@@ -8,6 +8,7 @@ A small, on-device model that generates **just-in-time interfaces**: you ask for
 - **For humans and agents at once.** Every interface has real accessibility semantics, so screen readers and AI agents can use it as well as people.
 - **Any design system.** The model only chooses *meaning* (components, patterns, "primary action"). The look comes from a swappable design system, with no retraining.
 - **Directed by designers.** A company's designers set its taste (profile, voice, patterns, rules, exemplars) and review what gets generated (§6).
+- **Run like a product.** PMs define capabilities, journeys, acceptance checks and metrics instead of screens. Analytics come built in (§7).
 
 **What we'll deliver, in order of value:**
 1. **The spec:** three-tier tokens, semantic components, patterns and agent semantics.
@@ -60,7 +61,7 @@ request ──► generator (small model, constrained to spec schema)
 Durations assume roughly 15–20 hours a week and are rough. Each phase has an exit test, and we don't move on until it passes.
 
 ### Phase 0: Setup and grounding (days 1–3)
-- Accept the Xcode license, `git init`, and set up the monorepo structure (§8).
+- Accept the Xcode license, `git init`, and set up the monorepo structure (§9).
 - Read the current A2UI spec, Material 3 tokens, GOV.UK patterns, and the Maru / Affora / Harness4GenUI preprints (check their claims against the PDFs).
 - **Output:** a one-page decision note on whether we extend the A2UI catalog or define our own schema with A2UI export.
 
@@ -210,7 +211,73 @@ Studio is a web app for designers.
 - **Studio:** a basic review and preview tool arrives with v0.2. The full Studio (rule suggestions, publish diffs, rollout) comes with v0.3. The team's review history can train its adapter (DPO) from v0.3.
 - **Privacy:** a company's exemplars, feedback and adapter stay in its own deployment. Nothing is collected by default.
 
-## 7. Risks
+## 7. Product layer: features, flows and metrics
+
+With static software, a PM defines features, a designer draws the screens and flows, engineering builds them, and analytics measures funnels. When screens are generated, **PMs and designers stop drawing screens and define what sits one level above them**: what the product can do, which journeys must hold, and how success is measured. Polixd has to make each of these explicit.
+
+| Today | In Polixd | Who owns it |
+|---|---|---|
+| Feature | **Capability**: a registered thing the product can do | PM + engineering |
+| Flow / user journey | **Journey**: a goal with required checkpoints | PM + designer (+ compliance) |
+| Screen | Generated UI (pattern + components) | Model, directed by the designer (§6) |
+| Acceptance criteria | **Checks** run against the company's request set | PM |
+| Analytics / funnels | **Automatic semantic events** + outcome metrics | PM |
+| A/B test | **Experiments** on direction, patterns, journeys or model | PM + designer |
+
+### Features become capabilities
+- The model can only build UI over capabilities the product has **registered**. A registered capability has:
+  - A name and a description.
+  - Inputs and outputs.
+  - Data sources.
+  - Preconditions ("account verified").
+  - Side effects.
+  - A **risk level**.
+- Risk level drives design automatically. For example, anything that moves money must use the confirm pattern and show a summary first.
+- **Feature flags and plans** switch capabilities on or off per user, through **OpenFeature**, a standard that works with LaunchDarkly, PostHog, GrowthBook and others. A capability that's off simply can't appear.
+- Capabilities are the same thing as the action intents in §2. Here they gain PM-owned metadata.
+
+### Flows become journeys
+- A journey is **a goal, required checkpoints and a done-condition**. Example: "Send money. The fee is visible before confirmation, confirmation is explicit, the receipt is shown. Done = transfer created."
+- **Three levels of control:**
+  - **Fixed:** exact steps, for regulated or legal flows like KYC and consent.
+  - **Guided:** checkpoints are required, and the layout between them is generated.
+  - **Open:** only the goal and the done-condition are fixed.
+- The benchmark tasks and the agent tests in Phase 3 already use this goal/done-condition shape. **Journey specs, acceptance tests and agent tests are one format.**
+- **Emergent flow map.** Paths through a product are no longer fixed, so Studio shows the paths people and agents *actually* took for each goal, along with where they dropped off.
+
+### Metrics come built in
+- Every generated UI already knows its intent, pattern, components and capabilities. So the runtime emits **standard semantic events** with no manual tracking:
+  - UI shown.
+  - Action taken.
+  - Checkpoint reached.
+  - Task completed or abandoned.
+  - Error.
+  - Undo.
+  - "Asked again" or regenerated.
+  - Optional quick feedback.
+- **Core metrics:**
+  - Task success rate.
+  - Time and steps to complete.
+  - Abandonment by step.
+  - **Regeneration rate**: the user had to ask again, so the UI missed. This is new and specific to JIT interfaces.
+  - **Recognition gain**: repeat tasks get faster.
+  - Accessibility pass rate.
+- **All metrics split by human vs. agent**, and by assistive-technology use.
+- Events go to the company's own analytics (PostHog, Amplitude, Segment or OpenTelemetry) through adapters. Polixd itself collects nothing.
+- **Unmet demand.** Requests that no registered capability could serve are logged as a ranked list: "what users asked for that we can't do yet." That's a feature backlog generated from real demand.
+
+### Acceptance criteria and experiments
+- PMs write criteria in plain language ("transfer in ≤ 3 steps", "fee always before amount"). These compile into checks, like design rules do, and run on every direction, pattern or model change. Nothing ships if they fail.
+- **Experiments** vary a Design Direction, a pattern, a journey or a model version. Assignment goes through the feature-flag provider, and results show in Studio against the metrics above, with guardrail metrics.
+
+### What this changes in the build
+- **Spec (Phase 1):** the capability, journey and event schemas join the spec. The Phase 1 finance patterns come with a small capability registry (accounts, transactions, transfers, budgets).
+- **Verifier and benchmark (Phase 3):** benchmark tasks are written as journeys. Journey-compliance checks are added, along with regeneration and recognition metrics.
+- **Runtime (v0.2):** capability registry, OpenFeature flags, event emission and analytics adapters.
+- **Studio (v0.3):** flow map, metrics dashboard, unmet-demand report, experiments.
+- **Scope guard:** v0.1 ships only the *schemas* and the events. Dashboards and experiments wait for Studio.
+
+## 8. Risks
 
 | Risk | Mitigation |
 |---|---|
@@ -222,10 +289,12 @@ Studio is a web app for designers.
 | Licensing | MIT/Apache/OGL sources only; learn from Apple HIG, don't copy it |
 | Designers can't express taste, or can't see why a UI came out as it did | Direction stays deterministic and explainable first; learned adapter is optional and comes last |
 | Model memorizes one taste instead of following directions | Train under randomized directions; direction-following metric in the benchmark |
+| Product layer bloats v1 | v0.1 ships only schemas + events; dashboards and experiments wait for Studio |
+| Regulated flows can't vary | Journeys support fixed mode for exact, audited steps |
 | Embedding is abused (injection, unsafe actions) | UI-as-data, host-allowlisted intents, threat model before v0.1 |
 | Breaking changes hurt early adopters | Semver, `specVersion`, migration notes; nothing public before v0.1 |
 
-## 8. Repo layout
+## 9. Repo layout
 
 ```
 packages/
@@ -237,6 +306,7 @@ packages/
   verifier/        @polixd/verifier + `polixd verify` CLI
   mcp/             @polixd/mcp: MCP server
   direction/       Design Direction schema, precedence engine, rule compiler
+  product/         capability registry, journeys, events, analytics + OpenFeature adapters
 python/            polixd SDK + polixd-spec (PyPI)
 model/             Python (uv + MLX): baselines, SFT, GRPO, export (MLX/GGUF)
 server/            Dockerfile + HTTP API
@@ -247,7 +317,7 @@ docs/              docs site, decisions, write-ups
 ```
 TypeScript (npm workspaces, Changesets for versioning and releases) and Python (uv). GitHub Actions for CI and publishing.
 
-## 9. Decisions needed before Phase 1
+## 10. Decisions needed before Phase 1
 
 1. **Domain.** Recommended: **personal finance**. It has forms, tables, charts, destructive confirms and repeated tasks, so consistency matters and agent tasks are easy to specify. Health brings privacy and medical-accuracy issues. Travel needs live data.
 2. **First design system.** Recommended: **Material 3** for tokens and guidance (it maps to web and Android and is well documented), with **GOV.UK** as the second system to prove the swap. The pair is deliberately very different visually.
