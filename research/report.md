@@ -13,6 +13,32 @@ This is Polyxd's running improvement report. Each entry states a question, what 
 
 ## Entries
 
+### 2026-09-19 · Constrained decoding fixes syntax, not structure (Phase 4, baseline 2)
+
+**Question.** If every token must keep the output valid against the UI schema, how much of baseline 1's failure goes away, and what does it cost?
+
+**First attempt: Outlines.** Outlines compiles the JSON Schema into one regular expression (about 60,000 characters for our schema) and then precomputes which of the model's ~248,000 tokens can follow each state. For our schema that precomputation ran for over 10 minutes on one CPU core without producing a first token, so we stopped it. A large, expressive schema makes up-front compilation impractical.
+
+**Second attempt: llguidance.** llguidance computes allowed tokens lazily at each step, so there is no start-up cost. It rejects JSON Schema `oneOf` by default, because exact "one of" semantics can't be enforced token by token. Every `oneOf` in the Polyxd schema has mutually exclusive branches (a string versus a `{path}` object, a list versus an object, or components distinguished by their `component` value), so treating them as `anyOf` accepts exactly the same documents. With that option it runs as a mlx-lm logits processor (`model/polyxd_model/constrain.py`).
+
+**Result.** Same model, prompt and benchmark as baseline 1.
+
+| Metric | Unconstrained | Constrained (llguidance) |
+|---|---|---|
+| Output parses as JSON | 56% | **100%** |
+| Passes schema and structural rules | 2% | 8% |
+| Agent tasks completed | 1 of 37 | 1 of 37 |
+| Median latency | 5.8 s | **4.2 s** |
+| Generation speed | 93 tokens/s | 87 tokens/s |
+
+Latency went down because constrained outputs can't loop or run to the token limit. The per-token cost of masking is small (about 6% slower generation).
+
+**What's left.** Nearly every remaining failure is a reference problem that JSON Schema can't express. The model lists `"children": ["amount"]` or `"summary": "freeze-card"` and then never defines that component, or sets `"root": "surface"`. Another cluster is `Card.children` holding a `Toggle` or `Action`, which the spec forbids today.
+
+**What it means.** The flat "list of components plus id references" format is right for the wire (it streams, it matches A2UI, it diffs well), but it is hard for a small model to *author*: the model has to keep a table of ids in its head across a long output. In baseline 1 the model's instinct was to nest children inline, which is how models naturally write trees.
+
+**Next.** Let the model author a nested tree (children written inline, no ids), constrained by a recursive schema generated from the same spec, and compile it deterministically into the flat document. Ids and references are then correct by construction, and nothing about the spec or the wire format changes. Separately, the `Card.children` restriction may be too strict: a habit card with a toggle is reasonable UI. That is a spec question, and the model's outputs are evidence for it.
+
 ### 2026-09-19 · Small models can't hold the structure (Phase 4, baseline 1)
 
 **Question.** Out of the box, how close is a small local model to producing valid Polyxd interfaces?

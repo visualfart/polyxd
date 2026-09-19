@@ -8,6 +8,7 @@ dependencies = [
   "mlx-lm",
   "outlines",
   "huggingface-hub",
+  "llguidance>=1.8.0",
 ]
 
 [tool.uv]

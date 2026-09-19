@@ -59,38 +59,27 @@ def chat(tokenizer, user: str) -> str:
         return tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
 
 
-_constrained = {}
-
-
-def run_constrained(model, tokenizer, user: str, max_tokens: int) -> dict:
-    """JSON-schema-constrained decoding via Outlines: every token must keep the output schema-valid."""
-    import outlines
-    from outlines.types import JsonSchema
-
-    if "gen" not in _constrained:
-        schema = (REPO / "packages" / "spec" / "schema" / "ui.schema.json").read_text()
-        _constrained["gen"] = outlines.Generator(outlines.from_mlxlm(model, tokenizer), JsonSchema(schema))
-    prompt = chat(tokenizer, user)
-    start = time.perf_counter()
-    raw = _constrained["gen"](prompt, max_tokens=max_tokens)
-    total = time.perf_counter() - start
-    doc, error = extract_json(raw)
-    tokens = len(tokenizer.encode(raw))
-    return {"raw": raw, "doc": doc, "error": error, "ttft_s": None, "total_s": round(total, 3), "prompt_tokens": None, "generation_tokens": tokens, "generation_tps": round(tokens / total, 1) if total else 0, "prompt_tps": None}
+SCHEMA = (REPO / "packages" / "spec" / "schema" / "ui.schema.json").read_text()
 
 
 def run_one(model, tokenizer, user: str, max_tokens: int, constrained: bool = False) -> dict:
-    if constrained:
-        return run_constrained(model, tokenizer, user, max_tokens)
     prompt = chat(tokenizer, user)
     sampler = make_sampler(temp=0.0)
+    processors, constraint = [], None
+    if constrained:
+        from .constrain import SchemaConstraint
+
+        constraint = SchemaConstraint(tokenizer, SCHEMA)
+        processors = [constraint]
     out, ttft, last = [], None, None
     start = time.perf_counter()
-    for resp in stream_generate(model, tokenizer, prompt, max_tokens=max_tokens, sampler=sampler):
+    for resp in stream_generate(model, tokenizer, prompt, max_tokens=max_tokens, sampler=sampler, logits_processors=processors):
         if ttft is None:
             ttft = time.perf_counter() - start
         out.append(resp.text)
         last = resp
+        if constraint and constraint.matcher.is_stopped():
+            break
     total = time.perf_counter() - start
     raw = "".join(out)
     doc, error = extract_json(raw)
@@ -104,6 +93,7 @@ def run_one(model, tokenizer, user: str, max_tokens: int, constrained: bool = Fa
         "generation_tokens": getattr(last, "generation_tokens", None),
         "generation_tps": round(getattr(last, "generation_tps", 0) or 0, 1),
         "prompt_tps": round(getattr(last, "prompt_tps", 0) or 0, 1),
+        "constraint_ms": round(constraint.mask_time * 1000) if constraint else None,
     }
 
 
@@ -128,7 +118,7 @@ def main() -> None:
     ap.add_argument("--sequences", action="store_true", help="run the multi-turn sequences with interface memory")
     ap.add_argument("--no-memory", action="store_true", help="with --sequences: don't give the model its previous output")
     ap.add_argument("--max-tokens", type=int, default=3500)
-    ap.add_argument("--constrained", action="store_true", help="JSON-schema-constrained decoding (Outlines)")
+    ap.add_argument("--constrained", action="store_true", help="JSON-schema-constrained decoding (llguidance)")
     args = ap.parse_args()
 
     name = (args.name or args.model.split("/")[-1]) + ("-constrained" if args.constrained else "")

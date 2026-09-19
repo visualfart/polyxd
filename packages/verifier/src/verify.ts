@@ -57,6 +57,13 @@ export async function verifyDocument(doc: any, opts: VerifyOptions = {}): Promis
           for (const width of opts.widths ?? DEFAULTS.widths) {
             const target = { theme, mode, width };
             const { page, errors } = await renderPage(browser, doc, target);
+            const rendered = await page.evaluate(() => !!document.querySelector(".pxd-surface"));
+            if (!rendered) {
+              // The renderer threw: a schema-valid document it can't display is a renderer bug.
+              targets.push({ ...target, findings: [{ severity: "error", check: "runtime:render", message: errors[0] ?? "surface did not render" }], agent: [] });
+              await page.close();
+              continue;
+            }
             const findings: Finding[] = [...(await axeAudit(page)), ...(await layoutAudit(page))];
             const agent: TargetReport["agent"] = [];
             for (const task of opts.tasks ?? []) {
