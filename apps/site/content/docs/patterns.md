@@ -1,6 +1,6 @@
 ---
 title: Patterns
-description: The five core patterns, what each one is for, and the shared check vocabulary that makes them self-checking.
+description: The six core patterns, what each one is for, and the shared check vocabulary that makes them self-checking.
 order: 12
 section: Concepts
 ---

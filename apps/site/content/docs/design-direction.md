@@ -26,7 +26,7 @@ The goal is that designers shape generated UI without writing prompts or JSON by
 
 | Setting | Values | Default |
 |---|---|---|
-| `density` | `compact`, `comfortable`, `spacious` | `comfortable` |
+| `density` | `compact`, `comfortable`, `spacious`. Sets row heights and how tightly rows pack: 32, 40 and 48px. `compact` is for pointer surfaces; touch targets keep their minimum either way | `comfortable` |
 | `emphasisBudget` | Primary actions allowed per view, 1–3 | `1` |
 | `dataDisplay` | `auto`, `prefer-charts`, `prefer-tables`, `prefer-metrics` | `auto` |
 | `motion` | `none`, `subtle`, `expressive` | `subtle` |

@@ -15,10 +15,10 @@ For every component's props, usage rules, accessibility requirements and platfor
 
 | Category | Components |
 |---|---|
-| Structure | `Section`, `Group`, `Card`, `Disclosure`, `Views` |
+| Structure | `Section`, `Group`, `Card`, `Disclosure`, `Views`, `Navigation` |
 | Content | `Text`, `Metric`, `DetailList`, `Collection`, `Table`, `Chart`, `Media` |
 | Feedback | `Status` |
-| Input | `TextInput`, `Choice`, `Toggle`, `DateInput`, `RangeInput`, `Form` |
+| Input | `TextInput`, `Choice`, `Toggle`, `DateInput`, `RangeInput`, `Form`, `FilterPanel` |
 | Action | `Action`, `ActionBar` |
 | Flow | `Steps`, `Confirm`, `Comparison` |
 
