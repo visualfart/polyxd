@@ -85,13 +85,38 @@
       "items": {
         "path": "/habits",
         "componentId": "habit"
-      }
+      },
+      "layout": "list"
     },
     {
       "id": "habit",
-      "component": "Toggle",
-      "label": {
+      "component": "Card",
+      "title": {
         "path": "name"
+      },
+      "subtitle": {
+        "path": "streak"
+      },
+      "children": [
+        "habit-done"
+      ],
+      "action": {
+        "event": {
+          "name": "habit.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "habit-done",
+      "component": "Toggle",
+      "key": "habit_done",
+      "label": {
+        "path": "doneLabel"
       },
       "value": {
         "path": "done"
@@ -147,12 +172,16 @@
       {
         "id": "h1",
         "name": "Read 20 minutes",
-        "done": true
+        "done": true,
+        "streak": "12-day streak",
+        "doneLabel": "Done: Read 20 minutes"
       },
       {
         "id": "h2",
         "name": "Walk 8k steps",
-        "done": false
+        "done": false,
+        "streak": "6-day streak",
+        "doneLabel": "Done: Walk 8k steps"
       }
     ]
   }

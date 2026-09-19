@@ -52,7 +52,7 @@ const cases: [string, string, (d: any) => void, RegExp][] = [
   }, /ActionBar\.children must reference Action/],
   ["cycle", "tasks-list.json", (d) => (byId(d, "list").empty = "root"), /already has parent|cycle|Collection\.empty must reference Status/],
   ["pure cycle back to root", "personal-reading-log.json", (d) => byId(d, "bar").children.push("root"), /cycle|ActionBar\.children must reference Action/],
-  ["component used in two places", "travel-booking-review.json", (d) => byId(d, "stay").children.push("guest-details"), /already has parent "guest"/],
+  ["component used in two places", "travel-booking-review.json", (d) => byId(d, "form").children.push("guest-details"), /already has parent "guest"/],
   ["unknown renderer action", "settings-delete-account.json", (d) => (byId(d, "confirm").cancel.action.event.name = "ui.close"), /"ui\.close" is not a renderer action/],
   ["invalid capability name", "tasks-add.json", (d) => (byId(d, "form").submit.action.event.name = "Save Task"), /pattern/],
   ["hard-coded metric value (data must be bound)", "money-budget-settings.json", (d) => (byId(d, "used").value = 212.5), /must be object|must have required property 'path'/],

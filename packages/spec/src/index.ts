@@ -8,3 +8,4 @@ export { contrastRatio, luminance, type ColorValue } from "./color.ts";
 export { flattenTree, toTree, isTree } from "./tree.ts";
 export { compileVoice, directionRules } from "./direction.ts";
 export { readingGrade } from "./checks.ts";
+export { REFERENCE_TYPES } from "./references.ts";

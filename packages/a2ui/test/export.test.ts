@@ -17,7 +17,7 @@ const assertValid = (messages: A2UIMessage[]) => {
   assert.deepEqual(checkComponentTree(componentsOf(messages)), []);
 };
 
-test("there are 20 example UI documents", () => assert.equal(files.length, 20));
+test("there are 24 example UI documents", () => assert.equal(files.length, 24));
 
 for (const file of files) {
   test(`${file} exports to A2UI v1.0 messages that validate against the official schemas`, () => {
@@ -71,7 +71,7 @@ test("the Polyxd root is renamed to 'root' and every reference follows (money-se
   assert.deepEqual(idMap, { form: "root" });
   const root = byId(messages, "root");
   assert.equal(root.component, "Form");
-  assert.deepEqual(root.children, ["recipient", "amount", "reference", "fees"]);
+  assert.deepEqual(root.children, ["recipient", "amount", "reference", "fee-details"]);
   assert.deepEqual(root.submit.action.event.context, {
     recipient: { path: "/draft/recipient" },
     amount: { path: "/draft/amount" },

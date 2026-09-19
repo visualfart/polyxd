@@ -558,14 +558,14 @@ export function Form({ node }: { node: Node }) {
       }}
       {...useA11y(node)}
     >
-      <div className="pxd-stack pxd-form-fields">
-        <Children ids={node.children} />
-      </div>
       {node.aside && (
         <aside className="pxd-form-aside">
           <Render id={node.aside} />
         </aside>
       )}
+      <div className="pxd-stack pxd-form-fields">
+        <Children ids={node.children} />
+      </div>
       <div className="pxd-action-bar">
         <button type="submit" className="pxd-button pxd-button-primary">
           {b.text(node.submit.label)}

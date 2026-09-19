@@ -42,7 +42,6 @@ const SINGLE_REFS: Record<string, string[]> = {
   Table: ["empty", "toolbar", "bulkActions", "rowActions", "search"],
   Status: ["action"],
   Confirm: ["summary"],
-  Form: ["aside"],
   FilterPanel: ["results"],
 };
 
@@ -67,6 +66,8 @@ export function readingOrder(doc: Doc): Component[] {
 /** Ids a component references, in order. Mirrors the reference props in the schema. */
 export function childIds(c: Component): string[] {
   const ids: string[] = [];
+  // A Form's summary is read before its fields: it says what you are agreeing to.
+  if (c.component === "Form" && typeof c.aside === "string") ids.push(c.aside);
   if (Array.isArray(c.children)) ids.push(...c.children);
   for (const p of SINGLE_REFS[c.component] ?? []) if (typeof c[p] === "string") ids.push(c[p]);
   if (c.items && typeof c.items === "object" && "componentId" in c.items) ids.push(c.items.componentId);

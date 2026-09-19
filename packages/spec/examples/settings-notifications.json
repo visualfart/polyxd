@@ -10,11 +10,31 @@
   "components": [
     {
       "id": "root",
-      "component": "Group",
+      "component": "Form",
+      "layout": "horizontal",
       "children": [
         "channels",
         "quiet"
-      ]
+      ],
+      "submit": {
+        "label": "Save notification settings",
+        "action": {
+          "event": {
+            "name": "notifications.save",
+            "context": {
+              "push": {
+                "path": "/prefs/push"
+              },
+              "email": {
+                "path": "/prefs/email"
+              },
+              "quiet": {
+                "path": "/prefs/quiet"
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "channels",

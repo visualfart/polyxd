@@ -17,7 +17,6 @@
         "path": "/plans"
       },
       "itemTitle": "name",
-      "summary": "Plus suits most people: enough storage and support at a lower price than Pro.",
       "recommended": "Plus",
       "attributes": [
         {
@@ -28,7 +27,8 @@
             "type": "currency",
             "currency": "GBP"
           },
-          "better": "lower"
+          "better": "lower",
+          "group": "Cost"
         },
         {
           "key": "storage",
@@ -37,12 +37,26 @@
           "format": {
             "type": "number"
           },
-          "better": "higher"
+          "better": "higher",
+          "group": "What you get"
         },
         {
           "key": "support",
           "label": "Support",
-          "path": "support"
+          "path": "support",
+          "group": "What you get"
+        },
+        {
+          "key": "offline",
+          "label": "Offline access",
+          "path": "offline",
+          "group": "What you get"
+        },
+        {
+          "key": "sharing",
+          "label": "Share with family",
+          "path": "sharing",
+          "group": "What you get"
         }
       ],
       "choose": {
@@ -57,7 +71,8 @@
             }
           }
         }
-      }
+      },
+      "recommendedReason": "Enough storage and email support, at half the price of Pro"
     }
   ],
   "data": {
@@ -67,21 +82,27 @@
         "name": "Basic",
         "price": 0,
         "storage": 5,
-        "support": "Community"
+        "support": "Community",
+        "offline": false,
+        "sharing": false
       },
       {
         "id": "plus",
         "name": "Plus",
         "price": 4.99,
         "storage": 200,
-        "support": "Email"
+        "support": "Email",
+        "offline": true,
+        "sharing": false
       },
       {
         "id": "pro",
         "name": "Pro",
         "price": 11.99,
         "storage": 2000,
-        "support": "Priority"
+        "support": "Priority",
+        "offline": true,
+        "sharing": true
       }
     ]
   }

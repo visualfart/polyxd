@@ -1,0 +1,513 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "account",
+    "title": "Acme Corp",
+    "intent": "account.view",
+    "avatar": "AC",
+    "badge": {
+      "text": {
+        "path": "/account/status"
+      },
+      "tone": "danger"
+    },
+    "subtitle": "Enterprise · acme.com · customer since March 2023",
+    "breadcrumbs": [
+      {
+        "label": "Customers",
+        "action": {
+          "event": {
+            "name": "nav.go",
+            "context": {
+              "to": "customers"
+            }
+          }
+        }
+      },
+      {
+        "label": "Accounts",
+        "action": {
+          "event": {
+            "name": "nav.go",
+            "context": {
+              "to": "accounts"
+            }
+          }
+        }
+      }
+    ],
+    "actions": "record-actions"
+  },
+  "root": "tabs",
+  "components": [
+    {
+      "id": "nav",
+      "component": "Navigation",
+      "label": "Main",
+      "current": {
+        "path": "/nav"
+      },
+      "items": [
+        {
+          "key": "overview",
+          "label": "Overview",
+          "icon": "chart",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "overview"
+              }
+            }
+          }
+        },
+        {
+          "key": "accounts",
+          "label": "Accounts",
+          "icon": "people",
+          "group": "Customers",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "accounts"
+              }
+            }
+          }
+        },
+        {
+          "key": "contacts",
+          "label": "Contacts",
+          "icon": "people",
+          "group": "Customers",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "contacts"
+              }
+            }
+          }
+        },
+        {
+          "key": "invoices",
+          "label": "Invoices",
+          "icon": "file",
+          "group": "Billing",
+          "badge": {
+            "path": "/overdue"
+          },
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "invoices"
+              }
+            }
+          }
+        },
+        {
+          "key": "subscriptions",
+          "label": "Subscriptions",
+          "icon": "card",
+          "group": "Billing",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "subscriptions"
+              }
+            }
+          }
+        },
+        {
+          "key": "settings",
+          "label": "Settings",
+          "icon": "settings",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "settings"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "record-actions",
+      "component": "ActionBar",
+      "children": [
+        "edit",
+        "record-payment"
+      ]
+    },
+    {
+      "id": "edit",
+      "component": "Action",
+      "label": "Edit account",
+      "emphasis": "tertiary",
+      "action": {
+        "event": {
+          "name": "account.edit",
+          "context": {
+            "id": {
+              "path": "/account/id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "record-payment",
+      "component": "Action",
+      "label": "Record payment",
+      "emphasis": "primary",
+      "action": {
+        "event": {
+          "name": "payment.recordStart",
+          "context": {
+            "account": {
+              "path": "/account/id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "tabs",
+      "component": "Views",
+      "variant": "tabs",
+      "selected": {
+        "path": "/tab"
+      },
+      "views": [
+        {
+          "key": "overview",
+          "label": "Overview",
+          "content": "overview"
+        },
+        {
+          "key": "invoices",
+          "label": "Invoices",
+          "count": {
+            "path": "/counts/invoices"
+          },
+          "content": "invoices"
+        },
+        {
+          "key": "activity",
+          "label": "Activity",
+          "content": "activity"
+        }
+      ]
+    },
+    {
+      "id": "overview",
+      "component": "Group",
+      "children": [
+        "overdue-notice",
+        "kpis",
+        "details"
+      ]
+    },
+    {
+      "id": "overdue-notice",
+      "component": "Status",
+      "kind": "warning",
+      "variant": "inline",
+      "title": "Invoice INV-2041 is 5 days overdue",
+      "message": "Acme has paid on time for 18 months; a reminder usually settles it.",
+      "action": "send-reminder"
+    },
+    {
+      "id": "send-reminder",
+      "component": "Action",
+      "label": "Send reminder",
+      "action": {
+        "event": {
+          "name": "invoice.remindStart",
+          "context": {
+            "invoice": "INV-2041"
+          }
+        }
+      }
+    },
+    {
+      "id": "kpis",
+      "component": "Group",
+      "children": [
+        "mrr",
+        "seats",
+        "outstanding"
+      ]
+    },
+    {
+      "id": "mrr",
+      "component": "Metric",
+      "label": "Monthly recurring revenue",
+      "value": {
+        "path": "/account/mrr"
+      },
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      },
+      "change": {
+        "value": {
+          "path": "/account/mrrChange"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "favorable": "increase"
+      },
+      "caption": "Since June"
+    },
+    {
+      "id": "seats",
+      "component": "Metric",
+      "label": "Seats used",
+      "value": {
+        "path": "/account/seats"
+      },
+      "caption": "2 left before the next tier"
+    },
+    {
+      "id": "outstanding",
+      "component": "Metric",
+      "label": "Outstanding",
+      "value": {
+        "path": "/account/outstanding"
+      },
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      },
+      "caption": "1 invoice"
+    },
+    {
+      "id": "details",
+      "component": "DetailList",
+      "title": "Details",
+      "layout": "grid",
+      "items": [
+        {
+          "key": "legal",
+          "label": "Legal name",
+          "value": {
+            "path": "/account/legal"
+          }
+        },
+        {
+          "key": "billing",
+          "label": "Billing email",
+          "value": {
+            "path": "/account/billingEmail"
+          }
+        },
+        {
+          "key": "vat",
+          "label": "VAT number",
+          "value": {
+            "path": "/account/vat"
+          }
+        },
+        {
+          "key": "owner",
+          "label": "Owner",
+          "value": {
+            "path": "/account/owner"
+          }
+        },
+        {
+          "key": "payment",
+          "label": "Payment method",
+          "value": {
+            "path": "/account/payment"
+          }
+        },
+        {
+          "key": "currency",
+          "label": "Currency",
+          "value": {
+            "path": "/account/currency"
+          }
+        },
+        {
+          "key": "plan",
+          "label": "Plan",
+          "value": {
+            "path": "/account/plan"
+          }
+        },
+        {
+          "key": "renews",
+          "label": "Renews",
+          "value": {
+            "path": "/account/renews"
+          }
+        },
+        {
+          "key": "region",
+          "label": "Region",
+          "value": {
+            "path": "/account/region"
+          }
+        }
+      ]
+    },
+    {
+      "id": "invoices",
+      "component": "Table",
+      "rows": {
+        "path": "/invoices"
+      },
+      "caption": "Invoices for Acme Corp",
+      "rowValuePath": "id",
+      "columns": [
+        {
+          "key": "ref",
+          "label": "Invoice",
+          "path": "ref",
+          "kind": "link"
+        },
+        {
+          "key": "issued",
+          "label": "Issued",
+          "path": "issued",
+          "kind": "date"
+        },
+        {
+          "key": "due",
+          "label": "Due",
+          "path": "due",
+          "kind": "date"
+        },
+        {
+          "key": "amount",
+          "label": "Amount",
+          "path": "amount",
+          "kind": "currency",
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          },
+          "sortable": true
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "path": "status",
+          "kind": "status",
+          "tones": {
+            "Paid": "success",
+            "Overdue": "danger"
+          }
+        }
+      ],
+      "rowAction": {
+        "event": {
+          "name": "invoice.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "activity",
+      "component": "Collection",
+      "key": "activity",
+      "label": "Activity",
+      "layout": "timeline",
+      "items": {
+        "path": "/activity",
+        "componentId": "event"
+      }
+    },
+    {
+      "id": "event",
+      "component": "Card",
+      "title": {
+        "path": "what"
+      },
+      "subtitle": {
+        "path": "when"
+      }
+    }
+  ],
+  "data": {
+    "nav": "accounts",
+    "overdue": 12,
+    "tab": "overview",
+    "counts": {
+      "invoices": 12
+    },
+    "account": {
+      "id": "a1",
+      "status": "Past due",
+      "mrr": 4200,
+      "mrrChange": 600,
+      "seats": "48 of 50",
+      "outstanding": 1250,
+      "legal": "Acme Corporation Ltd",
+      "billingEmail": "ap@acme.com",
+      "vat": "GB 123 4567 89",
+      "owner": "Rhea Mills",
+      "payment": "Visa ending 4242",
+      "currency": "GBP",
+      "plan": "Enterprise, annual",
+      "renews": "12 October 2026",
+      "region": "EU (Frankfurt)"
+    },
+    "invoices": [
+      {
+        "id": "i1",
+        "ref": "INV-2041",
+        "issued": "1 Sep 2026",
+        "due": "15 Sep 2026",
+        "amount": 1250,
+        "status": "Overdue"
+      },
+      {
+        "id": "i2",
+        "ref": "INV-1987",
+        "issued": "1 Aug 2026",
+        "due": "15 Aug 2026",
+        "amount": 4200,
+        "status": "Paid"
+      },
+      {
+        "id": "i3",
+        "ref": "INV-1932",
+        "issued": "1 Jul 2026",
+        "due": "15 Jul 2026",
+        "amount": 4200,
+        "status": "Paid"
+      }
+    ],
+    "activity": [
+      {
+        "id": "e1",
+        "what": "Payment of £1,250 failed: card declined",
+        "when": "2 hours ago · System"
+      },
+      {
+        "id": "e2",
+        "what": "Added 6 seats (42 → 48)",
+        "when": "Yesterday · Rhea Mills"
+      },
+      {
+        "id": "e3",
+        "what": "Upgraded Pro to Enterprise",
+        "when": "2 August · Tom Walsh"
+      }
+    ]
+  }
+}

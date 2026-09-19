@@ -479,8 +479,8 @@ Collects inputs and submits them together.
 - One column; labels above fields
 - Submit is the primary action; cancel is secondary
 - Submit context is built from the form's input bindings
-- 'aside' sits beside the form and stays in view on wide surfaces; on compact ones it comes after the fields, just before the submit action
 - 'horizontal' becomes stacked on compact surfaces
+- 'aside' sits beside the form on wide surfaces; on compact ones it comes first, before the fields, so people read what they are agreeing to
 
 ## RangeInput
 

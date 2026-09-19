@@ -208,7 +208,15 @@ export function buildTreeSchema(flat: any) {
     description: "The same document as ui.schema.json, with child components written inline. Generated; compile with flattenTree().",
     type: "object",
     required: ["specVersion", "surface", "root"],
-    properties: { $schema: flat.properties.$schema, specVersion: flat.properties.specVersion, surface: flat.properties.surface, root: node, data: flat.properties.data },
+    properties: {
+      $schema: flat.properties.$schema,
+      specVersion: flat.properties.specVersion,
+      // In tree form the surface's header actions are written inline, like any other component.
+      surface: { ...flat.properties.surface, properties: { ...flat.properties.surface.properties, actions: node } },
+      root: node,
+      navigation: { ...node, description: "The product's navigation, when this surface provides it" },
+      data: flat.properties.data,
+    },
     additionalProperties: false,
     $defs: { ...rest, Node: { ...Component } },
   };

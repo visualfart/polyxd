@@ -20,12 +20,13 @@
       "id": "books",
       "component": "Collection",
       "key": "books",
-      "label": "Books to read",
+      "label": "Reading now",
       "items": {
         "path": "/books",
         "componentId": "book"
       },
-      "empty": "empty"
+      "empty": "empty",
+      "layout": "list"
     },
     {
       "id": "book",
@@ -45,14 +46,23 @@
             }
           }
         }
+      },
+      "progress": {
+        "value": {
+          "path": "progress"
+        },
+        "label": {
+          "path": "pages"
+        }
       }
     },
     {
       "id": "empty",
       "component": "Status",
       "kind": "empty",
-      "title": "Your reading list is empty",
-      "message": "Add a book you've been meaning to read."
+      "title": "Nothing on your list yet",
+      "message": "Add a book you're reading, or bring your shelf across from Goodreads.",
+      "icon": "book"
     },
     {
       "id": "bar",
@@ -87,6 +97,28 @@
     }
   ],
   "data": {
-    "books": []
+    "books": [
+      {
+        "id": "b1",
+        "title": "The Design of Everyday Things",
+        "author": "Don Norman",
+        "progress": 0.38,
+        "pages": "120 of 320 pages"
+      },
+      {
+        "id": "b2",
+        "title": "Thinking in Systems",
+        "author": "Donella Meadows",
+        "progress": 0.8,
+        "pages": "148 of 185 pages"
+      },
+      {
+        "id": "b3",
+        "title": "The Craftsman",
+        "author": "Richard Sennett",
+        "progress": 0.05,
+        "pages": "16 of 326 pages"
+      }
+    ]
   }
 }

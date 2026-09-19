@@ -2,6 +2,10 @@
   "$schema": "../../schema/capabilities.schema.json",
   "name": "polyxd-examples",
   "capabilities": {
+    "account.create": {
+      "description": "Create an account",
+      "risk": "low"
+    },
     "account.delete": {
       "description": "Delete the user's account (restorable for 30 days)",
       "risk": "destructive",
@@ -10,6 +14,142 @@
         "Schedules data erasure"
       ],
       "agentMayInvoke": false
+    },
+    "account.edit": {
+      "description": "Edit an account's details",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "account.open": {
+      "description": "Open an account",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "accounts.assign": {
+      "description": "Assign an owner to several accounts",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "accounts.export": {
+      "description": "Export the current accounts view as a file",
+      "risk": "low"
+    },
+    "accounts.import": {
+      "description": "Import accounts from a file",
+      "risk": "low"
+    },
+    "accounts.page": {
+      "description": "Show another page of accounts",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "accounts.remind": {
+      "description": "Send a payment reminder for several accounts",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "accounts.remindStart": {
+      "description": "Open payment reminders for several accounts to review before sending",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "accounts.search": {
+      "description": "Search accounts",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "accounts.sort": {
+      "description": "Re-sort the accounts list",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
     },
     "book.create": {
       "description": "Start adding a book to the reading list",
@@ -52,6 +192,10 @@
         "additionalProperties": false
       }
     },
+    "filters.clear": {
+      "description": "Clear the filters on a list",
+      "risk": "none"
+    },
     "flight.select": {
       "description": "Select a flight to book",
       "risk": "none",
@@ -65,6 +209,19 @@
         "required": [
           "id"
         ],
+        "additionalProperties": false
+      }
+    },
+    "flights.sort": {
+      "description": "Re-sort the flight results",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string"
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -84,6 +241,22 @@
         "required": [
           "id",
           "done"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "habit.open": {
+      "description": "Open a habit's history",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
         ],
         "additionalProperties": false
       }
@@ -116,6 +289,86 @@
       ],
       "agentMayInvoke": false
     },
+    "invoice.create": {
+      "description": "Create an invoice for an account",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "invoice.createStart": {
+      "description": "Start a draft invoice for an account",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "invoice.open": {
+      "description": "Open an invoice",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "invoice.remind": {
+      "description": "Send a reminder for an overdue invoice",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "invoice": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "invoice"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "invoice.remindStart": {
+      "description": "Open a reminder for an overdue invoice to review before sending",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "invoice": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "invoice"
+        ],
+        "additionalProperties": false
+      }
+    },
     "meeting.invite": {
       "description": "Send a meeting invitation",
       "risk": "low",
@@ -143,6 +396,41 @@
         "Emails attendees"
       ]
     },
+    "nav.go": {
+      "description": "Move to another section of the product",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "notifications.save": {
+      "description": "Save notification settings",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "push": {
+            "type": "boolean"
+          },
+          "email": {
+            "type": "boolean"
+          },
+          "quiet": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "order.place": {
       "description": "Place an order and take payment",
       "risk": "consequential",
@@ -162,6 +450,38 @@
         "Charges the payment method"
       ],
       "agentMayInvoke": false
+    },
+    "payment.record": {
+      "description": "Record a payment against an account",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "payment.recordStart": {
+      "description": "Open the form for recording a payment",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account"
+        ],
+        "additionalProperties": false
+      }
     },
     "plan.select": {
       "description": "Choose a subscription plan (continues to checkout)",
@@ -235,6 +555,56 @@
       "description": "Retry loading statements",
       "risk": "none"
     },
+    "subscription.cancel": {
+      "description": "Cancel an account's subscription",
+      "risk": "destructive",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account"
+        ],
+        "additionalProperties": false
+      },
+      "agentMayInvoke": false
+    },
+    "subscription.cancelStart": {
+      "description": "Open the cancellation check for an account's subscription",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "task.archive": {
+      "description": "Archive a task (reversible)",
+      "risk": "low",
+      "undo": "task.unarchive",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
     "task.create": {
       "description": "Start creating a task",
       "risk": "none"
@@ -280,9 +650,48 @@
         "additionalProperties": false
       }
     },
+    "task.unarchive": {
+      "description": "Restore an archived task",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
     "tasks.planTomorrow": {
       "description": "Open tomorrow's plan",
       "risk": "none"
+    },
+    "team.invite": {
+      "description": "Invite someone to the workspace",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "team.save": {
+      "description": "Save workspace access settings",
+      "risk": "low"
     },
     "transactions.open": {
       "description": "Open a transaction",

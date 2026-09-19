@@ -125,7 +125,7 @@
       "instruction": "I did my walk today.",
       "steps": [
         {
-          "toggle": "Walk 8k steps"
+          "toggle": "Done: Walk 8k steps"
         }
       ],
       "expect": {

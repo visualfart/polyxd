@@ -11,6 +11,7 @@
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { EXTENSION_KEY, POLYXD_CATALOG_ID, type Json } from "./a2ui.ts";
+import { REFERENCE_TYPES } from "@polyxd/spec";
 import { MAPPING } from "./mapping.ts";
 
 const COMMON = "common_types.json#/$defs/";
@@ -27,16 +28,29 @@ const DIRECT: Record<string, string> = {
 };
 
 /**
- * Component props that may only reference certain component types (mirrors REFERENCE_TYPES in
- * @polyxd/spec src/validate.ts). Emitted as A2UI `allowedChildren` when every child slot of a component is restricted.
+ * A2UI `allowedChildren` for one component: emitted only when EVERY slot that can hold other
+ * components is restricted to named types. Derived from the spec's REFERENCE_TYPES, so the two
+ * can't drift apart (a component with a free-form `children` list stays unrestricted).
  */
-const ALLOWED_CHILDREN: Record<string, string[]> = {
-  ActionBar: ["Action"],
-  Card: ["Media", "Text", "Metric", "DetailList", "Group", "Status"],
-  Status: ["Action"],
-  Confirm: ["DetailList"],
-  Table: ["Status"],
-};
+function allowedChildren(c: ComponentSource): string[] | undefined {
+  const refOf = (v: unknown) => {
+    const ref = (v as Json)?.$ref;
+    return typeof ref === "string" ? ref : undefined;
+  };
+  // A Template holds any component as its repeated item, so it leaves the component unrestricted.
+  if (Object.values(c.props).some((v) => refOf(v)?.endsWith("/Template"))) return undefined;
+  const slots = Object.entries(c.props)
+    .filter(([, v]) => refOf(v)?.endsWith("/Id") || refOf(v)?.endsWith("/ChildList"))
+    .map(([k]) => k);
+  if (!slots.length) return undefined;
+  const types = new Set<string>();
+  for (const slot of slots) {
+    const allowed = REFERENCE_TYPES[`${c.name}.${slot}`];
+    if (!allowed) return undefined;
+    for (const t of allowed) types.add(t);
+  }
+  return [...types].sort();
+}
 
 /** Renderer-handled Polyxd actions (`ui.*`), exported as A2UI local function calls. */
 export const RENDERER_FUNCTIONS: Record<string, { fn: string; description: string }> = {
@@ -141,7 +155,7 @@ export function buildCatalog(): Json {
       description: c.summary,
       properties: props,
       required: ["component", ...c.required],
-      ...(ALLOWED_CHILDREN[c.name] ? { allowedChildren: ALLOWED_CHILDREN[c.name] } : {}),
+      ...(allowedChildren(c) ? { allowedChildren: allowedChildren(c) } : {}),
       metadata: {
         extensions: {
           [EXTENSION_KEY]: { category: c.category, target: decision.target, basicAnalog: decision.basicAnalog, why: decision.why },

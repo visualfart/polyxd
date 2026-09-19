@@ -11,21 +11,22 @@
   "components": [
     {
       "id": "root",
-      "component": "Group",
-      "children": [
-        "filters",
-        "results"
-      ]
-    },
-    {
-      "id": "filters",
-      "component": "Section",
-      "title": "Filter",
+      "component": "FilterPanel",
+      "label": "Filter lamps",
       "children": [
         "search",
         "category",
         "price"
-      ]
+      ],
+      "results": "results",
+      "resultCount": {
+        "path": "/resultCount"
+      },
+      "clear": {
+        "event": {
+          "name": "filters.clear"
+        }
+      }
     },
     {
       "id": "search",
@@ -35,7 +36,8 @@
       "kind": "search",
       "value": {
         "path": "/filters/q"
-      }
+      },
+      "placeholder": "Try “warm light” or “brass”"
     },
     {
       "id": "category",
@@ -64,10 +66,10 @@
     {
       "id": "price",
       "component": "RangeInput",
-      "key": "max_price",
-      "label": "Maximum price",
+      "key": "price",
+      "label": "Price",
       "value": {
-        "path": "/filters/maxPrice"
+        "path": "/filters/price"
       },
       "min": 0,
       "max": 300,
@@ -75,7 +77,8 @@
       "format": {
         "type": "currency",
         "currency": "GBP"
-      }
+      },
+      "mode": "range"
     },
     {
       "id": "results",
@@ -88,7 +91,8 @@
         "path": "/products",
         "componentId": "product"
       },
-      "empty": "no-results"
+      "empty": "no-results",
+      "layout": "grid"
     },
     {
       "id": "product",
@@ -133,9 +137,12 @@
       "types": [
         "desk"
       ],
-      "maxPrice": 120
+      "price": [
+        20,
+        120
+      ]
     },
-    "resultsLabel": "12 lamps",
+    "resultsLabel": "Desk lamps",
     "products": [
       {
         "id": "l1",
@@ -148,7 +155,20 @@
         "name": "Mini clamp lamp",
         "priceLabel": "£22",
         "image": "img2"
+      },
+      {
+        "id": "l3",
+        "name": "Brass floor lamp",
+        "priceLabel": "£119",
+        "image": "img3"
+      },
+      {
+        "id": "l4",
+        "name": "Clip-on reading light",
+        "priceLabel": "£18",
+        "image": "img4"
       }
-    ]
+    ],
+    "resultCount": 4
   }
 }

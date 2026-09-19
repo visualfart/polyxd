@@ -72,9 +72,14 @@ export async function layoutAudit(page: Page): Promise<Finding[]> {
         belowPack.push(`${name(el)} (${Math.round(width)}×${Math.round(height)})`);
       }
     });
-    return { overflow, tooSmall, belowPack, packMin };
+    // What happens must be the last thing read before the button that does it.
+    const consequence = surface.querySelector(".pxd-dialog-consequence");
+    const bar = consequence?.closest(".pxd-dialog")?.querySelector(".pxd-action-bar");
+    const consequenceMisplaced = !!consequence && !!bar && consequence.nextElementSibling !== bar;
+    return { overflow, tooSmall, belowPack, packMin, consequenceMisplaced };
   });
   const out: Finding[] = [];
+  if (r.consequenceMisplaced) out.push({ severity: "error", check: "layout:consequence-placement", message: "the consequence must sit directly above the buttons it warns about" });
   if (r.overflow > 1) out.push({ severity: "error", check: "layout:overflow", message: `content is ${r.overflow}px wider than the surface (horizontal scrolling)` });
   if (r.tooSmall.length) out.push({ severity: "error", check: "layout:target-size", message: `targets under 24px without spacing (WCAG 2.5.8): ${r.tooSmall.slice(0, 4).join(", ")}`, count: r.tooSmall.length });
   if (r.belowPack.length) out.push({ severity: "warning", check: "layout:target-size-pack", message: `buttons below the pack's ${r.packMin}px target: ${r.belowPack.slice(0, 4).join(", ")}`, count: r.belowPack.length });

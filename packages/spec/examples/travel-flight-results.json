@@ -23,7 +23,8 @@
           "path": "depart",
           "format": {
             "type": "time"
-          }
+          },
+          "sortable": true
         },
         {
           "key": "arrive",
@@ -31,7 +32,8 @@
           "path": "arrive",
           "format": {
             "type": "time"
-          }
+          },
+          "sortable": true
         },
         {
           "key": "stops",
@@ -39,12 +41,15 @@
           "path": "stops",
           "format": {
             "type": "number"
-          }
+          },
+          "sortable": true,
+          "kind": "number"
         },
         {
           "key": "airline",
           "label": "Airline",
-          "path": "airline"
+          "path": "airline",
+          "sortable": false
         },
         {
           "key": "price",
@@ -53,7 +58,9 @@
           "format": {
             "type": "currency",
             "currency": "GBP"
-          }
+          },
+          "sortable": true,
+          "kind": "currency"
         }
       ],
       "rowAction": {
@@ -66,7 +73,25 @@
           }
         }
       },
-      "empty": "none"
+      "empty": "none",
+      "sort": {
+        "column": {
+          "path": "/sort/column"
+        },
+        "direction": {
+          "path": "/sort/direction"
+        },
+        "action": {
+          "event": {
+            "name": "flights.sort",
+            "context": {
+              "column": {
+                "path": "/sort/column"
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "none",
@@ -94,6 +119,10 @@
         "airline": "Iberia",
         "price": 72
       }
-    ]
+    ],
+    "sort": {
+      "column": "depart",
+      "direction": "ascending"
+    }
   }
 }

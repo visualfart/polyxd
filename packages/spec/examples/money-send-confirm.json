@@ -12,7 +12,7 @@
     {
       "id": "confirm",
       "component": "Confirm",
-      "title": "Send £250.00 to Alex Kim?",
+      "title": "Send this payment?",
       "severity": "consequential",
       "consequence": "The money leaves your account immediately and can't be recalled.",
       "summary": "summary",
@@ -28,19 +28,32 @@
             }
           }
         }
+      },
+      "amount": {
+        "value": {
+          "path": "/quote/amount"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        }
+      },
+      "subject": {
+        "title": {
+          "path": "/quote/recipient"
+        },
+        "subtitle": {
+          "path": "/quote/recipientAccount"
+        },
+        "avatar": {
+          "path": "/quote/recipientInitials"
+        }
       }
     },
     {
       "id": "summary",
       "component": "DetailList",
       "items": [
-        {
-          "key": "recipient",
-          "label": "To",
-          "value": {
-            "path": "/quote/recipient"
-          }
-        },
         {
           "key": "amount",
           "label": "Amount",
@@ -69,8 +82,21 @@
           "value": {
             "path": "/quote/reference"
           }
+        },
+        {
+          "key": "total",
+          "label": "They get",
+          "value": {
+            "path": "/quote/amount"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          },
+          "total": true
         }
-      ]
+      ],
+      "variant": "receipt"
     }
   ],
   "data": {
@@ -79,7 +105,9 @@
       "recipient": "Alex Kim",
       "amount": 250,
       "fee": 0,
-      "reference": "Rent share"
+      "reference": "Rent share",
+      "recipientAccount": "Monzo ••42",
+      "recipientInitials": "AK"
     }
   }
 }

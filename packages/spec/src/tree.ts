@@ -44,9 +44,17 @@ export function flattenTree(tree: Json): Json {
     if (panel && Array.isArray(node[panel])) flat[panel] = node[panel].map((x: Json) => ({ ...x, content: x.content && typeof x.content === "object" ? visit(x.content) : x.content }));
     return id;
   };
-  const { root, ...rest } = tree;
+  const { root, navigation, surface, ...rest } = tree;
   const rootId = visit(root);
-  return { ...rest, root: rootId, components };
+  // The product's navigation and the surface's own header actions sit outside the root component.
+  const nav = navigation ? visit(navigation) : undefined;
+  const out: Json = { ...rest, root: rootId, components };
+  if (surface) {
+    const actions = surface.actions && typeof surface.actions === "object" ? visit(surface.actions) : surface.actions;
+    out.surface = actions === undefined ? surface : { ...surface, actions };
+  }
+  void nav; // its components are in the flat list; the flat form has no navigation key
+  return out;
 }
 
 /** The inverse: nests a flat document into tree form (used for round-trip tests and training targets). */
@@ -65,8 +73,14 @@ export function toTree(flat: Json): Json {
     if (panel && Array.isArray(c[panel])) node[panel] = c[panel].map((x: Json) => ({ ...x, content: build(x.content, next) }));
     return node;
   };
-  const { root, components: _components, ...rest } = flat;
-  return { ...rest, root: build(root) };
+  const { root, components: _components, surface, ...rest } = flat;
+  const out: Json = { ...rest, root: build(root) };
+  if (surface) {
+    out.surface = typeof surface.actions === "string" ? { ...surface, actions: build(surface.actions) } : surface;
+  }
+  const nav = flat.components.find((c: Json) => c.component === "Navigation");
+  if (nav) out.navigation = build(nav.id);
+  return out;
 }
 
 /** True when a document is in tree form (its root is a component object, not an id). */

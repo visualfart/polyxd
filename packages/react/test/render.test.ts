@@ -13,7 +13,7 @@ const html = (doc: any, props: Record<string, unknown> = {}) => renderToString(c
 for (const f of examples) {
   test(`renders ${f}`, () => {
     const out = html(load(f));
-    assert.match(out, /class="pxd-surface"/);
+    assert.match(out, /class="pxd-surface[^"]*"/);
     assert.doesNotMatch(out, /Unsupported component/);
   });
 }
@@ -45,7 +45,8 @@ test("charts carry the summary and a data table", () => {
 });
 
 test("empty collections show their empty state", () => {
-  assert.match(html(load("personal-reading-log.json")), /Your reading list is empty/);
+  const doc = load("personal-reading-log.json");
+  assert.match(html({ ...doc, data: { books: [] } }), /Nothing on your list yet/);
 });
 
 test("section headings nest below the surface title", () => {

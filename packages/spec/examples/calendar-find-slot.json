@@ -12,9 +12,9 @@
       "id": "form",
       "component": "Form",
       "children": [
+        "people",
         "date",
-        "slot",
-        "people"
+        "slot"
       ],
       "submit": {
         "label": "Send invite",
@@ -70,7 +70,9 @@
       "options": {
         "path": "/contacts",
         "valuePath": "id",
-        "labelPath": "name"
+        "labelPath": "name",
+        "avatarPath": "initials",
+        "recentPath": "recent"
       },
       "value": {
         "path": "/draft/people"
@@ -102,15 +104,21 @@
     "contacts": [
       {
         "id": "c1",
-        "name": "Priya"
+        "name": "Priya",
+        "initials": "P",
+        "recent": true
       },
       {
         "id": "c2",
-        "name": "Tom"
+        "name": "Tom",
+        "initials": "T",
+        "recent": true
       },
       {
         "id": "c3",
-        "name": "Mei"
+        "name": "Mei",
+        "initials": "M",
+        "recent": true
       }
     ]
   }

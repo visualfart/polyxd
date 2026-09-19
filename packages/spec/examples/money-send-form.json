@@ -16,7 +16,7 @@
         "recipient",
         "amount",
         "reference",
-        "fees"
+        "fee-details"
       ],
       "submit": {
         "label": "Continue",
@@ -46,7 +46,10 @@
       "options": {
         "path": "/payees",
         "valuePath": "id",
-        "labelPath": "name"
+        "labelPath": "name",
+        "avatarPath": "initials",
+        "recentPath": "recent",
+        "descriptionPath": "bank"
       },
       "value": {
         "path": "/draft/recipient"
@@ -68,7 +71,8 @@
         "min": 0.01,
         "max": 5000,
         "message": "Enter an amount between £0.01 and £5,000"
-      }
+      },
+      "size": "hero"
     },
     {
       "id": "reference",
@@ -84,17 +88,20 @@
       }
     },
     {
-      "id": "fees",
-      "component": "Disclosure",
-      "summary": "Fees and timing",
-      "children": [
-        "fee-details"
-      ]
-    },
-    {
       "id": "fee-details",
       "component": "DetailList",
       "items": [
+        {
+          "key": "amount",
+          "label": "You send",
+          "value": {
+            "path": "/draft/amount"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
         {
           "key": "fee",
           "label": "Fee",
@@ -107,31 +114,43 @@
           }
         },
         {
-          "key": "arrives",
-          "label": "Arrives",
+          "key": "total",
+          "label": "They get",
           "value": {
-            "path": "/quote/arrives"
+            "path": "/draft/amount"
           },
           "format": {
-            "type": "relativeTime"
-          }
+            "type": "currency",
+            "currency": "GBP"
+          },
+          "total": true
         }
-      ]
+      ],
+      "variant": "receipt"
     }
   ],
   "data": {
     "payees": [
       {
         "id": "p1",
-        "name": "Alex Kim"
+        "name": "Alex Kim",
+        "initials": "AK",
+        "recent": true,
+        "bank": "Monzo ••42"
       },
       {
         "id": "p2",
-        "name": "Sam Patel"
+        "name": "Sam Patel",
+        "initials": "SP",
+        "recent": true,
+        "bank": "Barclays ••18"
       },
       {
         "id": "p3",
-        "name": "Landlord"
+        "name": "Landlord",
+        "initials": "L",
+        "recent": false,
+        "bank": "Nationwide ••91"
       }
     ],
     "draft": {
