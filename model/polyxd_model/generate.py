@@ -62,9 +62,9 @@ def chat(tokenizer, user: str, fmt: str = "flat") -> str:
 SCHEMAS = {fmt: (REPO / "packages" / "spec" / "schema" / name).read_text() for fmt, name in {"flat": "ui.schema.json", "tree": "ui-tree.schema.json"}.items()}
 
 
-def run_one(model, tokenizer, user: str, max_tokens: int, constrained: bool = False, fmt: str = "flat") -> dict:
+def run_one(model, tokenizer, user: str, max_tokens: int, constrained: bool = False, fmt: str = "flat", temp: float = 0.0) -> dict:
     prompt = chat(tokenizer, user, fmt)
-    sampler = make_sampler(temp=0.0)
+    sampler = make_sampler(temp=temp, top_p=0.95 if temp else 0.0)
     processors, constraint = [], None
     if constrained:
         from .constrain import SchemaConstraint
@@ -120,13 +120,14 @@ def main() -> None:
     ap.add_argument("--max-tokens", type=int, default=3500)
     ap.add_argument("--constrained", action="store_true", help="JSON-schema-constrained decoding (llguidance)")
     ap.add_argument("--format", choices=["flat", "tree"], default="flat", help="authoring format: flat id list, or nested tree compiled to flat")
+    ap.add_argument("--adapter", help="path to a LoRA adapter (from polyxd_model.sft train)")
     args = ap.parse_args()
 
-    name = (args.name or args.model.split("/")[-1]) + ("-tree" if args.format == "tree" else "") + ("-constrained" if args.constrained else "")
+    name = (args.name or args.model.split("/")[-1] + (f"+{Path(args.adapter).name}" if args.adapter else "")) + ("-tree" if args.format == "tree" else "") + ("-constrained" if args.constrained else "")
     out_dir = RUNS / name / ("sequences" + ("-nomem" if args.no_memory else "") if args.sequences else "requests")
     out_dir.mkdir(parents=True, exist_ok=True)
-    model, tokenizer = load(args.model)
-    print(f"loaded {args.model} → {out_dir}")
+    model, tokenizer = load(args.model, adapter_path=args.adapter) if args.adapter else load(args.model)
+    print(f"loaded {args.model}{' + ' + args.adapter if args.adapter else ''} → {out_dir}")
 
     if not args.sequences:
         requests = json.loads((BENCH / "requests.json").read_text())["requests"]
