@@ -37,6 +37,31 @@ Every element of the approved flow designs mapped to what the spec, renderer and
   - **consequence next to the action** it describes.
 - Rebuild the gold set from the new designs and ask the designer to rank again, to measure whether agreement improves.
 
+## Batch 4: dense B2B software (CRUD, tables, navigation, headers)
+
+Designed in Carbon (canvas rows "B2B …" and "Density"). Same rule as before: the model states meaning (this is a list of records you can select and act on in bulk); density, row height and the shell come from Design Direction and the renderer.
+
+| Design element | Spec change | Renderer behaviour |
+|---|---|---|
+| Density | Design Direction `profile.density: comfortable \| default \| compact` | Maps to spacing and control heights from the pack (48 / 40 / 32 px rows); compact only on pointer surfaces, touch never below 44 px |
+| App shell and navigation | New `Navigation { items[{label, icon, badge, current, action}], groups }` (host may own it instead) | Side nav on wide (current item marked, `aria-current`), menu button on compact |
+| Page header | `surface.breadcrumbs`, `surface.subtitle`, `surface.badge`, `surface.actions` (ActionBar id), `surface.lead` (avatar) | Breadcrumbs, title with status tag, one primary plus secondary actions and an overflow menu |
+| Tabs on a record | `Views` gains `variant: "tabs"` with counts | Underlined tabs with counts |
+| Saved views | `Table.views[{label, count, value}]` bound to host state | Tab row above the table, "Save view" when the host supports it |
+| Table toolbar | `Table.search`, `Table.filters` (FilterPanel id), `Table.toolbar` (ActionBar id) | Search on the left, filter button with removable filter tags, icon tools, primary action on the right |
+| Sorting | `Table.columns[].sortable`, `Table.sort {column, direction}` bound; sort sends an action | `aria-sort` headers with arrows |
+| Selection and bulk actions | `Table.selection: "multiple"`, `selected` binding, `Table.bulkActions` (ActionBar id) | Checkbox column with select-all (mixed state); the toolbar becomes a bulk-action bar naming the count |
+| Row actions | `Table.rowActions` (Actions shown in a menu) | Overflow menu per row, named "Actions for {row}" |
+| Cell kinds | `columns[].kind: text \| number \| currency \| date \| status \| entity \| link` with `tones` for status | Numbers right-aligned and tabular; status as tags; entity with avatar and link |
+| Pagination | `Table.page {index, size, total}` bound; paging sends an action | Rows per page, "1–50 of 1,284", previous and next |
+| Record page | `DetailList layout: "grid"` (columns by width); `Metric` group as KPI strip; activity as `Collection variant: "timeline"` | Dense label-above-value grid, KPI tiles, timeline aside on wide |
+| Inline notice | `Status kind: "warning"` with `action`, `variant: "inline"` | Bordered notice with one action |
+| Create or edit in a side panel | `surface.presentation: "panel"` | Side sheet over the list on wide (list stays visible), full screen on compact; sticky Cancel and Submit |
+| Label-left settings rows | `Form.layout: "horizontal"` | Label and help on the left, control on the right, on wide surfaces |
+| Tables on phones | none: a rule | A Table becomes a list of rows: entity, key fields in one line, status tag |
+
+Verifier: dense layouts still meet target size (24 px minimum on pointer surfaces, 44 px on touch), bulk-action bars announce the count, sortable headers expose `aria-sort`, row menus are named per row.
+
 ## Out of scope for now
 
 - The desktop availability timeline (Find a time). It's domain-specific; the day strip and suggested slots cover the semantics.
