@@ -57,3 +57,15 @@ test("undeclared and missing inputs are warnings", () => {
   assert.match(text, /warning: "task.save" does not declare input "colour"/);
   assert.match(text, /warning: "task.save" requires input "title"/);
 });
+
+test("a reversible, low-risk action behind a Confirm is a warning: act and offer Undo", () => {
+  const reg = { name: "t", capabilities: { "task.archive": { description: "Archive", risk: "low" as const, undo: "task.unarchive" }, "task.unarchive": { description: "Restore", risk: "low" as const } } };
+  const doc = {
+    root: "c",
+    components: [{ id: "c", component: "Confirm", title: "Archive task?", consequence: "You can restore it.", confirm: { label: "Archive", action: { event: { name: "task.archive" } } }, cancel: { label: "Keep", action: { event: { name: "ui.dismiss" } } } }],
+  };
+  const issues = checkCapabilities(doc, reg);
+  assert.equal(issues.length, 1);
+  assert.equal(issues[0].severity, "warning");
+  assert.match(issues[0].message, /run it and offer Undo/);
+});

@@ -5,6 +5,7 @@ import { Collection, DetailList, Media, Metric, Status, Table, Text } from "./co
 import { Chart } from "./chart.tsx";
 import { Choice, DateInput, Form, RangeInput, TextInput, Toggle } from "./inputs.tsx";
 import { Action, ActionBar, Comparison, Confirm, Steps } from "./flow.tsx";
+import { FilterPanel } from "./filter.tsx";
 
 export type ComponentRenderer = ComponentType<{ node: Node }>;
 
@@ -16,5 +17,5 @@ export const registry: Record<string, ComponentRenderer> = {
   Section, Group, Card, Disclosure, Views,
   Text, Metric, DetailList, Collection, Table, Chart, Media, Status,
   TextInput, Choice, Toggle, DateInput, RangeInput, Form,
-  Action, ActionBar, Steps, Confirm, Comparison,
+  Action, ActionBar, Steps, Confirm, Comparison, FilterPanel,
 };

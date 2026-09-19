@@ -45,7 +45,7 @@ const cases: [string, string, (d: any) => void, RegExp][] = [
   ["wrong reference type", "error-load-failed.json", (d) => {
     d.components.push({ id: "txt", component: "Text", text: "hi" });
     byId(d, "root").action = "txt";
-  }, /Status\.action must reference Action, not Text/],
+  }, /Status\.action must reference Action or ActionBar, not Text/],
   ["non-action in ActionBar", "personal-reading-log.json", (d) => {
     d.components.push({ id: "t", component: "Text", text: "x" });
     byId(d, "bar").children.push("t");

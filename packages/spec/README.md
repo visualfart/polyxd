@@ -8,11 +8,11 @@ A generated interface is a **UI document**: a flat list of semantic components (
 
 | Path | What |
 |---|---|
-| `components/*.json` | The 24 semantic components (source of truth): props, when to use, accessibility and agent semantics, rendering rules, platform mappings |
+| `components/*.json` | The 25 semantic components (source of truth): props, when to use, accessibility and agent semantics, rendering rules, platform mappings |
 | `schema/ui.schema.json` | JSON Schema for a UI document, generated from the components (validation and constrained decoding) |
 | `catalog/catalog.json` | Usage guidance per component, generated |
 | `docs/components.md` | Readable component reference with the web / iOS / Android / A2UI mapping table, generated |
-| `patterns/*.json` | 5 core patterns, each with self-checking rules and journey semantics |
+| `patterns/*.json` | 6 core patterns, each with self-checking rules and journey semantics |
 | `tokens/semantic-contract.json` | The 86 semantic tokens every design-system pack must provide, plus 34 WCAG contrast pairs and constraints |
 | `schema/design-system.schema.json` | Design-system pack manifest |
 | `schema/check.schema.json` | The shared rule vocabulary used by patterns, Design Direction rules and acceptance criteria |

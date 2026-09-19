@@ -239,6 +239,7 @@ export function Comparison({ node }: { node: Node }) {
   const scopes = items.map((_, i) => ({ pointer: childPointer(pointer, i) }));
   const at = (path: string, i: number) => get(s.data, absolute(path, scopes[i]));
   const recommended = node.recommended !== undefined ? b.text(node.recommended) : undefined;
+  const reason = node.recommendedReason !== undefined ? b.text(node.recommendedReason) : undefined;
   // Best item per attribute, when the attribute says which direction is better.
   const best = new Map<string, number>();
   for (const a of node.attributes) {
@@ -247,30 +248,66 @@ export function Comparison({ node }: { node: Node }) {
     const target = a.better === "higher" ? Math.max(...vals) : Math.min(...vals);
     if (vals.filter((v) => v === target).length === 1) best.set(a.key, vals.indexOf(target));
   }
+  // Attributes under their group headings, in first-seen order.
+  const groups: { label?: string; attributes: any[] }[] = [];
+  for (const a of node.attributes) {
+    const label = a.group !== undefined ? b.text(a.group) : undefined;
+    const g = groups.find((x) => x.label === label);
+    if (g) g.attributes.push(a);
+    else groups.push({ label, attributes: [a] });
+  }
+  // The recommended item comes first, so it's read (and seen on phones) first.
+  const order = items.map((_, i) => i);
+  const ri = order.findIndex((i) => String(at(node.itemTitle, i) ?? "") === recommended);
+  if (ri > 0) order.unshift(...order.splice(ri, 1));
+  const value = (a: any, i: number) => {
+    const v = at(a.path, i);
+    if (typeof v === "boolean")
+      return v ? (
+        <span className="pxd-yes">
+          <Icon name="check" size={18} />
+          <span className="pxd-sr-only">Included</span>
+        </span>
+      ) : (
+        <span className="pxd-no">
+          <Icon name="dash" size={18} />
+          <span className="pxd-sr-only">Not included</span>
+        </span>
+      );
+    return formatValue(v, resolveFormat(a.format, s.data, b.scope), s.locale);
+  };
   return (
     <div className="pxd-comparison" {...useA11y(node)}>
       {node.summary !== undefined && <p className="pxd-comparison-summary">{b.text(node.summary)}</p>}
       <ul className="pxd-comparison-items">
-        {items.map((_, i) => {
+        {order.map((i) => {
           const title = String(at(node.itemTitle, i) ?? "");
           const isRecommended = recommended === title;
           return (
             <li key={i} className={`pxd-comparison-item${isRecommended ? " pxd-recommended" : ""}`}>
-              <Heading className="pxd-comparison-title">
-                {title}
-                {isRecommended && <span className="pxd-badge pxd-tone-info">Recommended</span>}
-              </Heading>
-              <dl>
-                {node.attributes.map((a: any) => (
-                  <div className="pxd-detail-row" key={a.key}>
-                    <dt>{b.text(a.label)}</dt>
-                    <dd>
-                      {formatValue(at(a.path, i), resolveFormat(a.format, s.data, b.scope), s.locale)}
-                      {best.get(a.key) === i && <span className="pxd-best"> Best</span>}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              {isRecommended && (
+                <p className="pxd-recommendation">
+                  <span className="pxd-badge pxd-tone-info">Recommended</span>
+                  {reason && <span className="pxd-recommendation-reason">{reason}</span>}
+                </p>
+              )}
+              <Heading className="pxd-comparison-title">{title}</Heading>
+              {groups.map((g, gi) => (
+                <div className="pxd-comparison-group" key={gi}>
+                  {g.label && <p className="pxd-comparison-group-label">{g.label}</p>}
+                  <dl>
+                    {g.attributes.map((a: any) => (
+                      <div className="pxd-detail-row" key={a.key}>
+                        <dt>{b.text(a.label)}</dt>
+                        <dd>
+                          {value(a, i)}
+                          {best.get(a.key) === i && <span className="pxd-best"> Best</span>}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              ))}
               {node.choose && (
                 <button type="button" className={`pxd-button ${isRecommended ? "pxd-button-primary" : "pxd-button-secondary"}`} onClick={() => s.dispatch(node.choose.action, scopes[i], node.id)}>
                   {b.text(node.choose.label)} <span className="pxd-sr-only">{title}</span>

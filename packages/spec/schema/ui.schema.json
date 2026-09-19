@@ -493,6 +493,24 @@
         "action": {
           "$ref": "#/$defs/Action",
           "description": "Activating the card as a whole (e.g. open details)"
+        },
+        "progress": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/Binding",
+              "description": "Number from 0 to 1 in host data"
+            },
+            "label": {
+              "$ref": "#/$defs/DynamicString",
+              "description": "Optional text, e.g. '120 of 320 pages'; the percentage is shown otherwise"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Progress through the entity (reading, a course, a goal)"
         }
       },
       "additionalProperties": false
@@ -777,6 +795,10 @@
                   "none"
                 ],
                 "default": "none"
+              },
+              "group": {
+                "$ref": "#/$defs/DynamicString",
+                "description": "Heading that groups related attributes (e.g. 'Storage', 'Support')"
               }
             },
             "additionalProperties": false
@@ -792,6 +814,10 @@
         },
         "summary": {
           "$ref": "#/$defs/DynamicString"
+        },
+        "recommendedReason": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Why the recommended item fits, shown on its badge (one short sentence)"
         }
       },
       "additionalProperties": false
@@ -1094,6 +1120,55 @@
       },
       "additionalProperties": false
     },
+    "ComponentFilterPanel": {
+      "type": "object",
+      "description": "Filters for a list of results, with the result count.",
+      "required": [
+        "id",
+        "component",
+        "children",
+        "results"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "FilterPanel"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Defaults to 'Filters'"
+        },
+        "children": {
+          "$ref": "#/$defs/ChildList",
+          "description": "The filter inputs (Choice, RangeInput, Toggle, DateInput, TextInput)"
+        },
+        "results": {
+          "$ref": "#/$defs/Id",
+          "description": "The Collection or Table the filters narrow"
+        },
+        "resultCount": {
+          "$ref": "#/$defs/Binding",
+          "description": "Number of results with the current filters, from host data"
+        },
+        "clear": {
+          "$ref": "#/$defs/Action",
+          "description": "Optional action that resets the filters on the host"
+        }
+      },
+      "additionalProperties": false
+    },
     "ComponentForm": {
       "type": "object",
       "description": "Collects inputs and submits them together.",
@@ -1129,6 +1204,10 @@
         "cancel": {
           "$ref": "#/$defs/ActionSpec",
           "description": "Optional; defaults to ui.dismiss when omitted and the surface is dismissible"
+        },
+        "aside": {
+          "$ref": "#/$defs/Id",
+          "description": "Optional summary (DetailList, Card or Group) kept beside the form, e.g. the running total"
         }
       },
       "additionalProperties": false
@@ -1424,7 +1503,8 @@
             "warning",
             "error",
             "empty",
-            "loading"
+            "loading",
+            "undo"
           ]
         },
         "title": {
@@ -1435,7 +1515,24 @@
         },
         "action": {
           "$ref": "#/$defs/Id",
-          "description": "Optional Action to recover or continue (e.g. 'Try again')"
+          "description": "Optional Action (or ActionBar for a primary and a secondary) to recover or continue, e.g. 'Try again'; for 'undo', the Undo action"
+        },
+        "icon": {
+          "enum": [
+            "lock",
+            "trash",
+            "clock",
+            "tag",
+            "info",
+            "alert",
+            "mail",
+            "shield",
+            "search",
+            "book",
+            "inbox",
+            "check"
+          ],
+          "description": "Optional icon for empty states; the renderer picks one by kind otherwise"
         }
       },
       "additionalProperties": false
@@ -1861,6 +1958,9 @@
         },
         {
           "$ref": "#/$defs/ComponentDisclosure"
+        },
+        {
+          "$ref": "#/$defs/ComponentFilterPanel"
         },
         {
           "$ref": "#/$defs/ComponentForm"

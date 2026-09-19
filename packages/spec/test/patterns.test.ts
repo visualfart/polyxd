@@ -8,7 +8,7 @@ const load = (name: string) => JSON.parse(readFileSync(new URL(`../examples/${na
 const failures = (doc: any, id?: string) => checkPattern(doc, id).filter((r) => !r.pass);
 const byId = (d: any, id: string) => d.components.find((c: any) => c.id === id);
 
-test("there are 5 core patterns", () => assert.equal(patterns.size, 5));
+test("there are 6 core patterns", () => assert.equal(patterns.size, 6));
 
 for (const [id, p] of patterns) {
   test(`pattern ${id} is a valid pattern file`, () => {

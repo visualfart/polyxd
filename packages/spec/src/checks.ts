@@ -42,6 +42,8 @@ const SINGLE_REFS: Record<string, string[]> = {
   Table: ["empty"],
   Status: ["action"],
   Confirm: ["summary"],
+  Form: ["aside"],
+  FilterPanel: ["results"],
 };
 
 const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput"]);

@@ -5,7 +5,7 @@
  * equivalent with the same meaning. Otherwise it is exported as a custom component with the same name and
  * props, so the export stays a lossless projection rather than a lossy flattening
  * (docs/decisions/0001 §6: "a faithful export", custom catalogs being the endorsed A2UI path).
- * None of the 24 components currently meets the rule. `basicAnalog` records the nearest Basic
+ * None of the 25 components currently meets the rule. `basicAnalog` records the nearest Basic
  * construct and `why` records what flattening into it would lose.
  */
 export interface MappingDecision {
@@ -66,6 +66,11 @@ export const MAPPING: Record<string, MappingDecision> = {
     target: "custom",
     basicAnalog: "Column of Row(Text, Text)",
     why: "The label/value pairing (a description list for assistive tech), stable item keys and value formats would be lost.",
+  },
+  FilterPanel: {
+    target: "custom",
+    basicAnalog: "Column of inputs beside a List, with a Modal on narrow screens",
+    why: "Column and Modal are layout. They lose the link between filters and the results they narrow, the result count, removable active-filter chips and the sidebar-or-sheet behaviour.",
   },
   Disclosure: {
     target: "custom",

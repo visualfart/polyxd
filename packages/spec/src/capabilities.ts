@@ -7,6 +7,8 @@ export interface Capability {
   description: string;
   risk: Risk;
   inputs?: { properties?: Record<string, unknown>; required?: string[] };
+  /** Capability that reverses this one */
+  undo?: string;
   flag?: string;
   agentMayInvoke?: boolean;
 }
@@ -22,6 +24,7 @@ export interface CapabilityRegistry {
  * - destructive capabilities are only triggered from a Confirm
  * - consequential capabilities are triggered from a Confirm, a review-and-submit surface,
  *   or the finish of Steps whose last step is a review (a DetailList)
+ * - reversible, low-risk capabilities (with `undo`) aren't put behind a Confirm: do it and offer Undo
  * - event context matches the capability's declared inputs
  */
 export function checkCapabilities(doc: any, registry: CapabilityRegistry, flags: Record<string, boolean> = {}): Issue[] {
@@ -65,6 +68,8 @@ export function checkCapabilities(doc: any, registry: CapabilityRegistry, flags:
           issues.push({ severity: "error", at: where, message: `"${name}" is destructive and must be triggered from a Confirm` });
         } else if (cap.risk === "consequential" && !(inConfirm || fromReviewedSteps || reviewSurface)) {
           issues.push({ severity: "error", at: where, message: `"${name}" is consequential and needs a Confirm or a review step before it` });
+        } else if ((cap.risk === "low" || cap.risk === "none") && cap.undo && inConfirm) {
+          issues.push({ severity: "warning", at: where, message: `"${name}" can be undone with "${cap.undo}": run it and offer Undo instead of asking first` });
         }
 
         const declared = cap.inputs?.properties ? Object.keys(cap.inputs.properties) : [];

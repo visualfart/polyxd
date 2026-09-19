@@ -29,6 +29,11 @@ const PATHS: Record<string, string> = {
   alert: "M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01",
   mail: "M3 5h18v14H3zM3 7l9 6 9-6",
   shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+  book: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z",
+  inbox: "M22 12h-6l-2 3h-4l-2-3H2M5.5 5h13L22 12v7H2v-7z",
+  filter: "M3 5h18l-7 8v6l-4 2v-8z",
+  close: "M18 6 6 18M6 6l12 12",
+  dash: "M6 12h12",
 };
 
 export function Icon({ name, size = 20 }: { name: string; size?: number }) {

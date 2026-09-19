@@ -1,0 +1,77 @@
+{
+ "specVersion": "0.1.0",
+ "surface": {
+  "id": "inbox",
+  "title": "Inbox",
+  "intent": "mail.list",
+  "pattern": "undo-over-confirm"
+ },
+ "root": "g",
+ "components": [
+  {
+   "id": "g",
+   "component": "Group",
+   "children": [
+    "list",
+    "undone"
+   ]
+  },
+  {
+   "id": "list",
+   "component": "Collection",
+   "key": "mail",
+   "label": "Messages",
+   "items": {
+    "path": "/mail",
+    "componentId": "msg"
+   }
+  },
+  {
+   "id": "msg",
+   "component": "Card",
+   "title": {
+    "path": "subject"
+   },
+   "subtitle": {
+    "path": "from"
+   }
+  },
+  {
+   "id": "undone",
+   "component": "Status",
+   "kind": "undo",
+   "title": "Archived \u201cInvoice for September\u201d",
+   "action": "undo"
+  },
+  {
+   "id": "undo",
+   "component": "Action",
+   "label": "Undo",
+   "action": {
+    "event": {
+     "name": "mail.unarchive",
+     "context": {
+      "id": {
+       "path": "/last"
+      }
+     }
+    }
+   }
+  }
+ ],
+ "data": {
+  "last": "m3",
+  "mail": [
+   {
+    "id": "m1",
+    "subject": "Team lunch on Friday",
+    "from": "Sam Patel"
+   },
+   {
+    "id": "m2",
+    "subject": "Your order has shipped",
+    "from": "Northwind"
+   }
+  ]
+ }
+}

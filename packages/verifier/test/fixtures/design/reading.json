@@ -1,0 +1,101 @@
+{
+ "specVersion": "0.1.0",
+ "surface": {
+  "id": "reading",
+  "title": "Reading list",
+  "intent": "reading.list"
+ },
+ "root": "g",
+ "components": [
+  {
+   "id": "g",
+   "component": "Group",
+   "children": [
+    "books",
+    "empty-demo"
+   ]
+  },
+  {
+   "id": "books",
+   "component": "Collection",
+   "key": "books",
+   "label": "Reading now",
+   "layout": "list",
+   "items": {
+    "path": "/books",
+    "componentId": "book"
+   }
+  },
+  {
+   "id": "book",
+   "component": "Card",
+   "title": {
+    "path": "title"
+   },
+   "subtitle": {
+    "path": "author"
+   },
+   "progress": {
+    "value": {
+     "path": "progress"
+    },
+    "label": {
+     "path": "pages"
+    }
+   }
+  },
+  {
+   "id": "empty-demo",
+   "component": "Status",
+   "kind": "empty",
+   "icon": "book",
+   "title": "Nothing on your list yet",
+   "message": "Add a book you're reading or want to read next.",
+   "action": "empty-actions"
+  },
+  {
+   "id": "empty-actions",
+   "component": "ActionBar",
+   "children": [
+    "add",
+    "browse"
+   ]
+  },
+  {
+   "id": "add",
+   "component": "Action",
+   "label": "Add a book",
+   "emphasis": "primary",
+   "action": {
+    "event": {
+     "name": "book.add"
+    }
+   }
+  },
+  {
+   "id": "browse",
+   "component": "Action",
+   "label": "Browse suggestions",
+   "action": {
+    "event": {
+     "name": "book.suggestions"
+    }
+   }
+  }
+ ],
+ "data": {
+  "books": [
+   {
+    "title": "The Design of Everyday Things",
+    "author": "Don Norman",
+    "progress": 0.38,
+    "pages": "120 of 320 pages"
+   },
+   {
+    "title": "Thinking in Systems",
+    "author": "Donella Meadows",
+    "progress": 0.8
+   }
+  ]
+ }
+}

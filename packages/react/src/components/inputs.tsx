@@ -1,7 +1,7 @@
 import { useId, useState, type FormEvent } from "react";
 import { Checkbox, RadioGroup, Slider, Switch } from "radix-ui";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
-import { absolute, childPointer, get } from "../data.ts";
+import { absolute, childPointer, get, type Scope } from "../data.ts";
 import { currencySymbol, formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Children } from "./structure.tsx";
@@ -143,7 +143,7 @@ export function TextInput({ node }: { node: Node }) {
   );
 }
 
-interface Option {
+export interface Option {
   value: string | number | boolean;
   label: string;
   description?: string;
@@ -151,16 +151,15 @@ interface Option {
   recent?: boolean;
 }
 
-function useOptions(node: Node): Option[] {
-  const b = useBindings();
-  const s = useSurface();
+/** A Choice's options, from literal options or host data. */
+export function optionsOf(node: Node, data: unknown, scope: Scope, text: (v: unknown) => string): Option[] {
   const o = node.options;
-  if (Array.isArray(o)) return o.map((x: any) => ({ value: x.value, label: b.text(x.label), description: x.description !== undefined ? b.text(x.description) : undefined }));
-  const pointer = absolute(o.path, b.scope);
-  const items = (get(s.data, pointer) as unknown[]) ?? [];
+  if (Array.isArray(o)) return o.map((x: any) => ({ value: x.value, label: text(x.label), description: x.description !== undefined ? text(x.description) : undefined }));
+  const pointer = absolute(o.path, scope);
+  const items = (get(data, pointer) as unknown[]) ?? [];
   return items.map((_, i) => {
     const p = { pointer: childPointer(pointer, i) };
-    const at = (path?: string) => (path ? get(s.data, absolute(path, p)) : undefined);
+    const at = (path?: string) => (path ? get(data, absolute(path, p)) : undefined);
     return {
       value: at(o.valuePath) as string,
       label: String(at(o.labelPath) ?? ""),
@@ -169,6 +168,12 @@ function useOptions(node: Node): Option[] {
       recent: o.recentPath ? Boolean(at(o.recentPath)) : false,
     };
   });
+}
+
+function useOptions(node: Node): Option[] {
+  const b = useBindings();
+  const s = useSurface();
+  return optionsOf(node, s.data, b.scope, b.text);
 }
 
 /** An option's visible label (its accessible name) and optional description (its accessible description). */
@@ -546,16 +551,21 @@ export function Form({ node }: { node: Node }) {
   const s = useSurface();
   return (
     <form
-      className="pxd-form"
+      className={`pxd-form${node.aside ? " pxd-form-with-aside" : ""}`}
       onSubmit={(e) => {
         e.preventDefault();
         s.dispatch(node.submit.action, b.scope, node.id);
       }}
       {...useA11y(node)}
     >
-      <div className="pxd-stack">
+      <div className="pxd-stack pxd-form-fields">
         <Children ids={node.children} />
       </div>
+      {node.aside && (
+        <aside className="pxd-form-aside">
+          <Render id={node.aside} />
+        </aside>
+      )}
       <div className="pxd-action-bar">
         <button type="submit" className="pxd-button pxd-button-primary">
           {b.text(node.submit.label)}

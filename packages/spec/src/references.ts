@@ -7,7 +7,10 @@ export const REFERENCE_TYPES: Record<string, string[]> = {
   "Card.children": ["Text", "Metric", "DetailList", "Group", "Media", "Status", "Toggle", "Action", "ActionBar"],
   "Collection.empty": ["Status"],
   "Table.empty": ["Status"],
-  "Status.action": ["Action"],
+  "Status.action": ["Action", "ActionBar"],
+  "Form.aside": ["DetailList", "Card", "Group"],
+  "FilterPanel.children": ["Choice", "RangeInput", "Toggle", "DateInput", "TextInput"],
+  "FilterPanel.results": ["Collection", "Table"],
   "ActionBar.children": ["Action"],
   "Confirm.summary": ["DetailList"],
 };

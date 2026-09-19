@@ -1,0 +1,98 @@
+{
+ "specVersion": "0.1.0",
+ "surface": {
+  "id": "compare",
+  "title": "Choose a plan",
+  "intent": "plans.compare",
+  "pattern": "compare-and-choose"
+ },
+ "root": "cmp",
+ "components": [
+  {
+   "id": "cmp",
+   "component": "Comparison",
+   "items": {
+    "path": "/plans"
+   },
+   "itemTitle": "name",
+   "recommended": {
+    "path": "/rec"
+   },
+   "recommendedReason": "Fits a team of 8 with room to grow",
+   "attributes": [
+    {
+     "key": "price",
+     "label": "Price per month",
+     "path": "price",
+     "format": {
+      "type": "currency",
+      "currency": "GBP"
+     },
+     "better": "lower",
+     "group": "Cost"
+    },
+    {
+     "key": "seats",
+     "label": "Seats",
+     "path": "seats",
+     "better": "higher",
+     "group": "Team"
+    },
+    {
+     "key": "sso",
+     "label": "Single sign-on",
+     "path": "sso",
+     "group": "Security"
+    },
+    {
+     "key": "audit",
+     "label": "Audit log",
+     "path": "audit",
+     "group": "Security"
+    }
+   ],
+   "choose": {
+    "label": "Choose",
+    "action": {
+     "event": {
+      "name": "plan.choose",
+      "context": {
+       "plan": {
+        "path": "id"
+       }
+      }
+     }
+    }
+   }
+  }
+ ],
+ "data": {
+  "rec": "Team",
+  "plans": [
+   {
+    "id": "starter",
+    "name": "Starter",
+    "price": 9,
+    "seats": 3,
+    "sso": false,
+    "audit": false
+   },
+   {
+    "id": "team",
+    "name": "Team",
+    "price": 29,
+    "seats": 10,
+    "sso": true,
+    "audit": false
+   },
+   {
+    "id": "business",
+    "name": "Business",
+    "price": 79,
+    "seats": 50,
+    "sso": true,
+    "audit": true
+   }
+  ]
+ }
+}

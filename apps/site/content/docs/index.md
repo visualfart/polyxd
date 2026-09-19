@@ -54,8 +54,8 @@ All packages live in one monorepo. None is published to npm yet; they are coming
 
 | Package | What it does |
 |---|---|
-| `@polyxd/spec` | JSON Schema and TypeScript types for UI documents; 24 semantic components; 5 core patterns and a shared check vocabulary; the semantic token contract; schemas for capabilities, journeys, analytics events and Design Direction; a validator; 20 example documents across six domains |
-| `@polyxd/react` | React renderer for all 24 components, built on Radix primitives and styled only by token CSS variables; a theme compiler |
+| `@polyxd/spec` | JSON Schema and TypeScript types for UI documents; 25 semantic components; 6 core patterns and a shared check vocabulary; the semantic token contract; schemas for capabilities, journeys, analytics events and Design Direction; a validator; 20 example documents across six domains |
+| `@polyxd/react` | React renderer for all 25 components, built on Radix primitives and styled only by token CSS variables; a theme compiler |
 | `@polyxd/ds-material3` | Material 3 design-system pack (DTCG tokens, light and dark) |
 | `@polyxd/ds-carbon` | IBM Carbon pack (White and Gray 100 themes) |
 | `@polyxd/ds-antd` | Ant Design pack (light and dark) |

@@ -41,13 +41,25 @@
     },
     {
       "id": "explains",
-      "description": "A one-line summary helps the decision",
+      "description": "A one-line summary or the recommendation's reason helps the decision",
       "severity": "warning",
       "rule": {
-        "check": "requires",
-        "component": "Comparison",
-        "props": [
-          "summary"
+        "check": "anyOf",
+        "checks": [
+          {
+            "check": "requires",
+            "component": "Comparison",
+            "props": [
+              "summary"
+            ]
+          },
+          {
+            "check": "requires",
+            "component": "Comparison",
+            "props": [
+              "recommendedReason"
+            ]
+          }
         ]
       }
     }

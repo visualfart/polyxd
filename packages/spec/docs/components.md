@@ -6,6 +6,7 @@ Generated from `components/*.json` (spec 0.1.0). The model chooses these semanti
 
 | Component | Category | Web (shadcn/Radix) | iOS (SwiftUI) | Android (Compose M3) | A2UI |
 |---|---|---|---|---|---|
+| [FilterPanel](#filterpanel) | layout | Sidebar + Sheet (shadcn) | List with a filter sheet | Side sheet / modal bottom sheet | Column |
 | [Card](#card) | structure | shadcn Card (CardHeader/CardTitle/CardContent/CardFooter) | GroupBox, or a Button/NavigationLink with card styling in lists | Card / ElevatedCard / OutlinedCard (onClick variant when actionable) | Card |
 | [Disclosure](#disclosure) | structure | shadcn Collapsible (or Accordion for several) | DisclosureGroup | Expandable ListItem / AnimatedVisibility with a toggle row | No direct equivalent; exports as Column (content always shown) |
 | [Group](#group) | structure | &lt;div role=group&gt; with flex/grid and semantic spacing tokens | VStack / HStack / Grid (ViewThatFits for inline) | Column / Row / FlowRow | Column or Row |
@@ -31,11 +32,37 @@ Generated from `components/*.json` (spec 0.1.0). The model chooses these semanti
 | [Confirm](#confirm) | flow | shadcn AlertDialog | .confirmationDialog / .alert with role: .destructive | AlertDialog | Modal with Text and Buttons |
 | [Steps](#steps) | flow | Progress + step content (no shadcn stepper primitive) | NavigationStack pushes or a paged view with a ProgressView | Custom stepper Row + content; LinearProgressIndicator | No direct equivalent; exports as Column of the current step |
 
+## FilterPanel
+
+Filters for a list of results, with the result count.
+
+**Required props:** `children`, `results`. **Optional:** `label`, `resultCount`, `clear`.
+
+**Use when**
+- Browsing results people narrow by several attributes
+- More than two filters, or filters that take space (ranges, long lists)
+
+**Don't use when**
+- One or two quick filters: put a Choice (chips) above the results
+- Filling in information: use Form
+
+**Accessibility** (role: region (filters) plus the results)
+- The result count is announced politely when it changes
+- Each active filter can be removed with a named button ('Remove filter: Desk')
+
+**Agents:** Set filter inputs by label; read the result count; remove filters by their Remove buttons.
+
+**Rendering rules**
+- Wide: filters in a sidebar beside the results
+- Compact: a 'Filters · n' button opens a bottom sheet whose action says 'Show n results'
+- Active filters show as removable chips above the results
+- Filters apply as they change (no separate Apply on wide)
+
 ## Card
 
 One self-contained entity (an account, an order, a place), optionally actionable as a whole.
 
-**Required props:** `title`. **Optional:** `subtitle`, `media`, `badge`, `children`, `action`.
+**Required props:** `title`. **Optional:** `subtitle`, `media`, `badge`, `children`, `action`, `progress`.
 
 **Use when**
 - Items in a Collection that each represent an entity
@@ -54,6 +81,7 @@ One self-contained entity (an account, an order, a place), optionally actionable
 **Rendering rules**
 - If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own
 - Uses surface.raised and radius.default
+- 'progress' renders a progress bar with its label or percentage
 
 ## Disclosure
 
@@ -316,13 +344,14 @@ A run of text.
 
 Feedback about state: info, success, warning, error, empty or loading.
 
-**Required props:** `kind`, `title`. **Optional:** `message`, `action`.
+**Required props:** `kind`, `title`. **Optional:** `message`, `action`, `icon`.
 
 **Use when**
 - Results of an action
 - Empty collections
 - Errors with a way to recover
 - Loading states
+- 'undo': after a reversible action ran, say what happened and offer Undo instead of asking first
 
 **Don't use when**
 - Validation errors on a field: inputs show their own errors
@@ -338,6 +367,8 @@ Feedback about state: info, success, warning, error, empty or loading.
 - error and warning use color.status.* tokens and an icon
 - empty states explain why and what to do next
 - loading shows a skeleton when layout is known, otherwise a progress indicator
+- 'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action
+- Empty states may carry an ActionBar: one primary and one secondary action
 
 ## Choice
 
@@ -389,7 +420,7 @@ A date, time, date-time or date range.
 
 Collects inputs and submits them together.
 
-**Required props:** `children`, `submit`. **Optional:** `cancel`.
+**Required props:** `children`, `submit`. **Optional:** `cancel`, `aside`.
 
 **Use when**
 - Any set of inputs that are submitted together
@@ -408,6 +439,7 @@ Collects inputs and submits them together.
 - One column; labels above fields
 - Submit is the primary action; cancel is secondary
 - Submit context is built from the form's input bindings
+- 'aside' sits beside the form and stays in view on wide surfaces; on compact ones it comes after the fields, just before the submit action
 
 ## RangeInput
 
@@ -529,7 +561,7 @@ The set of actions for a surface or section; the renderer places it where that p
 
 Compare a few options across the same attributes, and choose one.
 
-**Required props:** `items`, `itemTitle`, `attributes`. **Optional:** `choose`, `recommended`, `summary`.
+**Required props:** `items`, `itemTitle`, `attributes`. **Optional:** `choose`, `recommended`, `summary`, `recommendedReason`.
 
 **Use when**
 - Choosing between 2–4 plans, products, routes or offers
@@ -547,6 +579,10 @@ Compare a few options across the same attributes, and choose one.
 **Rendering rules**
 - Wide: items as columns; compact: one card per item with the same attribute order
 - Best values per attribute are marked when 'better' is set
+- Exactly one item may be recommended; its badge carries recommendedReason
+- Attributes with the same group sit under one heading
+- Boolean values render as a check or a dash with text alternatives ('Included' / 'Not included')
+- On compact surfaces the recommended item comes first
 
 ## Confirm
 

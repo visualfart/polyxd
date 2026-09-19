@@ -10,7 +10,8 @@
         "warning",
         "error",
         "empty",
-        "loading"
+        "loading",
+        "undo"
       ]
     },
     "title": {
@@ -21,7 +22,24 @@
     },
     "action": {
       "$ref": "#/$defs/Id",
-      "description": "Optional Action to recover or continue (e.g. 'Try again')"
+      "description": "Optional Action (or ActionBar for a primary and a secondary) to recover or continue, e.g. 'Try again'; for 'undo', the Undo action"
+    },
+    "icon": {
+      "enum": [
+        "lock",
+        "trash",
+        "clock",
+        "tag",
+        "info",
+        "alert",
+        "mail",
+        "shield",
+        "search",
+        "book",
+        "inbox",
+        "check"
+      ],
+      "description": "Optional icon for empty states; the renderer picks one by kind otherwise"
     }
   },
   "required": [
@@ -32,7 +50,8 @@
     "Results of an action",
     "Empty collections",
     "Errors with a way to recover",
-    "Loading states"
+    "Loading states",
+    "'undo': after a reversible action ran, say what happened and offer Undo instead of asking first"
   ],
   "whenNotToUse": [
     "Validation errors on a field: inputs show their own errors",
@@ -49,7 +68,9 @@
   "rendering": [
     "error and warning use color.status.* tokens and an icon",
     "empty states explain why and what to do next",
-    "loading shows a skeleton when layout is known, otherwise a progress indicator"
+    "loading shows a skeleton when layout is known, otherwise a progress indicator",
+    "'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action",
+    "Empty states may carry an ActionBar: one primary and one secondary action"
   ],
   "mappings": {
     "web": "shadcn Alert / Skeleton / Sonner toast",

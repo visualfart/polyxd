@@ -12,6 +12,10 @@
     "cancel": {
       "$ref": "#/$defs/ActionSpec",
       "description": "Optional; defaults to ui.dismiss when omitted and the surface is dismissible"
+    },
+    "aside": {
+      "$ref": "#/$defs/Id",
+      "description": "Optional summary (DetailList, Card or Group) kept beside the form, e.g. the running total"
     }
   },
   "required": [
@@ -36,7 +40,8 @@
   "rendering": [
     "One column; labels above fields",
     "Submit is the primary action; cancel is secondary",
-    "Submit context is built from the form's input bindings"
+    "Submit context is built from the form's input bindings",
+    "'aside' sits beside the form and stays in view on wide surfaces; on compact ones it comes after the fields, just before the submit action"
   ],
   "mappings": {
     "web": "shadcn Form (react-hook-form + zod)",

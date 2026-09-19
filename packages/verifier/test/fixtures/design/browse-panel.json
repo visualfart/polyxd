@@ -1,0 +1,172 @@
+{
+ "specVersion": "0.1.0",
+ "surface": {
+  "id": "browse-panel",
+  "title": "Desk lamps",
+  "intent": "commerce.browse",
+  "pattern": "filter-and-browse"
+ },
+ "root": "root",
+ "components": [
+  {
+   "id": "root",
+   "component": "FilterPanel",
+   "children": [
+    "search",
+    "category",
+    "price"
+   ],
+   "results": "results",
+   "resultCount": {
+    "path": "/count"
+   },
+   "clear": {
+    "event": {
+     "name": "filters.clear"
+    }
+   }
+  },
+  {
+   "id": "search",
+   "component": "TextInput",
+   "key": "search",
+   "label": "Search lamps",
+   "kind": "search",
+   "value": {
+    "path": "/filters/q"
+   },
+   "placeholder": "Try \u201cwarm light\u201d or \u201cbrass\u201d"
+  },
+  {
+   "id": "category",
+   "component": "Choice",
+   "key": "category",
+   "label": "Type",
+   "mode": "multiple",
+   "options": [
+    {
+     "value": "desk",
+     "label": "Desk"
+    },
+    {
+     "value": "floor",
+     "label": "Floor"
+    },
+    {
+     "value": "clip",
+     "label": "Clip-on"
+    }
+   ],
+   "value": {
+    "path": "/filters/types"
+   }
+  },
+  {
+   "id": "price",
+   "component": "RangeInput",
+   "key": "price",
+   "label": "Price",
+   "value": {
+    "path": "/filters/price"
+   },
+   "min": 0,
+   "max": 300,
+   "step": 5,
+   "format": {
+    "type": "currency",
+    "currency": "GBP"
+   },
+   "mode": "range"
+  },
+  {
+   "id": "results",
+   "component": "Collection",
+   "key": "results",
+   "label": {
+    "path": "/resultsLabel"
+   },
+   "items": {
+    "path": "/products",
+    "componentId": "product"
+   },
+   "empty": "no-results",
+   "layout": "grid"
+  },
+  {
+   "id": "product",
+   "component": "Card",
+   "title": {
+    "path": "name"
+   },
+   "subtitle": {
+    "path": "priceLabel"
+   },
+   "media": "product-img",
+   "action": {
+    "event": {
+     "name": "product.open",
+     "context": {
+      "id": {
+       "path": "id"
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "product-img",
+   "component": "Media",
+   "src": {
+    "path": "image"
+   },
+   "decorative": true
+  },
+  {
+   "id": "no-results",
+   "component": "Status",
+   "kind": "empty",
+   "title": "No lamps match",
+   "message": "Try a higher price or fewer types."
+  }
+ ],
+ "data": {
+  "filters": {
+   "q": "",
+   "types": [
+    "desk"
+   ],
+   "price": [
+    20,
+    120
+   ]
+  },
+  "resultsLabel": "12 lamps",
+  "products": [
+   {
+    "id": "l1",
+    "name": "Arc desk lamp",
+    "priceLabel": "\u00a349",
+    "image": "img1"
+   },
+   {
+    "id": "l2",
+    "name": "Mini clamp lamp",
+    "priceLabel": "\u00a322",
+    "image": "img2"
+   },
+   {
+    "id": "l3",
+    "name": "Brass floor lamp",
+    "priceLabel": "\u00a3119",
+    "image": "img3"
+   },
+   {
+    "id": "l4",
+    "name": "Clip-on reading light",
+    "priceLabel": "\u00a318",
+    "image": "img4"
+   }
+  ],
+  "count": 4
+ }
+}

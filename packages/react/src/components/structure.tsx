@@ -68,6 +68,7 @@ export function Card({ node }: { node: Node }) {
           {node.badge && <span className={`pxd-badge pxd-tone-${badgeTone}`}>{b.text(node.badge.text)}</span>}
         </div>
         {node.subtitle !== undefined && <p className="pxd-card-subtitle">{b.text(node.subtitle)}</p>}
+        {node.progress && <Progress value={b.value(node.progress.value)} label={(node.progress.label !== undefined && b.text(node.progress.label)) || undefined} name={title} locale={s.locale} />}
         {node.children && (
           <div className="pxd-stack pxd-stack-tight pxd-card-children">
             <Children ids={node.children} />
@@ -75,6 +76,20 @@ export function Card({ node }: { node: Node }) {
         )}
       </div>
     </article>
+  );
+}
+
+/** Progress through an entity: a bar with its label, or the percentage. */
+function Progress({ value, label, name, locale }: { value: unknown; label?: string; name: string; locale: string }) {
+  const v = Math.max(0, Math.min(1, Number(value) || 0));
+  const pct = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 0 }).format(v);
+  return (
+    <div className="pxd-progress">
+      <div className="pxd-progress-track" role="progressbar" aria-label={`Progress: ${name}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(v * 100)} aria-valuetext={label ?? pct}>
+        <div className="pxd-progress-fill" style={{ width: `${v * 100}%` }} />
+      </div>
+      <span className="pxd-progress-label">{label ?? pct}</span>
+    </div>
   );
 }
 

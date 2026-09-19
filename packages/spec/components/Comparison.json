@@ -42,6 +42,10 @@
               "none"
             ],
             "default": "none"
+          },
+          "group": {
+            "$ref": "#/$defs/DynamicString",
+            "description": "Heading that groups related attributes (e.g. 'Storage', 'Support')"
           }
         },
         "additionalProperties": false
@@ -57,6 +61,10 @@
     },
     "summary": {
       "$ref": "#/$defs/DynamicString"
+    },
+    "recommendedReason": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Why the recommended item fits, shown on its badge (one short sentence)"
     }
   },
   "required": [
@@ -81,7 +89,11 @@
   "agent": "Reads attributes per item; choose actions are named with the item title.",
   "rendering": [
     "Wide: items as columns; compact: one card per item with the same attribute order",
-    "Best values per attribute are marked when 'better' is set"
+    "Best values per attribute are marked when 'better' is set",
+    "Exactly one item may be recommended; its badge carries recommendedReason",
+    "Attributes with the same group sit under one heading",
+    "Boolean values render as a check or a dash with text alternatives ('Included' / 'Not included')",
+    "On compact surfaces the recommended item comes first"
   ],
   "mappings": {
     "web": "shadcn Table or Cards grid",

@@ -35,6 +35,24 @@
     "action": {
       "$ref": "#/$defs/Action",
       "description": "Activating the card as a whole (e.g. open details)"
+    },
+    "progress": {
+      "type": "object",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/Binding",
+          "description": "Number from 0 to 1 in host data"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Optional text, e.g. '120 of 320 pages'; the percentage is shown otherwise"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Progress through the entity (reading, a course, a goal)"
     }
   },
   "required": [
@@ -58,7 +76,8 @@
   "agent": "Activate the card by its title; use controls inside it by their own labels.",
   "rendering": [
     "If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own",
-    "Uses surface.raised and radius.default"
+    "Uses surface.raised and radius.default",
+    "'progress' renders a progress bar with its label or percentage"
   ],
   "mappings": {
     "web": "shadcn Card (CardHeader/CardTitle/CardContent/CardFooter)",

@@ -11,7 +11,7 @@ A pattern is a known arrangement of components for a kind of task. Patterns are 
 
 A surface declares its pattern in `surface.pattern`. The validator then runs that pattern's checks against the document. Patterns live in `packages/spec/patterns/*.json` and follow `schema/pattern.schema.json`.
 
-## The five core patterns
+## The six core patterns
 
 None of them is tied to a domain. The same `confirm-destructive` pattern covers sending money, deleting a project and closing an account.
 
@@ -21,6 +21,7 @@ None of them is tied to a domain. The same `confirm-destructive` pattern covers 
 | `multi-step-form` | Any data entry task | One `Form` for 6 inputs or fewer; `Steps` with one topic per step for longer or dependent tasks |
 | `compare-and-choose` | Choosing between 2–4 plans, products, routes or offers | One `Comparison` with the same attributes for every option, an optional recommendation, and a choose action per option |
 | `filter-and-browse` | Searching or browsing many items | Filters before the results, a `Collection` or `Table` of results, and an empty state that says how to widen the search |
+| `undo-over-confirm` | Everyday actions that can be reversed: archive, remove from a list, mark done, move to trash. Any `none` or `low` capability that names an `undo` capability | The action runs straight away; a `Status` of kind `undo` says what happened and offers Undo. No confirmation dialog |
 | `review-and-submit` | Bookings, orders, applications: any multi-field commitment | `DetailList` summaries of what will be submitted, any final acknowledgements, and a submit label that states the commitment ("Book and pay £312") |
 
 Each pattern file also records when *not* to use it, its journey semantics (goal, checkpoints, done-condition), how an agent completes it, the example documents that use it, and its sources (for example GOV.UK's "check answers" pattern for `review-and-submit`).

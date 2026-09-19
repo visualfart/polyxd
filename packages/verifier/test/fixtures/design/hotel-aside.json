@@ -1,0 +1,115 @@
+{
+ "specVersion": "0.1.0",
+ "surface": {
+  "id": "hotel",
+  "title": "Book your stay",
+  "intent": "stay.book",
+  "pattern": "multi-step-form"
+ },
+ "root": "form",
+ "components": [
+  {
+   "id": "form",
+   "component": "Form",
+   "children": [
+    "guest",
+    "email",
+    "requests"
+   ],
+   "aside": "summary",
+   "submit": {
+    "label": "Continue to payment",
+    "action": {
+     "event": {
+      "name": "booking.review"
+     }
+    }
+   }
+  },
+  {
+   "id": "guest",
+   "component": "TextInput",
+   "key": "guest",
+   "label": "Lead guest's full name",
+   "value": {
+    "path": "/draft/name"
+   },
+   "required": true
+  },
+  {
+   "id": "email",
+   "component": "TextInput",
+   "key": "email",
+   "label": "Email",
+   "kind": "email",
+   "help": "We'll send the confirmation here",
+   "value": {
+    "path": "/draft/email"
+   },
+   "required": true
+  },
+  {
+   "id": "requests",
+   "component": "TextInput",
+   "key": "requests",
+   "label": "Requests for the hotel (optional)",
+   "kind": "multiline",
+   "value": {
+    "path": "/draft/requests"
+   }
+  },
+  {
+   "id": "summary",
+   "component": "DetailList",
+   "variant": "receipt",
+   "items": [
+    {
+     "key": "room",
+     "label": "Harbour room, 2 nights",
+     "value": {
+      "path": "/q/room"
+     },
+     "format": {
+      "type": "currency",
+      "currency": "GBP"
+     }
+    },
+    {
+     "key": "tax",
+     "label": "Taxes",
+     "value": {
+      "path": "/q/tax"
+     },
+     "format": {
+      "type": "currency",
+      "currency": "GBP"
+     }
+    },
+    {
+     "key": "total",
+     "label": "Total",
+     "value": {
+      "path": "/q/total"
+     },
+     "format": {
+      "type": "currency",
+      "currency": "GBP"
+     },
+     "total": true
+    }
+   ]
+  }
+ ],
+ "data": {
+  "draft": {
+   "name": "",
+   "email": "",
+   "requests": ""
+  },
+  "q": {
+   "room": 280,
+   "tax": 32,
+   "total": 312
+  }
+ }
+}

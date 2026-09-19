@@ -1,13 +1,13 @@
 ---
 title: Components
-description: The 24 semantic components, what "semantic" means, and how the renderer turns meaning into concrete controls.
+description: The 25 semantic components, what "semantic" means, and how the renderer turns meaning into concrete controls.
 order: 11
 section: Concepts
 ---
 
 # Components
 
-Polyxd has 24 components. Each one describes **what something is for**, not what it looks like. The generator picks components; the renderer and the design-system pack decide how they appear on each platform.
+Polyxd has 25 components. Each one describes **what something is for**, not what it looks like. The generator picks components; the renderer and the design-system pack decide how they appear on each platform.
 
 For every component's props, usage rules, accessibility requirements and platform mappings, see the generated [components reference](/docs/reference/components). This page explains the ideas behind them.
 

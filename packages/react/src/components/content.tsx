@@ -3,6 +3,7 @@ import { resolveFormat, useBindings, useSurface, type Node } from "../context.ts
 import { absolute, childPointer, get } from "../data.ts";
 import { formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
+import { Icon } from "./avatar.tsx";
 import { Heading } from "./structure.tsx";
 
 export function Text({ node }: { node: Node }) {
@@ -205,18 +206,34 @@ export function Media({ node }: { node: Node }) {
   return <img className={cls} src={url} alt={alt} {...useA11y(node)} />;
 }
 
-const STATUS_ICON: Record<string, string> = { info: "ℹ", success: "✓", warning: "!", error: "✕", empty: "○" };
+const STATUS_ICON: Record<string, string> = { info: "info", success: "check", warning: "alert", error: "alert", empty: "inbox", undo: "check" };
 
+/**
+ * Status. 'undo' is a snackbar after a reversible action ran (announced politely, with Undo);
+ * 'empty' gets an icon tile and may carry an ActionBar (one primary, one secondary).
+ */
 export function Status({ node }: { node: Node }) {
   const b = useBindings();
   const urgent = node.kind === "error";
+  const a11y = useA11y(node);
+  if (node.kind === "undo") {
+    return (
+      <div className="pxd-snackbar" role="status" {...a11y}>
+        <p className="pxd-snackbar-text">
+          {b.text(node.title)}
+          {node.message !== undefined && <span className="pxd-snackbar-message"> {b.text(node.message)}</span>}
+        </p>
+        {node.action && <Render id={node.action} />}
+      </div>
+    );
+  }
   return (
-    <div className={`pxd-status pxd-status-${node.kind}`} role={urgent ? "alert" : "status"} {...useA11y(node)}>
+    <div className={`pxd-status pxd-status-${node.kind}`} role={urgent ? "alert" : "status"} {...a11y}>
       {node.kind === "loading" ? (
         <span className="pxd-spinner" aria-hidden="true" />
       ) : (
         <span className="pxd-status-icon" aria-hidden="true">
-          {STATUS_ICON[node.kind]}
+          <Icon name={node.icon ?? STATUS_ICON[node.kind]} size={node.kind === "empty" ? 28 : 16} />
         </span>
       )}
       <div className="pxd-status-body">

@@ -1398,3 +1398,234 @@ textarea.pxd-input {
     width: 100%;
   }
 }
+
+/* ---- Batch 2: layouts and patterns from the flow designs ---- */
+
+/* Empty states: an icon tile, encouraging copy, up to two actions. */
+.pxd-status-empty {
+  border: 0;
+  padding: var(--pxd-space-stack-loose) var(--pxd-space-inset-comfortable);
+}
+.pxd-status-empty .pxd-status-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--pxd-radius-large);
+}
+.pxd-status-empty .pxd-status-action .pxd-action-bar {
+  justify-content: center;
+}
+
+/* Undo: a snackbar at the bottom of the surface. */
+.pxd-snackbar {
+  position: sticky;
+  bottom: var(--pxd-space-inset-default);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  width: fit-content;
+  max-width: 100%;
+  margin: var(--pxd-space-stack-default) auto 0;
+  padding: var(--pxd-space-inset-compact) var(--pxd-space-inset-compact) var(--pxd-space-inset-compact) var(--pxd-space-inset-default);
+  border-radius: var(--pxd-radius-default);
+  background: var(--pxd-color-text-default);
+  color: var(--pxd-color-surface-default);
+  box-shadow: var(--pxd-shadow-overlay);
+}
+.pxd-snackbar-text {
+  margin: 0;
+}
+.pxd-snackbar .pxd-button {
+  background: transparent;
+  color: var(--pxd-color-surface-default);
+  border-color: transparent;
+  text-decoration: underline;
+}
+
+/* Progress on a card. */
+.pxd-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+}
+.pxd-progress-track {
+  flex: 1;
+  height: 6px;
+  border-radius: var(--pxd-radius-full);
+  background: var(--pxd-color-border-default);
+  overflow: hidden;
+}
+.pxd-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--pxd-color-action-primary-background);
+}
+.pxd-progress-label {
+  flex: none;
+  font-size: var(--pxd-type-body-small-size);
+  color: var(--pxd-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Form with a summary beside it (wide) or before the action (compact). */
+@container pxd (width >= 48rem) {
+  .pxd-form-with-aside {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+    grid-template-areas: "fields aside" "actions aside";
+    align-items: start;
+    column-gap: var(--pxd-space-inline-loose);
+    row-gap: var(--pxd-space-stack-loose);
+  }
+  .pxd-form-with-aside > .pxd-form-fields { grid-area: fields; }
+  .pxd-form-with-aside > .pxd-action-bar { grid-area: actions; }
+  .pxd-form-with-aside > .pxd-form-aside {
+    grid-area: aside;
+    position: sticky;
+    top: var(--pxd-space-inset-default);
+  }
+}
+.pxd-form-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-default);
+}
+
+/* Comparison: one recommendation with its reason, grouped attributes, yes/no marks. */
+.pxd-recommendation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--pxd-space-stack-tight);
+  margin: 0;
+}
+.pxd-recommendation-reason {
+  font-size: var(--pxd-type-body-small-size);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-comparison-group-label {
+  margin: 0;
+  padding-top: var(--pxd-space-stack-tight);
+  font-family: var(--pxd-type-label-small-family);
+  font-size: var(--pxd-type-label-small-size);
+  font-weight: 600;
+  color: var(--pxd-color-text-muted);
+}
+.pxd-yes,
+.pxd-no {
+  display: inline-flex;
+  vertical-align: middle;
+}
+.pxd-yes {
+  color: var(--pxd-color-text-default);
+}
+.pxd-no {
+  color: var(--pxd-color-text-muted);
+}
+
+/* Filter panel: sidebar on wide, a sheet on compact. */
+.pxd-filter-layout {
+  display: grid;
+  grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
+  gap: var(--pxd-space-inline-loose);
+  align-items: start;
+}
+.pxd-filter-sidebar {
+  position: sticky;
+  top: var(--pxd-space-inset-default);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-default);
+}
+.pxd-filter-title {
+  margin: 0;
+  font-family: var(--pxd-type-title-item-family);
+  font-size: var(--pxd-type-title-item-size);
+  font-weight: var(--pxd-type-title-item-weight);
+}
+.pxd-filter-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-default);
+  min-width: 0;
+}
+.pxd-filter-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--pxd-space-inline-default);
+}
+.pxd-filter-count {
+  margin: 0;
+  color: var(--pxd-color-text-muted);
+  font-size: var(--pxd-type-body-small-size);
+}
+.pxd-filter-trigger {
+  background: transparent;
+}
+.pxd-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pxd-filter-chip {
+  border-color: transparent;
+  background: var(--pxd-color-selection-background);
+  color: var(--pxd-color-selection-foreground);
+}
+.pxd-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  max-height: 85%;
+  background: var(--pxd-color-surface-overlay);
+  color: var(--pxd-color-text-default);
+  border-radius: var(--pxd-radius-large) var(--pxd-radius-large) 0 0;
+  box-shadow: var(--pxd-shadow-overlay);
+}
+.pxd-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--pxd-space-inset-compact) var(--pxd-space-inset-compact) 0 var(--pxd-space-inset-default);
+}
+.pxd-sheet-title {
+  margin: 0;
+  font-family: var(--pxd-type-title-section-family);
+  font-size: var(--pxd-type-title-section-size);
+  font-weight: var(--pxd-type-title-section-weight);
+}
+.pxd-sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--pxd-space-inset-default);
+}
+.pxd-sheet-footer {
+  display: flex;
+  gap: var(--pxd-space-inline-default);
+  padding: var(--pxd-space-inset-compact) var(--pxd-space-inset-default) var(--pxd-space-inset-default);
+  border-top: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+}
+.pxd-sheet-footer .pxd-button {
+  flex: 1;
+}
+.pxd-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pxd-size-target-min);
+  height: var(--pxd-size-target-min);
+  border: 0;
+  border-radius: var(--pxd-radius-full);
+  background: transparent;
+  color: var(--pxd-color-text-default);
+  cursor: pointer;
+}

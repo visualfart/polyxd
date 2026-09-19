@@ -1,0 +1,47 @@
+{
+  "$schema": "../schema/pattern.schema.json",
+  "id": "undo-over-confirm",
+  "name": "Undo instead of confirm",
+  "summary": "For everyday actions that can be reversed, do them straight away and offer Undo, instead of asking 'Are you sure?' every time.",
+  "whenToUse": [
+    "Archiving, removing from a list, marking done, moving to trash",
+    "Any capability with risk 'none' or 'low' that names an 'undo' capability"
+  ],
+  "whenNotToUse": [
+    "Actions that can't be reversed, or reverse only with loss: confirm-destructive",
+    "Moving money or sending on someone's behalf: confirm-destructive or review-and-submit"
+  ],
+  "structure": [
+    "The action runs when chosen",
+    "Status (kind 'undo') says what happened, naming the thing",
+    "Its action is Undo, wired to the reversing capability"
+  ],
+  "checks": [
+    {
+      "id": "has-undo-status",
+      "description": "An undo notice says what happened",
+      "severity": "error",
+      "rule": { "check": "contains", "component": "Status", "where": { "kind": "undo" }, "min": 1 }
+    },
+    {
+      "id": "undo-has-action",
+      "description": "The notice offers Undo",
+      "severity": "error",
+      "rule": { "check": "requires", "component": "Status", "where": { "kind": "undo" }, "props": ["action"] }
+    },
+    {
+      "id": "no-confirm",
+      "description": "Nothing asks for confirmation first",
+      "severity": "warning",
+      "rule": { "check": "not", "checks": [{ "check": "contains", "component": "Confirm" }] }
+    }
+  ],
+  "journey": {
+    "goal": "Finish the action in one step, and recover from a slip in one step",
+    "checkpoints": ["The notice names what happened", "Undo is one action away"],
+    "done": "The action stands, or Undo restored it"
+  },
+  "agent": "Carry out the action; if it was a mistake, activate Undo by its label.",
+  "examples": [],
+  "sources": ["Raskin: The Humane Interface (undo over warnings)", "NN/g: confirmation dialogs lose their power when overused", "Gmail undo send"]
+}

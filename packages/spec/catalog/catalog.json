@@ -88,7 +88,8 @@
       "agent": "Activate the card by its title; use controls inside it by their own labels.",
       "rendering": [
         "If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own",
-        "Uses surface.raised and radius.default"
+        "Uses surface.raised and radius.default",
+        "'progress' renders a progress bar with its label or percentage"
       ],
       "mappings": {
         "web": "shadcn Card (CardHeader/CardTitle/CardContent/CardFooter)",
@@ -228,7 +229,11 @@
       "agent": "Reads attributes per item; choose actions are named with the item title.",
       "rendering": [
         "Wide: items as columns; compact: one card per item with the same attribute order",
-        "Best values per attribute are marked when 'better' is set"
+        "Best values per attribute are marked when 'better' is set",
+        "Exactly one item may be recommended; its badge carries recommendedReason",
+        "Attributes with the same group sit under one heading",
+        "Boolean values render as a check or a dash with text alternatives ('Included' / 'Not included')",
+        "On compact surfaces the recommended item comes first"
       ],
       "mappings": {
         "web": "shadcn Table or Cards grid",
@@ -373,6 +378,42 @@
         "GOV.UK details component"
       ]
     },
+    "FilterPanel": {
+      "category": "layout",
+      "summary": "Filters for a list of results, with the result count.",
+      "whenToUse": [
+        "Browsing results people narrow by several attributes",
+        "More than two filters, or filters that take space (ranges, long lists)"
+      ],
+      "whenNotToUse": [
+        "One or two quick filters: put a Choice (chips) above the results",
+        "Filling in information: use Form"
+      ],
+      "accessibility": {
+        "role": "region (filters) plus the results",
+        "requirements": [
+          "The result count is announced politely when it changes",
+          "Each active filter can be removed with a named button ('Remove filter: Desk')"
+        ]
+      },
+      "agent": "Set filter inputs by label; read the result count; remove filters by their Remove buttons.",
+      "rendering": [
+        "Wide: filters in a sidebar beside the results",
+        "Compact: a 'Filters · n' button opens a bottom sheet whose action says 'Show n results'",
+        "Active filters show as removable chips above the results",
+        "Filters apply as they change (no separate Apply on wide)"
+      ],
+      "mappings": {
+        "web": "Sidebar + Sheet (shadcn)",
+        "ios": "List with a filter sheet",
+        "android": "Side sheet / modal bottom sheet"
+      },
+      "a2ui": "Column",
+      "sources": [
+        "Baymard: product list filtering",
+        "NN/g: filters vs facets"
+      ]
+    },
     "Form": {
       "category": "input",
       "summary": "Collects inputs and submits them together.",
@@ -394,7 +435,8 @@
       "rendering": [
         "One column; labels above fields",
         "Submit is the primary action; cancel is secondary",
-        "Submit context is built from the form's input bindings"
+        "Submit context is built from the form's input bindings",
+        "'aside' sits beside the form and stays in view on wide surfaces; on compact ones it comes after the fields, just before the submit action"
       ],
       "mappings": {
         "web": "shadcn Form (react-hook-form + zod)",
@@ -575,7 +617,8 @@
         "Results of an action",
         "Empty collections",
         "Errors with a way to recover",
-        "Loading states"
+        "Loading states",
+        "'undo': after a reversible action ran, say what happened and offer Undo instead of asking first"
       ],
       "whenNotToUse": [
         "Validation errors on a field: inputs show their own errors",
@@ -592,7 +635,9 @@
       "rendering": [
         "error and warning use color.status.* tokens and an icon",
         "empty states explain why and what to do next",
-        "loading shows a skeleton when layout is known, otherwise a progress indicator"
+        "loading shows a skeleton when layout is known, otherwise a progress indicator",
+        "'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action",
+        "Empty states may carry an ActionBar: one primary and one secondary action"
       ],
       "mappings": {
         "web": "shadcn Alert / Skeleton / Sonner toast",
