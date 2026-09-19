@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+.env
+# model weights, checkpoints, large artifacts
+model/checkpoints/
+model/weights/
+*.safetensors
+*.gguf
