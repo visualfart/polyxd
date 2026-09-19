@@ -365,7 +365,6 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  max-width: 100%;
   font: 12px var(--mono);
   color: var(--muted);
 }
@@ -396,14 +395,20 @@ body {
   flex: 1;
   overflow: auto;
   padding: 32px 24px 40px;
+  background: var(--line-soft);
+}
+/* The preview keeps the width it says it has: a "desktop 1100" frame stays 1100 and the stage
+   scrolls, rather than squeezing the surface into a narrower box and changing what it renders. */
+.g-stage-inner {
+  width: max-content;
+  min-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  background: var(--line-soft);
 }
 .g-frame {
-  max-width: 100%;
+  flex: none;
   border-radius: 20px;
   overflow: hidden;
   border: 1px solid var(--line);

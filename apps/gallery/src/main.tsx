@@ -168,6 +168,7 @@ function Gallery() {
         </div>
 
         <div className="g-stage">
+          <div className="g-stage-inner">
           <div className="g-caption" style={{ width: WIDTHS[width] }}>
             <span className="g-caption-text">{caption}</span>
             <span className="g-caption-width">{WIDTHS[width]}px</span>
@@ -178,6 +179,7 @@ function Gallery() {
           </div>
           <div className="g-frame" style={{ width: WIDTHS[width] }}>
             {surface}
+          </div>
           </div>
         </div>
       </main>
