@@ -47,12 +47,12 @@ One self-contained entity (an account, an order, a place), optionally actionable
 
 **Accessibility** (role: article (or link/button when it has an action))
 - Title is the accessible name
-- When actionable, the whole card is one target; nested actions are not allowed then
+- When actionable, the title is the card's one link; controls inside it (a Toggle, an Action) stay separate targets with their own names
 
-**Agents:** Activate the card by its title.
+**Agents:** Activate the card by its title; use controls inside it by their own labels.
 
 **Rendering rules**
-- If 'action' is set, children must not contain Actions (one target per card)
+- If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own
 - Uses surface.raised and radius.default
 
 ## Disclosure

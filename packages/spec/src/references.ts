@@ -4,7 +4,7 @@
  */
 export const REFERENCE_TYPES: Record<string, string[]> = {
   "Card.media": ["Media"],
-  "Card.children": ["Text", "Metric", "DetailList", "Group", "Media", "Status"],
+  "Card.children": ["Text", "Metric", "DetailList", "Group", "Media", "Status", "Toggle", "Action", "ActionBar"],
   "Collection.empty": ["Status"],
   "Table.empty": ["Status"],
   "Status.action": ["Action"],

@@ -69,7 +69,7 @@ export function Card({ node }: { node: Node }) {
         </div>
         {node.subtitle !== undefined && <p className="pxd-card-subtitle">{b.text(node.subtitle)}</p>}
         {node.children && (
-          <div className="pxd-stack pxd-stack-tight">
+          <div className="pxd-stack pxd-stack-tight pxd-card-children">
             <Children ids={node.children} />
           </div>
         )}

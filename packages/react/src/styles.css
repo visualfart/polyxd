@@ -210,6 +210,11 @@
 .pxd-card-link:focus-visible {
   outline: none;
 }
+/* Controls inside an actionable card stay their own targets, above the card's stretched link. */
+.pxd-card-actionable .pxd-card-children :is(button, input, select, textarea, a, [role="switch"], [role="checkbox"]) {
+  position: relative;
+  z-index: 1;
+}
 .pxd-card-media .pxd-media {
   width: 100%;
   border-radius: 0;

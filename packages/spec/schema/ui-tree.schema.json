@@ -501,6 +501,15 @@
               },
               {
                 "$ref": "#/$defs/ComponentStatus"
+              },
+              {
+                "$ref": "#/$defs/ComponentToggle"
+              },
+              {
+                "$ref": "#/$defs/ComponentAction"
+              },
+              {
+                "$ref": "#/$defs/ComponentActionBar"
               }
             ]
           }
