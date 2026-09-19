@@ -7,7 +7,7 @@
  */
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { validateDocument } from "@polyxd/spec";
+import { validateDocument, flattenTree, isTree } from "@polyxd/spec";
 import { launch, verifyDocument, compare, type Task } from "../src/index.ts";
 
 const runDir = resolve(process.argv[2] ?? "");
@@ -61,7 +61,16 @@ if (existsSync(reqDir)) {
       if (!r) continue;
       const row: any = { id: out.id, parsed: !!out.doc, valid: false, score: 0, task: r.task ? false : null, expectHit: 0, expectTotal: 0, total_s: out.total_s, ttft_s: out.ttft_s, tps: out.generation_tps, tokens: out.generation_tokens, problems: [] as string[] };
       if (out.doc) {
-        const doc = { ...out.doc, data: r.data };
+        // Tree-form outputs are compiled to the flat wire form first, as a host runtime would.
+        let flat = out.doc;
+        if (isTree(out.doc)) {
+          try {
+            flat = flattenTree(out.doc);
+          } catch (e) {
+            row.problems.push(`tree: ${(e as Error).message}`);
+          }
+        }
+        const doc = { ...flat, data: r.data };
         const v = validateDocument(doc);
         row.valid = v.valid;
         if (!v.valid) row.problems.push(...v.issues.filter((i) => i.severity === "error").slice(0, 3).map((i) => `${i.at}: ${i.message}`));
@@ -97,7 +106,8 @@ for (const kind of ["sequences", "sequences-nomem"]) {
     const s = readJson(join(dir, f));
     const pairs: number[] = [];
     for (let i = 1; i < s.turns.length; i++) {
-      const [a, b] = [s.turns[i - 1].doc, s.turns[i].doc];
+      const flat = (d: any) => (d && isTree(d) ? flattenTree(d) : d);
+      const [a, b] = [flat(s.turns[i - 1].doc), flat(s.turns[i].doc)];
       if (a && b && validateDocument({ ...a, data: s.turns[i - 1].data }).valid && validateDocument({ ...b, data: s.turns[i].data }).valid) pairs.push(compare(a, b).score);
       else pairs.push(0);
     }

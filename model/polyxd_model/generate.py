@@ -51,25 +51,25 @@ def extract_json(text: str) -> tuple[dict | None, str | None]:
     return None, "unterminated JSON (output cut off?)"
 
 
-def chat(tokenizer, user: str) -> str:
-    messages = [{"role": "system", "content": system_prompt()}, {"role": "user", "content": user}]
+def chat(tokenizer, user: str, fmt: str = "flat") -> str:
+    messages = [{"role": "system", "content": system_prompt(fmt)}, {"role": "user", "content": user}]
     try:
         return tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False, enable_thinking=False)
     except TypeError:
         return tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
 
 
-SCHEMA = (REPO / "packages" / "spec" / "schema" / "ui.schema.json").read_text()
+SCHEMAS = {fmt: (REPO / "packages" / "spec" / "schema" / name).read_text() for fmt, name in {"flat": "ui.schema.json", "tree": "ui-tree.schema.json"}.items()}
 
 
-def run_one(model, tokenizer, user: str, max_tokens: int, constrained: bool = False) -> dict:
-    prompt = chat(tokenizer, user)
+def run_one(model, tokenizer, user: str, max_tokens: int, constrained: bool = False, fmt: str = "flat") -> dict:
+    prompt = chat(tokenizer, user, fmt)
     sampler = make_sampler(temp=0.0)
     processors, constraint = [], None
     if constrained:
         from .constrain import SchemaConstraint
 
-        constraint = SchemaConstraint(tokenizer, SCHEMA)
+        constraint = SchemaConstraint(tokenizer, SCHEMAS[fmt])
         processors = [constraint]
     out, ttft, last = [], None, None
     start = time.perf_counter()
@@ -119,9 +119,10 @@ def main() -> None:
     ap.add_argument("--no-memory", action="store_true", help="with --sequences: don't give the model its previous output")
     ap.add_argument("--max-tokens", type=int, default=3500)
     ap.add_argument("--constrained", action="store_true", help="JSON-schema-constrained decoding (llguidance)")
+    ap.add_argument("--format", choices=["flat", "tree"], default="flat", help="authoring format: flat id list, or nested tree compiled to flat")
     args = ap.parse_args()
 
-    name = (args.name or args.model.split("/")[-1]) + ("-constrained" if args.constrained else "")
+    name = (args.name or args.model.split("/")[-1]) + ("-tree" if args.format == "tree" else "") + ("-constrained" if args.constrained else "")
     out_dir = RUNS / name / ("sequences" + ("-nomem" if args.no_memory else "") if args.sequences else "requests")
     out_dir.mkdir(parents=True, exist_ok=True)
     model, tokenizer = load(args.model)
@@ -133,7 +134,7 @@ def main() -> None:
             keep = set(args.only.split(","))
             requests = [r for r in requests if r["id"] in keep]
         for r in requests:
-            res = run_one(model, tokenizer, user_prompt(r), args.max_tokens, args.constrained)
+            res = run_one(model, tokenizer, user_prompt(r), args.max_tokens, args.constrained, args.format)
             (out_dir / f"{r['id']}.json").write_text(json.dumps({"id": r["id"], "model": args.model, **res}, indent=2, ensure_ascii=False))
             status = "ok " if res["doc"] else "ERR"
             print(f"{status} {r['id']:<34} {res['total_s']:6.1f}s  ttft {res['ttft_s'] or 0:.2f}s  {res['generation_tps']:5.1f} tok/s  {res['error'] or ''}", flush=True)
@@ -149,7 +150,7 @@ def main() -> None:
             memory = None if args.no_memory else memory_of(previous_doc)
             if seq.get("keys") and not args.no_memory and i == 0:
                 memory = "Use these keys: " + "; ".join(f"{k} = {v}" for k, v in seq["keys"].items())
-            res = run_one(model, tokenizer, user_prompt(request, memory), args.max_tokens, args.constrained)
+            res = run_one(model, tokenizer, user_prompt(request, memory), args.max_tokens, args.constrained, args.format)
             turns.append({"turn": i, "request": turn["request"], "data": data, **res})
             previous_doc, previous_data = res["doc"], data
             print(f"{'ok ' if res['doc'] else 'ERR'} {seq['id']} turn {i}  {res['total_s']:.1f}s")

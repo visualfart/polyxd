@@ -87,15 +87,29 @@ EXAMPLE = {
 }
 
 
-PROMPT_VERSION = 2
+PROMPT_VERSION = 3
+
+TREE_EXAMPLE = {
+    "specVersion": "0.1.0",
+    "surface": EXAMPLE["surface"],
+    "root": {**{k: v for k, v in EXAMPLE["components"][0].items() if k not in ("id", "children")},
+             "children": [{k: v for k, v in c.items() if k != "id"} for c in EXAMPLE["components"][1:]]},
+}
+
+SHAPES = {
+    "flat": """Document shape: {"specVersion":"0.1.0","surface":{"id","title","intent","pattern"?},"root":"<id>","components":[...]}.
+Components are a FLAT list; each has a unique "id" and "component" (its type). Containers reference children by id STRINGS ("children": ["a","b"]); never nest component objects inside other components.""",
+    "tree": """Document shape: {"specVersion":"0.1.0","surface":{"id","title","intent","pattern"?},"root":{<component>}}.
+Write the interface as a TREE: "root" is a component object, and wherever a component contains others (children, media, empty, summary, action, a Collection's items.item, a view's or step's content) write the child component object inline. Components don't need ids.""",
+}
 
 
 @cache
-def system_prompt() -> str:
+def system_prompt(fmt: str = "flat") -> str:
+    example = TREE_EXAMPLE if fmt == "tree" else EXAMPLE
     return f"""You generate just-in-time user interfaces as JSON, in the Polyxd UI document format. Output ONE JSON object and nothing else.
 
-Document shape: {{"specVersion":"0.1.0","surface":{{"id","title","intent","pattern"?}},"root":"<id>","components":[...]}}.
-Components are a FLAT list; each has a unique "id" and "component" (its type). Containers reference children by id STRINGS ("children": ["a","b"]); never nest component objects inside other components.
+{SHAPES[fmt]}
 
 Rules:
 1. Data comes from the host. Bind values with {{"path":"/json/pointer"}}; pointers start at the root of the DATA object (DATA {{"card":{{"id":"c1"}}}} → {{"path":"/card/id"}}, never "/data/card/id"). Never type numbers, prices, names or dates from the data as literal text; never invent data.
@@ -115,7 +129,7 @@ Patterns (set surface.pattern when one applies):
 {patterns_text()}
 
 Example:
-{json.dumps(EXAMPLE, ensure_ascii=False)}"""
+{json.dumps(example, ensure_ascii=False)}"""
 
 
 @cache

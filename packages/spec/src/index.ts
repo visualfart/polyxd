@@ -5,3 +5,4 @@ export { validateDocument, uiSchema, type Issue, type ValidationResult } from ".
 export { loadContract, loadDesignSystem, checkContract, checkDesignSystem, flatten, resolveAliases } from "./tokens.ts";
 export type { TokenSet, TokenContract, DesignSystemManifest, ContractIssue } from "./tokens.ts";
 export { contrastRatio, luminance, type ColorValue } from "./color.ts";
+export { flattenTree, toTree, isTree } from "./tree.ts";

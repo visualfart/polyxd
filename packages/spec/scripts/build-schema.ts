@@ -3,6 +3,8 @@
  *  - schema/ui.schema.json   one self-contained JSON Schema for a UI document (validation + constrained decoding)
  *  - catalog/catalog.json    usage guidance, accessibility, rendering rules and platform mappings per component
  *  - docs/components.md      the same, as a readable reference with the platform mapping table
+ *  - schema/ui-tree.schema.json  the model's authoring format: the same document, with child components
+ *                            written inline instead of referenced by id (compiled to the flat form by src/tree.ts)
  * Run with `npm run build:schema`. The test suite fails if the outputs are stale.
  */
 import { readFile, readdir, writeFile } from "node:fs/promises";
@@ -139,12 +141,49 @@ export function buildComponentDocs(components: ComponentSource[]) {
   return lines.join("\n") + "\n";
 }
 
+/**
+ * The authoring ("tree") schema: identical components, but every component reference (children lists,
+ * single references, templates, view/step content) holds the child component itself, and ids are optional.
+ * Small models write nested trees reliably and flat id tables poorly; see research/report.md.
+ */
+export function buildTreeSchema(flat: any) {
+  const defs: Record<string, any> = structuredClone(flat.$defs);
+  const node = { $ref: "#/$defs/Node" };
+  const replace = (s: any, isComponentId = false): any => {
+    if (!s || typeof s !== "object") return s;
+    if (Array.isArray(s)) return s.map((x) => replace(x));
+    if (s.$ref === "#/$defs/ChildList") return { type: "array", minItems: 1, items: node, ...(s.description ? { description: s.description } : {}) };
+    if (s.$ref === "#/$defs/Template")
+      return { type: "object", required: ["path", "item"], properties: { path: { $ref: "#/$defs/Path" }, item: node }, additionalProperties: false, description: "Array in host data to repeat over, and the component rendered for each item" };
+    if (s.$ref === "#/$defs/Id" && !isComponentId) return { ...node, ...(s.description ? { description: s.description } : {}) };
+    return Object.fromEntries(Object.entries(s).map(([k, v]) => [k, replace(v)]));
+  };
+  for (const [name, d] of Object.entries(defs)) {
+    if (!name.startsWith("Component") || name === "Component") continue;
+    const { id, ...props } = d.properties;
+    defs[name] = { ...d, required: d.required.filter((r: string) => r !== "id"), properties: { id: replace(id, true), ...Object.fromEntries(Object.entries(props).map(([k, v]) => [k, replace(v)])) } };
+  }
+  const { Component, ...rest } = defs;
+  return {
+    $schema: flat.$schema,
+    $id: "https://polyxd.com/schema/0.1/ui-tree.schema.json",
+    title: "Polyxd UI document (tree authoring form)",
+    description: "The same document as ui.schema.json, with child components written inline. Generated; compile with flattenTree().",
+    type: "object",
+    required: ["specVersion", "surface", "root"],
+    properties: { $schema: flat.properties.$schema, specVersion: flat.properties.specVersion, surface: flat.properties.surface, root: node, data: flat.properties.data },
+    additionalProperties: false,
+    $defs: { ...rest, Node: { ...Component } },
+  };
+}
+
 const json = (v: unknown) => JSON.stringify(v, null, 2) + "\n";
 
 export async function buildOutputs() {
   const [common, components] = await Promise.all([read("schema/common.defs.json"), loadComponentSources()]);
   return {
     "schema/ui.schema.json": json(buildUiSchema(common, components)),
+    "schema/ui-tree.schema.json": json(buildTreeSchema(buildUiSchema(common, components))),
     "catalog/catalog.json": json(buildCatalog(components)),
     "docs/components.md": buildComponentDocs(components),
   };
