@@ -1,4 +1,4 @@
-import { useContext, useId, useState } from "react";
+import { useContext, useEffect, useId, useRef, useState } from "react";
 import { AlertDialog } from "radix-ui";
 import { StepsContext, resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { absolute, childPointer, get } from "../data.ts";
@@ -104,6 +104,11 @@ export function Confirm({ node }: { node: Node }) {
   const ready = !mustType || typed.trim() === mustType;
   const destructive = node.severity === "destructive";
   const a11y = useA11y(node);
+  // A root confirmation takes focus on its safest option (Cancel), like a dialog would.
+  const safest = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (isRoot) safest.current?.focus({ preventScroll: true });
+  }, [isRoot]);
   const cancel = () => {
     if (!isRoot) setOpen(false);
     s.dispatch(node.cancel?.action ?? { event: { name: "ui.dismiss" } }, b.scope, node.id);
@@ -157,7 +162,7 @@ export function Confirm({ node }: { node: Node }) {
         {description}
         {body(
           confirmButton,
-          <button type="button" className="pxd-button pxd-button-secondary" onClick={cancel}>
+          <button type="button" ref={safest} className="pxd-button pxd-button-secondary" onClick={cancel}>
             {cancelLabel}
           </button>,
         )}

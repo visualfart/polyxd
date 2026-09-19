@@ -16,7 +16,9 @@
     "verify": "node src/cli.ts",
     "test": "npm run build:harness && node --test \"test/**/*.test.ts\"",
     "verify:examples": "npm run build:harness && node src/cli.ts ../spec/examples/*.json --registry ../spec/examples/registry/capabilities.json --tasks ../../bench/tasks.json -q",
-    "gold": "npm run build:harness && node scripts/gold-agreement.ts"
+    "gold": "npm run build:harness && node scripts/gold-agreement.ts",
+    "score": "npm run build:harness && node scripts/score-run.ts",
+    "leaderboard": "node scripts/leaderboard.ts"
   },
   "devDependencies": {
     "@polyxd/react": "^0.0.0",
