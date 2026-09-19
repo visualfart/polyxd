@@ -7,6 +7,7 @@ A small, on-device model that generates **just-in-time interfaces**: you ask for
 - **Recognizable.** Interfaces built on the fly still look and behave the same way each time, so people recognize them instead of having to recall them.
 - **For humans and agents at once.** Every interface has real accessibility semantics, so screen readers and AI agents can use it as well as people.
 - **Any design system.** The model only chooses *meaning* (components, patterns, "primary action"). The look comes from a swappable design system, with no retraining.
+- **Directed by designers.** A company's designers set its taste (profile, voice, patterns, rules, exemplars) and review what gets generated (§6).
 
 **What we'll deliver, in order of value:**
 1. **The spec:** three-tier tokens, semantic components, patterns and agent semantics.
@@ -59,8 +60,7 @@ request ──► generator (small model, constrained to spec schema)
 Durations assume roughly 15–20 hours a week and are rough. Each phase has an exit test, and we don't move on until it passes.
 
 ### Phase 0: Setup and grounding (days 1–3)
-- Accept the Xcode license, `git init`, and set up the monorepo structure (§7).
-- Reserve the `@polixd` npm scope, the `polixd` PyPI name and the `polixd` Hugging Face org.
+- Accept the Xcode license, `git init`, and set up the monorepo structure (§8).
 - Read the current A2UI spec, Material 3 tokens, GOV.UK patterns, and the Maru / Affora / Harness4GenUI preprints (check their claims against the PDFs).
 - **Output:** a one-page decision note on whether we extend the A2UI catalog or define our own schema with A2UI export.
 
@@ -76,7 +76,7 @@ Durations assume roughly 15–20 hours a week and are rough. Each phase has an e
 
 ### Phase 2: Web renderer and theming (weeks 2–4)
 - React + Vite + shadcn/Radix renderer, with tokens compiled to CSS variables.
-- Add a second design system to prove the swap.
+- Add a second design system to prove the swap, and two contrasting Design Direction profiles to prove taste control.
 - **Exit:** all examples render. Swapping the design system changes the look without editing any UI JSON.
 
 ### Phase 3: Verifier and benchmark (weeks 4–6)
@@ -151,9 +151,66 @@ The goal is for any app, agent or tool to adopt Polixd one layer at a time. Each
 - **Model weights:** inherit the base model's license, so we pick a base model with a permissive license.
 - **Benchmark:** respects the licenses of its sources.
 
-**Names.** Reserve the npm scope `@polixd`, the PyPI name `polixd`, and a Hugging Face org `polixd` early. All are free. A domain is optional.
+**Names.** "Polixd" is a working name and can change before v0.1. Package names follow whatever the final name is.
 
-## 6. Risks
+## 6. Taste: how a company's designers direct it
+
+Tokens control how things *look*. Taste goes further: how dense a screen is, how much gets emphasized, the tone of the copy, which pattern a team prefers, what to leave out, how motion feels. A designer at a company using Polixd needs to shape all of that **without writing prompts or JSON, and without retraining a model**.
+
+### The Design Direction package
+
+Each company's taste lives in one versioned package, alongside its tokens:
+
+| Layer | What the designer sets | Example | How it's enforced |
+|---|---|---|---|
+| **Tokens** | Look | Brand colors, type, radii | Renderer (deterministic) |
+| **Profile** | Style settings | Density: comfortable. Emphasis budget: 1 primary action per view. Charts over tables for trends. Motion: subtle. | Generator constraints + verifier |
+| **Voice** | Copy style + glossary | "Sentence case, no exclamation marks, say 'payment' not 'transaction'" | Generator conditioning + lint checks |
+| **Patterns and recipes** | The company's own versions of patterns, and its own components registered with semantics | "Our transfer flow always shows the fee before the amount field" | Pattern library, with company patterns taking precedence over defaults |
+| **Rules** | Dos and don'ts in plain language, compiled into checks where possible | "Destructive actions need a typed confirmation." "Never more than 5 options without search." | Verifier (a hard fail or a scored check) |
+| **Exemplars** | "This is how we'd do it" examples | 20–100 approved UIs for typical requests | Retrieved as examples at generation time |
+| **Learned adapter** (optional) | Taste that's hard to state as rules | Learned from the team's approve/reject history | Small LoRA adapter (tens of MB), swapped per company |
+
+Everything above the last row is deterministic, or close to it. It works on day one, and a designer can see exactly why a UI came out the way it did. The learned adapter comes last and is optional.
+
+**Freedom dial.** The company sets how far the generator may go beyond approved patterns:
+- **Strict:** only approved patterns.
+- **Guided:** new layouts allowed, built from approved components.
+- **Open:** anything that passes the verifier.
+
+When the model has no fitting pattern, it flags the gap for review.
+
+**Precedence.** From highest to lowest:
+1. Accessibility floor. Nobody can override it.
+2. The end user's accessibility needs (text size, reduced motion, contrast).
+3. Company rules.
+4. Company profile, voice and patterns.
+5. End-user preferences (for example density), within the company's bounds.
+6. Model defaults.
+
+### Where designers do this: Polixd Studio
+
+Studio is a web app for designers.
+- **Set direction.** Edit the profile, voice, rules and patterns through visual controls. Import tokens from Figma variables or Tokens Studio.
+- **Preview at scale.** Run the company's typical requests (their own benchmark set) under the current direction, and see every result side by side on web and mobile.
+- **Review.** Approve, reject or edit generated UIs directly.
+  - Approvals become exemplars.
+  - Edits and rejections become preference pairs.
+  - A repeated correction is suggested as a new rule ("you've moved the fee above the amount 6 times: make it a rule?").
+- **Pattern gaps.** Review the patterns the model had to invent in production, and promote good ones into the library.
+- **Publish safely.** Direction changes are versioned. Before publishing, the whole request set is re-run and a before/after diff is shown, like visual regression testing for taste. Changes can then be rolled out gradually.
+- **Later:** a Figma plugin to author patterns and exemplars where designers already work.
+
+### What this changes in the build
+
+- **Spec (Phase 1):** the Design Direction schema (profile, voice, rules, patterns, exemplars) sits beside tokens. Rules can be machine-checkable or advisory.
+- **Verifier (Phase 3):** direction-compliance checks, plus a new benchmark metric, *direction following*. The same request under two contrasting directions must give different outputs that each comply. We ship **two deliberately contrasting direction profiles** to prove taste control, the way two design systems prove the look swap.
+- **Training (Phases 5–6):** training data is generated under **many randomized directions**. The model should learn to *follow* a direction instead of memorizing one taste. This is the key training decision for taste.
+- **Runtime (v0.2):** loads a Design Direction package, retrieves exemplars, applies precedence, and optionally loads a company adapter.
+- **Studio:** a basic review and preview tool arrives with v0.2. The full Studio (rule suggestions, publish diffs, rollout) comes with v0.3. The team's review history can train its adapter (DPO) from v0.3.
+- **Privacy:** a company's exemplars, feedback and adapter stay in its own deployment. Nothing is collected by default.
+
+## 7. Risks
 
 | Risk | Mitigation |
 |---|---|
@@ -163,11 +220,12 @@ The goal is for any app, agent or tool to adopt Polixd one layer at a time. Each
 | Scope creep (two products) | Design-system generator is explicitly postponed |
 | Preprint numbers are wrong | Rely only on results we reproduce ourselves |
 | Licensing | MIT/Apache/OGL sources only; learn from Apple HIG, don't copy it |
+| Designers can't express taste, or can't see why a UI came out as it did | Direction stays deterministic and explainable first; learned adapter is optional and comes last |
+| Model memorizes one taste instead of following directions | Train under randomized directions; direction-following metric in the benchmark |
 | Embedding is abused (injection, unsafe actions) | UI-as-data, host-allowlisted intents, threat model before v0.1 |
 | Breaking changes hurt early adopters | Semver, `specVersion`, migration notes; nothing public before v0.1 |
-| Names taken | Reserve npm/PyPI/Hugging Face names in Phase 0 |
 
-## 7. Repo layout
+## 8. Repo layout
 
 ```
 packages/
@@ -178,20 +236,21 @@ packages/
   runtime/         @polixd/runtime: generator backends, memory, validation, streaming
   verifier/        @polixd/verifier + `polixd verify` CLI
   mcp/             @polixd/mcp: MCP server
+  direction/       Design Direction schema, precedence engine, rule compiler
 python/            polixd SDK + polixd-spec (PyPI)
 model/             Python (uv + MLX): baselines, SFT, GRPO, export (MLX/GGUF)
 server/            Dockerfile + HTTP API
 bench/             requests, multi-turn sequences, tasks, gold set
 apps/playground/   demo
+apps/studio/       designer Studio
 docs/              docs site, decisions, write-ups
 ```
 TypeScript (npm workspaces, Changesets for versioning and releases) and Python (uv). GitHub Actions for CI and publishing.
 
-## 8. Decisions needed before Phase 1
+## 9. Decisions needed before Phase 1
 
 1. **Domain.** Recommended: **personal finance**. It has forms, tables, charts, destructive confirms and repeated tasks, so consistency matters and agent tasks are easy to specify. Health brings privacy and medical-accuracy issues. Travel needs live data.
 2. **First design system.** Recommended: **Material 3** for tokens and guidance (it maps to web and Android and is well documented), with **GOV.UK** as the second system to prove the swap. The pair is deliberately very different visually.
 3. **Web stack.** Recommended: React + Vite + shadcn/Radix.
 4. **Time per week.** This sets the real timeline.
 5. **Licenses.** Recommended: Apache-2.0 for code, CC-BY-4.0 for spec and docs.
-6. **Public identity.** Keep "Polixd" as the public name? If so, reserve the npm, PyPI and Hugging Face names now.
