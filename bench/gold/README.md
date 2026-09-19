@@ -8,7 +8,16 @@
 
 All 30 pass `validateDocument`. The letters show the intended order, but the human ranking is what counts: if a designer thinks a `b` is better than its `a`, record that.
 
-## Filling in `ranking.json`
+## Ranking page
+
+The easiest way to rank is the blind ranking page in the local gallery: run `npm run dev -w @polyxd/gallery` and open <http://localhost:5173/?rank>. It shows each group's three variants side by side in a shuffled order under neutral names, fully interactive, and saves to `ranking.json` as you go. You can also leave notes:
+
+- **Notes on each option** and **notes on the group** (why you ranked them this way, what they all miss) are saved as `notes` (by variant) and `comment`.
+- **Annotate** lets you click any element in an option and write a note on it. Each annotation records the component's id and type in that variant's document, and the exact part clicked (for example `button "Next"`), saved under `annotations`.
+
+Notes and annotations don't affect the agreement score. They're the qualitative half: where you disagree with the verifier, they say which check is missing.
+
+## Filling in `ranking.json` by hand
 
 1. Render each group's three documents side by side. Use `apps/gallery` or the verifier harness, and look at a phone width and a desktop width. Don't read the answer key below, or run `npm run gold`, until you've finished.
 2. For each group, set `humanRank` to the variant names from **best to worst**, for example `["send-form-a", "send-form-c", "send-form-b"]`. The short forms `["a", "c", "b"]` also work. Ties aren't allowed: if two variants seem equal, pick the one you'd ship.

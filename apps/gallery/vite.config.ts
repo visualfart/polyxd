@@ -20,13 +20,34 @@ function goldRanking(): Plugin {
         req.on("data", (c) => (body += c));
         req.on("end", () => {
           try {
-            const { rater, ranks } = JSON.parse(body) as { rater: string; ranks: Record<string, string[]> };
+            const { rater, ranks, notes = {}, comments = {}, annotations = {} } = JSON.parse(body) as {
+              rater: string;
+              ranks: Record<string, string[]>;
+              notes?: Record<string, Record<string, string>>;
+              comments?: Record<string, string>;
+              annotations?: Record<string, Record<string, { id: string; component: string; part?: string; note: string }[]>>;
+            };
             const file = JSON.parse(readFileSync(rankingFile, "utf8"));
             file.rater = rater || null;
             for (const g of file.groups) {
               const r = ranks[g.id];
               // Only accept a full ordering of this group's own variants.
               g.humanRank = r && r.length === g.variants.length && r.every((v) => g.variants.includes(v)) ? r : g.humanRank ?? null;
+              // Free-text notes per variant and for the group as a whole (only for this group's variants).
+              const n = Object.fromEntries(Object.entries(notes[g.id] ?? {}).filter(([v, t]) => g.variants.includes(v) && typeof t === "string" && t.trim()));
+              if (Object.keys(n).length) g.notes = n;
+              else delete g.notes;
+              if (typeof comments[g.id] === "string" && comments[g.id].trim()) g.comment = comments[g.id].trim();
+              else delete g.comment;
+              // Element-level annotations: which component (by id in that variant's document) and the note.
+              const a = Object.fromEntries(
+                Object.entries(annotations[g.id] ?? {})
+                  .filter(([v]) => g.variants.includes(v))
+                  .map(([v, list]) => [v, (list ?? []).filter((x) => x && typeof x.id === "string").map(({ id, component, part, note }) => ({ id, component, ...(part ? { part } : {}), note: String(note ?? "") }))])
+                  .filter(([, list]) => (list as unknown[]).length),
+              );
+              if (Object.keys(a).length) g.annotations = a;
+              else delete g.annotations;
             }
             writeFileSync(rankingFile, JSON.stringify(file, null, 2) + "\n");
             res.setHeader("content-type", "application/json");

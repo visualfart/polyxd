@@ -97,12 +97,15 @@ export function useA11y(node: Node) {
   const s = useSurface();
   const scope = useContext(ScopeContext);
   const a = node.accessibility;
-  if (!a) return {};
+  // Which component rendered this element: for annotation, devtools and tests.
+  const ids = { "data-pxd-id": node.id, "data-pxd-component": node.component } as Record<string, unknown>;
+  if (!a) return ids;
   const text = (v: unknown) => {
     const r = resolve(v, s.data, scope);
     return r === undefined ? undefined : String(r);
   };
   return {
+    ...ids,
     "aria-label": a.label !== undefined ? text(a.label) : undefined,
     "aria-description": a.description !== undefined ? text(a.description) : undefined,
     "aria-live": a.live,

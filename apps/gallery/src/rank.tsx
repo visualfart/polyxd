@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { PolyxdSurface, type UIDocument } from "@polyxd/react";
 
 /**
@@ -13,12 +13,43 @@ const docs = Object.fromEntries(
     .map(([p, m]) => [p.split("/").pop()!.replace(".json", ""), m.default]),
 );
 
+interface Annotation {
+  /** Component id in the UI document, and its type */
+  id: string;
+  component: string;
+  /** The exact part clicked inside the component, e.g. 'button "Next"' */
+  part?: string;
+  note: string;
+}
+
+const PART = "button, a, input, textarea, select, label, h1, h2, h3, h4, legend, dt, dd, li, p, [role=radio], [role=checkbox], [role=switch], [role=tab]";
+
+/** A short description of the element clicked: its role-ish tag and visible text. */
+function describePart(el: HTMLElement, component: HTMLElement): { part?: string; key: string } {
+  const hit = el.closest<HTMLElement>(PART);
+  if (!hit || hit === component || !component.contains(hit)) return { key: "" };
+  const role = hit.getAttribute("role") ?? ({ BUTTON: "button", A: "link", INPUT: "field", TEXTAREA: "field", SELECT: "field", LABEL: "label", LEGEND: "label", DT: "label", DD: "value", LI: "item", P: "text" } as Record<string, string>)[hit.tagName] ?? "heading";
+  const text = (hit.getAttribute("aria-label") ?? hit.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 50);
+  const part = text ? `${role} "${text}"` : role;
+  return { part, key: part };
+}
+
+/** Finds the element an annotation points at: the part inside the component if it can, else the component. */
+function findTarget(root: HTMLElement, a: Annotation): HTMLElement | null {
+  const component = root.querySelector<HTMLElement>(`[data-pxd-id="${CSS.escape(a.id)}"]`);
+  if (!component || !a.part) return component;
+  return [...component.querySelectorAll<HTMLElement>(PART)].find((el) => describePart(el, component).part === a.part) ?? component;
+}
+
 interface Group {
   id: string;
   source: string;
   domain: string;
   variants: string[];
   humanRank: string[] | null;
+  notes?: Record<string, string>;
+  comment?: string;
+  annotations?: Record<string, Annotation[]>;
 }
 
 const THEMES = [
@@ -49,6 +80,10 @@ export function RankPage() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [rater, setRater] = useState("");
   const [ranks, setRanks] = useState<Record<string, string[]>>({});
+  const [notes, setNotes] = useState<Record<string, Record<string, string>>>({});
+  const [comments, setComments] = useState<Record<string, string>>({});
+  const [annotations, setAnnotations] = useState<Record<string, Record<string, Annotation[]>>>({});
+  const [annotating, setAnnotating] = useState<string | null>(null);
   const [index, setIndex] = useState(0);
   const [theme, setTheme] = useState("material3");
   const [width, setWidth] = useState<390 | 1100>(390);
@@ -62,6 +97,9 @@ export function RankPage() {
         setGroups(file.groups);
         setRater(file.rater ?? "");
         setRanks(Object.fromEntries(file.groups.filter((g: Group) => g.humanRank).map((g: Group) => [g.id, g.humanRank!])));
+        setNotes(Object.fromEntries(file.groups.filter((g: Group) => g.notes).map((g: Group) => [g.id, g.notes!])));
+        setComments(Object.fromEntries(file.groups.filter((g: Group) => g.comment).map((g: Group) => [g.id, g.comment!])));
+        setAnnotations(Object.fromEntries(file.groups.filter((g: Group) => g.annotations).map((g: Group) => [g.id, g.annotations!])));
         const firstOpen = file.groups.findIndex((g: Group) => !g.humanRank);
         setIndex(firstOpen === -1 ? 0 : firstOpen);
       })
@@ -73,10 +111,37 @@ export function RankPage() {
   const order = (group && ranks[group.id]) ?? [];
   const done = Object.keys(ranks).filter((k) => ranks[k].length === groups.find((g) => g.id === k)?.variants.length).length;
 
-  const save = async (next: Record<string, string[]>) => {
+  // Saves read the latest annotations even when called from a handler created before the last update.
+  const annotationsRef = useRef(annotations);
+  annotationsRef.current = annotations;
+
+  const markOf = (a: Annotation) => `${a.id}${a.part ? `|${a.part}` : ""}`;
+  const noteId = (option: number, mark: string) => `note-${option}-${mark.replace(/[^A-Za-z0-9_-]/g, "_")}`;
+  const listFor = (variant: string) => annotations[group?.id ?? ""]?.[variant] ?? [];
+  const setList = (variant: string, list: Annotation[]) => {
+    const next = { ...annotations, [group.id]: { ...annotations[group.id], [variant]: list } };
+    setAnnotations(next);
+    annotationsRef.current = next;
+  };
+  const annotateClick = (variant: string, e: MouseEvent<HTMLDivElement>) => {
+    if (annotating !== variant) return;
+    // In annotate mode a click picks the element instead of operating it.
+    e.preventDefault();
+    e.stopPropagation();
+    const el = (e.target as HTMLElement).closest<HTMLElement>("[data-pxd-id]");
+    if (!el) return;
+    const { part, key } = describePart(e.target as HTMLElement, el);
+    const id = el.dataset.pxdId!;
+    const mark = `${id}${key ? `|${key}` : ""}`;
+    if (!listFor(variant).some((a) => markOf(a) === mark)) setList(variant, [...listFor(variant), { id, component: el.dataset.pxdComponent ?? "", ...(part ? { part } : {}), note: "" }]);
+    const option = options.indexOf(variant) + 1;
+    requestAnimationFrame(() => document.getElementById(noteId(option, mark))?.focus());
+  };
+
+  const save = async (next: Record<string, string[]> = ranks) => {
     setStatus("Saving…");
     try {
-      const res = await fetch("/api/gold-ranking", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ rater, ranks: next }) });
+      const res = await fetch("/api/gold-ranking", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ rater, ranks: next, notes, comments, annotations: annotationsRef.current }) });
       const body = await res.json();
       setStatus(res.ok ? `Saved · ${body.ranked} of ${groups.length} groups ranked` : `Couldn't save: ${body.error}`);
     } catch {
@@ -162,13 +227,57 @@ export function RankPage() {
                   </button>
                 )}
               </div>
-              <div className="r-frame" style={{ width }}>
-                <PolyxdSurface key={`${v}-${theme}`} document={docs[v]} theme={theme} mode="light" resolveMedia={placeholder} />
+              <div className="r-annotate-bar">
+                <button type="button" className={`r-annotate${annotating === v ? " r-on" : ""}`} aria-pressed={annotating === v} onClick={() => setAnnotating(annotating === v ? null : v)}>
+                  {annotating === v ? "Done annotating" : "Annotate"}
+                </button>
+                {annotating === v && <span>Click any element to leave a note on it.</span>}
               </div>
+              <AnnotatedFrame width={width} active={annotating === v} marks={listFor(v)} onClickCapture={(e) => annotateClick(v, e)}>
+                <PolyxdSurface key={`${v}-${theme}`} document={docs[v]} theme={theme} mode="light" resolveMedia={placeholder} />
+              </AnnotatedFrame>
+              {listFor(v).length > 0 && (
+                <ol className="r-marks">
+                  {listFor(v).map((a, n) => (
+                    <li key={markOf(a)}>
+                      <label htmlFor={noteId(i + 1, markOf(a))}>
+                        <span className="r-mark-num">{n + 1}</span> {a.component}
+                        {a.part && <span className="r-part"> › {a.part}</span>}
+                      </label>
+                      <textarea
+                        id={noteId(i + 1, markOf(a))}
+                        rows={2}
+                        value={a.note}
+                        placeholder="What's wrong or right about this element?"
+                        onChange={(e) => setList(v, listFor(v).map((x) => (markOf(x) === markOf(a) ? { ...x, note: e.target.value } : x)))}
+                        onBlur={() => save()}
+                      />
+                      <button type="button" className="r-mark-remove" aria-label={`Remove note ${n + 1}`} onClick={() => (setList(v, listFor(v).filter((x) => markOf(x) !== markOf(a))), save())}>
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              )}
+              <label className="r-note">
+                Notes on option {i + 1} <span>(optional)</span>
+                <textarea
+                  rows={3}
+                  value={notes[group.id]?.[v] ?? ""}
+                  placeholder="What works, what doesn't, what you'd change"
+                  onChange={(e) => setNotes({ ...notes, [group.id]: { ...notes[group.id], [v]: e.target.value } })}
+                  onBlur={() => save()}
+                />
+              </label>
             </section>
           );
         })}
       </div>
+
+      <label className="r-note r-note-group">
+        Notes on this group <span>(optional: why you ranked them this way, anything the options all miss)</span>
+        <textarea rows={3} value={comments[group.id] ?? ""} onChange={(e) => setComments({ ...comments, [group.id]: e.target.value })} onBlur={() => save()} />
+      </label>
 
       <div className="r-foot">
         <button type="button" className="g-reset" disabled={index === 0} onClick={() => setIndex(index - 1)}>
@@ -184,6 +293,58 @@ export function RankPage() {
           All {groups.length} groups ranked and saved to <code>bench/gold/ranking.json</code>. Tell Claude, or run <code>npm run gold -w @polyxd/verifier</code> to see how the verifier agrees.
         </p>
       )}
+    </div>
+  );
+}
+
+/** The rendered surface, with numbered markers over annotated elements and hover outlines while annotating. */
+function AnnotatedFrame({ width, active, marks, onClickCapture, children }: { width: number; active: boolean; marks: Annotation[]; onClickCapture: (e: MouseEvent<HTMLDivElement>) => void; children: React.ReactNode }) {
+  const frame = useRef<HTMLDivElement>(null);
+  const [boxes, setBoxes] = useState<{ id: string; top: number; left: number; width: number; height: number }[]>([]);
+  const [hover, setHover] = useState<DOMRect | null>(null);
+  const measure = () => {
+    const root = frame.current;
+    if (!root) return;
+    const base = root.getBoundingClientRect();
+    setBoxes(
+      marks.flatMap((m) => {
+        const el = findTarget(root, m);
+        if (!el) return [];
+        const r = el.getBoundingClientRect();
+        return [{ id: `${m.id}|${m.part ?? ""}`, top: r.top - base.top, left: r.left - base.left, width: r.width, height: r.height }];
+      }),
+    );
+  };
+  useLayoutEffect(measure, [marks, width]);
+  useEffect(() => {
+    const ro = new ResizeObserver(measure);
+    if (frame.current) ro.observe(frame.current);
+    return () => ro.disconnect();
+  });
+  const base = frame.current?.getBoundingClientRect();
+  return (
+    <div
+      ref={frame}
+      className={`r-frame${active ? " r-annotating" : ""}`}
+      style={{ width }}
+      onClickCapture={onClickCapture}
+      onMouseMove={(e) => {
+        if (!active) return;
+        const el = (e.target as HTMLElement).closest<HTMLElement>("[data-pxd-id]");
+        if (!el) return setHover(null);
+        const { part } = describePart(e.target as HTMLElement, el);
+        const hit = part ? (e.target as HTMLElement).closest<HTMLElement>(PART) : el;
+        setHover((hit ?? el).getBoundingClientRect());
+      }}
+      onMouseLeave={() => setHover(null)}
+    >
+      {children}
+      {active && hover && base && <div className="r-hover" style={{ top: hover.top - base.top, left: hover.left - base.left, width: hover.width, height: hover.height }} />}
+      {boxes.map((b, n) => (
+        <div key={b.id} className="r-box" style={{ top: b.top, left: b.left, width: b.width, height: b.height }}>
+          <span className="r-mark-num">{n + 1}</span>
+        </div>
+      ))}
     </div>
   );
 }
