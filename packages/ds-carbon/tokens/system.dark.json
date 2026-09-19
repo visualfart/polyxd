@@ -1,0 +1,634 @@
+{
+  "$description": "IBM Carbon system tier, dark mode: the Carbon Gray 100 theme (@carbon/themes@11.81.0) as carbon.theme.*, with component tokens (button, notification, status) and the @carbon/charts@1.27.20 categorical palette, plus Polyxd per-mode additions (polyxd.theme.*).",
+  "carbon": {
+    "theme": {
+      "$type": "color",
+      "background": {
+        "$value": "{carbon.color.gray.100}"
+      },
+      "background-active": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.552941,
+            0.552941,
+            0.552941
+          ],
+          "alpha": 0.4,
+          "hex": "#8d8d8d"
+        },
+        "$description": "carbon.color.gray.50 at alpha 0.4 (rgba(141, 141, 141, 0.4)); a literal because an alias cannot add alpha"
+      },
+      "background-brand": {
+        "$value": "{carbon.color.blue.60}"
+      },
+      "background-hover": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.552941,
+            0.552941,
+            0.552941
+          ],
+          "alpha": 0.16,
+          "hex": "#8d8d8d"
+        },
+        "$description": "carbon.color.gray.50 at alpha 0.16 (rgba(141, 141, 141, 0.16)); a literal because an alias cannot add alpha"
+      },
+      "background-inverse": {
+        "$value": "{carbon.color.gray.10}"
+      },
+      "background-inverse-hover": {
+        "$value": "{carbon.color.white.hover}"
+      },
+      "background-selected": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.552941,
+            0.552941,
+            0.552941
+          ],
+          "alpha": 0.24,
+          "hex": "#8d8d8d"
+        },
+        "$description": "carbon.color.gray.50 at alpha 0.24 (rgba(141, 141, 141, 0.24)); a literal because an alias cannot add alpha"
+      },
+      "background-selected-hover": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.552941,
+            0.552941,
+            0.552941
+          ],
+          "alpha": 0.32,
+          "hex": "#8d8d8d"
+        },
+        "$description": "carbon.color.gray.50 at alpha 0.32 (rgba(141, 141, 141, 0.32)); a literal because an alias cannot add alpha"
+      },
+      "border-disabled": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.552941,
+            0.552941,
+            0.552941
+          ],
+          "alpha": 0.5,
+          "hex": "#8d8d8d"
+        },
+        "$description": "carbon.color.gray.50 at alpha 0.5 (rgba(141, 141, 141, 0.5)); a literal because an alias cannot add alpha"
+      },
+      "border-interactive": {
+        "$value": "{carbon.color.blue.50}"
+      },
+      "border-inverse": {
+        "$value": "{carbon.color.gray.10}"
+      },
+      "border-strong-01": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "border-strong-02": {
+        "$value": "{carbon.color.gray.50}"
+      },
+      "border-strong-03": {
+        "$value": "{carbon.color.gray.40}"
+      },
+      "border-subtle-00": {
+        "$value": "{carbon.color.gray.80}"
+      },
+      "border-subtle-01": {
+        "$value": "{carbon.color.gray.70}"
+      },
+      "border-subtle-02": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "border-subtle-03": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "border-subtle-selected-01": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "border-subtle-selected-02": {
+        "$value": "{carbon.color.gray.50}"
+      },
+      "border-subtle-selected-03": {
+        "$value": "{carbon.color.gray.50}"
+      },
+      "border-tile-01": {
+        "$value": "{carbon.color.gray.70}"
+      },
+      "border-tile-02": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "border-tile-03": {
+        "$value": "{carbon.color.gray.50}"
+      },
+      "field-01": {
+        "$value": "{carbon.color.gray.90}"
+      },
+      "field-02": {
+        "$value": "{carbon.color.gray.80}"
+      },
+      "field-03": {
+        "$value": "{carbon.color.gray.70}"
+      },
+      "field-hover-01": {
+        "$value": "{carbon.color.gray.90-hover}"
+      },
+      "field-hover-02": {
+        "$value": "{carbon.color.gray.80-hover}"
+      },
+      "field-hover-03": {
+        "$value": "{carbon.color.gray.70-hover}"
+      },
+      "focus": {
+        "$value": "{carbon.color.white.0}"
+      },
+      "focus-inset": {
+        "$value": "{carbon.color.gray.100}"
+      },
+      "focus-inverse": {
+        "$value": "{carbon.color.blue.60}"
+      },
+      "highlight": {
+        "$value": "{carbon.color.blue.90}"
+      },
+      "icon-disabled": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.956863,
+            0.956863,
+            0.956863
+          ],
+          "alpha": 0.25,
+          "hex": "#f4f4f4"
+        },
+        "$description": "carbon.color.gray.10 at alpha 0.25 (rgba(244, 244, 244, 0.25)); a literal because an alias cannot add alpha"
+      },
+      "icon-interactive": {
+        "$value": "{carbon.color.white.0}"
+      },
+      "icon-inverse": {
+        "$value": "{carbon.color.gray.100}"
+      },
+      "icon-on-color": {
+        "$value": "{carbon.color.white.0}"
+      },
+      "icon-on-color-disabled": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0.25,
+          "hex": "#ffffff"
+        },
+        "$description": "carbon.color.white.0 at alpha 0.25 (rgba(255, 255, 255, 0.25)); a literal because an alias cannot add alpha"
+      },
+      "icon-primary": {
+        "$value": "{carbon.color.gray.10}"
+      },
+      "icon-secondary": {
+        "$value": "{carbon.color.gray.30}"
+      },
+      "interactive": {
+        "$value": "{carbon.color.blue.50}"
+      },
+      "layer-01": {
+        "$value": "{carbon.color.gray.90}"
+      },
+      "layer-02": {
+        "$value": "{carbon.color.gray.80}"
+      },
+      "layer-03": {
+        "$value": "{carbon.color.gray.70}"
+      },
+      "layer-accent-01": {
+        "$value": "{carbon.color.gray.80}"
+      },
+      "layer-accent-02": {
+        "$value": "{carbon.color.gray.70}"
+      },
+      "layer-accent-03": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "layer-accent-active-01": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "layer-accent-active-02": {
+        "$value": "{carbon.color.gray.50}"
+      },
+      "layer-accent-active-03": {
+        "$value": "{carbon.color.gray.80}"
+      },
+      "layer-accent-hover-01": {
+        "$value": "{carbon.color.gray.80-hover}"
+      },
+      "layer-accent-hover-02": {
+        "$value": "{carbon.color.gray.70-hover}"
+      },
+      "layer-accent-hover-03": {
+        "$value": "{carbon.color.gray.60-hover}"
+      },
+      "layer-active-01": {
+        "$value": "{carbon.color.gray.70}"
+      },
+      "layer-active-02": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "layer-active-03": {
+        "$value": "{carbon.color.gray.50}"
+      },
+      "layer-background-01": {
+        "$value": "{carbon.color.gray.100}"
+      },
+      "layer-background-02": {
+        "$value": "{carbon.color.gray.90}"
+      },
+      "layer-background-03": {
+        "$value": "{carbon.color.gray.80}"
+      },
+      "layer-hover-01": {
+        "$value": "{carbon.color.gray.90-hover}"
+      },
+      "layer-hover-02": {
+        "$value": "{carbon.color.gray.80-hover}"
+      },
+      "layer-hover-03": {
+        "$value": "{carbon.color.gray.70-hover}"
+      },
+      "layer-selected-01": {
+        "$value": "{carbon.color.gray.80}"
+      },
+      "layer-selected-02": {
+        "$value": "{carbon.color.gray.70}"
+      },
+      "layer-selected-03": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "layer-selected-disabled": {
+        "$value": "{carbon.color.gray.40}"
+      },
+      "layer-selected-hover-01": {
+        "$value": "{carbon.color.gray.80-hover}"
+      },
+      "layer-selected-hover-02": {
+        "$value": "{carbon.color.gray.70-hover}"
+      },
+      "layer-selected-hover-03": {
+        "$value": "{carbon.color.gray.60-hover}"
+      },
+      "layer-selected-inverse": {
+        "$value": "{carbon.color.gray.10}"
+      },
+      "link-inverse": {
+        "$value": "{carbon.color.blue.60}"
+      },
+      "link-inverse-active": {
+        "$value": "{carbon.color.gray.100}"
+      },
+      "link-inverse-hover": {
+        "$value": "{carbon.color.blue.70}"
+      },
+      "link-inverse-visited": {
+        "$value": "{carbon.color.purple.60}"
+      },
+      "link-primary": {
+        "$value": "{carbon.color.blue.40}"
+      },
+      "link-primary-hover": {
+        "$value": "{carbon.color.blue.30}"
+      },
+      "link-secondary": {
+        "$value": "{carbon.color.blue.30}"
+      },
+      "link-visited": {
+        "$value": "{carbon.color.purple.40}"
+      },
+      "overlay": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.6,
+          "hex": "#000000"
+        },
+        "$description": "carbon.color.black.100 at alpha 0.6 (rgba(0, 0, 0, 0.6)); a literal because an alias cannot add alpha"
+      },
+      "shadow": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.8,
+          "hex": "#000000"
+        },
+        "$description": "carbon.color.black.100 at alpha 0.8 (rgba(0, 0, 0, 0.8)); a literal because an alias cannot add alpha"
+      },
+      "skeleton-background": {
+        "$value": "{carbon.color.gray.100-hover}"
+      },
+      "skeleton-element": {
+        "$value": "{carbon.color.gray.80}"
+      },
+      "support-caution-major": {
+        "$value": "{carbon.color.orange.40}"
+      },
+      "support-caution-minor": {
+        "$value": "{carbon.color.yellow.30}"
+      },
+      "support-caution-undefined": {
+        "$value": "{carbon.color.purple.50}"
+      },
+      "support-error": {
+        "$value": "{carbon.color.red.50}"
+      },
+      "support-error-inverse": {
+        "$value": "{carbon.color.red.60}"
+      },
+      "support-info": {
+        "$value": "{carbon.color.blue.50}"
+      },
+      "support-info-inverse": {
+        "$value": "{carbon.color.blue.70}"
+      },
+      "support-success": {
+        "$value": "{carbon.color.green.40}"
+      },
+      "support-success-inverse": {
+        "$value": "{carbon.color.green.50}"
+      },
+      "support-warning": {
+        "$value": "{carbon.color.yellow.30}"
+      },
+      "support-warning-inverse": {
+        "$value": "{carbon.color.yellow.30}"
+      },
+      "text-disabled": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.956863,
+            0.956863,
+            0.956863
+          ],
+          "alpha": 0.25,
+          "hex": "#f4f4f4"
+        },
+        "$description": "carbon.color.gray.10 at alpha 0.25 (rgba(244, 244, 244, 0.25)); a literal because an alias cannot add alpha"
+      },
+      "text-error": {
+        "$value": "{carbon.color.red.40}"
+      },
+      "text-helper": {
+        "$value": "{carbon.color.gray.40}"
+      },
+      "text-inverse": {
+        "$value": "{carbon.color.gray.100}"
+      },
+      "text-on-color": {
+        "$value": "{carbon.color.white.0}"
+      },
+      "text-on-color-disabled": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0.25,
+          "hex": "#ffffff"
+        },
+        "$description": "carbon.color.white.0 at alpha 0.25 (rgba(255, 255, 255, 0.25)); a literal because an alias cannot add alpha"
+      },
+      "text-placeholder": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.956863,
+            0.956863,
+            0.956863
+          ],
+          "alpha": 0.4,
+          "hex": "#f4f4f4"
+        },
+        "$description": "carbon.color.gray.10 at alpha 0.4 (rgba(244, 244, 244, 0.4)); a literal because an alias cannot add alpha"
+      },
+      "text-primary": {
+        "$value": "{carbon.color.gray.10}"
+      },
+      "text-secondary": {
+        "$value": "{carbon.color.gray.30}"
+      },
+      "toggle-off": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "button-danger-active": {
+        "$value": "{carbon.color.red.80}"
+      },
+      "button-danger-hover": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.721569,
+            0.098039,
+            0.129412
+          ],
+          "hex": "#b81921"
+        },
+        "$description": "#b81921: not a palette step"
+      },
+      "button-danger-primary": {
+        "$value": "{carbon.color.red.60}"
+      },
+      "button-danger-secondary": {
+        "$value": "{carbon.color.red.50}"
+      },
+      "button-disabled": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.552941,
+            0.552941,
+            0.552941
+          ],
+          "alpha": 0.3,
+          "hex": "#8d8d8d"
+        },
+        "$description": "carbon.color.gray.50 at alpha 0.3 (rgba(141, 141, 141, 0.3)); a literal because an alias cannot add alpha"
+      },
+      "button-primary": {
+        "$value": "{carbon.color.blue.60}"
+      },
+      "button-primary-active": {
+        "$value": "{carbon.color.blue.80}"
+      },
+      "button-primary-hover": {
+        "$value": "{carbon.color.blue.60-hover}"
+      },
+      "button-secondary": {
+        "$value": "{carbon.color.gray.60}"
+      },
+      "button-secondary-active": {
+        "$value": "{carbon.color.gray.80}"
+      },
+      "button-secondary-hover": {
+        "$value": "{carbon.color.gray.60-hover}"
+      },
+      "button-separator": {
+        "$value": "{carbon.color.gray.100}"
+      },
+      "button-tertiary": {
+        "$value": "{carbon.color.white.0}"
+      },
+      "button-tertiary-active": {
+        "$value": "{carbon.color.gray.30}"
+      },
+      "button-tertiary-hover": {
+        "$value": "{carbon.color.gray.10}"
+      },
+      "notification-action-tertiary-inverse": {
+        "$value": "{carbon.color.blue.60}"
+      },
+      "notification-action-tertiary-inverse-active": {
+        "$value": "{carbon.color.blue.80}"
+      },
+      "notification-action-tertiary-inverse-hover": {
+        "$value": "{carbon.color.blue.60-hover}"
+      },
+      "notification-action-tertiary-inverse-text": {
+        "$value": "{carbon.color.white.0}"
+      },
+      "notification-action-tertiary-inverse-text-on-color-disabled": {
+        "$value": "{carbon.color.gray.50}"
+      },
+      "notification-background-error": {
+        "$value": "{carbon.color.gray.90}"
+      },
+      "notification-background-info": {
+        "$value": "{carbon.color.gray.90}"
+      },
+      "notification-background-success": {
+        "$value": "{carbon.color.gray.90}"
+      },
+      "notification-background-warning": {
+        "$value": "{carbon.color.gray.90}"
+      },
+      "status-accessibility-background": {
+        "$value": "{carbon.color.gray.100}"
+      },
+      "status-blue": {
+        "$value": "{carbon.color.blue.50}"
+      },
+      "status-gray": {
+        "$value": "{carbon.color.gray.50}"
+      },
+      "status-green": {
+        "$value": "{carbon.color.green.40}"
+      },
+      "status-orange": {
+        "$value": "{carbon.color.orange.40}"
+      },
+      "status-purple": {
+        "$value": "{carbon.color.purple.50}"
+      },
+      "status-red": {
+        "$value": "{carbon.color.red.50}"
+      },
+      "status-yellow": {
+        "$value": "{carbon.color.yellow.30}"
+      }
+    },
+    "data-viz": {
+      "categorical": {
+        "10": {
+          "$value": "{carbon.color.yellow.40}",
+          "$description": "#d2a106 (a literal in @carbon/charts; equals carbon.color.yellow.40)"
+        },
+        "11": {
+          "$value": "{carbon.color.teal.40}"
+        },
+        "12": {
+          "$value": "{carbon.color.cyan.20}"
+        },
+        "13": {
+          "$value": "{carbon.color.orange.60}",
+          "$description": "#ba4e00 (a literal in @carbon/charts; equals carbon.color.orange.60)"
+        },
+        "14": {
+          "$value": "{carbon.color.purple.30}"
+        },
+        "$type": "color",
+        "$description": "@carbon/charts@1.27.20 scss/_color-palette.scss, 14-colour categorical palette (option 1) for the dark theme(s)",
+        "01": {
+          "$value": "{carbon.color.purple.60}"
+        },
+        "02": {
+          "$value": "{carbon.color.cyan.40}"
+        },
+        "03": {
+          "$value": "{carbon.color.teal.60}"
+        },
+        "04": {
+          "$value": "{carbon.color.magenta.40}"
+        },
+        "05": {
+          "$value": "{carbon.color.red.50}"
+        },
+        "06": {
+          "$value": "{carbon.color.red.10}"
+        },
+        "07": {
+          "$value": "{carbon.color.green.30}"
+        },
+        "08": {
+          "$value": "{carbon.color.blue.50}"
+        },
+        "09": {
+          "$value": "{carbon.color.magenta.60}"
+        }
+      }
+    }
+  },
+  "polyxd": {
+    "theme": {
+      "$type": "color",
+      "$description": "Polyxd per-mode additions: contrast adjustments and state opacities derived from Carbon theme tokens.",
+      "warning-emphasis": {
+        "$value": "{carbon.theme.support-warning}",
+        "$description": "$support-warning, unadjusted (10.75:1 on $background)"
+      },
+      "opacity": {
+        "$type": "number",
+        "hover": {
+          "$value": 0.16,
+          "$description": "Alpha of $background-hover (rgba(141, 141, 141, 0.16))"
+        },
+        "pressed": {
+          "$value": 0.4,
+          "$description": "Alpha of $background-active (rgba(141, 141, 141, 0.4))"
+        },
+        "focus": {
+          "$value": 0.16,
+          "$description": "Carbon marks focus with the $focus outline, not a fill; reuses the $background-hover alpha for renderers that paint a focus layer"
+        },
+        "disabled": {
+          "$value": 0.3,
+          "$description": "Adjusted: Carbon $text-disabled / $icon-disabled are text-primary at alpha 0.25 (rgba(244, 244, 244, 0.25)), below the contract minimum 0.3; raised to 0.3"
+        }
+      }
+    }
+  }
+}

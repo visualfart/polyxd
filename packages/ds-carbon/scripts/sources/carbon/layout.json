@@ -1,0 +1,45 @@
+{
+  "$source": {
+    "package": "@carbon/layout",
+    "version": "11.59.0",
+    "license": "Apache-2.0",
+    "extracted": "baseFontSize, spacing, sizes, iconSize, borderRadius (JS export)"
+  },
+  "baseFontSize": 16,
+  "spacing": [
+    "0.125rem",
+    "0.25rem",
+    "0.5rem",
+    "0.75rem",
+    "1rem",
+    "1.5rem",
+    "2rem",
+    "2.5rem",
+    "3rem",
+    "4rem",
+    "5rem",
+    "6rem",
+    "10rem"
+  ],
+  "sizes": {
+    "xs": "1.5rem",
+    "sm": "2rem",
+    "md": "2.5rem",
+    "lg": "3rem",
+    "xl": "4rem",
+    "2xl": "5rem"
+  },
+  "iconSize": [
+    "1rem",
+    "1.25rem"
+  ],
+  "borderRadius": {
+    "border-radius-00": "0px",
+    "border-radius-02": "0.125rem",
+    "border-radius-04": "0.25rem",
+    "border-radius-08": "0.5rem",
+    "border-radius-16": "1rem",
+    "border-radius-24": "1.5rem",
+    "border-radius-max": "999999px"
+  }
+}

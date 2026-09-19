@@ -1,0 +1,148 @@
+{
+  "$source": {
+    "package": "@carbon/type",
+    "version": "11.67.0",
+    "license": "Apache-2.0",
+    "extracted": "fontFamilies, fontWeights and productive type styles (JS export)"
+  },
+  "fontFamilies": {
+    "mono": "'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace",
+    "sans": "'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif",
+    "sansCondensed": "'IBM Plex Sans Condensed', 'Helvetica Neue', Arial, sans-serif",
+    "sansHebrew": "'IBM Plex Sans Hebrew', 'Helvetica Hebrew', 'Arial Hebrew', sans-serif",
+    "serif": "'IBM Plex Serif', 'Georgia', Times, serif"
+  },
+  "fontWeights": {
+    "light": 300,
+    "regular": 400,
+    "semibold": 600
+  },
+  "styles": {
+    "body01": {
+      "fontSize": "0.875rem",
+      "fontWeight": 400,
+      "lineHeight": 1.42857,
+      "letterSpacing": "0.16px"
+    },
+    "body02": {
+      "fontSize": "1rem",
+      "fontWeight": 400,
+      "lineHeight": 1.5,
+      "letterSpacing": 0
+    },
+    "bodyCompact01": {
+      "fontSize": "0.875rem",
+      "fontWeight": 400,
+      "lineHeight": 1.28572,
+      "letterSpacing": "0.16px"
+    },
+    "bodyCompact02": {
+      "fontSize": "1rem",
+      "fontWeight": 400,
+      "lineHeight": 1.375,
+      "letterSpacing": 0
+    },
+    "heading01": {
+      "fontSize": "0.875rem",
+      "fontWeight": 600,
+      "lineHeight": 1.42857,
+      "letterSpacing": "0.16px"
+    },
+    "heading02": {
+      "fontSize": "1rem",
+      "fontWeight": 600,
+      "lineHeight": 1.5,
+      "letterSpacing": 0
+    },
+    "heading03": {
+      "fontSize": "1.25rem",
+      "fontWeight": 400,
+      "lineHeight": 1.4,
+      "letterSpacing": 0
+    },
+    "heading04": {
+      "fontSize": "1.75rem",
+      "fontWeight": 400,
+      "lineHeight": 1.28572,
+      "letterSpacing": 0
+    },
+    "heading05": {
+      "fontSize": "2rem",
+      "fontWeight": 400,
+      "lineHeight": 1.25,
+      "letterSpacing": 0
+    },
+    "heading06": {
+      "fontSize": "2.625rem",
+      "fontWeight": 300,
+      "lineHeight": 1.199,
+      "letterSpacing": 0
+    },
+    "heading07": {
+      "fontSize": "3.375rem",
+      "fontWeight": 300,
+      "lineHeight": 1.199,
+      "letterSpacing": 0
+    },
+    "headingCompact01": {
+      "fontSize": "0.875rem",
+      "fontWeight": 600,
+      "lineHeight": 1.28572,
+      "letterSpacing": "0.16px"
+    },
+    "headingCompact02": {
+      "fontSize": "1rem",
+      "fontWeight": 600,
+      "lineHeight": 1.375,
+      "letterSpacing": 0
+    },
+    "label01": {
+      "fontSize": "0.75rem",
+      "fontWeight": 400,
+      "lineHeight": 1.33333,
+      "letterSpacing": "0.32px"
+    },
+    "label02": {
+      "fontSize": "0.875rem",
+      "fontWeight": 400,
+      "lineHeight": 1.28572,
+      "letterSpacing": "0.16px"
+    },
+    "helperText01": {
+      "fontSize": "0.75rem",
+      "lineHeight": 1.33333,
+      "letterSpacing": "0.32px"
+    },
+    "helperText02": {
+      "fontSize": "0.875rem",
+      "lineHeight": 1.28572,
+      "letterSpacing": "0.16px"
+    },
+    "legal01": {
+      "fontSize": "0.75rem",
+      "fontWeight": 400,
+      "lineHeight": 1.33333,
+      "letterSpacing": "0.32px"
+    },
+    "legal02": {
+      "fontSize": "0.875rem",
+      "fontWeight": 400,
+      "lineHeight": 1.28572,
+      "letterSpacing": "0.16px"
+    },
+    "code01": {
+      "fontFamily": "'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace",
+      "fontSize": "0.75rem",
+      "fontWeight": 400,
+      "lineHeight": 1.33333,
+      "letterSpacing": "0.32px"
+    },
+    "code02": {
+      "fontFamily": "'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace",
+      "fontSize": "0.875rem",
+      "fontWeight": 400,
+      "lineHeight": 1.42857,
+      "letterSpacing": "0.32px"
+    }
+  }
+}

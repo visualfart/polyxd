@@ -1,0 +1,385 @@
+{
+  "$description": "Polyxd semantic tier for IBM Carbon (light = White theme, dark = Gray 100 theme). Every token aliases a Carbon token (carbon.*) wherever Carbon has one; polyxd.* tokens mark contrast adjustments and values Carbon does not define. The file is the same in both modes.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{carbon.theme.background}"
+      },
+      "subtle": {
+        "$value": "{carbon.theme.layer-accent-01}",
+        "$description": "Carbon data-table header / accent layer"
+      },
+      "raised": {
+        "$value": "{carbon.theme.layer-01}",
+        "$description": "Carbon tile"
+      },
+      "overlay": {
+        "$value": "{carbon.theme.layer-01}",
+        "$description": "Carbon modal, menu and popover container ($layer on $background)"
+      },
+      "inverse": {
+        "$value": "{carbon.theme.background-inverse}",
+        "$description": "Carbon tooltip / inline notification (low contrast off)"
+      }
+    },
+    "scrim": {
+      "$value": "{carbon.theme.overlay}",
+      "$description": "Carbon modal backdrop: black at 0.6"
+    },
+    "text": {
+      "default": {
+        "$value": "{carbon.theme.text-primary}"
+      },
+      "muted": {
+        "$value": "{carbon.theme.text-secondary}"
+      },
+      "inverse": {
+        "$value": "{carbon.theme.text-inverse}"
+      },
+      "link": {
+        "$value": "{carbon.theme.link-primary}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{carbon.theme.border-subtle-01}"
+      },
+      "strong": {
+        "$value": "{carbon.theme.border-strong-01}"
+      },
+      "focus": {
+        "$value": "{carbon.theme.focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{carbon.theme.button-primary}"
+        },
+        "foreground": {
+          "$value": "{carbon.theme.text-on-color}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{carbon.theme.button-secondary}"
+        },
+        "foreground": {
+          "$value": "{carbon.theme.text-on-color}"
+        },
+        "border": {
+          "$value": "{carbon.theme.button-secondary}",
+          "$description": "Carbon secondary buttons are borderless; the border matches the fill"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{carbon.theme.button-danger-primary}"
+        },
+        "foreground": {
+          "$value": "{carbon.theme.text-on-color}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{carbon.theme.layer-selected-01}"
+      },
+      "foreground": {
+        "$value": "{carbon.theme.text-primary}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{carbon.theme.notification-background-info}"
+        },
+        "foreground": {
+          "$value": "{carbon.theme.text-primary}"
+        },
+        "emphasis": {
+          "$value": "{carbon.theme.support-info}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{carbon.theme.notification-background-success}"
+        },
+        "foreground": {
+          "$value": "{carbon.theme.text-primary}"
+        },
+        "emphasis": {
+          "$value": "{carbon.theme.support-success}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{carbon.theme.notification-background-warning}"
+        },
+        "foreground": {
+          "$value": "{carbon.theme.text-primary}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.theme.warning-emphasis}",
+          "$description": "Light: adjusted to $status-yellow-outline; dark: $support-warning"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{carbon.theme.notification-background-error}"
+        },
+        "foreground": {
+          "$value": "{carbon.theme.text-primary}"
+        },
+        "emphasis": {
+          "$value": "{carbon.theme.support-error}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{carbon.data-viz.categorical.01}"
+        },
+        "2": {
+          "$value": "{carbon.data-viz.categorical.02}"
+        },
+        "3": {
+          "$value": "{carbon.data-viz.categorical.03}"
+        },
+        "4": {
+          "$value": "{carbon.data-viz.categorical.04}"
+        },
+        "5": {
+          "$value": "{carbon.data-viz.categorical.05}"
+        },
+        "6": {
+          "$value": "{carbon.data-viz.categorical.06}"
+        }
+      },
+      "positive": {
+        "$value": "{carbon.theme.support-success}"
+      },
+      "negative": {
+        "$value": "{carbon.theme.support-error}"
+      },
+      "neutral": {
+        "$value": "{carbon.theme.status-gray}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": "{carbon.type.heading-05}"
+      },
+      "section": {
+        "$value": "{carbon.type.heading-03}"
+      },
+      "item": {
+        "$value": "{carbon.type.heading-02}"
+      }
+    },
+    "body": {
+      "default": {
+        "$value": "{carbon.type.body-02}",
+        "$description": "Carbon body-02 (16px). Carbon's default body style is body-01 (14px), but the contract requires >= 16px"
+      },
+      "small": {
+        "$value": "{carbon.type.body-01}"
+      }
+    },
+    "label": {
+      "default": {
+        "$value": "{carbon.type.label-02}",
+        "$description": "Same metrics as body-compact-01, Carbon's button and control text"
+      },
+      "small": {
+        "$value": "{carbon.type.label-01}"
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": "{carbon.type.heading-06}"
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "$description": "Carbon 8px-based spacing scale ($spacing-NN)",
+    "inset": {
+      "compact": {
+        "$value": "{carbon.spacing.03}"
+      },
+      "default": {
+        "$value": "{carbon.spacing.05}"
+      },
+      "comfortable": {
+        "$value": "{carbon.spacing.06}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{carbon.spacing.03}"
+      },
+      "default": {
+        "$value": "{carbon.spacing.05}"
+      },
+      "loose": {
+        "$value": "{carbon.spacing.07}"
+      },
+      "section": {
+        "$value": "{carbon.spacing.09}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{carbon.spacing.02}"
+      },
+      "default": {
+        "$value": "{carbon.spacing.03}"
+      },
+      "loose": {
+        "$value": "{carbon.spacing.05}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{carbon.size.lg}",
+        "$description": "Carbon $size-lg (48px), the large control height; Carbon's default (md) is 40px"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{carbon.icon-size.01}"
+      },
+      "default": {
+        "$value": "{carbon.icon-size.02}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{carbon.border-radius.00}",
+      "$description": "Carbon components have square corners"
+    },
+    "default": {
+      "$value": "{carbon.border-radius.00}"
+    },
+    "large": {
+      "$value": "{carbon.border-radius.00}"
+    },
+    "full": {
+      "$value": "{carbon.border-radius.max}",
+      "$description": "Pills and avatars (tags, toggles)"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        },
+        "$description": "Carbon 1px borders (dividers, tile and field outlines)"
+      },
+      "strong": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        },
+        "$description": "Carbon 2px emphasis (selected tile, invalid field, focus outline)"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        },
+        "$description": "@carbon/styles focus-outline('outline'): 2px solid $focus"
+      },
+      "offset": {
+        "$value": {
+          "value": -2,
+          "unit": "px"
+        },
+        "$description": "@carbon/styles focus-outline('outline'): outline-offset -2px (Carbon draws focus inside the element edge)"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": 65,
+      "$type": "number",
+      "$description": "Polyxd: characters per line for running text (Carbon defines no measure token)"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.theme.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.theme.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.theme.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.theme.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{polyxd.shadow.flat}",
+      "$description": "Carbon tiles are flat"
+    },
+    "overlay": {
+      "$value": "{carbon.shadow.box-shadow}",
+      "$description": "Carbon box-shadow mixin (menus, dropdowns)"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{carbon.motion.duration.fast-01}"
+      },
+      "short": {
+        "$value": "{carbon.motion.duration.fast-02}"
+      },
+      "medium": {
+        "$value": "{carbon.motion.duration.moderate-02}"
+      },
+      "long": {
+        "$value": "{carbon.motion.duration.slow-01}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{carbon.motion.easing.standard.productive}"
+      },
+      "enter": {
+        "$value": "{carbon.motion.easing.entrance.productive}"
+      },
+      "exit": {
+        "$value": "{carbon.motion.easing.exit.productive}"
+      }
+    }
+  }
+}

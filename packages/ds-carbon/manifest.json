@@ -1,0 +1,72 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "carbon",
+  "displayName": "IBM Carbon",
+  "version": "0.0.0",
+  "contractVersion": "0.1.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": [
+      "tokens/primitive.json",
+      "tokens/system.json",
+      "tokens/system.light.json",
+      "tokens/semantic.json"
+    ],
+    "dark": [
+      "tokens/primitive.json",
+      "tokens/system.json",
+      "tokens/system.dark.json",
+      "tokens/semantic.json"
+    ]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:@carbon/colors (https://github.com/carbon-design-system/carbon/tree/main/packages/colors)",
+      "version": "11.58.0",
+      "license": "Apache-2.0",
+      "notes": "carbon.color.<family>.<step> from the `colors` export and carbon.color.<family>.<step>-hover from `hoverColors`. Vendored as scripts/sources/carbon/colors.json."
+    },
+    {
+      "source": "npm:@carbon/themes (https://github.com/carbon-design-system/carbon/tree/main/packages/themes)",
+      "version": "11.81.0",
+      "license": "Apache-2.0",
+      "notes": "carbon.theme.* per mode: the `white` theme (light) and `g100` theme (dark) JS exports, names converted to Carbon's Sass spelling ($text-primary -> carbon.theme.text-primary); ai-*, chat-* and syntax-* tokens omitted. Component tokens from buttonTokens, notificationTokens and statusTokens (whiteTheme / g100 columns) are added to carbon.theme.* under their Sass names (e.g. carbon.theme.button-primary). A theme colour that equals a palette step is an alias to it; the rest (alpha colours, #b81921) are literals with a $description. The package's src/dtcg/*.json was not used: in 11.81.0 g100.json lacks tokens such as background-inverse and nests names differently from white.json. Vendored as scripts/sources/carbon/themes.json."
+    },
+    {
+      "source": "npm:@carbon/layout (https://github.com/carbon-design-system/carbon/tree/main/packages/layout)",
+      "version": "11.59.0",
+      "license": "Apache-2.0",
+      "notes": "carbon.spacing.01..13, carbon.size.xs..2xl, carbon.icon-size.01/02, carbon.border-radius.00..max. rem converted to px at baseFontSize 16. Vendored as scripts/sources/carbon/layout.json."
+    },
+    {
+      "source": "npm:@carbon/type (https://github.com/carbon-design-system/carbon/tree/main/packages/type)",
+      "version": "11.67.0",
+      "license": "Apache-2.0",
+      "notes": "carbon.type.font-family.* (IBM Plex stacks, as arrays), carbon.type.font-weight.*, and the productive type styles carbon.type.body-01 ... heading-07, label-01/02, helper-text-01/02, legal-01/02, code-01/02 as DTCG typography composites. Vendored as scripts/sources/carbon/type.json."
+    },
+    {
+      "source": "npm:@carbon/motion (https://github.com/carbon-design-system/carbon/tree/main/packages/motion)",
+      "version": "11.52.0",
+      "license": "Apache-2.0",
+      "notes": "carbon.motion.duration.fast-01..slow-02 and carbon.motion.easing.{standard,entrance,exit}.{productive,expressive}. Vendored as scripts/sources/carbon/motion.json."
+    },
+    {
+      "source": "npm:@carbon/charts scss/_color-palette.scss (https://github.com/carbon-design-system/carbon-charts)",
+      "version": "1.27.20",
+      "license": "Apache-2.0",
+      "notes": "carbon.data-viz.categorical.01..14 per mode: the 14-colour categorical sequence (key '14', option '1') of $white-theme-colors (light) and $dark-theme-colors (dark). Every entry, including the literal #b28600 / #8a3800 / #d2a106 / #ba4e00, is an exact @carbon/colors step (yellow 50, orange 70, yellow 40, orange 60). Neither @carbon/themes nor @carbon/colors 11.x ships data-visualization tokens. Vendored as scripts/sources/carbon/charts.json."
+    },
+    {
+      "source": "npm:@carbon/styles scss/utilities/_box-shadow.scss and _focus-outline.scss (https://github.com/carbon-design-system/carbon/tree/main/packages/styles)",
+      "version": "1.115.0",
+      "license": "Apache-2.0",
+      "notes": "Transcribed into scripts/generate.ts: carbon.shadow.box-shadow = 0 2px 6px 0 $shadow (menus, dropdowns); focus ring 2px solid $focus with outline-offset -2px (focus-outline('outline'))."
+    },
+    {
+      "source": "Polyxd",
+      "license": "Apache-2.0",
+      "notes": "The semantic-tier mapping; polyxd.theme.* per-mode additions (warning-emphasis contrast adjustment, state opacities read from the alpha of Carbon's $background-hover / $background-active, disabled opacity raised from Carbon's 0.25 to the contract minimum 0.3); polyxd.shadow.flat (Carbon tiles cast no shadow); border widths 1px/2px; measure.max 65."
+    }
+  ]
+}

@@ -1,0 +1,739 @@
+{
+  "$description": "Ant Design system tier, mode-independent: antd 6.6.4 map and alias tokens (theme.getDesignToken) whose value is the same under defaultAlgorithm and darkAlgorithm. Numbers are px dimensions unless they are line heights, opacities, z-indexes, motion units or font weights.",
+  "antd": {
+    "token": {
+      "borderRadius": {
+        "$type": "dimension",
+        "$value": "{antd.seed.borderRadius}"
+      },
+      "borderRadiusLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      },
+      "borderRadiusOuter": {
+        "$type": "dimension",
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "borderRadiusSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "borderRadiusXS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      },
+      "controlHeight": {
+        "$type": "dimension",
+        "$value": "{antd.seed.controlHeight}"
+      },
+      "controlHeightLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 40,
+          "unit": "px"
+        }
+      },
+      "controlHeightSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "controlHeightXS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "controlInteractiveSize": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "controlOutlineWidth": {
+        "$type": "dimension",
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      },
+      "controlPaddingHorizontal": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "controlPaddingHorizontalSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      },
+      "fontFamily": {
+        "$type": "fontFamily",
+        "$value": "{antd.seed.fontFamily}"
+      },
+      "fontFamilyCode": {
+        "$type": "fontFamily",
+        "$value": "{antd.seed.fontFamilyCode}"
+      },
+      "fontHeight": {
+        "$type": "dimension",
+        "$value": {
+          "value": 22,
+          "unit": "px"
+        }
+      },
+      "fontHeightLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "fontHeightSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "{antd.seed.fontSize}"
+      },
+      "fontSizeHeading1": {
+        "$type": "dimension",
+        "$value": {
+          "value": 38,
+          "unit": "px"
+        }
+      },
+      "fontSizeHeading2": {
+        "$type": "dimension",
+        "$value": {
+          "value": 30,
+          "unit": "px"
+        }
+      },
+      "fontSizeHeading3": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "fontSizeHeading4": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "fontSizeHeading5": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "fontSizeIcon": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "fontSizeLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "fontSizeSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "fontSizeXL": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "fontWeightStrong": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "lineHeight": {
+        "$type": "number",
+        "$value": 1.571429
+      },
+      "lineHeightHeading1": {
+        "$type": "number",
+        "$value": 1.210526
+      },
+      "lineHeightHeading2": {
+        "$type": "number",
+        "$value": 1.266667
+      },
+      "lineHeightHeading3": {
+        "$type": "number",
+        "$value": 1.333333
+      },
+      "lineHeightHeading4": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "lineHeightHeading5": {
+        "$type": "number",
+        "$value": 1.5
+      },
+      "lineHeightLG": {
+        "$type": "number",
+        "$value": 1.5
+      },
+      "lineHeightSM": {
+        "$type": "number",
+        "$value": 1.666667
+      },
+      "lineWidth": {
+        "$type": "dimension",
+        "$value": "{antd.seed.lineWidth}"
+      },
+      "lineWidthBold": {
+        "$type": "dimension",
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      },
+      "lineWidthFocus": {
+        "$type": "dimension",
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        }
+      },
+      "margin": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "marginLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "marginMD": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "marginSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "marginXL": {
+        "$type": "dimension",
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      },
+      "marginXS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      },
+      "marginXXL": {
+        "$type": "dimension",
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        }
+      },
+      "marginXXS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "motionBase": {
+        "$type": "number",
+        "$value": "{antd.seed.motionBase}"
+      },
+      "motionDurationFast": {
+        "$type": "duration",
+        "$value": {
+          "value": 100,
+          "unit": "ms"
+        }
+      },
+      "motionDurationMid": {
+        "$type": "duration",
+        "$value": {
+          "value": 200,
+          "unit": "ms"
+        }
+      },
+      "motionDurationSlow": {
+        "$type": "duration",
+        "$value": {
+          "value": 300,
+          "unit": "ms"
+        }
+      },
+      "motionEaseInBack": {
+        "$type": "cubicBezier",
+        "$value": "{antd.seed.motionEaseInBack}"
+      },
+      "motionEaseInOut": {
+        "$type": "cubicBezier",
+        "$value": "{antd.seed.motionEaseInOut}"
+      },
+      "motionEaseInOutCirc": {
+        "$type": "cubicBezier",
+        "$value": "{antd.seed.motionEaseInOutCirc}"
+      },
+      "motionEaseInQuint": {
+        "$type": "cubicBezier",
+        "$value": "{antd.seed.motionEaseInQuint}"
+      },
+      "motionEaseOut": {
+        "$type": "cubicBezier",
+        "$value": "{antd.seed.motionEaseOut}"
+      },
+      "motionEaseOutBack": {
+        "$type": "cubicBezier",
+        "$value": "{antd.seed.motionEaseOutBack}"
+      },
+      "motionEaseOutCirc": {
+        "$type": "cubicBezier",
+        "$value": "{antd.seed.motionEaseOutCirc}"
+      },
+      "motionEaseOutQuint": {
+        "$type": "cubicBezier",
+        "$value": "{antd.seed.motionEaseOutQuint}"
+      },
+      "motionUnit": {
+        "$type": "number",
+        "$value": "{antd.seed.motionUnit}"
+      },
+      "opacityImage": {
+        "$type": "number",
+        "$value": "{antd.seed.opacityImage}"
+      },
+      "opacityLoading": {
+        "$type": "number",
+        "$value": 0.65
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "paddingContentHorizontal": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "paddingContentHorizontalLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "paddingContentHorizontalSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "paddingContentVertical": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "paddingContentVerticalLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "paddingContentVerticalSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      },
+      "paddingLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "paddingMD": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "paddingSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "paddingXL": {
+        "$type": "dimension",
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      },
+      "paddingXS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      },
+      "paddingXXS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "screenLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 992,
+          "unit": "px"
+        }
+      },
+      "screenLGMax": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1199,
+          "unit": "px"
+        }
+      },
+      "screenLGMin": {
+        "$type": "dimension",
+        "$value": {
+          "value": 992,
+          "unit": "px"
+        }
+      },
+      "screenMD": {
+        "$type": "dimension",
+        "$value": {
+          "value": 768,
+          "unit": "px"
+        }
+      },
+      "screenMDMax": {
+        "$type": "dimension",
+        "$value": {
+          "value": 991,
+          "unit": "px"
+        }
+      },
+      "screenMDMin": {
+        "$type": "dimension",
+        "$value": {
+          "value": 768,
+          "unit": "px"
+        }
+      },
+      "screenSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 576,
+          "unit": "px"
+        }
+      },
+      "screenSMMax": {
+        "$type": "dimension",
+        "$value": {
+          "value": 767,
+          "unit": "px"
+        }
+      },
+      "screenSMMin": {
+        "$type": "dimension",
+        "$value": {
+          "value": 576,
+          "unit": "px"
+        }
+      },
+      "screenXL": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1200,
+          "unit": "px"
+        }
+      },
+      "screenXLMax": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1599,
+          "unit": "px"
+        }
+      },
+      "screenXLMin": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1200,
+          "unit": "px"
+        }
+      },
+      "screenXS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 480,
+          "unit": "px"
+        }
+      },
+      "screenXSMax": {
+        "$type": "dimension",
+        "$value": {
+          "value": 575,
+          "unit": "px"
+        }
+      },
+      "screenXSMin": {
+        "$type": "dimension",
+        "$value": {
+          "value": 480,
+          "unit": "px"
+        }
+      },
+      "screenXXL": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1600,
+          "unit": "px"
+        }
+      },
+      "screenXXLMax": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1919,
+          "unit": "px"
+        }
+      },
+      "screenXXLMin": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1600,
+          "unit": "px"
+        }
+      },
+      "screenXXXL": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1920,
+          "unit": "px"
+        }
+      },
+      "screenXXXLMin": {
+        "$type": "dimension",
+        "$value": {
+          "value": 1920,
+          "unit": "px"
+        }
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "sizeLG": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "sizeMD": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "sizeMS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "sizePopupArrow": {
+        "$type": "dimension",
+        "$value": "{antd.seed.sizePopupArrow}"
+      },
+      "sizeSM": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "sizeStep": {
+        "$type": "dimension",
+        "$value": "{antd.seed.sizeStep}"
+      },
+      "sizeUnit": {
+        "$type": "dimension",
+        "$value": "{antd.seed.sizeUnit}"
+      },
+      "sizeXL": {
+        "$type": "dimension",
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      },
+      "sizeXS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      },
+      "sizeXXL": {
+        "$type": "dimension",
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        }
+      },
+      "sizeXXS": {
+        "$type": "dimension",
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "zIndexBase": {
+        "$type": "number",
+        "$value": "{antd.seed.zIndexBase}"
+      },
+      "zIndexPopupBase": {
+        "$type": "number",
+        "$value": "{antd.seed.zIndexPopupBase}"
+      },
+      "$description": "Skipped (no DTCG type): dropShadowPopover, focusOutline, lineType, linkDecoration, linkFocusDecoration, linkHoverDecoration, motion, wireframe"
+    }
+  },
+  "polyxd": {
+    "sys": {
+      "$description": "Polyxd additions: values the semantic contract needs that antd does not expose as tokens.",
+      "font": {
+        "weight-regular": {
+          "$value": 400,
+          "$type": "fontWeight",
+          "$description": "antd body text is font-weight normal (400); antd only tokenises fontWeightStrong"
+        },
+        "letter-spacing": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          },
+          "$type": "dimension",
+          "$description": "antd sets no letter-spacing"
+        }
+      },
+      "radius": {
+        "full": {
+          "$value": {
+            "value": 9999,
+            "unit": "px"
+          },
+          "$type": "dimension",
+          "$description": "antd has no pill radius token (it uses 50% / shape=\"round\"); 9999px is the conventional equivalent"
+        }
+      },
+      "motion": {
+        "duration-long": {
+          "$value": {
+            "value": 400,
+            "unit": "ms"
+          },
+          "$type": "duration",
+          "$description": "One step past motionDurationSlow on antd's own ladder: motionBase + motionUnit x 4 (fast = x1, mid = x2, slow = x3)"
+        }
+      },
+      "focus": {
+        "ring-offset": {
+          "$value": {
+            "value": 1,
+            "unit": "px"
+          },
+          "$type": "dimension",
+          "$description": "antd 6.6.4 es/style/index.js genFocusOutline: outline-offset defaults to 1"
+        }
+      },
+      "state": {
+        "disabled": {
+          "$value": 0.45,
+          "$type": "number",
+          "$description": "Contrast adjustment: antd's disabled content is colorTextDisabled (text alpha 0.25), below the contract's 0.3 minimum; this is the next step of antd's text-alpha ladder (colorTextTertiary, 0.45)"
+        }
+      }
+    }
+  }
+}

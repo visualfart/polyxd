@@ -1,0 +1,114 @@
+{
+  "$source": {
+    "package": "@carbon/charts",
+    "version": "1.27.20",
+    "license": "Apache-2.0",
+    "extracted": "scss/_color-palette.scss: $white-theme-colors and $dark-theme-colors, key '14' option '1' (the 14-colour categorical sequence). Entries are [family, step] (getColorValue) or a literal hex."
+  },
+  "categorical": {
+    "white": [
+      [
+        "purple",
+        70
+      ],
+      [
+        "cyan",
+        50
+      ],
+      [
+        "teal",
+        70
+      ],
+      [
+        "magenta",
+        70
+      ],
+      [
+        "red",
+        50
+      ],
+      [
+        "red",
+        90
+      ],
+      [
+        "green",
+        60
+      ],
+      [
+        "blue",
+        80
+      ],
+      [
+        "magenta",
+        50
+      ],
+      "#b28600",
+      [
+        "teal",
+        50
+      ],
+      [
+        "cyan",
+        90
+      ],
+      "#8a3800",
+      [
+        "purple",
+        50
+      ]
+    ],
+    "dark": [
+      [
+        "purple",
+        60
+      ],
+      [
+        "cyan",
+        40
+      ],
+      [
+        "teal",
+        60
+      ],
+      [
+        "magenta",
+        40
+      ],
+      [
+        "red",
+        50
+      ],
+      [
+        "red",
+        10
+      ],
+      [
+        "green",
+        30
+      ],
+      [
+        "blue",
+        50
+      ],
+      [
+        "magenta",
+        60
+      ],
+      "#d2a106",
+      [
+        "teal",
+        40
+      ],
+      [
+        "cyan",
+        20
+      ],
+      "#ba4e00",
+      [
+        "purple",
+        30
+      ]
+    ]
+  }
+}

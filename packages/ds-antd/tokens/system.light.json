@@ -1,0 +1,1883 @@
+{
+  "$description": "Ant Design system tier, light mode: antd 6.6.4 theme.getDesignToken({ algorithm: theme.defaultAlgorithm }) colour and shadow tokens, aliased to palette steps where the algorithm took them from one. Plus polyxd.sys.* additions (solid composites, contrast adjustments, chart colours, state opacities).",
+  "antd": {
+    "token": {
+      "boxShadow": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 6,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 16,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.12,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 3,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -4,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.05,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 9,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 28,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 8,
+              "unit": "px"
+            }
+          }
+        ]
+      },
+      "boxShadowCard": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.16,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 2,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -2,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.12,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 3,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.09,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 5,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 12,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 4,
+              "unit": "px"
+            }
+          }
+        ]
+      },
+      "boxShadowDrawerDown": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": -6,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 16,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.12,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": -3,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -4,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.05,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": -9,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 28,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 8,
+              "unit": "px"
+            }
+          }
+        ]
+      },
+      "boxShadowDrawerLeft": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 6,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 16,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.12,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 3,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -4,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.05,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 9,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 28,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 8,
+              "unit": "px"
+            }
+          }
+        ]
+      },
+      "boxShadowDrawerRight": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": -6,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 16,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.12,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": -3,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -4,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.05,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": -9,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 28,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 8,
+              "unit": "px"
+            }
+          }
+        ]
+      },
+      "boxShadowDrawerUp": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 6,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 16,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.12,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 3,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -4,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.05,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 9,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 28,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 8,
+              "unit": "px"
+            }
+          }
+        ]
+      },
+      "boxShadowPopoverArrow": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.05,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 2,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 2,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 5,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          }
+        ]
+      },
+      "boxShadowSecondary": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 6,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 16,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.12,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 3,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -4,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.05,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 9,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 28,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 8,
+              "unit": "px"
+            }
+          }
+        ]
+      },
+      "boxShadowTabsOverflowBottom": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": -10,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 8,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -8,
+              "unit": "px"
+            },
+            "inset": true
+          }
+        ]
+      },
+      "boxShadowTabsOverflowLeft": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 10,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 8,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -8,
+              "unit": "px"
+            },
+            "inset": true
+          }
+        ]
+      },
+      "boxShadowTabsOverflowRight": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": -10,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 8,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -8,
+              "unit": "px"
+            },
+            "inset": true
+          }
+        ]
+      },
+      "boxShadowTabsOverflowTop": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.08,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 10,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 8,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -8,
+              "unit": "px"
+            },
+            "inset": true
+          }
+        ]
+      },
+      "boxShadowTertiary": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.05,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 2,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.03,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -1,
+              "unit": "px"
+            }
+          },
+          {
+            "color": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 0.03,
+              "hex": "#000000"
+            },
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 2,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 4,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            }
+          }
+        ]
+      },
+      "colorBgBase": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        }
+      },
+      "colorBgBlur": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0,
+          "hex": "#000000"
+        }
+      },
+      "colorBgContainer": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        }
+      },
+      "colorBgContainerDisabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.04,
+          "hex": "#000000"
+        }
+      },
+      "colorBgElevated": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        }
+      },
+      "colorBgLayout": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.960784,
+            0.960784,
+            0.960784
+          ],
+          "hex": "#f5f5f5"
+        }
+      },
+      "colorBgMask": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.45,
+          "hex": "#000000"
+        }
+      },
+      "colorBgSolid": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "hex": "#000000"
+        }
+      },
+      "colorBgSolidActive": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.95,
+          "hex": "#000000"
+        }
+      },
+      "colorBgSolidHover": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.75,
+          "hex": "#000000"
+        }
+      },
+      "colorBgSpotlight": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.85,
+          "hex": "#000000"
+        }
+      },
+      "colorBgTextActive": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.15,
+          "hex": "#000000"
+        }
+      },
+      "colorBgTextHover": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.06,
+          "hex": "#000000"
+        }
+      },
+      "colorBorder": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.85098,
+            0.85098,
+            0.85098
+          ],
+          "hex": "#d9d9d9"
+        }
+      },
+      "colorBorderBg": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        }
+      },
+      "colorBorderDisabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.85098,
+            0.85098,
+            0.85098
+          ],
+          "hex": "#d9d9d9"
+        }
+      },
+      "colorBorderSecondary": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.941176,
+            0.941176,
+            0.941176
+          ],
+          "hex": "#f0f0f0"
+        }
+      },
+      "colorError": {
+        "$type": "color",
+        "$value": "{antd.palette.error.6}"
+      },
+      "colorErrorActive": {
+        "$type": "color",
+        "$value": "{antd.palette.error.7}"
+      },
+      "colorErrorAffix": {
+        "$type": "color",
+        "$value": "{antd.palette.error.6}"
+      },
+      "colorErrorBg": {
+        "$type": "color",
+        "$value": "{antd.palette.error.1}"
+      },
+      "colorErrorBgActive": {
+        "$type": "color",
+        "$value": "{antd.palette.error.3}"
+      },
+      "colorErrorBgFilledHover": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.87451,
+            0.862745
+          ],
+          "hex": "#ffdfdc"
+        }
+      },
+      "colorErrorBgHover": {
+        "$type": "color",
+        "$value": "{antd.palette.error.2}"
+      },
+      "colorErrorBorder": {
+        "$type": "color",
+        "$value": "{antd.palette.error.3}"
+      },
+      "colorErrorBorderHover": {
+        "$type": "color",
+        "$value": "{antd.palette.error.4}"
+      },
+      "colorErrorHover": {
+        "$type": "color",
+        "$value": "{antd.palette.error.5}"
+      },
+      "colorErrorOutline": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.14902,
+            0.019608
+          ],
+          "alpha": 0.06,
+          "hex": "#ff2605"
+        }
+      },
+      "colorErrorText": {
+        "$type": "color",
+        "$value": "{antd.palette.error.6}"
+      },
+      "colorErrorTextActive": {
+        "$type": "color",
+        "$value": "{antd.palette.error.7}"
+      },
+      "colorErrorTextHover": {
+        "$type": "color",
+        "$value": "{antd.palette.error.5}"
+      },
+      "colorFill": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.15,
+          "hex": "#000000"
+        }
+      },
+      "colorFillAlter": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.02,
+          "hex": "#000000"
+        }
+      },
+      "colorFillContent": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.06,
+          "hex": "#000000"
+        }
+      },
+      "colorFillContentHover": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.15,
+          "hex": "#000000"
+        }
+      },
+      "colorFillQuaternary": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.02,
+          "hex": "#000000"
+        }
+      },
+      "colorFillSecondary": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.06,
+          "hex": "#000000"
+        }
+      },
+      "colorFillTertiary": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.04,
+          "hex": "#000000"
+        }
+      },
+      "colorHighlight": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.301961,
+            0.309804
+          ],
+          "hex": "#ff4d4f"
+        }
+      },
+      "colorIcon": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.45,
+          "hex": "#000000"
+        }
+      },
+      "colorIconHover": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.88,
+          "hex": "#000000"
+        }
+      },
+      "colorInfo": {
+        "$type": "color",
+        "$value": "{antd.palette.info.6}"
+      },
+      "colorInfoActive": {
+        "$type": "color",
+        "$value": "{antd.palette.info.7}"
+      },
+      "colorInfoBg": {
+        "$type": "color",
+        "$value": "{antd.palette.info.1}"
+      },
+      "colorInfoBgHover": {
+        "$type": "color",
+        "$value": "{antd.palette.info.2}"
+      },
+      "colorInfoBorder": {
+        "$type": "color",
+        "$value": "{antd.palette.info.3}"
+      },
+      "colorInfoBorderHover": {
+        "$type": "color",
+        "$value": "{antd.palette.info.4}"
+      },
+      "colorInfoHover": {
+        "$type": "color",
+        "$value": "{antd.palette.info.4}"
+      },
+      "colorInfoText": {
+        "$type": "color",
+        "$value": "{antd.palette.info.6}"
+      },
+      "colorInfoTextActive": {
+        "$type": "color",
+        "$value": "{antd.palette.info.7}"
+      },
+      "colorInfoTextHover": {
+        "$type": "color",
+        "$value": "{antd.palette.info.5}"
+      },
+      "colorLink": {
+        "$type": "color",
+        "$value": "{antd.palette.info.6}"
+      },
+      "colorLinkActive": {
+        "$type": "color",
+        "$value": "{antd.palette.info.7}"
+      },
+      "colorLinkHover": {
+        "$type": "color",
+        "$value": "{antd.palette.info.4}"
+      },
+      "colorPrimary": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.6}"
+      },
+      "colorPrimaryActive": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.7}"
+      },
+      "colorPrimaryBg": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.1}"
+      },
+      "colorPrimaryBgHover": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.2}"
+      },
+      "colorPrimaryBorder": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.3}"
+      },
+      "colorPrimaryBorderHover": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.4}"
+      },
+      "colorPrimaryHover": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.5}"
+      },
+      "colorPrimaryText": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.6}"
+      },
+      "colorPrimaryTextActive": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.7}"
+      },
+      "colorPrimaryTextHover": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.5}"
+      },
+      "colorShadow": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "hex": "#000000"
+        }
+      },
+      "colorSplit": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.019608,
+            0.019608,
+            0.019608
+          ],
+          "alpha": 0.06,
+          "hex": "#050505"
+        }
+      },
+      "colorSuccess": {
+        "$type": "color",
+        "$value": "{antd.palette.success.6}"
+      },
+      "colorSuccessActive": {
+        "$type": "color",
+        "$value": "{antd.palette.success.7}"
+      },
+      "colorSuccessBg": {
+        "$type": "color",
+        "$value": "{antd.palette.success.1}"
+      },
+      "colorSuccessBgHover": {
+        "$type": "color",
+        "$value": "{antd.palette.success.2}"
+      },
+      "colorSuccessBorder": {
+        "$type": "color",
+        "$value": "{antd.palette.success.3}"
+      },
+      "colorSuccessBorderHover": {
+        "$type": "color",
+        "$value": "{antd.palette.success.4}"
+      },
+      "colorSuccessHover": {
+        "$type": "color",
+        "$value": "{antd.palette.success.4}"
+      },
+      "colorSuccessText": {
+        "$type": "color",
+        "$value": "{antd.palette.success.6}"
+      },
+      "colorSuccessTextActive": {
+        "$type": "color",
+        "$value": "{antd.palette.success.7}"
+      },
+      "colorSuccessTextHover": {
+        "$type": "color",
+        "$value": "{antd.palette.success.5}"
+      },
+      "colorText": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.88,
+          "hex": "#000000"
+        }
+      },
+      "colorTextBase": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "hex": "#000000"
+        }
+      },
+      "colorTextDescription": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.45,
+          "hex": "#000000"
+        }
+      },
+      "colorTextDisabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.25,
+          "hex": "#000000"
+        }
+      },
+      "colorTextHeading": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.88,
+          "hex": "#000000"
+        }
+      },
+      "colorTextLabel": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.65,
+          "hex": "#000000"
+        }
+      },
+      "colorTextLightSolid": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        }
+      },
+      "colorTextPlaceholder": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.25,
+          "hex": "#000000"
+        }
+      },
+      "colorTextQuaternary": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.25,
+          "hex": "#000000"
+        }
+      },
+      "colorTextSecondary": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.65,
+          "hex": "#000000"
+        }
+      },
+      "colorTextTertiary": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.45,
+          "hex": "#000000"
+        }
+      },
+      "colorWarning": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.6}"
+      },
+      "colorWarningActive": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.7}"
+      },
+      "colorWarningAffix": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.6}"
+      },
+      "colorWarningBg": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.1}"
+      },
+      "colorWarningBgHover": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.2}"
+      },
+      "colorWarningBorder": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.3}"
+      },
+      "colorWarningBorderHover": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.4}"
+      },
+      "colorWarningHover": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.4}"
+      },
+      "colorWarningOutline": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.843137,
+            0.019608
+          ],
+          "alpha": 0.1,
+          "hex": "#ffd705"
+        }
+      },
+      "colorWarningText": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.6}"
+      },
+      "colorWarningTextActive": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.7}"
+      },
+      "colorWarningTextHover": {
+        "$type": "color",
+        "$value": "{antd.palette.warning.5}"
+      },
+      "colorWhite": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "hex": "#ffffff"
+        }
+      },
+      "controlItemBgActive": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.1}"
+      },
+      "controlItemBgActiveDisabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.15,
+          "hex": "#000000"
+        }
+      },
+      "controlItemBgActiveHover": {
+        "$type": "color",
+        "$value": "{antd.palette.primary.2}"
+      },
+      "controlItemBgHover": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.04,
+          "hex": "#000000"
+        }
+      },
+      "controlOutline": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.019608,
+            0.568627,
+            1
+          ],
+          "alpha": 0.1,
+          "hex": "#0591ff"
+        }
+      },
+      "controlTmpOutline": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.02,
+          "hex": "#000000"
+        }
+      }
+    }
+  },
+  "polyxd": {
+    "sys": {
+      "state": {
+        "$type": "number",
+        "$description": "Alpha channel of the antd tokens that implement each state (antd shifts colours rather than using state layers)",
+        "hover": {
+          "$value": 0.06,
+          "$description": "alpha of antd.token.colorBgTextHover (text/icon button hover)"
+        },
+        "pressed": {
+          "$value": 0.15,
+          "$description": "alpha of antd.token.colorBgTextActive (text/icon button active)"
+        },
+        "focus": {
+          "$value": 0.1,
+          "$description": "alpha of antd.token.controlOutline (input focus glow)"
+        }
+      },
+      "color": {
+        "$type": "color",
+        "$description": "Polyxd additions: opaque composites of antd's translucent colours (solid.*), roles whose antd source differs by mode or was adjusted for contrast, and chart colours.",
+        "solid": {
+          "colorFillAlter": {
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                0.980392,
+                0.980392,
+                0.980392
+              ],
+              "hex": "#fafafa"
+            },
+            "$description": "antd.token.colorFillAlter (rgba(0,0,0,0.02)) composited on antd.token.colorBgContainer (#ffffff); a literal because an alias cannot composite"
+          },
+          "colorBgSpotlight": {
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                0.14902,
+                0.14902,
+                0.14902
+              ],
+              "hex": "#262626"
+            },
+            "$description": "antd.token.colorBgSpotlight (rgba(0,0,0,0.85)) composited on antd.token.colorBgContainer (#ffffff); a literal because an alias cannot composite"
+          },
+          "colorText": {
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                0.121569,
+                0.121569,
+                0.121569
+              ],
+              "hex": "#1f1f1f"
+            },
+            "$description": "antd.token.colorText (rgba(0,0,0,0.88)) composited on antd.token.colorBgContainer (#ffffff); a literal because an alias cannot composite"
+          },
+          "colorTextSecondary": {
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                0.34902,
+                0.34902,
+                0.34902
+              ],
+              "hex": "#595959"
+            },
+            "$description": "antd.token.colorTextSecondary (rgba(0,0,0,0.65)) composited on antd.token.colorBgContainer (#ffffff); a literal because an alias cannot composite"
+          },
+          "colorTextTertiary": {
+            "$value": {
+              "colorSpace": "srgb",
+              "components": [
+                0.54902,
+                0.54902,
+                0.54902
+              ],
+              "hex": "#8c8c8c"
+            },
+            "$description": "antd.token.colorTextTertiary (rgba(0,0,0,0.45)) composited on antd.token.colorBgContainer (#ffffff); a literal because an alias cannot composite"
+          }
+        },
+        "text-link": {
+          "$value": "{antd.palette.info.7}",
+          "$description": "adjusted from antd.token.colorLink for contrast"
+        },
+        "border-focus": {
+          "$value": "{antd.palette.primary.6}",
+          "$description": "adjusted from antd.token.colorPrimaryBorder for contrast"
+        },
+        "action-primary-background": {
+          "$value": "{antd.palette.primary.7}",
+          "$description": "adjusted from antd.token.colorPrimary for contrast"
+        },
+        "action-danger-background": {
+          "$value": "{antd.palette.error.7}",
+          "$description": "adjusted from antd.token.colorError for contrast"
+        },
+        "status-info-foreground": {
+          "$value": "{antd.palette.info.7}",
+          "$description": "adjusted from antd.token.colorInfoText for contrast"
+        },
+        "status-success-foreground": {
+          "$value": "{antd.palette.success.8}",
+          "$description": "adjusted from antd.token.colorSuccessText for contrast"
+        },
+        "status-success-emphasis": {
+          "$value": "{antd.palette.success.7}",
+          "$description": "adjusted from antd.token.colorSuccess for contrast"
+        },
+        "status-warning-foreground": {
+          "$value": "{antd.palette.warning.9}",
+          "$description": "adjusted from antd.token.colorWarningText for contrast"
+        },
+        "status-warning-emphasis": {
+          "$value": "{antd.palette.warning.8}",
+          "$description": "adjusted from antd.token.colorWarning for contrast"
+        },
+        "status-danger-foreground": {
+          "$value": "{antd.palette.error.8}",
+          "$description": "adjusted from antd.token.colorErrorText for contrast"
+        },
+        "data-categorical-1": {
+          "$value": "{antd.palette.blue.6}",
+          "$description": "preset blue step 6"
+        },
+        "data-categorical-2": {
+          "$value": "{antd.palette.orange.7}",
+          "$description": "adjusted from preset orange step 6 for contrast"
+        },
+        "data-categorical-3": {
+          "$value": "{antd.palette.cyan.7}",
+          "$description": "adjusted from preset cyan step 6 for contrast"
+        },
+        "data-categorical-4": {
+          "$value": "{antd.palette.magenta.6}",
+          "$description": "preset magenta step 6"
+        },
+        "data-categorical-5": {
+          "$value": "{antd.palette.green.7}",
+          "$description": "adjusted from preset green step 6 for contrast"
+        },
+        "data-categorical-6": {
+          "$value": "{antd.palette.purple.6}",
+          "$description": "preset purple step 6"
+        },
+        "data-positive": {
+          "$value": "{antd.palette.success.7}",
+          "$description": "adjusted from antd.token.colorSuccess for contrast"
+        }
+      }
+    }
+  }
+}

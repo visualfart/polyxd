@@ -5,7 +5,9 @@
 - **Phase 0 — done.** Decision [0001](docs/decisions/0001-a2ui-and-foundations.md): own schema as source of truth, exported to A2UI v1.0 and MCP Apps.
 - **Phase 1 — done.** `@polyxd/spec` (24 components, UI schema, validator, 5 patterns, check vocabulary, capability/journey/event/direction schemas, 20 examples), `@polyxd/ds-material3` (passes the token contract in light and dark), `@polyxd/a2ui` (all 20 examples export to A2UI v1.0 RC and validate against the official schemas). 142 tests.
   - Finding: none of the 24 components maps losslessly onto A2UI's Basic catalog, so the export is a custom Polyxd catalog. The official `@a2ui/react` renderer supports only v0.8/v0.9, so rendering an exported surface in it is a follow-up.
-- **Next: Phase 2** — `@polyxd/react` renderer, token theming, second design system, example gallery.
+- **Phase 2 — done.** `@polyxd/react` (all 24 components on Radix, styled only by token variables, container-query layouts, adapter overrides), theme compiler (packs → CSS variables + shadcn variable names), `@polyxd/ds-carbon` and `@polyxd/ds-antd` alongside Material 3, and `apps/gallery` (every example × pack × light/dark × phone/tablet/desktop, with an action log). Decision [0002](docs/decisions/0002-astryx.md): Astryx is a complement and a future renderer adapter.
+  - Findings: Ant Design's defaults fail WCAG in several places (white on its primary blue is 4.10:1; warning text 1.83:1; input border 1.41:1), so the pack moves those to the nearest passing step of the same palette. Carbon's light warning colour (1.68:1) was swapped for its own darker outline token. Both systems' 14px body text is mapped to their 16px size for `type.body.default`. The contrast checker now composites translucent colours before measuring.
+- **Next: Phase 3** — verifier (axe-core, consistency score, scripted agent tasks from journeys) and the benchmark.
 
 ## 1. What we're building
 
@@ -358,7 +360,7 @@ TypeScript (npm workspaces, Changesets for versioning and releases) and Python (
 ## 11. Decisions made
 
 1. **Domain-generic.** Spec, components and patterns are generic, and the benchmark spans several domains. Trade-off: a narrow domain would make the small model's job easier. If the Phase 4 baselines show the small model struggling across domains, we revisit with domain adapters, not a narrower spec.
-2. **First design system: Material 3.** A second, visually contrasting system (GOV.UK is the current candidate) is added in Phase 2 only to prove the swap.
+2. **Design systems: Material 3, Carbon and Ant Design** (Carbon and Ant chosen 2026-09-19 by usage and visual contrast). Later, in order of usage: MUI, Atlassian, Fluent, Bootstrap. GOV.UK remains a source of pattern guidance.
 3. **Web stack: React + Vite + shadcn/Radix.** No Next.js. The renderer is a library, so there's no server framework.
 4. **No fixed timeline.** Phases are ordered by dependency and gated by exit tests.
 5. **Licenses:** Apache-2.0 for code, CC-BY-4.0 for the spec and docs.

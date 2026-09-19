@@ -1,0 +1,32 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "antd",
+  "displayName": "Ant Design",
+  "version": "0.0.0",
+  "contractVersion": "0.1.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": ["tokens/primitive.json", "tokens/system.json", "tokens/system.light.json", "tokens/semantic.json"],
+    "dark": ["tokens/primitive.json", "tokens/system.json", "tokens/system.dark.json", "tokens/semantic.json"]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:antd (https://github.com/ant-design/ant-design)",
+      "version": "6.6.4",
+      "license": "MIT",
+      "notes": "antd.seed.* = theme.defaultSeed. antd.token.* = theme.getDesignToken({ algorithm }) with theme.defaultAlgorithm (light) and theme.darkAlgorithm (dark) applied to the default seed: map and alias tokens. Dumped by scripts/sources/antd/dump-antd-tokens.mjs into scripts/sources/antd/antd-tokens.json (vendored with antd's LICENSE); generate.ts runs offline from that file. Focus-ring offset (1px) and colour (colorPrimaryBorder) are from es/style/index.js genFocusOutline; enter/exit easings from es/style/motion/zoom.js."
+    },
+    {
+      "source": "npm:@ant-design/colors (https://github.com/ant-design/ant-design-colors)",
+      "version": "8.0.1",
+      "license": "MIT",
+      "notes": "antd.palette.<preset>.1-10 = presetPalettes, antd.paletteDark.<preset>.1-10 = presetDarkPalettes. antd.palette.{primary,success,warning,error,info} = generate(seed) and antd.paletteDark.* = generate(seed, { theme: 'dark' }): the palettes the two algorithms derive colorPrimary*/colorSuccess*/... from. The version is the one antd 6.6.4 resolved to."
+    },
+    {
+      "source": "Polyxd",
+      "license": "Apache-2.0",
+      "notes": "The semantic-tier mapping; contrast adjustments to neighbouring steps of the same antd palette (listed in README.md); polyxd.sys.color.solid.* (antd's translucent colours composited on colorBgContainer); polyxd.sys.state.* (alphas of antd's hover/active/focus tokens; disabled 0.45); radius.full 9999px; font weight 400 and letter-spacing 0; motion duration-long 400ms (motionUnit x 4); measure.max 65."
+    }
+  ]
+}

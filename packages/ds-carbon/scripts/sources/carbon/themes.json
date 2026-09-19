@@ -1,0 +1,367 @@
+{
+  "$source": {
+    "package": "@carbon/themes",
+    "version": "11.81.0",
+    "license": "Apache-2.0",
+    "extracted": "white and g100 theme objects (JS export; ai*, chat* and syntax* tokens omitted) and buttonTokens, notificationTokens, statusTokens for white/g100"
+  },
+  "themes": {
+    "white": {
+      "background": "#ffffff",
+      "backgroundActive": "rgba(141, 141, 141, 0.5)",
+      "backgroundBrand": "#0f62fe",
+      "backgroundHover": "rgba(141, 141, 141, 0.12)",
+      "backgroundInverse": "#393939",
+      "backgroundInverseHover": "#474747",
+      "backgroundSelected": "rgba(141, 141, 141, 0.2)",
+      "backgroundSelectedHover": "rgba(141, 141, 141, 0.32)",
+      "borderDisabled": "#c6c6c6",
+      "borderInteractive": "#0f62fe",
+      "borderInverse": "#161616",
+      "borderStrong01": "#8d8d8d",
+      "borderStrong02": "#8d8d8d",
+      "borderStrong03": "#8d8d8d",
+      "borderSubtle00": "#e0e0e0",
+      "borderSubtle01": "#c6c6c6",
+      "borderSubtle02": "#e0e0e0",
+      "borderSubtle03": "#c6c6c6",
+      "borderSubtleSelected01": "#c6c6c6",
+      "borderSubtleSelected02": "#c6c6c6",
+      "borderSubtleSelected03": "#c6c6c6",
+      "borderTile01": "#c6c6c6",
+      "borderTile02": "#a8a8a8",
+      "borderTile03": "#c6c6c6",
+      "field01": "#f4f4f4",
+      "field02": "#ffffff",
+      "field03": "#f4f4f4",
+      "fieldHover01": "#e8e8e8",
+      "fieldHover02": "#e8e8e8",
+      "fieldHover03": "#e8e8e8",
+      "focus": "#0f62fe",
+      "focusInset": "#ffffff",
+      "focusInverse": "#ffffff",
+      "highlight": "#d0e2ff",
+      "iconDisabled": "rgba(22, 22, 22, 0.25)",
+      "iconInteractive": "#0f62fe",
+      "iconInverse": "#ffffff",
+      "iconOnColor": "#ffffff",
+      "iconOnColorDisabled": "#8d8d8d",
+      "iconPrimary": "#161616",
+      "iconSecondary": "#525252",
+      "interactive": "#0f62fe",
+      "layer01": "#f4f4f4",
+      "layer02": "#ffffff",
+      "layer03": "#f4f4f4",
+      "layerAccent01": "#e0e0e0",
+      "layerAccent02": "#e0e0e0",
+      "layerAccent03": "#e0e0e0",
+      "layerAccentActive01": "#a8a8a8",
+      "layerAccentActive02": "#a8a8a8",
+      "layerAccentActive03": "#a8a8a8",
+      "layerAccentHover01": "#d1d1d1",
+      "layerAccentHover02": "#d1d1d1",
+      "layerAccentHover03": "#d1d1d1",
+      "layerActive01": "#c6c6c6",
+      "layerActive02": "#c6c6c6",
+      "layerActive03": "#c6c6c6",
+      "layerBackground01": "#ffffff",
+      "layerBackground02": "#f4f4f4",
+      "layerBackground03": "#ffffff",
+      "layerHover01": "#e8e8e8",
+      "layerHover02": "#e8e8e8",
+      "layerHover03": "#e8e8e8",
+      "layerSelected01": "#e0e0e0",
+      "layerSelected02": "#e0e0e0",
+      "layerSelected03": "#e0e0e0",
+      "layerSelectedDisabled": "#8d8d8d",
+      "layerSelectedHover01": "#d1d1d1",
+      "layerSelectedHover02": "#d1d1d1",
+      "layerSelectedHover03": "#d1d1d1",
+      "layerSelectedInverse": "#161616",
+      "linkInverse": "#78a9ff",
+      "linkInverseActive": "#f4f4f4",
+      "linkInverseHover": "#a6c8ff",
+      "linkInverseVisited": "#be95ff",
+      "linkPrimary": "#0f62fe",
+      "linkPrimaryHover": "#0043ce",
+      "linkSecondary": "#0043ce",
+      "linkVisited": "#8a3ffc",
+      "overlay": "rgba(0, 0, 0, 0.6)",
+      "shadow": "rgba(0, 0, 0, 0.3)",
+      "skeletonBackground": "#e8e8e8",
+      "skeletonElement": "#c6c6c6",
+      "supportCautionMajor": "#ff832b",
+      "supportCautionMinor": "#f1c21b",
+      "supportCautionUndefined": "#8a3ffc",
+      "supportError": "#da1e28",
+      "supportErrorInverse": "#fa4d56",
+      "supportInfo": "#0043ce",
+      "supportInfoInverse": "#4589ff",
+      "supportSuccess": "#24a148",
+      "supportSuccessInverse": "#42be65",
+      "supportWarning": "#f1c21b",
+      "supportWarningInverse": "#f1c21b",
+      "textDisabled": "rgba(22, 22, 22, 0.25)",
+      "textError": "#da1e28",
+      "textHelper": "#6f6f6f",
+      "textInverse": "#ffffff",
+      "textOnColor": "#ffffff",
+      "textOnColorDisabled": "#8d8d8d",
+      "textPlaceholder": "rgba(22, 22, 22, 0.4)",
+      "textPrimary": "#161616",
+      "textSecondary": "#525252",
+      "toggleOff": "#8d8d8d"
+    },
+    "g100": {
+      "background": "#161616",
+      "backgroundActive": "rgba(141, 141, 141, 0.4)",
+      "backgroundBrand": "#0f62fe",
+      "backgroundHover": "rgba(141, 141, 141, 0.16)",
+      "backgroundInverse": "#f4f4f4",
+      "backgroundInverseHover": "#e8e8e8",
+      "backgroundSelected": "rgba(141, 141, 141, 0.24)",
+      "backgroundSelectedHover": "rgba(141, 141, 141, 0.32)",
+      "borderDisabled": "rgba(141, 141, 141, 0.5)",
+      "borderInteractive": "#4589ff",
+      "borderInverse": "#f4f4f4",
+      "borderStrong01": "#6f6f6f",
+      "borderStrong02": "#8d8d8d",
+      "borderStrong03": "#a8a8a8",
+      "borderSubtle00": "#393939",
+      "borderSubtle01": "#525252",
+      "borderSubtle02": "#6f6f6f",
+      "borderSubtle03": "#6f6f6f",
+      "borderSubtleSelected01": "#6f6f6f",
+      "borderSubtleSelected02": "#8d8d8d",
+      "borderSubtleSelected03": "#8d8d8d",
+      "borderTile01": "#525252",
+      "borderTile02": "#6f6f6f",
+      "borderTile03": "#8d8d8d",
+      "field01": "#262626",
+      "field02": "#393939",
+      "field03": "#525252",
+      "fieldHover01": "#333333",
+      "fieldHover02": "#474747",
+      "fieldHover03": "#636363",
+      "focus": "#ffffff",
+      "focusInset": "#161616",
+      "focusInverse": "#0f62fe",
+      "highlight": "#001d6c",
+      "iconDisabled": "rgba(244, 244, 244, 0.25)",
+      "iconInteractive": "#ffffff",
+      "iconInverse": "#161616",
+      "iconOnColor": "#ffffff",
+      "iconOnColorDisabled": "rgba(255, 255, 255, 0.25)",
+      "iconPrimary": "#f4f4f4",
+      "iconSecondary": "#c6c6c6",
+      "interactive": "#4589ff",
+      "layer01": "#262626",
+      "layer02": "#393939",
+      "layer03": "#525252",
+      "layerAccent01": "#393939",
+      "layerAccent02": "#525252",
+      "layerAccent03": "#6f6f6f",
+      "layerAccentActive01": "#6f6f6f",
+      "layerAccentActive02": "#8d8d8d",
+      "layerAccentActive03": "#393939",
+      "layerAccentHover01": "#474747",
+      "layerAccentHover02": "#636363",
+      "layerAccentHover03": "#5e5e5e",
+      "layerActive01": "#525252",
+      "layerActive02": "#6f6f6f",
+      "layerActive03": "#8d8d8d",
+      "layerBackground01": "#161616",
+      "layerBackground02": "#262626",
+      "layerBackground03": "#393939",
+      "layerHover01": "#333333",
+      "layerHover02": "#474747",
+      "layerHover03": "#636363",
+      "layerSelected01": "#393939",
+      "layerSelected02": "#525252",
+      "layerSelected03": "#6f6f6f",
+      "layerSelectedDisabled": "#a8a8a8",
+      "layerSelectedHover01": "#474747",
+      "layerSelectedHover02": "#636363",
+      "layerSelectedHover03": "#5e5e5e",
+      "layerSelectedInverse": "#f4f4f4",
+      "linkInverse": "#0f62fe",
+      "linkInverseActive": "#161616",
+      "linkInverseHover": "#0043ce",
+      "linkInverseVisited": "#8a3ffc",
+      "linkPrimary": "#78a9ff",
+      "linkPrimaryHover": "#a6c8ff",
+      "linkSecondary": "#a6c8ff",
+      "linkVisited": "#be95ff",
+      "overlay": "rgba(0, 0, 0, 0.6)",
+      "shadow": "rgba(0, 0, 0, 0.8)",
+      "skeletonBackground": "#292929",
+      "skeletonElement": "#393939",
+      "supportCautionMajor": "#ff832b",
+      "supportCautionMinor": "#f1c21b",
+      "supportCautionUndefined": "#a56eff",
+      "supportError": "#fa4d56",
+      "supportErrorInverse": "#da1e28",
+      "supportInfo": "#4589ff",
+      "supportInfoInverse": "#0043ce",
+      "supportSuccess": "#42be65",
+      "supportSuccessInverse": "#24a148",
+      "supportWarning": "#f1c21b",
+      "supportWarningInverse": "#f1c21b",
+      "textDisabled": "rgba(244, 244, 244, 0.25)",
+      "textError": "#ff8389",
+      "textHelper": "#a8a8a8",
+      "textInverse": "#161616",
+      "textOnColor": "#ffffff",
+      "textOnColorDisabled": "rgba(255, 255, 255, 0.25)",
+      "textPlaceholder": "rgba(244, 244, 244, 0.4)",
+      "textPrimary": "#f4f4f4",
+      "textSecondary": "#c6c6c6",
+      "toggleOff": "#6f6f6f"
+    }
+  },
+  "components": {
+    "buttonTokens": {
+      "buttonDangerActive": {
+        "white": "#750e13",
+        "g100": "#750e13"
+      },
+      "buttonDangerHover": {
+        "white": "#b81921",
+        "g100": "#b81921"
+      },
+      "buttonDangerPrimary": {
+        "white": "#da1e28",
+        "g100": "#da1e28"
+      },
+      "buttonDangerSecondary": {
+        "white": "#da1e28",
+        "g100": "#fa4d56"
+      },
+      "buttonDisabled": {
+        "white": "#c6c6c6",
+        "g100": "rgba(141, 141, 141, 0.3)"
+      },
+      "buttonPrimary": {
+        "white": "#0f62fe",
+        "g100": "#0f62fe"
+      },
+      "buttonPrimaryActive": {
+        "white": "#002d9c",
+        "g100": "#002d9c"
+      },
+      "buttonPrimaryHover": {
+        "white": "#0050e6",
+        "g100": "#0050e6"
+      },
+      "buttonSecondary": {
+        "white": "#393939",
+        "g100": "#6f6f6f"
+      },
+      "buttonSecondaryActive": {
+        "white": "#6f6f6f",
+        "g100": "#393939"
+      },
+      "buttonSecondaryHover": {
+        "white": "#474747",
+        "g100": "#5e5e5e"
+      },
+      "buttonSeparator": {
+        "white": "#e0e0e0",
+        "g100": "#161616"
+      },
+      "buttonTertiary": {
+        "white": "#0f62fe",
+        "g100": "#ffffff"
+      },
+      "buttonTertiaryActive": {
+        "white": "#002d9c",
+        "g100": "#c6c6c6"
+      },
+      "buttonTertiaryHover": {
+        "white": "#0050e6",
+        "g100": "#f4f4f4"
+      }
+    },
+    "notificationTokens": {
+      "notificationActionHover": {
+        "white": "#ffffff"
+      },
+      "notificationActionTertiaryInverse": {
+        "white": "#ffffff",
+        "g100": "#0f62fe"
+      },
+      "notificationActionTertiaryInverseActive": {
+        "white": "#c6c6c6",
+        "g100": "#002d9c"
+      },
+      "notificationActionTertiaryInverseHover": {
+        "white": "#f4f4f4",
+        "g100": "#0050e6"
+      },
+      "notificationActionTertiaryInverseText": {
+        "white": "#161616",
+        "g100": "#ffffff"
+      },
+      "notificationActionTertiaryInverseTextOnColorDisabled": {
+        "white": "rgba(255, 255, 255, 0.25)",
+        "g100": "#8d8d8d"
+      },
+      "notificationBackgroundError": {
+        "white": "#fff1f1",
+        "g100": "#262626"
+      },
+      "notificationBackgroundInfo": {
+        "white": "#edf5ff",
+        "g100": "#262626"
+      },
+      "notificationBackgroundSuccess": {
+        "white": "#defbe6",
+        "g100": "#262626"
+      },
+      "notificationBackgroundWarning": {
+        "white": "#fcf4d6",
+        "g100": "#262626"
+      }
+    },
+    "statusTokens": {
+      "statusAccessibilityBackground": {
+        "white": "#ffffff",
+        "g100": "#161616"
+      },
+      "statusBlue": {
+        "white": "#0043ce",
+        "g100": "#4589ff"
+      },
+      "statusGray": {
+        "white": "#6f6f6f",
+        "g100": "#8d8d8d"
+      },
+      "statusGreen": {
+        "white": "#24a148",
+        "g100": "#42be65"
+      },
+      "statusOrange": {
+        "white": "#ff832b",
+        "g100": "#ff832b"
+      },
+      "statusOrangeOutline": {
+        "white": "#ba4e00"
+      },
+      "statusPurple": {
+        "white": "#8a3ffc",
+        "g100": "#a56eff"
+      },
+      "statusRed": {
+        "white": "#da1e28",
+        "g100": "#fa4d56"
+      },
+      "statusYellow": {
+        "white": "#f1c21b",
+        "g100": "#f1c21b"
+      },
+      "statusYellowOutline": {
+        "white": "#8e6a00"
+      }
+    }
+  }
+}

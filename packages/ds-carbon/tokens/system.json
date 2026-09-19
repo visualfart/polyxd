@@ -1,0 +1,385 @@
+{
+  "$description": "IBM Carbon system tier, mode-independent: productive type styles (@carbon/type@11.67.0) and shadows (@carbon/styles 1.115.0 utilities/_box-shadow.scss).",
+  "carbon": {
+    "type": {
+      "$type": "typography",
+      "$description": "Carbon type styles from @carbon/type@11.67.0. Carbon sets font-family: sans on every style except code, and helper-text inherits weight (regular).",
+      "body-01": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 14,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.42857,
+          "letterSpacing": {
+            "value": 0.16,
+            "unit": "px"
+          }
+        }
+      },
+      "body-02": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 16,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "body-compact-01": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 14,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.28572,
+          "letterSpacing": {
+            "value": 0.16,
+            "unit": "px"
+          }
+        }
+      },
+      "body-compact-02": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 16,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.375,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "heading-01": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 14,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.semibold}",
+          "lineHeight": 1.42857,
+          "letterSpacing": {
+            "value": 0.16,
+            "unit": "px"
+          }
+        }
+      },
+      "heading-02": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 16,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.semibold}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "heading-03": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 20,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "heading-04": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 28,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.28572,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "heading-05": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 32,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "heading-06": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 42,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.light}",
+          "lineHeight": 1.199,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "heading-07": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 54,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.light}",
+          "lineHeight": 1.199,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "heading-compact-01": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 14,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.semibold}",
+          "lineHeight": 1.28572,
+          "letterSpacing": {
+            "value": 0.16,
+            "unit": "px"
+          }
+        }
+      },
+      "heading-compact-02": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 16,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.semibold}",
+          "lineHeight": 1.375,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "label-01": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 12,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.33333,
+          "letterSpacing": {
+            "value": 0.32,
+            "unit": "px"
+          }
+        }
+      },
+      "label-02": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 14,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.28572,
+          "letterSpacing": {
+            "value": 0.16,
+            "unit": "px"
+          }
+        }
+      },
+      "helper-text-01": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 12,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.33333,
+          "letterSpacing": {
+            "value": 0.32,
+            "unit": "px"
+          }
+        }
+      },
+      "helper-text-02": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 14,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.28572,
+          "letterSpacing": {
+            "value": 0.16,
+            "unit": "px"
+          }
+        }
+      },
+      "legal-01": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 12,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.33333,
+          "letterSpacing": {
+            "value": 0.32,
+            "unit": "px"
+          }
+        }
+      },
+      "legal-02": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.sans}",
+          "fontSize": {
+            "value": 14,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.28572,
+          "letterSpacing": {
+            "value": 0.16,
+            "unit": "px"
+          }
+        }
+      },
+      "code-01": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.mono}",
+          "fontSize": {
+            "value": 12,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.33333,
+          "letterSpacing": {
+            "value": 0.32,
+            "unit": "px"
+          }
+        }
+      },
+      "code-02": {
+        "$value": {
+          "fontFamily": "{carbon.type.font-family.mono}",
+          "fontSize": {
+            "value": 14,
+            "unit": "px"
+          },
+          "fontWeight": "{carbon.type.font-weight.regular}",
+          "lineHeight": 1.42857,
+          "letterSpacing": {
+            "value": 0.32,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "box-shadow": {
+        "$value": {
+          "color": "{carbon.theme.shadow}",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 2,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 6,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$description": "@carbon/styles 1.115.0 scss/utilities/_box-shadow.scss: box-shadow: 0 2px 6px $shadow (menus, dropdowns, overflow menus)"
+      }
+    }
+  },
+  "polyxd": {
+    "shadow": {
+      "$type": "shadow",
+      "flat": {
+        "$value": {
+          "color": {
+            "colorSpace": "srgb",
+            "components": [
+              0,
+              0,
+              0
+            ],
+            "alpha": 0,
+            "hex": "#000000"
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 0,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 0,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$description": "Polyxd addition: no shadow. Carbon tiles and cards are flat and are set apart by $layer colour, not elevation."
+      }
+    }
+  }
+}

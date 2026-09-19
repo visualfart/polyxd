@@ -1,0 +1,449 @@
+{
+  "$description": "Polyxd semantic tier for Ant Design. Every token aliases an antd token (antd.token.* / antd.palette*.*) or, where antd has no opaque or passing equivalent, a polyxd.sys.* addition documented in the README.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{antd.token.colorBgContainer}"
+      },
+      "subtle": {
+        "$value": "{polyxd.sys.color.solid.colorFillAlter}",
+        "$description": "table header / collapse header background"
+      },
+      "raised": {
+        "$value": "{antd.token.colorBgContainer}",
+        "$description": "antd Card background (cards are separated by colorBorderSecondary, not tone)"
+      },
+      "overlay": {
+        "$value": "{antd.token.colorBgElevated}",
+        "$description": "Modal / Popover / Dropdown background"
+      },
+      "inverse": {
+        "$value": "{polyxd.sys.color.solid.colorBgSpotlight}",
+        "$description": "Tooltip background"
+      }
+    },
+    "scrim": {
+      "$value": "{antd.token.colorBgMask}"
+    },
+    "text": {
+      "default": {
+        "$value": "{polyxd.sys.color.solid.colorText}"
+      },
+      "muted": {
+        "$value": "{polyxd.sys.color.solid.colorTextSecondary}"
+      },
+      "inverse": {
+        "$value": "{antd.token.colorTextLightSolid}"
+      },
+      "link": {
+        "$value": "{polyxd.sys.color.text-link}",
+        "$description": "Contrast adjustment (light, dark): natural antd.token.colorLink moved to the nearest step of the info palette that passes; see README"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{antd.token.colorBorderSecondary}"
+      },
+      "strong": {
+        "$value": "{polyxd.sys.color.solid.colorTextTertiary}",
+        "$description": "Contrast adjustment (light, dark): natural antd.token.colorBorder moved to the nearest step of antd's neutral ladder that passes; see README"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.color.border-focus}",
+        "$description": "genFocusOutline: outline lineWidthFocus solid colorPrimaryBorder. Contrast adjustment (light, dark): natural antd.token.colorPrimaryBorder moved to the nearest step of the primary palette that passes; see README"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{polyxd.sys.color.action-primary-background}",
+          "$description": "Contrast adjustment (light): natural antd.token.colorPrimary moved to the nearest step of the primary palette that passes; see README"
+        },
+        "foreground": {
+          "$value": "{antd.token.colorTextLightSolid}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{antd.token.colorBgContainer}",
+          "$description": "antd default Button"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.color.solid.colorText}"
+        },
+        "border": {
+          "$value": "{antd.token.colorBorder}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.color.action-danger-background}",
+          "$description": "Contrast adjustment (light, dark): natural antd.token.colorError moved to the nearest step of the error palette that passes; see README"
+        },
+        "foreground": {
+          "$value": "{antd.token.colorTextLightSolid}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{antd.token.controlItemBgActive}",
+        "$description": "selected Select option / Menu item"
+      },
+      "foreground": {
+        "$value": "{polyxd.sys.color.solid.colorText}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{antd.token.colorInfoBg}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.color.status-info-foreground}",
+          "$description": "Contrast adjustment (light, dark): natural antd.token.colorInfoText moved to the nearest step of the info palette that passes; see README"
+        },
+        "emphasis": {
+          "$value": "{antd.token.colorInfo}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{antd.token.colorSuccessBg}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.color.status-success-foreground}",
+          "$description": "Contrast adjustment (light): natural antd.token.colorSuccessText moved to the nearest step of the success palette that passes; see README"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.color.status-success-emphasis}",
+          "$description": "Contrast adjustment (light): natural antd.token.colorSuccess moved to the nearest step of the success palette that passes; see README"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{antd.token.colorWarningBg}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.color.status-warning-foreground}",
+          "$description": "Contrast adjustment (light): natural antd.token.colorWarningText moved to the nearest step of the warning palette that passes; see README"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.color.status-warning-emphasis}",
+          "$description": "Contrast adjustment (light): natural antd.token.colorWarning moved to the nearest step of the warning palette that passes; see README"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{antd.token.colorErrorBg}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.color.status-danger-foreground}",
+          "$description": "Contrast adjustment (light, dark): natural antd.token.colorErrorText moved to the nearest step of the error palette that passes; see README"
+        },
+        "emphasis": {
+          "$value": "{antd.token.colorError}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polyxd.sys.color.data-categorical-1}",
+          "$description": "antd preset blue palette, step 6 (light: presetPalettes, dark: presetDarkPalettes)"
+        },
+        "2": {
+          "$value": "{polyxd.sys.color.data-categorical-2}",
+          "$description": "antd preset orange palette, step 6 (light: presetPalettes, dark: presetDarkPalettes). Contrast adjustment (light): natural preset orange step 6 moved to the nearest step of the orange palette that passes; see README"
+        },
+        "3": {
+          "$value": "{polyxd.sys.color.data-categorical-3}",
+          "$description": "antd preset cyan palette, step 6 (light: presetPalettes, dark: presetDarkPalettes). Contrast adjustment (light): natural preset cyan step 6 moved to the nearest step of the cyan palette that passes; see README"
+        },
+        "4": {
+          "$value": "{polyxd.sys.color.data-categorical-4}",
+          "$description": "antd preset magenta palette, step 6 (light: presetPalettes, dark: presetDarkPalettes)"
+        },
+        "5": {
+          "$value": "{polyxd.sys.color.data-categorical-5}",
+          "$description": "antd preset green palette, step 6 (light: presetPalettes, dark: presetDarkPalettes). Contrast adjustment (light): natural preset green step 6 moved to the nearest step of the green palette that passes; see README"
+        },
+        "6": {
+          "$value": "{polyxd.sys.color.data-categorical-6}",
+          "$description": "antd preset purple palette, step 6 (light: presetPalettes, dark: presetDarkPalettes). Contrast adjustment (dark): natural preset purple step 6 moved to the nearest step of the purple palette that passes; see README"
+        }
+      },
+      "positive": {
+        "$value": "{polyxd.sys.color.data-positive}",
+        "$description": "Contrast adjustment (light): natural antd.token.colorSuccess moved to the nearest step of the success palette that passes; see README"
+      },
+      "negative": {
+        "$value": "{antd.token.colorError}"
+      },
+      "neutral": {
+        "$value": "{polyxd.sys.color.solid.colorTextTertiary}",
+        "$description": "antd's icon / tertiary grey (colorIcon)"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{antd.token.fontFamily}",
+          "fontSize": "{antd.token.fontSizeHeading2}",
+          "fontWeight": "{antd.token.fontWeightStrong}",
+          "lineHeight": "{antd.token.lineHeightHeading2}",
+          "letterSpacing": "{polyxd.sys.font.letter-spacing}"
+        },
+        "$description": "Typography.Title level 2: fontSizeHeading2 30px, lineHeightHeading2 1.2667 (38px), fontWeightStrong 600"
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{antd.token.fontFamily}",
+          "fontSize": "{antd.token.fontSizeHeading4}",
+          "fontWeight": "{antd.token.fontWeightStrong}",
+          "lineHeight": "{antd.token.lineHeightHeading4}",
+          "letterSpacing": "{polyxd.sys.font.letter-spacing}"
+        },
+        "$description": "Typography.Title level 4: fontSizeHeading4 20px, lineHeightHeading4 1.4 (28px), fontWeightStrong 600"
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{antd.token.fontFamily}",
+          "fontSize": "{antd.token.fontSizeHeading5}",
+          "fontWeight": "{antd.token.fontWeightStrong}",
+          "lineHeight": "{antd.token.lineHeightHeading5}",
+          "letterSpacing": "{polyxd.sys.font.letter-spacing}"
+        },
+        "$description": "Typography.Title level 5 (also Card / Modal title size, fontSizeLG): fontSizeHeading5 16px, lineHeightHeading5 1.5 (24px), fontWeightStrong 600"
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{antd.token.fontFamily}",
+          "fontSize": "{antd.token.fontSizeLG}",
+          "fontWeight": "{polyxd.sys.font.weight-regular}",
+          "lineHeight": "{antd.token.lineHeightLG}",
+          "letterSpacing": "{polyxd.sys.font.letter-spacing}"
+        },
+        "$description": "Judgement call: antd's base fontSize is 14px but the contract needs >= 16px body text, so this is antd's large text size: fontSizeLG 16px, lineHeightLG 1.5 (24px), 400"
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{antd.token.fontFamily}",
+          "fontSize": "{antd.token.fontSize}",
+          "fontWeight": "{polyxd.sys.font.weight-regular}",
+          "lineHeight": "{antd.token.lineHeight}",
+          "letterSpacing": "{polyxd.sys.font.letter-spacing}"
+        },
+        "$description": "antd base text (fontSize): fontSize 14px, lineHeight 1.5714 (22px), 400"
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{antd.token.fontFamily}",
+          "fontSize": "{antd.token.fontSize}",
+          "fontWeight": "{polyxd.sys.font.weight-regular}",
+          "lineHeight": "{antd.token.lineHeight}",
+          "letterSpacing": "{polyxd.sys.font.letter-spacing}"
+        },
+        "$description": "antd control text (Button, Input, Form label): fontSize 14px, lineHeight 1.5714 (22px), 400"
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{antd.token.fontFamily}",
+          "fontSize": "{antd.token.fontSizeSM}",
+          "fontWeight": "{polyxd.sys.font.weight-regular}",
+          "lineHeight": "{antd.token.lineHeightSM}",
+          "letterSpacing": "{polyxd.sys.font.letter-spacing}"
+        },
+        "$description": "antd small text (Tag, Badge, small controls): fontSizeSM 12px, lineHeightSM 1.6667 (20px), 400"
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{antd.token.fontFamily}",
+          "fontSize": "{antd.token.fontSizeHeading3}",
+          "fontWeight": "{polyxd.sys.font.weight-regular}",
+          "lineHeight": "{antd.token.lineHeightHeading3}",
+          "letterSpacing": "{polyxd.sys.font.letter-spacing}"
+        },
+        "$description": "antd Statistic value (contentFontSize = fontSizeHeading3): fontSizeHeading3 24px, lineHeightHeading3 1.3333 (32px), 400"
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "$description": "antd size ladder (sizeUnit 4 x sizeStep): XXS 4, XS 8, SM 12, base 16, MD 20, LG 24, XL 32, XXL 48",
+    "inset": {
+      "compact": {
+        "$value": "{antd.token.paddingSM}",
+        "$description": "Card size=small body padding"
+      },
+      "default": {
+        "$value": "{antd.token.padding}"
+      },
+      "comfortable": {
+        "$value": "{antd.token.paddingLG}",
+        "$description": "Card body padding"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{antd.token.marginXXS}"
+      },
+      "default": {
+        "$value": "{antd.token.marginXS}"
+      },
+      "loose": {
+        "$value": "{antd.token.margin}"
+      },
+      "section": {
+        "$value": "{antd.token.marginXL}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{antd.token.marginXXS}"
+      },
+      "default": {
+        "$value": "{antd.token.marginXS}",
+        "$description": "Space size=small"
+      },
+      "loose": {
+        "$value": "{antd.token.margin}",
+        "$description": "Space size=middle"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{antd.token.controlHeight}",
+        "$description": "antd default control height, 32px. Judgement call: antd's default density is below the 44-48px touch guidance of iOS/Material; it meets WCAG 2.5.8 (24px). Use controlHeightLG (40px) for touch-first surfaces"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{antd.token.fontSizeIcon}",
+        "$description": "antd small icon size (fontSizeSM)"
+      },
+      "default": {
+        "$value": "{antd.token.fontSize}",
+        "$description": "antd icons inherit the text size (14px)"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{antd.token.borderRadiusSM}"
+    },
+    "default": {
+      "$value": "{antd.token.borderRadius}"
+    },
+    "large": {
+      "$value": "{antd.token.borderRadiusLG}"
+    },
+    "full": {
+      "$value": "{polyxd.sys.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{antd.token.lineWidth}"
+      },
+      "strong": {
+        "$value": "{antd.token.lineWidthBold}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{antd.token.lineWidthFocus}",
+        "$description": "genFocusOutline outline width"
+      },
+      "offset": {
+        "$value": "{polyxd.sys.focus.ring-offset}",
+        "$description": "genFocusOutline outline-offset"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": 65,
+      "$type": "number",
+      "$description": "Characters per line for running text (Polyxd; antd has no measure token)"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{antd.token.boxShadowTertiary}",
+      "$description": "antd's low elevation (Segmented thumb, hoverable surfaces)"
+    },
+    "overlay": {
+      "$value": "{antd.token.boxShadowSecondary}",
+      "$description": "Popover / Dropdown / Select popup; identical to boxShadow (Modal) in antd 6"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{antd.token.motionDurationFast}"
+      },
+      "short": {
+        "$value": "{antd.token.motionDurationMid}"
+      },
+      "medium": {
+        "$value": "{antd.token.motionDurationSlow}"
+      },
+      "long": {
+        "$value": "{polyxd.sys.motion.duration-long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{antd.token.motionEaseInOut}"
+      },
+      "enter": {
+        "$value": "{antd.token.motionEaseOutCirc}",
+        "$description": "antd zoom motion (Modal, Popover) enter"
+      },
+      "exit": {
+        "$value": "{antd.token.motionEaseInOutCirc}",
+        "$description": "antd zoom motion (Modal, Popover) leave"
+      }
+    }
+  }
+}
