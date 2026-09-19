@@ -1,0 +1,59 @@
+# @polixd/spec
+
+The Polixd spec: what a just-in-time interface is made of, and the tools to check one.
+
+A generated interface is a **UI document**: a flat list of semantic components (the same adjacency-list shape as A2UI), bound to data the host provides, with actions that name capabilities the host has registered. The document is data, never code. A renderer turns it into native components (shadcn on the web, SwiftUI, Compose), and a design-system pack decides how it looks.
+
+## What's here
+
+| Path | What |
+|---|---|
+| `components/*.json` | The 24 semantic components (source of truth): props, when to use, accessibility and agent semantics, rendering rules, platform mappings |
+| `schema/ui.schema.json` | JSON Schema for a UI document, generated from the components (validation and constrained decoding) |
+| `catalog/catalog.json` | Usage guidance per component, generated |
+| `docs/components.md` | Readable component reference with the web / iOS / Android / A2UI mapping table, generated |
+| `patterns/*.json` | 5 core patterns, each with self-checking rules and journey semantics |
+| `tokens/semantic-contract.json` | The 86 semantic tokens every design-system pack must provide, plus 34 WCAG contrast pairs and constraints |
+| `schema/design-system.schema.json` | Design-system pack manifest |
+| `schema/check.schema.json` | The shared rule vocabulary used by patterns, Design Direction rules and acceptance criteria |
+| `schema/capabilities.schema.json` | Capability registry (features): risk levels, inputs, flags |
+| `schema/journey.schema.json` | Journeys (flows): goal, checkpoints, done event, acceptance criteria, agent task |
+| `schema/event.schema.json` | Semantic analytics events |
+| `schema/direction.schema.json` | Design Direction (a company's taste): profile, voice, patterns, rules, exemplars |
+| `examples/` | 20 UI documents across six domains, a capability registry, journeys, two contrasting directions and an event |
+
+## Using it
+
+```bash
+# validate UI documents (schema + structural and design rules)
+npm run validate -w @polixd/spec -- examples/*.json
+
+# check a design-system pack against the token contract
+npm run check-ds -w @polixd/spec -- ../ds-material3/manifest.json
+
+# after editing components/*.json or schema/common.defs.json
+npm run build:schema -w @polixd/spec
+
+npm test -w @polixd/spec
+```
+
+From code:
+
+```ts
+import { validateDocument, checkDesignSystem } from "@polixd/spec";
+import { checkPattern, evaluateRules } from "@polixd/spec/patterns";
+import { checkCapabilities } from "@polixd/spec/capabilities";
+```
+
+## Rules the validator enforces beyond the schema
+
+- Every referenced component exists, has one parent, and is reachable from the root; no cycles.
+- References have allowed types (e.g. `ActionBar` holds only `Action`s; `Confirm.summary` is a `DetailList`).
+- At most one primary action is visible at a time (a `Form` submit counts; each `Views` panel, `Steps` step and `Confirm` dialog is its own context).
+- Relative data paths only inside repeated items; absolute paths should exist in the data when data is given.
+- Only `ui.dismiss`, `ui.back` and `ui.next` in the reserved `ui.` action namespace.
+- Key figures and images must be bound to host data: the model can't invent a balance or load a URL.
+
+With a capability registry, `checkCapabilities` also enforces that destructive capabilities are only triggered from a `Confirm`, and consequential ones from a `Confirm`, a review surface or a `Steps` flow ending in a review.
+
+Code is Apache-2.0; the spec content (schemas, components, patterns, docs) is CC-BY-4.0.

@@ -2,6 +2,7 @@
  * Assembles the per-component source files into:
  *  - schema/ui.schema.json   one self-contained JSON Schema for a UI document (validation + constrained decoding)
  *  - catalog/catalog.json    usage guidance, accessibility, rendering rules and platform mappings per component
+ *  - docs/components.md      the same, as a readable reference with the platform mapping table
  * Run with `npm run build:schema`. The test suite fails if the outputs are stale.
  */
 import { readFile, readdir, writeFile } from "node:fs/promises";
@@ -92,6 +93,52 @@ export function buildCatalog(components: ComponentSource[]) {
   };
 }
 
+const cell = (s: unknown) => String(s).replace(/\|/g, "\\|").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+export function buildComponentDocs(components: ComponentSource[]) {
+  const order = ["structure", "content", "feedback", "input", "action", "flow"];
+  const sorted = [...components].sort((a, b) => order.indexOf(a.category) - order.indexOf(b.category) || a.name.localeCompare(b.name));
+  const m = (c: ComponentSource) => c.mappings as Record<string, string>;
+  const list = (items: unknown) => (items as string[]).map((x) => `- ${x}`).join("\n");
+  const lines = [
+    "# Polixd components",
+    "",
+    `Generated from \`components/*.json\` (spec ${SPEC_VERSION}). The model chooses these semantic components; each platform renders them with its own native parts.`,
+    "",
+    "## Platform mapping",
+    "",
+    "| Component | Category | Web (shadcn/Radix) | iOS (SwiftUI) | Android (Compose M3) | A2UI |",
+    "|---|---|---|---|---|---|",
+    ...sorted.map((c) => `| [${c.name}](#${c.name.toLowerCase()}) | ${c.category} | ${cell(m(c).web)} | ${cell(m(c).ios)} | ${cell(m(c).android)} | ${cell(c.a2ui)} |`),
+  ];
+  for (const c of sorted) {
+    const a11y = c.accessibility as { role: string; requirements: string[] };
+    lines.push(
+      "",
+      `## ${c.name}`,
+      "",
+      c.summary,
+      "",
+      `**Required props:** ${c.required.map((r) => `\`${r}\``).join(", ")}. **Optional:** ${Object.keys(c.props).filter((p) => !c.required.includes(p)).map((p) => `\`${p}\``).join(", ") || "none"}.`,
+      "",
+      "**Use when**",
+      list(c.whenToUse),
+      "",
+      "**Don't use when**",
+      list(c.whenNotToUse),
+      "",
+      `**Accessibility** (role: ${a11y.role})`,
+      list(a11y.requirements),
+      "",
+      `**Agents:** ${c.agent}`,
+      "",
+      "**Rendering rules**",
+      list(c.rendering),
+    );
+  }
+  return lines.join("\n") + "\n";
+}
+
 const json = (v: unknown) => JSON.stringify(v, null, 2) + "\n";
 
 export async function buildOutputs() {
@@ -99,6 +146,7 @@ export async function buildOutputs() {
   return {
     "schema/ui.schema.json": json(buildUiSchema(common, components)),
     "catalog/catalog.json": json(buildCatalog(components)),
+    "docs/components.md": buildComponentDocs(components),
   };
 }
 
