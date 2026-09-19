@@ -27,10 +27,10 @@ The goal is that designers shape generated UI without writing prompts or JSON by
 | Setting | Values | Default |
 |---|---|---|
 | `density` | `compact`, `comfortable`, `spacious`. Sets row heights and how tightly rows pack: 32, 40 and 48px. `compact` is for pointer surfaces; touch targets keep their minimum either way | `comfortable` |
-| `emphasisBudget` | Primary actions allowed per view, 1–3 | `1` |
+| `emphasisBudget` | Primary actions allowed per view, 1–3. The validator enforces it: above one, a surface may carry two or three primary actions | `1` |
 | `dataDisplay` | `auto`, `prefer-charts`, `prefer-tables`, `prefer-metrics` | `auto` |
 | `motion` | `none`, `subtle`, `expressive` | `subtle` |
-| `disclosure` | `show-everything`, `progressive` (how eagerly secondary detail goes behind a `Disclosure`) | `progressive` |
+| `disclosure` | `show-everything`, `progressive` (how eagerly secondary detail goes behind a `Disclosure`). `show-everything` also opens every `Disclosure` on arrival | `progressive` |
 | `freedom` | `strict`, `guided`, `open` | `guided` |
 
 The validator currently enforces one primary action per view regardless of `emphasisBudget`, since the accessibility floor caps it at one on most platforms.

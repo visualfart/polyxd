@@ -18,6 +18,8 @@ export interface PolyxdSurfaceProps {
   theme?: string;
   /** Design Direction's profile.density. Sets row heights and spacing; compact is for pointer surfaces. */
   density?: "compact" | "comfortable" | "spacious";
+  /** Design Direction's profile.disclosure. "show-everything" opens every Disclosure by default. */
+  disclosure?: "progressive" | "show-everything";
   mode?: "light" | "dark";
   locale?: string;
   /** Turns a host media reference into a URL. Generated UIs never contain URLs. */
@@ -28,7 +30,7 @@ export interface PolyxdSurfaceProps {
 }
 
 /** Renders one Polyxd UI document. */
-export function PolyxdSurface({ document: doc, data: initial, onAction, onDataChange, onDismiss, theme, mode, density, locale = "en-GB", resolveMedia, components: overrides, className }: PolyxdSurfaceProps) {
+export function PolyxdSurface({ document: doc, data: initial, onAction, onDataChange, onDismiss, theme, mode, density, disclosure = "progressive", locale = "en-GB", resolveMedia, components: overrides, className }: PolyxdSurfaceProps) {
   const [data, setData] = useState<Data>(() => initial ?? doc.data ?? {});
   const [portal, setPortal] = useState<HTMLElement | null>(null);
   const byId = useMemo(() => new Map(doc.components.map((c) => [c.id, c])), [doc]);
@@ -54,7 +56,7 @@ export function PolyxdSurface({ document: doc, data: initial, onAction, onDataCh
     [data, onAction, onDismiss],
   );
 
-  const value: SurfaceContextValue = { doc, byId, data, setValue, dispatch, locale, resolveMedia, portal, components };
+  const value: SurfaceContextValue = { doc, byId, data, setValue, dispatch, locale, resolveMedia, portal, components, disclosure };
   const rootIsDialog = byId.get(doc.root)?.component === "Confirm";
   const nav = doc.components.find((c) => c.component === "Navigation");
 

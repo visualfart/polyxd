@@ -14,8 +14,7 @@
       "children": [
         "title",
         "due",
-        "priority",
-        "notes"
+        "more"
       ],
       "submit": {
         "label": "Add task",
@@ -91,6 +90,15 @@
       "value": {
         "path": "/draft/notes"
       }
+    },
+    {
+      "id": "more",
+      "component": "Disclosure",
+      "summary": "Priority and notes",
+      "children": [
+        "priority",
+        "notes"
+      ]
     }
   ],
   "data": {

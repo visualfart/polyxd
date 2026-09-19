@@ -76,13 +76,28 @@ const matches = (actual: unknown, expected: unknown): boolean =>
     ? actual !== null && typeof actual === "object" && Object.entries(expected).every(([k, v]) => matches((actual as any)[k], v))
     : JSON.stringify(actual) === JSON.stringify(expected);
 
+/** Opens any collapsed Disclosure, so hidden detail doesn't look like a missing control. */
+async function openDetail(root: Locator): Promise<boolean> {
+  const closed = root.locator('.pxd-disclosure-trigger[aria-expanded="false"]');
+  const n = await closed.count();
+  for (let i = 0; i < n; i++) await closed.nth(0).click();
+  return n > 0;
+}
+
 /** Runs a task on a rendered surface and checks the host received the expected capability event. */
 export async function runTask(page: Page, task: Task): Promise<AgentResult> {
   const root = page.locator(".pxd-surface");
   let done = 0;
   try {
     for (const step of task.steps) {
-      await runStep(root, step);
+      try {
+        await runStep(root, step);
+      } catch (e) {
+        // Detail behind progressive disclosure is hidden, not unavailable: open it and try again,
+        // which is what a capable agent (or a person) does.
+        if (!/^no /.test((e as Error).message) || !(await openDetail(root))) throw e;
+        await runStep(root, step);
+      }
       done++;
     }
   } catch (e) {

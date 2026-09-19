@@ -91,3 +91,19 @@ test("allows one primary per view panel and per step", () => {
   });
   assert.equal(r.valid, true, r.text);
 });
+
+test("emphasisBudget: a Design Direction can allow two primary actions in one view", () => {
+  const doc = {
+    specVersion: "0.1.0",
+    surface: { id: "s", title: "Dashboard" },
+    root: "bar",
+    components: [
+      { id: "bar", component: "ActionBar", children: ["a", "b"] },
+      { id: "a", component: "Action", label: "Add a task", emphasis: "primary", action: { event: { name: "task.create" } } },
+      { id: "b", component: "Action", label: "Start a project", emphasis: "primary", action: { event: { name: "project.create" } } },
+    ],
+  };
+  assert.match(validateDocument(doc).issues.map((i) => i.message).join(), /more than one primary action/);
+  assert.deepEqual(validateDocument(doc, { emphasisBudget: 2 }).issues, []);
+  assert.match(validateDocument(doc, { emphasisBudget: 1 }).issues.map((i) => i.message).join(), /more than one primary action/);
+});

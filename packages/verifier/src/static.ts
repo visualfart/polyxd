@@ -8,6 +8,8 @@ export interface StaticOptions {
   registry?: CapabilityRegistry;
   /** Design Direction or acceptance rules to hold the document to */
   rules?: Rule[];
+  /** Primary actions allowed in one view (Design Direction's profile.emphasisBudget) */
+  emphasisBudget?: number;
 }
 
 const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput"]);
@@ -31,7 +33,7 @@ function valueAt(data: unknown, pointer?: string): unknown {
  */
 export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
   const out: Finding[] = [];
-  const v = validateDocument(doc);
+  const v = validateDocument(doc, { emphasisBudget: opts.emphasisBudget });
   for (const i of v.issues) out.push({ severity: i.severity, check: "spec", message: `${i.at}: ${i.message}` });
   if (!v.valid) return out;
 

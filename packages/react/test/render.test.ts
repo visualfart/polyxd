@@ -25,7 +25,8 @@ test("formats bound values with the locale", () => {
 });
 
 test("choice picks a control by option count", () => {
-  const out = html(load("tasks-add.json"));
+  // Priority sits behind "Priority and notes", so open the detail to see its control.
+  const out = html(load("tasks-add.json"), { disclosure: "show-everything" });
   assert.match(out, /pxd-chips/); // 3 short options → chips
   const checkout = html(load("shop-checkout.json"));
   assert.match(checkout, /Step 1 of 3/);
@@ -58,4 +59,11 @@ test("section headings nest below the surface title", () => {
 test("adapters can replace a component renderer", () => {
   const out = html(load("error-load-failed.json"), { components: { Status: () => createElement("marquee", null, "custom status") } });
   assert.match(out, /custom status/);
+});
+
+test("disclosure: 'show-everything' opens detail that would otherwise start closed", () => {
+  const doc = load("tasks-add.json");
+  const openCount = (s: string) => (s.match(/data-state="open"/g) ?? []).length;
+  assert.equal(openCount(html(doc)), 0);
+  assert.ok(openCount(html(doc, { disclosure: "show-everything" })) > 0, "a Disclosure should start open");
 });

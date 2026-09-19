@@ -47,6 +47,8 @@ export interface SurfaceContextValue {
   portal: HTMLElement | null;
   /** Component renderers in use (the default adapter plus any overrides) */
   components: Record<string, React.ComponentType<{ node: Node }>>;
+  /** Design Direction's profile.disclosure: whether secondary detail starts hidden. */
+  disclosure: "progressive" | "show-everything";
 }
 
 export const SurfaceContext = createContext<SurfaceContextValue | null>(null);

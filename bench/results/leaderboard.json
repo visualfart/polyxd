@@ -149,6 +149,18 @@
       "latency": 5.76,
       "ttft": 1.394,
       "tps": 93.4
+    },
+    {
+      "run": "gemma-4-e4b-it-4bit+sft-v3-tree-constrained",
+      "valid": null,
+      "score": 0,
+      "tasks": 0,
+      "taskTotal": 0,
+      "expectations": null,
+      "direction": null,
+      "latency": 0,
+      "ttft": 0,
+      "tps": 0
     }
   ],
   "best": {

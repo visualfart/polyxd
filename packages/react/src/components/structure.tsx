@@ -97,7 +97,9 @@ function Progress({ value, label, name, locale }: { value: unknown; label?: stri
 
 export function Disclosure({ node }: { node: Node }) {
   const b = useBindings();
-  const [open, setOpen] = useState<boolean>(node.open ?? false);
+  const s = useSurface();
+  // Design Direction can say a product shows everything rather than tucking detail away.
+  const [open, setOpen] = useState<boolean>(node.open ?? s.disclosure === "show-everything");
   return (
     <Collapsible.Root className="pxd-disclosure" open={open} onOpenChange={setOpen} {...useA11y(node)}>
       <Collapsible.Trigger className="pxd-disclosure-trigger">

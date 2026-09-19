@@ -101,7 +101,12 @@ const schemaMessage = (e: ErrorObject) => {
 };
 
 /** Validates a UI document: JSON Schema first, then structural and design rules the schema can't express. */
-export function validateDocument(doc: Json): ValidationResult {
+export interface ValidateOptions {
+  /** Primary actions allowed in one view (Design Direction's profile.emphasisBudget). Default 1. */
+  emphasisBudget?: number;
+}
+
+export function validateDocument(doc: Json, opts: ValidateOptions = {}): ValidationResult {
   const issues: Issue[] = [];
   const error = (at: string, message: string) => issues.push({ severity: "error", at, message });
   const warn = (at: string, message: string) => issues.push({ severity: "warning", at, message });
@@ -215,14 +220,17 @@ export function validateDocument(doc: Json): ValidationResult {
     if (!reached.has(id)) warn(`/components/${index}`, `"${id}" is not reachable from root "${d.root}"`);
   }
 
-  // At most one primary action visible at a time: two primaries conflict when one context contains the other.
+  // How many primary actions may share a view: one by default, more only if the Design Direction
+  // says so (profile.emphasisBudget). Two primaries share a view when one context contains the other.
+  const budget = Math.max(1, opts.emphasisBudget ?? 1);
   const isPrefix = (a: string[], b: string[]) => a.every((x, i) => b[i] === x);
+  const together = (a: { stack: string[] }, b: { stack: string[] }) => isPrefix(a.stack, b.stack) || isPrefix(b.stack, a.stack);
   for (let i = 0; i < primaries.length; i++) {
-    for (let j = i + 1; j < primaries.length; j++) {
-      const [a, b] = [primaries[i], primaries[j]];
-      if (isPrefix(a.stack, b.stack) || isPrefix(b.stack, a.stack)) {
-        error(b.at, `more than one primary action visible at once (also ${a.at})`);
-      }
+    const group = primaries.filter((p, j) => j >= i && together(primaries[i], p));
+    if (group.length > budget) {
+      const last = group[budget];
+      error(last.at, budget === 1 ? `more than one primary action visible at once (also ${group[0].at})` : `more than ${budget} primary actions visible at once (also ${group.slice(0, budget).map((p) => p.at).join(", ")})`);
+      break;
     }
   }
 
