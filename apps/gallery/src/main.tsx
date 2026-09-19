@@ -16,6 +16,7 @@ const domainOf = (file: string) => file.split("-")[0];
 const domains = [...new Set(examples.map((e) => domainOf(e.file)))];
 
 const WIDTHS = { phone: 390, tablet: 768, desktop: 1100 } as const;
+const THEME_NAMES: Record<string, string> = { material3: "Material 3", carbon: "Carbon", antd: "Ant Design" };
 type Width = keyof typeof WIDTHS;
 
 /** Placeholder images for host media references (generated UIs never contain URLs). */
@@ -72,10 +73,13 @@ function Gallery() {
   );
 
   return (
+    <>
+    <SiteHeader />
     <div className="g-app">
       <nav className="g-sidebar" aria-label="Examples">
-        <div className="g-brand">
-          Polyxd <span>gallery</span>
+        <div className="g-intro">
+          <h1>Gallery</h1>
+          <p>Every example, rendered live. Switch the design system, mode and width; actions the interface sends appear in the inspector.</p>
         </div>
         {domains.map((d) => (
           <div key={d} className="g-domain">
@@ -102,7 +106,9 @@ function Gallery() {
             Design system
             <select value={theme} onChange={(e) => (setTheme(e.target.value), sync({ theme: e.target.value }))}>
               {themes.map((t) => (
-                <option key={t}>{t}</option>
+                <option key={t} value={t}>
+                  {THEME_NAMES[t] ?? t}
+                </option>
               ))}
             </select>
           </label>
@@ -124,7 +130,7 @@ function Gallery() {
             Reset
           </button>
           <span className="g-meta">
-            intent <code>{example.doc.surface.intent}</code>
+            <span>intent</span> <code>{example.doc.surface.intent}</code>
           </span>
         </div>
 
@@ -158,6 +164,35 @@ function Gallery() {
         )}
       </aside>
     </div>
+    </>
+  );
+}
+
+const LOGO = (
+  <svg width="30" height="25" viewBox="0 0 34 28" fill="none" aria-hidden="true">
+    <rect x="1" y="1" width="18" height="18" rx="9" stroke="currentColor" strokeWidth="2" />
+    <rect x="8" y="5" width="18" height="18" stroke="currentColor" strokeWidth="2" />
+    <rect x="15" y="9" width="18" height="18" rx="4" fill="#FF5A1F" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
+/** The same header as polyxd.com, so the gallery reads as part of the site. */
+function SiteHeader() {
+  return (
+    <header className="g-header">
+      <a className="g-brand" href="/" aria-label="Polyxd home">
+        {LOGO}
+        <span>polyxd</span>
+      </a>
+      <nav className="g-nav" aria-label="Main">
+        <a className="g-nav-optional" href="/#how">How it works</a>
+        <a className="g-nav-optional" href="/#agents">People &amp; agents</a>
+        <a className="g-nav-optional" href="/#taste">For design teams</a>
+        <a href="/gallery/" aria-current="page">Gallery</a>
+        <a href="/docs/">Docs</a>
+        <a className="g-cta" href="/#access">Early access</a>
+      </nav>
+    </header>
   );
 }
 
