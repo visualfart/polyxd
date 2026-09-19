@@ -1,0 +1,1067 @@
+{
+  "$description": "Material 3 system tier, mode-independent: typescale, shape, motion, state and elevation from material-web v2.5.0 tokens/versions/v0_192/_md-sys-*.scss.",
+  "md": {
+    "sys": {
+      "typescale": {
+        "$description": "From material-web v2.5.0 tokens/versions/v0_192/_md-sys-typescale.scss; rem converted to px at 16px/rem",
+        "display-large-font": {
+          "$value": "{md.ref.typeface.brand}",
+          "$type": "fontFamily"
+        },
+        "display-large-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "display-large-size": {
+          "$value": {
+            "value": 57,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "display-large-line-height": {
+          "$value": {
+            "value": 64,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "display-large-tracking": {
+          "$value": {
+            "value": -0.25,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "display-medium-font": {
+          "$value": "{md.ref.typeface.brand}",
+          "$type": "fontFamily"
+        },
+        "display-medium-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "display-medium-size": {
+          "$value": {
+            "value": 45,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "display-medium-line-height": {
+          "$value": {
+            "value": 52,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "display-medium-tracking": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "display-small-font": {
+          "$value": "{md.ref.typeface.brand}",
+          "$type": "fontFamily"
+        },
+        "display-small-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "display-small-size": {
+          "$value": {
+            "value": 36,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "display-small-line-height": {
+          "$value": {
+            "value": 44,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "display-small-tracking": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "headline-large-font": {
+          "$value": "{md.ref.typeface.brand}",
+          "$type": "fontFamily"
+        },
+        "headline-large-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "headline-large-size": {
+          "$value": {
+            "value": 32,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "headline-large-line-height": {
+          "$value": {
+            "value": 40,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "headline-large-tracking": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "headline-medium-font": {
+          "$value": "{md.ref.typeface.brand}",
+          "$type": "fontFamily"
+        },
+        "headline-medium-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "headline-medium-size": {
+          "$value": {
+            "value": 28,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "headline-medium-line-height": {
+          "$value": {
+            "value": 36,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "headline-medium-tracking": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "headline-small-font": {
+          "$value": "{md.ref.typeface.brand}",
+          "$type": "fontFamily"
+        },
+        "headline-small-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "headline-small-size": {
+          "$value": {
+            "value": 24,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "headline-small-line-height": {
+          "$value": {
+            "value": 32,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "headline-small-tracking": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "title-large-font": {
+          "$value": "{md.ref.typeface.brand}",
+          "$type": "fontFamily"
+        },
+        "title-large-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "title-large-size": {
+          "$value": {
+            "value": 22,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "title-large-line-height": {
+          "$value": {
+            "value": 28,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "title-large-tracking": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "title-medium-font": {
+          "$value": "{md.ref.typeface.plain}",
+          "$type": "fontFamily"
+        },
+        "title-medium-weight": {
+          "$value": "{md.ref.typeface.weight-medium}",
+          "$type": "fontWeight"
+        },
+        "title-medium-size": {
+          "$value": {
+            "value": 16,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "title-medium-line-height": {
+          "$value": {
+            "value": 24,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "title-medium-tracking": {
+          "$value": {
+            "value": 0.15,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "title-small-font": {
+          "$value": "{md.ref.typeface.plain}",
+          "$type": "fontFamily"
+        },
+        "title-small-weight": {
+          "$value": "{md.ref.typeface.weight-medium}",
+          "$type": "fontWeight"
+        },
+        "title-small-size": {
+          "$value": {
+            "value": 14,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "title-small-line-height": {
+          "$value": {
+            "value": 20,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "title-small-tracking": {
+          "$value": {
+            "value": 0.1,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "body-large-font": {
+          "$value": "{md.ref.typeface.plain}",
+          "$type": "fontFamily"
+        },
+        "body-large-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "body-large-size": {
+          "$value": {
+            "value": 16,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "body-large-line-height": {
+          "$value": {
+            "value": 24,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "body-large-tracking": {
+          "$value": {
+            "value": 0.5,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "body-medium-font": {
+          "$value": "{md.ref.typeface.plain}",
+          "$type": "fontFamily"
+        },
+        "body-medium-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "body-medium-size": {
+          "$value": {
+            "value": 14,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "body-medium-line-height": {
+          "$value": {
+            "value": 20,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "body-medium-tracking": {
+          "$value": {
+            "value": 0.25,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "body-small-font": {
+          "$value": "{md.ref.typeface.plain}",
+          "$type": "fontFamily"
+        },
+        "body-small-weight": {
+          "$value": "{md.ref.typeface.weight-regular}",
+          "$type": "fontWeight"
+        },
+        "body-small-size": {
+          "$value": {
+            "value": 12,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "body-small-line-height": {
+          "$value": {
+            "value": 16,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "body-small-tracking": {
+          "$value": {
+            "value": 0.4,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "label-large-font": {
+          "$value": "{md.ref.typeface.plain}",
+          "$type": "fontFamily"
+        },
+        "label-large-weight": {
+          "$value": "{md.ref.typeface.weight-medium}",
+          "$type": "fontWeight"
+        },
+        "label-large-size": {
+          "$value": {
+            "value": 14,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "label-large-line-height": {
+          "$value": {
+            "value": 20,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "label-large-tracking": {
+          "$value": {
+            "value": 0.1,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "label-medium-font": {
+          "$value": "{md.ref.typeface.plain}",
+          "$type": "fontFamily"
+        },
+        "label-medium-weight": {
+          "$value": "{md.ref.typeface.weight-medium}",
+          "$type": "fontWeight"
+        },
+        "label-medium-size": {
+          "$value": {
+            "value": 12,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "label-medium-line-height": {
+          "$value": {
+            "value": 16,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "label-medium-tracking": {
+          "$value": {
+            "value": 0.5,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "label-small-font": {
+          "$value": "{md.ref.typeface.plain}",
+          "$type": "fontFamily"
+        },
+        "label-small-weight": {
+          "$value": "{md.ref.typeface.weight-medium}",
+          "$type": "fontWeight"
+        },
+        "label-small-size": {
+          "$value": {
+            "value": 11,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "label-small-line-height": {
+          "$value": {
+            "value": 16,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "label-small-tracking": {
+          "$value": {
+            "value": 0.5,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        }
+      },
+      "shape": {
+        "$type": "dimension",
+        "$description": "From material-web v2.5.0 tokens/versions/v0_192/_md-sys-shape.scss. Per-corner composites (e.g. corner-large-top) are omitted: DTCG has no four-corner type.",
+        "corner-extra-large": {
+          "$value": {
+            "value": 28,
+            "unit": "px"
+          }
+        },
+        "corner-extra-small": {
+          "$value": {
+            "value": 4,
+            "unit": "px"
+          }
+        },
+        "corner-full": {
+          "$value": {
+            "value": 9999,
+            "unit": "px"
+          }
+        },
+        "corner-large": {
+          "$value": {
+            "value": 16,
+            "unit": "px"
+          }
+        },
+        "corner-medium": {
+          "$value": {
+            "value": 12,
+            "unit": "px"
+          }
+        },
+        "corner-none": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "corner-small": {
+          "$value": {
+            "value": 8,
+            "unit": "px"
+          }
+        }
+      },
+      "motion": {
+        "$description": "From material-web v2.5.0 tokens/versions/v0_192/_md-sys-motion.scss. 'path' is omitted (no DTCG type).",
+        "duration-extra-long1": {
+          "$value": {
+            "value": 700,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-extra-long2": {
+          "$value": {
+            "value": 800,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-extra-long3": {
+          "$value": {
+            "value": 900,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-extra-long4": {
+          "$value": {
+            "value": 1000,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-long1": {
+          "$value": {
+            "value": 450,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-long2": {
+          "$value": {
+            "value": 500,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-long3": {
+          "$value": {
+            "value": 550,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-long4": {
+          "$value": {
+            "value": 600,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-medium1": {
+          "$value": {
+            "value": 250,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-medium2": {
+          "$value": {
+            "value": 300,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-medium3": {
+          "$value": {
+            "value": 350,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-medium4": {
+          "$value": {
+            "value": 400,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-short1": {
+          "$value": {
+            "value": 50,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-short2": {
+          "$value": {
+            "value": 100,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-short3": {
+          "$value": {
+            "value": 150,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "duration-short4": {
+          "$value": {
+            "value": 200,
+            "unit": "ms"
+          },
+          "$type": "duration"
+        },
+        "easing-emphasized": {
+          "$value": [
+            0.2,
+            0,
+            0,
+            1
+          ],
+          "$type": "cubicBezier"
+        },
+        "easing-emphasized-accelerate": {
+          "$value": [
+            0.3,
+            0,
+            0.8,
+            0.15
+          ],
+          "$type": "cubicBezier"
+        },
+        "easing-emphasized-decelerate": {
+          "$value": [
+            0.05,
+            0.7,
+            0.1,
+            1
+          ],
+          "$type": "cubicBezier"
+        },
+        "easing-legacy": {
+          "$value": [
+            0.4,
+            0,
+            0.2,
+            1
+          ],
+          "$type": "cubicBezier"
+        },
+        "easing-legacy-accelerate": {
+          "$value": [
+            0.4,
+            0,
+            1,
+            1
+          ],
+          "$type": "cubicBezier"
+        },
+        "easing-legacy-decelerate": {
+          "$value": [
+            0,
+            0,
+            0.2,
+            1
+          ],
+          "$type": "cubicBezier"
+        },
+        "easing-linear": {
+          "$value": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "$type": "cubicBezier"
+        },
+        "easing-standard": {
+          "$value": [
+            0.2,
+            0,
+            0,
+            1
+          ],
+          "$type": "cubicBezier"
+        },
+        "easing-standard-accelerate": {
+          "$value": [
+            0.3,
+            0,
+            1,
+            1
+          ],
+          "$type": "cubicBezier"
+        },
+        "easing-standard-decelerate": {
+          "$value": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "$type": "cubicBezier"
+        }
+      },
+      "state": {
+        "$type": "number",
+        "$description": "From material-web v2.5.0 tokens/versions/v0_192/_md-sys-state.scss",
+        "dragged-state-layer-opacity": {
+          "$value": 0.16
+        },
+        "focus-state-layer-opacity": {
+          "$value": 0.12
+        },
+        "hover-state-layer-opacity": {
+          "$value": 0.08
+        },
+        "pressed-state-layer-opacity": {
+          "$value": 0.12
+        }
+      },
+      "elevation": {
+        "$description": "Levels (dp, as px) from material-web v2.5.0 tokens/versions/v0_192/_md-sys-elevation.scss; shadows from material-web v2.5.0 elevation/internal/_elevation.scss (key shadow at 0.3 and ambient shadow at 0.15 opacity of md.sys.color.shadow, #000000 in both modes).",
+        "level0": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "level1": {
+          "$value": {
+            "value": 1,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "level2": {
+          "$value": {
+            "value": 3,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "level3": {
+          "$value": {
+            "value": 6,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "level4": {
+          "$value": {
+            "value": 8,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        },
+        "level5": {
+          "$value": {
+            "value": 12,
+            "unit": "px"
+          },
+          "$type": "dimension"
+        }
+      }
+    }
+  },
+  "polixd": {
+    "sys": {
+      "elevation": {
+        "shadow": {
+          "$type": "shadow",
+          "$description": "Levels (dp, as px) from material-web v2.5.0 tokens/versions/v0_192/_md-sys-elevation.scss; shadows from material-web v2.5.0 elevation/internal/_elevation.scss (key shadow at 0.3 and ambient shadow at 0.15 opacity of md.sys.color.shadow, #000000 in both modes).",
+          "level1": {
+            "$value": [
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.3,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 1,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 2,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              },
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.15,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 1,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 3,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 1,
+                  "unit": "px"
+                }
+              }
+            ]
+          },
+          "level2": {
+            "$value": [
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.3,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 1,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 2,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              },
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.15,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 2,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 6,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 2,
+                  "unit": "px"
+                }
+              }
+            ]
+          },
+          "level3": {
+            "$value": [
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.3,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 1,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 3,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              },
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.15,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 4,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 8,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 3,
+                  "unit": "px"
+                }
+              }
+            ]
+          },
+          "level4": {
+            "$value": [
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.3,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 2,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 3,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              },
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.15,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 6,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 10,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 4,
+                  "unit": "px"
+                }
+              }
+            ]
+          },
+          "level5": {
+            "$value": [
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.3,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 4,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 4,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              },
+              {
+                "color": {
+                  "colorSpace": "srgb",
+                  "components": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "alpha": 0.15,
+                  "hex": "#000000"
+                },
+                "offsetX": {
+                  "value": 0,
+                  "unit": "px"
+                },
+                "offsetY": {
+                  "value": 8,
+                  "unit": "px"
+                },
+                "blur": {
+                  "value": 12,
+                  "unit": "px"
+                },
+                "spread": {
+                  "value": 6,
+                  "unit": "px"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

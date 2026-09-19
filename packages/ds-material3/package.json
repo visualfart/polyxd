@@ -1,0 +1,20 @@
+{
+  "name": "@polixd/ds-material3",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Material 3 design-system pack for Polixd (DTCG 2025.10 tokens)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "manifest.json",
+    "tokens",
+    "README.md"
+  ],
+  "scripts": {
+    "generate": "node scripts/generate.ts",
+    "check": "node ../spec/src/cli/check-design-system.ts manifest.json"
+  },
+  "dependencies": {
+    "@material/material-color-utilities": "^0.4.0"
+  }
+}

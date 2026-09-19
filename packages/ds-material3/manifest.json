@@ -1,0 +1,50 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "material3",
+  "displayName": "Material 3",
+  "version": "0.0.0",
+  "contractVersion": "0.1.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": ["tokens/primitive.json", "tokens/system.json", "tokens/system.light.json", "tokens/semantic.json"],
+    "dark": ["tokens/primitive.json", "tokens/system.json", "tokens/system.dark.json", "tokens/semantic.json"]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:@material/material-color-utilities (https://github.com/material-foundation/material-color-utilities)",
+      "version": "0.4.0",
+      "license": "Apache-2.0",
+      "notes": "md.ref.palette.* and md.sys.color.* (light/dark): SchemeTonalSpot(Hct.fromInt(#6750A4), isDark, contrastLevel 0, specVersion '2021'). Every md.sys.color role aliases the exact reference-palette tone the scheme resolves to. Spec 2021 (the library's default) was chosen over 2025 (M3 Expressive) because it is the colour spec material-web v0_192 implements and it resolves every role to an exact palette tone."
+    },
+    {
+      "source": "npm:@material/material-color-utilities (https://github.com/material-foundation/material-color-utilities)",
+      "version": "0.4.0",
+      "license": "Apache-2.0",
+      "notes": "Polixd additions (M3 only defines error). polixd.ref.palette.success/warning/info = TonalPalette.fromInt(#2E7D32 / #F9A825 / #0288D1), used with the M3 custom-colour tone pattern (light 40/100/90/30, dark 80/20/30/90). polixd.ref.palette.chart-1..6 = TonalPalette.fromHueAndChroma(seed hue + 0/240/120/300/180/60 degrees, 48); chart colours use tone 40 (light) / 80 (dark)."
+    },
+    {
+      "source": "github:material-components/material-web tokens/versions/v0_192/_md-ref-typeface.scss, _md-sys-typescale.scss, _md-sys-shape.scss, _md-sys-motion.scss, _md-sys-state.scss, _md-sys-elevation.scss (vendored in scripts/sources/material-web)",
+      "version": "v2.5.0 (commit b4de401eb665ec63474f39319a4ba8f2145974cc)",
+      "license": "Apache-2.0",
+      "notes": "md.ref.typeface.*, md.sys.typescale.*, md.sys.shape.*, md.sys.motion.*, md.sys.state.*, md.sys.elevation.*. rem converted to px at 16px/rem. The files sit directly in tokens/versions/v0_192/ (there is no sass/ subfolder at this tag)."
+    },
+    {
+      "source": "github:material-components/material-web tokens/versions/v0_192/_md-comp-scrim.scss, _md-comp-filled-button.scss, _md-comp-icon-button.scss, _md-comp-outlined-text-field.scss (vendored)",
+      "version": "v2.5.0 (commit b4de401eb665ec63474f39319a4ba8f2145974cc)",
+      "license": "Apache-2.0",
+      "notes": "Scrim opacity 0.32, disabled content opacity 0.38, icon sizes 18px/24px, outline widths 1px/2px."
+    },
+    {
+      "source": "github:material-components/material-web tokens/_md-comp-focus-ring.scss and elevation/internal/_elevation.scss",
+      "version": "v2.5.0 (commit b4de401eb665ec63474f39319a4ba8f2145974cc)",
+      "license": "Apache-2.0",
+      "notes": "Focus ring width 3px, outward offset 2px, colour md.sys.color.secondary. Elevation shadows: key layer (opacity 0.3) and ambient layer (opacity 0.15) per level, transcribed into scripts/generate.ts."
+    },
+    {
+      "source": "Polixd",
+      "license": "Apache-2.0",
+      "notes": "Spacing on the M3 4dp grid (polixd.ref.space.N = 4N px), size.target.min 48px (M3 minimum target), measure.max 65, and the semantic-tier mapping itself."
+    }
+  ]
+}

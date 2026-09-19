@@ -1,0 +1,455 @@
+{
+  "$description": "Polixd semantic tier for Material 3. Every token maps to an M3 system (md.sys.*) or reference (md.ref.*) token wherever an M3 equivalent exists; mode differences come from the system files.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{md.sys.color.surface}"
+      },
+      "subtle": {
+        "$value": "{md.sys.color.surface-container}"
+      },
+      "raised": {
+        "$value": "{md.sys.color.surface-container-low}",
+        "$description": "md.comp.elevated-card.container.color"
+      },
+      "overlay": {
+        "$value": "{md.sys.color.surface-container-high}",
+        "$description": "md.comp.dialog.container.color"
+      },
+      "inverse": {
+        "$value": "{md.sys.color.inverse-surface}"
+      }
+    },
+    "scrim": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0,
+          0,
+          0
+        ],
+        "alpha": 0.32,
+        "hex": "#000000"
+      },
+      "$description": "md.sys.color.scrim (#000000 in both modes) at md.comp.scrim.container.opacity 0.32; a literal because an alias cannot add alpha"
+    },
+    "text": {
+      "default": {
+        "$value": "{md.sys.color.on-surface}"
+      },
+      "muted": {
+        "$value": "{md.sys.color.on-surface-variant}"
+      },
+      "inverse": {
+        "$value": "{md.sys.color.inverse-on-surface}"
+      },
+      "link": {
+        "$value": "{md.sys.color.primary}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{md.sys.color.outline-variant}"
+      },
+      "strong": {
+        "$value": "{md.sys.color.outline}"
+      },
+      "focus": {
+        "$value": "{md.sys.color.secondary}",
+        "$description": "material-web md-focus-ring color"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{md.sys.color.primary}"
+        },
+        "foreground": {
+          "$value": "{md.sys.color.on-primary}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{md.sys.color.secondary-container}"
+        },
+        "foreground": {
+          "$value": "{md.sys.color.on-secondary-container}"
+        },
+        "border": {
+          "$value": "{md.sys.color.outline}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{md.sys.color.error}"
+        },
+        "foreground": {
+          "$value": "{md.sys.color.on-error}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{md.sys.color.secondary-container}"
+      },
+      "foreground": {
+        "$value": "{md.sys.color.on-secondary-container}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{polixd.sys.color.info-container}"
+        },
+        "foreground": {
+          "$value": "{polixd.sys.color.on-info-container}"
+        },
+        "emphasis": {
+          "$value": "{polixd.sys.color.info}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{polixd.sys.color.success-container}"
+        },
+        "foreground": {
+          "$value": "{polixd.sys.color.on-success-container}"
+        },
+        "emphasis": {
+          "$value": "{polixd.sys.color.success}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{polixd.sys.color.warning-container}"
+        },
+        "foreground": {
+          "$value": "{polixd.sys.color.on-warning-container}"
+        },
+        "emphasis": {
+          "$value": "{polixd.sys.color.warning}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{md.sys.color.error-container}"
+        },
+        "foreground": {
+          "$value": "{md.sys.color.on-error-container}"
+        },
+        "emphasis": {
+          "$value": "{md.sys.color.error}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polixd.sys.color.chart-1}"
+        },
+        "2": {
+          "$value": "{polixd.sys.color.chart-2}"
+        },
+        "3": {
+          "$value": "{polixd.sys.color.chart-3}"
+        },
+        "4": {
+          "$value": "{polixd.sys.color.chart-4}"
+        },
+        "5": {
+          "$value": "{polixd.sys.color.chart-5}"
+        },
+        "6": {
+          "$value": "{polixd.sys.color.chart-6}"
+        }
+      },
+      "positive": {
+        "$value": "{polixd.sys.color.success}"
+      },
+      "negative": {
+        "$value": "{md.sys.color.error}"
+      },
+      "neutral": {
+        "$value": "{md.sys.color.outline}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{md.sys.typescale.headline-large-font}",
+          "fontSize": "{md.sys.typescale.headline-large-size}",
+          "fontWeight": "{md.sys.typescale.headline-large-weight}",
+          "lineHeight": 1.25,
+          "letterSpacing": "{md.sys.typescale.headline-large-tracking}"
+        },
+        "$description": "md.sys.typescale.headline-large (lineHeight = 40px / 32px)"
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{md.sys.typescale.title-large-font}",
+          "fontSize": "{md.sys.typescale.title-large-size}",
+          "fontWeight": "{md.sys.typescale.title-large-weight}",
+          "lineHeight": 1.2727,
+          "letterSpacing": "{md.sys.typescale.title-large-tracking}"
+        },
+        "$description": "md.sys.typescale.title-large (lineHeight = 28px / 22px)"
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{md.sys.typescale.title-medium-font}",
+          "fontSize": "{md.sys.typescale.title-medium-size}",
+          "fontWeight": "{md.sys.typescale.title-medium-weight}",
+          "lineHeight": 1.5,
+          "letterSpacing": "{md.sys.typescale.title-medium-tracking}"
+        },
+        "$description": "md.sys.typescale.title-medium (lineHeight = 24px / 16px)"
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{md.sys.typescale.body-large-font}",
+          "fontSize": "{md.sys.typescale.body-large-size}",
+          "fontWeight": "{md.sys.typescale.body-large-weight}",
+          "lineHeight": 1.5,
+          "letterSpacing": "{md.sys.typescale.body-large-tracking}"
+        },
+        "$description": "md.sys.typescale.body-large (lineHeight = 24px / 16px)"
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{md.sys.typescale.body-medium-font}",
+          "fontSize": "{md.sys.typescale.body-medium-size}",
+          "fontWeight": "{md.sys.typescale.body-medium-weight}",
+          "lineHeight": 1.4286,
+          "letterSpacing": "{md.sys.typescale.body-medium-tracking}"
+        },
+        "$description": "md.sys.typescale.body-medium (lineHeight = 20px / 14px)"
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{md.sys.typescale.label-large-font}",
+          "fontSize": "{md.sys.typescale.label-large-size}",
+          "fontWeight": "{md.sys.typescale.label-large-weight}",
+          "lineHeight": 1.4286,
+          "letterSpacing": "{md.sys.typescale.label-large-tracking}"
+        },
+        "$description": "md.sys.typescale.label-large (lineHeight = 20px / 14px)"
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{md.sys.typescale.label-medium-font}",
+          "fontSize": "{md.sys.typescale.label-medium-size}",
+          "fontWeight": "{md.sys.typescale.label-medium-weight}",
+          "lineHeight": 1.3333,
+          "letterSpacing": "{md.sys.typescale.label-medium-tracking}"
+        },
+        "$description": "md.sys.typescale.label-medium (lineHeight = 16px / 12px)"
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{md.sys.typescale.display-small-font}",
+          "fontSize": "{md.sys.typescale.display-small-size}",
+          "fontWeight": "{md.sys.typescale.display-small-weight}",
+          "lineHeight": 1.2222,
+          "letterSpacing": "{md.sys.typescale.display-small-tracking}"
+        },
+        "$description": "md.sys.typescale.display-small (lineHeight = 44px / 36px)"
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "$description": "M3 4dp grid",
+    "inset": {
+      "compact": {
+        "$value": "{polixd.ref.space.2}"
+      },
+      "default": {
+        "$value": "{polixd.ref.space.4}"
+      },
+      "comfortable": {
+        "$value": "{polixd.ref.space.6}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{polixd.ref.space.1}"
+      },
+      "default": {
+        "$value": "{polixd.ref.space.2}"
+      },
+      "loose": {
+        "$value": "{polixd.ref.space.4}"
+      },
+      "section": {
+        "$value": "{polixd.ref.space.8}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{polixd.ref.space.1}"
+      },
+      "default": {
+        "$value": "{polixd.ref.space.2}"
+      },
+      "loose": {
+        "$value": "{polixd.ref.space.4}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        },
+        "$description": "M3 minimum touch target, 48x48dp"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": {
+          "value": 18,
+          "unit": "px"
+        },
+        "$description": "md.comp.filled-button.with-icon.icon.size"
+      },
+      "default": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        },
+        "$description": "md.comp.icon-button.icon.size"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{md.sys.shape.corner-extra-small}"
+    },
+    "default": {
+      "$value": "{md.sys.shape.corner-medium}"
+    },
+    "large": {
+      "$value": "{md.sys.shape.corner-extra-large}"
+    },
+    "full": {
+      "$value": "{md.sys.shape.corner-full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        },
+        "$description": "md.comp.outlined-text-field.outline.width"
+      },
+      "strong": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        },
+        "$description": "md.comp.outlined-text-field.focus.outline.width"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        },
+        "$description": "material-web md-focus-ring width"
+      },
+      "offset": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        },
+        "$description": "material-web md-focus-ring outward-offset"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": 65,
+      "$type": "number",
+      "$description": "Characters per line for running text"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{md.sys.state.hover-state-layer-opacity}"
+      },
+      "pressed": {
+        "$value": "{md.sys.state.pressed-state-layer-opacity}"
+      },
+      "focus": {
+        "$value": "{md.sys.state.focus-state-layer-opacity}"
+      },
+      "disabled": {
+        "$value": 0.38,
+        "$description": "md.comp.*.disabled.label-text.opacity (M3 disabled content opacity)"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{polixd.sys.elevation.shadow.level1}",
+      "$description": "md.sys.elevation.level1 (elevated card)"
+    },
+    "overlay": {
+      "$value": "{polixd.sys.elevation.shadow.level3}",
+      "$description": "md.sys.elevation.level3 (dialog)"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{md.sys.motion.duration-short1}"
+      },
+      "short": {
+        "$value": "{md.sys.motion.duration-short4}"
+      },
+      "medium": {
+        "$value": "{md.sys.motion.duration-medium2}"
+      },
+      "long": {
+        "$value": "{md.sys.motion.duration-long2}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{md.sys.motion.easing-standard}"
+      },
+      "enter": {
+        "$value": "{md.sys.motion.easing-emphasized-decelerate}"
+      },
+      "exit": {
+        "$value": "{md.sys.motion.easing-emphasized-accelerate}"
+      }
+    }
+  }
+}

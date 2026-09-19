@@ -1,0 +1,219 @@
+{
+  "$description": "Material 3 system tier, dark mode: md.sys.color roles from material-color-utilities SchemeTonalSpot (spec 2021, contrast 0) aliased to reference palette tones, plus Polixd status and chart roles.",
+  "md": {
+    "sys": {
+      "color": {
+        "$type": "color",
+        "background": {
+          "$value": "{md.ref.palette.neutral.6}"
+        },
+        "on-background": {
+          "$value": "{md.ref.palette.neutral.90}"
+        },
+        "surface": {
+          "$value": "{md.ref.palette.neutral.6}"
+        },
+        "surface-dim": {
+          "$value": "{md.ref.palette.neutral.6}"
+        },
+        "surface-bright": {
+          "$value": "{md.ref.palette.neutral.24}"
+        },
+        "surface-container-lowest": {
+          "$value": "{md.ref.palette.neutral.4}"
+        },
+        "surface-container-low": {
+          "$value": "{md.ref.palette.neutral.10}"
+        },
+        "surface-container": {
+          "$value": "{md.ref.palette.neutral.12}"
+        },
+        "surface-container-high": {
+          "$value": "{md.ref.palette.neutral.17}"
+        },
+        "surface-container-highest": {
+          "$value": "{md.ref.palette.neutral.22}"
+        },
+        "on-surface": {
+          "$value": "{md.ref.palette.neutral.90}"
+        },
+        "surface-variant": {
+          "$value": "{md.ref.palette.neutral-variant.30}"
+        },
+        "on-surface-variant": {
+          "$value": "{md.ref.palette.neutral-variant.80}"
+        },
+        "inverse-surface": {
+          "$value": "{md.ref.palette.neutral.90}"
+        },
+        "inverse-on-surface": {
+          "$value": "{md.ref.palette.neutral.20}"
+        },
+        "inverse-primary": {
+          "$value": "{md.ref.palette.primary.40}"
+        },
+        "outline": {
+          "$value": "{md.ref.palette.neutral-variant.60}"
+        },
+        "outline-variant": {
+          "$value": "{md.ref.palette.neutral-variant.30}"
+        },
+        "shadow": {
+          "$value": "{md.ref.palette.neutral.0}"
+        },
+        "scrim": {
+          "$value": "{md.ref.palette.neutral.0}"
+        },
+        "surface-tint": {
+          "$value": "{md.ref.palette.primary.80}"
+        },
+        "primary": {
+          "$value": "{md.ref.palette.primary.80}"
+        },
+        "on-primary": {
+          "$value": "{md.ref.palette.primary.20}"
+        },
+        "primary-container": {
+          "$value": "{md.ref.palette.primary.30}"
+        },
+        "on-primary-container": {
+          "$value": "{md.ref.palette.primary.90}"
+        },
+        "primary-fixed": {
+          "$value": "{md.ref.palette.primary.90}"
+        },
+        "primary-fixed-dim": {
+          "$value": "{md.ref.palette.primary.80}"
+        },
+        "on-primary-fixed": {
+          "$value": "{md.ref.palette.primary.10}"
+        },
+        "on-primary-fixed-variant": {
+          "$value": "{md.ref.palette.primary.30}"
+        },
+        "secondary": {
+          "$value": "{md.ref.palette.secondary.80}"
+        },
+        "on-secondary": {
+          "$value": "{md.ref.palette.secondary.20}"
+        },
+        "secondary-container": {
+          "$value": "{md.ref.palette.secondary.30}"
+        },
+        "on-secondary-container": {
+          "$value": "{md.ref.palette.secondary.90}"
+        },
+        "secondary-fixed": {
+          "$value": "{md.ref.palette.secondary.90}"
+        },
+        "secondary-fixed-dim": {
+          "$value": "{md.ref.palette.secondary.80}"
+        },
+        "on-secondary-fixed": {
+          "$value": "{md.ref.palette.secondary.10}"
+        },
+        "on-secondary-fixed-variant": {
+          "$value": "{md.ref.palette.secondary.30}"
+        },
+        "tertiary": {
+          "$value": "{md.ref.palette.tertiary.80}"
+        },
+        "on-tertiary": {
+          "$value": "{md.ref.palette.tertiary.20}"
+        },
+        "tertiary-container": {
+          "$value": "{md.ref.palette.tertiary.30}"
+        },
+        "on-tertiary-container": {
+          "$value": "{md.ref.palette.tertiary.90}"
+        },
+        "tertiary-fixed": {
+          "$value": "{md.ref.palette.tertiary.90}"
+        },
+        "tertiary-fixed-dim": {
+          "$value": "{md.ref.palette.tertiary.80}"
+        },
+        "on-tertiary-fixed": {
+          "$value": "{md.ref.palette.tertiary.10}"
+        },
+        "on-tertiary-fixed-variant": {
+          "$value": "{md.ref.palette.tertiary.30}"
+        },
+        "error": {
+          "$value": "{md.ref.palette.error.80}"
+        },
+        "on-error": {
+          "$value": "{md.ref.palette.error.20}"
+        },
+        "error-container": {
+          "$value": "{md.ref.palette.error.30}"
+        },
+        "on-error-container": {
+          "$value": "{md.ref.palette.error.90}"
+        }
+      }
+    }
+  },
+  "polixd": {
+    "sys": {
+      "color": {
+        "$type": "color",
+        "$description": "Polixd additions shaped like M3 custom-colour roles (M3 has no success/warning/info roles, nor chart colours).",
+        "success": {
+          "$value": "{polixd.ref.palette.success.80}"
+        },
+        "on-success": {
+          "$value": "{polixd.ref.palette.success.20}"
+        },
+        "success-container": {
+          "$value": "{polixd.ref.palette.success.30}"
+        },
+        "on-success-container": {
+          "$value": "{polixd.ref.palette.success.90}"
+        },
+        "warning": {
+          "$value": "{polixd.ref.palette.warning.80}"
+        },
+        "on-warning": {
+          "$value": "{polixd.ref.palette.warning.20}"
+        },
+        "warning-container": {
+          "$value": "{polixd.ref.palette.warning.30}"
+        },
+        "on-warning-container": {
+          "$value": "{polixd.ref.palette.warning.90}"
+        },
+        "info": {
+          "$value": "{polixd.ref.palette.info.80}"
+        },
+        "on-info": {
+          "$value": "{polixd.ref.palette.info.20}"
+        },
+        "info-container": {
+          "$value": "{polixd.ref.palette.info.30}"
+        },
+        "on-info-container": {
+          "$value": "{polixd.ref.palette.info.90}"
+        },
+        "chart-1": {
+          "$value": "{polixd.ref.palette.chart-1.80}"
+        },
+        "chart-2": {
+          "$value": "{polixd.ref.palette.chart-2.80}"
+        },
+        "chart-3": {
+          "$value": "{polixd.ref.palette.chart-3.80}"
+        },
+        "chart-4": {
+          "$value": "{polixd.ref.palette.chart-4.80}"
+        },
+        "chart-5": {
+          "$value": "{polixd.ref.palette.chart-5.80}"
+        },
+        "chart-6": {
+          "$value": "{polixd.ref.palette.chart-6.80}"
+        }
+      }
+    }
+  }
+}
