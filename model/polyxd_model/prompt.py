@@ -87,7 +87,7 @@ EXAMPLE = {
 }
 
 
-PROMPT_VERSION = 3
+PROMPT_VERSION = 4  # v4: full copy-and-tone direction text
 
 TREE_EXAMPLE = {
     "specVersion": "0.1.0",
@@ -146,6 +146,46 @@ def directions() -> dict:
     return out
 
 
+def direction_text(d: dict) -> list[str]:
+    """A Design Direction as instructions: taste rules plus copy and tone."""
+    v = d.get("voice", {})
+    out = [f"Design direction ({d['name']}):"]
+    if v.get("guidelines"):
+        out.append("- Voice: " + " ".join(v["guidelines"]))
+    tone = v.get("tone", {})
+    if tone:
+        out.append("- Tone: " + ", ".join(f"{k} {val}" for k, val in tone.items()))
+    person = {"you": 'address the user as "you"; never say "we"', "we-and-you": 'the product may say "we"', "impersonal": 'don\'t say "you" or "we"'}.get(v.get("person", ""))
+    if person:
+        out.append(f"- Person: {person}")
+    style = []
+    if v.get("casing"):
+        style.append(f"{v['casing']} case")
+    if v.get("spelling"):
+        style.append(f"{v['spelling']} spelling")
+    if v.get("readingLevel", {}).get("maxGrade"):
+        style.append(f"reading grade {v['readingLevel']['maxGrade']} or below")
+    if v.get("punctuation", {}).get("exclamation") == "never":
+        style.append("no exclamation marks")
+    if v.get("punctuation", {}).get("emoji") == "never":
+        style.append("no emoji")
+    if v.get("labels", {}).get("maxWords"):
+        style.append(f"button labels of at most {v['labels']['maxWords']} words, starting with a verb")
+    if style:
+        out.append("- Style: " + "; ".join(style))
+    glossary = [f'say "{g["use"]}", not {" or ".join(repr(x) for x in g.get("insteadOf", []))}' for g in v.get("glossary", [])]
+    if glossary:
+        out.append("- Words: " + "; ".join(glossary))
+    if v.get("avoid"):
+        out.append("- Never use: " + ", ".join(repr(x) for x in v["avoid"]))
+    for moment, guidance in v.get("situations", {}).items():
+        out.append(f"- For {moment} states: {guidance}")
+    rules = [r["description"] for r in d.get("rules", [])]
+    if rules:
+        out.append("- Rules: " + "; ".join(rules))
+    return out
+
+
 def user_prompt(request: dict, memory: str | None = None) -> str:
     """The host's turn: request, capabilities it exposes, the data, and any direction/memory."""
     caps = registry()
@@ -162,11 +202,7 @@ def user_prompt(request: dict, memory: str | None = None) -> str:
         lines += ["", "Required button labels (use exactly): " + "; ".join(names)]
     direction = request.get("direction")
     if direction and direction in directions():
-        d = directions()[direction]
-        voice = d.get("voice", {})
-        rules = [r["description"] for r in d.get("rules", [])]
-        glossary = [f'say "{g["use"]}" not {", ".join(repr(x) for x in g.get("insteadOf", []))}' for g in voice.get("glossary", [])]
-        lines += ["", f"Design direction ({direction}): " + "; ".join(voice.get("guidelines", []) + glossary + rules)]
+        lines += ["", *direction_text(directions()[direction])]
     if memory:
         lines += ["", "Interface memory (keep these keys, labels, components and order the same):", memory]
     lines += ["", "Output the JSON document now."]

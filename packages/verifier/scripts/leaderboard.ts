@@ -7,8 +7,8 @@ const rows = readdirSync(runs)
   .filter((d) => existsSync(new URL(`${d}/summary.json`, runs)))
   .map((d) => JSON.parse(readFileSync(new URL(`${d}/summary.json`, runs), "utf8")).summary)
   .sort((a, b) => b.meanScore - a.meanScore);
-const cols = ["run", "validRate", "meanScore", "taskSuccess", "expectations", "consistency", "medianLatency_s", "medianTtft_s", "medianTps"];
-const head = ["Model run", "Valid", "Mean score", "Agent tasks", "Expected parts", "Consistency (memory / none)", "Median latency (s)", "Median TTFT (s)", "Tokens/s"];
+const cols = ["run", "validRate", "meanScore", "taskSuccess", "expectations", "directionCompliance", "consistency", "medianLatency_s", "medianTtft_s", "medianTps"];
+const head = ["Model run", "Valid", "Mean score", "Agent tasks", "Expected parts", "Direction rules", "Consistency (memory / none)", "Median latency (s)", "Median TTFT (s)", "Tokens/s"];
 const cell = (r: any, c: string) =>
   c === "consistency" ? `${r.consistency?.sequences ?? "—"} / ${r.consistency?.["sequences-nomem"] ?? "—"}` : String(r[c] ?? "—");
 const md = [

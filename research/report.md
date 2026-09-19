@@ -29,6 +29,8 @@ This is Polyxd's running improvement report. Each entry states a question, what 
 
 Validation loss fell at every checkpoint (0.53, 0.29, 0.24, 0.24, 0.23), with no sign of the overfitting in run 1.
 
+*Disclosure:* between run 1 and run 2's evaluation, the two example Design Directions gained structured copy-and-tone settings. The 5 benchmark requests that use a direction therefore saw slightly reworded direction text (the same guidance, reorganised). The other 45 prompts are identical.
+
 **What it means.**
 
 - **What you select for is what you get.** The same candidates, filtered two ways, produced a model that got less useful (run 1) and one that got more useful (run 2). For a generator of interfaces, "no errors" and "helps someone finish the task" are different targets, and the training signal has to name both.

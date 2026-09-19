@@ -7,7 +7,8 @@
  */
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { validateDocument, flattenTree, isTree } from "@polyxd/spec";
+import { validateDocument, flattenTree, isTree, directionRules } from "@polyxd/spec";
+import { evaluateRules } from "@polyxd/spec/patterns";
 import { launch, verifyDocument, compare, type Task } from "../src/index.ts";
 
 const runDir = resolve(process.argv[2] ?? "");
@@ -20,6 +21,8 @@ const readJson = (p: string | URL) => JSON.parse(readFileSync(p, "utf8"));
 const requests: any[] = readJson(new URL("requests.json", bench)).requests;
 const registry = readJson(new URL("registry.json", bench));
 const byId = new Map(requests.map((r) => [r.id, r]));
+const directionsDir = new URL("../../spec/examples/directions/", import.meta.url);
+const directions = new Map(readdirSync(directionsDir).filter((f) => f.endsWith(".json")).map((f) => { const d = readJson(new URL(f, directionsDir)); return [d.name, d]; }));
 
 const median = (xs: number[]) => {
   const s = [...xs].sort((a, b) => a - b);
@@ -74,6 +77,15 @@ if (existsSync(reqDir)) {
         const v = validateDocument(doc);
         row.valid = v.valid;
         if (!v.valid) row.problems.push(...v.issues.filter((i) => i.severity === "error").slice(0, 3).map((i) => `${i.at}: ${i.message}`));
+        // Design Direction compliance (copy, tone and taste rules): reported separately from the score.
+        const dir = r.direction ? directions.get(r.direction) : undefined;
+        if (dir && v.valid) {
+          const results = evaluateRules(directionRules(dir), doc);
+          row.directionPassed = results.filter((x) => x.pass).length;
+          row.directionTotal = results.length;
+          const missed = results.filter((x) => !x.pass).map((x) => x.id);
+          if (missed.length) row.problems.push(`direction: ${missed.join(", ")}`);
+        }
         const ex = expectations(doc, r);
         row.expectHit = ex.hit;
         row.expectTotal = ex.total;
@@ -125,6 +137,7 @@ const summary = {
   meanScore: n ? Math.round(rows.reduce((s, r) => s + r.score, 0) / n) : 0,
   taskSuccess: `${withTask.filter((r) => r.task).length}/${withTask.length}`,
   expectations: pct(rows.reduce((s, r) => s + r.expectHit, 0), rows.reduce((s, r) => s + r.expectTotal, 0)),
+  directionCompliance: pct(rows.reduce((s, r) => s + (r.directionPassed ?? 0), 0), rows.reduce((s, r) => s + (r.directionTotal ?? 0), 0)),
   medianLatency_s: median(rows.map((r) => r.total_s)),
   medianTtft_s: median(rows.map((r) => r.ttft_s)),
   medianTps: median(rows.map((r) => r.tps)),
