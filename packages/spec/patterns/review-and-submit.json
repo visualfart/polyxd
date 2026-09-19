@@ -1,0 +1,100 @@
+{
+  "$schema": "../schema/pattern.schema.json",
+  "id": "review-and-submit",
+  "name": "Review and submit",
+  "summary": "Before committing, show everything that will be submitted in a scannable summary, then one clear submit action.",
+  "whenToUse": [
+    "Bookings, orders, applications: any multi-field commitment"
+  ],
+  "whenNotToUse": [
+    "Single-field actions",
+    "Consequential single actions: use confirm-destructive"
+  ],
+  "structure": [
+    "Sections with DetailLists summarising what will be submitted",
+    "Any final acknowledgements (terms)",
+    "Submit label states the commitment ('Book and pay £312')"
+  ],
+  "checks": [
+    {
+      "id": "has-summary",
+      "description": "What will be submitted is shown as label/value pairs",
+      "severity": "error",
+      "rule": {
+        "check": "contains",
+        "component": "DetailList"
+      }
+    },
+    {
+      "id": "submits",
+      "description": "There is a way to submit",
+      "severity": "error",
+      "rule": {
+        "check": "anyOf",
+        "checks": [
+          {
+            "check": "contains",
+            "component": "Form"
+          },
+          {
+            "check": "contains",
+            "component": "Steps"
+          }
+        ]
+      }
+    },
+    {
+      "id": "summary-before-inputs",
+      "description": "Review content comes before any last inputs",
+      "severity": "warning",
+      "rule": {
+        "check": "anyOf",
+        "checks": [
+          {
+            "check": "not",
+            "checks": [
+              {
+                "check": "contains",
+                "component": "Toggle"
+              }
+            ]
+          },
+          {
+            "check": "precedes",
+            "before": [
+              "DetailList"
+            ],
+            "after": [
+              "Toggle"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "commitment-label",
+      "description": "The submit label states the commitment, not 'Submit'",
+      "severity": "error",
+      "rule": {
+        "check": "noLabelMatches",
+        "pattern": "^(OK|Ok|Yes|Confirm|Submit|Done|Continue)$"
+      }
+    }
+  ],
+  "journey": {
+    "goal": "Check the details, then commit",
+    "checkpoints": [
+      "Summary of what will be submitted is visible",
+      "Required acknowledgements are given"
+    ],
+    "done": "The submit event is sent"
+  },
+  "agent": "Read the DetailLists (label/value pairs), verify them against the user's intent, then activate the submit button.",
+  "examples": [
+    "travel-booking-review.json"
+  ],
+  "sources": [
+    "GOV.UK: check answers pattern",
+    "Nielsen: error prevention"
+  ]
+}

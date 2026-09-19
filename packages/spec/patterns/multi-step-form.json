@@ -1,0 +1,74 @@
+{
+  "$schema": "../schema/pattern.schema.json",
+  "id": "multi-step-form",
+  "name": "Multi-step form",
+  "summary": "Collect information in small, ordered chunks: one form when short, Steps when long or dependent.",
+  "whenToUse": [
+    "Any data entry task",
+    "Tasks whose later questions depend on earlier answers"
+  ],
+  "whenNotToUse": [
+    "Settings that apply immediately: use Toggles with actions"
+  ],
+  "structure": [
+    "Form (≤ 6 inputs) or Steps with one topic per step",
+    "Labels above inputs, help text under labels",
+    "Verb-first submit label as the single primary action"
+  ],
+  "checks": [
+    {
+      "id": "form-or-steps",
+      "description": "Inputs are collected in a Form or in Steps",
+      "severity": "error",
+      "rule": {
+        "check": "anyOf",
+        "checks": [
+          {
+            "check": "contains",
+            "component": "Form"
+          },
+          {
+            "check": "contains",
+            "component": "Steps"
+          }
+        ]
+      }
+    },
+    {
+      "id": "short-views",
+      "description": "No more than 6 inputs are visible at once; longer tasks are split into steps",
+      "severity": "error",
+      "rule": {
+        "check": "maxInputsPerView",
+        "max": 6
+      }
+    },
+    {
+      "id": "specific-submit",
+      "description": "The submit button says what happens next",
+      "severity": "warning",
+      "rule": {
+        "check": "noLabelMatches",
+        "pattern": "^(OK|Ok|Yes|Confirm|Submit|Done)$"
+      }
+    }
+  ],
+  "journey": {
+    "goal": "Provide the information the task needs",
+    "checkpoints": [
+      "Every required input has a value",
+      "Validation passes for each step before moving on"
+    ],
+    "done": "The submit (or finish) event is sent with the collected values"
+  },
+  "agent": "Fill each input by its label, then activate the submit button. In Steps, use Next until the finish button appears.",
+  "examples": [
+    "money-send-form.json",
+    "shop-checkout.json"
+  ],
+  "sources": [
+    "GOV.UK: one thing per page, question pages",
+    "Hick's law",
+    "Nielsen: error prevention"
+  ]
+}

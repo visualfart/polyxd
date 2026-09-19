@@ -1,0 +1,70 @@
+{
+  "$schema": "../schema/pattern.schema.json",
+  "id": "compare-and-choose",
+  "name": "Compare and choose",
+  "summary": "Put a few options side by side on the same attributes, mark what is better, recommend when there's a clear fit, and let the user choose.",
+  "whenToUse": [
+    "Choosing between 2–4 plans, products, routes or offers"
+  ],
+  "whenNotToUse": [
+    "More than ~5 options: filter-and-browse or a sortable Table",
+    "No decision to make"
+  ],
+  "structure": [
+    "Comparison with attributes in the same order for every option",
+    "Optional recommendation with a one-line reason",
+    "A choose action per option"
+  ],
+  "checks": [
+    {
+      "id": "one-comparison",
+      "description": "Exactly one Comparison",
+      "severity": "error",
+      "rule": {
+        "check": "contains",
+        "component": "Comparison",
+        "min": 1,
+        "max": 1
+      }
+    },
+    {
+      "id": "can-choose",
+      "description": "Each option can be chosen",
+      "severity": "error",
+      "rule": {
+        "check": "requires",
+        "component": "Comparison",
+        "props": [
+          "choose"
+        ]
+      }
+    },
+    {
+      "id": "explains",
+      "description": "A one-line summary helps the decision",
+      "severity": "warning",
+      "rule": {
+        "check": "requires",
+        "component": "Comparison",
+        "props": [
+          "summary"
+        ]
+      }
+    }
+  ],
+  "journey": {
+    "goal": "Pick the option that fits best",
+    "checkpoints": [
+      "All options are compared on the same attributes"
+    ],
+    "done": "The choose event is sent with the selected option"
+  },
+  "agent": "Read each option's attributes (column headers name them), pick by the user's criteria, then activate that option's choose action.",
+  "examples": [
+    "shop-compare-plans.json"
+  ],
+  "sources": [
+    "Hick's law",
+    "Choice architecture (defaults and recommendations)"
+  ]
+}

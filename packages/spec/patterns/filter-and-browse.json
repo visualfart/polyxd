@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema/pattern.schema.json",
+  "id": "filter-and-browse",
+  "name": "Filter and browse",
+  "summary": "Narrow a large set with a few filters placed before the results, and explain empty results.",
+  "whenToUse": [
+    "Searching or browsing many items"
+  ],
+  "whenNotToUse": [
+    "2–4 items: compare-and-choose",
+    "A single known item: go straight to it"
+  ],
+  "structure": [
+    "Filters (search, Choice, RangeInput) before the results",
+    "Result count in the results label",
+    "Collection or Table of results with an empty state that says how to widen the search"
+  ],
+  "checks": [
+    {
+      "id": "has-results",
+      "description": "Results are shown as a Collection or Table",
+      "severity": "error",
+      "rule": {
+        "check": "anyOf",
+        "checks": [
+          {
+            "check": "contains",
+            "component": "Collection"
+          },
+          {
+            "check": "contains",
+            "component": "Table"
+          }
+        ]
+      }
+    },
+    {
+      "id": "filters-first",
+      "description": "Filters come before the results",
+      "severity": "error",
+      "rule": {
+        "check": "precedes",
+        "before": [
+          "TextInput",
+          "Choice",
+          "RangeInput",
+          "DateInput"
+        ],
+        "after": [
+          "Collection",
+          "Table"
+        ]
+      }
+    },
+    {
+      "id": "empty-state",
+      "description": "Empty results explain what to do",
+      "severity": "error",
+      "rule": {
+        "check": "allOf",
+        "checks": [
+          {
+            "check": "requires",
+            "component": "Collection",
+            "props": [
+              "empty"
+            ]
+          },
+          {
+            "check": "requires",
+            "component": "Table",
+            "props": [
+              "empty"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "journey": {
+    "goal": "Find a suitable item",
+    "checkpoints": [
+      "Filters reflect the user's criteria"
+    ],
+    "done": "An item is opened or selected"
+  },
+  "agent": "Set filters by label, read the results list, then open an item by its title.",
+  "examples": [
+    "shop-browse-filter.json"
+  ],
+  "sources": [
+    "Nielsen: recognition over recall",
+    "Hick's law",
+    "Baymard: filtering"
+  ]
+}

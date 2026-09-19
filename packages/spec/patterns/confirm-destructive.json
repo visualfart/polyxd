@@ -1,0 +1,90 @@
+{
+  "$schema": "../schema/pattern.schema.json",
+  "id": "confirm-destructive",
+  "name": "Confirm a consequential or destructive action",
+  "summary": "Before something that is hard or impossible to undo, say exactly what will happen and ask for an explicit, specific confirmation.",
+  "whenToUse": [
+    "Moving money",
+    "Deleting data or accounts",
+    "Sending or publishing on someone's behalf",
+    "Any capability with risk level 'consequential' or 'destructive'"
+  ],
+  "whenNotToUse": [
+    "Reversible actions: do them and offer undo instead",
+    "Routine saves"
+  ],
+  "structure": [
+    "Confirm (title names the action and object)",
+    "Consequence: what happens and whether it can be undone",
+    "Optional DetailList summary of what is being confirmed",
+    "Cancel (least destructive, focused first) and a confirm button that repeats the verb"
+  ],
+  "checks": [
+    {
+      "id": "root-is-confirm",
+      "description": "The surface is a confirmation dialog",
+      "severity": "error",
+      "rule": {
+        "check": "rootIs",
+        "components": [
+          "Confirm"
+        ]
+      }
+    },
+    {
+      "id": "states-consequence",
+      "description": "It says what will happen and whether it can be undone",
+      "severity": "error",
+      "rule": {
+        "check": "requires",
+        "component": "Confirm",
+        "props": [
+          "consequence"
+        ]
+      }
+    },
+    {
+      "id": "specific-confirm-label",
+      "description": "The confirm button says what it does, never just 'OK' or 'Yes'",
+      "severity": "error",
+      "rule": {
+        "check": "noLabelMatches",
+        "pattern": "^(OK|Ok|Yes|Confirm|Submit|Done)$"
+      }
+    },
+    {
+      "id": "typed-for-destructive",
+      "description": "Irreversible, high-impact deletions ask the user to type a confirmation",
+      "severity": "warning",
+      "rule": {
+        "check": "requires",
+        "component": "Confirm",
+        "where": {
+          "severity": "destructive"
+        },
+        "props": [
+          "typeToConfirm"
+        ]
+      }
+    }
+  ],
+  "journey": {
+    "goal": "Carry out the action knowingly, or back out safely",
+    "checkpoints": [
+      "Consequence is visible before the confirm button",
+      "User explicitly confirms"
+    ],
+    "done": "The capability's event is sent, or the dialog is dismissed with nothing changed"
+  },
+  "agent": "Read the title and consequence, then activate the confirm button by its label. Agents acting for a user should surface the consequence to that user before confirming.",
+  "examples": [
+    "money-send-confirm.json",
+    "tasks-delete-project.json",
+    "settings-delete-account.json"
+  ],
+  "sources": [
+    "Nielsen heuristic: error prevention",
+    "GOV.UK: warning text and confirmation",
+    "Material 3 dialogs"
+  ]
+}
