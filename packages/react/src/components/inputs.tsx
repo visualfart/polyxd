@@ -246,6 +246,68 @@ export function Choice({ node }: { node: Node }) {
         </div>
       );
     }
+    if (withFaces) {
+      // People are recognised by face and name, whether you pick one or several.
+      const recent = query ? [] : options.filter((o) => o.recent);
+      const rest = options.filter((o) => (query ? matches(o) : !o.recent));
+      return (
+        <fieldset className="pxd-field pxd-choice pxd-people" aria-describedby={help ? helpId : undefined} {...a11y}>
+          <legend className="pxd-field-label" id={labelId}>
+            {label}
+          </legend>
+          {help && <p className="pxd-field-help" id={helpId}>{help}</p>}
+          {search}
+          <div className="pxd-people-group">
+            {recent.length > 0 && (
+              <div className="pxd-people-recent">
+                {recent.map((o) => (
+                  <Checkbox.Root key={key(o.value)} className="pxd-person-tile" checked={isOn(o.value)} onCheckedChange={() => toggle(o.value)} aria-label={o.label}>
+                    <span className="pxd-person-face">
+                      <Avatar value={o.avatar} name={o.label} size={56} />
+                      <Checkbox.Indicator className="pxd-person-tick">
+                        <Icon name="check" size={14} />
+                      </Checkbox.Indicator>
+                    </span>
+                    <span className="pxd-person-name" aria-hidden="true">
+                      {o.label.split(" ")[0]}
+                    </span>
+                  </Checkbox.Root>
+                ))}
+              </div>
+            )}
+            <div className="pxd-people-list">
+              {rest.map((o) => {
+                const cid = `${labelId}-${key(o.value)}`;
+                return (
+                  <Checkbox.Root
+                    key={key(o.value)}
+                    id={cid}
+                    className="pxd-person-row"
+                    checked={isOn(o.value)}
+                    onCheckedChange={() => toggle(o.value)}
+                    aria-labelledby={`${cid}-name`}
+                    aria-describedby={o.description ? `${cid}-desc` : undefined}
+                  >
+                    <Avatar value={o.avatar} name={o.label} />
+                    <span className="pxd-person-text">
+                      <span id={`${cid}-name`}>{o.label}</span>
+                      {o.description && (
+                        <span className="pxd-option-description" id={`${cid}-desc`}>
+                          {o.description}
+                        </span>
+                      )}
+                    </span>
+                    <Checkbox.Indicator className="pxd-person-check">
+                      <Icon name="check" />
+                    </Checkbox.Indicator>
+                  </Checkbox.Root>
+                );
+              })}
+            </div>
+          </div>
+        </fieldset>
+      );
+    }
     return (
       <fieldset className="pxd-field pxd-choice" aria-describedby={help ? helpId : undefined} {...a11y}>
         <legend className="pxd-field-label" id={labelId}>

@@ -71,8 +71,7 @@
         "path": "/contacts",
         "valuePath": "id",
         "labelPath": "name",
-        "avatarPath": "initials",
-        "recentPath": "recent"
+        "avatarPath": "initials"
       },
       "value": {
         "path": "/draft/people"
@@ -105,20 +104,17 @@
       {
         "id": "c1",
         "name": "Priya",
-        "initials": "P",
-        "recent": true
+        "initials": "P"
       },
       {
         "id": "c2",
         "name": "Tom",
-        "initials": "T",
-        "recent": true
+        "initials": "T"
       },
       {
         "id": "c3",
         "name": "Mei",
-        "initials": "M",
-        "recent": true
+        "initials": "M"
       }
     ]
   }

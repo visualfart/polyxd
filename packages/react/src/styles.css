@@ -131,7 +131,13 @@
 .pxd-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--pxd-space-stack-default);
+  gap: var(--polyxd-stack);
+}
+/* Separate questions need more air between them than the parts of one question. */
+.pxd-form-fields,
+.pxd-section > .pxd-stack,
+.pxd-group.pxd-stack {
+  gap: var(--polyxd-stack-apart);
 }
 .pxd-stack-tight {
   gap: var(--pxd-space-stack-tight);
@@ -139,7 +145,7 @@
 .pxd-section {
   display: flex;
   flex-direction: column;
-  gap: var(--pxd-space-stack-default);
+  gap: var(--polyxd-stack);
 }
 .pxd-section + .pxd-section,
 .pxd-group > .pxd-section + .pxd-section {
@@ -235,7 +241,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--pxd-space-inline-tight);
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   padding: 0;
   border: 0;
   background: none;
@@ -254,7 +260,7 @@
   overflow-x: auto;
 }
 .pxd-views-tab {
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   padding: 0 var(--pxd-space-inset-default);
   border: 0;
   border-bottom: var(--pxd-border-width-strong) solid transparent;
@@ -566,7 +572,7 @@
 .pxd-input {
   width: 100%;
   max-width: 32rem;
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   padding: 0 var(--pxd-space-inset-compact);
   background: var(--pxd-color-surface-default);
   border: var(--pxd-border-width-default) solid var(--pxd-color-border-strong);
@@ -649,7 +655,7 @@ textarea.pxd-input {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   cursor: pointer;
 }
 .pxd-choice-option .pxd-radio,
@@ -706,7 +712,7 @@ textarea.pxd-input {
 }
 .pxd-segment {
   flex: 1 1 auto;
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   padding: 0 var(--pxd-space-inset-default);
   line-height: 1.2;
   border: 0;
@@ -786,7 +792,7 @@ textarea.pxd-input {
   position: relative;
   display: flex;
   align-items: center;
-  height: var(--pxd-size-target-min);
+  height: var(--polyxd-control);
   max-width: 32rem;
   touch-action: none;
 }
@@ -824,7 +830,7 @@ textarea.pxd-input {
   align-items: center;
   justify-content: center;
   gap: var(--pxd-space-inline-tight);
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   min-width: var(--pxd-size-target-min);
   padding: 0 var(--pxd-space-inset-default);
   border-radius: var(--pxd-radius-default);
@@ -1030,7 +1036,7 @@ textarea.pxd-input {
   display: flex;
   align-items: center;
   gap: var(--pxd-space-inline-default);
-  min-height: calc(var(--pxd-size-target-min) + 8px);
+  min-height: calc(var(--polyxd-control) + 8px);
   padding: 0 var(--pxd-space-inset-default);
   border-radius: var(--pxd-radius-full);
   background: var(--pxd-color-surface-subtle);
@@ -1041,12 +1047,12 @@ textarea.pxd-input {
   outline-offset: var(--pxd-focus-ring-offset);
 }
 .pxd-search-compact {
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
 }
 .pxd-search-input {
   flex: 1;
   min-width: 0;
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   border: 0;
   background: transparent;
   color: var(--pxd-color-text-default);
@@ -1115,7 +1121,7 @@ textarea.pxd-input {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   padding: 0 var(--pxd-space-inset-default);
   border: var(--pxd-border-width-default) solid var(--pxd-color-border-strong);
   border-radius: var(--pxd-radius-default);
@@ -1180,6 +1186,24 @@ textarea.pxd-input {
 .pxd-person-tile[data-state="checked"] .pxd-avatar {
   box-shadow: 0 0 0 3px var(--pxd-color-surface-default), 0 0 0 6px var(--pxd-color-action-primary-background);
 }
+.pxd-person-face {
+  position: relative;
+  display: inline-flex;
+}
+.pxd-person-tick {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--pxd-color-surface-default);
+  background: var(--pxd-color-action-primary-background);
+  color: var(--pxd-color-action-primary-foreground);
+}
 .pxd-person-name {
   max-width: 72px;
   overflow: hidden;
@@ -1195,7 +1219,7 @@ textarea.pxd-input {
   display: flex;
   align-items: center;
   gap: var(--pxd-space-inline-loose);
-  min-height: calc(var(--pxd-size-target-min) + 8px);
+  min-height: calc(var(--polyxd-control) + 8px);
   padding: 6px var(--pxd-space-inset-compact);
   border: 0;
   border-radius: var(--pxd-radius-default);
@@ -1622,7 +1646,7 @@ textarea.pxd-input {
   align-items: center;
   justify-content: center;
   width: var(--pxd-size-target-min);
-  height: var(--pxd-size-target-min);
+  height: var(--polyxd-control);
   border: 0;
   border-radius: var(--pxd-radius-full);
   background: transparent;
@@ -1637,14 +1661,33 @@ textarea.pxd-input {
 .pxd-surface {
   --polyxd-row-height: 40px;
   --polyxd-row-pad: var(--pxd-space-inset-compact);
+  /* Space between two things that belong together, and between two separate questions. */
+  --polyxd-stack: var(--pxd-space-stack-default);
+  --polyxd-stack-apart: var(--pxd-space-stack-loose);
+  --polyxd-inset: var(--pxd-space-inset-comfortable);
+  --polyxd-control: var(--pxd-size-target-min);
 }
 .pxd-surface[data-pxd-density="compact"] {
   --polyxd-row-height: 32px;
   --polyxd-row-pad: var(--pxd-space-inline-default);
+  --polyxd-stack: var(--pxd-space-stack-tight);
+  --polyxd-stack-apart: var(--pxd-space-stack-default);
+  --polyxd-inset: var(--pxd-space-inset-default);
+  /* Controls shrink only where there is a pointer; touch keeps its 44px floor. */
+  --polyxd-control: max(36px, calc(var(--pxd-size-target-min) - 12px));
 }
 .pxd-surface[data-pxd-density="spacious"] {
   --polyxd-row-height: 48px;
   --polyxd-row-pad: var(--pxd-space-inset-default);
+  --polyxd-stack: var(--pxd-space-stack-loose);
+  --polyxd-stack-apart: var(--pxd-space-stack-section);
+  --polyxd-inset: var(--pxd-space-inset-comfortable);
+  --polyxd-control: calc(var(--pxd-size-target-min) + 4px);
+}
+@media (pointer: coarse) {
+  .pxd-surface[data-pxd-density="compact"] {
+    --polyxd-control: max(44px, calc(var(--pxd-size-target-min) - 4px));
+  }
 }
 
 /* App shell: navigation beside the page. */
@@ -1683,7 +1726,7 @@ textarea.pxd-input {
   align-items: center;
   gap: var(--pxd-space-inline-default);
   width: 100%;
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   padding: 0 var(--pxd-space-inset-compact);
   border: 0;
   border-left: 3px solid transparent;
@@ -1812,7 +1855,7 @@ textarea.pxd-input {
   display: inline-flex;
   align-items: center;
   gap: var(--pxd-space-inline-default);
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   padding: 0 var(--pxd-space-inset-compact);
   border: 0;
   border-bottom: 2px solid transparent;
@@ -1880,7 +1923,7 @@ textarea.pxd-input {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   border: 0;
   padding: 0;
   background: none;
@@ -1927,7 +1970,7 @@ textarea.pxd-input {
   min-height: max(var(--polyxd-row-height), 24px);
 }
 .pxd-row-item .pxd-link {
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
 }
 .pxd-entity-text {
   display: flex;
@@ -1945,7 +1988,7 @@ textarea.pxd-input {
   align-items: center;
   gap: var(--pxd-space-inline-loose);
   padding: 0 var(--pxd-space-inline-default);
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   border-top: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
   background: var(--pxd-color-surface-subtle);
   font-size: var(--pxd-type-body-small-size);
@@ -1958,7 +2001,7 @@ textarea.pxd-input {
   color: var(--pxd-color-text-muted);
 }
 .pxd-paging-size select {
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   border: 0;
   background: transparent;
   color: var(--pxd-color-text-default);
@@ -1995,7 +2038,7 @@ textarea.pxd-input {
 .pxd-menu-item {
   display: flex;
   align-items: center;
-  min-height: var(--pxd-size-target-min);
+  min-height: var(--polyxd-control);
   padding: 0 var(--pxd-space-inset-compact);
   border-radius: var(--pxd-radius-small);
   color: var(--pxd-color-text-default);
