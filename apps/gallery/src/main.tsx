@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { PolyxdSurface, type ActionEvent, type UIDocument } from "@polyxd/react";
 import "@polyxd/react/styles.css";
 import "./gallery.css";
+import { RankPage } from "./rank.tsx";
 
 // Every theme pack the renderer has compiled, and every example UI document in the spec.
 const themeFiles = import.meta.glob("../../../packages/react/themes/*.css", { eager: true });
@@ -196,8 +197,17 @@ function SiteHeader() {
   );
 }
 
+const ranking = new URLSearchParams(location.search).has("rank");
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Gallery />
+    {ranking ? (
+      <>
+        <SiteHeader />
+        <RankPage />
+      </>
+    ) : (
+      <Gallery />
+    )}
   </StrictMode>,
 );

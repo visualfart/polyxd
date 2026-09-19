@@ -357,3 +357,216 @@ body {
     margin-left: 0;
   }
 }
+
+/* Gold-set ranking page (?rank) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.r-page {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px clamp(16px, 3vw, 40px) 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.r-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+.r-title {
+  max-width: 760px;
+}
+.r-title h1 {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(36px, 4vw, 52px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.r-title p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.r-rater {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.r-rater input {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  font: 16px var(--body);
+}
+.r-groups {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.r-groups button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  font: 600 15px var(--body);
+  color: var(--ink);
+  cursor: pointer;
+}
+.r-groups button.r-done {
+  background: var(--line-soft);
+  color: var(--muted);
+}
+.r-groups button.r-done::after {
+  content: " ✓";
+}
+.r-groups button[aria-current="step"] {
+  border: 2px solid var(--ink);
+  color: var(--ink);
+}
+.r-progress {
+  margin-left: 8px;
+  font: 13px var(--mono);
+  color: var(--muted);
+}
+.r-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-block: 1px solid var(--line);
+  text-transform: none;
+}
+.r-toolbar strong {
+  margin-right: auto;
+  text-transform: capitalize;
+}
+.r-toolbar .g-seg button {
+  text-transform: none;
+}
+.r-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.r-options.r-wide {
+  grid-template-columns: 1fr;
+}
+.r-option {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.r-option-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+}
+.r-option-head h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+.r-choose {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--signal);
+  font: 600 15px var(--body);
+  color: var(--ink);
+  cursor: pointer;
+}
+.r-badge {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font: 600 14px var(--body);
+  background: var(--ink);
+  color: var(--ground);
+}
+.r-badge-1 {
+  background: var(--line-soft);
+  color: var(--ink);
+}
+.r-badge-2 {
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+}
+.r-frame {
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgb(20 20 20 / 0.06), 0 12px 32px rgb(20 20 20 / 0.08);
+}
+.r-picked .r-frame {
+  border-color: var(--ink);
+}
+.r-frame .pxd-surface {
+  min-height: 420px;
+}
+.r-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.r-next {
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  font: 600 15px var(--body);
+  color: var(--ground);
+  cursor: pointer;
+}
+.r-next:disabled,
+.g-reset:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.r-finished {
+  padding: 16px 20px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 16px;
+  font-size: 16px;
+}
+.r-error {
+  padding: 16px;
+  background: #fff1ea;
+  border: 1px solid #ffc3ab;
+  border-radius: 12px;
+}
+@media (max-width: 1250px) {
+  .r-options {
+    grid-template-columns: 1fr;
+  }
+}
