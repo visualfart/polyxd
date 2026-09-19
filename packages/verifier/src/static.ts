@@ -1,7 +1,7 @@
 import { validateDocument } from "@polyxd/spec";
 import { checkPattern, evaluateRules, type Rule } from "@polyxd/spec/patterns";
 import { checkCapabilities, type CapabilityRegistry } from "@polyxd/spec/capabilities";
-import { readingOrder } from "@polyxd/spec/checks";
+import { readingOrder, runCheck } from "@polyxd/spec/checks";
 import type { Finding } from "./rendered.ts";
 
 export interface StaticOptions {
@@ -27,6 +27,12 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
   for (const r of checkPattern(doc)) if (!r.pass) out.push({ severity: r.severity, check: `pattern:${r.id}`, message: `${r.description}: ${r.message}` });
   if (opts.registry) for (const i of checkCapabilities(doc, opts.registry)) out.push({ severity: i.severity, check: "capability", message: `${i.at}: ${i.message}` });
   if (opts.rules) for (const r of evaluateRules(opts.rules, doc)) if (!r.pass) out.push({ severity: r.severity, check: `rule:${r.id}`, message: `${r.description}: ${r.message}` });
+
+  // Short views everywhere, not only in surfaces that declare the multi-step-form pattern.
+  if (doc.surface?.pattern !== "multi-step-form") {
+    const r = runCheck({ check: "maxInputsPerView", max: 6 }, doc);
+    if (!r.pass) out.push({ severity: "error", check: "load:inputs-per-view", message: r.message });
+  }
 
   const order = readingOrder(doc);
   // Visible text must say something.

@@ -14,7 +14,8 @@
     "build": "tsc -b",
     "build:harness": "vite build --config harness/vite.config.ts",
     "verify": "node src/cli.ts",
-    "test": "node --test \"test/**/*.test.ts\""
+    "test": "npm run build:harness && node --test \"test/**/*.test.ts\"",
+    "verify:examples": "npm run build:harness && node src/cli.ts ../spec/examples/*.json --registry ../spec/examples/registry/capabilities.json --tasks ../../bench/tasks.json -q"
   },
   "devDependencies": {
     "@polyxd/react": "^0.0.0",
