@@ -10,3 +10,4 @@ model/checkpoints/
 model/weights/
 *.safetensors
 *.gguf
+*.tsbuildinfo

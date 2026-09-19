@@ -1,0 +1,13 @@
+{
+  "name": "@polixd/spec",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Polixd spec: JSON Schema and TypeScript types for just-in-time interfaces",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  }
+}
