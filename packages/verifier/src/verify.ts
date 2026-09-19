@@ -56,7 +56,16 @@ export async function verifyDocument(doc: any, opts: VerifyOptions = {}): Promis
         for (const mode of opts.modes ?? DEFAULTS.modes) {
           for (const width of opts.widths ?? DEFAULTS.widths) {
             const target = { theme, mode, width };
-            const { page, errors } = await renderPage(browser, doc, target);
+            let page: Awaited<ReturnType<typeof renderPage>>["page"];
+            let errors: string[];
+            try {
+              ({ page, errors } = await renderPage(browser, doc, target));
+            } catch (e) {
+              // Timed out or crashed before the surface was ready: that is the renderer's problem
+              // with this document, and the run carries on.
+              targets.push({ ...target, findings: [{ severity: "error", check: "runtime:render", message: `did not finish rendering: ${(e as Error).message.split("\n")[0]}` }], agent: [] });
+              continue;
+            }
             const rendered = await page.evaluate(() => !!document.querySelector(".pxd-surface"));
             if (!rendered) {
               // The renderer threw: a schema-valid document it can't display is a renderer bug.

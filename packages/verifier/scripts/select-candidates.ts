@@ -66,7 +66,13 @@ try {
       const wiredSet = wiredCapabilities(flat);
       const wired = offered.filter((c) => wiredSet.has(c)).length;
       if (values["require-wiring"] && offered.length && wired === 0) continue;
-      const rep = await verifyDocument(flat, { browser, registry: hostRegistry(offered), themes: ["material3"], modes: ["light"], widths: [390] });
+      let rep;
+      try {
+        rep = await verifyDocument(flat, { browser, registry: hostRegistry(offered), themes: ["material3"], modes: ["light"], widths: [390] });
+      } catch (e) {
+        console.log(`  !  ${scenario.id}: could not be scored (${(e as Error).message.split("\n")[0]})`);
+        continue;
+      }
       const rank = (x: { score: number; wired: number }) => x.score + (values["require-wiring"] && offered.length ? (20 * x.wired) / offered.length : 0);
       const cand = { tree: s.doc, score: rep.score, wired };
       if (!best || rank(cand) > rank(best) || (rank(cand) === rank(best) && wired > best.wired)) best = cand;
