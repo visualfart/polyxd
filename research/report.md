@@ -13,6 +13,28 @@ This is Polyxd's running improvement report. Each entry states a question, what 
 
 ## Entries
 
+### 2026-09-20 · How to ship the fine-tune: keep the adapter separate (Phase 5, packaging)
+
+**Question.** Run 2's adapter slowed generation from 74 to 56 tokens/s. Merging the adapter into the model should restore speed, but at what cost?
+
+**Result.** Same fine-tuned model, packaged four ways, same benchmark:
+
+| Packaging | Size on disk | Mean score | Agent tasks | Tokens/s | Median latency |
+|---|---|---|---|---|---|
+| **4-bit base + separate LoRA adapter** | 2.5 GB + adapter | **79** | **16/37** | 56 | 4.1 s |
+| Merged at full precision, re-quantised to 8-bit | 7.4 GB | 76 | 15/37 | 47 | 4.8 s |
+| Merged at full precision, re-quantised to 6-bit | 5.7 GB | 76 | 12/37 | 57 | 4.2 s |
+| Merged directly into 4-bit | 3.9 GB | 74 | 12/37 | **76** | **3.4 s** |
+
+**What it means.** Merging means re-quantising, and the fine-tune's changes are small enough that rounding erases part of them: more at 4-bit, less at 8-bit, but even 8-bit (three times the size) doesn't match the separate adapter. Keeping the adapter separate is the best trade: highest quality, the same speed as 6-bit, and a far smaller download. It also fits the product: one shared base model on a device, with small swappable adapters per company (the "learned taste" layer in the Design Direction plan).
+
+**Caveats.**
+
+- These are single greedy runs on 37 agent tasks, so differences of one to four tasks are within noise. The pattern (merging costs quality, more at lower precision) is consistent, but the exact numbers aren't precise.
+- The 8-bit and 6-bit runs used prompt v4, which adds structured copy-and-tone text for the 5 requests with a Design Direction. The other 45 prompts are identical.
+
+**Decision.** Ship the base model plus a separate adapter. Fix the benchmark's noise before the next comparison: run each configuration with several samples and report spread, not single numbers.
+
 ### 2026-09-20 · Rewarding usefulness fixes it: best model so far (Phase 5, run 2)
 
 **Change from run 1.** Same 1,600 candidates, different selection. When the host offers capabilities, a candidate must wire at least one to something a person or agent can operate. Candidates are ranked by verifier score plus the share of offered capabilities they wire up. "Can't do that" examples are capped at 10%. That kept 186 of 400 scenarios (168 for training, 18 for validation), fewer than run 1's 316 but more useful. Training ran 400 steps.
