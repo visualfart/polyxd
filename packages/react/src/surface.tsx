@@ -1,7 +1,8 @@
 import { useCallback, useContext, useMemo, useState, type ComponentType } from "react";
 import { SurfaceContext, ScopeContext, StepsContext, useSurface, type ActionEvent, type Node, type UIDocument, type SurfaceContextValue } from "./context.tsx";
-import { resolve, resolveContext, set, type Data, type Scope } from "./data.ts";
+import { ROOT_SCOPE, resolve, resolveContext, set, type Data, type Scope } from "./data.ts";
 import { registry, type ComponentRenderer } from "./components/index.ts";
+import { Avatar } from "./components/avatar.tsx";
 
 export interface PolyxdSurfaceProps {
   document: UIDocument;
@@ -15,6 +16,8 @@ export interface PolyxdSurfaceProps {
   onDismiss?: () => void;
   /** Design-system pack name, e.g. "material3" (matching a loaded theme CSS file). */
   theme?: string;
+  /** Design Direction's profile.density. Sets row heights and spacing; compact is for pointer surfaces. */
+  density?: "compact" | "comfortable" | "spacious";
   mode?: "light" | "dark";
   locale?: string;
   /** Turns a host media reference into a URL. Generated UIs never contain URLs. */
@@ -25,7 +28,7 @@ export interface PolyxdSurfaceProps {
 }
 
 /** Renders one Polyxd UI document. */
-export function PolyxdSurface({ document: doc, data: initial, onAction, onDataChange, onDismiss, theme, mode, locale = "en-GB", resolveMedia, components: overrides, className }: PolyxdSurfaceProps) {
+export function PolyxdSurface({ document: doc, data: initial, onAction, onDataChange, onDismiss, theme, mode, density, locale = "en-GB", resolveMedia, components: overrides, className }: PolyxdSurfaceProps) {
   const [data, setData] = useState<Data>(() => initial ?? doc.data ?? {});
   const [portal, setPortal] = useState<HTMLElement | null>(null);
   const byId = useMemo(() => new Map(doc.components.map((c) => [c.id, c])), [doc]);
@@ -53,21 +56,71 @@ export function PolyxdSurface({ document: doc, data: initial, onAction, onDataCh
 
   const value: SurfaceContextValue = { doc, byId, data, setValue, dispatch, locale, resolveMedia, portal, components };
   const rootIsDialog = byId.get(doc.root)?.component === "Confirm";
+  const nav = doc.components.find((c) => c.component === "Navigation");
 
   return (
     <SurfaceContext.Provider value={value}>
       <div
-        className={["pxd-surface", className].filter(Boolean).join(" ")}
+        className={["pxd-surface", doc.surface.presentation === "panel" ? "pxd-surface-panel" : null, nav ? "pxd-surface-with-nav" : null, className].filter(Boolean).join(" ")}
         data-pxd-theme={theme}
         data-pxd-mode={mode}
+        data-pxd-density={density}
         data-pxd-surface={doc.surface.id}
         lang={locale}
       >
-        {!rootIsDialog && <h1 className="pxd-surface-title">{doc.surface.title}</h1>}
-        <Render id={doc.root} />
+        {nav && <Render id={nav.id} />}
+        <div className="pxd-surface-main">
+          {!rootIsDialog && <SurfaceHeader />}
+          <Render id={doc.root} />
+        </div>
         <div ref={setPortal} className="pxd-portal" />
       </div>
     </SurfaceContext.Provider>
+  );
+}
+
+/** Title, and on a record page: where it sits, what state it's in, and what you can do to it. */
+function SurfaceHeader() {
+  const s = useSurface();
+  const { title, subtitle, breadcrumbs, badge, avatar, actions } = s.doc.surface;
+  const text = (v: unknown) => String(resolve(v, s.data, ROOT_SCOPE) ?? "");
+  const plain = !subtitle && !breadcrumbs && !badge && !avatar && !actions;
+  if (plain) return <h1 className="pxd-surface-title">{title}</h1>;
+  return (
+    <header className="pxd-page-header">
+      {breadcrumbs && (
+        <nav className="pxd-breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            {breadcrumbs.map((c: any, i: number) => (
+              <li key={i}>
+                {c.action ? (
+                  <button type="button" className="pxd-link" onClick={() => s.dispatch(c.action, ROOT_SCOPE, s.doc.surface.id)}>
+                    {text(c.label)}
+                  </button>
+                ) : (
+                  text(c.label)
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <div className="pxd-page-header-main">
+        {avatar !== undefined && <Avatar value={text(avatar)} name={title} size={48} />}
+        <div className="pxd-page-header-text">
+          <h1 className="pxd-surface-title">
+            {title}
+            {badge && <span className={`pxd-badge pxd-tone-${badge.tone ?? "neutral"}`}>{text(badge.text)}</span>}
+          </h1>
+          {subtitle && <p className="pxd-surface-subtitle">{subtitle}</p>}
+        </div>
+        {actions && (
+          <div className="pxd-page-header-actions">
+            <Render id={actions} />
+          </div>
+        )}
+      </div>
+    </header>
   );
 }
 

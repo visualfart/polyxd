@@ -6,7 +6,21 @@ export type Node = Record<string, any> & { id: string; component: string };
 
 export interface UIDocument {
   specVersion: string;
-  surface: { id: string; title: string; intent?: string; pattern?: string; journey?: string; dismissible?: boolean };
+  surface: {
+    id: string;
+    title: string;
+    intent?: string;
+    pattern?: string;
+    journey?: string;
+    dismissible?: boolean;
+    subtitle?: string;
+    breadcrumbs?: { label: unknown; action?: any }[];
+    badge?: { text: unknown; tone?: string };
+    avatar?: unknown;
+    /** ActionBar id: what you can do to this record */
+    actions?: string;
+    presentation?: "page" | "panel";
+  };
   root: string;
   components: Node[];
   data?: Data;

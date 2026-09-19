@@ -60,7 +60,7 @@ export function DetailList({ node }: { node: Node }) {
   const rows = (node.items as any[]).filter((i) => !i.total);
   const totals = (node.items as any[]).filter((i) => i.total);
   return (
-    <div className={`pxd-detail-list${receipt ? " pxd-receipt" : ""}`} {...useA11y(node)}>
+    <div className={`pxd-detail-list${receipt ? " pxd-receipt" : ""}${node.layout === "grid" ? " pxd-detail-grid" : ""}`} {...useA11y(node)}>
       {node.title !== undefined && <Heading className="pxd-detail-title">{b.text(node.title)}</Heading>}
       <dl>
         {rows.map((item: any, i: number) => {
@@ -104,7 +104,8 @@ export function Collection({ node }: { node: Node }) {
   const label = b.text(node.label);
   // Grid for visual items (a Card with media), list otherwise, unless the document says which.
   const template = s.byId.get(node.items.componentId);
-  const grid = node.layout === "grid" || (node.layout !== "list" && template?.component === "Card" && !!template.media);
+  const grid = node.layout === "grid" || (node.layout !== "list" && node.layout !== "timeline" && template?.component === "Card" && !!template.media);
+  const timeline = node.layout === "timeline";
 
   if (!items.length && node.empty) return <Render id={node.empty} />;
   return (
@@ -112,7 +113,7 @@ export function Collection({ node }: { node: Node }) {
       <div className="pxd-collection-label" id={labelId}>
         {label} <span className="pxd-count">({items.length})</span>
       </div>
-      <ul className={`pxd-collection-list${grid ? " pxd-collection-grid" : ""}`} aria-labelledby={labelId}>
+      <ul className={`pxd-collection-list${grid ? " pxd-collection-grid" : ""}${timeline ? " pxd-timeline" : ""}`} aria-labelledby={labelId}>
         {items.map((item, i) => {
           const v = itemValue(item, i);
           const scope = { pointer: childPointer(pointer, i) };
@@ -140,60 +141,6 @@ export function Collection({ node }: { node: Node }) {
 }
 
 const NUMERIC = new Set(["number", "currency", "percent", "duration"]);
-
-export function Table({ node }: { node: Node }) {
-  const b = useBindings();
-  const s = useSurface();
-  const pointer = absolute(node.rows.path, b.scope);
-  const rows = (get(s.data, pointer) as any[]) ?? [];
-  if (!rows.length && node.empty) return <Render id={node.empty} />;
-  return (
-    <div className="pxd-table-wrap" {...useA11y(node)}>
-      <table className="pxd-table">
-        <caption>{b.text(node.caption)}</caption>
-        <thead>
-          <tr>
-            {node.columns.map((c: any) => (
-              <th key={c.key} scope="col" className={NUMERIC.has(c.format?.type) ? "pxd-num" : undefined}>
-                {b.text(c.label)}
-              </th>
-            ))}
-            {node.rowAction && (
-              <th scope="col">
-                <span className="pxd-sr-only">Actions</span>
-              </th>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => {
-            const scope = { pointer: childPointer(pointer, i) };
-            return (
-              <tr key={row?.id ?? i}>
-                {node.columns.map((c: any, ci: number) => {
-                  const text = formatValue(get(s.data, absolute(c.path, scope)), resolveFormat(c.format, s.data, b.scope), s.locale);
-                  const Cell = ci === 0 ? "th" : "td";
-                  return (
-                    <Cell key={c.key} scope={ci === 0 ? "row" : undefined} data-label={b.text(c.label)} className={NUMERIC.has(c.format?.type) ? "pxd-num" : undefined}>
-                      {text}
-                    </Cell>
-                  );
-                })}
-                {node.rowAction && (
-                  <td className="pxd-table-action">
-                    <button type="button" className="pxd-button pxd-button-tertiary" onClick={() => s.dispatch(node.rowAction, scope, node.id)}>
-                      Select<span className="pxd-sr-only"> {formatValue(get(s.data, absolute(node.columns[0].path, scope)), resolveFormat(node.columns[0].format, s.data, b.scope), s.locale)}</span>
-                    </button>
-                  </td>
-                )}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 export function Media({ node }: { node: Node }) {
   const b = useBindings();
@@ -228,7 +175,7 @@ export function Status({ node }: { node: Node }) {
     );
   }
   return (
-    <div className={`pxd-status pxd-status-${node.kind}`} role={urgent ? "alert" : "status"} {...a11y}>
+    <div className={`pxd-status pxd-status-${node.kind}${node.variant === "inline" ? " pxd-status-notice" : ""}`} role={urgent ? "alert" : "status"} {...a11y}>
       {node.kind === "loading" ? (
         <span className="pxd-spinner" aria-hidden="true" />
       ) : (
@@ -239,12 +186,17 @@ export function Status({ node }: { node: Node }) {
       <div className="pxd-status-body">
         <p className="pxd-status-title">{b.text(node.title)}</p>
         {node.message !== undefined && <p className="pxd-status-message">{b.text(node.message)}</p>}
-        {node.action && (
+        {node.action && node.variant !== "inline" && (
           <div className="pxd-status-action">
             <Render id={node.action} />
           </div>
         )}
       </div>
+      {node.action && node.variant === "inline" && (
+        <div className="pxd-status-action">
+          <Render id={node.action} />
+        </div>
+      )}
     </div>
   );
 }

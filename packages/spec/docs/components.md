@@ -326,7 +326,7 @@ A key figure with a label, and optionally its change.
 
 Tabular data: many items sharing the same attributes.
 
-**Required props:** `rows`, `caption`, `columns`. **Optional:** `rowAction`, `empty`, `sort`, `selection`, `selected`, `rowValuePath`, `bulkActions`, `rowActions`, `toolbar`, `search`, `filters`, `views`, `view`, `page`.
+**Required props:** `rows`, `caption`, `columns`. **Optional:** `rowAction`, `empty`, `sort`, `selection`, `selected`, `rowValuePath`, `bulkActions`, `rowActions`, `toolbar`, `search`, `views`, `view`, `page`.
 
 **Use when**
 - Scanning or comparing many rows by several attributes

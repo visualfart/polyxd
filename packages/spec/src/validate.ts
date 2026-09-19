@@ -24,7 +24,7 @@ const validateSchema = ajv.compile(uiSchema);
 
 /** Props whose paths resolve against the current item of a repeated structure. */
 const ITEM_SCOPED: Record<string, string[]> = {
-  Table: ["columns", "rowAction"],
+  Table: ["columns", "rowAction", "rowValuePath"],
   Chart: ["x", "series"],
   Comparison: ["itemTitle", "attributes", "choose"],
 };
@@ -118,7 +118,7 @@ export function validateDocument(doc: Json): ValidationResult {
     return { valid: false, issues };
   }
 
-  const d = doc as { root: string; components: Array<Record<string, any>>; data?: Json };
+  const d = doc as { root: string; components: Array<Record<string, any>>; data?: Json; surface?: Record<string, any> };
   const byId = new Map<string, { c: Record<string, any>; index: number }>();
   d.components.forEach((c, index) => {
     if (byId.has(c.id)) error(`/components/${index}/id`, `duplicate id "${c.id}"`);
@@ -195,7 +195,8 @@ export function validateDocument(doc: Json): ValidationResult {
 
     for (const r of refs.get(id)!.ids) {
       if (!byId.has(r.id) || r.id === id) continue;
-      const isTemplate = r.prop === "items" && c.component === "Collection";
+      // A Collection's item template and a Table's row-action menu both render once per row.
+      const isTemplate = (r.prop === "items" && c.component === "Collection") || (r.prop === "rowActions" && c.component === "Table");
       const prev = parent.get(r.id);
       if (prev && prev !== id) {
         error(r.at, `"${r.id}" already has parent "${prev}"; a component can appear in only one place`);
@@ -206,6 +207,9 @@ export function validateDocument(doc: Json): ValidationResult {
     }
   };
   if (byId.has(d.root)) visit(d.root, [], false, []);
+  // The surface's own header actions and the product's navigation sit outside the root component.
+  if (typeof d.surface?.actions === "string" && byId.has(d.surface.actions)) visit(d.surface.actions, [], false, []);
+  for (const [id, { c }] of byId) if (c.component === "Navigation" && !reached.has(id)) visit(id, [], false, []);
 
   for (const [id, { index }] of byId) {
     if (!reached.has(id)) warn(`/components/${index}`, `"${id}" is not reachable from root "${d.root}"`);

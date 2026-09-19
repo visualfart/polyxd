@@ -17,6 +17,5 @@ export const REFERENCE_TYPES: Record<string, string[]> = {
   "Table.bulkActions": ["ActionBar"],
   "Table.rowActions": ["ActionBar"],
   "Table.search": ["TextInput"],
-  "Table.filters": ["FilterPanel"],
   "Surface.actions": ["ActionBar"],
 };

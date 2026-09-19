@@ -551,7 +551,7 @@ export function Form({ node }: { node: Node }) {
   const s = useSurface();
   return (
     <form
-      className={`pxd-form${node.aside ? " pxd-form-with-aside" : ""}`}
+      className={`pxd-form${node.aside ? " pxd-form-with-aside" : ""}${node.layout === "horizontal" ? " pxd-form-horizontal" : ""}`}
       onSubmit={(e) => {
         e.preventDefault();
         s.dispatch(node.submit.action, b.scope, node.id);

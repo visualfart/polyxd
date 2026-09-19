@@ -1629,3 +1629,487 @@ textarea.pxd-input {
   color: var(--pxd-color-text-default);
   cursor: pointer;
 }
+
+/* ---- Batch 4: dense B2B layouts (app shell, page header, data tables) ---- */
+
+/* Density comes from Design Direction. It sets row height and how tight rows are packed;
+   touch targets keep their minimum, so compact is for pointer surfaces. */
+.pxd-surface {
+  --polyxd-row-height: 40px;
+  --polyxd-row-pad: var(--pxd-space-inset-compact);
+}
+.pxd-surface[data-pxd-density="compact"] {
+  --polyxd-row-height: 32px;
+  --polyxd-row-pad: var(--pxd-space-inline-default);
+}
+.pxd-surface[data-pxd-density="spacious"] {
+  --polyxd-row-height: 48px;
+  --polyxd-row-pad: var(--pxd-space-inset-default);
+}
+
+/* App shell: navigation beside the page. */
+.pxd-surface-with-nav {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--pxd-space-inline-loose);
+}
+.pxd-surface-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-loose);
+  min-width: 0;
+}
+.pxd-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-default);
+  min-width: 12rem;
+}
+.pxd-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pxd-nav-group-label {
+  margin: 0 0 var(--pxd-space-stack-tight);
+  padding: 0 var(--pxd-space-inline-default);
+  font-family: var(--pxd-type-label-small-family);
+  font-size: var(--pxd-type-label-small-size);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  width: 100%;
+  min-height: var(--pxd-size-target-min);
+  padding: 0 var(--pxd-space-inset-compact);
+  border: 0;
+  border-left: 3px solid transparent;
+  border-radius: 0 var(--pxd-radius-default) var(--pxd-radius-default) 0;
+  background: transparent;
+  color: var(--pxd-color-text-muted);
+  font-family: var(--pxd-type-label-default-family);
+  font-size: var(--pxd-type-label-default-size);
+  text-align: left;
+  cursor: pointer;
+}
+.pxd-nav-item:hover {
+  background: color-mix(in srgb, var(--pxd-color-text-default) calc(var(--pxd-opacity-state-hover) * 100%), transparent);
+}
+.pxd-nav-current {
+  border-left-color: var(--pxd-color-action-primary-background);
+  background: var(--pxd-color-surface-subtle);
+  color: var(--pxd-color-text-default);
+  font-weight: 600;
+}
+.pxd-nav-label {
+  flex: 1;
+}
+.pxd-nav-badge {
+  flex: none;
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: var(--pxd-radius-full);
+  background: var(--pxd-color-status-danger-background);
+  color: var(--pxd-color-status-danger-foreground);
+  font-size: var(--pxd-type-label-small-size);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.pxd-nav-drawer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 11;
+  width: min(20rem, 85%);
+  padding-bottom: var(--pxd-space-inset-default);
+  overflow-y: auto;
+  background: var(--pxd-color-surface-overlay);
+  box-shadow: var(--pxd-shadow-overlay);
+}
+
+/* Page header: where you are, what state it's in, what you can do. */
+.pxd-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-tight);
+}
+.pxd-breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pxd-space-inline-default);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--pxd-type-body-small-size);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-breadcrumbs li + li::before {
+  content: "/";
+  margin-right: var(--pxd-space-inline-default);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-page-header-main {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  flex-wrap: wrap;
+}
+.pxd-page-header-text {
+  flex: 1;
+  min-width: 12rem;
+}
+.pxd-page-header-text .pxd-surface-title {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  flex-wrap: wrap;
+  margin: 0;
+}
+.pxd-surface-subtitle {
+  margin: var(--pxd-space-stack-tight) 0 0;
+  color: var(--pxd-color-text-muted);
+}
+.pxd-page-header-actions {
+  flex: none;
+}
+.pxd-link {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--pxd-color-text-link);
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* A surface that opens beside what it came from. */
+.pxd-surface-panel {
+  height: 100%;
+  border-left: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  background: var(--pxd-color-surface-default);
+}
+
+/* Table: toolbar, saved views, sorting, selection, paging. */
+.pxd-table-wrap {
+  display: flex;
+  flex-direction: column;
+  border: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  border-radius: var(--pxd-radius-default);
+  overflow: hidden;
+}
+.pxd-table-views {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  background: var(--pxd-color-surface-default);
+}
+.pxd-table-view {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  min-height: var(--pxd-size-target-min);
+  padding: 0 var(--pxd-space-inset-compact);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--pxd-color-text-muted);
+  font-family: var(--pxd-type-label-default-family);
+  font-size: var(--pxd-type-label-default-size);
+  cursor: pointer;
+}
+.pxd-table-view-current {
+  border-bottom-color: var(--pxd-color-action-primary-background);
+  color: var(--pxd-color-text-default);
+  font-weight: 600;
+}
+.pxd-views-tab .pxd-views-count {
+  margin-left: var(--pxd-space-inline-default);
+}
+.pxd-views-count {
+  font-size: var(--pxd-type-label-small-size);
+  color: var(--pxd-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pxd-table-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  padding: var(--pxd-space-inline-default);
+  background: var(--pxd-color-surface-subtle);
+  border-bottom: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+}
+.pxd-table-toolbar > .pxd-field {
+  flex: 1;
+  min-width: 0;
+  max-width: 24rem;
+}
+.pxd-table-toolbar-spacer {
+  flex: 1;
+}
+.pxd-table-bulk {
+  background: var(--pxd-color-selection-background);
+  color: var(--pxd-color-selection-foreground);
+}
+.pxd-bulk-count {
+  margin: 0;
+  flex: 1;
+  font-weight: 600;
+}
+.pxd-table-bulk .pxd-button-tertiary {
+  color: inherit;
+  border-color: currentColor;
+}
+.pxd-table-scroll {
+  overflow-x: auto;
+}
+.pxd-table th,
+.pxd-table td {
+  height: var(--polyxd-row-height);
+  padding: 0 var(--polyxd-row-pad);
+}
+.pxd-table thead th {
+  background: var(--pxd-color-surface-subtle);
+  white-space: nowrap;
+}
+.pxd-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--pxd-size-target-min);
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pxd-table-select {
+  width: 3rem;
+}
+.pxd-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: var(--pxd-border-width-strong) solid var(--pxd-color-border-strong);
+  border-radius: var(--pxd-radius-small);
+  background: var(--pxd-color-surface-default);
+  color: var(--pxd-color-action-primary-foreground);
+  cursor: pointer;
+}
+.pxd-checkbox[data-state="checked"],
+.pxd-checkbox[data-state="indeterminate"] {
+  border-color: var(--pxd-color-action-primary-background);
+  background: var(--pxd-color-action-primary-background);
+}
+/* Selected rows are marked at the edge, not tinted: link text is only guaranteed
+   readable on the default surface. */
+.pxd-row-selected > :first-child {
+  box-shadow: inset 3px 0 0 0 var(--pxd-color-action-primary-background);
+}
+.pxd-entity {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+}
+/* In a dense row, the whole row height is the target (WCAG 2.5.8 asks for 24px). */
+.pxd-table .pxd-link,
+.pxd-row-item .pxd-link {
+  display: flex;
+  align-items: center;
+  min-height: max(var(--polyxd-row-height), 24px);
+}
+.pxd-row-item .pxd-link {
+  min-height: var(--pxd-size-target-min);
+}
+.pxd-entity-text {
+  display: flex;
+  flex-direction: column;
+}
+.pxd-entity-name {
+  font-weight: 500;
+}
+.pxd-entity-secondary {
+  font-size: var(--pxd-type-body-small-size);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-paging {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-loose);
+  padding: 0 var(--pxd-space-inline-default);
+  min-height: var(--pxd-size-target-min);
+  border-top: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  background: var(--pxd-color-surface-subtle);
+  font-size: var(--pxd-type-body-small-size);
+  flex-wrap: wrap;
+}
+.pxd-paging-size {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-paging-size select {
+  min-height: var(--pxd-size-target-min);
+  border: 0;
+  background: transparent;
+  color: var(--pxd-color-text-default);
+  font: inherit;
+}
+.pxd-paging-range {
+  margin: 0;
+  flex: 1;
+  font-variant-numeric: tabular-nums;
+}
+.pxd-paging-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+}
+.pxd-paging-page {
+  font-variant-numeric: tabular-nums;
+  color: var(--pxd-color-text-muted);
+}
+.pxd-icon-button:disabled {
+  opacity: var(--pxd-opacity-state-disabled);
+  cursor: default;
+}
+
+/* Row actions menu. */
+.pxd-menu {
+  z-index: 12;
+  min-width: 12rem;
+  padding: var(--pxd-space-inline-tight);
+  border-radius: var(--pxd-radius-default);
+  background: var(--pxd-color-surface-overlay);
+  box-shadow: var(--pxd-shadow-overlay);
+}
+.pxd-menu-item {
+  display: flex;
+  align-items: center;
+  min-height: var(--pxd-size-target-min);
+  padding: 0 var(--pxd-space-inset-compact);
+  border-radius: var(--pxd-radius-small);
+  color: var(--pxd-color-text-default);
+  cursor: pointer;
+}
+.pxd-menu-item[data-highlighted] {
+  background: var(--pxd-color-surface-subtle);
+  outline: none;
+}
+.pxd-menu-item-danger {
+  color: var(--pxd-color-status-danger-foreground);
+}
+
+/* A table on a phone: rows, not columns. */
+.pxd-row-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pxd-row-item {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  padding: var(--pxd-space-inline-default) var(--pxd-space-inset-compact);
+  border-bottom: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+}
+.pxd-row-main {
+  flex: 1;
+  min-width: 0;
+}
+.pxd-row-details {
+  margin: 2px 0 0;
+  font-size: var(--pxd-type-body-small-size);
+  color: var(--pxd-color-text-muted);
+}
+
+/* Record pages: a grid of short fields, activity as a timeline, notices inside the page. */
+.pxd-detail-grid dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--pxd-space-stack-default) var(--pxd-space-inline-loose);
+}
+.pxd-detail-grid .pxd-detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+}
+.pxd-detail-grid dt {
+  font-size: var(--pxd-type-label-small-size);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-timeline .pxd-collection-item {
+  position: relative;
+  padding-left: var(--pxd-space-inset-default);
+  border-left: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+}
+.pxd-timeline .pxd-collection-item::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pxd-color-border-strong);
+}
+.pxd-status-notice {
+  align-items: center;
+  border-radius: 0;
+  border-left: 4px solid var(--pxd-color-status-warning-emphasis);
+}
+.pxd-status-notice .pxd-status-body {
+  flex: 1;
+}
+.pxd-status-notice .pxd-status-action {
+  margin: 0;
+}
+.pxd-status-error.pxd-status-notice {
+  border-left-color: var(--pxd-color-status-danger-emphasis);
+}
+.pxd-status-info.pxd-status-notice {
+  border-left-color: var(--pxd-color-status-info-emphasis);
+}
+
+/* Settings-style forms: label and help on the left, control on the right. */
+@container pxd (width >= 48rem) {
+  .pxd-form-horizontal .pxd-field {
+    display: grid;
+    grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+    gap: var(--pxd-space-inline-loose);
+    align-items: start;
+    padding-bottom: var(--pxd-space-stack-default);
+    border-bottom: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  }
+  .pxd-form-horizontal .pxd-field > .pxd-field-label,
+  .pxd-form-horizontal .pxd-field > .pxd-field-help {
+    grid-column: 1;
+  }
+  .pxd-form-horizontal .pxd-field > :not(.pxd-field-label):not(.pxd-field-help) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
+/* A strip of numbers: three or four tiles across, stacked on phones. */
+.pxd-metric-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--pxd-space-inline-default);
+}
+.pxd-metric-row .pxd-metric {
+  padding: var(--pxd-space-inset-default);
+  background: var(--pxd-color-surface-subtle);
+  border-radius: var(--pxd-radius-default);
+}

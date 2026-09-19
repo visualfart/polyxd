@@ -2028,10 +2028,6 @@
           "$ref": "#/$defs/ComponentTextInput",
           "description": "TextInput (kind 'search') above the table"
         },
-        "filters": {
-          "$ref": "#/$defs/ComponentFilterPanel",
-          "description": "FilterPanel whose filters narrow this table"
-        },
         "views": {
           "type": "array",
           "minItems": 2,

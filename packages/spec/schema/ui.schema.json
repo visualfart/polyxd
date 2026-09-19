@@ -1932,10 +1932,6 @@
           "$ref": "#/$defs/Id",
           "description": "TextInput (kind 'search') above the table"
         },
-        "filters": {
-          "$ref": "#/$defs/Id",
-          "description": "FilterPanel whose filters narrow this table"
-        },
         "views": {
           "type": "array",
           "minItems": 2,

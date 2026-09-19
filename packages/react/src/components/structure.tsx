@@ -32,10 +32,12 @@ export function Section({ node }: { node: Node }) {
 }
 
 export function Group({ node }: { node: Node }) {
-  const b = useBindings();
-  const label = node.label !== undefined ? b.text(node.label) : undefined;
+  const s = useSurface();
+  // A group of numbers reads as one strip of tiles, not a stack of blocks.
+  const children = (node.children ?? []).map((id: string) => s.byId.get(id));
+  const metrics = children.length > 1 && children.every((c: Node | undefined) => c?.component === "Metric");
   return (
-    <div className={`pxd-group pxd-group-${node.arrangement ?? "auto"}`} role="group" aria-label={label} {...useA11y(node)}>
+    <div className={`pxd-group pxd-stack${metrics ? " pxd-metric-row" : ""}`} {...useA11y(node)}>
       <Children ids={node.children} />
     </div>
   );
@@ -115,18 +117,23 @@ export function Disclosure({ node }: { node: Node }) {
 
 export function Views({ node }: { node: Node }) {
   const b = useBindings();
+  const s = useSurface();
   const bound = node.selected ? b.value<string>(node.selected) : undefined;
   const [local, setLocal] = useState<string>(bound ?? node.views[0].key);
   const selected = bound ?? local;
   const change = (key: string) => (node.selected ? b.write(node.selected, key) : setLocal(key));
   return (
-    <Tabs.Root className="pxd-views" value={selected} onValueChange={change} {...useA11y(node)}>
+    <Tabs.Root className={`pxd-views pxd-views-${node.variant ?? "tabs"}`} value={selected} onValueChange={change} {...useA11y(node)}>
       <Tabs.List className="pxd-views-list">
-        {node.views.map((v: any) => (
-          <Tabs.Trigger key={v.key} value={v.key} className="pxd-views-tab">
-            {b.text(v.label)}
-          </Tabs.Trigger>
-        ))}
+        {node.views.map((v: any) => {
+          const count = v.count !== undefined ? b.value<number>(v.count) : undefined;
+          return (
+            <Tabs.Trigger key={v.key} value={v.key} className="pxd-views-tab">
+              {b.text(v.label)}
+              {count !== undefined && <span className="pxd-views-count">{new Intl.NumberFormat(s.locale).format(count)}</span>}
+            </Tabs.Trigger>
+          );
+        })}
       </Tabs.List>
       {node.views.map((v: any) => (
         <Tabs.Content key={v.key} value={v.key} className="pxd-views-panel">

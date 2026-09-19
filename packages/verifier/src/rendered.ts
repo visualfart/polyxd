@@ -67,7 +67,8 @@ export async function layoutAudit(page: Page): Promise<Finding[]> {
           return Math.hypot(dx, dy) < 12;
         });
         if (crowded) tooSmall.push(`${name(el)} (${Math.round(width)}×${Math.round(height)})`);
-      } else if (effective < packMin - 0.5 && el.tagName === "BUTTON") {
+      } else if (effective < packMin - 0.5 && el.tagName === "BUTTON" && !el.closest("tr, .pxd-row-item")) {
+        // Rows are dense by design: inside one, WCAG's 24px minimum applies, not the pack's comfortable size.
         belowPack.push(`${name(el)} (${Math.round(width)}×${Math.round(height)})`);
       }
     });

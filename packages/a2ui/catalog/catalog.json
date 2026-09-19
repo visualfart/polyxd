@@ -2183,10 +2183,6 @@
           "$ref": "common_types.json#/$defs/ComponentId",
           "description": "TextInput (kind 'search') above the table"
         },
-        "filters": {
-          "$ref": "common_types.json#/$defs/ComponentId",
-          "description": "FilterPanel whose filters narrow this table"
-        },
         "views": {
           "type": "array",
           "minItems": 2,
