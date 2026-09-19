@@ -7,6 +7,30 @@ section: Project
 
 This is Polyxd's running improvement report. Each entry states a question, what changed, the measured result, and what happens next. Numbers come from the repository's own tools (the verifier, the benchmark and the scorer), and every run can be reproduced from the commands given. Negative results stay in.
 
+## Where things stand
+
+Five charts, from the same runs as the table below. Each one opens the numbers behind it.
+
+### What a run costs, and what it gets
+
+<!--CHART:QUALITY-SPEED-->
+
+### Whether the output is a valid document at all
+
+<!--CHART:VALID-->
+
+### What training changed
+
+<!--CHART:TRAINING-->
+
+### How the scores are spread
+
+<!--CHART:SPREAD-->
+
+### Where the best run loses its points
+
+<!--CHART:PROBLEMS-->
+
 ## Current leaderboard
 
 <!--LEADERBOARD-->

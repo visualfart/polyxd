@@ -1,12 +1,15 @@
-/** Collects each model run summary (model/runs/NAME/summary.json) into bench/results/leaderboard.md. */
+/**
+ * Collects each model run summary (model/runs/NAME/summary.json) into bench/results/leaderboard.md,
+ * and into leaderboard.json, which the site charts from. Runs themselves aren't committed (they are
+ * large and machine-specific), so the JSON carries everything the charts need.
+ */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 
 const runs = new URL("../../../model/runs/", import.meta.url);
 const out = new URL("../../../bench/results/", import.meta.url);
-const rows = readdirSync(runs)
-  .filter((d) => existsSync(new URL(`${d}/summary.json`, runs)))
-  .map((d) => JSON.parse(readFileSync(new URL(`${d}/summary.json`, runs), "utf8")).summary)
-  .sort((a, b) => b.meanScore - a.meanScore);
+const files = readdirSync(runs).filter((d) => existsSync(new URL(`${d}/summary.json`, runs)));
+const full = files.map((d) => JSON.parse(readFileSync(new URL(`${d}/summary.json`, runs), "utf8"))).sort((a, b) => b.summary.meanScore - a.summary.meanScore);
+const rows = full.map((f) => f.summary);
 const cols = ["run", "validRate", "meanScore", "taskSuccess", "expectations", "directionCompliance", "consistency", "medianLatency_s", "medianTtft_s", "medianTps"];
 const head = ["Model run", "Valid", "Mean score", "Agent tasks", "Expected parts", "Direction rules", "Consistency (memory / none)", "Median latency (s)", "Median TTFT (s)", "Tokens/s"];
 const cell = (r: any, c: string) =>
@@ -23,4 +26,53 @@ const md = [
 ].join("\n");
 mkdirSync(out, { recursive: true });
 writeFileSync(new URL("leaderboard.md", out), md);
+
+/** What each finding is about, so the charts can say where a run loses its points. */
+function category(problem: string): string {
+  if (problem.startsWith("task:")) return "Agent task";
+  if (problem.startsWith("missing capability") || problem.includes("capability")) return "Capability wiring";
+  if (problem.startsWith("missing pattern")) return "Pattern";
+  if (problem.startsWith("missing component")) return "Missing component";
+  if (problem.startsWith("spec") || problem.includes("invalid")) return "Invalid document";
+  if (problem.startsWith("axe") || problem.includes("contrast")) return "Accessibility";
+  if (problem.startsWith("layout")) return "Layout";
+  if (problem.startsWith("copy") || problem.startsWith("rule")) return "Copy and direction";
+  return "Other";
+}
+
+const pct = (v: unknown) => (typeof v === "string" && v.endsWith("%") ? Number(v.slice(0, -1)) : null);
+const best = full[0];
+const tally: Record<string, number> = {};
+for (const r of best?.rows ?? []) for (const p of r.problems ?? []) tally[category(String(p))] = (tally[category(String(p))] ?? 0) + 1;
+
+writeFileSync(
+  new URL("leaderboard.json", out),
+  JSON.stringify(
+    {
+      generatedAt: new Date().toISOString().slice(0, 10),
+      benchmark: { requests: rows[0]?.requests ?? 50, withTasks: 37, hardware: "Apple M5 Pro, 24 GB" },
+      runs: rows.map((r) => ({
+        run: r.run,
+        valid: pct(r.validRate),
+        score: r.meanScore,
+        tasks: Number(String(r.taskSuccess ?? "0/37").split("/")[0]),
+        taskTotal: Number(String(r.taskSuccess ?? "0/37").split("/")[1]),
+        expectations: pct(r.expectations),
+        direction: pct(r.directionCompliance),
+        latency: r.medianLatency_s,
+        ttft: r.medianTtft_s,
+        tps: r.medianTps,
+      })),
+      best: {
+        run: best?.summary.run,
+        scores: (best?.rows ?? []).map((r: any) => r.score),
+        problems: Object.entries(tally)
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => b.count - a.count),
+      },
+    },
+    null,
+    2,
+  ) + "\n",
+);
 console.log(md);

@@ -328,3 +328,82 @@
   border-radius: 4px;
   vertical-align: -2px;
 }
+
+/* Research charts: drawn at build time, with the numbers behind each one a click away. */
+.chart {
+  margin: 28px 0 36px;
+}
+.chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+  padding: 12px 8px;
+  box-sizing: border-box;
+}
+.chart figcaption,
+.chart > figcaption {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.chart-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.chart-tick {
+  fill: var(--muted);
+  font: 12px var(--body);
+}
+.chart-axis {
+  fill: var(--muted);
+  font: 11px var(--mono);
+  letter-spacing: 0.04em;
+}
+.chart-label {
+  fill: var(--ink);
+  font: 500 12px var(--body);
+}
+.chart-dot {
+  fill: var(--ink-2);
+}
+.chart-dot-best {
+  fill: var(--signal);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.chart-bar {
+  fill: var(--ink-2);
+}
+.chart-bar-best {
+  fill: var(--signal);
+}
+.chart-line {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+.chart-line-dot {
+  fill: var(--ink);
+}
+.chart-line-2 {
+  stroke: var(--signal);
+  stroke-width: 2.5;
+  stroke-dasharray: 6 4;
+}
+.chart-line-2-dot {
+  fill: var(--signal);
+}
+.chart-data {
+  margin-top: 10px;
+}
+.chart-data summary {
+  font-size: 14px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.chart-data[open] summary {
+  margin-bottom: 8px;
+}

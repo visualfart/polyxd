@@ -10,6 +10,7 @@ import { existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { allCharts, type Leaderboard } from "./charts.ts";
 import { Marked } from "marked";
 import { loadDesignSystem, loadContract } from "@polyxd/spec";
 
@@ -123,7 +124,14 @@ async function researchSource(): Promise<string> {
   const report = await readFile(join(REPO, "research/report.md"), "utf8");
   const lb = join(REPO, "bench/results/leaderboard.md");
   const table = existsSync(lb) ? (await readFile(lb, "utf8")).replace(/^# .*\n+/, "") : "No runs scored yet.";
-  return report.replace("<!--LEADERBOARD-->", table);
+  let out = report.replace("<!--LEADERBOARD-->", table);
+  // Charts are drawn from the committed results, so the page can be rebuilt anywhere.
+  const data = join(REPO, "bench/results/leaderboard.json");
+  if (existsSync(data)) {
+    const charts = allCharts(JSON.parse(await readFile(data, "utf8")) as Leaderboard);
+    for (const [marker, html] of Object.entries(charts)) out = out.replace(marker, html);
+  }
+  return out.replace(/<!--CHART:[A-Z-]+-->/g, "");
 }
 
 async function markdownPages(): Promise<Page[]> {
