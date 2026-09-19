@@ -2,7 +2,7 @@
 
 ## 1. What we're building
 
-A small, on-device model that generates **just-in-time interfaces**: you ask for something, a UI appears for that moment, then it goes away. What makes it different:
+A small, on-device model that generates **just-in-time interfaces**, so people can build real AI-first software, or their own personal software, without drawing screens: you ask for something, a UI appears for that moment, then it goes away. What makes it different:
 
 - **Recognizable.** Interfaces built on the fly still look and behave the same way each time, so people recognize them instead of having to recall them.
 - **For humans and agents at once.** Every interface has real accessibility semantics, so screen readers and AI agents can use it as well as people.
@@ -58,47 +58,47 @@ request ──► generator (small model, constrained to spec schema)
 
 ## 4. Phases
 
-Durations assume roughly 15–20 hours a week and are rough. Each phase has an exit test, and we don't move on until it passes.
+No fixed timeline. Each phase has an exit test, and we don't move on until it passes.
 
-### Phase 0: Setup and grounding (days 1–3)
+### Phase 0: Setup and grounding
 - Accept the Xcode license, `git init`, and set up the monorepo structure (§9).
 - Read the current A2UI spec, Material 3 tokens, GOV.UK patterns, and the Maru / Affora / Harness4GenUI preprints (check their claims against the PDFs).
 - **Output:** a one-page decision note on whether we extend the A2UI catalog or define our own schema with A2UI export.
 
-### Phase 1: Spec v0 (weeks 1–2)
+### Phase 1: Spec v0
 - Token tiers in DTCG format, filled from the first design system.
 - ~20 semantic components (choice, form field, confirm-destructive, compare, progress-steps, list, card, chart, empty/error/loading states, …). Each one has:
   - Props.
   - Required accessibility and agent semantics.
   - Usage rules ("when to pick it").
   - A mapping to shadcn, SwiftUI and Compose.
-- 5 patterns in the chosen domain, each with task semantics (goal, steps, done-condition).
+- 5 core patterns that aren't tied to any domain (e.g. confirm-destructive, multi-step form, compare-and-choose, filter-and-browse, review-and-submit), each with task semantics (goal, steps, done-condition).
 - **Exit:** 20 hand-written example UIs validate against the schema, and the mapping table is complete.
 
-### Phase 2: Web renderer and theming (weeks 2–4)
+### Phase 2: Web renderer and theming
 - React + Vite + shadcn/Radix renderer, with tokens compiled to CSS variables.
 - Add a second design system to prove the swap, and two contrasting Design Direction profiles to prove taste control.
 - **Exit:** all examples render. Swapping the design system changes the look without editing any UI JSON.
 
-### Phase 3: Verifier and benchmark (weeks 4–6)
+### Phase 3: Verifier and benchmark
 - Hard checks: schema, axe-core, contrast, target sizes, token-only values, 3 viewport widths.
 - Consistency score: how similar the semantic tree is to memory for the same intent (pattern choice, component-for-datatype, relative placement, labels).
 - Agent test: given a task, a scripted Playwright agent and a small local LLM agent try to complete it using only the accessibility tree. We measure success, steps and dead ends.
-- Benchmark: 50 single requests plus 10 multi-turn sequences, where consistency matters.
+- Benchmark: 50 single requests plus 10 multi-turn sequences (where consistency matters), spread across ~6 domains: money, productivity, commerce, travel, settings/admin, and personal software. No domain gets special treatment.
 - **Exit:** the verifier catches at least 90% of 20 deliberately injected defects, and its scores agree with your manual ranking of a 30-item gold set.
 
-### Phase 4: Baselines (weeks 6–7)
+### Phase 4: Baselines
 - Run 3B, 7–8B and ~14B open models locally with constrained decoding, with and without interface memory. Pick the models from what's current at that point.
 - **Output:** a leaderboard.
 - **Decision gate:**
   - If the 14B model is already good, the goal becomes making the 3B match it (distillation).
   - If every model fails on consistency, the effort goes into memory design, not training.
 
-### Phase 5: Supervised fine-tuning (weeks 7–10)
+### Phase 5: Supervised fine-tuning
 - Rejection sampling: the teacher generates N candidates per request, the verifier keeps the best, and we LoRA-train the 3B model on them in MLX.
 - **Exit:** the 3B model clearly beats its own baseline and closes most of the gap to the teacher on held-out requests.
 
-### Phase 6: RL with the verifier as reward (weeks 10–14)
+### Phase 6: RL with the verifier as reward
 - GRPO on the fine-tuned 3B model, with the old Mac rendering in parallel.
 - Every round, a human audits 50 samples for reward hacking. Each hack found becomes a new check.
 - **Exit:** beats the fine-tuned model on held-out requests, with no unaddressed hacks in the audit.
@@ -271,7 +271,7 @@ With static software, a PM defines features, a designer draws the screens and fl
 - **Experiments** vary a Design Direction, a pattern, a journey or a model version. Assignment goes through the feature-flag provider, and results show in Studio against the metrics above, with guardrail metrics.
 
 ### What this changes in the build
-- **Spec (Phase 1):** the capability, journey and event schemas join the spec. The Phase 1 finance patterns come with a small capability registry (accounts, transactions, transfers, budgets).
+- **Spec (Phase 1):** the capability, journey and event schemas join the spec. Phase 1 includes small example capability registries for a few domains to exercise the schemas.
 - **Verifier and benchmark (Phase 3):** benchmark tasks are written as journeys. Journey-compliance checks are added, along with regeneration and recognition metrics.
 - **Runtime (v0.2):** capability registry, OpenFeature flags, event emission and analytics adapters.
 - **Studio (v0.3):** flow map, metrics dashboard, unmet-demand report, experiments.
@@ -317,10 +317,10 @@ docs/              docs site, decisions, write-ups
 ```
 TypeScript (npm workspaces, Changesets for versioning and releases) and Python (uv). GitHub Actions for CI and publishing.
 
-## 10. Decisions needed before Phase 1
+## 10. Decisions made
 
-1. **Domain.** Recommended: **personal finance**. It has forms, tables, charts, destructive confirms and repeated tasks, so consistency matters and agent tasks are easy to specify. Health brings privacy and medical-accuracy issues. Travel needs live data.
-2. **First design system.** Recommended: **Material 3** for tokens and guidance (it maps to web and Android and is well documented), with **GOV.UK** as the second system to prove the swap. The pair is deliberately very different visually.
-3. **Web stack.** Recommended: React + Vite + shadcn/Radix.
-4. **Time per week.** This sets the real timeline.
-5. **Licenses.** Recommended: Apache-2.0 for code, CC-BY-4.0 for spec and docs.
+1. **Domain-generic.** Spec, components and patterns are generic, and the benchmark spans several domains. Trade-off: a narrow domain would make the small model's job easier. If the Phase 4 baselines show the small model struggling across domains, we revisit with domain adapters, not a narrower spec.
+2. **First design system: Material 3.** A second, visually contrasting system (GOV.UK is the current candidate) is added in Phase 2 only to prove the swap.
+3. **Web stack: React + Vite + shadcn/Radix.** No Next.js. The renderer is a library, so there's no server framework.
+4. **No fixed timeline.** Phases are ordered by dependency and gated by exit tests.
+5. **Licenses:** Apache-2.0 for code, CC-BY-4.0 for the spec and docs.
