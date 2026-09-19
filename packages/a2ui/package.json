@@ -1,0 +1,25 @@
+{
+  "name": "@polixd/a2ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Exports Polixd UI documents to A2UI v1.0 message streams, with a Polixd A2UI catalog",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "build:catalog": "node scripts/build-catalog.ts"
+  },
+  "files": [
+    "dist",
+    "catalog",
+    "vendor"
+  ],
+  "dependencies": {
+    "@polixd/spec": "*",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  }
+}

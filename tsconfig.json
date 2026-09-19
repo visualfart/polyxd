@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "packages/spec" }]
+  "references": [{ "path": "packages/spec" }, { "path": "packages/a2ui" }]
 }

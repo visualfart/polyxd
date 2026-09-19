@@ -1,0 +1,2092 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polixd.dev/catalog/0.1/a2ui",
+  "protocolVersion": "1.0",
+  "title": "Polixd catalog",
+  "description": "Polixd semantic components as an A2UI v1.0 catalog. Every component is a faithful projection of the Polixd component with the same name and props. Generated from @polixd/spec components/*.json by @polixd/a2ui (npm run build:catalog).",
+  "catalogId": "https://polixd.dev/catalog/0.1/a2ui",
+  "instructions": "# Polixd catalog for A2UI\n\nSemantic components for just-in-time interfaces. The renderer maps each one onto its own native, design-system components and tokens. Pick components by meaning, not by look. Never send colours, sizes or fonts.\n\n## Rules for every surface\n\n1. The top-level component has `\"id\": \"root\"`. Children are referenced by id (flat adjacency list), never nested inline.\n2. Data always comes from the host through JSON Pointer bindings `{\"path\": \"/...\"}`. Never invent data or pre-format numbers and dates into strings. Set `format` instead.\n3. Inside a templated list (`Collection.items`), relative paths such as `{\"path\": \"title\"}` resolve against the current item. Absolute paths start with `/`.\n4. Actions are declared capability intents: `{\"event\": {\"name\": \"transfer.confirm\", \"context\": {...}}}`. Use `{\"functionCall\": {\"call\": \"dismiss\" | \"back\" | \"next\"}}` for navigation the renderer handles itself.\n5. At most one primary action is visible at a time. A Form's submit and a Steps finish count as primary.\n6. Destructive or consequential actions go through `Confirm`.\n7. Components carry their own roles and names. Use `accessibility` only to add to them.\n\n## Components\n\n### Action\n\nA button that triggers a host capability.\n\n- **Use when:**\n  - Anything the user can do that isn't typing or choosing\n- **Don't use when:**\n  - Navigating between views: use Views\n  - Confirming something destructive: wrap in Confirm\n- **Rendering:**\n  - At most one primary action visible at a time\n  - danger tone uses color.action.danger.*\n- **Accessibility** (role: button):\n  - Label describes the outcome\n  - Target at least size.target.min\n  - Disabled actions explain why nearby\n- **Agents:** Activate by label.\n\n### ActionBar\n\nThe set of actions for a surface or section; the renderer places it where that platform expects.\n\n- **Use when:**\n  - Two or more actions that apply to the whole surface or section\n- **Don't use when:**\n  - A single action inline with content: use Action directly\n- **Rendering:**\n  - Web: bottom of the section, primary last on desktop and first on mobile stacks\n  - iOS/Android: toolbar or bottom bar on compact screens\n- **Accessibility** (role: toolbar / group):\n  - Order in the accessibility tree is order of importance\n- **Agents:** Actions are listed together.\n\n### Card\n\nOne self-contained entity (an account, an order, a place), optionally actionable as a whole.\n\n- **Use when:**\n  - Items in a Collection that each represent an entity\n  - A single entity summary in a larger surface\n- **Don't use when:**\n  - Plain grouping: use Group\n  - Tabular data with many attributes: use Table\n- **Rendering:**\n  - If 'action' is set, children must not contain Actions (one target per card)\n  - Uses surface.raised and radius.default\n- **Accessibility** (role: article (or link/button when it has an action)):\n  - Title is the accessible name\n  - When actionable, the whole card is one target; nested actions are not allowed then\n- **Agents:** Activate the card by its title.\n\n### Chart\n\nA visual summary of data, always paired with a text summary.\n\n- **Use when:**\n  - A trend, comparison, share or spread matters more than exact values\n- **Don't use when:**\n  - Exact values matter most: use Table or Metric\n  - A single number: use Metric\n- **Rendering:**\n  - trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram\n  - Series colors use color.data.categorical.N in order\n- **Accessibility** (role: img (figure) with the summary as description, plus a data-table alternative):\n  - 'summary' states the takeaway in words\n  - Series are distinguishable without color (labels, markers)\n  - The underlying data is available as a table\n- **Agents:** Reads the summary, and the data through the table alternative.\n\n### Choice\n\nPick one or several options from a known set. The renderer chooses the control.\n\n- **Use when:**\n  - Any choice from a known set of options\n- **Don't use when:**\n  - On/off setting: use Toggle\n  - Picking between rich entities by comparing attributes: use Comparison\n- **Rendering:**\n  - single, 2–4 short options → segmented control or radios\n  - single, 5–10 → radios (or select on compact screens)\n  - single, > 10 → searchable select\n  - multiple, ≤ 10 → checkboxes; > 10 → searchable multi-select\n  - Option order comes from host data or remembers the last order used\n- **Accessibility** (role: radiogroup / group of checkboxes / listbox / combobox (depends on rendering)):\n  - Visible group label\n  - Every option has a text label\n- **Agents:** Select options by label.\n\n### Collection\n\nA list of items from host data, each rendered with the same template.\n\n- **Use when:**\n  - Browsing a set of similar entities\n  - Search results\n- **Don't use when:**\n  - Attributes compared across items: use Table or Comparison\n  - Choosing an option in a form: use Choice\n- **Rendering:**\n  - Long lists are virtualized by the renderer\n  - Items keep their order from host data\n- **Accessibility** (role: list / listitem (listbox when selectable)):\n  - Announces the item count\n  - An empty state is provided\n- **Agents:** Items are enumerated with their titles; each item exposes its own actions.\n\n### Comparison\n\nCompare a few options across the same attributes, and choose one.\n\n- **Use when:**\n  - Choosing between 2–4 plans, products, routes or offers\n- **Don't use when:**\n  - More than ~5 items: use Table with sorting\n  - No decision needed: use Table\n- **Rendering:**\n  - Wide: items as columns; compact: one card per item with the same attribute order\n  - Best values per attribute are marked when 'better' is set\n- **Accessibility** (role: table (items as columns on wide screens) or list of cards):\n  - Attribute names are headers\n  - 'better' is conveyed in text, not only color\n- **Agents:** Reads attributes per item; choose actions are named with the item title.\n\n### Confirm\n\nAsks the user to confirm a consequential or destructive action, showing what will happen.\n\n- **Use when:**\n  - Moving money, deleting data, sending on someone's behalf, anything irreversible\n- **Don't use when:**\n  - Routine reversible actions (prefer undo)\n  - Information only: use Status\n- **Rendering:**\n  - destructive uses color.action.danger.*\n  - Capabilities with high risk level must use Confirm (enforced by the verifier)\n- **Accessibility** (role: alertdialog):\n  - Focus starts on the least destructive option\n  - Confirm label repeats the action verb\n  - Escape cancels\n- **Agents:** Reads title and consequence; confirm and cancel are named buttons.\n\n### DateInput\n\nA date, time, date-time or date range.\n\n- **Use when:**\n  - Any date or time entry\n- **Don't use when:**\n  - Relative choices like 'This month / Last month': use Choice\n- **Rendering:**\n  - Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar\n- **Accessibility** (role: group of spinbuttons or a date picker dialog):\n  - Typing the date is always possible, not only picking from a calendar\n- **Agents:** Fill by label with an ISO date.\n\n### DetailList\n\nLabel/value pairs describing one thing (a summary, a receipt, a review step).\n\n- **Use when:**\n  - Reviewing before submitting\n  - Showing the attributes of one entity\n  - Receipts\n- **Don't use when:**\n  - Many entities with the same attributes: use Table\n  - Comparing entities: use Comparison\n- **Rendering:**\n  - Keeps the item order stable across generations (keys are remembered)\n- **Accessibility** (role: list of term/definition pairs (dl)):\n  - Label and value are programmatically associated\n- **Agents:** Read each label with its value.\n\n### Disclosure\n\nProgressive disclosure: secondary content hidden behind a toggle.\n\n- **Use when:**\n  - Details most people don't need (fees breakdown, advanced options, help text)\n- **Don't use when:**\n  - Content everyone needs to complete the task\n  - Primary navigation\n- **Rendering:**\n  - Never hide required inputs or the primary action inside a closed Disclosure\n- **Accessibility** (role: button (aria-expanded) + region):\n  - Summary is a button with expanded state\n  - Hidden content is not in the tab order while closed\n- **Agents:** Expand by the summary text; state is exposed as expanded/collapsed.\n\n### Form\n\nCollects inputs and submits them together.\n\n- **Use when:**\n  - Any set of inputs that are submitted together\n- **Don't use when:**\n  - Settings that apply immediately: use Toggles with actions\n  - Several distinct stages: use Steps\n- **Rendering:**\n  - One column; labels above fields\n  - Submit is the primary action; cancel is secondary\n  - Submit context is built from the form's input bindings\n- **Accessibility** (role: form):\n  - Submit is a real submit button\n  - On submit errors, focus moves to an error summary that links to each field\n- **Agents:** Fill fields by label, then activate the submit button by its label.\n\n### Group\n\nVisually groups closely related items without a heading (proximity).\n\n- **Use when:**\n  - A few items that belong together (a key figure and its caption, several metrics)\n- **Don't use when:**\n  - The group needs a heading: use Section\n  - Choosing between items: use Choice or Comparison\n- **Rendering:**\n  - 'inline' collapses to a stack below the compact breakpoint\n  - Gap uses space.stack.default or space.inline.default\n- **Accessibility** (role: group):\n  - Has an accessible name when it contains interactive items\n- **Agents:** Treated as one unit when its label is present.\n\n### Media\n\nAn image supplied by the host.\n\n- **Use when:**\n  - Photos or illustrations that help identify something (a product, a place, a person)\n- **Don't use when:**\n  - Decoration with no information\n  - Icons for actions (renderer supplies those)\n- **Rendering:**\n  - Images never convey information that is not also in text\n- **Accessibility** (role: img):\n  - Has alt text unless decorative (then hidden from assistive technology)\n- **Agents:** Reads the alt text.\n\n### Metric\n\nA key figure with a label, and optionally its change.\n\n- **Use when:**\n  - One to four headline numbers the user asked about\n- **Don't use when:**\n  - Many numbers: use Table or DetailList\n  - Trends over time: use Chart\n- **Rendering:**\n  - Value uses type.numeric.display\n  - Change uses color.data.positive / negative according to 'favorable'\n- **Accessibility** (role: group (label + value)):\n  - Change direction is conveyed in text as well as color\n  - Screen readers read label, value and change as one sentence\n- **Agents:** Read label and value.\n\n### RangeInput\n\nA number within known bounds where the exact value matters less than its position.\n\n- **Use when:**\n  - Approximate values within a range (budget cap, volume)\n- **Don't use when:**\n  - Exact values: use TextInput with kind 'number' or 'currency'\n- **Rendering:**\n  - Shows min, max and the current formatted value\n- **Accessibility** (role: slider):\n  - Current value is shown as text\n  - Keyboard arrows change the value by step\n- **Agents:** Set the value directly by label.\n\n### Section\n\nA titled region of the surface that groups related content under a heading.\n\n- **Use when:**\n  - The surface has two or more distinct topics (e.g. 'Recipient' and 'Amount')\n  - Content would otherwise exceed one screen and needs signposting\n- **Don't use when:**\n  - Only one topic: put content directly under the root\n  - Visual grouping without a heading: use Group\n- **Rendering:**\n  - Heading level follows nesting depth, never chosen by the model\n  - Spacing between sections uses space.stack.section\n- **Accessibility** (role: region (with heading)):\n  - Title is rendered as a real heading; nesting depth sets the heading level\n  - Title is the region's accessible name\n- **Agents:** Navigate by heading; the title names the region.\n\n### Status\n\nFeedback about state: info, success, warning, error, empty or loading.\n\n- **Use when:**\n  - Results of an action\n  - Empty collections\n  - Errors with a way to recover\n  - Loading states\n- **Don't use when:**\n  - Validation errors on a field: inputs show their own errors\n  - Confirmation before acting: use Confirm\n- **Rendering:**\n  - error and warning use color.status.* tokens and an icon\n  - empty states explain why and what to do next\n  - loading shows a skeleton when layout is known, otherwise a progress indicator\n- **Accessibility** (role: status or alert (live region)):\n  - success/info/loading are polite live regions; error is assertive\n  - Meaning is in text, not only color or icon\n- **Agents:** Reads the title and message; the recovery action is exposed.\n\n### Steps\n\nA task split into ordered steps with visible progress.\n\n- **Use when:**\n  - Tasks with dependent stages or too many inputs for one view (checkout, onboarding)\n- **Don't use when:**\n  - Independent views: use Views\n  - Under ~6 inputs: a single Form\n- **Rendering:**\n  - Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'\n  - Each step validates before moving on\n- **Accessibility** (role: group with step progress (aria-current on the current step)):\n  - Current step and total are announced\n  - Back never loses entered data\n- **Agents:** Reads 'step N of M'; next/back are exposed as buttons.\n\n### Table\n\nTabular data: many items sharing the same attributes.\n\n- **Use when:**\n  - Scanning or comparing many rows by several attributes\n- **Don't use when:**\n  - One entity: use DetailList\n  - A few entities where the user must choose: use Comparison\n- **Rendering:**\n  - On compact screens, rows become stacked cards with label/value pairs\n  - Alignment follows the column format, never chosen by the model\n- **Accessibility** (role: table with caption and column headers):\n  - Has a caption\n  - Column headers are real header cells\n  - Numeric columns are right-aligned by format\n- **Agents:** Read by row and column headers; rows with rowAction are activatable.\n\n### Text\n\nA run of text.\n\n- **Use when:**\n  - Explanations, instructions, messages\n- **Don't use when:**\n  - Headings: use Section title\n  - Label/value pairs: use DetailList\n  - Key figures: use Metric\n- **Rendering:**\n  - 'supporting' uses color.text.muted\n  - No inline styling; emphasis comes from structure\n- **Accessibility** (role: text):\n  - Body text is at least 16px (type.body.default)\n  - Line length is capped by measure.max\n- **Agents:** Read as text.\n\n### TextInput\n\nA single text-like value: text, number, email, phone, currency, search or long text.\n\n- **Use when:**\n  - Free-form values the user types\n- **Don't use when:**\n  - A value from a known set: use Choice\n  - Dates: use DateInput\n  - Secrets (passwords, card numbers): not generated; hosts provide their own secure flows\n- **Rendering:**\n  - Width suggests expected length\n  - Errors appear after the user leaves the field or submits, not while typing\n- **Accessibility** (role: textbox / searchbox / spinbutton):\n  - Visible label, never placeholder-only\n  - Help and errors are associated with the field\n  - Kind sets the right keyboard and autocomplete\n- **Agents:** Fill by label.\n\n### Toggle\n\nAn on/off setting.\n\n- **Use when:**\n  - Settings that take effect immediately\n  - A single yes/no inside a form\n- **Don't use when:**\n  - Choosing between named options: use Choice\n- **Rendering:**\n  - With 'action' it renders as a switch; inside a Form without action, as a checkbox\n- **Accessibility** (role: switch (immediate) / checkbox (in a form)):\n  - Label says what 'on' means\n- **Agents:** Toggle by label; state is exposed as on/off.\n\n### Views\n\nSwitch between alternative views of the same subject (tabs).\n\n- **Use when:**\n  - 2–6 peer views of the same data (Overview / Transactions / Settings)\n- **Don't use when:**\n  - Sequential steps: use Steps\n  - Filtering one list: use Choice\n- **Rendering:**\n  - More than 4 views on compact screens become a menu or scrollable tabs\n- **Accessibility** (role: tablist / tab / tabpanel):\n  - Each tab has a visible label\n  - Arrow keys move between tabs\n- **Agents:** Select a view by its label.\n",
+  "components": {
+    "Action": {
+      "type": "object",
+      "description": "A button that triggers a host capability.",
+      "properties": {
+        "component": {
+          "const": "Action"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Verb-first label saying what happens ('Send £20', not 'OK')"
+        },
+        "action": {
+          "$ref": "common_types.json#/$defs/Action"
+        },
+        "emphasis": {
+          "enum": [
+            "primary",
+            "secondary",
+            "tertiary"
+          ],
+          "default": "secondary"
+        },
+        "tone": {
+          "enum": [
+            "default",
+            "danger"
+          ],
+          "default": "default"
+        },
+        "disabled": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean"
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "action"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "action",
+            "target": "custom",
+            "basicAnalog": "Button + Text child",
+            "why": "Button needs a synthesized Text child and has only default/primary/borderless; it has no danger tone and no disabled state."
+          }
+        }
+      }
+    },
+    "ActionBar": {
+      "type": "object",
+      "description": "The set of actions for a surface or section; the renderer places it where that platform expects.",
+      "properties": {
+        "component": {
+          "const": "ActionBar"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "children": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "array",
+          "minItems": 1,
+          "description": "Action component ids, in order of importance"
+        }
+      },
+      "required": [
+        "component",
+        "children"
+      ],
+      "allowedChildren": [
+        "Action"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "action",
+            "target": "custom",
+            "basicAnalog": "Row of Button",
+            "why": "Row is pure layout. It loses the 'set of actions ordered by importance' semantics and the stacking on narrow screens."
+          }
+        }
+      }
+    },
+    "Card": {
+      "type": "object",
+      "description": "One self-contained entity (an account, an order, a place), optionally actionable as a whole.",
+      "properties": {
+        "component": {
+          "const": "Card"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "title": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Name of the entity"
+        },
+        "subtitle": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "media": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "Optional Media component id"
+        },
+        "badge": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "$ref": "common_types.json#/$defs/DynamicString"
+            },
+            "tone": {
+              "enum": [
+                "neutral",
+                "info",
+                "success",
+                "warning",
+                "danger"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "children": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered child component ids"
+        },
+        "action": {
+          "$ref": "common_types.json#/$defs/Action",
+          "description": "Activating the card as a whole (e.g. open details)"
+        }
+      },
+      "required": [
+        "component",
+        "title"
+      ],
+      "allowedChildren": [
+        "Media",
+        "Text",
+        "Metric",
+        "DetailList",
+        "Group",
+        "Status"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "structure",
+            "target": "custom",
+            "basicAnalog": "Card > Column(Image, Text, Text, ...)",
+            "why": "Basic Card is a single-child container with no action. Title, subtitle, badge (with tone), media slot and whole-card action would need synthesized components or would be dropped."
+          }
+        }
+      }
+    },
+    "Chart": {
+      "type": "object",
+      "description": "A visual summary of data, always paired with a text summary.",
+      "properties": {
+        "component": {
+          "const": "Chart"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "intent": {
+          "enum": [
+            "trend",
+            "comparison",
+            "composition",
+            "distribution"
+          ],
+          "description": "What the chart should communicate; the renderer picks the chart type"
+        },
+        "data": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Array of data points in host data"
+        },
+        "title": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "summary": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Text alternative stating the takeaway (required)"
+        },
+        "x": {
+          "type": "object",
+          "required": [
+            "path",
+            "label"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            },
+            "label": {
+              "$ref": "common_types.json#/$defs/DynamicString"
+            },
+            "format": {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "enum": [
+                    "text",
+                    "number",
+                    "currency",
+                    "percent",
+                    "date",
+                    "time",
+                    "datetime",
+                    "relativeTime",
+                    "duration"
+                  ]
+                },
+                "currency": {
+                  "$ref": "common_types.json#/$defs/DynamicString",
+                  "description": "ISO 4217 code, required for type 'currency'"
+                },
+                "precision": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 6
+                }
+              },
+              "additionalProperties": false,
+              "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+            }
+          },
+          "additionalProperties": false
+        },
+        "series": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "label"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+                "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+              },
+              "path": {
+                "type": "string",
+                "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+              },
+              "label": {
+                "$ref": "common_types.json#/$defs/DynamicString"
+              },
+              "format": {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "text",
+                      "number",
+                      "currency",
+                      "percent",
+                      "date",
+                      "time",
+                      "datetime",
+                      "relativeTime",
+                      "duration"
+                    ]
+                  },
+                  "currency": {
+                    "$ref": "common_types.json#/$defs/DynamicString",
+                    "description": "ISO 4217 code, required for type 'currency'"
+                  },
+                  "precision": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 6
+                  }
+                },
+                "additionalProperties": false,
+                "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "component",
+        "intent",
+        "data",
+        "title",
+        "summary",
+        "x",
+        "series"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Text(summary) + List",
+            "why": "Basic has no chart. Intent, axes, series and formats would be dropped."
+          }
+        }
+      }
+    },
+    "Choice": {
+      "type": "object",
+      "description": "Pick one or several options from a known set. The renderer chooses the control.",
+      "properties": {
+        "component": {
+          "const": "Choice"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "options": {
+          "oneOf": [
+            {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "required": [
+                  "value",
+                  "label"
+                ],
+                "properties": {
+                  "value": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean"
+                    ]
+                  },
+                  "label": {
+                    "$ref": "common_types.json#/$defs/DynamicString"
+                  },
+                  "description": {
+                    "$ref": "common_types.json#/$defs/DynamicString"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "path",
+                "valuePath",
+                "labelPath"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "valuePath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "labelPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "descriptionPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                }
+              },
+              "additionalProperties": false
+            }
+          ],
+          "description": "Either a fixed list, or options read from host data"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Two-way binding into host data"
+        },
+        "mode": {
+          "enum": [
+            "single",
+            "multiple"
+          ],
+          "default": "single"
+        },
+        "help": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "options",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "ChoicePicker",
+            "why": "ChoicePicker options must be literal (Polixd options can come from host data), option descriptions are missing, the value must be a string list, and there is no help text."
+          }
+        }
+      }
+    },
+    "Collection": {
+      "type": "object",
+      "description": "A list of items from host data, each rendered with the same template.",
+      "properties": {
+        "component": {
+          "const": "Collection"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "items": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "object",
+          "description": "Same shape as A2UI templated children"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "What the list contains, e.g. 'Recent payments'"
+        },
+        "empty": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "Status component shown when there are no items"
+        },
+        "selection": {
+          "enum": [
+            "none",
+            "single",
+            "multiple"
+          ],
+          "default": "none"
+        },
+        "selected": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Selected item value(s) in host data when selection is not 'none'"
+        }
+      },
+      "required": [
+        "component",
+        "items",
+        "label"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "List (templated children)",
+            "why": "List has no label, no empty state and no selection model."
+          }
+        }
+      }
+    },
+    "Comparison": {
+      "type": "object",
+      "description": "Compare a few options across the same attributes, and choose one.",
+      "properties": {
+        "component": {
+          "const": "Comparison"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "items": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Array of options in host data (2–4 recommended)"
+        },
+        "itemTitle": {
+          "type": "string",
+          "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+          "description": "Relative path to each item's name"
+        },
+        "attributes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "path"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+                "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+              },
+              "label": {
+                "$ref": "common_types.json#/$defs/DynamicString"
+              },
+              "path": {
+                "type": "string",
+                "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+              },
+              "format": {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "text",
+                      "number",
+                      "currency",
+                      "percent",
+                      "date",
+                      "time",
+                      "datetime",
+                      "relativeTime",
+                      "duration"
+                    ]
+                  },
+                  "currency": {
+                    "$ref": "common_types.json#/$defs/DynamicString",
+                    "description": "ISO 4217 code, required for type 'currency'"
+                  },
+                  "precision": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 6
+                  }
+                },
+                "additionalProperties": false,
+                "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+              },
+              "better": {
+                "enum": [
+                  "higher",
+                  "lower",
+                  "none"
+                ],
+                "default": "none"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "choose": {
+          "type": "object",
+          "required": [
+            "label",
+            "action"
+          ],
+          "properties": {
+            "label": {
+              "$ref": "common_types.json#/$defs/DynamicString"
+            },
+            "action": {
+              "$ref": "common_types.json#/$defs/Action"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Action per item; context bindings resolve against the item"
+        },
+        "recommended": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Optional value of the recommended item's title, with a reason in 'summary'"
+        },
+        "summary": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        }
+      },
+      "required": [
+        "component",
+        "items",
+        "itemTitle",
+        "attributes"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "flow",
+            "target": "custom",
+            "basicAnalog": "List of Card",
+            "why": "Basic has no comparison. Attribute rows, 'better' direction, recommendation and per-item choose action would be flattened away."
+          }
+        }
+      }
+    },
+    "Confirm": {
+      "type": "object",
+      "description": "Asks the user to confirm a consequential or destructive action, showing what will happen.",
+      "properties": {
+        "component": {
+          "const": "Confirm"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "title": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Question naming the action ('Send £250 to Alex?')"
+        },
+        "message": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "consequence": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "What happens and whether it can be undone"
+        },
+        "summary": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "Optional DetailList summarising what is being confirmed"
+        },
+        "severity": {
+          "enum": [
+            "consequential",
+            "destructive"
+          ]
+        },
+        "confirm": {
+          "type": "object",
+          "required": [
+            "label",
+            "action"
+          ],
+          "properties": {
+            "label": {
+              "$ref": "common_types.json#/$defs/DynamicString"
+            },
+            "action": {
+              "$ref": "common_types.json#/$defs/Action"
+            }
+          },
+          "additionalProperties": false
+        },
+        "cancel": {
+          "type": "object",
+          "required": [
+            "label",
+            "action"
+          ],
+          "properties": {
+            "label": {
+              "$ref": "common_types.json#/$defs/DynamicString"
+            },
+            "action": {
+              "$ref": "common_types.json#/$defs/Action"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Defaults to 'Cancel' → ui.dismiss"
+        },
+        "typeToConfirm": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Text the user must type before confirming (for irreversible, high-impact actions)"
+        }
+      },
+      "required": [
+        "component",
+        "title",
+        "severity",
+        "confirm"
+      ],
+      "allowedChildren": [
+        "DetailList"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "flow",
+            "target": "custom",
+            "basicAnalog": "Modal(trigger, content: Column(Text, Button, Button))",
+            "why": "Modal needs a trigger component. Severity, consequence, type-to-confirm and the default cancel behaviour have no Basic form."
+          }
+        }
+      }
+    },
+    "DateInput": {
+      "type": "object",
+      "description": "A date, time, date-time or date range.",
+      "properties": {
+        "component": {
+          "const": "DateInput"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "ISO 8601 value(s) in host data"
+        },
+        "kind": {
+          "enum": [
+            "date",
+            "time",
+            "datetime",
+            "dateRange"
+          ],
+          "default": "date"
+        },
+        "min": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "max": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "help": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "DateTimeInput",
+            "why": "DateTimeInput has no date-range kind and no help text, and 'required' becomes a check function."
+          }
+        }
+      }
+    },
+    "DetailList": {
+      "type": "object",
+      "description": "Label/value pairs describing one thing (a summary, a receipt, a review step).",
+      "properties": {
+        "component": {
+          "const": "DetailList"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "label",
+              "value"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+                "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+              },
+              "label": {
+                "$ref": "common_types.json#/$defs/DynamicString"
+              },
+              "value": {
+                "$ref": "common_types.json#/$defs/DynamicValue"
+              },
+              "format": {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "text",
+                      "number",
+                      "currency",
+                      "percent",
+                      "date",
+                      "time",
+                      "datetime",
+                      "relativeTime",
+                      "duration"
+                    ]
+                  },
+                  "currency": {
+                    "$ref": "common_types.json#/$defs/DynamicString",
+                    "description": "ISO 4217 code, required for type 'currency'"
+                  },
+                  "precision": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 6
+                  }
+                },
+                "additionalProperties": false,
+                "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "title": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        }
+      },
+      "required": [
+        "component",
+        "items"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Column of Row(Text, Text)",
+            "why": "The label/value pairing (a description list for assistive tech), stable item keys and value formats would be lost."
+          }
+        }
+      }
+    },
+    "Disclosure": {
+      "type": "object",
+      "description": "Progressive disclosure: secondary content hidden behind a toggle.",
+      "properties": {
+        "component": {
+          "const": "Disclosure"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "summary": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Always-visible label describing what is hidden"
+        },
+        "children": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered child component ids"
+        },
+        "open": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "component",
+        "summary",
+        "children"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "structure",
+            "target": "custom",
+            "basicAnalog": "Column (content always shown)",
+            "why": "Basic has no expand/collapse."
+          }
+        }
+      }
+    },
+    "Form": {
+      "type": "object",
+      "description": "Collects inputs and submits them together.",
+      "properties": {
+        "component": {
+          "const": "Form"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "children": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered child component ids"
+        },
+        "submit": {
+          "type": "object",
+          "required": [
+            "label",
+            "action"
+          ],
+          "properties": {
+            "label": {
+              "$ref": "common_types.json#/$defs/DynamicString"
+            },
+            "action": {
+              "$ref": "common_types.json#/$defs/Action"
+            }
+          },
+          "additionalProperties": false
+        },
+        "cancel": {
+          "type": "object",
+          "required": [
+            "label",
+            "action"
+          ],
+          "properties": {
+            "label": {
+              "$ref": "common_types.json#/$defs/DynamicString"
+            },
+            "action": {
+              "$ref": "common_types.json#/$defs/Action"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Optional; defaults to ui.dismiss when omitted and the surface is dismissible"
+        }
+      },
+      "required": [
+        "component",
+        "children",
+        "submit"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "Column + Button",
+            "why": "Submit/cancel semantics (Enter submits, cancel defaults to dismiss) and form grouping have no Basic form."
+          }
+        }
+      }
+    },
+    "Group": {
+      "type": "object",
+      "description": "Visually groups closely related items without a heading (proximity).",
+      "properties": {
+        "component": {
+          "const": "Group"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "children": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered child component ids"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Accessible name for the group when it isn't obvious from its content"
+        },
+        "arrangement": {
+          "enum": [
+            "auto",
+            "inline",
+            "grid"
+          ],
+          "default": "auto",
+          "description": "Hint only. 'inline' for a few short peers (e.g. metrics); renderers stack on narrow screens."
+        }
+      },
+      "required": [
+        "component",
+        "children"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "structure",
+            "target": "custom",
+            "basicAnalog": "Column or Row",
+            "why": "Basic forces one axis. The adaptive 'auto'/'inline'/'grid' arrangement hint would be lost."
+          }
+        }
+      }
+    },
+    "Media": {
+      "type": "object",
+      "description": "An image supplied by the host.",
+      "properties": {
+        "component": {
+          "const": "Media"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "src": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Image reference in host data; generated UI never contains URLs"
+        },
+        "alt": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Required unless decorative"
+        },
+        "decorative": {
+          "type": "boolean",
+          "default": false
+        },
+        "aspect": {
+          "enum": [
+            "square",
+            "landscape",
+            "portrait",
+            "auto"
+          ],
+          "default": "auto"
+        }
+      },
+      "required": [
+        "component",
+        "src"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Image",
+            "why": "Image takes a URL string. Polixd's src is a host-data binding, and 'decorative' and the aspect hint have no Image equivalent (Image.variant is a size, not an aspect)."
+          }
+        }
+      }
+    },
+    "Metric": {
+      "type": "object",
+      "description": "A key figure with a label, and optionally its change.",
+      "properties": {
+        "component": {
+          "const": "Metric"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Always bound to host data"
+        },
+        "format": {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "text",
+                "number",
+                "currency",
+                "percent",
+                "date",
+                "time",
+                "datetime",
+                "relativeTime",
+                "duration"
+              ]
+            },
+            "currency": {
+              "$ref": "common_types.json#/$defs/DynamicString",
+              "description": "ISO 4217 code, required for type 'currency'"
+            },
+            "precision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6
+            }
+          },
+          "additionalProperties": false,
+          "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+        },
+        "change": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "object",
+              "required": [
+                "path"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                }
+              },
+              "additionalProperties": false,
+              "description": "A value read from (and, for inputs, written to) host data. Data always comes from the host; the model never invents it."
+            },
+            "format": {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "enum": [
+                    "text",
+                    "number",
+                    "currency",
+                    "percent",
+                    "date",
+                    "time",
+                    "datetime",
+                    "relativeTime",
+                    "duration"
+                  ]
+                },
+                "currency": {
+                  "$ref": "common_types.json#/$defs/DynamicString",
+                  "description": "ISO 4217 code, required for type 'currency'"
+                },
+                "precision": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 6
+                }
+              },
+              "additionalProperties": false,
+              "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+            },
+            "favorable": {
+              "enum": [
+                "increase",
+                "decrease",
+                "none"
+              ],
+              "default": "increase",
+              "description": "Which direction is good, so color follows meaning, not sign"
+            }
+          },
+          "additionalProperties": false
+        },
+        "caption": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Column of Text",
+            "why": "Value format, change value and favourable direction (the colour follows the meaning) would be lost."
+          }
+        }
+      }
+    },
+    "RangeInput": {
+      "type": "object",
+      "description": "A number within known bounds where the exact value matters less than its position.",
+      "properties": {
+        "component": {
+          "const": "RangeInput"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Number in host data"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "format": {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "text",
+                "number",
+                "currency",
+                "percent",
+                "date",
+                "time",
+                "datetime",
+                "relativeTime",
+                "duration"
+              ]
+            },
+            "currency": {
+              "$ref": "common_types.json#/$defs/DynamicString",
+              "description": "ISO 4217 code, required for type 'currency'"
+            },
+            "precision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6
+            }
+          },
+          "additionalProperties": false,
+          "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value",
+        "min",
+        "max"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "Slider",
+            "why": "Slider has a step count, not a step size, and no value format."
+          }
+        }
+      }
+    },
+    "Section": {
+      "type": "object",
+      "description": "A titled region of the surface that groups related content under a heading.",
+      "properties": {
+        "component": {
+          "const": "Section"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "title": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Heading for the section"
+        },
+        "description": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Optional one-line explanation under the heading"
+        },
+        "children": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered child component ids"
+        }
+      },
+      "required": [
+        "component",
+        "title",
+        "children"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "structure",
+            "target": "custom",
+            "basicAnalog": "Column with a Text heading",
+            "why": "Basic Text has no heading level, so the section heading and landmark would be lost."
+          }
+        }
+      }
+    },
+    "Status": {
+      "type": "object",
+      "description": "Feedback about state: info, success, warning, error, empty or loading.",
+      "properties": {
+        "component": {
+          "const": "Status"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "kind": {
+          "enum": [
+            "info",
+            "success",
+            "warning",
+            "error",
+            "empty",
+            "loading"
+          ]
+        },
+        "title": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "message": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "action": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "Optional Action to recover or continue (e.g. 'Try again')"
+        }
+      },
+      "required": [
+        "component",
+        "kind",
+        "title"
+      ],
+      "allowedChildren": [
+        "Action"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "feedback",
+            "target": "custom",
+            "basicAnalog": "Row(Icon, Text)",
+            "why": "Status kinds (loading, empty, error, ...) and their live-region semantics would be lost."
+          }
+        }
+      }
+    },
+    "Steps": {
+      "type": "object",
+      "description": "A task split into ordered steps with visible progress.",
+      "properties": {
+        "component": {
+          "const": "Steps"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 7,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "title",
+              "content"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+                "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+              },
+              "title": {
+                "$ref": "common_types.json#/$defs/DynamicString"
+              },
+              "content": {
+                "$ref": "common_types.json#/$defs/ComponentId"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "current": {
+          "$ref": "common_types.json#/$defs/DynamicNumber",
+          "description": "Index of the current step (default 0)"
+        },
+        "finish": {
+          "type": "object",
+          "required": [
+            "label",
+            "action"
+          ],
+          "properties": {
+            "label": {
+              "$ref": "common_types.json#/$defs/DynamicString"
+            },
+            "action": {
+              "$ref": "common_types.json#/$defs/Action"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "component",
+        "steps",
+        "finish"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "flow",
+            "target": "custom",
+            "basicAnalog": "Column of the current step",
+            "why": "Basic has no stepper. Step keys, progress and the finish action would be lost."
+          }
+        }
+      }
+    },
+    "Table": {
+      "type": "object",
+      "description": "Tabular data: many items sharing the same attributes.",
+      "properties": {
+        "component": {
+          "const": "Table"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "rows": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Array of row objects in host data"
+        },
+        "caption": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "What the table shows (required for accessibility)"
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "path"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+                "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+              },
+              "label": {
+                "$ref": "common_types.json#/$defs/DynamicString"
+              },
+              "path": {
+                "type": "string",
+                "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                "description": "Relative to the row"
+              },
+              "format": {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "text",
+                      "number",
+                      "currency",
+                      "percent",
+                      "date",
+                      "time",
+                      "datetime",
+                      "relativeTime",
+                      "duration"
+                    ]
+                  },
+                  "currency": {
+                    "$ref": "common_types.json#/$defs/DynamicString",
+                    "description": "ISO 4217 code, required for type 'currency'"
+                  },
+                  "precision": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 6
+                  }
+                },
+                "additionalProperties": false,
+                "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "rowAction": {
+          "$ref": "common_types.json#/$defs/Action",
+          "description": "Activated per row; context bindings resolve against the row"
+        },
+        "empty": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "Status component shown when there are no rows"
+        }
+      },
+      "required": [
+        "component",
+        "rows",
+        "caption",
+        "columns"
+      ],
+      "allowedChildren": [
+        "Status"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "List of Row",
+            "why": "Basic has no table. Caption, column headers, formats, row action and empty state would be lost."
+          }
+        }
+      }
+    },
+    "Text": {
+      "type": "object",
+      "description": "A run of text.",
+      "properties": {
+        "component": {
+          "const": "Text"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "text": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "variant": {
+          "enum": [
+            "body",
+            "supporting",
+            "caption"
+          ],
+          "default": "body"
+        },
+        "format": {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "text",
+                "number",
+                "currency",
+                "percent",
+                "date",
+                "time",
+                "datetime",
+                "relativeTime",
+                "duration"
+              ]
+            },
+            "currency": {
+              "$ref": "common_types.json#/$defs/DynamicString",
+              "description": "ISO 4217 code, required for type 'currency'"
+            },
+            "precision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6
+            }
+          },
+          "additionalProperties": false,
+          "description": "Only when 'text' is bound to a non-string value"
+        }
+      },
+      "required": [
+        "component",
+        "text"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Text",
+            "why": "Basic Text interprets Markdown (Polixd text is plain), has no 'supporting' variant and no value format."
+          }
+        }
+      }
+    },
+    "TextInput": {
+      "type": "object",
+      "description": "A single text-like value: text, number, email, phone, currency, search or long text.",
+      "properties": {
+        "component": {
+          "const": "TextInput"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Two-way binding into host data"
+        },
+        "kind": {
+          "enum": [
+            "text",
+            "multiline",
+            "number",
+            "currency",
+            "email",
+            "phone",
+            "url",
+            "search"
+          ],
+          "default": "text"
+        },
+        "currency": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "ISO 4217 code when kind is 'currency'"
+        },
+        "help": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Hint shown below the label (not a placeholder)"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "validation": {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "minLength": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "message": {
+              "$ref": "common_types.json#/$defs/DynamicString",
+              "description": "Error message shown when validation fails"
+            }
+          },
+          "additionalProperties": false
+        },
+        "autocomplete": {
+          "type": "string",
+          "description": "HTML autocomplete token hint (e.g. 'email', 'postal-code')"
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "TextField",
+            "why": "TextField has no currency/email/phone/url/search kinds, help text or autocomplete hint, and validation becomes Basic check functions."
+          }
+        }
+      }
+    },
+    "Toggle": {
+      "type": "object",
+      "description": "An on/off setting.",
+      "properties": {
+        "component": {
+          "const": "Toggle"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Boolean in host data"
+        },
+        "description": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "action": {
+          "$ref": "common_types.json#/$defs/Action",
+          "description": "Set when the change applies immediately (a setting); omit inside a Form"
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "CheckBox",
+            "why": "CheckBox has no description and no immediate-apply action (a setting that saves on change)."
+          }
+        }
+      }
+    },
+    "Views": {
+      "type": "object",
+      "description": "Switch between alternative views of the same subject (tabs).",
+      "properties": {
+        "component": {
+          "const": "Views"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "views": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "content"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+                "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+              },
+              "label": {
+                "$ref": "common_types.json#/$defs/DynamicString"
+              },
+              "content": {
+                "$ref": "common_types.json#/$defs/ComponentId"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "selected": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Key of the selected view in host data"
+        }
+      },
+      "required": [
+        "component",
+        "views"
+      ],
+      "metadata": {
+        "extensions": {
+          "dev_polixd": {
+            "category": "structure",
+            "target": "custom",
+            "basicAnalog": "Tabs",
+            "why": "Tabs has no stable view keys and no binding for the selected view."
+          }
+        }
+      }
+    }
+  },
+  "functions": {
+    "dismiss": {
+      "type": "object",
+      "description": "Closes the surface without doing anything (Polixd 'ui.dismiss').",
+      "returnType": "void",
+      "allowedCallers": "rendererOnly",
+      "properties": {
+        "call": {
+          "const": "dismiss"
+        }
+      },
+      "required": [
+        "call"
+      ]
+    },
+    "back": {
+      "type": "object",
+      "description": "Returns to the previous step or surface (Polixd 'ui.back').",
+      "returnType": "void",
+      "allowedCallers": "rendererOnly",
+      "properties": {
+        "call": {
+          "const": "back"
+        }
+      },
+      "required": [
+        "call"
+      ]
+    },
+    "next": {
+      "type": "object",
+      "description": "Advances to the next step (Polixd 'ui.next').",
+      "returnType": "void",
+      "allowedCallers": "rendererOnly",
+      "properties": {
+        "call": {
+          "const": "next"
+        }
+      },
+      "required": [
+        "call"
+      ]
+    }
+  },
+  "$defs": {
+    "anyComponent": {
+      "oneOf": [
+        {
+          "$ref": "#/components/Action"
+        },
+        {
+          "$ref": "#/components/ActionBar"
+        },
+        {
+          "$ref": "#/components/Card"
+        },
+        {
+          "$ref": "#/components/Chart"
+        },
+        {
+          "$ref": "#/components/Choice"
+        },
+        {
+          "$ref": "#/components/Collection"
+        },
+        {
+          "$ref": "#/components/Comparison"
+        },
+        {
+          "$ref": "#/components/Confirm"
+        },
+        {
+          "$ref": "#/components/DateInput"
+        },
+        {
+          "$ref": "#/components/DetailList"
+        },
+        {
+          "$ref": "#/components/Disclosure"
+        },
+        {
+          "$ref": "#/components/Form"
+        },
+        {
+          "$ref": "#/components/Group"
+        },
+        {
+          "$ref": "#/components/Media"
+        },
+        {
+          "$ref": "#/components/Metric"
+        },
+        {
+          "$ref": "#/components/RangeInput"
+        },
+        {
+          "$ref": "#/components/Section"
+        },
+        {
+          "$ref": "#/components/Status"
+        },
+        {
+          "$ref": "#/components/Steps"
+        },
+        {
+          "$ref": "#/components/Table"
+        },
+        {
+          "$ref": "#/components/Text"
+        },
+        {
+          "$ref": "#/components/TextInput"
+        },
+        {
+          "$ref": "#/components/Toggle"
+        },
+        {
+          "$ref": "#/components/Views"
+        }
+      ],
+      "discriminator": {
+        "propertyName": "component"
+      }
+    },
+    "anyFunction": {
+      "oneOf": [
+        {
+          "$ref": "#/functions/dismiss"
+        },
+        {
+          "$ref": "#/functions/back"
+        },
+        {
+          "$ref": "#/functions/next"
+        }
+      ]
+    }
+  }
+}

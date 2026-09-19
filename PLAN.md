@@ -1,5 +1,12 @@
 # Polixd — Project Plan (draft v0)
 
+## Status (2026-09-19)
+
+- **Phase 0 — done.** Decision [0001](docs/decisions/0001-a2ui-and-foundations.md): own schema as source of truth, exported to A2UI v1.0 and MCP Apps.
+- **Phase 1 — done.** `@polixd/spec` (24 components, UI schema, validator, 5 patterns, check vocabulary, capability/journey/event/direction schemas, 20 examples), `@polixd/ds-material3` (passes the token contract in light and dark), `@polixd/a2ui` (all 20 examples export to A2UI v1.0 RC and validate against the official schemas). 142 tests.
+  - Finding: none of the 24 components maps losslessly onto A2UI's Basic catalog, so the export is a custom Polixd catalog. The official `@a2ui/react` renderer supports only v0.8/v0.9, so rendering an exported surface in it is a follow-up.
+- **Next: Phase 2** — `@polixd/react` renderer, token theming, second design system, example gallery.
+
 ## 1. What we're building
 
 A small, on-device model that generates **just-in-time interfaces**, so people can build real AI-first software, or their own personal software, without drawing screens: you ask for something, a UI appears for that moment, then it goes away. What makes it different:

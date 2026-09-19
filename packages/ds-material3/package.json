@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "generate": "node scripts/generate.ts",
-    "check": "node ../spec/src/cli/check-design-system.ts manifest.json"
+    "check": "node ../spec/src/cli/check-design-system.ts manifest.json",
+    "test": "npm run check"
   },
   "dependencies": {
     "@material/material-color-utilities": "^0.4.0"
