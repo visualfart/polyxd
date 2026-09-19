@@ -77,7 +77,7 @@ function header(current: "home" | "docs") {
 
 const footer = `<footer class="site-footer"><div class="wrap">
 <a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">polyxd</span></a>
-<nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/docs/reference/components/">Components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
+<nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/docs/research/">Research log</a><a href="/docs/reference/components/">Components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
 <span>© 2026 Polyxd · Apache-2.0 code, CC-BY-4.0 spec</span>
 </div></footer>`;
 
@@ -118,13 +118,23 @@ function frontMatter(src: string): { meta: Record<string, string>; body: string 
   return { meta, body: src.slice(m[0].length) };
 }
 
+/** The research log lives with the experiments (research/report.md); the leaderboard is inserted from bench/results. */
+async function researchSource(): Promise<string> {
+  const report = await readFile(join(REPO, "research/report.md"), "utf8");
+  const lb = join(REPO, "bench/results/leaderboard.md");
+  const table = existsSync(lb) ? (await readFile(lb, "utf8")).replace(/^# .*\n+/, "") : "No runs scored yet.";
+  return report.replace("<!--LEADERBOARD-->", table);
+}
+
 async function markdownPages(): Promise<Page[]> {
   const dir = join(SITE, "content/docs");
   if (!existsSync(dir)) return [];
   const files = (await readdir(dir)).filter((f) => f.endsWith(".md"));
+  const sources: [string, () => Promise<string>][] = files.map((f) => [f, () => readFile(join(dir, f), "utf8")]);
+  if (existsSync(join(REPO, "research/report.md"))) sources.push(["research.md", researchSource]);
   return Promise.all(
-    files.map(async (f) => {
-      const { meta, body } = frontMatter(await readFile(join(dir, f), "utf8"));
+    sources.map(async ([f, load]) => {
+      const { meta, body } = frontMatter(await load());
       const { html, toc } = renderMarkdown(body.replace(/^\s*# .*\n/, ""));
       const slug = f === "index.md" ? "" : f.replace(/\.md$/, "");
       return { slug, title: meta.title ?? slug, description: meta.description ?? "", section: meta.section ?? "Concepts", order: Number(meta.order ?? 50), html, toc };

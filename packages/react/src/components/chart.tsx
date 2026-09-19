@@ -128,12 +128,15 @@ export function Chart({ node }: { node: Node }) {
       );
     });
   } else {
-    const barW = (band * 0.7) / series.length;
+    // Distribution is a histogram: adjacent bins touch. Comparison bars keep gaps between items.
+    const histogram = node.intent === "distribution";
+    const fill = histogram ? 1 : 0.7;
+    const barW = (band * fill) / series.length;
     body = points.flatMap((p, i) =>
       series.map((sr, si) => {
         const v = y(p, sr);
         const top = scaleY(Math.max(v, 0));
-        return <rect key={`${i}-${si}`} x={PAD.left + band * i + band * 0.15 + barW * si} y={top} width={barW - 2} height={Math.max(scaleY(0) - top, 1)} fill={color(si)} rx={2} />;
+        return <rect key={`${i}-${si}`} x={PAD.left + band * i + band * ((1 - fill) / 2) + barW * si} y={top} width={barW - (histogram ? 1 : 2)} height={Math.max(scaleY(0) - top, 1)} fill={color(si)} rx={histogram ? 0 : 2} />;
       }),
     );
   }
