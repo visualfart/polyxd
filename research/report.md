@@ -13,6 +13,31 @@ This is Polyxd's running improvement report. Each entry states a question, what 
 
 ## Entries
 
+### 2026-09-20 · Rewarding usefulness fixes it: best model so far (Phase 5, run 2)
+
+**Change from run 1.** Same 1,600 candidates, different selection. When the host offers capabilities, a candidate must wire at least one to something a person or agent can operate. Candidates are ranked by verifier score plus the share of offered capabilities they wire up. "Can't do that" examples are capped at 10%. That kept 186 of 400 scenarios (168 for training, 18 for validation), fewer than run 1's 316 but more useful. Training ran 400 steps.
+
+**Result on the held-out benchmark (Gemma-4-E4B):**
+
+| | Base | Run 1: score-only selection | **Run 2: usefulness-aware** |
+|---|---|---|---|
+| Valid | 98% | 100% | **100%** |
+| Mean verifier score | 71 | 76 | **79** |
+| Agent tasks completed | 14/37 | 10/37 | **16/37** |
+| Expected components present | **64%** | 42% | 56% |
+| Median latency | **3.5 s** | 3.4 s | 4.1 s |
+
+Validation loss fell at every checkpoint (0.53, 0.29, 0.24, 0.24, 0.23), with no sign of the overfitting in run 1.
+
+**What it means.**
+
+- **What you select for is what you get.** The same candidates, filtered two ways, produced a model that got less useful (run 1) and one that got more useful (run 2). For a generator of interfaces, "no errors" and "helps someone finish the task" are different targets, and the training signal has to name both.
+- **Fewer, better examples beat more, safer ones.** Run 2 trained on about half as many examples and did better everywhere except expected components.
+- **The latency increase is the adapter, not the model.** Generation drops from 74 to 56 tokens/s because the LoRA weights are applied separately at each step. Merging the adapter into the model should recover the base speed. That's measured next.
+- **What's still weak:** 21 of 37 agent tasks still fail, and expected components are below the base model. Both point to the same gap: the model doesn't reliably choose the specific structure a request calls for (a `Chart` for a trend, a `Toggle` for a done-state). That's what the next step's reward is designed around.
+
+**Next.** Merge the adapter and re-measure speed. Then Phase 6: reinforcement learning where the reward is the verifier score *plus* agent task success *plus* capability wiring, so the model is rewarded directly for interfaces that get the job done.
+
 ### 2026-09-20 · Fine-tuning on "error-free" examples taught the model to be timid (Phase 5, run 1)
 
 **Question.** Does fine-tuning a small model on its own best outputs, as picked by the verifier, make it better?
