@@ -1,0 +1,72 @@
+/* Landing page motion: starting states, applied only when hero.js will animate them.
+   Without the `motion` class (no JS, or reduced motion) every one of these is visible. */
+.motion {
+  scroll-behavior: auto; /* Lenis owns the scroll. */
+}
+/* Lenis's own requirements (node_modules/lenis/dist/lenis.css), inlined so the page
+   loads one stylesheet fewer. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.motion .badge,
+.motion .hero-lede,
+.motion .demo {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.motion .step,
+.motion .stat,
+.motion .section-head,
+.motion .band .split-text,
+.motion .band .tree,
+.motion .split .stack,
+.motion .split .direction,
+.motion .taste .split-text,
+.motion .cta > div,
+.motion .waitlist {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.demo-replay {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--night-muted);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.demo-replay:hover {
+  color: var(--night-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion .badge,
+  .motion .hero-lede,
+  .motion .demo,
+  .motion .step,
+  .motion .stat,
+  .motion .section-head,
+  .motion .band .split-text,
+  .motion .band .tree,
+  .motion .split .stack,
+  .motion .split .direction,
+  .motion .taste .split-text,
+  .motion .cta > div,
+  .motion .waitlist {
+    opacity: 1;
+    transform: none;
+  }
+}

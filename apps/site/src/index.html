@@ -6,6 +6,17 @@
 <title>Polyxd — interfaces that show up when you need them</title>
 <meta name="description" content="Polyxd turns a request into a real, accessible interface, built from your design system, usable by people and agents, and gone when the task is done.">
 <!--HEAD-->
+<link rel="stylesheet" href="/assets/motion.css">
+<script>
+// Motion is opt-in and self-cancelling: the class turns on hero.js's starting states, and
+// comes back off if the visitor prefers reduced motion or the animation code never arrives.
+(() => {
+  const root = document.documentElement;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  root.classList.add("motion");
+  setTimeout(() => root.dataset.motionReady || root.classList.remove("motion"), 2500);
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -61,7 +72,7 @@
 <figcaption><strong>Ant Design</strong><span>axe 0 · agent ✓</span></figcaption>
 </figure>
 </div>
-<p class="demo-note">One UI document, three design systems. The model chose the meaning; the design system chose the look. <a href="/gallery/?example=money-send-confirm">See it live</a>.</p>
+<p class="demo-note">One UI document, three design systems. The model chose the meaning; the design system chose the look. <a href="/gallery/?example=money-send-confirm">See it live</a>. <button class="demo-replay" type="button" data-replay hidden>Replay</button></p>
 </div>
 </div>
 </section>
@@ -168,5 +179,11 @@ press <span class="s">"Send £250.00"</span>
 </main>
 <!--FOOTER-->
 <script src="/assets/site.js" defer></script>
+<script src="/assets/vendor/gsap.min.js" defer></script>
+<script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/assets/vendor/SplitText.min.js" defer></script>
+<script src="/assets/vendor/DrawSVGPlugin.min.js" defer></script>
+<script src="/assets/vendor/lenis.min.js" defer></script>
+<script src="/assets/hero.js" defer></script>
 </body>
 </html>
