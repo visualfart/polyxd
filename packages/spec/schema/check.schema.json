@@ -20,6 +20,13 @@
         { "properties": { "check": { "const": "labelMatches" }, "component": { "type": "string" }, "where": { "$ref": "#/$defs/Where" }, "prop": { "type": "string", "description": "Dotted path of one text prop to check (e.g. 'confirm.label'); default: all visible labels" }, "pattern": { "type": "string" }, "flags": { "type": "string" } }, "required": ["component", "pattern"], "additionalProperties": false },
         { "properties": { "check": { "const": "noLabelMatches" }, "pattern": { "type": "string" }, "flags": { "type": "string" } }, "required": ["pattern"], "additionalProperties": false },
         { "properties": { "check": { "const": "actionInside" }, "capabilities": { "$ref": "#/$defs/Names" }, "container": { "$ref": "#/$defs/Names" } }, "required": ["capabilities", "container"], "additionalProperties": false },
+        { "properties": { "check": { "const": "casing" }, "style": { "enum": ["sentence", "title"] } }, "required": ["style"], "additionalProperties": false },
+        { "properties": { "check": { "const": "maxWords" }, "max": { "type": "integer", "minimum": 1 } }, "required": ["max"], "additionalProperties": false },
+        { "properties": { "check": { "const": "readingLevel" }, "maxGrade": { "type": "number" } }, "required": ["maxGrade"], "additionalProperties": false },
+        { "properties": { "check": { "const": "avoidTerms" }, "terms": { "$ref": "#/$defs/Names" }, "suggest": { "type": "string" } }, "required": ["terms"], "additionalProperties": false },
+        { "properties": { "check": { "const": "noEmoji" } }, "additionalProperties": false },
+        { "properties": { "check": { "const": "spelling" }, "variant": { "enum": ["en-GB", "en-US"] } }, "required": ["variant"], "additionalProperties": false },
+        { "properties": { "check": { "const": "person" }, "style": { "enum": ["you", "we-and-you", "impersonal"] } }, "required": ["style"], "additionalProperties": false },
         { "properties": { "check": { "const": "anyOf" }, "checks": { "type": "array", "items": { "$ref": "#/$defs/Check" }, "minItems": 1 } }, "required": ["checks"], "additionalProperties": false },
         { "properties": { "check": { "const": "allOf" }, "checks": { "type": "array", "items": { "$ref": "#/$defs/Check" }, "minItems": 1 } }, "required": ["checks"], "additionalProperties": false },
         { "properties": { "check": { "const": "not" }, "checks": { "type": "array", "items": { "$ref": "#/$defs/Check" }, "minItems": 1, "maxItems": 1 } }, "required": ["checks"], "additionalProperties": false }

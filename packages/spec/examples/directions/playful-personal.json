@@ -16,7 +16,35 @@
       "Warm and encouraging, like a friend keeping you on track.",
       "Short labels; celebrate streaks."
     ],
-    "casing": "sentence"
+    "tone": {
+      "formality": "casual",
+      "energy": "upbeat",
+      "warmth": "warm",
+      "humor": "light"
+    },
+    "person": "we-and-you",
+    "readingLevel": {
+      "maxGrade": 6
+    },
+    "casing": "sentence",
+    "spelling": "en-US",
+    "punctuation": {
+      "exclamation": "allowed",
+      "emoji": "allowed"
+    },
+    "labels": {
+      "maxWords": 3,
+      "verbFirst": true
+    },
+    "avoid": [
+      "should",
+      "failed"
+    ],
+    "situations": {
+      "empty": "Invite the first step warmly.",
+      "success": "Celebrate briefly.",
+      "error": "Reassure, then say how to fix it."
+    }
   },
   "rules": [
     {

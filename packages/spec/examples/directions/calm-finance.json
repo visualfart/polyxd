@@ -14,9 +14,28 @@
   "voice": {
     "guidelines": [
       "Plain, calm and specific. Say what happens to the user's money.",
-      "No exclamation marks, no jokes about money."
+      "No jokes about money."
     ],
+    "tone": {
+      "formality": "neutral",
+      "energy": "calm",
+      "warmth": "reserved",
+      "humor": "none"
+    },
+    "person": "you",
+    "readingLevel": {
+      "maxGrade": 8
+    },
     "casing": "sentence",
+    "spelling": "en-GB",
+    "punctuation": {
+      "exclamation": "never",
+      "emoji": "never"
+    },
+    "labels": {
+      "maxWords": 4,
+      "verbFirst": true
+    },
     "glossary": [
       {
         "use": "payment",
@@ -31,7 +50,20 @@
           "transfer"
         ]
       }
-    ]
+    ],
+    "avoid": [
+      "simply",
+      "just",
+      "oops",
+      "invalid",
+      "failed"
+    ],
+    "situations": {
+      "empty": "Say what will appear here and how to make it appear.",
+      "error": "Say what happened, that nothing was lost, and what to do next. Never blame the user.",
+      "confirm": "Name the amount, the recipient and whether it can be undone.",
+      "success": "Confirm what happened in one short sentence, with the amount."
+    }
   },
   "patterns": {
     "prefer": [
@@ -40,15 +72,6 @@
     ]
   },
   "rules": [
-    {
-      "id": "no-exclamations",
-      "description": "No exclamation marks",
-      "severity": "error",
-      "rule": {
-        "check": "noLabelMatches",
-        "pattern": "!"
-      }
-    },
     {
       "id": "money-moves-in-confirm",
       "description": "Money only moves from a confirmation",
@@ -61,16 +84,6 @@
         "container": [
           "Confirm"
         ]
-      }
-    },
-    {
-      "id": "say-payment",
-      "description": "Say 'payment', not 'transaction'",
-      "severity": "warning",
-      "rule": {
-        "check": "noLabelMatches",
-        "pattern": "\\btransactions?\\b",
-        "flags": "i"
       }
     }
   ],

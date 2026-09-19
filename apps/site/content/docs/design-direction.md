@@ -17,7 +17,7 @@ The goal is that designers shape generated UI without writing prompts or JSON by
 |---|---|---|
 | `designSystem` | The pack it goes with, e.g. `material3` | Reference only |
 | `profile` | Density, emphasis budget, data display, motion, disclosure, freedom | Planned: generator constraints |
-| `voice` | Copy guidelines, casing, glossary | Planned: generator conditioning. Voice rules can be written as `rules` today |
+| `voice` | Copy and tone: tone, person, reading level, casing, spelling, punctuation, label length, glossary, words to avoid, guidance for recurring situations | **Checkable settings are compiled into rules and checked today**; all of it is given to the generator |
 | `patterns` | Preferred and disallowed patterns, plus the company's own pattern files | Planned: pattern library with company precedence |
 | `rules` | Dos and don'ts, each written in plain language and as a check | **Checked by the verifier today** |
 | `exemplars` | "This is how we'd do it" pairs of request and UI document | Planned: retrieved as examples at generation time |
@@ -34,6 +34,53 @@ The goal is that designers shape generated UI without writing prompts or JSON by
 | `freedom` | `strict`, `guided`, `open` | `guided` |
 
 The validator currently enforces one primary action per view regardless of `emphasisBudget`, since the accessibility floor caps it at one on most platforms.
+
+### Copy and tone
+
+`voice` is where a content designer sets how the product sounds. Settings that can be checked mechanically compile into rules with `compileVoice(direction)`; the rest (tone, situation guidance) steer the generator.
+
+| Setting | Values | Checked by |
+|---|---|---|
+| `tone.formality` | `formal`, `neutral`, `casual` | Generator guidance |
+| `tone.energy` | `calm`, `neutral`, `upbeat` | Generator guidance |
+| `tone.warmth` | `reserved`, `friendly`, `warm` | Generator guidance |
+| `tone.humor` | `none`, `light` | Generator guidance |
+| `person` | `you` (the product never says "we"), `we-and-you`, `impersonal` | `person` check |
+| `readingLevel.maxGrade` | Highest Flesch–Kincaid grade for running text (applied once there are 30+ words) | `readingLevel` check |
+| `casing` | `sentence`, `title` | `casing` check |
+| `spelling` | `en-GB`, `en-US` | `spelling` check (common interface words: colour/color, cancelled/canceled, organise/organize…) |
+| `punctuation.exclamation` | `never`, `allowed` | `noLabelMatches` "!" |
+| `punctuation.emoji` | `never`, `allowed` | `noEmoji` check |
+| `labels.maxWords` | Longest button label | `maxWords` check |
+| `labels.verbFirst` | Buttons start with what they do | Generator guidance |
+| `glossary` | `{ "use": "payment", "insteadOf": ["transaction"] }` | `avoidTerms` check, with the preferred word as the suggestion (plurals included) |
+| `avoid` | Words never to use, e.g. "simply", "oops", "invalid" | `avoidTerms` check |
+| `situations` | Guidance for `empty`, `error`, `success`, `confirm`, `loading`, `destructive` moments | Generator guidance |
+
+```json
+"voice": {
+  "tone": { "formality": "neutral", "energy": "calm", "warmth": "reserved", "humor": "none" },
+  "person": "you",
+  "readingLevel": { "maxGrade": 8 },
+  "casing": "sentence",
+  "spelling": "en-GB",
+  "punctuation": { "exclamation": "never", "emoji": "never" },
+  "labels": { "maxWords": 4, "verbFirst": true },
+  "glossary": [{ "use": "payment", "insteadOf": ["transaction", "txn"] }],
+  "avoid": ["simply", "just", "oops", "invalid"],
+  "situations": { "error": "Say what happened, that nothing was lost, and what to do next. Never blame the user." }
+}
+```
+
+Hold a document to everything a Direction says, its explicit rules and its compiled voice, with `directionRules`:
+
+```ts
+import { directionRules } from "@polyxd/spec";
+
+const report = await verifyDocument(doc, { registry, rules: directionRules(direction) });
+```
+
+Copy checks are warnings by default: they flag, and the team decides. Voice and tone are taste, and the verifier's job is to make them visible, not to overrule the people who own them.
 
 ### Rules
 
@@ -53,7 +100,7 @@ Pass a Direction's rules to the verifier to hold a document to them:
 ```ts
 import { verifyDocument } from "@polyxd/verifier";
 
-const report = await verifyDocument(doc, { registry, rules: direction.rules });
+const report = await verifyDocument(doc, { registry, rules: directionRules(direction) });
 ```
 
 ## The freedom dial
@@ -90,22 +137,25 @@ The spec ships two deliberately different Directions in `packages/spec/examples/
 | Motion | subtle | expressive |
 | Disclosure | progressive | show-everything |
 | Freedom | strict | open |
-| Voice | "Plain, calm and specific. Say what happens to the user's money." No exclamation marks, no jokes about money | "Warm and encouraging, like a friend keeping you on track." Short labels; celebrate streaks |
+| Tone | Calm, reserved, neutral formality, no humour | Upbeat, warm, casual, light humour |
+| Copy | "you" only; reading grade ≤ 8; en-GB; no exclamation marks or emoji; buttons ≤ 4 words; never "simply", "just", "oops", "invalid", "failed" | "we" and "you"; reading grade ≤ 6; en-US; exclamation marks and emoji allowed; buttons ≤ 3 words; never "should", "failed" |
 | Glossary | "payment" instead of "transaction" or "txn"; "send" instead of "transfer" | none |
 | Patterns | prefer `confirm-destructive`, `review-and-submit` | none |
-| Rules | No exclamation marks (error); money only moves from a confirmation (error); say "payment", not "transaction" (warning) | Personal dashboards show progress visually, i.e. contain a `Chart` (warning) |
+| Rules | Money only moves from a confirmation (error), plus the compiled voice checks | Personal dashboards show progress visually, i.e. contain a `Chart` (warning), plus the compiled voice checks |
 | Exemplars | The send-money form and confirmation examples | none |
 
-The "say payment" rule shows how voice becomes a check:
+The glossary entry shows how voice becomes a check. `compileVoice` turns `{ "use": "payment", "insteadOf": ["transaction", "txn"] }` into:
 
 ```json
 {
-  "id": "say-payment",
-  "description": "Say 'payment', not 'transaction'",
+  "id": "voice-glossary-payment",
+  "description": "Say \"payment\", not \"transaction\" or \"txn\"",
   "severity": "warning",
-  "rule": { "check": "noLabelMatches", "pattern": "\\btransactions?\\b", "flags": "i" }
+  "rule": { "check": "avoidTerms", "terms": ["transaction", "txn"], "suggest": "payment" }
 }
 ```
+
+On the balance overview example, calm-finance flags "Recent transactions" with this rule, and playful-personal passes the same surface.
 
 ## Studio (planned)
 

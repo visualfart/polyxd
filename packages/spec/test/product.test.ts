@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import { evaluateRules } from "../src/patterns.ts";
+import { directionRules, compileVoice } from "../src/direction.ts";
+import { readingGrade } from "../src/checks.ts";
 
 const read = (p: string) => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 const ajv = new Ajv2020({ strict: false, discriminator: true });
@@ -37,10 +39,32 @@ test("the same surface can pass one direction and fail another (taste is enforce
   const calm = read("../examples/directions/calm-finance.json");
   const playful = read("../examples/directions/playful-personal.json");
   const overview = read("../examples/money-balance-overview.json");
-  const failed = (dir: any, doc: any) => evaluateRules(dir.rules, doc).filter((r) => !r.pass).map((r) => r.id);
+  const failed = (dir: any, doc: any) => evaluateRules(directionRules(dir), doc).filter((r) => !r.pass).map((r) => r.id);
   // "Recent transactions" breaks calm-finance's glossary; the chart satisfies playful-personal.
-  assert.deepEqual(failed(calm, overview), ["say-payment"]);
+  assert.deepEqual(failed(calm, overview), ["voice-glossary-payment"]);
   assert.deepEqual(failed(playful, overview), []);
-  const tasks = read("../examples/tasks-list.json");
-  assert.deepEqual(failed(playful, tasks), ["celebrate-progress"]);
+  assert.deepEqual(failed(playful, read("../examples/tasks-list.json")), ["celebrate-progress"]);
+});
+
+const withCopy = (mutate: (d: any) => void) => {
+  const d = read("../examples/tasks-add.json");
+  mutate(d);
+  return d;
+};
+const voiceFails = (voice: any, doc: any) => evaluateRules(compileVoice({ voice }), doc).filter((r) => !r.pass).map((r) => r.id);
+
+test("copy and tone settings compile into checks that catch what they should", () => {
+  const byId = (d: any, id: string) => d.components.find((c: any) => c.id === id);
+  assert.deepEqual(voiceFails({ casing: "sentence" }, withCopy((d) => (byId(d, "form").submit.label = "Add New Task"))), ["voice-casing"]);
+  assert.deepEqual(voiceFails({ labels: { maxWords: 3 } }, withCopy((d) => (byId(d, "form").submit.label = "Add this task to my list now"))), ["voice-label-length"]);
+  assert.deepEqual(voiceFails({ punctuation: { emoji: "never" } }, withCopy((d) => (byId(d, "title").label = "Task ✅"))), ["voice-no-emoji"]);
+  assert.deepEqual(voiceFails({ spelling: "en-GB" }, withCopy((d) => (byId(d, "notes").label = "Favorite color"))), ["voice-spelling"]);
+  assert.deepEqual(voiceFails({ person: "you" }, withCopy((d) => (byId(d, "notes").label = "What we should know"))), ["voice-person"]);
+  assert.deepEqual(voiceFails({ avoid: ["simply"] }, withCopy((d) => (byId(d, "title").label = "Simply type a task"))), ["voice-avoid"]);
+  assert.deepEqual(voiceFails({ casing: "sentence", labels: { maxWords: 4 }, spelling: "en-GB", person: "you", avoid: ["simply"] }, read("../examples/tasks-add.json")), []);
+});
+
+test("reading level separates plain from dense writing", () => {
+  assert.ok(readingGrade("Your card is frozen. You can unfreeze it at any time.") < 6);
+  assert.ok(readingGrade("Notwithstanding the aforementioned considerations, reactivation necessitates comprehensive verification of institutional authorisation.") > 14);
 });

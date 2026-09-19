@@ -19,6 +19,13 @@ export type Check =
   | { check: "labelMatches"; component: string; where?: Record<string, unknown>; prop?: string; pattern: string; flags?: string }
   | { check: "noLabelMatches"; pattern: string; flags?: string }
   | { check: "actionInside"; capabilities: string[]; container: string[] }
+  | { check: "casing"; style: "sentence" | "title" }
+  | { check: "maxWords"; max: number }
+  | { check: "readingLevel"; maxGrade: number }
+  | { check: "avoidTerms"; terms: string[]; suggest?: string }
+  | { check: "noEmoji" }
+  | { check: "spelling"; variant: "en-GB" | "en-US" }
+  | { check: "person"; style: "you" | "we-and-you" | "impersonal" }
   | { check: "anyOf"; checks: Check[] }
   | { check: "allOf"; checks: Check[] }
   | { check: "not"; checks: [Check] };
@@ -83,6 +90,57 @@ function labels(c: Component): string[] {
   }
   return out;
 }
+
+/** Button labels: what the user presses. */
+function actionLabels(c: Component): string[] {
+  const out: string[] = [];
+  if (c.component === "Action" && typeof c.label === "string") out.push(c.label);
+  for (const p of ["submit", "cancel", "confirm", "finish", "choose"]) if (typeof c[p]?.label === "string") out.push(c[p].label);
+  return out;
+}
+
+/** Running text (sentences people read), as opposed to labels and titles. */
+function runningText(c: Component): string[] {
+  const out: string[] = [];
+  for (const p of ["text", "message", "consequence", "description", "help", "caption"]) if (typeof c[p] === "string") out.push(c[p]);
+  if (c.component === "Chart" || c.component === "Comparison") if (typeof c.summary === "string") out.push(c.summary);
+  return out;
+}
+
+const syllables = (word: string) => {
+  const w = word.toLowerCase().replace(/[^a-z]/g, "");
+  if (w.length <= 3) return 1;
+  const groups = w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, "").replace(/^y/, "").match(/[aeiouy]{1,2}/g);
+  return Math.max(1, groups?.length ?? 1);
+};
+
+/** Flesch–Kincaid grade level of a passage. */
+export function readingGrade(text: string): number {
+  const sentences = Math.max(1, (text.match(/[.!?]+(\s|$)/g) ?? []).length || 1);
+  const words = text.match(/[A-Za-z][A-Za-z'’-]*/g) ?? [];
+  if (!words.length) return 0;
+  const syl = words.reduce((n, w) => n + syllables(w), 0);
+  return 0.39 * (words.length / sentences) + 11.8 * (syl / words.length) - 15.59;
+}
+
+/** en-US ↔ en-GB spellings common in interfaces. */
+const SPELLING: [string, string][] = [
+  ["color", "colour"], ["favorite", "favourite"], ["organize", "organise"], ["organization", "organisation"], ["center", "centre"],
+  ["canceled", "cancelled"], ["canceling", "cancelling"], ["license", "licence"], ["personalize", "personalise"], ["customize", "customise"],
+  ["prioritize", "prioritise"], ["authorize", "authorise"], ["recognize", "recognise"], ["catalog", "catalogue"], ["gray", "grey"],
+  ["check", "cheque"], ["behavior", "behaviour"], ["labeled", "labelled"], ["traveling", "travelling"], ["enrollment", "enrolment"],
+];
+
+const EMOJI = /\p{Extended_Pictographic}/u;
+
+const SMALL_WORDS = new Set(["a", "an", "and", "as", "at", "but", "by", "for", "in", "of", "on", "or", "the", "to", "with", "vs"]);
+
+/** A title-cased phrase: its later words (other than small words) are capitalised. Acronyms and one proper noun pass. */
+const isTitleCase = (s: string) => {
+  const later = s.trim().split(/\s+/).slice(1).filter((w) => /^[A-Za-z]/.test(w) && !SMALL_WORDS.has(w.toLowerCase()));
+  const capped = later.filter((w) => /^[A-Z][a-z]/.test(w)).length;
+  return (later.length >= 2 && capped === later.length) || capped >= 3;
+};
 
 function actionNames(c: Component): string[] {
   const names: string[] = [];
@@ -173,6 +231,43 @@ export function runCheck(check: Check, doc: Doc): CheckResult {
       return bad.length
         ? fail(`${bad.map((c) => c.id).join(", ")} trigger ${check.capabilities.join("/")} outside ${check.container.join("/")}`)
         : ok(`${check.capabilities.join("/")} only inside ${check.container.join("/")}`);
+    }
+    case "casing": {
+      const texts = order.flatMap((c) => [...actionLabels(c), ...["title", "label"].map((p) => c[p]).filter((v) => typeof v === "string")].map((t) => ({ id: c.id, t })));
+      const bad = check.style === "sentence" ? texts.filter(({ t }) => isTitleCase(t)) : texts.filter(({ t }) => !isTitleCase(t) && t.trim().split(/\s+/).length > 2);
+      return bad.length ? fail(`use ${check.style} case: ${bad.slice(0, 4).map(({ id, t }) => `${id}: "${t}"`).join("; ")}`) : ok(`${check.style} case`);
+    }
+    case "maxWords": {
+      const bad = order.flatMap((c) => actionLabels(c).filter((l) => l.trim().split(/\s+/).length > check.max).map((l) => `${c.id}: "${l}"`));
+      return bad.length ? fail(`button labels over ${check.max} words: ${bad.join("; ")}`) : ok(`button labels ≤ ${check.max} words`);
+    }
+    case "readingLevel": {
+      const text = order.flatMap(runningText).join(" ");
+      // Readability formulas are noise on a sentence or two; measure only when there's enough text.
+      if ((text.match(/[A-Za-z]+/g) ?? []).length < 30) return ok("too little running text to measure");
+      const grade = readingGrade(text);
+      return grade <= check.maxGrade ? ok(`reading grade ${grade.toFixed(1)}`) : fail(`reading grade ${grade.toFixed(1)} is above ${check.maxGrade}; use shorter sentences and plainer words`);
+    }
+    case "avoidTerms": {
+      const all = order.flatMap((c) => [...labels(c), ...actionLabels(c), ...runningText(c)].map((t) => ({ id: c.id, t })));
+      const hits = all.flatMap(({ id, t }) => check.terms.filter((term) => new RegExp(`(^|[^\\p{L}])${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(s|es)?([^\\p{L}]|$)`, "iu").test(t)).map((term) => `${id}: "${term}"`));
+      return hits.length ? fail(`avoid ${hits.join("; ")}${check.suggest ? ` (say "${check.suggest}")` : ""}`) : ok("no avoided terms");
+    }
+    case "noEmoji": {
+      const hits = order.flatMap((c) => [...labels(c), ...actionLabels(c), ...runningText(c)].filter((t) => EMOJI.test(t)).map((t) => `${c.id}: "${t}"`));
+      return hits.length ? fail(`no emoji: ${hits.slice(0, 3).join("; ")}`) : ok("no emoji");
+    }
+    case "spelling": {
+      const wrong = SPELLING.map(([us, gb]) => (check.variant === "en-GB" ? [us, gb] : [gb, us]));
+      const all = order.flatMap((c) => [...labels(c), ...actionLabels(c), ...runningText(c)].map((t) => ({ id: c.id, t })));
+      const hits = all.flatMap(({ id, t }) => wrong.filter(([w]) => new RegExp(`\\b${w}`, "i").test(t)).map(([w, right]) => `${id}: "${w}" → "${right}"`));
+      return hits.length ? fail(`${check.variant} spelling: ${hits.slice(0, 4).join("; ")}`) : ok(`${check.variant} spelling`);
+    }
+    case "person": {
+      if (check.style === "we-and-you") return ok("any person");
+      const re = check.style === "you" ? /\b(we|we're|we'll|our|us)\b/i : /\b(you|your|you're|we|our|us)\b/i;
+      const hits = order.flatMap((c) => [...labels(c), ...actionLabels(c), ...runningText(c)].filter((t) => re.test(t)).map((t) => `${c.id}: "${t}"`));
+      return hits.length ? fail(`address people as ${check.style === "you" ? '"you" (not "we")' : "neither you nor we"}: ${hits.slice(0, 3).join("; ")}`) : ok(`person: ${check.style}`);
     }
     case "anyOf": {
       const results = check.checks.map((c) => runCheck(c, doc));

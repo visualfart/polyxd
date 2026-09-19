@@ -6,3 +6,5 @@ export { loadContract, loadDesignSystem, checkContract, checkDesignSystem, flatt
 export type { TokenSet, TokenContract, DesignSystemManifest, ContractIssue } from "./tokens.ts";
 export { contrastRatio, luminance, type ColorValue } from "./color.ts";
 export { flattenTree, toTree, isTree } from "./tree.ts";
+export { compileVoice, directionRules } from "./direction.ts";
+export { readingGrade } from "./checks.ts";
