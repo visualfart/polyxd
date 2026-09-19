@@ -96,85 +96,113 @@ body {
 /* Three panels */
 .g-app {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr) 360px;
+  grid-template-columns: 248px minmax(0, 1fr) 320px;
   height: calc(100vh - var(--header));
 }
-.g-sidebar,
-.g-panel {
-  overflow-y: auto;
-  padding: 24px 20px;
-}
 .g-sidebar {
+  overflow-y: auto;
+  padding: 16px 12px;
   border-right: 1px solid var(--line);
 }
 .g-panel {
+  overflow-y: auto;
+  padding: 20px 16px;
   border-left: 1px solid var(--line);
   background: var(--paper);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
-.g-intro h1 {
-  margin: 0 0 8px;
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: 36px;
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-.g-intro p {
-  margin: 0 0 24px;
-  font-size: 14px;
-  line-height: 1.55;
-  color: var(--ink-2);
-}
-.g-domain {
-  margin-bottom: 18px;
-}
-.g-domain-name {
-  margin-bottom: 6px;
-  font: 12px var(--mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+
+/* The example list: one line each, on a 36px rhythm. */
+.g-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
   color: var(--muted);
 }
-.g-domain ul {
+.g-search:focus-within {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.g-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+}
+.g-search input:focus {
+  outline: none;
+}
+.g-groups {
+  padding-top: 20px;
+}
+.g-group + .g-group {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.g-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 10px 8px;
+}
+.g-group-head h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.g-count {
+  font: 11px var(--mono);
+  color: var(--muted);
+}
+.g-group ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.g-domain button {
+.g-group button {
   all: unset;
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
   width: 100%;
-  padding: 8px 12px;
-  margin-left: -12px;
-  width: calc(100% + 12px);
+  height: 36px;
+  padding: 0 10px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 15px;
-  color: var(--ink-2);
-}
-.g-domain button:hover {
-  background: var(--paper);
+  font-size: 14px;
   color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.g-domain button[aria-current="page"] {
-  background: var(--paper);
-  color: var(--ink);
+.g-group button:hover {
+  background: var(--line-soft);
+}
+.g-group button[aria-current="page"] {
+  background: var(--ink);
+  color: var(--ground);
   font-weight: 600;
-  box-shadow: inset 3px 0 0 var(--signal);
 }
-.g-tag {
-  font: 12px var(--mono);
-  font-weight: 400;
-  color: var(--muted);
+.g-group button:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: -2px;
 }
 
-/* Toolbar */
+/* Toolbar: one labelled row of control clusters. */
 .g-main {
   display: flex;
   flex-direction: column;
@@ -182,47 +210,142 @@ body {
 }
 .g-toolbar {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 24px;
+  align-items: flex-end;
+  gap: 18px;
+  padding: 18px 28px 20px;
   border-bottom: 1px solid var(--line);
   font-size: 14px;
 }
-.g-toolbar label {
+.g-cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.g-cluster-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Design-system picker: each option carries that pack's own colour and typeface. */
+.g-picker {
+  position: relative;
+}
+.g-picker-button {
+  all: unset;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 500;
-}
-.g-toolbar select {
-  min-height: 40px;
-  padding: 0 34px 0 14px;
+  gap: 10px;
+  height: 48px;
+  min-width: 244px;
+  padding: 0 14px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23141414' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
-  appearance: none;
-  font: 500 14px var(--body);
+  border-radius: 14px;
+  background: var(--paper);
+  cursor: pointer;
   color: var(--ink);
+}
+.g-picker-button:hover,
+.g-picker-button[aria-expanded="true"] {
+  border-color: var(--ink);
+}
+.g-picker-button:focus-visible,
+.g-listbox:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+.g-picker-button > svg:last-child {
+  margin-left: auto;
+  color: var(--muted);
+}
+.g-picker-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  min-width: 0;
+}
+.g-picker-name {
+  font-weight: 600;
+}
+.g-picker-by {
+  font-size: 11px;
+  color: var(--muted);
+}
+.g-specimen {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.g-listbox {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  z-index: 20;
+  width: 332px;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: 0 18px 40px rgb(20 20 20 / 16%);
+}
+.g-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
   cursor: pointer;
 }
+.g-option-active,
+.g-option[aria-selected="true"] {
+  background: var(--line-soft);
+}
+.g-option > svg:last-child {
+  margin-left: auto;
+}
+.g-listbox-note {
+  margin: 4px 6px 2px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Segmented controls: icons under a label, or icon plus word. */
 .g-seg {
   display: inline-flex;
-  padding: 3px;
-  gap: 2px;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
   background: var(--line-soft);
-  border-radius: 999px;
 }
 .g-seg button {
-  min-height: 34px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  font: 500 14px var(--body);
-  color: var(--ink-2);
-  text-transform: capitalize;
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 40px;
+  min-width: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-2);
 }
 .g-seg button:hover {
   color: var(--ink);
@@ -232,40 +355,52 @@ body {
   background: var(--ink);
   color: var(--ground);
 }
-.g-reset {
-  min-height: 40px;
-  padding: 0 16px;
-  border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  background: transparent;
-  font: 600 14px var(--body);
-  color: var(--ink);
-  cursor: pointer;
-}
-.g-meta {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--muted);
-}
-.g-meta code {
-  padding: 3px 8px;
-  background: var(--paper);
-  border: 1px solid var(--line-soft);
-  border-radius: 6px;
-  font: 13px var(--mono);
-  color: var(--ink);
+.g-seg button:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: -2px;
 }
 
-/* Stage */
+/* The caption above the preview says what you are looking at, and resets it. */
+.g-caption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  font: 12px var(--mono);
+  color: var(--muted);
+}
+.g-caption-width {
+  margin-left: auto;
+}
+.g-reset {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  cursor: pointer;
+  font: 500 13px var(--body);
+  color: var(--ink-2);
+}
+.g-reset:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
 .g-stage {
   flex: 1;
   overflow: auto;
-  padding: 32px 24px;
+  padding: 32px 24px 40px;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background: var(--line-soft);
 }
 .g-frame {
   max-width: 100%;
@@ -280,11 +415,16 @@ body {
 }
 
 /* Inspector */
-.g-panel .g-seg {
-  align-self: flex-start;
+.g-panel-tabs {
+  display: flex;
 }
-.g-panel .g-seg button {
-  text-transform: none;
+.g-panel-tabs button {
+  flex: 1;
+}
+.g-panel-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
 }
 .g-log {
   list-style: none;
@@ -296,16 +436,36 @@ body {
   font: 12.5px/1.55 var(--mono);
 }
 .g-log li {
-  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
   background: var(--ground);
-  border-radius: 10px;
   word-break: break-word;
 }
+.g-log-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.g-log-head code {
+  font-weight: 500;
+  font-size: 13px;
+}
 .g-log time {
+  margin-left: auto;
+  font-size: 11px;
   color: var(--muted);
+}
+.g-log-context {
+  font-size: 11px;
+  color: var(--ink-2);
 }
 .g-log .g-empty {
   background: none;
+  border: 0;
   padding: 0;
   font: 14px/1.55 var(--body);
   color: var(--muted);

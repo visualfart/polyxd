@@ -30,6 +30,7 @@ DOMAINS = {
     "travel": "flights, hotels, trips, bookings, check-in and itineraries",
     "settings": "account, security, notifications, team members and admin settings",
     "personal": "habits, health tracking, journaling, reading, hobbies and personal records",
+    "business": "software teams use at work: customer and account lists, invoices and billing, support tickets, inventory, orders, team admin — records people scan, sort, filter, select and act on in bulk",
 }
 
 KINDS = [
@@ -42,6 +43,8 @@ KINDS = [
     "find something in a longer list",
     "a vague or very short request",
     "a request with several steps",
+    "work with many records at once (sort, filter, select several, act in bulk)",
+    "open one record and see everything about it",
 ]
 
 SCENARIO_SCHEMA = {

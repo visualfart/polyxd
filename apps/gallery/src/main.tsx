@@ -4,6 +4,7 @@ import { PolyxdSurface, type ActionEvent, type UIDocument } from "@polyxd/react"
 import "@polyxd/react/styles.css";
 import "./gallery.css";
 import { RankPage } from "./rank.tsx";
+import { Cluster, Icon, PackPicker, Segmented, type Pack } from "./ui.tsx";
 
 // Every theme pack the renderer has compiled, and every example UI document in the spec.
 const themeFiles = import.meta.glob("../../../packages/react/themes/*.css", { eager: true });
@@ -16,11 +17,45 @@ const examples = Object.entries(exampleFiles)
   .map(([path, mod]) => ({ file: path.split("/").pop()!.replace(".json", ""), doc: mod.default }))
   .sort((a, b) => a.file.localeCompare(b.file));
 const domainOf = (file: string) => file.split("-")[0];
-const domains = [...new Set(examples.map((e) => domainOf(e.file)))];
 
 const WIDTHS = { phone: 390, tablet: 768, desktop: 1100 } as const;
-const THEME_NAMES: Record<string, string> = { material3: "Material 3", carbon: "Carbon", antd: "Ant Design" };
 type Width = keyof typeof WIDTHS;
+
+/** Who each pack comes from. Its colour and typeface come from the pack's own tokens at runtime. */
+const PACK_INFO: Record<string, { name: string; by: string }> = {
+  material3: { name: "Material 3", by: "Google · Roboto" },
+  carbon: { name: "Carbon", by: "IBM · IBM Plex Sans" },
+  antd: { name: "Ant Design", by: "Ant Group" },
+};
+const packs: Pack[] = themes.map((key) => ({ key, ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) }));
+
+/** Example files are named <domain>-<thing>; these are the words people use for those domains. */
+const GROUP_NAMES: Record<string, string> = {
+  money: "Money",
+  crm: "Work",
+  tasks: "Tasks",
+  shop: "Shopping",
+  travel: "Travel",
+  calendar: "Calendar",
+  personal: "Personal",
+  settings: "Settings",
+  error: "Errors",
+};
+const GROUP_ORDER = Object.keys(GROUP_NAMES);
+const WIDTH_OPTIONS = [
+  { key: "phone" as Width, text: "Phone", icon: "phone" },
+  { key: "tablet" as Width, text: "Tablet", icon: "tablet" },
+  { key: "desktop" as Width, text: "Desktop", icon: "desktop" },
+];
+const DENSITY_OPTIONS = [
+  { key: "compact" as Density, text: "Compact rows", icon: "rowsTight" },
+  { key: "comfortable" as Density, text: "Default rows", icon: "rowsMid" },
+  { key: "spacious" as Density, text: "Roomy rows", icon: "rowsLoose" },
+];
+const MODE_OPTIONS = [
+  { key: "light" as const, text: "Light", icon: "sun" },
+  { key: "dark" as const, text: "Dark", icon: "moon" },
+];
 
 /** Placeholder images for host media references (generated UIs never contain URLs). */
 function placeholder(ref: string) {
@@ -41,12 +76,13 @@ function Gallery() {
   const [width, setWidth] = useState<Width>(() => readParam("width", ["phone", "tablet", "desktop"] as const, "desktop"));
   const [density, setDensity] = useState<Density>(() => readParam("density", ["comfortable", "compact", "spacious"] as const, "comfortable"));
   const [panel, setPanel] = useState<"log" | "json">("log");
-  const [log, setLog] = useState<{ at: string; text: string }[]>([]);
+  const [search, setSearch] = useState("");
+  const [log, setLog] = useState<{ at: string; name: string; context: string }[]>([]);
   const [run, setRun] = useState(0);
   const example = examples.find((e) => e.file === file)!;
 
-  const push = (text: string) => setLog((l) => [{ at: new Date().toLocaleTimeString(), text }, ...l].slice(0, 50));
-  const onAction = (e: ActionEvent) => push(`${e.name} ${JSON.stringify(e.context)}  ← ${e.source}`);
+  const push = (name: string, context: unknown) => setLog((l) => [{ at: new Date().toLocaleTimeString(), name, context: JSON.stringify(context) }, ...l].slice(0, 50));
+  const onAction = (e: ActionEvent) => push(e.name, e.context);
 
   const sync = (patch: Record<string, string>) => {
     const params = new URLSearchParams(location.search);
@@ -68,7 +104,7 @@ function Gallery() {
         mode={mode}
         density={density}
         onAction={onAction}
-        onDismiss={() => push("ui.dismiss (surface closed)")}
+        onDismiss={() => push("ui.dismiss", { surface: example.doc.surface.id })}
         resolveMedia={placeholder}
       />
     ),
@@ -77,76 +113,69 @@ function Gallery() {
     [file, run, theme, mode, density],
   );
 
+  const query = search.trim().toLowerCase();
+  const matches = examples.filter((e) => !query || e.doc.surface.title.toLowerCase().includes(query) || e.file.includes(query) || (e.doc.surface.intent ?? "").includes(query));
+  const groups = [...new Set(matches.map((e) => domainOf(e.file)))]
+    .sort((a, b) => (GROUP_ORDER.indexOf(a) + 1 || 99) - (GROUP_ORDER.indexOf(b) + 1 || 99))
+    .map((d) => ({ key: d, name: GROUP_NAMES[d] ?? d, items: matches.filter((e) => domainOf(e.file) === d) }));
+  const caption = [example.doc.surface.title, example.doc.surface.intent, example.doc.surface.pattern].filter(Boolean).join(" · ");
+
   return (
     <>
     <SiteHeader />
     <div className="g-app">
       <nav className="g-sidebar" aria-label="Examples">
-        <div className="g-intro">
-          <h1>Gallery</h1>
-          <p>Every example, rendered live. Switch the design system, mode, density and width; actions the interface sends appear in the inspector.</p>
-        </div>
-        {domains.map((d) => (
-          <div key={d} className="g-domain">
-            <div className="g-domain-name">{d}</div>
-            <ul>
-              {examples
-                .filter((e) => domainOf(e.file) === d)
-                .map((e) => (
+        <label className="g-search">
+          <Icon name="search" size={16} />
+          <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search examples" aria-label={`Search ${examples.length} examples`} />
+        </label>
+        <div className="g-groups">
+          {groups.map((g) => (
+            <div key={g.key} className="g-group">
+              <div className="g-group-head">
+                <h2>{g.name}</h2>
+                <span className="g-count">{g.items.length}</span>
+              </div>
+              <ul>
+                {g.items.map((e) => (
                   <li key={e.file}>
                     <button type="button" aria-current={e.file === file ? "page" : undefined} onClick={() => choose(e.file)}>
                       {e.doc.surface.title}
-                      {e.doc.surface.pattern && <span className="g-tag">{e.doc.surface.pattern}</span>}
                     </button>
                   </li>
                 ))}
-            </ul>
-          </div>
-        ))}
+              </ul>
+            </div>
+          ))}
+          {groups.length === 0 && <p className="g-empty">No example matches “{search}”.</p>}
+        </div>
       </nav>
 
       <main className="g-main">
         <div className="g-toolbar" role="toolbar" aria-label="Preview settings">
-          <label>
-            Design system
-            <select value={theme} onChange={(e) => (setTheme(e.target.value), sync({ theme: e.target.value }))}>
-              {themes.map((t) => (
-                <option key={t} value={t}>
-                  {THEME_NAMES[t] ?? t}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="g-seg" role="group" aria-label="Mode">
-            {(["light", "dark"] as const).map((m) => (
-              <button key={m} type="button" aria-pressed={mode === m} onClick={() => (setMode(m), sync({ mode: m }))}>
-                {m}
-              </button>
-            ))}
-          </div>
-          <div className="g-seg" role="group" aria-label="Density">
-            {(["compact", "comfortable", "spacious"] as const).map((d) => (
-              <button key={d} type="button" aria-pressed={density === d} onClick={() => (setDensity(d), sync({ density: d }))}>
-                {d}
-              </button>
-            ))}
-          </div>
-          <div className="g-seg" role="group" aria-label="Width">
-            {(Object.keys(WIDTHS) as Width[]).map((w) => (
-              <button key={w} type="button" aria-pressed={width === w} onClick={() => (setWidth(w), sync({ width: w }))}>
-                {w}
-              </button>
-            ))}
-          </div>
-          <button type="button" className="g-reset" onClick={() => (setRun((r) => r + 1), setLog([]))}>
-            Reset
-          </button>
-          <span className="g-meta">
-            <span>intent</span> <code>{example.doc.surface.intent}</code>
-          </span>
+          <Cluster label="Design system">
+            <PackPicker packs={packs} value={theme} onChange={(t) => (setTheme(t), sync({ theme: t }))} />
+          </Cluster>
+          <Cluster label="Mode">
+            <Segmented label="Mode" options={MODE_OPTIONS} value={mode} onChange={(m) => (setMode(m), sync({ mode: m }))} showText={false} />
+          </Cluster>
+          <Cluster label="Density">
+            <Segmented label="Density" options={DENSITY_OPTIONS} value={density} onChange={(d) => (setDensity(d), sync({ density: d }))} showText={false} />
+          </Cluster>
+          <Cluster label="Width">
+            <Segmented label="Width" options={WIDTH_OPTIONS} value={width} onChange={(w) => (setWidth(w), sync({ width: w }))} showText={false} />
+          </Cluster>
         </div>
 
         <div className="g-stage">
+          <div className="g-caption" style={{ width: WIDTHS[width] }}>
+            <span className="g-caption-text">{caption}</span>
+            <span className="g-caption-width">{WIDTHS[width]}px</span>
+            <button type="button" className="g-reset" onClick={() => (setRun((r) => r + 1), setLog([]))}>
+              <Icon name="reset" size={15} />
+              Reset
+            </button>
+          </div>
           <div className="g-frame" style={{ width: WIDTHS[width] }}>
             {surface}
           </div>
@@ -154,20 +183,27 @@ function Gallery() {
       </main>
 
       <aside className="g-panel" aria-label="Inspector">
-        <div className="g-seg" role="tablist">
+        <div className="g-seg g-panel-tabs" role="tablist">
           <button type="button" role="tab" aria-selected={panel === "log"} onClick={() => setPanel("log")}>
-            Actions ({log.length})
+            <Icon name="bolt" size={16} />
+            <span>Actions{log.length > 0 ? ` (${log.length})` : ""}</span>
           </button>
           <button type="button" role="tab" aria-selected={panel === "json"} onClick={() => setPanel("json")}>
-            UI document
+            <Icon name="code" size={16} />
+            <span>Document</span>
           </button>
         </div>
+        <p className="g-panel-note">What this interface sends to the host app.</p>
         {panel === "log" ? (
           <ol className="g-log" aria-live="polite">
-            {log.length === 0 && <li className="g-empty">Actions the UI sends to the host appear here.</li>}
+            {log.length === 0 && <li className="g-empty">Use the interface; what it sends appears here.</li>}
             {log.map((l, i) => (
               <li key={i}>
-                <time>{l.at}</time> {l.text}
+                <span className="g-log-head">
+                  <code>{l.name}</code>
+                  <time>{l.at}</time>
+                </span>
+                <code className="g-log-context">{l.context}</code>
               </li>
             ))}
           </ol>

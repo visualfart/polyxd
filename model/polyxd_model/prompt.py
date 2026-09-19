@@ -87,7 +87,7 @@ EXAMPLE = {
 }
 
 
-PROMPT_VERSION = 4  # v4: full copy-and-tone direction text
+PROMPT_VERSION = 5  # v5: 26 components (FilterPanel, Navigation), dense tables, undo-over-confirm
 
 TREE_EXAMPLE = {
     "specVersion": "0.1.0",
