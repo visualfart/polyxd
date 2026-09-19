@@ -9,6 +9,8 @@ import { RankPage } from "./rank.tsx";
 const themeFiles = import.meta.glob("../../../packages/react/themes/*.css", { eager: true });
 const exampleFiles = import.meta.glob<{ default: UIDocument }>("../../../packages/spec/examples/*.json", { eager: true });
 
+type Density = "compact" | "comfortable" | "spacious";
+
 const themes = Object.keys(themeFiles).map((p) => p.split("/").pop()!.replace(".css", "")).sort();
 const examples = Object.entries(exampleFiles)
   .map(([path, mod]) => ({ file: path.split("/").pop()!.replace(".json", ""), doc: mod.default }))
@@ -37,6 +39,7 @@ function Gallery() {
   const [theme, setTheme] = useState(() => readParam("theme", themes, themes.includes("material3") ? "material3" : themes[0]));
   const [mode, setMode] = useState<"light" | "dark">(() => readParam("mode", ["light", "dark"] as const, "light"));
   const [width, setWidth] = useState<Width>(() => readParam("width", ["phone", "tablet", "desktop"] as const, "desktop"));
+  const [density, setDensity] = useState<Density>(() => readParam("density", ["comfortable", "compact", "spacious"] as const, "comfortable"));
   const [panel, setPanel] = useState<"log" | "json">("log");
   const [log, setLog] = useState<{ at: string; text: string }[]>([]);
   const [run, setRun] = useState(0);
@@ -63,6 +66,7 @@ function Gallery() {
         document={example.doc}
         theme={theme}
         mode={mode}
+        density={density}
         onAction={onAction}
         onDismiss={() => push("ui.dismiss (surface closed)")}
         resolveMedia={placeholder}
@@ -70,7 +74,7 @@ function Gallery() {
     ),
     // Theme and mode change the look only; the surface keeps its state.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [file, run, theme, mode],
+    [file, run, theme, mode, density],
   );
 
   return (
@@ -80,7 +84,7 @@ function Gallery() {
       <nav className="g-sidebar" aria-label="Examples">
         <div className="g-intro">
           <h1>Gallery</h1>
-          <p>Every example, rendered live. Switch the design system, mode and width; actions the interface sends appear in the inspector.</p>
+          <p>Every example, rendered live. Switch the design system, mode, density and width; actions the interface sends appear in the inspector.</p>
         </div>
         {domains.map((d) => (
           <div key={d} className="g-domain">
@@ -117,6 +121,13 @@ function Gallery() {
             {(["light", "dark"] as const).map((m) => (
               <button key={m} type="button" aria-pressed={mode === m} onClick={() => (setMode(m), sync({ mode: m }))}>
                 {m}
+              </button>
+            ))}
+          </div>
+          <div className="g-seg" role="group" aria-label="Density">
+            {(["compact", "comfortable", "spacious"] as const).map((d) => (
+              <button key={d} type="button" aria-pressed={density === d} onClick={() => (setDensity(d), sync({ density: d }))}>
+                {d}
               </button>
             ))}
           </div>
