@@ -68,7 +68,7 @@ request ──► generator (small model, constrained to spec schema)
 No fixed timeline. Each phase has an exit test, and we don't move on until it passes.
 
 ### Phase 0: Setup and grounding
-- Accept the Xcode license, `git init`, and set up the monorepo structure (§9).
+- Accept the Xcode license, `git init`, and set up the monorepo structure (§10).
 - Read the current A2UI spec, Material 3 tokens, GOV.UK patterns, and the Maru / Affora / Harness4GenUI preprints (check their claims against the PDFs).
 - **Output:** a one-page decision note on whether we extend the A2UI catalog or define our own schema with A2UI export.
 
@@ -140,7 +140,7 @@ The goal is for any app, agent or tool to adopt Polyxd one layer at a time. Each
 **Our own hosted API is deferred.** It's the only piece that costs money to run. The server image makes self-hosting possible from day one, and we'll decide on a hosted API after v0.1 based on demand.
 
 **Distribution requirements that affect the build from Phase 1:**
-- **Monorepo with publishable packages from the start.** Package boundaries match the layers above (§7).
+- **Monorepo with publishable packages from the start.** Package boundaries match the layers above (§10).
 - **Spec versioning.** Semver, a `specVersion` field in every UI document, and a stated compatibility policy with migration notes. v0.x may break; v1.0 is a stability promise.
 - **Streaming.** JIT interfaces must feel instant, so UI JSON is streamed and rendered progressively. Budget: first meaningful render under 1s on the M5, measured in the benchmark.
 - **Small footprint.** The renderer bundle has a size budget, and the model targets ≤ 2.5GB at 4-bit.
@@ -284,7 +284,38 @@ With static software, a PM defines features, a designer draws the screens and fl
 - **Studio (v0.3):** flow map, metrics dashboard, unmet-demand report, experiments.
 - **Scope guard:** v0.1 ships only the *schemas* and the events. Dashboards and experiments wait for Studio.
 
-## 8. Risks
+## 8. Business model: open core (to review later)
+
+Proposed 2026-09-19; not yet decided. **Everything that runs inside someone else's product is free and Apache-licensed. Studio, where a company's designers and PMs work together, is paid.**
+
+**Free forever (open source):** spec, design-system packs, React renderer, runtime SDK, MCP server, verifier and benchmark, model weights.
+- These are how people find and adopt Polyxd. "Works with any LLM, private, on-device, no telemetry" falls apart if the runtime has a paywall or usage meter.
+- Per-generation pricing doesn't work anyway: on-device use has nowhere to count requests, and it punishes the heaviest users.
+
+**Paid: Polyxd Studio (§6–7).**
+- Companies buy it, not developers. Designers and PMs are budget holders.
+- It's naturally multi-user and hosted: review queues, approvals, versioned publishing, rollouts, flow maps and experiments all need shared state.
+- It improves with use. Approvals become exemplars and corrections become rules, so a team's Design Direction gets better over time and customers stay.
+
+| Tier | Price | Includes |
+|---|---|---|
+| Free | $0 | 1 Design Direction, up to 3 editors, preview and review, local-only |
+| Team | ~$30–50 per editor per month (viewers free) | Unlimited directions, publish diffs, rule suggestions, metrics dashboard, flow map, unmet-demand report |
+| Enterprise | Annual, ~$25k+ | SSO/SCIM, audit log, fixed-mode journeys, gradual rollouts, experiments, managed adapter training, self-hosted Studio, SLA |
+
+Charge per **editor**, never per end user or per generation, so the runtime stays free.
+
+**Later:** a usage-priced hosted API (the one piece that costs money per call; deferred until after v0.1), managed adapter training (code stays open, we run it), and paid custom packs and onboarding for regulated industries (fintech, government, healthcare).
+
+**To settle before going public:**
+1. **Timing.** Nothing to sell until after v0.1 (Phase 3). Launch the verifier and benchmark first to build credibility.
+2. **Keep Studio out of the Apache repo.** Apache-2.0 can't be taken back. Studio lives in a separate private repo (or under a source-available license such as BSL/FSL) before the first public push.
+3. **Publicly commit to what stays free:** spec, runtime, model, verifier. Projects that move features behind a paywall later lose trust.
+4. **Spec governance.** If the spec is adopted, a neutral home (foundation or open RFC process) will matter to enterprises more than the license. Not needed for v0.1; plan for it.
+
+**Where the advantage is:** owning the spec, owning the benchmark people use to compare generated UIs, and Studio being the obvious place to direct them. Pricing should protect all three.
+
+## 9. Risks
 
 | Risk | Mitigation |
 |---|---|
@@ -301,7 +332,7 @@ With static software, a PM defines features, a designer draws the screens and fl
 | Embedding is abused (injection, unsafe actions) | UI-as-data, host-allowlisted intents, threat model before v0.1 |
 | Breaking changes hurt early adopters | Semver, `specVersion`, migration notes; nothing public before v0.1 |
 
-## 9. Repo layout
+## 10. Repo layout
 
 ```
 packages/
@@ -319,12 +350,12 @@ model/             Python (uv + MLX): baselines, SFT, GRPO, export (MLX/GGUF)
 server/            Dockerfile + HTTP API
 bench/             requests, multi-turn sequences, tasks, gold set
 apps/playground/   demo
-apps/studio/       designer Studio
+                   (Studio lives in a separate private repo, see §8)
 docs/              docs site, decisions, write-ups
 ```
 TypeScript (npm workspaces, Changesets for versioning and releases) and Python (uv). GitHub Actions for CI and publishing.
 
-## 10. Decisions made
+## 11. Decisions made
 
 1. **Domain-generic.** Spec, components and patterns are generic, and the benchmark spans several domains. Trade-off: a narrow domain would make the small model's job easier. If the Phase 4 baselines show the small model struggling across domains, we revisit with domain adapters, not a narrower spec.
 2. **First design system: Material 3.** A second, visually contrasting system (GOV.UK is the current candidate) is added in Phase 2 only to prove the swap.
