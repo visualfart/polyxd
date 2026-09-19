@@ -193,7 +193,9 @@
       "agent": "Items are enumerated with their titles; each item exposes its own actions.",
       "rendering": [
         "Long lists are virtualized by the renderer",
-        "Items keep their order from host data"
+        "Items keep their order from host data",
+        "grid: 2 columns on phones, more as width allows; list: one item per row",
+        "auto: grid when the item template is a Card with media, otherwise list"
       ],
       "mappings": {
         "web": "List markup with Card or row template; ScrollArea for long lists",
@@ -260,7 +262,10 @@
       "agent": "Reads title and consequence; confirm and cancel are named buttons.",
       "rendering": [
         "destructive uses color.action.danger.*",
-        "Capabilities with high risk level must use Confirm (enforced by the verifier)"
+        "Capabilities with high risk level must use Confirm (enforced by the verifier)",
+        "the consequence sits directly above the confirm button",
+        "amount and subject lead the dialog when set",
+        "consequences render as an icon list, two columns on wide surfaces"
       ],
       "mappings": {
         "web": "shadcn AlertDialog",
@@ -308,7 +313,8 @@
       "whenToUse": [
         "Reviewing before submitting",
         "Showing the attributes of one entity",
-        "Receipts"
+        "Receipts",
+        "Fees, prices and totals before someone commits (variant 'receipt')"
       ],
       "whenNotToUse": [
         "Many entities with the same attributes: use Table",
@@ -322,7 +328,8 @@
       },
       "agent": "Read each label with its value.",
       "rendering": [
-        "Keeps the item order stable across generations (keys are remembered)"
+        "Keeps the item order stable across generations (keys are remembered)",
+        "receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right"
       ],
       "mappings": {
         "web": "<dl> with semantic tokens",
@@ -496,9 +503,10 @@
     },
     "RangeInput": {
       "category": "input",
-      "summary": "A number within known bounds where the exact value matters less than its position.",
+      "summary": "A number, or a range between two numbers, within known bounds.",
       "whenToUse": [
-        "Approximate values within a range (budget cap, volume)"
+        "Approximate values within a range (budget cap, volume)",
+        "A price or date range for filtering (mode 'range')"
       ],
       "whenNotToUse": [
         "Exact values: use TextInput with kind 'number' or 'currency'"
@@ -512,7 +520,8 @@
       },
       "agent": "Set the value directly by label.",
       "rendering": [
-        "Shows min, max and the current formatted value"
+        "Shows min, max and the current formatted value",
+        "mode 'range' shows two thumbs and min/max fields that stay in sync"
       ],
       "mappings": {
         "web": "shadcn Slider",
@@ -717,7 +726,9 @@
       "agent": "Fill by label.",
       "rendering": [
         "Width suggests expected length",
-        "Errors appear after the user leaves the field or submits, not while typing"
+        "Errors appear after the user leaves the field or submits, not while typing",
+        "kind 'search' renders as a pill search field with an icon; the label stays as its accessible name",
+        "size 'hero' renders a large centred amount with the currency symbol dimmed"
       ],
       "mappings": {
         "web": "shadcn Input / Textarea with Label and FormMessage",

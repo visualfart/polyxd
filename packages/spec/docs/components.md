@@ -173,7 +173,7 @@ A visual summary of data, always paired with a text summary.
 
 A list of items from host data, each rendered with the same template.
 
-**Required props:** `items`, `label`. **Optional:** `empty`, `selection`, `selected`.
+**Required props:** `items`, `label`. **Optional:** `empty`, `selection`, `selected`, `layout`.
 
 **Use when**
 - Browsing a set of similar entities
@@ -192,17 +192,20 @@ A list of items from host data, each rendered with the same template.
 **Rendering rules**
 - Long lists are virtualized by the renderer
 - Items keep their order from host data
+- grid: 2 columns on phones, more as width allows; list: one item per row
+- auto: grid when the item template is a Card with media, otherwise list
 
 ## DetailList
 
 Label/value pairs describing one thing (a summary, a receipt, a review step).
 
-**Required props:** `items`. **Optional:** `title`.
+**Required props:** `items`. **Optional:** `title`, `variant`.
 
 **Use when**
 - Reviewing before submitting
 - Showing the attributes of one entity
 - Receipts
+- Fees, prices and totals before someone commits (variant 'receipt')
 
 **Don't use when**
 - Many entities with the same attributes: use Table
@@ -215,6 +218,7 @@ Label/value pairs describing one thing (a summary, a receipt, a review step).
 
 **Rendering rules**
 - Keeps the item order stable across generations (keys are remembered)
+- receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right
 
 ## Media
 
@@ -407,12 +411,13 @@ Collects inputs and submits them together.
 
 ## RangeInput
 
-A number within known bounds where the exact value matters less than its position.
+A number, or a range between two numbers, within known bounds.
 
-**Required props:** `label`, `value`, `min`, `max`. **Optional:** `step`, `format`.
+**Required props:** `label`, `value`, `min`, `max`. **Optional:** `step`, `format`, `mode`.
 
 **Use when**
 - Approximate values within a range (budget cap, volume)
+- A price or date range for filtering (mode 'range')
 
 **Don't use when**
 - Exact values: use TextInput with kind 'number' or 'currency'
@@ -425,12 +430,13 @@ A number within known bounds where the exact value matters less than its positio
 
 **Rendering rules**
 - Shows min, max and the current formatted value
+- mode 'range' shows two thumbs and min/max fields that stay in sync
 
 ## TextInput
 
 A single text-like value: text, number, email, phone, currency, search or long text.
 
-**Required props:** `label`, `value`. **Optional:** `kind`, `currency`, `help`, `required`, `validation`, `autocomplete`.
+**Required props:** `label`, `value`. **Optional:** `kind`, `currency`, `help`, `required`, `validation`, `autocomplete`, `placeholder`, `size`.
 
 **Use when**
 - Free-form values the user types
@@ -450,6 +456,8 @@ A single text-like value: text, number, email, phone, currency, search or long t
 **Rendering rules**
 - Width suggests expected length
 - Errors appear after the user leaves the field or submits, not while typing
+- kind 'search' renders as a pill search field with an icon; the label stays as its accessible name
+- size 'hero' renders a large centred amount with the currency symbol dimmed
 
 ## Toggle
 
@@ -544,7 +552,7 @@ Compare a few options across the same attributes, and choose one.
 
 Asks the user to confirm a consequential or destructive action, showing what will happen.
 
-**Required props:** `title`, `severity`, `confirm`. **Optional:** `message`, `consequence`, `summary`, `cancel`, `typeToConfirm`.
+**Required props:** `title`, `severity`, `confirm`. **Optional:** `message`, `consequence`, `summary`, `cancel`, `typeToConfirm`, `amount`, `subject`, `consequences`.
 
 **Use when**
 - Moving money, deleting data, sending on someone's behalf, anything irreversible
@@ -563,6 +571,9 @@ Asks the user to confirm a consequential or destructive action, showing what wil
 **Rendering rules**
 - destructive uses color.action.danger.*
 - Capabilities with high risk level must use Confirm (enforced by the verifier)
+- the consequence sits directly above the confirm button
+- amount and subject lead the dialog when set
+- consequences render as an icon list, two columns on wide surfaces
 
 ## Steps
 

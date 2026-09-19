@@ -56,7 +56,7 @@ function walk(schema: Schema, value: Json, at: string, ctx: { prop: string; item
   if (name === "Options" && value && !Array.isArray(value) && typeof value === "object") {
     const opts = value as Record<string, string>;
     found.paths.push({ path: opts.path, at: `${at}/path`, itemScoped: ctx.itemScoped });
-    for (const k of ["valuePath", "labelPath", "descriptionPath"]) {
+    for (const k of ["valuePath", "labelPath", "descriptionPath", "avatarPath", "imagePath", "recentPath"]) {
       if (opts[k]) found.paths.push({ path: opts[k], at: `${at}/${k}`, itemScoped: true });
     }
     return;
@@ -169,6 +169,7 @@ export function validateDocument(doc: Json): ValidationResult {
 
   // Rules the schema states in prose.
   for (const [, { c, index }] of byId) {
+    if (c.component === "TextInput" && c.placeholder !== undefined && c.kind !== "search") warn(`/components/${index}/placeholder`, "placeholders are only for search fields; use the label and help text");
     if (c.component === "Media" && !c.decorative && c.alt === undefined) error(`/components/${index}`, "Media needs alt text unless it is decorative");
   }
 

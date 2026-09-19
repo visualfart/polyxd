@@ -24,6 +24,10 @@
           },
           "format": {
             "$ref": "#/$defs/Format"
+          },
+          "total": {
+            "type": "boolean",
+            "description": "The total row of a receipt, shown emphasised after a divider"
           }
         },
         "additionalProperties": false
@@ -31,6 +35,14 @@
     },
     "title": {
       "$ref": "#/$defs/DynamicString"
+    },
+    "variant": {
+      "enum": [
+        "default",
+        "receipt"
+      ],
+      "default": "default",
+      "description": "'receipt' for money: values right-aligned in tabular figures, with an optional total row"
     }
   },
   "required": [
@@ -39,7 +51,8 @@
   "whenToUse": [
     "Reviewing before submitting",
     "Showing the attributes of one entity",
-    "Receipts"
+    "Receipts",
+    "Fees, prices and totals before someone commits (variant 'receipt')"
   ],
   "whenNotToUse": [
     "Many entities with the same attributes: use Table",
@@ -53,7 +66,8 @@
   },
   "agent": "Read each label with its value.",
   "rendering": [
-    "Keeps the item order stable across generations (keys are remembered)"
+    "Keeps the item order stable across generations (keys are remembered)",
+    "receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right"
   ],
   "mappings": {
     "web": "<dl> with semantic tokens",

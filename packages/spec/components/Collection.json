@@ -25,6 +25,15 @@
     "selected": {
       "$ref": "#/$defs/Binding",
       "description": "Selected item value(s) in host data when selection is not 'none'"
+    },
+    "layout": {
+      "enum": [
+        "auto",
+        "list",
+        "grid"
+      ],
+      "default": "auto",
+      "description": "'grid' for visual items (products, books); 'list' for rows; 'auto' lets the renderer choose from the item template"
     }
   },
   "required": [
@@ -49,7 +58,9 @@
   "agent": "Items are enumerated with their titles; each item exposes its own actions.",
   "rendering": [
     "Long lists are virtualized by the renderer",
-    "Items keep their order from host data"
+    "Items keep their order from host data",
+    "grid: 2 columns on phones, more as width allows; list: one item per row",
+    "auto: grid when the item template is a Card with media, otherwise list"
   ],
   "mappings": {
     "web": "List markup with Card or row template; ScrollArea for long lists",

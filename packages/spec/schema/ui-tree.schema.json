@@ -323,6 +323,17 @@
             },
             "descriptionPath": {
               "$ref": "#/$defs/Path"
+            },
+            "avatarPath": {
+              "$ref": "#/$defs/Path",
+              "description": "Initials or a media reference per option: renders people and places with a face"
+            },
+            "imagePath": {
+              "$ref": "#/$defs/Path"
+            },
+            "recentPath": {
+              "$ref": "#/$defs/Path",
+              "description": "Boolean per option: shown in a 'Recent' row above the full list"
             }
           },
           "additionalProperties": false
@@ -713,6 +724,15 @@
         "selected": {
           "$ref": "#/$defs/Binding",
           "description": "Selected item value(s) in host data when selection is not 'none'"
+        },
+        "layout": {
+          "enum": [
+            "auto",
+            "list",
+            "grid"
+          ],
+          "default": "auto",
+          "description": "'grid' for visual items (products, books); 'list' for rows; 'auto' lets the renderer choose from the item template"
         }
       },
       "additionalProperties": false
@@ -858,6 +878,75 @@
         "typeToConfirm": {
           "$ref": "#/$defs/DynamicString",
           "description": "Text the user must type before confirming (for irreversible, high-impact actions)"
+        },
+        "amount": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/Binding"
+            },
+            "format": {
+              "$ref": "#/$defs/Format"
+            }
+          },
+          "additionalProperties": false,
+          "description": "The amount being committed, shown large at the top"
+        },
+        "subject": {
+          "type": "object",
+          "required": [
+            "title"
+          ],
+          "properties": {
+            "title": {
+              "$ref": "#/$defs/DynamicString"
+            },
+            "subtitle": {
+              "$ref": "#/$defs/DynamicString"
+            },
+            "avatar": {
+              "$ref": "#/$defs/DynamicString",
+              "description": "Initials, or a media reference in host data"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Who or what the action is for, shown with a face or picture"
+        },
+        "consequences": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "title"
+            ],
+            "properties": {
+              "title": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "detail": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "icon": {
+                "enum": [
+                  "lock",
+                  "trash",
+                  "clock",
+                  "tag",
+                  "info",
+                  "alert",
+                  "mail",
+                  "shield"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "What will happen, as a short list (for destructive actions)"
         }
       },
       "additionalProperties": false
@@ -964,6 +1053,10 @@
               },
               "format": {
                 "$ref": "#/$defs/Format"
+              },
+              "total": {
+                "type": "boolean",
+                "description": "The total row of a receipt, shown emphasised after a divider"
               }
             },
             "additionalProperties": false
@@ -971,6 +1064,14 @@
         },
         "title": {
           "$ref": "#/$defs/DynamicString"
+        },
+        "variant": {
+          "enum": [
+            "default",
+            "receipt"
+          ],
+          "default": "default",
+          "description": "'receipt' for money: values right-aligned in tabular figures, with an optional total row"
         }
       },
       "additionalProperties": false
@@ -1239,7 +1340,7 @@
     },
     "ComponentRangeInput": {
       "type": "object",
-      "description": "A number within known bounds where the exact value matters less than its position.",
+      "description": "A number, or a range between two numbers, within known bounds.",
       "required": [
         "component",
         "label",
@@ -1269,7 +1370,7 @@
         },
         "value": {
           "$ref": "#/$defs/Binding",
-          "description": "Number in host data"
+          "description": "Number in host data, or [min, max] when mode is 'range'"
         },
         "min": {
           "type": "number"
@@ -1283,6 +1384,14 @@
         },
         "format": {
           "$ref": "#/$defs/Format"
+        },
+        "mode": {
+          "enum": [
+            "single",
+            "range"
+          ],
+          "default": "single",
+          "description": "'range' picks a lower and upper bound; value is then [min, max]"
         }
       },
       "additionalProperties": false
@@ -1638,6 +1747,18 @@
         "autocomplete": {
           "type": "string",
           "description": "HTML autocomplete token hint (e.g. 'email', 'postal-code')"
+        },
+        "placeholder": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Only for kind 'search', shown inside the field. Never a substitute for the label."
+        },
+        "size": {
+          "enum": [
+            "default",
+            "hero"
+          ],
+          "default": "default",
+          "description": "'hero' for the one number a surface is about (an amount to send): large and centred"
         }
       },
       "additionalProperties": false

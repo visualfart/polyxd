@@ -17,44 +17,123 @@
   },
   "Binding": {
     "type": "object",
-    "required": ["path"],
-    "properties": { "path": { "$ref": "#/$defs/Path" } },
+    "required": [
+      "path"
+    ],
+    "properties": {
+      "path": {
+        "$ref": "#/$defs/Path"
+      }
+    },
     "additionalProperties": false,
     "description": "A value read from (and, for inputs, written to) host data. Data always comes from the host; the model never invents it."
   },
   "DynamicString": {
-    "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/Binding" }]
+    "oneOf": [
+      {
+        "type": "string"
+      },
+      {
+        "$ref": "#/$defs/Binding"
+      }
+    ]
   },
   "DynamicNumber": {
-    "oneOf": [{ "type": "number" }, { "$ref": "#/$defs/Binding" }]
+    "oneOf": [
+      {
+        "type": "number"
+      },
+      {
+        "$ref": "#/$defs/Binding"
+      }
+    ]
   },
   "DynamicBoolean": {
-    "oneOf": [{ "type": "boolean" }, { "$ref": "#/$defs/Binding" }]
+    "oneOf": [
+      {
+        "type": "boolean"
+      },
+      {
+        "$ref": "#/$defs/Binding"
+      }
+    ]
   },
   "DynamicValue": {
-    "oneOf": [{ "type": ["string", "number", "boolean"] }, { "$ref": "#/$defs/Binding" }]
+    "oneOf": [
+      {
+        "type": [
+          "string",
+          "number",
+          "boolean"
+        ]
+      },
+      {
+        "$ref": "#/$defs/Binding"
+      }
+    ]
   },
   "Format": {
     "type": "object",
-    "required": ["type"],
+    "required": [
+      "type"
+    ],
     "properties": {
-      "type": { "enum": ["text", "number", "currency", "percent", "date", "time", "datetime", "relativeTime", "duration"] },
-      "currency": { "$ref": "#/$defs/DynamicString", "description": "ISO 4217 code, required for type 'currency'" },
-      "precision": { "type": "integer", "minimum": 0, "maximum": 6 }
+      "type": {
+        "enum": [
+          "text",
+          "number",
+          "currency",
+          "percent",
+          "date",
+          "time",
+          "datetime",
+          "relativeTime",
+          "duration"
+        ]
+      },
+      "currency": {
+        "$ref": "#/$defs/DynamicString",
+        "description": "ISO 4217 code, required for type 'currency'"
+      },
+      "precision": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 6
+      }
     },
     "additionalProperties": false,
     "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
   },
   "Tone": {
-    "enum": ["neutral", "info", "success", "warning", "danger"]
+    "enum": [
+      "neutral",
+      "info",
+      "success",
+      "warning",
+      "danger"
+    ]
   },
   "Accessibility": {
     "type": "object",
     "properties": {
-      "label": { "$ref": "#/$defs/DynamicString", "description": "Accessible name, when the visible label is absent or insufficient" },
-      "description": { "$ref": "#/$defs/DynamicString" },
-      "live": { "enum": ["off", "polite", "assertive"] },
-      "hidden": { "type": "boolean", "description": "Hide from assistive technology (decorative only)" }
+      "label": {
+        "$ref": "#/$defs/DynamicString",
+        "description": "Accessible name, when the visible label is absent or insufficient"
+      },
+      "description": {
+        "$ref": "#/$defs/DynamicString"
+      },
+      "live": {
+        "enum": [
+          "off",
+          "polite",
+          "assertive"
+        ]
+      },
+      "hidden": {
+        "type": "boolean",
+        "description": "Hide from assistive technology (decorative only)"
+      }
     },
     "additionalProperties": false,
     "description": "Same fields as A2UI v1.0 'accessibility'. Components already carry roles and names from their semantics; use this only to add to them."
@@ -66,16 +145,24 @@
   },
   "Action": {
     "type": "object",
-    "required": ["event"],
+    "required": [
+      "event"
+    ],
     "properties": {
       "event": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
-          "name": { "$ref": "#/$defs/Capability" },
+          "name": {
+            "$ref": "#/$defs/Capability"
+          },
           "context": {
             "type": "object",
-            "additionalProperties": { "$ref": "#/$defs/DynamicValue" },
+            "additionalProperties": {
+              "$ref": "#/$defs/DynamicValue"
+            },
             "description": "Values sent with the event, usually bindings to inputs or to the current template item"
           }
         },
@@ -87,25 +174,43 @@
   },
   "ActionSpec": {
     "type": "object",
-    "required": ["label", "action"],
+    "required": [
+      "label",
+      "action"
+    ],
     "properties": {
-      "label": { "$ref": "#/$defs/DynamicString" },
-      "action": { "$ref": "#/$defs/Action" }
+      "label": {
+        "$ref": "#/$defs/DynamicString"
+      },
+      "action": {
+        "$ref": "#/$defs/Action"
+      }
     },
     "additionalProperties": false
   },
   "ChildList": {
     "type": "array",
-    "items": { "$ref": "#/$defs/Id" },
+    "items": {
+      "$ref": "#/$defs/Id"
+    },
     "minItems": 1,
     "description": "Ordered child component ids"
   },
   "Template": {
     "type": "object",
-    "required": ["path", "componentId"],
+    "required": [
+      "path",
+      "componentId"
+    ],
     "properties": {
-      "path": { "$ref": "#/$defs/Path", "description": "Array in host data to repeat over" },
-      "componentId": { "$ref": "#/$defs/Id", "description": "Component rendered once per item; relative paths inside it resolve against the item" }
+      "path": {
+        "$ref": "#/$defs/Path",
+        "description": "Array in host data to repeat over"
+      },
+      "componentId": {
+        "$ref": "#/$defs/Id",
+        "description": "Component rendered once per item; relative paths inside it resolve against the item"
+      }
     },
     "additionalProperties": false,
     "description": "Same shape as A2UI templated children"
@@ -117,23 +222,59 @@
         "minItems": 2,
         "items": {
           "type": "object",
-          "required": ["value", "label"],
+          "required": [
+            "value",
+            "label"
+          ],
           "properties": {
-            "value": { "type": ["string", "number", "boolean"] },
-            "label": { "$ref": "#/$defs/DynamicString" },
-            "description": { "$ref": "#/$defs/DynamicString" }
+            "value": {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            },
+            "label": {
+              "$ref": "#/$defs/DynamicString"
+            },
+            "description": {
+              "$ref": "#/$defs/DynamicString"
+            }
           },
           "additionalProperties": false
         }
       },
       {
         "type": "object",
-        "required": ["path", "valuePath", "labelPath"],
+        "required": [
+          "path",
+          "valuePath",
+          "labelPath"
+        ],
         "properties": {
-          "path": { "$ref": "#/$defs/Path" },
-          "valuePath": { "$ref": "#/$defs/Path" },
-          "labelPath": { "$ref": "#/$defs/Path" },
-          "descriptionPath": { "$ref": "#/$defs/Path" }
+          "path": {
+            "$ref": "#/$defs/Path"
+          },
+          "valuePath": {
+            "$ref": "#/$defs/Path"
+          },
+          "labelPath": {
+            "$ref": "#/$defs/Path"
+          },
+          "descriptionPath": {
+            "$ref": "#/$defs/Path"
+          },
+          "avatarPath": {
+            "$ref": "#/$defs/Path",
+            "description": "Initials or a media reference per option: renders people and places with a face"
+          },
+          "imagePath": {
+            "$ref": "#/$defs/Path"
+          },
+          "recentPath": {
+            "$ref": "#/$defs/Path",
+            "description": "Boolean per option: shown in a 'Recent' row above the full list"
+          }
         },
         "additionalProperties": false
       }

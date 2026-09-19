@@ -1,14 +1,14 @@
 {
   "name": "RangeInput",
   "category": "input",
-  "summary": "A number within known bounds where the exact value matters less than its position.",
+  "summary": "A number, or a range between two numbers, within known bounds.",
   "props": {
     "label": {
       "$ref": "#/$defs/DynamicString"
     },
     "value": {
       "$ref": "#/$defs/Binding",
-      "description": "Number in host data"
+      "description": "Number in host data, or [min, max] when mode is 'range'"
     },
     "min": {
       "type": "number"
@@ -22,6 +22,14 @@
     },
     "format": {
       "$ref": "#/$defs/Format"
+    },
+    "mode": {
+      "enum": [
+        "single",
+        "range"
+      ],
+      "default": "single",
+      "description": "'range' picks a lower and upper bound; value is then [min, max]"
     }
   },
   "required": [
@@ -31,7 +39,8 @@
     "max"
   ],
   "whenToUse": [
-    "Approximate values within a range (budget cap, volume)"
+    "Approximate values within a range (budget cap, volume)",
+    "A price or date range for filtering (mode 'range')"
   ],
   "whenNotToUse": [
     "Exact values: use TextInput with kind 'number' or 'currency'"
@@ -45,7 +54,8 @@
   },
   "agent": "Set the value directly by label.",
   "rendering": [
-    "Shows min, max and the current formatted value"
+    "Shows min, max and the current formatted value",
+    "mode 'range' shows two thumbs and min/max fields that stay in sync"
   ],
   "mappings": {
     "web": "shadcn Slider",

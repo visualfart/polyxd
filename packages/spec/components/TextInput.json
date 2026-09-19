@@ -62,6 +62,18 @@
     "autocomplete": {
       "type": "string",
       "description": "HTML autocomplete token hint (e.g. 'email', 'postal-code')"
+    },
+    "placeholder": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Only for kind 'search', shown inside the field. Never a substitute for the label."
+    },
+    "size": {
+      "enum": [
+        "default",
+        "hero"
+      ],
+      "default": "default",
+      "description": "'hero' for the one number a surface is about (an amount to send): large and centred"
     }
   },
   "required": [
@@ -87,7 +99,9 @@
   "agent": "Fill by label.",
   "rendering": [
     "Width suggests expected length",
-    "Errors appear after the user leaves the field or submits, not while typing"
+    "Errors appear after the user leaves the field or submits, not while typing",
+    "kind 'search' renders as a pill search field with an icon; the label stays as its accessible name",
+    "size 'hero' renders a large centred amount with the currency symbol dimmed"
   ],
   "mappings": {
     "web": "shadcn Input / Textarea with Label and FormMessage",

@@ -34,6 +34,75 @@
     "typeToConfirm": {
       "$ref": "#/$defs/DynamicString",
       "description": "Text the user must type before confirming (for irreversible, high-impact actions)"
+    },
+    "amount": {
+      "type": "object",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/Binding"
+        },
+        "format": {
+          "$ref": "#/$defs/Format"
+        }
+      },
+      "additionalProperties": false,
+      "description": "The amount being committed, shown large at the top"
+    },
+    "subject": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "subtitle": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "avatar": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Initials, or a media reference in host data"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Who or what the action is for, shown with a face or picture"
+    },
+    "consequences": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "detail": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "icon": {
+            "enum": [
+              "lock",
+              "trash",
+              "clock",
+              "tag",
+              "info",
+              "alert",
+              "mail",
+              "shield"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "What will happen, as a short list (for destructive actions)"
     }
   },
   "required": [
@@ -59,7 +128,10 @@
   "agent": "Reads title and consequence; confirm and cancel are named buttons.",
   "rendering": [
     "destructive uses color.action.danger.*",
-    "Capabilities with high risk level must use Confirm (enforced by the verifier)"
+    "Capabilities with high risk level must use Confirm (enforced by the verifier)",
+    "the consequence sits directly above the confirm button",
+    "amount and subject lead the dialog when set",
+    "consequences render as an icon list, two columns on wide surfaces"
   ],
   "mappings": {
     "web": "shadcn AlertDialog",
