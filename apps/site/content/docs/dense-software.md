@@ -1,7 +1,7 @@
 ---
 title: Dense software
 description: How Polyxd handles B2B interfaces: data tables, bulk actions, navigation, record pages and density.
-order: 14
+order: 13.5
 section: Concepts
 ---
 
