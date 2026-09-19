@@ -39,7 +39,7 @@ export interface CheckResult {
 const SINGLE_REFS: Record<string, string[]> = {
   Card: ["media"],
   Collection: ["empty"],
-  Table: ["empty"],
+  Table: ["empty", "toolbar", "bulkActions", "rowActions", "search", "filters"],
   Status: ["action"],
   Confirm: ["summary"],
   Form: ["aside"],

@@ -16,6 +16,14 @@
     "aside": {
       "$ref": "#/$defs/Id",
       "description": "Optional summary (DetailList, Card or Group) kept beside the form, e.g. the running total"
+    },
+    "layout": {
+      "enum": [
+        "stacked",
+        "horizontal"
+      ],
+      "default": "stacked",
+      "description": "'horizontal' puts label and help on the left and the control on the right (settings pages), on wide surfaces"
     }
   },
   "required": [
@@ -41,7 +49,8 @@
     "One column; labels above fields",
     "Submit is the primary action; cancel is secondary",
     "Submit context is built from the form's input bindings",
-    "'aside' sits beside the form and stays in view on wide surfaces; on compact ones it comes after the fields, just before the submit action"
+    "'aside' sits beside the form and stays in view on wide surfaces; on compact ones it comes after the fields, just before the submit action",
+    "'horizontal' becomes stacked on compact surfaces"
   ],
   "mappings": {
     "web": "shadcn Form (react-hook-form + zod)",

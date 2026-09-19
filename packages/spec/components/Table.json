@@ -35,6 +35,45 @@
           },
           "format": {
             "$ref": "#/$defs/Format"
+          },
+          "kind": {
+            "enum": [
+              "text",
+              "number",
+              "currency",
+              "date",
+              "status",
+              "entity",
+              "link"
+            ],
+            "default": "text",
+            "description": "What the cell holds; drives alignment, tabular figures and status tags"
+          },
+          "align": {
+            "enum": [
+              "start",
+              "end"
+            ],
+            "description": "Overrides the alignment the kind implies"
+          },
+          "tones": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/Tone"
+            },
+            "description": "For 'status': value → tone, e.g. {\"Past due\": \"danger\"}"
+          },
+          "sortable": {
+            "type": "boolean",
+            "description": "Whether people can sort by this column"
+          },
+          "avatarPath": {
+            "$ref": "#/$defs/Path",
+            "description": "For 'entity': relative path to the picture or initials"
+          },
+          "secondaryPath": {
+            "$ref": "#/$defs/Path",
+            "description": "For 'entity': a second line, e.g. an email address"
           }
         },
         "additionalProperties": false
@@ -47,6 +86,118 @@
     "empty": {
       "$ref": "#/$defs/Id",
       "description": "Status component shown when there are no rows"
+    },
+    "sort": {
+      "type": "object",
+      "required": [
+        "column"
+      ],
+      "properties": {
+        "column": {
+          "$ref": "#/$defs/Binding",
+          "description": "Key of the sorted column in host data"
+        },
+        "direction": {
+          "$ref": "#/$defs/Binding",
+          "description": "'ascending' or 'descending' in host data"
+        },
+        "action": {
+          "$ref": "#/$defs/Action",
+          "description": "Sent when someone sorts, so the host can re-query"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Sorting state, owned by the host"
+    },
+    "selection": {
+      "enum": [
+        "none",
+        "multiple"
+      ],
+      "default": "none",
+      "description": "'multiple' adds a checkbox column and a select-all"
+    },
+    "selected": {
+      "$ref": "#/$defs/Binding",
+      "description": "Array of selected row values in host data"
+    },
+    "rowValuePath": {
+      "$ref": "#/$defs/Path",
+      "description": "Relative path to each row's id, used for selection"
+    },
+    "bulkActions": {
+      "$ref": "#/$defs/Id",
+      "description": "ActionBar shown instead of the toolbar while rows are selected"
+    },
+    "rowActions": {
+      "$ref": "#/$defs/Id",
+      "description": "ActionBar offered per row, in a menu named after the row"
+    },
+    "toolbar": {
+      "$ref": "#/$defs/Id",
+      "description": "ActionBar above the table (e.g. New, Import, Export)"
+    },
+    "search": {
+      "$ref": "#/$defs/Id",
+      "description": "TextInput (kind 'search') above the table"
+    },
+    "filters": {
+      "$ref": "#/$defs/Id",
+      "description": "FilterPanel whose filters narrow this table"
+    },
+    "views": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label"
+        ],
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/Key"
+          },
+          "label": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "count": {
+            "$ref": "#/$defs/Binding"
+          },
+          "action": {
+            "$ref": "#/$defs/Action"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Saved views (All, Mine, Past due…), shown as tabs with counts"
+    },
+    "view": {
+      "$ref": "#/$defs/Binding",
+      "description": "Key of the selected saved view in host data"
+    },
+    "page": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "$ref": "#/$defs/Binding",
+          "description": "1-based page number in host data"
+        },
+        "size": {
+          "$ref": "#/$defs/Binding"
+        },
+        "total": {
+          "$ref": "#/$defs/Binding",
+          "description": "Total number of rows, all pages"
+        },
+        "action": {
+          "$ref": "#/$defs/Action",
+          "description": "Sent when someone changes page or page size"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Paging state, owned by the host"
     }
   },
   "required": [
@@ -55,7 +206,8 @@
     "columns"
   ],
   "whenToUse": [
-    "Scanning or comparing many rows by several attributes"
+    "Scanning or comparing many rows by several attributes",
+    "Records people scan, sort, select and act on in bulk (B2B lists)"
   ],
   "whenNotToUse": [
     "One entity: use DetailList",
@@ -66,13 +218,21 @@
     "requirements": [
       "Has a caption",
       "Column headers are real header cells",
-      "Numeric columns are right-aligned by format"
+      "Numeric columns are right-aligned by format",
+      "Sortable headers carry aria-sort and say what sorting does",
+      "The select-all checkbox is mixed when some rows are selected",
+      "The bulk-action bar names how many rows are selected, announced politely",
+      "Each row's action menu is named after its row"
     ]
   },
-  "agent": "Read by row and column headers; rows with rowAction are activatable.",
+  "agent": "Read by row and column headers; rows with rowAction are activatable. Sort by activating a column header; select rows by their checkboxes; act in bulk from the bar that appears.",
   "rendering": [
     "On compact screens, rows become stacked cards with label/value pairs",
-    "Alignment follows the column format, never chosen by the model"
+    "Alignment follows the column format, never chosen by the model",
+    "Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'",
+    "On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status",
+    "Selection replaces the toolbar with the bulk-action bar while rows are selected",
+    "Paging shows rows per page, the range and the total"
   ],
   "mappings": {
     "web": "shadcn Table (optionally Data Table with TanStack)",

@@ -13,4 +13,10 @@ export const REFERENCE_TYPES: Record<string, string[]> = {
   "FilterPanel.results": ["Collection", "Table"],
   "ActionBar.children": ["Action"],
   "Confirm.summary": ["DetailList"],
+  "Table.toolbar": ["ActionBar"],
+  "Table.bulkActions": ["ActionBar"],
+  "Table.rowActions": ["ActionBar"],
+  "Table.search": ["TextInput"],
+  "Table.filters": ["FilterPanel"],
+  "Surface.actions": ["ActionBar"],
 };

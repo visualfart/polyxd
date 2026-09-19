@@ -43,6 +43,14 @@
       ],
       "default": "default",
       "description": "'receipt' for money: values right-aligned in tabular figures, with an optional total row"
+    },
+    "layout": {
+      "enum": [
+        "rows",
+        "grid"
+      ],
+      "default": "rows",
+      "description": "'grid' packs many short fields into columns (record pages); 'rows' keeps one per line"
     }
   },
   "required": [
@@ -67,7 +75,8 @@
   "agent": "Read each label with its value.",
   "rendering": [
     "Keeps the item order stable across generations (keys are remembered)",
-    "receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right"
+    "receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right",
+    "'grid' lays fields out in columns by width, label above value"
   ],
   "mappings": {
     "web": "<dl> with semantic tokens",

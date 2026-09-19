@@ -199,7 +199,7 @@ async function componentsPage(): Promise<Page> {
 <p><strong>A2UI:</strong> ${esc(c.a2ui)}</p></section>`;
     }),
   ].join("\n");
-  return { slug: "reference/components", title: "Components reference", description: "All 25 semantic components: props, when to use them, accessibility, rendering rules and platform mappings.", section: "Reference", order: 30, html, toc };
+  return { slug: "reference/components", title: "Components reference", description: "All 26 semantic components: props, when to use them, accessibility, rendering rules and platform mappings.", section: "Reference", order: 30, html, toc };
 }
 
 async function tokensPage(): Promise<Page> {

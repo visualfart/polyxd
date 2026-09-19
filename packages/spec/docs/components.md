@@ -7,6 +7,7 @@ Generated from `components/*.json` (spec 0.1.0). The model chooses these semanti
 | Component | Category | Web (shadcn/Radix) | iOS (SwiftUI) | Android (Compose M3) | A2UI |
 |---|---|---|---|---|---|
 | [FilterPanel](#filterpanel) | layout | Sidebar + Sheet (shadcn) | List with a filter sheet | Side sheet / modal bottom sheet | Column |
+| [Navigation](#navigation) | layout | Sidebar navigation (shadcn Sidebar) | TabView or a sidebar on iPad | NavigationRail / NavigationDrawer | Column |
 | [Card](#card) | structure | shadcn Card (CardHeader/CardTitle/CardContent/CardFooter) | GroupBox, or a Button/NavigationLink with card styling in lists | Card / ElevatedCard / OutlinedCard (onClick variant when actionable) | Card |
 | [Disclosure](#disclosure) | structure | shadcn Collapsible (or Accordion for several) | DisclosureGroup | Expandable ListItem / AnimatedVisibility with a toggle row | No direct equivalent; exports as Column (content always shown) |
 | [Group](#group) | structure | &lt;div role=group&gt; with flex/grid and semantic spacing tokens | VStack / HStack / Grid (ViewThatFits for inline) | Column / Row / FlowRow | Column or Row |
@@ -57,6 +58,32 @@ Filters for a list of results, with the result count.
 - Compact: a 'Filters · n' button opens a bottom sheet whose action says 'Show n results'
 - Active filters show as removable chips above the results
 - Filters apply as they change (no separate Apply on wide)
+
+## Navigation
+
+The product's main navigation.
+
+**Required props:** `items`, `current`. **Optional:** `label`.
+
+**Use when**
+- Software with sections people move between (B2B apps, dashboards)
+- Only when the host doesn't already provide navigation
+
+**Don't use when**
+- Steps of one task: use Steps
+- Sections of one record: use Views
+- A surface embedded in a host that has its own navigation
+
+**Accessibility** (role: navigation)
+- The current item carries aria-current="page"
+- Badges say what they count ('12 overdue')
+
+**Agents:** Move between sections by activating items by their labels.
+
+**Rendering rules**
+- Wide: a side navigation with grouped items
+- Compact: a menu button that opens the navigation
+- Badges sit at the end of their item
 
 ## Card
 
@@ -155,7 +182,7 @@ A titled region of the surface that groups related content under a heading.
 
 Switch between alternative views of the same subject (tabs).
 
-**Required props:** `views`. **Optional:** `selected`.
+**Required props:** `views`. **Optional:** `selected`, `variant`.
 
 **Use when**
 - 2–6 peer views of the same data (Overview / Transactions / Settings)
@@ -172,6 +199,7 @@ Switch between alternative views of the same subject (tabs).
 
 **Rendering rules**
 - More than 4 views on compact screens become a menu or scrollable tabs
+- Counts sit beside their labels and are part of the tab's accessible name
 
 ## Chart
 
@@ -222,12 +250,13 @@ A list of items from host data, each rendered with the same template.
 - Items keep their order from host data
 - grid: 2 columns on phones, more as width allows; list: one item per row
 - auto: grid when the item template is a Card with media, otherwise list
+- 'timeline' marks each item on a line, newest first, for activity feeds
 
 ## DetailList
 
 Label/value pairs describing one thing (a summary, a receipt, a review step).
 
-**Required props:** `items`. **Optional:** `title`, `variant`.
+**Required props:** `items`. **Optional:** `title`, `variant`, `layout`.
 
 **Use when**
 - Reviewing before submitting
@@ -247,6 +276,7 @@ Label/value pairs describing one thing (a summary, a receipt, a review step).
 **Rendering rules**
 - Keeps the item order stable across generations (keys are remembered)
 - receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right
+- 'grid' lays fields out in columns by width, label above value
 
 ## Media
 
@@ -296,10 +326,11 @@ A key figure with a label, and optionally its change.
 
 Tabular data: many items sharing the same attributes.
 
-**Required props:** `rows`, `caption`, `columns`. **Optional:** `rowAction`, `empty`.
+**Required props:** `rows`, `caption`, `columns`. **Optional:** `rowAction`, `empty`, `sort`, `selection`, `selected`, `rowValuePath`, `bulkActions`, `rowActions`, `toolbar`, `search`, `filters`, `views`, `view`, `page`.
 
 **Use when**
 - Scanning or comparing many rows by several attributes
+- Records people scan, sort, select and act on in bulk (B2B lists)
 
 **Don't use when**
 - One entity: use DetailList
@@ -309,12 +340,20 @@ Tabular data: many items sharing the same attributes.
 - Has a caption
 - Column headers are real header cells
 - Numeric columns are right-aligned by format
+- Sortable headers carry aria-sort and say what sorting does
+- The select-all checkbox is mixed when some rows are selected
+- The bulk-action bar names how many rows are selected, announced politely
+- Each row's action menu is named after its row
 
-**Agents:** Read by row and column headers; rows with rowAction are activatable.
+**Agents:** Read by row and column headers; rows with rowAction are activatable. Sort by activating a column header; select rows by their checkboxes; act in bulk from the bar that appears.
 
 **Rendering rules**
 - On compact screens, rows become stacked cards with label/value pairs
 - Alignment follows the column format, never chosen by the model
+- Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'
+- On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status
+- Selection replaces the toolbar with the bulk-action bar while rows are selected
+- Paging shows rows per page, the range and the total
 
 ## Text
 
@@ -344,7 +383,7 @@ A run of text.
 
 Feedback about state: info, success, warning, error, empty or loading.
 
-**Required props:** `kind`, `title`. **Optional:** `message`, `action`, `icon`.
+**Required props:** `kind`, `title`. **Optional:** `message`, `action`, `icon`, `variant`.
 
 **Use when**
 - Results of an action
@@ -369,6 +408,7 @@ Feedback about state: info, success, warning, error, empty or loading.
 - loading shows a skeleton when layout is known, otherwise a progress indicator
 - 'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action
 - Empty states may carry an ActionBar: one primary and one secondary action
+- 'inline' renders a bordered notice with its action on the right
 
 ## Choice
 
@@ -420,7 +460,7 @@ A date, time, date-time or date range.
 
 Collects inputs and submits them together.
 
-**Required props:** `children`, `submit`. **Optional:** `cancel`, `aside`.
+**Required props:** `children`, `submit`. **Optional:** `cancel`, `aside`, `layout`.
 
 **Use when**
 - Any set of inputs that are submitted together
@@ -440,6 +480,7 @@ Collects inputs and submits them together.
 - Submit is the primary action; cancel is secondary
 - Submit context is built from the form's input bindings
 - 'aside' sits beside the form and stays in view on wide surfaces; on compact ones it comes after the fields, just before the submit action
+- 'horizontal' becomes stacked on compact surfaces
 
 ## RangeInput
 

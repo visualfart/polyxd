@@ -1,0 +1,103 @@
+{
+  "name": "Navigation",
+  "category": "layout",
+  "summary": "The product's main navigation.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Names the navigation, e.g. 'Main'"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "action"
+        ],
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/Key"
+          },
+          "label": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "group": {
+            "$ref": "#/$defs/DynamicString",
+            "description": "Heading that groups items (e.g. 'Billing')"
+          },
+          "icon": {
+            "enum": [
+              "home",
+              "search",
+              "inbox",
+              "book",
+              "tag",
+              "clock",
+              "shield",
+              "lock",
+              "mail",
+              "settings",
+              "chart",
+              "people",
+              "card",
+              "file"
+            ]
+          },
+          "badge": {
+            "$ref": "#/$defs/Binding",
+            "description": "Count needing attention, e.g. overdue invoices"
+          },
+          "action": {
+            "$ref": "#/$defs/Action"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "current": {
+      "$ref": "#/$defs/Binding",
+      "description": "Key of the current item in host data"
+    }
+  },
+  "required": [
+    "items",
+    "current"
+  ],
+  "whenToUse": [
+    "Software with sections people move between (B2B apps, dashboards)",
+    "Only when the host doesn't already provide navigation"
+  ],
+  "whenNotToUse": [
+    "Steps of one task: use Steps",
+    "Sections of one record: use Views",
+    "A surface embedded in a host that has its own navigation"
+  ],
+  "accessibility": {
+    "role": "navigation",
+    "requirements": [
+      "The current item carries aria-current=\"page\"",
+      "Badges say what they count ('12 overdue')"
+    ]
+  },
+  "agent": "Move between sections by activating items by their labels.",
+  "rendering": [
+    "Wide: a side navigation with grouped items",
+    "Compact: a menu button that opens the navigation",
+    "Badges sit at the end of their item"
+  ],
+  "mappings": {
+    "web": "Sidebar navigation (shadcn Sidebar)",
+    "ios": "TabView or a sidebar on iPad",
+    "android": "NavigationRail / NavigationDrawer"
+  },
+  "a2ui": "Column",
+  "sources": [
+    "Carbon UI shell",
+    "Material 3 navigation drawer",
+    "NN/g: navigation should show where you are"
+  ]
+}

@@ -196,7 +196,8 @@
         "Long lists are virtualized by the renderer",
         "Items keep their order from host data",
         "grid: 2 columns on phones, more as width allows; list: one item per row",
-        "auto: grid when the item template is a Card with media, otherwise list"
+        "auto: grid when the item template is a Card with media, otherwise list",
+        "'timeline' marks each item on a line, newest first, for activity feeds"
       ],
       "mappings": {
         "web": "List markup with Card or row template; ScrollArea for long lists",
@@ -334,7 +335,8 @@
       "agent": "Read each label with its value.",
       "rendering": [
         "Keeps the item order stable across generations (keys are remembered)",
-        "receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right"
+        "receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right",
+        "'grid' lays fields out in columns by width, label above value"
       ],
       "mappings": {
         "web": "<dl> with semantic tokens",
@@ -436,7 +438,8 @@
         "One column; labels above fields",
         "Submit is the primary action; cancel is secondary",
         "Submit context is built from the form's input bindings",
-        "'aside' sits beside the form and stays in view on wide surfaces; on compact ones it comes after the fields, just before the submit action"
+        "'aside' sits beside the form and stays in view on wide surfaces; on compact ones it comes after the fields, just before the submit action",
+        "'horizontal' becomes stacked on compact surfaces"
       ],
       "mappings": {
         "web": "shadcn Form (react-hook-form + zod)",
@@ -543,6 +546,43 @@
         "WCAG 1.4.1 use of color"
       ]
     },
+    "Navigation": {
+      "category": "layout",
+      "summary": "The product's main navigation.",
+      "whenToUse": [
+        "Software with sections people move between (B2B apps, dashboards)",
+        "Only when the host doesn't already provide navigation"
+      ],
+      "whenNotToUse": [
+        "Steps of one task: use Steps",
+        "Sections of one record: use Views",
+        "A surface embedded in a host that has its own navigation"
+      ],
+      "accessibility": {
+        "role": "navigation",
+        "requirements": [
+          "The current item carries aria-current=\"page\"",
+          "Badges say what they count ('12 overdue')"
+        ]
+      },
+      "agent": "Move between sections by activating items by their labels.",
+      "rendering": [
+        "Wide: a side navigation with grouped items",
+        "Compact: a menu button that opens the navigation",
+        "Badges sit at the end of their item"
+      ],
+      "mappings": {
+        "web": "Sidebar navigation (shadcn Sidebar)",
+        "ios": "TabView or a sidebar on iPad",
+        "android": "NavigationRail / NavigationDrawer"
+      },
+      "a2ui": "Column",
+      "sources": [
+        "Carbon UI shell",
+        "Material 3 navigation drawer",
+        "NN/g: navigation should show where you are"
+      ]
+    },
     "RangeInput": {
       "category": "input",
       "summary": "A number, or a range between two numbers, within known bounds.",
@@ -637,7 +677,8 @@
         "empty states explain why and what to do next",
         "loading shows a skeleton when layout is known, otherwise a progress indicator",
         "'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action",
-        "Empty states may carry an ActionBar: one primary and one secondary action"
+        "Empty states may carry an ActionBar: one primary and one secondary action",
+        "'inline' renders a bordered notice with its action on the right"
       ],
       "mappings": {
         "web": "shadcn Alert / Skeleton / Sonner toast",
@@ -686,7 +727,8 @@
       "category": "content",
       "summary": "Tabular data: many items sharing the same attributes.",
       "whenToUse": [
-        "Scanning or comparing many rows by several attributes"
+        "Scanning or comparing many rows by several attributes",
+        "Records people scan, sort, select and act on in bulk (B2B lists)"
       ],
       "whenNotToUse": [
         "One entity: use DetailList",
@@ -697,13 +739,21 @@
         "requirements": [
           "Has a caption",
           "Column headers are real header cells",
-          "Numeric columns are right-aligned by format"
+          "Numeric columns are right-aligned by format",
+          "Sortable headers carry aria-sort and say what sorting does",
+          "The select-all checkbox is mixed when some rows are selected",
+          "The bulk-action bar names how many rows are selected, announced politely",
+          "Each row's action menu is named after its row"
         ]
       },
-      "agent": "Read by row and column headers; rows with rowAction are activatable.",
+      "agent": "Read by row and column headers; rows with rowAction are activatable. Sort by activating a column header; select rows by their checkboxes; act in bulk from the bar that appears.",
       "rendering": [
         "On compact screens, rows become stacked cards with label/value pairs",
-        "Alignment follows the column format, never chosen by the model"
+        "Alignment follows the column format, never chosen by the model",
+        "Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'",
+        "On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status",
+        "Selection replaces the toolbar with the bulk-action bar while rows are selected",
+        "Paging shows rows per page, the range and the total"
       ],
       "mappings": {
         "web": "shadcn Table (optionally Data Table with TanStack)",
@@ -835,7 +885,8 @@
       },
       "agent": "Select a view by its label.",
       "rendering": [
-        "More than 4 views on compact screens become a menu or scrollable tabs"
+        "More than 4 views on compact screens become a menu or scrollable tabs",
+        "Counts sit beside their labels and are part of the tab's accessible name"
       ],
       "mappings": {
         "web": "shadcn Tabs",

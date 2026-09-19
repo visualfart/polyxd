@@ -23,6 +23,10 @@
           },
           "content": {
             "$ref": "#/$defs/Id"
+          },
+          "count": {
+            "$ref": "#/$defs/Binding",
+            "description": "How many items the view holds, shown beside its label"
           }
         },
         "additionalProperties": false
@@ -31,6 +35,14 @@
     "selected": {
       "$ref": "#/$defs/Binding",
       "description": "Key of the selected view in host data"
+    },
+    "variant": {
+      "enum": [
+        "tabs",
+        "segmented"
+      ],
+      "default": "tabs",
+      "description": "'tabs' for sections of a record; 'segmented' for switching how the same thing is shown"
     }
   },
   "required": [
@@ -52,7 +64,8 @@
   },
   "agent": "Select a view by its label.",
   "rendering": [
-    "More than 4 views on compact screens become a menu or scrollable tabs"
+    "More than 4 views on compact screens become a menu or scrollable tabs",
+    "Counts sit beside their labels and are part of the tab's accessible name"
   ],
   "mappings": {
     "web": "shadcn Tabs",

@@ -40,6 +40,14 @@
         "check"
       ],
       "description": "Optional icon for empty states; the renderer picks one by kind otherwise"
+    },
+    "variant": {
+      "enum": [
+        "default",
+        "inline"
+      ],
+      "default": "default",
+      "description": "'inline' is a notice inside a page (a warning above a record) rather than a block of its own"
     }
   },
   "required": [
@@ -70,7 +78,8 @@
     "empty states explain why and what to do next",
     "loading shows a skeleton when layout is known, otherwise a progress indicator",
     "'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action",
-    "Empty states may carry an ActionBar: one primary and one secondary action"
+    "Empty states may carry an ActionBar: one primary and one secondary action",
+    "'inline' renders a bordered notice with its action on the right"
   ],
   "mappings": {
     "web": "shadcn Alert / Skeleton / Sonner toast",

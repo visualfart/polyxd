@@ -8,7 +8,7 @@ A generated interface is a **UI document**: a flat list of semantic components (
 
 | Path | What |
 |---|---|
-| `components/*.json` | The 25 semantic components (source of truth): props, when to use, accessibility and agent semantics, rendering rules, platform mappings |
+| `components/*.json` | The 26 semantic components (source of truth): props, when to use, accessibility and agent semantics, rendering rules, platform mappings |
 | `schema/ui.schema.json` | JSON Schema for a UI document, generated from the components (validation and constrained decoding) |
 | `catalog/catalog.json` | Usage guidance per component, generated |
 | `docs/components.md` | Readable component reference with the web / iOS / Android / A2UI mapping table, generated |

@@ -30,10 +30,11 @@
       "enum": [
         "auto",
         "list",
-        "grid"
+        "grid",
+        "timeline"
       ],
       "default": "auto",
-      "description": "'grid' for visual items (products, books); 'list' for rows; 'auto' lets the renderer choose from the item template"
+      "description": "'grid' for visual items (products, books); 'list' for rows; 'timeline' for dated activity; 'auto' lets the renderer choose from the item template"
     }
   },
   "required": [
@@ -60,7 +61,8 @@
     "Long lists are virtualized by the renderer",
     "Items keep their order from host data",
     "grid: 2 columns on phones, more as width allows; list: one item per row",
-    "auto: grid when the item template is a Card with media, otherwise list"
+    "auto: grid when the item template is a Card with media, otherwise list",
+    "'timeline' marks each item on a line, newest first, for activity feeds"
   ],
   "mappings": {
     "web": "List markup with Card or row template; ScrollArea for long lists",

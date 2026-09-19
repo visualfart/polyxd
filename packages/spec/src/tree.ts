@@ -8,7 +8,7 @@ type Json = any;
 
 /** Props that hold component references, by component (mirrors the reference props in the schema). */
 const LIST_REFS: Record<string, string[]> = { Section: ["children"], Group: ["children"], Card: ["children"], Disclosure: ["children"], Form: ["children"], ActionBar: ["children"], FilterPanel: ["children"] };
-const SINGLE_REFS: Record<string, string[]> = { Card: ["media"], Collection: ["empty"], Table: ["empty"], Status: ["action"], Confirm: ["summary"], Form: ["aside"], FilterPanel: ["results"] };
+const SINGLE_REFS: Record<string, string[]> = { Card: ["media"], Collection: ["empty"], Table: ["empty", "toolbar", "bulkActions", "rowActions", "search", "filters"], Status: ["action"], Confirm: ["summary"], Form: ["aside"], FilterPanel: ["results"] };
 const PANEL_REFS: Record<string, string> = { Views: "views", Steps: "steps" };
 
 const ID = /^[A-Za-z][A-Za-z0-9_-]*$/;

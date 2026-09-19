@@ -43,6 +43,62 @@
           "type": "string",
           "description": "Id of the journey this surface is a step of, when one applies"
         },
+        "subtitle": {
+          "type": "string",
+          "description": "One line under the title: what this record or page is"
+        },
+        "breadcrumbs": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": [
+              "label"
+            ],
+            "properties": {
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "action": {
+                "$ref": "#/$defs/Action"
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "Where this surface sits, ending with its parent (the title is the last step)"
+        },
+        "badge": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "$ref": "#/$defs/DynamicString"
+            },
+            "tone": {
+              "$ref": "#/$defs/Tone"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Status of the thing this surface is about, e.g. 'Past due'"
+        },
+        "avatar": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Initials or a media reference for the entity this surface is about"
+        },
+        "actions": {
+          "$ref": "#/$defs/Id",
+          "description": "ActionBar in the header: what you can do to this record"
+        },
+        "presentation": {
+          "enum": [
+            "page",
+            "panel"
+          ],
+          "default": "page",
+          "description": "'panel' opens beside what it came from (a side sheet over a list) and is full screen on compact surfaces"
+        },
         "dismissible": {
           "type": "boolean",
           "default": true
@@ -756,10 +812,11 @@
           "enum": [
             "auto",
             "list",
-            "grid"
+            "grid",
+            "timeline"
           ],
           "default": "auto",
-          "description": "'grid' for visual items (products, books); 'list' for rows; 'auto' lets the renderer choose from the item template"
+          "description": "'grid' for visual items (products, books); 'list' for rows; 'timeline' for dated activity; 'auto' lets the renderer choose from the item template"
         }
       },
       "additionalProperties": false
@@ -1107,6 +1164,14 @@
           ],
           "default": "default",
           "description": "'receipt' for money: values right-aligned in tabular figures, with an optional total row"
+        },
+        "layout": {
+          "enum": [
+            "rows",
+            "grid"
+          ],
+          "default": "rows",
+          "description": "'grid' packs many short fields into columns (record pages); 'rows' keeps one per line"
         }
       },
       "additionalProperties": false
@@ -1281,6 +1346,14 @@
             }
           ],
           "description": "Optional summary (DetailList, Card or Group) kept beside the form, e.g. the running total"
+        },
+        "layout": {
+          "enum": [
+            "stacked",
+            "horizontal"
+          ],
+          "default": "stacked",
+          "description": "'horizontal' puts label and help on the left and the control on the right (settings pages), on wide surfaces"
         }
       },
       "additionalProperties": false
@@ -1462,6 +1535,93 @@
       },
       "additionalProperties": false
     },
+    "ComponentNavigation": {
+      "type": "object",
+      "description": "The product's main navigation.",
+      "required": [
+        "component",
+        "items",
+        "current"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Navigation"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Names the navigation, e.g. 'Main'"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "action"
+            ],
+            "properties": {
+              "key": {
+                "$ref": "#/$defs/Key"
+              },
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "group": {
+                "$ref": "#/$defs/DynamicString",
+                "description": "Heading that groups items (e.g. 'Billing')"
+              },
+              "icon": {
+                "enum": [
+                  "home",
+                  "search",
+                  "inbox",
+                  "book",
+                  "tag",
+                  "clock",
+                  "shield",
+                  "lock",
+                  "mail",
+                  "settings",
+                  "chart",
+                  "people",
+                  "card",
+                  "file"
+                ]
+              },
+              "badge": {
+                "$ref": "#/$defs/Binding",
+                "description": "Count needing attention, e.g. overdue invoices"
+              },
+              "action": {
+                "$ref": "#/$defs/Action"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "current": {
+          "$ref": "#/$defs/Binding",
+          "description": "Key of the current item in host data"
+        }
+      },
+      "additionalProperties": false
+    },
     "ComponentRangeInput": {
       "type": "object",
       "description": "A number, or a range between two numbers, within known bounds.",
@@ -1632,6 +1792,14 @@
             "check"
           ],
           "description": "Optional icon for empty states; the renderer picks one by kind otherwise"
+        },
+        "variant": {
+          "enum": [
+            "default",
+            "inline"
+          ],
+          "default": "default",
+          "description": "'inline' is a notice inside a page (a warning above a record) rather than a block of its own"
         }
       },
       "additionalProperties": false
@@ -1754,6 +1922,45 @@
               },
               "format": {
                 "$ref": "#/$defs/Format"
+              },
+              "kind": {
+                "enum": [
+                  "text",
+                  "number",
+                  "currency",
+                  "date",
+                  "status",
+                  "entity",
+                  "link"
+                ],
+                "default": "text",
+                "description": "What the cell holds; drives alignment, tabular figures and status tags"
+              },
+              "align": {
+                "enum": [
+                  "start",
+                  "end"
+                ],
+                "description": "Overrides the alignment the kind implies"
+              },
+              "tones": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/$defs/Tone"
+                },
+                "description": "For 'status': value → tone, e.g. {\"Past due\": \"danger\"}"
+              },
+              "sortable": {
+                "type": "boolean",
+                "description": "Whether people can sort by this column"
+              },
+              "avatarPath": {
+                "$ref": "#/$defs/Path",
+                "description": "For 'entity': relative path to the picture or initials"
+              },
+              "secondaryPath": {
+                "$ref": "#/$defs/Path",
+                "description": "For 'entity': a second line, e.g. an email address"
               }
             },
             "additionalProperties": false
@@ -1766,6 +1973,118 @@
         "empty": {
           "$ref": "#/$defs/ComponentStatus",
           "description": "Status component shown when there are no rows"
+        },
+        "sort": {
+          "type": "object",
+          "required": [
+            "column"
+          ],
+          "properties": {
+            "column": {
+              "$ref": "#/$defs/Binding",
+              "description": "Key of the sorted column in host data"
+            },
+            "direction": {
+              "$ref": "#/$defs/Binding",
+              "description": "'ascending' or 'descending' in host data"
+            },
+            "action": {
+              "$ref": "#/$defs/Action",
+              "description": "Sent when someone sorts, so the host can re-query"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Sorting state, owned by the host"
+        },
+        "selection": {
+          "enum": [
+            "none",
+            "multiple"
+          ],
+          "default": "none",
+          "description": "'multiple' adds a checkbox column and a select-all"
+        },
+        "selected": {
+          "$ref": "#/$defs/Binding",
+          "description": "Array of selected row values in host data"
+        },
+        "rowValuePath": {
+          "$ref": "#/$defs/Path",
+          "description": "Relative path to each row's id, used for selection"
+        },
+        "bulkActions": {
+          "$ref": "#/$defs/ComponentActionBar",
+          "description": "ActionBar shown instead of the toolbar while rows are selected"
+        },
+        "rowActions": {
+          "$ref": "#/$defs/ComponentActionBar",
+          "description": "ActionBar offered per row, in a menu named after the row"
+        },
+        "toolbar": {
+          "$ref": "#/$defs/ComponentActionBar",
+          "description": "ActionBar above the table (e.g. New, Import, Export)"
+        },
+        "search": {
+          "$ref": "#/$defs/ComponentTextInput",
+          "description": "TextInput (kind 'search') above the table"
+        },
+        "filters": {
+          "$ref": "#/$defs/ComponentFilterPanel",
+          "description": "FilterPanel whose filters narrow this table"
+        },
+        "views": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label"
+            ],
+            "properties": {
+              "key": {
+                "$ref": "#/$defs/Key"
+              },
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "count": {
+                "$ref": "#/$defs/Binding"
+              },
+              "action": {
+                "$ref": "#/$defs/Action"
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "Saved views (All, Mine, Past due…), shown as tabs with counts"
+        },
+        "view": {
+          "$ref": "#/$defs/Binding",
+          "description": "Key of the selected saved view in host data"
+        },
+        "page": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "$ref": "#/$defs/Binding",
+              "description": "1-based page number in host data"
+            },
+            "size": {
+              "$ref": "#/$defs/Binding"
+            },
+            "total": {
+              "$ref": "#/$defs/Binding",
+              "description": "Total number of rows, all pages"
+            },
+            "action": {
+              "$ref": "#/$defs/Action",
+              "description": "Sent when someone changes page or page size"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Paging state, owned by the host"
         }
       },
       "additionalProperties": false
@@ -1998,6 +2317,10 @@
               },
               "content": {
                 "$ref": "#/$defs/Node"
+              },
+              "count": {
+                "$ref": "#/$defs/Binding",
+                "description": "How many items the view holds, shown beside its label"
               }
             },
             "additionalProperties": false
@@ -2006,6 +2329,14 @@
         "selected": {
           "$ref": "#/$defs/Binding",
           "description": "Key of the selected view in host data"
+        },
+        "variant": {
+          "enum": [
+            "tabs",
+            "segmented"
+          ],
+          "default": "tabs",
+          "description": "'tabs' for sections of a record; 'segmented' for switching how the same thing is shown"
         }
       },
       "additionalProperties": false
@@ -2066,6 +2397,9 @@
         },
         {
           "$ref": "#/$defs/ComponentMetric"
+        },
+        {
+          "$ref": "#/$defs/ComponentNavigation"
         },
         {
           "$ref": "#/$defs/ComponentRangeInput"
