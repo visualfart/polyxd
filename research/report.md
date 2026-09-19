@@ -37,6 +37,70 @@ Five charts, from the same runs as the table below. Each one opens the numbers b
 
 ## Entries
 
+### 2026-09-20 · Designing first, then building: what the designs caught that the checks didn't
+
+**Question.** The designer's ranking said the verifier knows safety, not taste. If the interfaces were *designed* first — drawn properly, reviewed, then built into the spec and renderer — would the system's first options get better?
+
+**Setup.** 26 artboards across nine flows (send money, delete, browse, compare, book, add a task, notifications, find a time, reading list), reviewed and approved, then implemented as spec changes and renderer behaviour in three batches. Everything was held to the existing checks: 24 examples across 288 renders (3 design systems × light/dark × phone/desktop), plus the scripted agent.
+
+**Result.** The designs added semantics the spec was missing, not styling knobs: a hero amount, people with faces, receipts with a total, a confirmation that names who it is for and lists what will happen, a filter panel linked to its results, one recommendation with its reason, undo instead of a confirmation, progress on a card, richer empty states. All 24 examples still score 100, agent tasks 216/216.
+
+**What the designs caught that the checks did not:**
+
+| Found by | What it was |
+|---|---|
+| Looking at a Carbon render | Every Carbon surface was falling back to a serif face. One font name in the pack's tokens (`.SFNSText-Regular`) isn't a valid CSS identifier unquoted, which invalidates the whole `font-family` declaration. Contrast, target size and reading order all passed; the page was simply in the wrong typeface. |
+| Building a dense table | A link on a selected row failed contrast in Carbon, because the contract only guarantees link colour on the default surface. Selected rows are now marked at the edge instead of tinted. |
+| A designer using the gallery | Density was decoration: `profile.density` moved table rows and nothing else. |
+
+**What changed.** The three batches are in the spec and renderer. The font fix is in the theme compiler, so no pack can reintroduce it.
+
+**Honest limit.** This measures the *system's ceiling*, not the model's output: the model has not been retrained on the new components yet. Whether the first options are better is the next gold-set ranking's question, not this entry's.
+
+---
+
+### 2026-09-20 · Dense B2B: the capability rules pushed back, and they were right
+
+**Question.** Tables, bulk actions, navigation and record pages are most of the software people use at work. Could the same spec carry them without becoming a widget library?
+
+**Setup.** Nine artboards in Carbon (accounts list, bulk selection, record page, side-panel form, overview, settings, phone, and a density comparison), then implemented: `Table` gained saved views, a toolbar, sorting, selection with bulk actions, a row menu, cell kinds and paging; `Navigation`, page headers, detail grids, timelines, inline notices and horizontal forms followed.
+
+**Result.** 26 components (from 24). Two B2B examples score 100 across 24 renders. On phones a table becomes a list of rows, and the per-row action keeps the same name at both widths, so an agent's steps don't depend on screen size.
+
+**The finding.** The first version of the accounts list failed the capability checks: "send payment reminder" for three accounts, "create invoice" and "cancel subscription" all fired straight from a row menu. The rules say a consequential capability needs a confirmation or a review step, and a destructive one needs a `Confirm`. That is correct — a row menu that cancels a subscription on click is how real products lose customers' trust. The list's actions now *start* a flow ("open the cancellation check"), and the check itself is a separate surface with what will happen, a typed confirmation and the money at stake.
+
+**What changed.** The registry distinguishes starting a flow from committing it, and the B2B examples follow the same safety rules as the consumer ones.
+
+---
+
+### 2026-09-20 · The mean score hides a bimodal result
+
+**Question.** The best run scores 79 on average. Is that "mostly good with rough edges", or two populations?
+
+**Setup.** Plotted the per-request scores of `gemma-4-e4b + SFT v2 · tree` as a distribution rather than a mean (chart above).
+
+**Result.** 26 of 50 requests score 80 or more; 3 score below 40, 10 between 40 and 59, 11 between 60 and 79. The distribution has a clear upper mass and a long tail, not a hump around the mean.
+
+**What this implies.** Work that lifts everything a little is the wrong shape of work. Grouped by kind of finding, the tail is mostly agent tasks (21) and missing components (19) — surfaces that are valid, safe and well-formed, but leave something out that the request asked for. Pattern and capability-wiring findings come next. Accessibility findings are 3.
+
+**What changed.** The next training round's selection weights capability wiring, and the benchmark charts now show the distribution, so a mean can't hide this again.
+
+---
+
+### 2026-09-20 · One unrenderable candidate ended a training run
+
+**Question.** Why did a retrain produce a model from a single example?
+
+**Setup.** Phase 5c: 550 scenarios, 4 candidates each, scored by the verifier to pick the best per scenario, then LoRA fine-tuning on what survived.
+
+**Result.** Three minutes in, one candidate's page never became ready within the harness's 10-second timeout. `renderPage` threw, nothing caught it, and the exception ended the scoring of all 2,200 candidates. Selection wrote one training example. Training then failed on an empty dataset, and the evaluation dutifully reported a run of 0 requests scoring 0.
+
+**What changed.** A page that never finishes rendering is now recorded as a finding against that document, like any other renderer failure, and the run continues; the selection script also skips a candidate it can't score. Re-run: 262 of 550 scenarios kept, mean best score 91.2 (the previous round kept 186 of 400 at 91.4).
+
+**Worth stating plainly.** The failure was loud and easy to find, and it still produced a "finished" pipeline with a summary table full of zeros. A pipeline that reports success on an empty result is worse than one that crashes.
+
+---
+
 ### 2026-09-20 · A designer ranked the gold set: the verifier knows safety, not taste (Phase 3 exit)
 
 **Question.** Does the verifier's score agree with a designer's judgement? This was the last Phase 3 exit test.
