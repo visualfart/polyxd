@@ -18,7 +18,7 @@
           "description": { "type": "string" },
           "risk": {
             "enum": ["none", "low", "consequential", "destructive"],
-            "description": "consequential/destructive capabilities can only be triggered from a Confirm"
+            "description": "destructive: only from a Confirm. consequential: from a Confirm, a review-and-submit surface, or the finish of Steps whose last step is a review"
           },
           "inputs": { "type": "object", "description": "JSON Schema of the event context this capability accepts" },
           "preconditions": { "type": "array", "items": { "type": "string" } },

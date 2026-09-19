@@ -57,4 +57,4 @@ On-device is the default: the model is meant to run locally, and interface memor
 
 ## Open core
 
-The spec, design-system packs, React renderer, runtime, MCP server, verifier, benchmark and model weights are meant to be free and open: code under Apache-2.0, and the spec and docs under CC-BY-4.0. A paid Studio for teams, where designers and PMs set Design Direction, review generated UIs and publish changes, is being considered, but nothing about it is decided and it does not exist yet. Whatever happens with Studio, anything that runs inside someone else's product stays free.
+The spec, design-system packs, React renderer, runtime, MCP server, verifier, benchmark and model weights are meant to be free and open: code under Apache-2.0, and the spec and docs under CC-BY-4.0. A paid Studio for teams, where designers and PMs set Design Direction, review generated UIs and publish changes, is being considered, but nothing about it is decided and it does not exist yet. The intent is that anything that runs inside someone else's product stays free, with no usage metering.
