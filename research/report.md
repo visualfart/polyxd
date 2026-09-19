@@ -13,6 +13,32 @@ This is Polyxd's running improvement report. Each entry states a question, what 
 
 ## Entries
 
+### 2026-09-19 · Let the model write a tree: valid output from 8% to 70% (Phase 4, experiment 3)
+
+**Question.** Baseline 2 showed the remaining failures were references between components. If the model writes children inline, as a tree, and a compiler produces the flat document, do those failures go away?
+
+**Change.** No change to the spec or the wire format. We added an *authoring* form:
+
+- `schema/ui-tree.schema.json` is generated from the same component sources as the main schema. Wherever a component holds others (children, media, empty states, summaries, a Collection's item template, view and step content), the tree form holds the child component itself. Ids are optional.
+- `flattenTree()` in `@polyxd/spec` compiles a tree into the flat document deterministically. It keeps a model's id only when it's valid and unique, and otherwise generates one from the component's key or type. `toTree()` is the inverse; all 20 spec examples round-trip without loss.
+- The generator uses the tree schema as the constraint and a tree-shaped example in the prompt (prompt v3).
+
+**Result.** Qwen3.5-4B, constrained, same benchmark:
+
+| Metric | Flat, constrained | Tree, constrained |
+|---|---|---|
+| Passes schema and structural rules | 8% | **70%** |
+| Mean verifier score (0–100) | 6 | **51** |
+| Agent tasks completed | 1 of 37 | **10 of 37** |
+| Expected components present | 73% | 76% |
+| Median latency | 4.2 s | 3.9 s |
+
+**What's left.** Of the 15 invalid outputs, 7 put a `Status` where a confirmation's `summary` must be a `DetailList`, and several put a `Toggle`, `Choice` or `Collection` inside a `Card`, which the spec doesn't allow. Four have two primary actions in one view. Among the valid ones, the most common problem is a missing expected component (for example no `Chart` for a spending summary) and agent tasks failing because an item the task needs to press isn't actionable.
+
+**Why the tree helps.** A flat list asks the model to keep a table of ids consistent across the whole output. A tree puts each child where it's used, which is how both people and models write nested structures. The flat form remains the right wire format for streaming, diffing and A2UI; the compiler is a few dozen lines.
+
+**Next (running now).** The tree grammar can go further than the flat one: because a child is written in place, the allowed component types for each reference can be part of the grammar. `Confirm.summary` can only be a `DetailList`, `Card.media` only `Media`, and images need `alt` unless marked decorative. The allowed types now live in one module (`src/references.ts`) shared by the validator and the tree schema. Then: the same setup on Qwen3.5-2B, Gemma-4-E4B and Qwen3.5-9B. An open spec question also stands: several outputs put a toggle or button inside a card, which is reasonable UI, and the `Card.children` restriction may be too strict.
+
 ### 2026-09-19 · Constrained decoding fixes syntax, not structure (Phase 4, baseline 2)
 
 **Question.** If every token must keep the output valid against the UI schema, how much of baseline 1's failure goes away, and what does it cost?

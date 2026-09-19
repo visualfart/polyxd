@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { Ajv2020, type ErrorObject } from "ajv/dist/2020.js";
+import { REFERENCE_TYPES } from "./references.ts";
 
 type Json = unknown;
 type Schema = Record<string, any>;
@@ -20,17 +21,6 @@ export const uiSchema: Schema = JSON.parse(readFileSync(new URL("../schema/ui.sc
 
 const ajv = new Ajv2020({ allErrors: true, discriminator: true, strict: false });
 const validateSchema = ajv.compile(uiSchema);
-
-/** Component props that may only reference components of certain types. */
-const REFERENCE_TYPES: Record<string, string[]> = {
-  "Card.media": ["Media"],
-  "Card.children": ["Text", "Metric", "DetailList", "Group", "Media", "Status"],
-  "Collection.empty": ["Status"],
-  "Table.empty": ["Status"],
-  "Status.action": ["Action"],
-  "ActionBar.children": ["Action"],
-  "Confirm.summary": ["DetailList"],
-};
 
 /** Props whose paths resolve against the current item of a repeated structure. */
 const ITEM_SCOPED: Record<string, string[]> = {

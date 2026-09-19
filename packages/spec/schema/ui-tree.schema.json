@@ -411,7 +411,7 @@
           "type": "array",
           "minItems": 1,
           "items": {
-            "$ref": "#/$defs/Node"
+            "$ref": "#/$defs/ComponentAction"
           },
           "description": "Action component ids, in order of importance"
         }
@@ -450,7 +450,7 @@
           "$ref": "#/$defs/DynamicString"
         },
         "media": {
-          "$ref": "#/$defs/Node",
+          "$ref": "#/$defs/ComponentMedia",
           "description": "Optional Media component id"
         },
         "badge": {
@@ -472,7 +472,26 @@
           "type": "array",
           "minItems": 1,
           "items": {
-            "$ref": "#/$defs/Node"
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ComponentText"
+              },
+              {
+                "$ref": "#/$defs/ComponentMetric"
+              },
+              {
+                "$ref": "#/$defs/ComponentDetailList"
+              },
+              {
+                "$ref": "#/$defs/ComponentGroup"
+              },
+              {
+                "$ref": "#/$defs/ComponentMedia"
+              },
+              {
+                "$ref": "#/$defs/ComponentStatus"
+              }
+            ]
           }
         },
         "action": {
@@ -680,7 +699,7 @@
           "description": "What the list contains, e.g. 'Recent payments'"
         },
         "empty": {
-          "$ref": "#/$defs/Node",
+          "$ref": "#/$defs/ComponentStatus",
           "description": "Status component shown when there are no items"
         },
         "selection": {
@@ -820,7 +839,7 @@
           "description": "What happens and whether it can be undone"
         },
         "summary": {
-          "$ref": "#/$defs/Node",
+          "$ref": "#/$defs/ComponentDetailList",
           "description": "Optional DetailList summarising what is being confirmed"
         },
         "severity": {
@@ -1134,7 +1153,24 @@
           "default": "auto"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "alt"
+          ]
+        },
+        {
+          "required": [
+            "decorative"
+          ],
+          "properties": {
+            "decorative": {
+              "const": true
+            }
+          }
+        }
+      ]
     },
     "ComponentMetric": {
       "type": "object",
@@ -1336,7 +1372,7 @@
           "$ref": "#/$defs/DynamicString"
         },
         "action": {
-          "$ref": "#/$defs/Node",
+          "$ref": "#/$defs/ComponentAction",
           "description": "Optional Action to recover or continue (e.g. 'Try again')"
         }
       },
@@ -1470,7 +1506,7 @@
           "description": "Activated per row; context bindings resolve against the row"
         },
         "empty": {
-          "$ref": "#/$defs/Node",
+          "$ref": "#/$defs/ComponentStatus",
           "description": "Status component shown when there are no rows"
         }
       },

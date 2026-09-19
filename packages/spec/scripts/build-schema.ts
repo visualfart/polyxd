@@ -8,6 +8,7 @@
  * Run with `npm run build:schema`. The test suite fails if the outputs are stale.
  */
 import { readFile, readdir, writeFile } from "node:fs/promises";
+import { REFERENCE_TYPES } from "../src/references.ts";
 
 const root = new URL("../", import.meta.url);
 const read = async (p: string) => JSON.parse(await readFile(new URL(p, root), "utf8"));
@@ -158,10 +159,25 @@ export function buildTreeSchema(flat: any) {
     if (s.$ref === "#/$defs/Id" && !isComponentId) return { ...node, ...(s.description ? { description: s.description } : {}) };
     return Object.fromEntries(Object.entries(s).map(([k, v]) => [k, replace(v)]));
   };
+  // A reference restricted to some component types becomes a union of just those types.
+  const typed = (types: string[]) => (types.length === 1 ? { $ref: `#/$defs/Component${types[0]}` } : { anyOf: types.map((t) => ({ $ref: `#/$defs/Component${t}` })) });
   for (const [name, d] of Object.entries(defs)) {
     if (!name.startsWith("Component") || name === "Component") continue;
+    const component = name.slice("Component".length);
     const { id, ...props } = d.properties;
-    defs[name] = { ...d, required: d.required.filter((r: string) => r !== "id"), properties: { id: replace(id, true), ...Object.fromEntries(Object.entries(props).map(([k, v]) => [k, replace(v)])) } };
+    const out = Object.fromEntries(
+      Object.entries(props).map(([k, v]: [string, any]) => {
+        const allowed = REFERENCE_TYPES[`${component}.${k}`];
+        const converted = replace(v);
+        if (!allowed) return [k, converted];
+        if (converted.type === "array") return [k, { ...converted, items: typed(allowed) }];
+        return [k, { ...typed(allowed), ...(converted.description ? { description: converted.description } : {}) }];
+      }),
+    );
+    const required = d.required.filter((r: string) => r !== "id");
+    defs[name] = { ...d, required, properties: { id: replace(id, true), ...out } };
+    // Images carry alt text unless marked decorative (the validator's prose rule, as grammar).
+    if (component === "Media") defs[name].anyOf = [{ required: ["alt"] }, { required: ["decorative"], properties: { decorative: { const: true } } }];
   }
   const { Component, ...rest } = defs;
   return {
