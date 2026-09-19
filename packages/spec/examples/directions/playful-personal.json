@@ -1,0 +1,32 @@
+{
+  "$schema": "../../schema/direction.schema.json",
+  "name": "playful-personal",
+  "version": "0.1.0",
+  "designSystem": "material3",
+  "profile": {
+    "density": "compact",
+    "emphasisBudget": 1,
+    "dataDisplay": "prefer-charts",
+    "motion": "expressive",
+    "disclosure": "show-everything",
+    "freedom": "open"
+  },
+  "voice": {
+    "guidelines": [
+      "Warm and encouraging, like a friend keeping you on track.",
+      "Short labels; celebrate streaks."
+    ],
+    "casing": "sentence"
+  },
+  "rules": [
+    {
+      "id": "celebrate-progress",
+      "description": "Personal dashboards show progress visually",
+      "severity": "warning",
+      "rule": {
+        "check": "contains",
+        "component": "Chart"
+      }
+    }
+  ]
+}

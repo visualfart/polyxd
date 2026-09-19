@@ -1,0 +1,75 @@
+{
+  "$schema": "../../schema/journey.schema.json",
+  "id": "money.send",
+  "goal": "Send money to someone I've paid before",
+  "intent": "money.send",
+  "mode": "guided",
+  "capabilities": [
+    "transfer.review",
+    "transfer.confirm"
+  ],
+  "checkpoints": [
+    {
+      "key": "details",
+      "description": "Recipient and amount entered",
+      "event": "transfer.review"
+    },
+    {
+      "key": "fee-visible",
+      "description": "The fee is shown before the user confirms",
+      "rule": {
+        "check": "contains",
+        "component": "DetailList"
+      }
+    },
+    {
+      "key": "confirmed",
+      "description": "User explicitly confirms the exact amount",
+      "rule": {
+        "check": "rootIs",
+        "components": [
+          "Confirm"
+        ]
+      }
+    }
+  ],
+  "done": {
+    "event": "transfer.confirm"
+  },
+  "acceptance": [
+    {
+      "id": "confirm-names-amount",
+      "description": "The confirm button states the amount being sent",
+      "severity": "error",
+      "rule": {
+        "check": "labelMatches",
+        "component": "Confirm",
+        "pattern": "£[0-9]",
+        "prop": "confirm.label"
+      }
+    },
+    {
+      "id": "never-outside-confirm",
+      "description": "Money only moves from a confirmation",
+      "severity": "error",
+      "rule": {
+        "check": "actionInside",
+        "capabilities": [
+          "transfer.confirm"
+        ],
+        "container": [
+          "Confirm"
+        ]
+      }
+    }
+  ],
+  "task": {
+    "instruction": "Send £250 to Alex Kim with the reference 'Rent share'.",
+    "inputs": {
+      "recipient": "Alex Kim",
+      "amount": 250,
+      "reference": "Rent share"
+    },
+    "maxSteps": 8
+  }
+}

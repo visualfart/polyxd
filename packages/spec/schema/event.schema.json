@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polixd.dev/schema/0.1/event.schema.json",
+  "title": "Polixd semantic analytics event",
+  "description": "Emitted by the runtime automatically for every generated UI. Carries keys and semantics, never field values or personal data. Sent to the host's own analytics; Polixd collects nothing.",
+  "type": "object",
+  "required": ["type", "timestamp", "sessionId", "surface", "actor"],
+  "properties": {
+    "type": {
+      "enum": [
+        "surface.shown", "surface.dismissed", "surface.regenerated",
+        "action.taken", "checkpoint.reached", "task.completed", "task.abandoned",
+        "input.error", "status.shown", "undo", "feedback"
+      ]
+    },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "sessionId": { "type": "string" },
+    "surface": {
+      "type": "object",
+      "required": ["id", "intent"],
+      "properties": {
+        "id": { "type": "string" },
+        "intent": { "type": "string" },
+        "pattern": { "type": "string" },
+        "journey": { "type": "string" },
+        "specVersion": { "type": "string" },
+        "generator": { "type": "string", "description": "Model or generator id + version" },
+        "direction": { "type": "string", "description": "Design Direction name@version" },
+        "experiment": { "type": "object", "additionalProperties": { "type": "string" }, "description": "Experiment key → variant" }
+      },
+      "additionalProperties": false
+    },
+    "actor": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["human", "agent"] },
+        "assistiveTech": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "component": { "type": "object", "properties": { "id": { "type": "string" }, "key": { "type": "string" }, "type": { "type": "string" } }, "additionalProperties": false },
+    "capability": { "type": "string", "description": "For action.taken" },
+    "checkpoint": { "type": "string", "description": "For checkpoint.reached" },
+    "durationMs": { "type": "integer", "minimum": 0, "description": "Time since surface.shown" },
+    "steps": { "type": "integer", "minimum": 0, "description": "Interactions since surface.shown" },
+    "reason": { "type": "string", "description": "For task.abandoned / surface.regenerated / feedback: a short code, never free text from the user" },
+    "rating": { "enum": [-1, 0, 1], "description": "For feedback" }
+  },
+  "additionalProperties": false
+}

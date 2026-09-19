@@ -1,0 +1,87 @@
+{
+  "$schema": "../../schema/direction.schema.json",
+  "name": "calm-finance",
+  "version": "0.1.0",
+  "designSystem": "material3",
+  "profile": {
+    "density": "comfortable",
+    "emphasisBudget": 1,
+    "dataDisplay": "prefer-metrics",
+    "motion": "subtle",
+    "disclosure": "progressive",
+    "freedom": "strict"
+  },
+  "voice": {
+    "guidelines": [
+      "Plain, calm and specific. Say what happens to the user's money.",
+      "No exclamation marks, no jokes about money."
+    ],
+    "casing": "sentence",
+    "glossary": [
+      {
+        "use": "payment",
+        "insteadOf": [
+          "transaction",
+          "txn"
+        ]
+      },
+      {
+        "use": "send",
+        "insteadOf": [
+          "transfer"
+        ]
+      }
+    ]
+  },
+  "patterns": {
+    "prefer": [
+      "confirm-destructive",
+      "review-and-submit"
+    ]
+  },
+  "rules": [
+    {
+      "id": "no-exclamations",
+      "description": "No exclamation marks",
+      "severity": "error",
+      "rule": {
+        "check": "noLabelMatches",
+        "pattern": "!"
+      }
+    },
+    {
+      "id": "money-moves-in-confirm",
+      "description": "Money only moves from a confirmation",
+      "severity": "error",
+      "rule": {
+        "check": "actionInside",
+        "capabilities": [
+          "transfer.confirm"
+        ],
+        "container": [
+          "Confirm"
+        ]
+      }
+    },
+    {
+      "id": "say-payment",
+      "description": "Say 'payment', not 'transaction'",
+      "severity": "warning",
+      "rule": {
+        "check": "noLabelMatches",
+        "pattern": "\\btransactions?\\b",
+        "flags": "i"
+      }
+    }
+  ],
+  "exemplars": [
+    {
+      "request": "send Alex the rent",
+      "document": "../money-send-form.json"
+    },
+    {
+      "request": "confirm sending £250 to Alex",
+      "document": "../money-send-confirm.json"
+    }
+  ]
+}

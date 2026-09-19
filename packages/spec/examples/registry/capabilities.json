@@ -1,0 +1,350 @@
+{
+  "$schema": "../../schema/capabilities.schema.json",
+  "name": "polixd-examples",
+  "capabilities": {
+    "account.delete": {
+      "description": "Delete the user's account (restorable for 30 days)",
+      "risk": "destructive",
+      "sideEffects": [
+        "Signs the user out",
+        "Schedules data erasure"
+      ],
+      "agentMayInvoke": false
+    },
+    "book.create": {
+      "description": "Start adding a book to the reading list",
+      "risk": "none"
+    },
+    "book.open": {
+      "description": "Open a book's details",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "books.import": {
+      "description": "Import books from another service",
+      "risk": "low",
+      "flag": "reading-import"
+    },
+    "budget.setAlerts": {
+      "description": "Turn budget alerts on or off",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "flight.select": {
+      "description": "Select a flight to book",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "habit.check": {
+      "description": "Mark a habit done or not done today",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "done": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "done"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "hotel.book": {
+      "description": "Book a hotel and take payment",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "offerId": {
+            "type": "string"
+          },
+          "acceptedTerms": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "offerId",
+          "acceptedTerms"
+        ],
+        "additionalProperties": false
+      },
+      "preconditions": [
+        "Payment method on file",
+        "Terms accepted"
+      ],
+      "sideEffects": [
+        "Charges the payment method"
+      ],
+      "agentMayInvoke": false
+    },
+    "meeting.invite": {
+      "description": "Send a meeting invitation",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "slot": {
+            "type": "string"
+          },
+          "people": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "date",
+          "slot",
+          "people"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "Emails attendees"
+      ]
+    },
+    "order.place": {
+      "description": "Place an order and take payment",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "cartId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cartId"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "Charges the payment method"
+      ],
+      "agentMayInvoke": false
+    },
+    "plan.select": {
+      "description": "Choose a subscription plan (continues to checkout)",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "plan"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "prefs.set": {
+      "description": "Update notification preferences",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "push": {
+            "type": "boolean"
+          },
+          "email": {
+            "type": "boolean"
+          },
+          "quiet": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "product.open": {
+      "description": "Open a product",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "project.delete": {
+      "description": "Delete a project and all its tasks for everyone",
+      "risk": "destructive",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "agentMayInvoke": false
+    },
+    "statements.reload": {
+      "description": "Retry loading statements",
+      "risk": "none"
+    },
+    "task.create": {
+      "description": "Start creating a task",
+      "risk": "none"
+    },
+    "task.open": {
+      "description": "Open a task",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "task.save": {
+      "description": "Save a new task",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "due": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "tasks.planTomorrow": {
+      "description": "Open tomorrow's plan",
+      "risk": "none"
+    },
+    "transactions.open": {
+      "description": "Open a transaction",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "transfer.confirm": {
+      "description": "Send money for a reviewed quote",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "quoteId"
+        ],
+        "additionalProperties": false
+      },
+      "preconditions": [
+        "Quote not expired"
+      ],
+      "sideEffects": [
+        "Moves money out of the account"
+      ],
+      "agentMayInvoke": false
+    },
+    "transfer.review": {
+      "description": "Get a quote and review a transfer",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "recipient": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "reference": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "recipient",
+          "amount"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

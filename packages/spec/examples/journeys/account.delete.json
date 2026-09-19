@@ -1,0 +1,31 @@
+{
+  "$schema": "../../schema/journey.schema.json",
+  "id": "account.delete",
+  "goal": "Close my account",
+  "intent": "settings.account.delete",
+  "mode": "fixed",
+  "capabilities": [
+    "account.delete"
+  ],
+  "checkpoints": [
+    {
+      "key": "consequence",
+      "description": "User sees what happens to their data and how to restore",
+      "rule": {
+        "check": "requires",
+        "component": "Confirm",
+        "props": [
+          "consequence",
+          "typeToConfirm"
+        ]
+      }
+    }
+  ],
+  "done": {
+    "event": "account.delete"
+  },
+  "task": {
+    "instruction": "Delete my account.",
+    "maxSteps": 4
+  }
+}

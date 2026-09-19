@@ -16,7 +16,7 @@ export type Check =
   | { check: "precedes"; before: string[]; after: string[] }
   | { check: "maxInputsPerView"; max: number }
   | { check: "requires"; component: string; where?: Record<string, unknown>; props: string[] }
-  | { check: "labelMatches"; component: string; where?: Record<string, unknown>; pattern: string; flags?: string }
+  | { check: "labelMatches"; component: string; where?: Record<string, unknown>; prop?: string; pattern: string; flags?: string }
   | { check: "noLabelMatches"; pattern: string; flags?: string }
   | { check: "actionInside"; capabilities: string[]; container: string[] }
   | { check: "anyOf"; checks: Check[] }
@@ -150,7 +150,8 @@ export function runCheck(check: Check, doc: Doc): CheckResult {
     }
     case "labelMatches": {
       const re = new RegExp(check.pattern, check.flags);
-      const bad = order.filter((c) => matches(c, check.component, check.where)).filter((c) => !labels(c).some((l) => re.test(l)));
+      const texts = (c: Component) => (check.prop ? [check.prop.split(".").reduce((v: any, k) => v?.[k], c)].filter((v) => typeof v === "string") : labels(c));
+      const bad = order.filter((c) => matches(c, check.component, check.where)).filter((c) => !texts(c).some((l) => re.test(l)));
       return bad.length ? fail(`${bad.map((c) => c.id).join(", ")}: no label matches /${check.pattern}/`) : ok(`labels match /${check.pattern}/`);
     }
     case "noLabelMatches": {
