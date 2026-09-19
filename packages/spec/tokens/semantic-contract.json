@@ -1,0 +1,588 @@
+{
+  "$schema": "../schema/token-contract.schema.json",
+  "contractVersion": "0.1.0",
+  "description": "Semantic tokens every Polixd design-system pack must provide, in every mode. Generated UIs and renderers only reference these names, never raw values.",
+  "tokens": {
+    "color.surface.default": {
+      "type": "color",
+      "description": "Main page/app background"
+    },
+    "color.surface.subtle": {
+      "type": "color",
+      "description": "Slightly differentiated background for grouping (sections, table headers)"
+    },
+    "color.surface.raised": {
+      "type": "color",
+      "description": "Background of raised containers (cards, sheets)"
+    },
+    "color.surface.overlay": {
+      "type": "color",
+      "description": "Background of overlays (dialogs, popovers)"
+    },
+    "color.surface.inverse": {
+      "type": "color",
+      "description": "High-contrast inverse background (snackbars, tooltips)"
+    },
+    "color.scrim": {
+      "type": "color",
+      "description": "Backdrop behind modal overlays"
+    },
+    "color.text.default": {
+      "type": "color",
+      "description": "Primary text"
+    },
+    "color.text.muted": {
+      "type": "color",
+      "description": "Secondary text: captions, helper text, metadata"
+    },
+    "color.text.inverse": {
+      "type": "color",
+      "description": "Text on surface.inverse"
+    },
+    "color.text.link": {
+      "type": "color",
+      "description": "Inline links"
+    },
+    "color.border.default": {
+      "type": "color",
+      "description": "Dividers and container outlines"
+    },
+    "color.border.strong": {
+      "type": "color",
+      "description": "Input outlines and borders that identify controls (WCAG 1.4.11)"
+    },
+    "color.border.focus": {
+      "type": "color",
+      "description": "Keyboard focus indicator"
+    },
+    "color.action.primary.background": {
+      "type": "color",
+      "description": "The single most important action"
+    },
+    "color.action.primary.foreground": {
+      "type": "color",
+      "description": "Text/icon on action.primary.background"
+    },
+    "color.action.secondary.background": {
+      "type": "color",
+      "description": "Supporting actions"
+    },
+    "color.action.secondary.foreground": {
+      "type": "color",
+      "description": "Text/icon on action.secondary.background"
+    },
+    "color.action.secondary.border": {
+      "type": "color",
+      "description": "Outline of secondary actions"
+    },
+    "color.action.danger.background": {
+      "type": "color",
+      "description": "Destructive or irreversible actions"
+    },
+    "color.action.danger.foreground": {
+      "type": "color",
+      "description": "Text/icon on action.danger.background"
+    },
+    "color.selection.background": {
+      "type": "color",
+      "description": "Selected option, tab or row"
+    },
+    "color.selection.foreground": {
+      "type": "color",
+      "description": "Text/icon on selection.background"
+    },
+    "color.status.info.background": {
+      "type": "color",
+      "description": "Background of info messages"
+    },
+    "color.status.info.foreground": {
+      "type": "color",
+      "description": "Text on status.info.background"
+    },
+    "color.status.info.emphasis": {
+      "type": "color",
+      "description": "Icon/border/indicator for info on regular surfaces"
+    },
+    "color.status.success.background": {
+      "type": "color",
+      "description": "Background of success messages"
+    },
+    "color.status.success.foreground": {
+      "type": "color",
+      "description": "Text on status.success.background"
+    },
+    "color.status.success.emphasis": {
+      "type": "color",
+      "description": "Icon/border/indicator for success on regular surfaces"
+    },
+    "color.status.warning.background": {
+      "type": "color",
+      "description": "Background of warning messages"
+    },
+    "color.status.warning.foreground": {
+      "type": "color",
+      "description": "Text on status.warning.background"
+    },
+    "color.status.warning.emphasis": {
+      "type": "color",
+      "description": "Icon/border/indicator for warning on regular surfaces"
+    },
+    "color.status.danger.background": {
+      "type": "color",
+      "description": "Background of danger messages"
+    },
+    "color.status.danger.foreground": {
+      "type": "color",
+      "description": "Text on status.danger.background"
+    },
+    "color.status.danger.emphasis": {
+      "type": "color",
+      "description": "Icon/border/indicator for danger on regular surfaces"
+    },
+    "color.data.categorical.1": {
+      "type": "color",
+      "description": "Chart series 1"
+    },
+    "color.data.categorical.2": {
+      "type": "color",
+      "description": "Chart series 2"
+    },
+    "color.data.categorical.3": {
+      "type": "color",
+      "description": "Chart series 3"
+    },
+    "color.data.categorical.4": {
+      "type": "color",
+      "description": "Chart series 4"
+    },
+    "color.data.categorical.5": {
+      "type": "color",
+      "description": "Chart series 5"
+    },
+    "color.data.categorical.6": {
+      "type": "color",
+      "description": "Chart series 6"
+    },
+    "color.data.positive": {
+      "type": "color",
+      "description": "Increase / favourable change in data"
+    },
+    "color.data.negative": {
+      "type": "color",
+      "description": "Decrease / unfavourable change in data"
+    },
+    "color.data.neutral": {
+      "type": "color",
+      "description": "Unchanged or baseline data"
+    },
+    "type.title.page": {
+      "type": "typography",
+      "description": "Title of the whole surface"
+    },
+    "type.title.section": {
+      "type": "typography",
+      "description": "Section headings"
+    },
+    "type.title.item": {
+      "type": "typography",
+      "description": "Titles of cards, list items, dialogs"
+    },
+    "type.body.default": {
+      "type": "typography",
+      "description": "Running text; must be >= 16px"
+    },
+    "type.body.small": {
+      "type": "typography",
+      "description": "Secondary running text"
+    },
+    "type.label.default": {
+      "type": "typography",
+      "description": "Controls, form labels, buttons"
+    },
+    "type.label.small": {
+      "type": "typography",
+      "description": "Chips, badges, table headers"
+    },
+    "type.numeric.display": {
+      "type": "typography",
+      "description": "Large key figures (metrics)"
+    },
+    "space.inset.compact": {
+      "type": "dimension",
+      "description": "Padding inside dense containers"
+    },
+    "space.inset.default": {
+      "type": "dimension",
+      "description": "Padding inside containers"
+    },
+    "space.inset.comfortable": {
+      "type": "dimension",
+      "description": "Padding inside spacious containers"
+    },
+    "space.stack.tight": {
+      "type": "dimension",
+      "description": "Vertical gap between tightly related items (label and field)"
+    },
+    "space.stack.default": {
+      "type": "dimension",
+      "description": "Vertical gap between related items"
+    },
+    "space.stack.loose": {
+      "type": "dimension",
+      "description": "Vertical gap between loosely related items"
+    },
+    "space.stack.section": {
+      "type": "dimension",
+      "description": "Vertical gap between sections"
+    },
+    "space.inline.tight": {
+      "type": "dimension",
+      "description": "Horizontal gap within a compound control"
+    },
+    "space.inline.default": {
+      "type": "dimension",
+      "description": "Horizontal gap between adjacent items"
+    },
+    "space.inline.loose": {
+      "type": "dimension",
+      "description": "Horizontal gap between groups"
+    },
+    "size.target.min": {
+      "type": "dimension",
+      "description": "Minimum interactive target size (>= 24px, platform guidance 44-48)"
+    },
+    "size.icon.small": {
+      "type": "dimension",
+      "description": "Small icons"
+    },
+    "size.icon.default": {
+      "type": "dimension",
+      "description": "Default icons"
+    },
+    "radius.small": {
+      "type": "dimension",
+      "description": "Corner radius: small"
+    },
+    "radius.default": {
+      "type": "dimension",
+      "description": "Corner radius: default"
+    },
+    "radius.large": {
+      "type": "dimension",
+      "description": "Corner radius: large"
+    },
+    "radius.full": {
+      "type": "dimension",
+      "description": "Corner radius: full"
+    },
+    "border.width.default": {
+      "type": "dimension",
+      "description": "Default border width"
+    },
+    "border.width.strong": {
+      "type": "dimension",
+      "description": "Emphasised border width (selected, focused inputs)"
+    },
+    "focus.ring.width": {
+      "type": "dimension",
+      "description": "Focus indicator thickness"
+    },
+    "focus.ring.offset": {
+      "type": "dimension",
+      "description": "Gap between element and focus indicator"
+    },
+    "measure.max": {
+      "type": "number",
+      "description": "Maximum line length for running text, in characters (45-75)"
+    },
+    "opacity.state.hover": {
+      "type": "number",
+      "description": "State layer opacity on hover"
+    },
+    "opacity.state.pressed": {
+      "type": "number",
+      "description": "State layer opacity when pressed"
+    },
+    "opacity.state.focus": {
+      "type": "number",
+      "description": "State layer opacity when focused"
+    },
+    "opacity.state.disabled": {
+      "type": "number",
+      "description": "Opacity of disabled content"
+    },
+    "shadow.raised": {
+      "type": "shadow",
+      "description": "Elevation of raised containers"
+    },
+    "shadow.overlay": {
+      "type": "shadow",
+      "description": "Elevation of overlays"
+    },
+    "motion.duration.instant": {
+      "type": "duration",
+      "description": "Motion duration: instant"
+    },
+    "motion.duration.short": {
+      "type": "duration",
+      "description": "Motion duration: short"
+    },
+    "motion.duration.medium": {
+      "type": "duration",
+      "description": "Motion duration: medium"
+    },
+    "motion.duration.long": {
+      "type": "duration",
+      "description": "Motion duration: long"
+    },
+    "motion.easing.standard": {
+      "type": "cubicBezier",
+      "description": "On-screen movement"
+    },
+    "motion.easing.enter": {
+      "type": "cubicBezier",
+      "description": "Elements entering"
+    },
+    "motion.easing.exit": {
+      "type": "cubicBezier",
+      "description": "Elements leaving"
+    }
+  },
+  "contrast": [
+    {
+      "foreground": "color.text.default",
+      "background": "color.surface.default",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.text.muted",
+      "background": "color.surface.default",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.text.default",
+      "background": "color.surface.subtle",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.text.muted",
+      "background": "color.surface.subtle",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.text.default",
+      "background": "color.surface.raised",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.text.muted",
+      "background": "color.surface.raised",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.text.default",
+      "background": "color.surface.overlay",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.text.muted",
+      "background": "color.surface.overlay",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.text.inverse",
+      "background": "color.surface.inverse",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.text.link",
+      "background": "color.surface.default",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.action.primary.foreground",
+      "background": "color.action.primary.background",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.action.secondary.foreground",
+      "background": "color.action.secondary.background",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.action.danger.foreground",
+      "background": "color.action.danger.background",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.selection.foreground",
+      "background": "color.selection.background",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.status.info.foreground",
+      "background": "color.status.info.background",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.status.info.emphasis",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.status.success.foreground",
+      "background": "color.status.success.background",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.status.success.emphasis",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.status.warning.foreground",
+      "background": "color.status.warning.background",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.status.warning.emphasis",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.status.danger.foreground",
+      "background": "color.status.danger.background",
+      "min": 4.5,
+      "criterion": "WCAG 2.2 1.4.3"
+    },
+    {
+      "foreground": "color.status.danger.emphasis",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.border.strong",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.border.focus",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.action.primary.background",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.action.danger.background",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.data.categorical.1",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.data.categorical.2",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.data.categorical.3",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.data.categorical.4",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.data.categorical.5",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.data.categorical.6",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.data.positive",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    },
+    {
+      "foreground": "color.data.negative",
+      "background": "color.surface.default",
+      "min": 3,
+      "criterion": "WCAG 2.2 1.4.11"
+    }
+  ],
+  "constraints": [
+    {
+      "token": "type.body.default",
+      "property": "fontSize",
+      "min": {
+        "value": 16,
+        "unit": "px"
+      },
+      "reason": "Readable body text"
+    },
+    {
+      "token": "size.target.min",
+      "min": {
+        "value": 24,
+        "unit": "px"
+      },
+      "reason": "WCAG 2.2 2.5.8 target size (minimum)"
+    },
+    {
+      "token": "measure.max",
+      "min": 45,
+      "max": 75,
+      "reason": "Comfortable line length"
+    },
+    {
+      "token": "opacity.state.disabled",
+      "min": 0.3,
+      "max": 0.6,
+      "reason": "Disabled content stays perceivable but clearly inactive"
+    }
+  ]
+}

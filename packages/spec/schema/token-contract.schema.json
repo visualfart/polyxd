@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polixd.dev/schema/0.1/token-contract.schema.json",
+  "title": "Polixd semantic token contract",
+  "type": "object",
+  "required": ["contractVersion", "tokens", "contrast", "constraints"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "contractVersion": { "type": "string" },
+    "description": { "type": "string" },
+    "tokens": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+$" },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type", "description"],
+        "properties": {
+          "type": { "enum": ["color", "dimension", "number", "duration", "cubicBezier", "typography", "shadow", "fontFamily", "fontWeight"] },
+          "description": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "contrast": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["foreground", "background", "min", "criterion"],
+        "properties": {
+          "foreground": { "type": "string" },
+          "background": { "type": "string" },
+          "min": { "type": "number", "minimum": 1 },
+          "criterion": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["token", "reason"],
+        "properties": {
+          "token": { "type": "string" },
+          "property": { "type": "string" },
+          "min": {},
+          "max": {},
+          "reason": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

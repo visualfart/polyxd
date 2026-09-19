@@ -8,6 +8,23 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "check-ds": "node src/cli/check-design-system.ts"
+  },
+  "files": [
+    "dist",
+    "schema",
+    "tokens",
+    "components",
+    "patterns",
+    "examples"
+  ],
+  "bin": {
+    "polixd-check-ds": "dist/cli/check-design-system.js"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
   }
 }

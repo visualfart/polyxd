@@ -1,6 +1,6 @@
 # 0001 — A2UI and foundations (Phase 0 decision note)
 
-- **Status:** Proposed
+- **Status:** Accepted (2026-09-19)
 - **Date:** 2026-09-19
 - **Scope:** Protocol base (A2UI vs own schema), token format and tooling, Material 3 token source, preprint claims, Phase 4 base models.
 - **Method:** Web research on primary sources (specs, repos, arXiv, npm/PyPI/Hugging Face metadata) on 2026-09-19. Package versions were read from the registries. Some claims come from secondary summaries and are marked as such.
