@@ -4,7 +4,7 @@
  */
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import type { Browser } from "playwright";
 import { launch, verifyDocument } from "../src/index.ts";
 import { load, registry, tasks, examplesDir } from "./helpers.ts";
@@ -21,6 +21,17 @@ for (const f of readdirSync(examplesDir).filter((f) => f.endsWith(".json"))) {
     const failed = r.targets.flatMap((t) => t.agent.filter((a) => !a.success).map((a) => `${t.theme}/${t.mode}/${t.width} ${a.task}: ${a.error}`));
     assert.deepEqual(problems, []);
     assert.deepEqual(failed, []);
+    assert.equal(r.score, 100);
+  });
+}
+
+// Documents that use the building blocks from the flow designs (design/flows), until the examples adopt them.
+const designDir = new URL("./fixtures/design/", import.meta.url);
+for (const f of readdirSync(designDir).filter((f) => f.endsWith(".json"))) {
+  test(`design fixture ${f}: 3 packs × light/dark × phone/desktop`, async () => {
+    const r = await verifyDocument(JSON.parse(readFileSync(new URL(f, designDir), "utf8")), { browser });
+    const problems = [...r.static, ...r.targets.flatMap((t) => t.findings.map((x) => ({ ...x, at: `${t.theme}/${t.mode}/${t.width}` })))];
+    assert.deepEqual(problems, []);
     assert.equal(r.score, 100);
   });
 }

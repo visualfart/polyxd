@@ -5,6 +5,7 @@ import { absolute, childPointer, get } from "../data.ts";
 import { formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Heading } from "./structure.tsx";
+import { Avatar, Icon } from "./avatar.tsx";
 
 export function Action({ node }: { node: Node }) {
   const b = useBindings();
@@ -115,14 +116,46 @@ export function Confirm({ node }: { node: Node }) {
   };
   const confirm = () => ready && s.dispatch(node.confirm.action, b.scope, node.id);
 
+  const subject = node.subject && (
+    <div className="pxd-dialog-subject">
+      <Avatar value={node.subject.avatar !== undefined ? b.value(node.subject.avatar) : undefined} name={b.text(node.subject.title)} size={56} />
+      <div>
+        <div className="pxd-dialog-subject-title">{b.text(node.subject.title)}</div>
+        {node.subject.subtitle !== undefined && <div className="pxd-dialog-subject-sub">{b.text(node.subject.subtitle)}</div>}
+      </div>
+    </div>
+  );
+  const amount = node.amount && <div className="pxd-dialog-amount">{b.text(node.amount.value, node.amount.format)}</div>;
+  const consequences = Array.isArray(node.consequences) && (
+    <ul className="pxd-consequences">
+      {node.consequences.map((c: any, i: number) => (
+        <li key={i}>
+          <span className="pxd-consequence-icon">
+            <Icon name={c.icon ?? "info"} />
+          </span>
+          <span>
+            <span className="pxd-consequence-title">{b.text(c.title)}</span>
+            {c.detail !== undefined && <span className="pxd-consequence-detail">{b.text(c.detail)}</span>}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
   const description = (
     <div className="pxd-dialog-description" id={descId}>
       {node.message !== undefined && <p>{b.text(node.message)}</p>}
-      {node.consequence !== undefined && <p className="pxd-dialog-consequence">{b.text(node.consequence)}</p>}
     </div>
+  );
+  // The consequence sits directly above the confirm button (design review, 2026-09-20).
+  const consequence = node.consequence !== undefined && (
+    <p className="pxd-dialog-consequence" id={`${descId}-consequence`}>
+      <Icon name="info" size={18} />
+      <span>{b.text(node.consequence)}</span>
+    </p>
   );
   const body = (confirmButton: React.ReactNode, cancelButton: React.ReactNode) => (
     <>
+      {consequences}
       {node.summary && <Render id={node.summary} />}
       {mustType && (
         <div className="pxd-field">
@@ -132,6 +165,7 @@ export function Confirm({ node }: { node: Node }) {
           <input id={`${node.id}-type`} className="pxd-input" autoComplete="off" value={typed} onChange={(e) => setTyped(e.target.value)} />
         </div>
       )}
+      {consequence}
       <div className="pxd-action-bar">
         {confirmButton}
         {cancelButton}
@@ -151,7 +185,7 @@ export function Confirm({ node }: { node: Node }) {
         role="alertdialog"
         aria-modal="false"
         aria-labelledby={titleId}
-        aria-describedby={descId}
+        aria-describedby={node.consequence !== undefined ? `${descId} ${descId}-consequence` : descId}
         className={`pxd-dialog pxd-dialog-inline${destructive ? " pxd-dialog-destructive" : ""}`}
         onKeyDown={(e) => e.key === "Escape" && cancel()}
         {...a11y}
@@ -159,6 +193,8 @@ export function Confirm({ node }: { node: Node }) {
         <h1 className="pxd-dialog-title" id={titleId}>
           {b.text(node.title)}
         </h1>
+        {amount}
+        {subject}
         {description}
         {body(
           confirmButton,
@@ -174,8 +210,10 @@ export function Confirm({ node }: { node: Node }) {
     <AlertDialog.Root open={open} onOpenChange={(o) => (o ? setOpen(true) : cancel())}>
       <AlertDialog.Portal container={s.portal}>
         <AlertDialog.Overlay className="pxd-overlay" />
-        <AlertDialog.Content className={`pxd-dialog${destructive ? " pxd-dialog-destructive" : ""}`} {...a11y}>
+        <AlertDialog.Content className={`pxd-dialog${destructive ? " pxd-dialog-destructive" : ""}`} aria-describedby={node.consequence !== undefined ? `${descId} ${descId}-consequence` : descId} {...a11y}>
           <AlertDialog.Title className="pxd-dialog-title">{b.text(node.title)}</AlertDialog.Title>
+          {amount}
+          {subject}
           <AlertDialog.Description asChild>{description}</AlertDialog.Description>
           {body(
             <AlertDialog.Action asChild onClick={(e) => (e.preventDefault(), confirm())}>

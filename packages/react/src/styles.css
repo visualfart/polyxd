@@ -771,6 +771,7 @@ textarea.pxd-input {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  max-width: 32rem;
 }
 .pxd-range-value {
   font-weight: 600;
@@ -1014,5 +1015,381 @@ textarea.pxd-input {
   .pxd-surface *::after {
     transition-duration: 0ms !important;
     animation-duration: 0ms !important;
+  }
+}
+
+/* ---- Batch 1: building blocks from the flow designs (design/flows) ---- */
+
+/* Search: a pill with the icon inside; the label is visually hidden but remains the accessible name. */
+.pxd-search {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  min-height: calc(var(--pxd-size-target-min) + 8px);
+  padding: 0 var(--pxd-space-inset-default);
+  border-radius: var(--pxd-radius-full);
+  background: var(--pxd-color-surface-subtle);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-search:focus-within {
+  outline: var(--pxd-focus-ring-width) solid var(--pxd-color-border-focus);
+  outline-offset: var(--pxd-focus-ring-offset);
+}
+.pxd-search-compact {
+  min-height: var(--pxd-size-target-min);
+}
+.pxd-search-input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--pxd-size-target-min);
+  border: 0;
+  background: transparent;
+  color: var(--pxd-color-text-default);
+  font-size: var(--pxd-type-body-default-size);
+}
+.pxd-search-input:focus-visible {
+  outline: none;
+}
+.pxd-search-input::placeholder {
+  color: var(--pxd-color-text-muted);
+}
+
+/* Hero amount: the one number a surface is about. */
+.pxd-hero-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pxd-space-stack-tight);
+  padding: var(--pxd-space-stack-loose) 0 var(--pxd-space-stack-default);
+  text-align: center;
+}
+.pxd-hero-label {
+  color: var(--pxd-color-text-muted);
+  font-size: var(--pxd-type-body-small-size);
+}
+.pxd-hero-input {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  max-width: 100%;
+}
+.pxd-hero-symbol {
+  font-size: calc(var(--pxd-type-numeric-display-size) * 1.1);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-hero-value {
+  min-width: 1ch;
+  max-width: 100%;
+  border: 0;
+  border-bottom: var(--pxd-border-width-strong) solid transparent;
+  background: transparent;
+  color: var(--pxd-color-text-default);
+  font-family: var(--pxd-type-numeric-display-family);
+  font-size: calc(var(--pxd-type-numeric-display-size) * 1.6);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  field-sizing: content;
+}
+.pxd-hero-value:focus-visible {
+  outline: none;
+  border-bottom-color: var(--pxd-color-border-focus);
+}
+.pxd-hero-help {
+  max-width: none;
+}
+
+/* Chips: single choice (radio) and multiple (checkbox), for a few short options. */
+.pxd-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pxd-space-inline-default);
+}
+.pxd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--pxd-size-target-min);
+  padding: 0 var(--pxd-space-inset-default);
+  border: var(--pxd-border-width-default) solid var(--pxd-color-border-strong);
+  border-radius: var(--pxd-radius-default);
+  background: transparent;
+  color: var(--pxd-color-text-default);
+  font-family: var(--pxd-type-label-default-family);
+  font-size: var(--pxd-type-label-default-size);
+  font-weight: var(--pxd-type-label-default-weight);
+  cursor: pointer;
+}
+.pxd-chip[data-state="checked"] {
+  border-color: transparent;
+  background: var(--pxd-color-selection-background);
+  color: var(--pxd-color-selection-foreground);
+}
+.pxd-chip-check {
+  display: inline-flex;
+}
+
+/* Avatars: initials on a tone chosen per name, from contrast-guaranteed pairs. */
+.pxd-avatar {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  object-fit: cover;
+  font-weight: 600;
+}
+.pxd-avatar-primary { background: var(--pxd-color-selection-background); color: var(--pxd-color-selection-foreground); }
+.pxd-avatar-secondary { background: var(--pxd-color-surface-subtle); color: var(--pxd-color-text-default); }
+.pxd-avatar-tertiary { background: var(--pxd-color-status-info-background); color: var(--pxd-color-status-info-foreground); }
+.pxd-avatar-success { background: var(--pxd-color-status-success-background); color: var(--pxd-color-status-success-foreground); }
+.pxd-avatar-warning { background: var(--pxd-color-status-warning-background); color: var(--pxd-color-status-warning-foreground); }
+
+/* People picker: recent faces, then a list. */
+.pxd-people-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-default);
+}
+.pxd-people-recent {
+  display: flex;
+  gap: var(--pxd-space-inline-default);
+  overflow-x: auto;
+  padding: 2px;
+}
+.pxd-person-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 72px;
+  flex: none;
+  padding: 6px 0;
+  border: 0;
+  border-radius: var(--pxd-radius-default);
+  background: transparent;
+  color: var(--pxd-color-text-default);
+  cursor: pointer;
+}
+.pxd-person-tile[data-state="checked"] .pxd-avatar {
+  box-shadow: 0 0 0 3px var(--pxd-color-surface-default), 0 0 0 6px var(--pxd-color-action-primary-background);
+}
+.pxd-person-name {
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--pxd-type-label-small-size);
+}
+.pxd-people-list {
+  display: flex;
+  flex-direction: column;
+}
+.pxd-person-row {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-loose);
+  min-height: calc(var(--pxd-size-target-min) + 8px);
+  padding: 6px var(--pxd-space-inset-compact);
+  border: 0;
+  border-radius: var(--pxd-radius-default);
+  background: transparent;
+  color: var(--pxd-color-text-default);
+  text-align: left;
+  cursor: pointer;
+}
+.pxd-person-row:hover {
+  background: color-mix(in srgb, var(--pxd-color-text-default) calc(var(--pxd-opacity-state-hover) * 100%), transparent);
+}
+.pxd-person-row[data-state="checked"] {
+  background: var(--pxd-color-selection-background);
+  color: var(--pxd-color-selection-foreground);
+}
+.pxd-person-row[data-state="checked"] .pxd-option-description {
+  color: inherit;
+}
+.pxd-person-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: var(--pxd-type-body-default-size);
+}
+.pxd-person-check {
+  display: inline-flex;
+}
+
+/* Range: two thumbs and min/max fields. */
+.pxd-range-fields {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--pxd-space-inline-default);
+  max-width: 32rem;
+}
+.pxd-range-fields label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-tight);
+  font-size: var(--pxd-type-label-small-size);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-range-fields > span {
+  padding-bottom: calc(var(--pxd-size-target-min) / 2 - 10px);
+  color: var(--pxd-color-text-muted);
+}
+
+/* Grid collections: visual items side by side. */
+.pxd-collection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--pxd-space-stack-loose) var(--pxd-space-inline-default);
+}
+@container pxd (width >= 36rem) {
+  .pxd-collection-grid {
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: var(--pxd-space-stack-loose) var(--pxd-space-inline-loose);
+  }
+}
+.pxd-collection-grid .pxd-card {
+  flex-direction: column !important;
+  box-shadow: none;
+  background: transparent;
+  border: 0;
+}
+.pxd-collection-grid .pxd-card-media {
+  flex: none !important;
+}
+.pxd-collection-grid .pxd-card-media .pxd-media {
+  aspect-ratio: 1;
+  border-radius: var(--pxd-radius-default);
+}
+.pxd-collection-grid .pxd-card-body {
+  padding: var(--pxd-space-stack-tight) 2px 0;
+}
+
+/* Receipt: people read amounts from the right. */
+.pxd-receipt dl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-tight);
+  padding: var(--pxd-space-inset-default);
+  border-radius: var(--pxd-radius-default);
+  background: var(--pxd-color-surface-subtle);
+}
+.pxd-receipt .pxd-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--pxd-space-inline-loose);
+  padding: 0;
+  border: 0;
+}
+.pxd-receipt .pxd-detail-row dd {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.pxd-receipt .pxd-free {
+  color: var(--pxd-color-status-success-foreground);
+  background: var(--pxd-color-status-success-background);
+  padding: 0 var(--pxd-space-inline-tight);
+  border-radius: var(--pxd-radius-small);
+}
+.pxd-receipt .pxd-total {
+  margin-top: var(--pxd-space-stack-tight);
+  padding-top: var(--pxd-space-stack-default);
+  border-top: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  font-weight: 600;
+}
+.pxd-receipt .pxd-total dt {
+  color: var(--pxd-color-text-default);
+}
+@container pxd (width < 30rem) {
+  .pxd-receipt .pxd-detail-row {
+    flex-direction: row;
+  }
+}
+
+/* Confirmation: who it's for, the amount, what happens. */
+.pxd-dialog-subject {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+}
+.pxd-dialog-subject-title {
+  font-weight: 600;
+}
+.pxd-dialog-subject-sub {
+  font-size: var(--pxd-type-body-small-size);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-dialog-amount {
+  font-family: var(--pxd-type-numeric-display-family);
+  font-size: calc(var(--pxd-type-numeric-display-size) * 1.3);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.pxd-dialog-consequence {
+  display: flex;
+  gap: var(--pxd-space-inline-default);
+  align-items: flex-start;
+  margin: 0;
+  font-weight: 400;
+  font-size: var(--pxd-type-body-small-size);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-dialog-consequence svg {
+  flex: none;
+  margin-top: 2px;
+}
+.pxd-consequences {
+  display: grid;
+  gap: var(--pxd-space-stack-default);
+}
+@container pxd (width >= 40rem) {
+  .pxd-consequences {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.pxd-consequences li {
+  display: flex;
+  gap: var(--pxd-space-inline-default);
+  align-items: flex-start;
+}
+.pxd-consequence-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--pxd-radius-default);
+  background: var(--pxd-color-surface-subtle);
+  color: var(--pxd-color-text-muted);
+}
+.pxd-consequence-title,
+.pxd-consequence-detail {
+  display: block;
+}
+.pxd-consequence-detail {
+  font-size: var(--pxd-type-body-small-size);
+  color: var(--pxd-color-text-muted);
+}
+
+/* On phones, a form's actions stay within reach at the bottom, full width. */
+@container pxd (width < 30rem) {
+  .pxd-form > .pxd-action-bar,
+  .pxd-steps-content > .pxd-action-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    margin: 0 calc(var(--pxd-space-inset-comfortable) * -1) calc(var(--pxd-space-inset-comfortable) * -1);
+    padding: var(--pxd-space-inset-compact) var(--pxd-space-inset-comfortable) var(--pxd-space-inset-comfortable);
+    background: var(--pxd-color-surface-default);
+    border-top: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  }
+  .pxd-form > .pxd-action-bar .pxd-button,
+  .pxd-steps-content > .pxd-action-bar .pxd-button {
+    width: 100%;
   }
 }

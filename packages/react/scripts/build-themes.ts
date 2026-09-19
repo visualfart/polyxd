@@ -34,7 +34,18 @@ function shadow(v: unknown): string {
   return Array.isArray(v) ? v.map(one).join(", ") : one(v);
 }
 
-const family = (v: unknown) => (Array.isArray(v) ? v : [v]).map((f) => (/[\s]/.test(String(f)) && !/^["']/.test(String(f)) ? `"${f}"` : f)).join(", ");
+/**
+ * A CSS font-family list from a DTCG fontFamily token. Names that aren't plain CSS identifiers are
+ * quoted (one invalid name, such as `.SFNSText-Regular`, invalidates the whole declaration), and a
+ * generic family is appended when the pack gives none, so a missing web font never falls back to serif.
+ */
+const GENERIC = /^(serif|sans-serif|monospace|cursive|fantasy|system-ui|ui-sans-serif|ui-serif|ui-monospace|ui-rounded|math|emoji|fangsong|-apple-system|BlinkMacSystemFont)$/;
+const family = (v: unknown) => {
+  const names = (Array.isArray(v) ? v : String(v).split(",")).map((f) => String(f).trim().replace(/^["']|["']$/g, ""));
+  const css = names.map((f) => (GENERIC.test(f) || /^[A-Za-z_][\w-]*$/.test(f) ? f : `"${f}"`));
+  if (!names.some((f) => /^(serif|sans-serif|monospace|system-ui|ui-sans-serif|ui-serif|ui-monospace)$/.test(f))) css.push("system-ui", "sans-serif");
+  return css.join(", ");
+};
 
 /** CSS declarations for one resolved token. Composite typography expands into its parts. */
 export function declarations(name: string, type: string, value: unknown): [string, string][] {

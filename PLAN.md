@@ -315,7 +315,7 @@ Charge per **editor**, never per end user or per generation, so the runtime stay
 
 **To settle before going public:**
 1. **Timing.** Nothing to sell until after v0.1 (Phase 3). Launch the verifier and benchmark first to build credibility.
-2. **Keep Studio out of the Apache repo.** Apache-2.0 can't be taken back. Studio lives in a separate private repo (or under a source-available license such as BSL/FSL) before the first public push.
+2. **Where Studio lives and ships: open, decide later.** No need to split it into another repo now. Before the first public push, decide its license (Apache-2.0 can't be taken back; a source-available license such as BSL/FSL is an option) and where it's published: npm if it fits, otherwise a free alternative (GitHub Releases or GitHub Packages, a Cloudflare Pages/Workers deploy as a hosted app, or JSR).
 3. **Publicly commit to what stays free:** spec, runtime, model, verifier. Projects that move features behind a paywall later lose trust.
 4. **Spec governance.** If the spec is adopted, a neutral home (foundation or open RFC process) will matter to enterprises more than the license. Not needed for v0.1; plan for it.
 
@@ -356,7 +356,7 @@ model/             Python (uv + MLX): baselines, SFT, GRPO, export (MLX/GGUF)
 server/            Dockerfile + HTTP API
 bench/             requests, multi-turn sequences, tasks, gold set
 apps/playground/   demo
-                   (Studio lives in a separate private repo, see §8)
+                   (Studio: location and publishing decided later, see §8)
 docs/              docs site, decisions, write-ups
 ```
 TypeScript (npm workspaces, Changesets for versioning and releases) and Python (uv). GitHub Actions for CI and publishing.

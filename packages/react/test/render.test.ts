@@ -26,7 +26,7 @@ test("formats bound values with the locale", () => {
 
 test("choice picks a control by option count", () => {
   const out = html(load("tasks-add.json"));
-  assert.match(out, /pxd-segmented/); // 3 short options → segmented
+  assert.match(out, /pxd-chips/); // 3 short options → chips
   const checkout = html(load("shop-checkout.json"));
   assert.match(checkout, /Step 1 of 3/);
 });

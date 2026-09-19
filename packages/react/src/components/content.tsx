@@ -48,14 +48,33 @@ export function Metric({ node }: { node: Node }) {
 
 export function DetailList({ node }: { node: Node }) {
   const b = useBindings();
+  const s = useSurface();
+  const receipt = node.variant === "receipt";
+  const value = (item: any) => {
+    const raw = b.value(item.value);
+    // In a receipt, a zero charge reads as "Free".
+    if (receipt && item.format?.type === "currency" && raw === 0 && !item.total) return { text: "Free", free: true };
+    return { text: b.text(item.value, item.format), free: false };
+  };
+  const rows = (node.items as any[]).filter((i) => !i.total);
+  const totals = (node.items as any[]).filter((i) => i.total);
   return (
-    <div className="pxd-detail-list" {...useA11y(node)}>
+    <div className={`pxd-detail-list${receipt ? " pxd-receipt" : ""}`} {...useA11y(node)}>
       {node.title !== undefined && <Heading className="pxd-detail-title">{b.text(node.title)}</Heading>}
       <dl>
-        {node.items.map((item: any, i: number) => (
-          <div className="pxd-detail-row" key={item.key ?? i}>
+        {rows.map((item: any, i: number) => {
+          const v = value(item);
+          return (
+            <div className="pxd-detail-row" key={item.key ?? i}>
+              <dt>{b.text(item.label)}</dt>
+              <dd className={v.free ? "pxd-free" : undefined}>{v.text}</dd>
+            </div>
+          );
+        })}
+        {totals.map((item: any, i: number) => (
+          <div className="pxd-detail-row pxd-total" key={item.key ?? `t${i}`}>
             <dt>{b.text(item.label)}</dt>
-            <dd>{b.text(item.value, item.format)}</dd>
+            <dd>{value(item).text}</dd>
           </div>
         ))}
       </dl>
@@ -82,6 +101,9 @@ export function Collection({ node }: { node: Node }) {
     b.write(node.selected, cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]);
   };
   const label = b.text(node.label);
+  // Grid for visual items (a Card with media), list otherwise, unless the document says which.
+  const template = s.byId.get(node.items.componentId);
+  const grid = node.layout === "grid" || (node.layout !== "list" && template?.component === "Card" && !!template.media);
 
   if (!items.length && node.empty) return <Render id={node.empty} />;
   return (
@@ -89,7 +111,7 @@ export function Collection({ node }: { node: Node }) {
       <div className="pxd-collection-label" id={labelId}>
         {label} <span className="pxd-count">({items.length})</span>
       </div>
-      <ul className="pxd-collection-list" aria-labelledby={labelId}>
+      <ul className={`pxd-collection-list${grid ? " pxd-collection-grid" : ""}`} aria-labelledby={labelId}>
         {items.map((item, i) => {
           const v = itemValue(item, i);
           const scope = { pointer: childPointer(pointer, i) };
