@@ -18,6 +18,7 @@ A small, on-device model that generates **just-in-time interfaces**: you ask for
 - Pixel generation.
 - Inventing a new protocol. We build on or stay compatible with A2UI.
 - A design-system generator. It's a separate product and comes later.
+- A paid hosted API. v1 is on-device or self-hosted (§5).
 - Native iOS/Android renderers. The spec maps to SwiftUI/Compose, but v1 only renders on the web.
 
 ## 2. Architecture
@@ -40,6 +41,12 @@ request ──► generator (small model, constrained to spec schema)
 | Verifier | Schema validity, axe-core, token compliance, contrast, target size, responsive widths, consistency vs. memory, agent task completion | Code + small local LLM agent |
 | Generator | Small open-weight model, JSON-schema constrained decoding | AI |
 
+**Contract rules that make it embeddable in other software:**
+- **Generated UI is data, never code.** The UI JSON contains no scripts, URLs to load or styles. The host's renderer decides what can appear, so embedding Polixd can't run arbitrary code.
+- **Actions are declared intents.** The model emits `{"action": "transfer.confirm", ...}`, and the host binds each intent to its own handler. The host keeps control of what actually happens.
+- **Data comes from the host.** The model lays out and labels data it is given, and never invents values like balances or prices.
+- **The generator is swappable.** Anything that can emit spec-valid JSON can drive the runtime: our small model, a local model, or any hosted LLM. The spec and renderers are useful even to people who never use our model.
+
 ## 3. Hardware
 
 - **M5 Pro, 24GB:** everything. That covers dev, rendering, local teacher models (≤14B at 4-bit), MLX LoRA/QLoRA fine-tuning of 1.5–8B models, and small GRPO runs.
@@ -52,7 +59,8 @@ request ──► generator (small model, constrained to spec schema)
 Durations assume roughly 15–20 hours a week and are rough. Each phase has an exit test, and we don't move on until it passes.
 
 ### Phase 0: Setup and grounding (days 1–3)
-- Accept the Xcode license, `git init`, and set up the repo structure (§6).
+- Accept the Xcode license, `git init`, and set up the monorepo structure (§7).
+- Reserve the `@polixd` npm scope, the `polixd` PyPI name and the `polixd` Hugging Face org.
 - Read the current A2UI spec, Material 3 tokens, GOV.UK patterns, and the Maru / Affora / Harness4GenUI preprints (check their claims against the PDFs).
 - **Output:** a one-page decision note on whether we extend the A2UI catalog or define our own schema with A2UI export.
 
@@ -100,7 +108,52 @@ Durations assume roughly 15–20 hours a week and are rough. Each phase has an e
 
 **Later:** SwiftUI/Compose renderers, the design-system generator (OKLCH palettes, modular type scale, and so on, checked by the same verifier), and a bring-your-own-design-system importer (Figma variables / Tokens Studio).
 
-## 5. Risks
+## 5. Distribution: how other software uses Polixd
+
+The goal is for any app, agent or tool to adopt Polixd one layer at a time. Each layer ships as its own package, so no one has to adopt all of it.
+
+| Layer | Who uses it | Ships as | Channel (free) |
+|---|---|---|---|
+| **Spec** (schema, types, tokens format) | Anyone generating or rendering UI | `@polixd/spec` (JSON Schema + TS types), `polixd-spec` (Python) | npm, PyPI, docs site |
+| **Design-system packs** | Apps bringing their brand | `@polixd/ds-material3`, `@polixd/ds-govuk`, and an importer for Figma variables / Tokens Studio | npm |
+| **Web renderer** | Web apps | `@polixd/react` (shadcn/Radix) | npm |
+| **Native renderers** (later) | iOS / Android apps | Swift package, Compose library | SPM, Maven Central |
+| **Runtime SDK** (generator + memory + validation + streaming) | Apps that want the whole loop | `@polixd/runtime`, `polixd` (Python), with pluggable model backends and memory storage | npm, PyPI |
+| **Model** | Runs on-device or self-hosted | Weights in MLX, GGUF and safetensors formats | Hugging Face, Ollama library |
+| **Server** | Teams that want to self-host | Docker image: model server + HTTP API with streaming | GitHub Container Registry |
+| **Agent integration** | AI agents and assistants | MCP server (MCP Apps compatible), A2UI export | npm (`npx @polixd/mcp`) |
+| **Verifier and benchmark** | Anyone evaluating generative UI | `polixd verify` CLI, dataset, leaderboard | npm, Hugging Face Datasets |
+| **Demo** | Everyone | Hosted playground | Hugging Face Spaces / GitHub Pages |
+
+**Where things run.** On-device is the default: private, free and fast. The same runtime can point at a self-hosted server or any model endpoint.
+
+**Memory is private by default.** It's stored on the client (IndexedDB / SQLite), with storage adapters for hosts that want server-side memory. There's no telemetry.
+
+**Our own hosted API is deferred.** It's the only piece that costs money to run. The server image makes self-hosting possible from day one, and we'll decide on a hosted API after v0.1 based on demand.
+
+**Distribution requirements that affect the build from Phase 1:**
+- **Monorepo with publishable packages from the start.** Package boundaries match the layers above (§7).
+- **Spec versioning.** Semver, a `specVersion` field in every UI document, and a stated compatibility policy with migration notes. v0.x may break; v1.0 is a stability promise.
+- **Streaming.** JIT interfaces must feel instant, so UI JSON is streamed and rendered progressively. Budget: first meaningful render under 1s on the M5, measured in the benchmark.
+- **Small footprint.** The renderer bundle has a size budget, and the model targets ≤ 2.5GB at 4-bit.
+- **Stable public API** with documentation for every package, plus runnable examples (a React app, a Python agent, an MCP client).
+- **Security.** Content is sanitized, intents are allowlisted by the host, and there's a threat model for prompt injection through host data shown in a UI.
+
+**Release milestones.** The repo stays private until v0.1.
+- **v0.1** (after Phase 3): spec, design-system packs, React renderer, verifier and benchmark. It works with any LLM.
+- **v0.2** (after Phase 5): runtime SDK, MCP server, first model weights.
+- **v0.3** (after Phase 6): RL model, Docker server, playground.
+- **v1.0:** spec frozen, then native renderers.
+
+**Licensing** (to confirm):
+- **Code:** Apache-2.0, for its patent grant.
+- **Spec and docs:** CC-BY-4.0.
+- **Model weights:** inherit the base model's license, so we pick a base model with a permissive license.
+- **Benchmark:** respects the licenses of its sources.
+
+**Names.** Reserve the npm scope `@polixd`, the PyPI name `polixd`, and a Hugging Face org `polixd` early. All are free. A domain is optional.
+
+## 6. Risks
 
 | Risk | Mitigation |
 |---|---|
@@ -110,24 +163,35 @@ Durations assume roughly 15–20 hours a week and are rough. Each phase has an e
 | Scope creep (two products) | Design-system generator is explicitly postponed |
 | Preprint numbers are wrong | Rely only on results we reproduce ourselves |
 | Licensing | MIT/Apache/OGL sources only; learn from Apple HIG, don't copy it |
+| Embedding is abused (injection, unsafe actions) | UI-as-data, host-allowlisted intents, threat model before v0.1 |
+| Breaking changes hurt early adopters | Semver, `specVersion`, migration notes; nothing public before v0.1 |
+| Names taken | Reserve npm/PyPI/Hugging Face names in Phase 0 |
 
-## 6. Repo layout
+## 7. Repo layout
 
 ```
-spec/            JSON Schema, components, patterns, mapping table
-design-systems/  material3/, <second>/  (DTCG tokens)
-renderer-web/    React + shadcn renderer
-memory/          interface memory store + rule extraction
-verifier/        Playwright, axe-core, scorers, agent tester
-bench/           requests, multi-turn sequences, tasks, gold set
-model/           Python (uv + MLX): baselines, SFT, GRPO
-docs/            decisions, write-ups
+packages/
+  spec/            @polixd/spec: JSON Schema, TS types, components, patterns, mapping table
+  ds-material3/    @polixd/ds-material3 (DTCG tokens)
+  ds-govuk/        @polixd/ds-govuk
+  react/           @polixd/react: shadcn/Radix renderer
+  runtime/         @polixd/runtime: generator backends, memory, validation, streaming
+  verifier/        @polixd/verifier + `polixd verify` CLI
+  mcp/             @polixd/mcp: MCP server
+python/            polixd SDK + polixd-spec (PyPI)
+model/             Python (uv + MLX): baselines, SFT, GRPO, export (MLX/GGUF)
+server/            Dockerfile + HTTP API
+bench/             requests, multi-turn sequences, tasks, gold set
+apps/playground/   demo
+docs/              docs site, decisions, write-ups
 ```
-TypeScript (npm workspaces) for spec/renderer/verifier; Python for the model.
+TypeScript (npm workspaces, Changesets for versioning and releases) and Python (uv). GitHub Actions for CI and publishing.
 
-## 7. Decisions needed before Phase 1
+## 8. Decisions needed before Phase 1
 
 1. **Domain.** Recommended: **personal finance**. It has forms, tables, charts, destructive confirms and repeated tasks, so consistency matters and agent tasks are easy to specify. Health brings privacy and medical-accuracy issues. Travel needs live data.
 2. **First design system.** Recommended: **Material 3** for tokens and guidance (it maps to web and Android and is well documented), with **GOV.UK** as the second system to prove the swap. The pair is deliberately very different visually.
 3. **Web stack.** Recommended: React + Vite + shadcn/Radix.
 4. **Time per week.** This sets the real timeline.
+5. **Licenses.** Recommended: Apache-2.0 for code, CC-BY-4.0 for spec and docs.
+6. **Public identity.** Keep "Polixd" as the public name? If so, reserve the npm, PyPI and Hugging Face names now.
