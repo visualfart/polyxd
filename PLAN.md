@@ -10,7 +10,8 @@
 - **Phase 3 — nearly done.** `@polyxd/verifier`: document checks, rendered checks (axe-core WCAG 2.2 AA, overflow, target size) in 3 packs × light/dark × phone/desktop, an accessibility-tree agent, and a consistency score. All 20 examples score 100 across 240 renders with 216/216 agent runs; 20/20 injected defects are caught. Building it found and fixed real renderer bugs (graphics-only colours used as text, undersized targets, polluted accessible names, a dialog that blocked the host page). Benchmark in `bench/`: 50 requests, 10 multi-turn sequences, 58 capabilities, 37 agent tasks, 30-item gold set.
   - **Remaining exit criterion:** a designer ranks the gold set (`bench/gold/ranking.json`), then `npm run gold -w @polyxd/verifier` measures agreement. Today the verifier orders a > b > c in 8/10 groups.
 - **Website:** polyxd.com landing page, docs and live gallery (`apps/site`), deployed on Cloudflare Workers with a KV-backed waitlist. Custom domain pending DNS move to Cloudflare.
-- **Next: Phase 4** — baselines: local 3B / 8B / ~14B models with constrained decoding, scored on the benchmark.
+- **Phase 4 — done.** Four local models on the benchmark with llguidance-constrained decoding and a tree authoring format compiled to the flat spec (typed references in the grammar). Best: Gemma-4-E4B, 98% valid, mean score 71, 14/37 agent tasks, 3.5 s median. Format and grammar mattered far more than size (Qwen3.5-4B: 2% → 90% valid without changing the model). Details in the research log (`research/report.md`, published at /docs/research).
+- **Next: Phase 5** — held-out training set, verifier-filtered teacher outputs, LoRA fine-tuning of Gemma-4-E4B and Qwen3.5-4B on MLX.
 
 ## 1. What we're building
 

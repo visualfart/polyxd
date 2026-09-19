@@ -13,6 +13,38 @@ This is Polyxd's running improvement report. Each entry states a question, what 
 
 ## Entries
 
+### 2026-09-20 · Typed references, and four models compared (Phase 4, experiment 4)
+
+**Change.** The tree grammar now also fixes *which* component types each reference may hold (a confirmation's `summary` is a `DetailList`, `Card.media` is `Media`, an `ActionBar` holds `Action`s, images need `alt` unless decorative). The allowed types live in one module shared by the validator and the tree schema, so the grammar and the checker can't disagree.
+
+**Result.** All four models, same prompt (v3), same typed tree grammar, same 50 requests, Apple M5 Pro:
+
+| Model (4-bit) | Valid | Mean score | Agent tasks | Expected parts | Median latency | First token | Tokens/s |
+|---|---|---|---|---|---|---|---|
+| **Gemma-4-E4B** | **98%** | **71** | **14/37** | 64% | 3.5 s | 0.9 s | 74 |
+| Qwen3.5-9B | 86% | 64 | 13/37 | 68% | 6.6 s | 2.4 s | 54 |
+| Qwen3.5-4B | 90% | 63 | 13/37 | 75% | 3.9 s | 1.4 s | 87 |
+| Qwen3.5-2B | 80% | 43 | 3/37 | 50% | 2.0 s | 0.6 s | 177 |
+
+Typed references alone took Qwen3.5-4B from 70% to 90% valid and from 51 to 63 mean score, with no change in speed.
+
+**What it means.**
+
+- **Format and grammar mattered far more than size.** Across the whole sequence, Qwen3.5-4B went from 2% to 90% valid without touching the model. The 9B model is no better than the 4B one and is 1.7× slower.
+- **Gemma-4-E4B is the strongest starting point**: nearly always valid, highest score, and the fastest first token of the capable models. It becomes the primary candidate for fine-tuning, with Qwen3.5-4B as the comparison.
+- **Validity is nearly solved; usefulness isn't.** The best model completes 14 of 37 agent tasks. For Gemma, 12 of the misses are the same mistake: the thing the user wants to act on isn't actionable. It lists today's events or recent payments but doesn't attach the capability the host offered (`events.open`, `transactions.open`) to each item. Four more miss a toggle the task needs, and four use a field or option name the task can't find. The remaining invalid outputs are mostly two primary actions in one view.
+
+These are design-judgment errors, not syntax. That's the job Phase 5 was planned for: fine-tuning on verifier-filtered examples, then reinforcement learning with the verifier and agent tasks as the reward.
+
+**Next.** Phase 5: build a training set that is *separate* from the benchmark (the 50 requests stay held out), generate candidates with the strongest available model, keep only those the verifier scores highly and whose agent tasks pass, and LoRA-fine-tune Gemma-4-E4B and Qwen3.5-4B on MLX.
+
+**Reproduce.**
+
+```bash
+model/run-baselines.sh            # generates and scores all four models
+npm run leaderboard -w @polyxd/verifier
+```
+
 ### 2026-09-19 · Let the model write a tree: valid output from 8% to 70% (Phase 4, experiment 3)
 
 **Question.** Baseline 2 showed the remaining failures were references between components. If the model writes children inline, as a tree, and a compiler produces the flat document, do those failures go away?
