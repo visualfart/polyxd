@@ -169,7 +169,14 @@ export function Table({ node }: { node: Node }) {
                 </p>
               </div>
               {status && cell(status, scope)}
-              {node.rowActions && rowMenu(scope, name)}
+              {node.rowActions ? (
+                rowMenu(scope, name)
+              ) : node.rowAction && !node.columns[0].kind ? (
+                // The same button as in the table, so an agent's steps work at any width.
+                <button type="button" className="pxd-button pxd-button-tertiary" onClick={() => s.dispatch(node.rowAction, scope, node.id)}>
+                  Select<span className="pxd-sr-only"> {name}</span>
+                </button>
+              ) : null}
             </li>
           );
         })}
