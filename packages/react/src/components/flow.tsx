@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useId, useState } from "react";
 import { AlertDialog } from "radix-ui";
 import { StepsContext, resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { absolute, childPointer, get } from "../data.ts";
@@ -87,61 +87,101 @@ export function Steps({ node }: { node: Node }) {
   );
 }
 
-/** Confirmation dialog. When it's the surface root, it is shown open and the surface is the dialog. */
+/**
+ * Confirmation. When it is the surface root, the surface *is* the dialog: it renders inline as an
+ * alertdialog scoped to the surface, so it never takes over the host page. When it opens on top of
+ * other surface content, it is a modal dialog (Radix AlertDialog), portalled inside the surface.
+ */
 export function Confirm({ node }: { node: Node }) {
   const b = useBindings();
   const s = useSurface();
   const isRoot = s.doc.root === node.id;
   const [open, setOpen] = useState(true);
   const [typed, setTyped] = useState("");
+  const titleId = useId();
+  const descId = useId();
   const mustType = node.typeToConfirm !== undefined ? b.text(node.typeToConfirm) : undefined;
   const ready = !mustType || typed.trim() === mustType;
   const destructive = node.severity === "destructive";
+  const a11y = useA11y(node);
   const cancel = () => {
-    setOpen(false);
+    if (!isRoot) setOpen(false);
     s.dispatch(node.cancel?.action ?? { event: { name: "ui.dismiss" } }, b.scope, node.id);
   };
+  const confirm = () => ready && s.dispatch(node.confirm.action, b.scope, node.id);
+
+  const description = (
+    <div className="pxd-dialog-description" id={descId}>
+      {node.message !== undefined && <p>{b.text(node.message)}</p>}
+      {node.consequence !== undefined && <p className="pxd-dialog-consequence">{b.text(node.consequence)}</p>}
+    </div>
+  );
+  const body = (confirmButton: React.ReactNode, cancelButton: React.ReactNode) => (
+    <>
+      {node.summary && <Render id={node.summary} />}
+      {mustType && (
+        <div className="pxd-field">
+          <label className="pxd-field-label" htmlFor={`${node.id}-type`}>
+            Type <strong>{mustType}</strong> to confirm
+          </label>
+          <input id={`${node.id}-type`} className="pxd-input" autoComplete="off" value={typed} onChange={(e) => setTyped(e.target.value)} />
+        </div>
+      )}
+      <div className="pxd-action-bar">
+        {confirmButton}
+        {cancelButton}
+      </div>
+    </>
+  );
+  const confirmButton = (
+    <button type="button" className={`pxd-button pxd-button-primary${destructive ? " pxd-button-danger" : ""}`} disabled={!ready} onClick={confirm}>
+      {b.text(node.confirm.label)}
+    </button>
+  );
+  const cancelLabel = node.cancel ? b.text(node.cancel.label) : "Cancel";
+
+  if (isRoot) {
+    return (
+      <div
+        role="alertdialog"
+        aria-modal="false"
+        aria-labelledby={titleId}
+        aria-describedby={descId}
+        className={`pxd-dialog pxd-dialog-inline${destructive ? " pxd-dialog-destructive" : ""}`}
+        onKeyDown={(e) => e.key === "Escape" && cancel()}
+        {...a11y}
+      >
+        <h1 className="pxd-dialog-title" id={titleId}>
+          {b.text(node.title)}
+        </h1>
+        {description}
+        {body(
+          confirmButton,
+          <button type="button" className="pxd-button pxd-button-secondary" onClick={cancel}>
+            {cancelLabel}
+          </button>,
+        )}
+      </div>
+    );
+  }
+
   return (
     <AlertDialog.Root open={open} onOpenChange={(o) => (o ? setOpen(true) : cancel())}>
       <AlertDialog.Portal container={s.portal}>
-        <AlertDialog.Overlay className={`pxd-overlay${isRoot ? " pxd-overlay-root" : ""}`} />
-        <AlertDialog.Content className={`pxd-dialog${destructive ? " pxd-dialog-destructive" : ""}`} {...useA11y(node)}>
+        <AlertDialog.Overlay className="pxd-overlay" />
+        <AlertDialog.Content className={`pxd-dialog${destructive ? " pxd-dialog-destructive" : ""}`} {...a11y}>
           <AlertDialog.Title className="pxd-dialog-title">{b.text(node.title)}</AlertDialog.Title>
-          <AlertDialog.Description asChild>
-            <div className="pxd-dialog-description">
-              {node.message !== undefined && <p>{b.text(node.message)}</p>}
-              {node.consequence !== undefined && <p className="pxd-dialog-consequence">{b.text(node.consequence)}</p>}
-            </div>
-          </AlertDialog.Description>
-          {node.summary && <Render id={node.summary} />}
-          {mustType && (
-            <div className="pxd-field">
-              <label className="pxd-field-label" htmlFor={`${node.id}-type`}>
-                Type <strong>{mustType}</strong> to confirm
-              </label>
-              <input id={`${node.id}-type`} className="pxd-input" autoComplete="off" value={typed} onChange={(e) => setTyped(e.target.value)} />
-            </div>
-          )}
-          <div className="pxd-action-bar">
-            <AlertDialog.Action asChild>
-              <button
-                type="button"
-                className={`pxd-button pxd-button-primary${destructive ? " pxd-button-danger" : ""}`}
-                disabled={!ready}
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (ready) s.dispatch(node.confirm.action, b.scope, node.id);
-                }}
-              >
-                {b.text(node.confirm.label)}
-              </button>
-            </AlertDialog.Action>
+          <AlertDialog.Description asChild>{description}</AlertDialog.Description>
+          {body(
+            <AlertDialog.Action asChild onClick={(e) => (e.preventDefault(), confirm())}>
+              {confirmButton}
+            </AlertDialog.Action>,
             <AlertDialog.Cancel asChild>
               <button type="button" className="pxd-button pxd-button-secondary" autoFocus>
-                {node.cancel ? b.text(node.cancel.label) : "Cancel"}
+                {cancelLabel}
               </button>
-            </AlertDialog.Cancel>
-          </div>
+            </AlertDialog.Cancel>,
+          )}
         </AlertDialog.Content>
       </AlertDialog.Portal>
     </AlertDialog.Root>

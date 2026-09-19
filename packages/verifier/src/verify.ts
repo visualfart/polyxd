@@ -1,0 +1,90 @@
+import type { Browser } from "playwright";
+import { launch, renderPage, type RenderTarget } from "./browser.ts";
+import { axeAudit, layoutAudit, type Finding } from "./rendered.ts";
+import { runTask, type AgentResult, type Task } from "./agent.ts";
+import { staticAudit, type StaticOptions } from "./static.ts";
+
+export interface VerifyOptions extends StaticOptions {
+  themes?: string[];
+  modes?: ("light" | "dark")[];
+  widths?: number[];
+  /** Agent tasks to run on this document, in every target */
+  tasks?: Task[];
+  /** Reuse a browser across many documents */
+  browser?: Browser;
+}
+
+export interface TargetReport extends RenderTarget {
+  findings: Finding[];
+  agent: (AgentResult & { task: string })[];
+}
+
+export interface Report {
+  surface: string;
+  static: Finding[];
+  targets: TargetReport[];
+  errors: number;
+  warnings: number;
+  agentSuccess: number;
+  agentRuns: number;
+  /** 0–100. 100 = no errors, warnings or failed tasks anywhere. */
+  score: number;
+}
+
+export const DEFAULTS = { themes: ["material3", "carbon", "antd"], modes: ["light", "dark"] as ("light" | "dark")[], widths: [390, 1100] };
+
+/**
+ * Scoring (v0): start at 100; each distinct error check costs 20 (once per check, not per target,
+ * so one broken thing isn't counted six times), each distinct warning 4, and failed agent runs
+ * cost up to 40 in proportion. Floors at 0.
+ */
+export function score(r: Omit<Report, "score">): number {
+  const all = [...r.static, ...r.targets.flatMap((t) => t.findings)];
+  const distinct = (sev: string) => new Set(all.filter((f) => f.severity === sev).map((f) => f.check)).size;
+  const agentPenalty = r.agentRuns ? 40 * (1 - r.agentSuccess / r.agentRuns) : 0;
+  return Math.max(0, Math.round(100 - 20 * distinct("error") - 4 * distinct("warning") - agentPenalty));
+}
+
+export async function verifyDocument(doc: any, opts: VerifyOptions = {}): Promise<Report> {
+  const staticFindings = staticAudit(doc, opts);
+  const targets: TargetReport[] = [];
+  const invalid = staticFindings.some((f) => f.check === "spec" && f.severity === "error");
+  if (!invalid) {
+    const browser = opts.browser ?? (await launch());
+    try {
+      for (const theme of opts.themes ?? DEFAULTS.themes) {
+        for (const mode of opts.modes ?? DEFAULTS.modes) {
+          for (const width of opts.widths ?? DEFAULTS.widths) {
+            const target = { theme, mode, width };
+            const { page, errors } = await renderPage(browser, doc, target);
+            const findings: Finding[] = [...(await axeAudit(page)), ...(await layoutAudit(page))];
+            const agent: TargetReport["agent"] = [];
+            for (const task of opts.tasks ?? []) {
+              // Each task gets a fresh render so earlier tasks can't leave state behind.
+              const fresh = agent.length === 0 ? page : (await renderPage(browser, doc, target)).page;
+              agent.push({ task: task.id, ...(await runTask(fresh, task)) });
+              if (fresh !== page) await fresh.close();
+            }
+            for (const e of errors) findings.push({ severity: "error", check: "runtime", message: e });
+            targets.push({ ...target, findings, agent });
+            await page.close();
+          }
+        }
+      }
+    } finally {
+      if (!opts.browser) await browser.close();
+    }
+  }
+  const all = [...staticFindings, ...targets.flatMap((t) => t.findings)];
+  const runs = targets.flatMap((t) => t.agent);
+  const base = {
+    surface: doc?.surface?.id ?? "(invalid)",
+    static: staticFindings,
+    targets,
+    errors: all.filter((f) => f.severity === "error").length,
+    warnings: all.filter((f) => f.severity === "warning").length,
+    agentSuccess: runs.filter((r) => r.success).length,
+    agentRuns: runs.length,
+  };
+  return { ...base, score: invalid ? 0 : score(base) };
+}

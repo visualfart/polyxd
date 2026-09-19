@@ -12,7 +12,7 @@ function Field({ label, help, required, children, id, helpId }: { label: string;
     <div className="pxd-field">
       <label className="pxd-field-label" htmlFor={id}>
         {label}
-        {required && <span className="pxd-required"> (required)</span>}
+        {required && <span className="pxd-required" aria-hidden="true"> (required)</span>}
       </label>
       {help && (
         <p className="pxd-field-help" id={helpId}>
@@ -111,6 +111,20 @@ function useOptions(node: Node): Option[] {
   });
 }
 
+/** An option's visible label (its accessible name) and optional description (its accessible description). */
+function OptionText({ id, label, description }: { id: string; label: string; description?: string }) {
+  return (
+    <div className="pxd-option-text">
+      <label htmlFor={id}>{label}</label>
+      {description && (
+        <span className="pxd-option-description" id={`${id}-desc`}>
+          {description}
+        </span>
+      )}
+    </div>
+  );
+}
+
 /** Choice picks its control from the number and shape of options (see the Choice rendering rules). */
 export function Choice({ node }: { node: Node }) {
   const b = useBindings();
@@ -146,13 +160,16 @@ export function Choice({ node }: { node: Node }) {
             const cid = `${labelId}-${key(o.value)}`;
             return (
               <div className="pxd-choice-option" key={key(o.value)}>
-                <Checkbox.Root id={cid} className="pxd-checkbox" checked={selected.some((x) => key(x) === key(o.value))} onCheckedChange={() => toggle(o.value)}>
+                <Checkbox.Root
+                  id={cid}
+                  className="pxd-checkbox"
+                  checked={selected.some((x) => key(x) === key(o.value))}
+                  onCheckedChange={() => toggle(o.value)}
+                  aria-describedby={o.description ? `${cid}-desc` : undefined}
+                >
                   <Checkbox.Indicator className="pxd-checkbox-indicator">✓</Checkbox.Indicator>
                 </Checkbox.Root>
-                <label htmlFor={cid}>
-                  {o.label}
-                  {o.description && <span className="pxd-option-description">{o.description}</span>}
-                </label>
+                <OptionText id={cid} label={o.label} description={o.description} />
               </div>
             );
           })}
@@ -166,7 +183,7 @@ export function Choice({ node }: { node: Node }) {
     <div className="pxd-field pxd-choice" {...a11y}>
       <div className="pxd-field-label" id={labelId}>
         {b.text(node.label)}
-        {node.required && <span className="pxd-required"> (required)</span>}
+        {node.required && <span className="pxd-required" aria-hidden="true"> (required)</span>}
       </div>
       {help && <p className="pxd-field-help" id={helpId}>{help}</p>}
       {search}
@@ -187,13 +204,10 @@ export function Choice({ node }: { node: Node }) {
             </RadioGroup.Item>
           ) : (
             <div className="pxd-choice-option" key={key(o.value)}>
-              <RadioGroup.Item id={cid} value={key(o.value)} className="pxd-radio">
+              <RadioGroup.Item id={cid} value={key(o.value)} className="pxd-radio" aria-describedby={o.description ? `${cid}-desc` : undefined}>
                 <RadioGroup.Indicator className="pxd-radio-indicator" />
               </RadioGroup.Item>
-              <label htmlFor={cid}>
-                {o.label}
-                {o.description && <span className="pxd-option-description">{o.description}</span>}
-              </label>
+              <OptionText id={cid} label={o.label} description={o.description} />
             </div>
           );
         })}

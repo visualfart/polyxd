@@ -283,12 +283,16 @@
   letter-spacing: var(--pxd-type-numeric-display-letter-spacing);
   font-variant-numeric: tabular-nums;
 }
+/* Change pills use status pairs, which the token contract guarantees at 4.5:1 for text. */
 .pxd-metric-change {
+  align-self: flex-start;
+  padding: 0 var(--pxd-space-inline-default);
+  border-radius: var(--pxd-radius-full);
   font-weight: 600;
 }
-.pxd-data-positive { color: var(--pxd-color-data-positive); }
-.pxd-data-negative { color: var(--pxd-color-data-negative); }
-.pxd-data-neutral { color: var(--pxd-color-data-neutral); }
+.pxd-metric-change.pxd-data-positive { background: var(--pxd-color-status-success-background); color: var(--pxd-color-status-success-foreground); }
+.pxd-metric-change.pxd-data-negative { background: var(--pxd-color-status-danger-background); color: var(--pxd-color-status-danger-foreground); }
+.pxd-metric-change.pxd-data-neutral { background: var(--pxd-color-surface-default); color: var(--pxd-color-text-muted); }
 
 .pxd-detail-list {
   display: flex;
@@ -623,13 +627,29 @@ textarea.pxd-input {
   display: flex;
   align-items: flex-start;
   gap: var(--pxd-space-inline-default);
-  min-height: var(--pxd-size-target-min);
-  padding-top: calc((var(--pxd-size-target-min) - 20px) / 2 - 2px);
 }
-.pxd-choice-option label {
+.pxd-option-text {
+  flex: 1;
   display: flex;
   flex-direction: column;
+}
+.pxd-option-text .pxd-option-description {
+  margin-top: calc(var(--pxd-space-stack-tight) * -1);
+  padding-bottom: var(--pxd-space-stack-tight);
+}
+/* The label is part of the target, and fills the row up to the pack's minimum target height. */
+.pxd-choice-option label,
+.pxd-toggle-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--pxd-size-target-min);
   cursor: pointer;
+}
+.pxd-choice-option .pxd-radio,
+.pxd-choice-option .pxd-checkbox {
+  margin-top: calc((var(--pxd-size-target-min) - 20px) / 2);
 }
 .pxd-radio,
 .pxd-checkbox {
@@ -704,16 +724,18 @@ textarea.pxd-input {
   display: flex;
   align-items: flex-start;
   gap: var(--pxd-space-inline-default);
-  min-height: var(--pxd-size-target-min);
+}
+.pxd-toggle > .pxd-switch,
+.pxd-toggle > .pxd-checkbox {
+  margin-top: calc((var(--pxd-size-target-min) - 24px) / 2);
 }
 .pxd-toggle-text {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding-top: 2px;
 }
-.pxd-toggle-label {
-  cursor: pointer;
+.pxd-toggle-text .pxd-field-help {
+  margin-top: calc(var(--pxd-space-stack-tight) * -1);
 }
 .pxd-switch {
   flex: none;
@@ -893,13 +915,6 @@ textarea.pxd-input {
   background: var(--pxd-color-scrim);
   z-index: 10;
 }
-.pxd-overlay-root {
-  position: absolute;
-  background: transparent;
-}
-.pxd-surface:has(.pxd-overlay-root) {
-  min-height: 24rem;
-}
 .pxd-dialog {
   position: fixed;
   left: 50%;
@@ -918,11 +933,16 @@ textarea.pxd-input {
   border-radius: var(--pxd-radius-large);
   box-shadow: var(--pxd-shadow-overlay);
 }
-.pxd-surface:has(.pxd-overlay-root) .pxd-dialog {
-  position: absolute;
+/* A confirmation that is the whole surface sits inline, centred in the surface. */
+.pxd-dialog-inline {
+  position: static;
+  transform: none;
+  margin: var(--pxd-space-stack-loose) auto;
+  max-height: none;
 }
-.pxd-dialog-destructive .pxd-dialog-title {
-  color: var(--pxd-color-status-danger-emphasis);
+/* Danger is shown by a graphic accent; title text stays in the text colour (4.5:1 guaranteed). */
+.pxd-dialog-destructive {
+  border-top: 4px solid var(--pxd-color-status-danger-emphasis);
 }
 .pxd-dialog-description {
   display: flex;
@@ -973,14 +993,19 @@ textarea.pxd-input {
   margin-top: auto;
 }
 .pxd-best {
-  color: var(--pxd-color-data-positive);
+  margin-left: var(--pxd-space-inline-tight);
+  padding: 0 var(--pxd-space-inline-tight);
+  border-radius: var(--pxd-radius-small);
+  background: var(--pxd-color-status-success-background);
+  color: var(--pxd-color-status-success-foreground);
   font-weight: 600;
 }
 
 .pxd-unknown {
   padding: var(--pxd-space-inset-compact);
   border: 1px dashed var(--pxd-color-status-danger-emphasis);
-  color: var(--pxd-color-status-danger-emphasis);
+  background: var(--pxd-color-status-danger-background);
+  color: var(--pxd-color-status-danger-foreground);
 }
 
 @media (prefers-reduced-motion: reduce) {

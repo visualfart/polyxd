@@ -56,6 +56,7 @@ const cases: [string, string, (d: any) => void, RegExp][] = [
   ["unknown renderer action", "settings-delete-account.json", (d) => (byId(d, "confirm").cancel.action.event.name = "ui.close"), /"ui\.close" is not a renderer action/],
   ["invalid capability name", "tasks-add.json", (d) => (byId(d, "form").submit.action.event.name = "Save Task"), /pattern/],
   ["hard-coded metric value (data must be bound)", "money-budget-settings.json", (d) => (byId(d, "used").value = 212.5), /must be object|must have required property 'path'/],
+  ["image without alt text", "shop-order-status.json", (d) => delete byId(d, "item-img").alt, /Media needs alt text/],
   ["URL instead of host-provided image", "shop-order-status.json", (d) => (byId(d, "item-img").src = "https://example.com/x.png"), /must be object/],
 ];
 for (const [name, file, fn, expected] of cases) {

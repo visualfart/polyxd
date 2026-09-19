@@ -177,6 +177,11 @@ export function validateDocument(doc: Json): ValidationResult {
     }
   }
 
+  // Rules the schema states in prose.
+  for (const [, { c, index }] of byId) {
+    if (c.component === "Media" && !c.decorative && c.alt === undefined) error(`/components/${index}`, "Media needs alt text unless it is decorative");
+  }
+
   // Tree walk from root: cycles, single parent, reachability, item scope, primary-action contexts.
   const parent = new Map<string, string>();
   const reached = new Set<string>();

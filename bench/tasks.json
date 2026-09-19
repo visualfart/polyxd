@@ -1,0 +1,349 @@
+{
+  "$comment": "Agent tasks: each is performed through the accessibility tree only (roles and accessible names), in every design system, mode and width. See packages/verifier/src/agent.ts.",
+  "tasks": [
+    {
+      "id": "find-slot",
+      "document": "calendar-find-slot",
+      "instruction": "Invite Tom to the 13:00 slot on Monday.",
+      "steps": [
+        {
+          "choose": "13:00–13:30",
+          "in": "Times everyone is free"
+        },
+        {
+          "check": "Tom"
+        },
+        {
+          "press": "Send invite"
+        }
+      ],
+      "expect": {
+        "event": "meeting.invite",
+        "context": {
+          "slot": "13:00",
+          "people": [
+            "c1",
+            "c2"
+          ]
+        }
+      }
+    },
+    {
+      "id": "retry-statements",
+      "document": "error-load-failed",
+      "instruction": "The statements didn't load. Try again.",
+      "steps": [
+        {
+          "press": "Try again"
+        }
+      ],
+      "expect": {
+        "event": "statements.reload"
+      }
+    },
+    {
+      "id": "open-salary",
+      "document": "money-balance-overview",
+      "instruction": "Show me the salary payment.",
+      "steps": [
+        {
+          "press": "Salary"
+        }
+      ],
+      "expect": {
+        "event": "transactions.open",
+        "context": {
+          "id": "t2"
+        }
+      }
+    },
+    {
+      "id": "budget-alerts-off",
+      "document": "money-budget-settings",
+      "instruction": "Stop warning me about my groceries budget.",
+      "steps": [
+        {
+          "toggle": "Warn me at 80% of the limit"
+        }
+      ],
+      "expect": {
+        "event": "budget.setAlerts",
+        "context": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "id": "confirm-send",
+      "document": "money-send-confirm",
+      "instruction": "Yes, send the £250 to Alex.",
+      "steps": [
+        {
+          "press": "Send £250.00"
+        }
+      ],
+      "expect": {
+        "event": "transfer.confirm",
+        "context": {
+          "quoteId": "q_91"
+        }
+      }
+    },
+    {
+      "id": "send-money",
+      "document": "money-send-form",
+      "instruction": "Send £250 to Alex Kim with the reference 'Rent share'.",
+      "steps": [
+        {
+          "choose": "Alex Kim",
+          "in": "Who are you sending to?"
+        },
+        {
+          "fill": "Amount",
+          "value": "250"
+        },
+        {
+          "fill": "Reference",
+          "value": "Rent share"
+        },
+        {
+          "press": "Continue"
+        }
+      ],
+      "expect": {
+        "event": "transfer.review",
+        "context": {
+          "recipient": "p1",
+          "amount": 250,
+          "reference": "Rent share"
+        }
+      }
+    },
+    {
+      "id": "habit-walk",
+      "document": "personal-habits",
+      "instruction": "I did my walk today.",
+      "steps": [
+        {
+          "toggle": "Walk 8k steps"
+        }
+      ],
+      "expect": {
+        "event": "habit.check",
+        "context": {
+          "id": "h2",
+          "done": true
+        }
+      }
+    },
+    {
+      "id": "add-book",
+      "document": "personal-reading-log",
+      "instruction": "Add a book to my reading list.",
+      "steps": [
+        {
+          "press": "Add a book"
+        }
+      ],
+      "expect": {
+        "event": "book.create"
+      }
+    },
+    {
+      "id": "delete-account",
+      "document": "settings-delete-account",
+      "instruction": "Delete my account.",
+      "steps": [
+        {
+          "fill": "Type DELETE to confirm",
+          "value": "DELETE"
+        },
+        {
+          "press": "Delete my account"
+        }
+      ],
+      "expect": {
+        "event": "account.delete"
+      }
+    },
+    {
+      "id": "email-summaries-on",
+      "document": "settings-notifications",
+      "instruction": "Turn on the weekly email summaries.",
+      "steps": [
+        {
+          "toggle": "Email summaries"
+        }
+      ],
+      "expect": {
+        "event": "prefs.set",
+        "context": {
+          "email": true
+        }
+      }
+    },
+    {
+      "id": "open-clamp-lamp",
+      "document": "shop-browse-filter",
+      "instruction": "Open the mini clamp lamp.",
+      "steps": [
+        {
+          "press": "Mini clamp lamp"
+        }
+      ],
+      "expect": {
+        "event": "product.open",
+        "context": {
+          "id": "l2"
+        }
+      }
+    },
+    {
+      "id": "checkout",
+      "document": "shop-checkout",
+      "instruction": "Deliver express to 12 Park Road and pay with my Visa.",
+      "steps": [
+        {
+          "fill": "Delivery address",
+          "value": "12 Park Road, Leeds"
+        },
+        {
+          "choose": "Express (next day)",
+          "in": "Delivery speed"
+        },
+        {
+          "press": "Continue"
+        },
+        {
+          "choose": "Visa ending 4242",
+          "in": "Pay with"
+        },
+        {
+          "press": "Continue"
+        },
+        {
+          "press": "Place order"
+        }
+      ],
+      "expect": {
+        "event": "order.place",
+        "context": {
+          "cartId": "cart_1"
+        }
+      }
+    },
+    {
+      "id": "choose-plus",
+      "document": "shop-compare-plans",
+      "instruction": "Go with the Plus plan.",
+      "steps": [
+        {
+          "press": "Choose Plus"
+        }
+      ],
+      "expect": {
+        "event": "plan.select",
+        "context": {
+          "plan": "plus"
+        }
+      }
+    },
+    {
+      "id": "add-task",
+      "document": "tasks-add",
+      "instruction": "Add a high-priority task to pay rent.",
+      "steps": [
+        {
+          "fill": "Task",
+          "value": "Pay rent"
+        },
+        {
+          "choose": "High",
+          "in": "Priority"
+        },
+        {
+          "press": "Add task"
+        }
+      ],
+      "expect": {
+        "event": "task.save",
+        "context": {
+          "title": "Pay rent",
+          "priority": "high"
+        }
+      }
+    },
+    {
+      "id": "delete-project",
+      "document": "tasks-delete-project",
+      "instruction": "Delete the Website relaunch project.",
+      "steps": [
+        {
+          "fill": "Type Website relaunch to confirm",
+          "value": "Website relaunch"
+        },
+        {
+          "press": "Delete project"
+        }
+      ],
+      "expect": {
+        "event": "project.delete",
+        "context": {
+          "id": "pr_7"
+        }
+      }
+    },
+    {
+      "id": "open-invoice-task",
+      "document": "tasks-list",
+      "instruction": "Open the invoice task.",
+      "steps": [
+        {
+          "press": "Send invoice"
+        }
+      ],
+      "expect": {
+        "event": "task.open",
+        "context": {
+          "id": "k1"
+        }
+      }
+    },
+    {
+      "id": "book-hotel",
+      "document": "travel-booking-review",
+      "instruction": "Accept the terms and book the hotel.",
+      "steps": [
+        {
+          "check": "I agree to the hotel's booking terms"
+        },
+        {
+          "press": "Book and pay £312"
+        }
+      ],
+      "expect": {
+        "event": "hotel.book",
+        "context": {
+          "offerId": "o_3",
+          "acceptedTerms": true
+        }
+      }
+    },
+    {
+      "id": "pick-morning-flight",
+      "document": "travel-flight-results",
+      "instruction": "Book the 07:10 flight.",
+      "steps": [
+        {
+          "press": "Select 07:10"
+        }
+      ],
+      "expect": {
+        "event": "flight.select",
+        "context": {
+          "id": "f1"
+        }
+      }
+    }
+  ]
+}

@@ -37,3 +37,10 @@ test("the stylesheet only uses semantic token variables that exist in the contra
   const unknown = [...used].filter((v) => !known.has(v));
   assert.deepEqual(unknown, []);
 });
+
+test("colours only guaranteed for graphics (3:1) are never used for text", () => {
+  const css = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
+  const graphicsOnly = /--pxd-color-(data-[a-z0-9-]+|status-[a-z]+-emphasis|border-[a-z]+)\b/;
+  const bad = [...css.matchAll(/(?:^|[;{\s])color:\s*var\((--pxd-[a-z0-9-]+)\)/g)].map((m) => m[1]).filter((v) => graphicsOnly.test(v));
+  assert.deepEqual(bad, []);
+});
