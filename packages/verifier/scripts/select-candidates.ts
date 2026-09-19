@@ -5,14 +5,34 @@
  *
  * node packages/verifier/scripts/select-candidates.ts model/data/candidates/<model> [--min 90]
  * Writes model/data/selected.jsonl: { id, user, assistant } with the assistant turn in tree form.
+ *
+ * --require-wiring: when the host offers capabilities, a candidate must attach at least one of them to
+ *   something a person or agent can operate, and candidates are ranked by score plus wiring. Without it,
+ *   selection by verifier score alone favours timid interfaces with nothing to do (research log, Phase 5).
+ * --max-nocap F: at most this fraction of kept examples may come from scenarios offering no capability.
  */
+
 import { appendFileSync, existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { validateDocument, flattenTree, isTree } from "@polyxd/spec";
 import { launch, verifyDocument } from "../src/index.ts";
 
-const { values, positionals } = parseArgs({ allowPositionals: true, options: { min: { type: "string" }, out: { type: "string" } } });
+/** Capabilities attached to an operable control: Action, Form submit, Card/Table row actions, Toggle, Confirm, Comparison, Steps finish. */
+function wiredCapabilities(flat: any): Set<string> {
+  const out = new Set<string>();
+  const add = (a: any) => typeof a?.event?.name === "string" && out.add(a.event.name);
+  for (const c of flat.components ?? []) {
+    if (c.component === "Action" || c.component === "Card" || c.component === "Toggle") add(c.action);
+    if (c.component === "Table") add(c.rowAction);
+    for (const p of ["submit", "confirm", "finish", "choose"]) add(c[p]?.action);
+  }
+  return out;
+}
+const { values, positionals } = parseArgs({
+  allowPositionals: true,
+  options: { min: { type: "string" }, out: { type: "string" }, "require-wiring": { type: "boolean" }, "max-nocap": { type: "string" } },
+});
 const dir = resolve(positionals[0] ?? "");
 if (!existsSync(dir)) {
   console.error("Usage: select-candidates.ts <model/data/candidates/MODEL> [--min 90]");
@@ -25,8 +45,8 @@ const hostRegistry = (caps: string[]) => ({ name: registry.name, capabilities: O
 
 writeFileSync(outPath, "");
 const browser = await launch();
-let kept = 0;
 let total = 0;
+const keptRows: any[] = [];
 const scores: number[] = [];
 try {
   for (const f of readdirSync(dir).filter((f) => f.endsWith(".json")).sort()) {
@@ -42,19 +62,27 @@ try {
         continue;
       }
       if (!validateDocument(flat).valid) continue;
-      const rep = await verifyDocument(flat, { browser, registry: hostRegistry(scenario.capabilities ?? []), themes: ["material3"], modes: ["light"], widths: [390] });
-      const text = JSON.stringify(flat);
-      const wired = (scenario.capabilities ?? []).filter((c: string) => text.includes(`"${c}"`)).length;
-      if (!best || rep.score > best.score || (rep.score === best.score && wired > best.wired)) best = { tree: s.doc, score: rep.score, wired };
+      const offered: string[] = scenario.capabilities ?? [];
+      const wiredSet = wiredCapabilities(flat);
+      const wired = offered.filter((c) => wiredSet.has(c)).length;
+      if (values["require-wiring"] && offered.length && wired === 0) continue;
+      const rep = await verifyDocument(flat, { browser, registry: hostRegistry(offered), themes: ["material3"], modes: ["light"], widths: [390] });
+      const rank = (x: { score: number; wired: number }) => x.score + (values["require-wiring"] && offered.length ? (20 * x.wired) / offered.length : 0);
+      const cand = { tree: s.doc, score: rep.score, wired };
+      if (!best || rank(cand) > rank(best) || (rank(cand) === rank(best) && wired > best.wired)) best = cand;
     }
     if (best) scores.push(best.score);
-    if (best && best.score >= min) {
-      kept++;
-      appendFileSync(outPath, JSON.stringify({ id: scenario.id, user, assistant: JSON.stringify(best.tree), score: best.score }) + "\n");
-    }
+    if (best && best.score >= min) keptRows.push({ id: scenario.id, user, assistant: JSON.stringify(best.tree), score: best.score, nocap: !(scenario.capabilities ?? []).length });
     console.log(`${best ? String(best.score).padStart(3) : "  –"} ${best && best.score >= min ? "keep" : "drop"}  ${scenario.id}  ${scenario.request.slice(0, 60)}`);
   }
 } finally {
   await browser.close();
 }
-console.log(`\nkept ${kept}/${total} scenarios (best candidate ≥ ${min}); mean best score ${(scores.reduce((a, b) => a + b, 0) / Math.max(1, scores.length)).toFixed(1)} → ${outPath}`);
+// Cap examples from scenarios where the app could do nothing, so they don't dominate.
+const maxNocap = values["max-nocap"] !== undefined ? Number(values["max-nocap"]) : 1;
+const withCap = keptRows.filter((r) => !r.nocap);
+const nocap = keptRows.filter((r) => r.nocap).slice(0, Math.floor((maxNocap * withCap.length) / Math.max(1e-9, 1 - maxNocap)));
+const final = [...withCap, ...nocap];
+for (const { nocap: _n, ...r } of final) appendFileSync(outPath, JSON.stringify(r) + "\n");
+const kept = final.length;
+console.log(`\nkept ${kept}/${total} (${nocap.length} without capabilities) scenarios (best candidate ≥ ${min}); mean best score ${(scores.reduce((a, b) => a + b, 0) / Math.max(1, scores.length)).toFixed(1)} → ${outPath}`);

@@ -13,6 +13,40 @@ This is Polyxd's running improvement report. Each entry states a question, what 
 
 ## Entries
 
+### 2026-09-20 · Fine-tuning on "error-free" examples taught the model to be timid (Phase 5, run 1)
+
+**Question.** Does fine-tuning a small model on its own best outputs, as picked by the verifier, make it better?
+
+**Setup.** All training data comes from local open models and our own verifier. No closed-model outputs are used, so the weights stay clean to publish.
+
+1. **Scenarios.** Gemma-4-E4B wrote 400 training scenarios (a request, the capabilities the host offers, and the host's data) under a constrained scenario schema, spread across seven domains. Anything too close to a benchmark request was rejected, so the 50 benchmark requests stay held out.
+2. **Candidates.** Four interfaces per scenario from Gemma-4-E4B (one greedy, three at temperature 0.7), tree format, constrained: 1,600 in total.
+3. **Selection.** The verifier rendered and scored every candidate and kept the best per scenario if it scored at least 90. 316 of 400 scenarios qualified (mean best score 93).
+4. **Training.** LoRA on 16 layers, 600 steps, batch 1, learning rate 1e-4, loss on the answer only. Peak memory 15.9 GB on the M5 Pro.
+
+**Result on the held-out benchmark.**
+
+| Gemma-4-E4B | Base | Fine-tuned (run 1) |
+|---|---|---|
+| Valid | 98% | **100%** |
+| Mean verifier score | 71 | **76** |
+| Agent tasks completed | **14/37** | 10/37 |
+| Expected components present | **64%** | 42% |
+| Median latency | 3.5 s | 3.4 s |
+
+The model got safer and less useful. Validation loss also rose between steps 500 and 600 (0.168 to 0.205): it was starting to overfit.
+
+**Why.** The selection rewarded the absence of mistakes, and the easiest way to make no mistakes is to do little. Of the 316 kept examples, only 5 contained an `Action`, 14 a `Toggle` and 8 a `Choice`, and 71 came from scenarios where the app offered no capability at all. The fine-tuned model learned to show information and leave it inert, which is exactly the Phase 4 weakness (items the user wants to act on aren't actionable), made worse. It's a textbook case of optimising a proxy: the verifier measures "nothing is wrong", not "this helps".
+
+**Change for run 2.** Selection now also measures usefulness:
+
+- If the host offers capabilities, a candidate must attach at least one to something a person or agent can operate (a button, a form submit, a clickable card or row, a toggle, a confirmation, a choice).
+- Candidates are ranked by verifier score plus the share of offered capabilities they wire up.
+- Examples where the app could do nothing are capped at 10% of the set.
+- Training stops at 400 steps, before the overfitting seen in run 1.
+
+The same idea will shape the Phase 6 reward: agent task success and capability wiring have to be in the reward alongside the verifier score, or reinforcement learning will find the same shortcut.
+
 ### 2026-09-20 · Typed references, and four models compared (Phase 4, experiment 4)
 
 **Change.** The tree grammar now also fixes *which* component types each reference may hold (a confirmation's `summary` is a `DetailList`, `Card.media` is `Media`, an `ActionBar` holds `Action`s, images need `alt` unless decorative). The allowed types live in one module shared by the validator and the tree schema, so the grammar and the checker can't disagree.
