@@ -1,0 +1,85 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "send-confirm",
+    "title": "Confirm payment",
+    "intent": "money.send",
+    "pattern": "confirm-destructive"
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "id": "confirm",
+      "component": "Confirm",
+      "title": "Send £250.00 to Alex Kim?",
+      "severity": "consequential",
+      "consequence": "The money leaves your account immediately and can't be recalled.",
+      "summary": "summary",
+      "confirm": {
+        "label": "Send £250.00",
+        "action": {
+          "event": {
+            "name": "transfer.confirm",
+            "context": {
+              "quoteId": {
+                "path": "/quote/id"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "summary",
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "recipient",
+          "label": "To",
+          "value": {
+            "path": "/quote/recipient"
+          }
+        },
+        {
+          "key": "amount",
+          "label": "Amount",
+          "value": {
+            "path": "/quote/amount"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        {
+          "key": "fee",
+          "label": "Fee",
+          "value": {
+            "path": "/quote/fee"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        {
+          "key": "reference",
+          "label": "Reference",
+          "value": {
+            "path": "/quote/reference"
+          }
+        }
+      ]
+    }
+  ],
+  "data": {
+    "quote": {
+      "id": "q_91",
+      "recipient": "Alex Kim",
+      "amount": 250,
+      "fee": 0,
+      "reference": "Rent share"
+    }
+  }
+}

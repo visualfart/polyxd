@@ -1,0 +1,84 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "reading",
+    "title": "Reading list",
+    "intent": "personal.reading.list"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "books",
+        "bar"
+      ]
+    },
+    {
+      "id": "books",
+      "component": "Collection",
+      "key": "books",
+      "label": "Books to read",
+      "items": {
+        "path": "/books",
+        "componentId": "book"
+      }
+    },
+    {
+      "id": "book",
+      "component": "Card",
+      "title": {
+        "path": "title"
+      },
+      "subtitle": {
+        "path": "author"
+      },
+      "action": {
+        "event": {
+          "name": "book.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "bar",
+      "component": "ActionBar",
+      "children": [
+        "add",
+        "import"
+      ]
+    },
+    {
+      "id": "add",
+      "component": "Action",
+      "key": "add_book",
+      "label": "Click here",
+      "emphasis": "primary",
+      "action": {
+        "event": {
+          "name": "book.add"
+        }
+      }
+    },
+    {
+      "id": "import",
+      "component": "Action",
+      "key": "import",
+      "label": "Go",
+      "action": {
+        "event": {
+          "name": "books.import"
+        }
+      }
+    }
+  ],
+  "data": {
+    "books": []
+  }
+}

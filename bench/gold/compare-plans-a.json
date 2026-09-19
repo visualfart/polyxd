@@ -1,0 +1,88 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "plans",
+    "title": "Choose a plan",
+    "intent": "commerce.plan.choose",
+    "pattern": "compare-and-choose"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Comparison",
+      "key": "plans",
+      "items": {
+        "path": "/plans"
+      },
+      "itemTitle": "name",
+      "summary": "Plus suits most people: enough storage and support at a lower price than Pro.",
+      "recommended": "Plus",
+      "attributes": [
+        {
+          "key": "price",
+          "label": "Price per month",
+          "path": "price",
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          },
+          "better": "lower"
+        },
+        {
+          "key": "storage",
+          "label": "Storage (GB)",
+          "path": "storage",
+          "format": {
+            "type": "number"
+          },
+          "better": "higher"
+        },
+        {
+          "key": "support",
+          "label": "Support",
+          "path": "support"
+        }
+      ],
+      "choose": {
+        "label": "Choose",
+        "action": {
+          "event": {
+            "name": "plan.select",
+            "context": {
+              "plan": {
+                "path": "id"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "data": {
+    "plans": [
+      {
+        "id": "basic",
+        "name": "Basic",
+        "price": 0,
+        "storage": 5,
+        "support": "Community"
+      },
+      {
+        "id": "plus",
+        "name": "Plus",
+        "price": 4.99,
+        "storage": 200,
+        "support": "Email"
+      },
+      {
+        "id": "pro",
+        "name": "Pro",
+        "price": 11.99,
+        "storage": 2000,
+        "support": "Priority"
+      }
+    ]
+  }
+}

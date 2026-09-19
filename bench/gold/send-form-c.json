@@ -1,0 +1,103 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "send",
+    "title": "Send money",
+    "intent": "money.send",
+    "pattern": "multi-step-form"
+  },
+  "root": "form",
+  "components": [
+    {
+      "id": "form",
+      "component": "Form",
+      "children": [
+        "amount",
+        "recipient",
+        "reference"
+      ],
+      "submit": {
+        "label": "Submit",
+        "action": {
+          "event": {
+            "name": "transfer.confirm",
+            "context": {
+              "recipient": {
+                "path": "/draft/recipient"
+              },
+              "amount": {
+                "path": "/draft/amount"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "recipient",
+      "component": "TextInput",
+      "key": "recipient",
+      "label": "Name",
+      "value": {
+        "path": "/draft/recipient"
+      },
+      "required": true
+    },
+    {
+      "id": "amount",
+      "component": "TextInput",
+      "key": "amount",
+      "label": "Amount",
+      "kind": "currency",
+      "currency": "GBP",
+      "value": {
+        "path": "/draft/amount"
+      },
+      "required": true,
+      "validation": {
+        "min": 0.01,
+        "max": 5000,
+        "message": "Enter an amount between £0.01 and £5,000"
+      }
+    },
+    {
+      "id": "reference",
+      "component": "TextInput",
+      "key": "reference",
+      "label": "Reference",
+      "help": "Shown on their statement",
+      "value": {
+        "path": "/draft/reference"
+      },
+      "validation": {
+        "maxLength": 18
+      }
+    }
+  ],
+  "data": {
+    "payees": [
+      {
+        "id": "p1",
+        "name": "Alex Kim"
+      },
+      {
+        "id": "p2",
+        "name": "Sam Patel"
+      },
+      {
+        "id": "p3",
+        "name": "Landlord"
+      }
+    ],
+    "draft": {
+      "recipient": null,
+      "amount": null,
+      "reference": ""
+    },
+    "quote": {
+      "fee": 0,
+      "arrives": "2026-09-19T12:05:00Z"
+    }
+  }
+}

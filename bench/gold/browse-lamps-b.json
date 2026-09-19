@@ -1,0 +1,154 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "browse",
+    "title": "Desk lamps",
+    "intent": "commerce.browse",
+    "pattern": "filter-and-browse"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "filters",
+        "results"
+      ]
+    },
+    {
+      "id": "filters",
+      "component": "Section",
+      "title": "Options",
+      "children": [
+        "search",
+        "category",
+        "price"
+      ]
+    },
+    {
+      "id": "search",
+      "component": "TextInput",
+      "key": "search",
+      "label": "Search",
+      "kind": "search",
+      "value": {
+        "path": "/filters/q"
+      }
+    },
+    {
+      "id": "category",
+      "component": "Choice",
+      "key": "category",
+      "label": "Type",
+      "mode": "multiple",
+      "options": [
+        {
+          "value": "desk",
+          "label": "Desk"
+        },
+        {
+          "value": "floor",
+          "label": "Floor"
+        },
+        {
+          "value": "clip",
+          "label": "Clip-on"
+        }
+      ],
+      "value": {
+        "path": "/filters/types"
+      }
+    },
+    {
+      "id": "price",
+      "component": "RangeInput",
+      "key": "max_price",
+      "label": "Price",
+      "value": {
+        "path": "/filters/maxPrice"
+      },
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      }
+    },
+    {
+      "id": "results",
+      "component": "Collection",
+      "key": "results",
+      "label": {
+        "path": "/resultsLabel"
+      },
+      "items": {
+        "path": "/products",
+        "componentId": "product"
+      },
+      "empty": "no-results"
+    },
+    {
+      "id": "product",
+      "component": "Card",
+      "title": {
+        "path": "name"
+      },
+      "subtitle": {
+        "path": "priceLabel"
+      },
+      "media": "product-img",
+      "action": {
+        "event": {
+          "name": "product.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "product-img",
+      "component": "Media",
+      "src": {
+        "path": "image"
+      },
+      "decorative": true
+    },
+    {
+      "id": "no-results",
+      "component": "Status",
+      "kind": "empty",
+      "title": "No lamps match",
+      "message": "Nothing found."
+    }
+  ],
+  "data": {
+    "filters": {
+      "q": "",
+      "types": [
+        "desk"
+      ],
+      "maxPrice": 120
+    },
+    "resultsLabel": "12 lamps",
+    "products": [
+      {
+        "id": "l1",
+        "name": "Arc desk lamp",
+        "priceLabel": "£49",
+        "image": "img1"
+      },
+      {
+        "id": "l2",
+        "name": "Mini clamp lamp",
+        "priceLabel": "£22",
+        "image": "img2"
+      }
+    ]
+  }
+}

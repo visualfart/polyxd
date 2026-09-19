@@ -1,0 +1,117 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "find-slot",
+    "title": "Find a time",
+    "intent": "calendar.schedule"
+  },
+  "root": "form",
+  "components": [
+    {
+      "id": "form",
+      "component": "Form",
+      "children": [
+        "date",
+        "slot",
+        "people"
+      ],
+      "submit": {
+        "label": "Send invite",
+        "action": {
+          "event": {
+            "name": "meeting.invite",
+            "context": {
+              "date": {
+                "path": "/draft/date"
+              },
+              "slot": {
+                "path": "/draft/slot"
+              },
+              "people": {
+                "path": "/draft/people"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "date",
+      "component": "DateInput",
+      "key": "date",
+      "label": "Day",
+      "value": {
+        "path": "/draft/date"
+      },
+      "min": "2026-09-19"
+    },
+    {
+      "id": "slot",
+      "component": "Choice",
+      "key": "slot",
+      "label": "Times everyone is free",
+      "options": {
+        "path": "/slots",
+        "valuePath": "start",
+        "labelPath": "label"
+      },
+      "value": {
+        "path": "/draft/slot"
+      },
+      "required": true
+    },
+    {
+      "id": "people",
+      "component": "Choice",
+      "key": "attendees",
+      "label": "Who's coming",
+      "mode": "multiple",
+      "options": {
+        "path": "/contacts",
+        "valuePath": "id",
+        "labelPath": "name"
+      },
+      "value": {
+        "path": "/draft/people"
+      }
+    }
+  ],
+  "data": {
+    "draft": {
+      "date": "2026-09-22",
+      "slot": null,
+      "people": [
+        "c1"
+      ]
+    },
+    "slots": [
+      {
+        "start": "09:30",
+        "label": "9:30–10:00"
+      },
+      {
+        "start": "13:00",
+        "label": "13:00–13:30"
+      },
+      {
+        "start": "16:00",
+        "label": "16:00–16:30"
+      }
+    ],
+    "contacts": [
+      {
+        "id": "c1",
+        "name": "Priya"
+      },
+      {
+        "id": "c2",
+        "name": "Tom"
+      },
+      {
+        "id": "c3",
+        "name": "Mei"
+      }
+    ]
+  }
+}

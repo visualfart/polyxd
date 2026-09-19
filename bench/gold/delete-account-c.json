@@ -1,0 +1,39 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "delete-account",
+    "title": "Delete account",
+    "intent": "settings.account.delete",
+    "pattern": "confirm-destructive"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "warning",
+        "delete"
+      ]
+    },
+    {
+      "id": "warning",
+      "component": "Text",
+      "text": "This will delete your account."
+    },
+    {
+      "id": "delete",
+      "component": "Action",
+      "label": "Delete",
+      "emphasis": "primary",
+      "tone": "danger",
+      "action": {
+        "event": {
+          "name": "account.delete"
+        }
+      }
+    }
+  ],
+  "data": {}
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "plans",
+    "title": "Choose a plan",
+    "intent": "commerce.plan.choose",
+    "pattern": "compare-and-choose"
+  },
+  "root": "form",
+  "components": [
+    {
+      "id": "form",
+      "component": "Form",
+      "children": [
+        "plan"
+      ],
+      "submit": {
+        "label": "Submit",
+        "action": {
+          "event": {
+            "name": "plan.select",
+            "context": {
+              "plan": {
+                "path": "/draft/plan"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "plan",
+      "component": "Choice",
+      "key": "plans",
+      "label": "Plan",
+      "options": {
+        "path": "/plans",
+        "valuePath": "id",
+        "labelPath": "name"
+      },
+      "value": {
+        "path": "/draft/plan"
+      }
+    }
+  ],
+  "data": {
+    "plans": [
+      {
+        "id": "basic",
+        "name": "Basic",
+        "price": 0,
+        "storage": 5,
+        "support": "Community"
+      },
+      {
+        "id": "plus",
+        "name": "Plus",
+        "price": 4.99,
+        "storage": 200,
+        "support": "Email"
+      },
+      {
+        "id": "pro",
+        "name": "Pro",
+        "price": 11.99,
+        "storage": 2000,
+        "support": "Priority"
+      }
+    ],
+    "draft": {
+      "plan": null
+    }
+  }
+}

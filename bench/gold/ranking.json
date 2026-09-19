@@ -1,0 +1,116 @@
+{
+  "$comment": "Fill humanRank for each group with its variant file names ordered best → worst, e.g. [\"send-form-a\", \"send-form-b\", \"send-form-c\"]. Rank from the rendered UIs (apps/gallery or the verifier harness) without reading the notes or scores first. See README.md.",
+  "rater": null,
+  "groups": [
+    {
+      "id": "send-form",
+      "source": "money-send-form",
+      "domain": "money",
+      "variants": [
+        "send-form-a",
+        "send-form-b",
+        "send-form-c"
+      ],
+      "humanRank": null
+    },
+    {
+      "id": "send-confirm",
+      "source": "money-send-confirm",
+      "domain": "money",
+      "variants": [
+        "send-confirm-a",
+        "send-confirm-b",
+        "send-confirm-c"
+      ],
+      "humanRank": null
+    },
+    {
+      "id": "delete-account",
+      "source": "settings-delete-account",
+      "domain": "settings",
+      "variants": [
+        "delete-account-a",
+        "delete-account-b",
+        "delete-account-c"
+      ],
+      "humanRank": null
+    },
+    {
+      "id": "browse-lamps",
+      "source": "shop-browse-filter",
+      "domain": "commerce",
+      "variants": [
+        "browse-lamps-a",
+        "browse-lamps-b",
+        "browse-lamps-c"
+      ],
+      "humanRank": null
+    },
+    {
+      "id": "compare-plans",
+      "source": "shop-compare-plans",
+      "domain": "commerce",
+      "variants": [
+        "compare-plans-a",
+        "compare-plans-b",
+        "compare-plans-c"
+      ],
+      "humanRank": null
+    },
+    {
+      "id": "hotel-review",
+      "source": "travel-booking-review",
+      "domain": "travel",
+      "variants": [
+        "hotel-review-a",
+        "hotel-review-b",
+        "hotel-review-c"
+      ],
+      "humanRank": null
+    },
+    {
+      "id": "add-task",
+      "source": "tasks-add",
+      "domain": "productivity",
+      "variants": [
+        "add-task-a",
+        "add-task-b",
+        "add-task-c"
+      ],
+      "humanRank": null
+    },
+    {
+      "id": "notifications",
+      "source": "settings-notifications",
+      "domain": "settings",
+      "variants": [
+        "notifications-a",
+        "notifications-b",
+        "notifications-c"
+      ],
+      "humanRank": null
+    },
+    {
+      "id": "find-slot",
+      "source": "calendar-find-slot",
+      "domain": "calendar",
+      "variants": [
+        "find-slot-a",
+        "find-slot-b",
+        "find-slot-c"
+      ],
+      "humanRank": null
+    },
+    {
+      "id": "reading-list",
+      "source": "personal-reading-log",
+      "domain": "personal",
+      "variants": [
+        "reading-list-a",
+        "reading-list-b",
+        "reading-list-c"
+      ],
+      "humanRank": null
+    }
+  ]
+}

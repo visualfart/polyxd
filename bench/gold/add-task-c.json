@@ -1,0 +1,134 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "add-task",
+    "title": "New task",
+    "intent": "tasks.create"
+  },
+  "root": "form",
+  "components": [
+    {
+      "id": "form",
+      "component": "Form",
+      "children": [
+        "title",
+        "due",
+        "priority",
+        "notes",
+        "project",
+        "assignee",
+        "tags",
+        "estimate"
+      ],
+      "submit": {
+        "label": "Add task",
+        "action": {
+          "event": {
+            "name": "task.save",
+            "context": {
+              "title": {
+                "path": "/draft/title"
+              },
+              "due": {
+                "path": "/draft/due"
+              },
+              "priority": {
+                "path": "/draft/priority"
+              },
+              "notes": {
+                "path": "/draft/notes"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "title",
+      "component": "TextInput",
+      "key": "title",
+      "label": "Task",
+      "value": {
+        "path": "/draft/title"
+      },
+      "required": true
+    },
+    {
+      "id": "due",
+      "component": "TextInput",
+      "key": "due",
+      "label": "Due date (YYYY-MM-DD)",
+      "value": {
+        "path": "/draft/due"
+      }
+    },
+    {
+      "id": "priority",
+      "component": "TextInput",
+      "key": "priority",
+      "label": "Priority (low/normal/high)",
+      "value": {
+        "path": "/draft/priority"
+      }
+    },
+    {
+      "id": "notes",
+      "component": "TextInput",
+      "key": "notes",
+      "label": "Notes",
+      "kind": "multiline",
+      "value": {
+        "path": "/draft/notes"
+      }
+    },
+    {
+      "id": "project",
+      "component": "TextInput",
+      "key": "project",
+      "label": "Project",
+      "value": {
+        "path": "/draft/project"
+      }
+    },
+    {
+      "id": "assignee",
+      "component": "TextInput",
+      "key": "assignee",
+      "label": "Assignee",
+      "value": {
+        "path": "/draft/assignee"
+      }
+    },
+    {
+      "id": "tags",
+      "component": "TextInput",
+      "key": "tags",
+      "label": "Tags",
+      "value": {
+        "path": "/draft/tags"
+      }
+    },
+    {
+      "id": "estimate",
+      "component": "TextInput",
+      "key": "estimate",
+      "label": "Estimate",
+      "value": {
+        "path": "/draft/estimate"
+      }
+    }
+  ],
+  "data": {
+    "draft": {
+      "title": "",
+      "due": null,
+      "priority": "normal",
+      "notes": "",
+      "project": "",
+      "assignee": "",
+      "tags": "",
+      "estimate": ""
+    }
+  }
+}

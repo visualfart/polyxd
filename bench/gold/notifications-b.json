@@ -1,0 +1,109 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "notifications",
+    "title": "Notifications",
+    "intent": "settings.notifications"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "channels",
+        "quiet"
+      ]
+    },
+    {
+      "id": "channels",
+      "component": "Section",
+      "title": "Channels",
+      "children": [
+        "push",
+        "email"
+      ]
+    },
+    {
+      "id": "push",
+      "component": "Toggle",
+      "key": "push",
+      "label": "Push",
+      "value": {
+        "path": "/prefs/push"
+      },
+      "action": {
+        "event": {
+          "name": "prefs.set",
+          "context": {
+            "push": {
+              "path": "/prefs/push"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "email",
+      "component": "Toggle",
+      "key": "email",
+      "label": "Email summaries",
+      "description": "Weekly, on Mondays",
+      "value": {
+        "path": "/prefs/email"
+      },
+      "action": {
+        "event": {
+          "name": "prefs.set",
+          "context": {
+            "emails": {
+              "path": "/prefs/email"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "quiet",
+      "component": "Section",
+      "title": "Other",
+      "children": [
+        "quiet-toggle",
+        "quiet-note"
+      ]
+    },
+    {
+      "id": "quiet-toggle",
+      "component": "Toggle",
+      "key": "quiet_hours",
+      "label": "Pause non-urgent notifications 22:00–07:00",
+      "value": {
+        "path": "/prefs/quiet"
+      },
+      "action": {
+        "event": {
+          "name": "prefs.set",
+          "context": {
+            "quiet": {
+              "path": "/prefs/quiet"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "quiet-note",
+      "component": "Text",
+      "variant": "supporting",
+      "text": "Security alerts always come through."
+    }
+  ],
+  "data": {
+    "prefs": {
+      "push": true,
+      "email": false,
+      "quiet": true
+    }
+  }
+}

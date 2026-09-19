@@ -1,0 +1,898 @@
+{
+  "$comment": "Polyxd benchmark: multi-turn sequences. Each turn is a request with host data (\"same\" = the previous turn's data). keys is the semantic key vocabulary for the intent (given to the model, as interface memory would); stable keys must keep their component, relative order and label across turns (scored with compare() from @polyxd/verifier). See bench/README.md.",
+  "sequences": [
+    {
+      "id": "seq-spending",
+      "domain": "money",
+      "intent": "money.spending.summary",
+      "capabilities": [
+        "transactions.open"
+      ],
+      "keys": {
+        "spent": "Metric: amount spent this period",
+        "budget": "Metric: budget or budget left",
+        "by_category": "Chart: spending by category",
+        "recent": "Collection: recent payments"
+      },
+      "turns": [
+        {
+          "request": "show my spending",
+          "data": {
+            "period": "September 2026",
+            "spent": 1843.2,
+            "budget": 2200,
+            "byCategory": [
+              {
+                "category": "Rent",
+                "amount": 950
+              },
+              {
+                "category": "Groceries",
+                "amount": 312.4
+              },
+              {
+                "category": "Eating out",
+                "amount": 221.8
+              },
+              {
+                "category": "Transport",
+                "amount": 148
+              }
+            ],
+            "recent": [
+              {
+                "id": "t31",
+                "merchant": "Tesco",
+                "amount": -42.18
+              },
+              {
+                "id": "t29",
+                "merchant": "Dishoom",
+                "amount": -63.5
+              }
+            ]
+          }
+        },
+        {
+          "request": "show my spending again",
+          "data": "same"
+        },
+        {
+          "request": "just groceries",
+          "data": {
+            "period": "September 2026",
+            "category": "Groceries",
+            "spent": 312.4,
+            "budget": 350,
+            "recent": [
+              {
+                "id": "t31",
+                "merchant": "Tesco",
+                "amount": -42.18
+              },
+              {
+                "id": "t22",
+                "merchant": "Lidl",
+                "amount": -27.9
+              }
+            ]
+          }
+        },
+        {
+          "request": "how does that compare to last month?",
+          "data": {
+            "period": "August 2026",
+            "category": "Groceries",
+            "spent": 288.1,
+            "budget": 350,
+            "previous": 312.4
+          }
+        }
+      ],
+      "stable": [
+        "spent",
+        "budget"
+      ],
+      "mayChange": [
+        "by_category disappears once filtered to one category",
+        "recent narrows to groceries",
+        "a comparison figure may be added in turn 4"
+      ]
+    },
+    {
+      "id": "seq-send-money",
+      "domain": "money",
+      "intent": "money.send",
+      "capabilities": [
+        "transfer.review",
+        "transfer.confirm"
+      ],
+      "keys": {
+        "recipient": "Choice: who to pay",
+        "amount": "TextInput (currency)",
+        "reference": "TextInput",
+        "fee": "DetailList row: fee"
+      },
+      "turns": [
+        {
+          "request": "send Sam £20",
+          "data": {
+            "payees": [
+              {
+                "id": "p1",
+                "name": "Alex Kim"
+              },
+              {
+                "id": "p2",
+                "name": "Sam Patel"
+              }
+            ],
+            "draft": {
+              "recipient": "p2",
+              "amount": 20,
+              "reference": ""
+            },
+            "quote": {
+              "fee": 0
+            }
+          }
+        },
+        {
+          "request": "pay Sam again",
+          "data": {
+            "payees": [
+              {
+                "id": "p1",
+                "name": "Alex Kim"
+              },
+              {
+                "id": "p2",
+                "name": "Sam Patel"
+              }
+            ],
+            "draft": {
+              "recipient": "p2",
+              "amount": null,
+              "reference": ""
+            },
+            "quote": {
+              "fee": 0
+            }
+          }
+        },
+        {
+          "request": "send £15 to Alex for lunch",
+          "data": {
+            "payees": [
+              {
+                "id": "p1",
+                "name": "Alex Kim"
+              },
+              {
+                "id": "p2",
+                "name": "Sam Patel"
+              }
+            ],
+            "draft": {
+              "recipient": "p1",
+              "amount": 15,
+              "reference": "Lunch"
+            },
+            "quote": {
+              "fee": 0
+            }
+          }
+        }
+      ],
+      "stable": [
+        "recipient",
+        "amount",
+        "reference",
+        "fee"
+      ],
+      "mayChange": [
+        "pre-filled values",
+        "reference may be empty"
+      ]
+    },
+    {
+      "id": "seq-tasks-today",
+      "domain": "productivity",
+      "intent": "tasks.today",
+      "capabilities": [
+        "task.open",
+        "task.complete",
+        "task.create"
+      ],
+      "keys": {
+        "tasks": "Collection: today's tasks",
+        "add_task": "Action: add a task"
+      },
+      "turns": [
+        {
+          "request": "what's on today",
+          "data": {
+            "tasks": [
+              {
+                "id": "k1",
+                "title": "Send Q3 invoice",
+                "project": "Freelance",
+                "done": false
+              },
+              {
+                "id": "k2",
+                "title": "Book dentist",
+                "project": "Personal",
+                "done": false
+              },
+              {
+                "id": "k3",
+                "title": "Call the bank",
+                "project": "Admin",
+                "done": false
+              }
+            ]
+          }
+        },
+        {
+          "request": "today's tasks",
+          "data": {
+            "tasks": [
+              {
+                "id": "k1",
+                "title": "Send Q3 invoice",
+                "project": "Freelance",
+                "done": true
+              },
+              {
+                "id": "k2",
+                "title": "Book dentist",
+                "project": "Personal",
+                "done": false
+              },
+              {
+                "id": "k3",
+                "title": "Call the bank",
+                "project": "Admin",
+                "done": false
+              }
+            ]
+          }
+        },
+        {
+          "request": "what's left",
+          "data": {
+            "tasks": [
+              {
+                "id": "k3",
+                "title": "Call the bank",
+                "project": "Admin",
+                "done": false
+              }
+            ]
+          }
+        },
+        {
+          "request": "anything left today?",
+          "data": {
+            "tasks": []
+          }
+        }
+      ],
+      "stable": [
+        "tasks",
+        "add_task"
+      ],
+      "mayChange": [
+        "number of items",
+        "turn 4 shows the Collection's empty state"
+      ]
+    },
+    {
+      "id": "seq-calendar-day",
+      "domain": "calendar",
+      "intent": "calendar.day",
+      "capabilities": [
+        "event.open"
+      ],
+      "keys": {
+        "events": "Collection: events in time order",
+        "next_up": "Status or Metric: what's next"
+      },
+      "turns": [
+        {
+          "request": "what's my day look like",
+          "data": {
+            "date": "2026-09-21",
+            "events": [
+              {
+                "id": "e1",
+                "title": "Stand-up",
+                "time": "09:15–09:30"
+              },
+              {
+                "id": "e2",
+                "title": "Design review",
+                "time": "11:00–12:00"
+              }
+            ]
+          }
+        },
+        {
+          "request": "and tomorrow?",
+          "data": {
+            "date": "2026-09-22",
+            "events": [
+              {
+                "id": "e5",
+                "title": "Stand-up",
+                "time": "09:15–09:30"
+              },
+              {
+                "id": "e6",
+                "title": "1:1 with Maya",
+                "time": "14:00–14:30"
+              },
+              {
+                "id": "e7",
+                "title": "Dentist",
+                "time": "17:00–17:30"
+              }
+            ]
+          }
+        },
+        {
+          "request": "my day",
+          "data": {
+            "date": "2026-09-23",
+            "events": [
+              {
+                "id": "e8",
+                "title": "Offsite planning",
+                "time": "10:00–12:00"
+              }
+            ]
+          }
+        }
+      ],
+      "stable": [
+        "events"
+      ],
+      "mayChange": [
+        "the date in the title",
+        "events"
+      ]
+    },
+    {
+      "id": "seq-notifications",
+      "domain": "settings",
+      "intent": "settings.notifications",
+      "capabilities": [
+        "prefs.set"
+      ],
+      "keys": {
+        "push": "Toggle: push notifications",
+        "email": "Toggle: email",
+        "sms": "Toggle: text messages"
+      },
+      "turns": [
+        {
+          "request": "notification settings",
+          "data": {
+            "prefs": {
+              "push": true,
+              "email": true,
+              "sms": false
+            }
+          }
+        },
+        {
+          "request": "turn off the emails",
+          "data": {
+            "prefs": {
+              "push": true,
+              "email": true,
+              "sms": false
+            }
+          }
+        },
+        {
+          "request": "show me notification settings again",
+          "data": {
+            "prefs": {
+              "push": true,
+              "email": false,
+              "sms": false
+            }
+          }
+        }
+      ],
+      "stable": [
+        "push",
+        "email",
+        "sms"
+      ],
+      "mayChange": [
+        "toggle values",
+        "turn 2 may lead with the email toggle's state, but the others keep their place"
+      ]
+    },
+    {
+      "id": "seq-browse-lamps",
+      "domain": "commerce",
+      "intent": "commerce.browse",
+      "capabilities": [
+        "product.open"
+      ],
+      "keys": {
+        "search": "TextInput (search)",
+        "category": "Choice: lamp type",
+        "max_price": "RangeInput: maximum price",
+        "results": "Collection: products"
+      },
+      "turns": [
+        {
+          "request": "desk lamps under £100",
+          "data": {
+            "filters": {
+              "q": "desk lamp",
+              "types": [
+                "desk"
+              ],
+              "maxPrice": 100
+            },
+            "products": [
+              {
+                "id": "l1",
+                "name": "Arc desk lamp",
+                "priceLabel": "£49"
+              },
+              {
+                "id": "l3",
+                "name": "Studio LED lamp",
+                "priceLabel": "£85"
+              }
+            ]
+          }
+        },
+        {
+          "request": "cheaper, under £60",
+          "data": {
+            "filters": {
+              "q": "desk lamp",
+              "types": [
+                "desk"
+              ],
+              "maxPrice": 60
+            },
+            "products": [
+              {
+                "id": "l1",
+                "name": "Arc desk lamp",
+                "priceLabel": "£49"
+              }
+            ]
+          }
+        },
+        {
+          "request": "what about clip-on ones",
+          "data": {
+            "filters": {
+              "q": "",
+              "types": [
+                "clip"
+              ],
+              "maxPrice": 60
+            },
+            "products": [
+              {
+                "id": "l2",
+                "name": "Mini clamp lamp",
+                "priceLabel": "£22"
+              }
+            ]
+          }
+        },
+        {
+          "request": "show lamps again",
+          "data": {
+            "filters": {
+              "q": "",
+              "types": [],
+              "maxPrice": 300
+            },
+            "products": [
+              {
+                "id": "l1",
+                "name": "Arc desk lamp",
+                "priceLabel": "£49"
+              },
+              {
+                "id": "l2",
+                "name": "Mini clamp lamp",
+                "priceLabel": "£22"
+              },
+              {
+                "id": "l3",
+                "name": "Studio LED lamp",
+                "priceLabel": "£85"
+              }
+            ]
+          }
+        }
+      ],
+      "stable": [
+        "search",
+        "category",
+        "max_price",
+        "results"
+      ],
+      "mayChange": [
+        "filter values",
+        "results"
+      ]
+    },
+    {
+      "id": "seq-trip",
+      "domain": "travel",
+      "intent": "travel.trip.overview",
+      "capabilities": [
+        "booking.open"
+      ],
+      "keys": {
+        "bookings": "Collection: bookings in date order",
+        "spent": "Metric: trip cost so far",
+        "dates": "DetailList row or Text: trip dates"
+      },
+      "turns": [
+        {
+          "request": "Japan trip",
+          "data": {
+            "trip": {
+              "name": "Japan",
+              "dates": "12–26 Nov"
+            },
+            "bookings": [
+              {
+                "id": "bk1",
+                "kind": "Flight",
+                "title": "LHR → HND"
+              },
+              {
+                "id": "bk2",
+                "kind": "Hotel",
+                "title": "Hotel Gracery Shinjuku"
+              }
+            ],
+            "spent": 2710
+          }
+        },
+        {
+          "request": "show me the Japan trip again",
+          "data": {
+            "trip": {
+              "name": "Japan",
+              "dates": "12–26 Nov"
+            },
+            "bookings": [
+              {
+                "id": "bk1",
+                "kind": "Flight",
+                "title": "LHR → HND"
+              },
+              {
+                "id": "bk2",
+                "kind": "Hotel",
+                "title": "Hotel Gracery Shinjuku"
+              },
+              {
+                "id": "bk4",
+                "kind": "Hotel",
+                "title": "Ryokan Yachiyo"
+              }
+            ],
+            "spent": 3480
+          }
+        },
+        {
+          "request": "just the hotels",
+          "data": {
+            "trip": {
+              "name": "Japan",
+              "dates": "12–26 Nov"
+            },
+            "bookings": [
+              {
+                "id": "bk2",
+                "kind": "Hotel",
+                "title": "Hotel Gracery Shinjuku"
+              },
+              {
+                "id": "bk4",
+                "kind": "Hotel",
+                "title": "Ryokan Yachiyo"
+              }
+            ],
+            "spent": 3480
+          }
+        }
+      ],
+      "stable": [
+        "bookings",
+        "spent"
+      ],
+      "mayChange": [
+        "number of bookings",
+        "the Collection's label in turn 3 (e.g. 'Hotels')"
+      ]
+    },
+    {
+      "id": "seq-habits",
+      "domain": "personal",
+      "intent": "personal.habits.today",
+      "capabilities": [
+        "habit.check"
+      ],
+      "keys": {
+        "done_today": "Metric: habits done today",
+        "habits": "Toggles or Collection of habits",
+        "streak": "Metric or Chart: streak"
+      },
+      "turns": [
+        {
+          "request": "habits",
+          "data": {
+            "habits": [
+              {
+                "id": "h1",
+                "name": "Meditate 10 min",
+                "done": false
+              },
+              {
+                "id": "h2",
+                "name": "Walk 8k steps",
+                "done": false
+              }
+            ],
+            "doneToday": 0,
+            "streak": 12
+          }
+        },
+        {
+          "request": "how are my habits doing",
+          "data": {
+            "habits": [
+              {
+                "id": "h1",
+                "name": "Meditate 10 min",
+                "done": true
+              },
+              {
+                "id": "h2",
+                "name": "Walk 8k steps",
+                "done": false
+              }
+            ],
+            "doneToday": 1,
+            "streak": 12
+          }
+        },
+        {
+          "request": "habits today?",
+          "data": {
+            "habits": [
+              {
+                "id": "h1",
+                "name": "Meditate 10 min",
+                "done": true
+              },
+              {
+                "id": "h2",
+                "name": "Walk 8k steps",
+                "done": true
+              },
+              {
+                "id": "h3",
+                "name": "Read 20 pages",
+                "done": false
+              }
+            ],
+            "doneToday": 2,
+            "streak": 13
+          }
+        }
+      ],
+      "stable": [
+        "done_today",
+        "habits",
+        "streak"
+      ],
+      "mayChange": [
+        "values",
+        "a new habit appears in turn 3 in its data order"
+      ]
+    },
+    {
+      "id": "seq-pay-bills",
+      "domain": "money",
+      "intent": "money.bill.pay",
+      "capabilities": [
+        "bill.pay"
+      ],
+      "keys": {
+        "payee": "DetailList row: who is paid",
+        "amount": "DetailList row: amount",
+        "due": "DetailList row: due date",
+        "from": "DetailList row: paying account"
+      },
+      "turns": [
+        {
+          "request": "pay the electricity bill",
+          "data": {
+            "bill": {
+              "id": "b_12",
+              "payee": "Northern Power",
+              "amount": 86.4,
+              "due": "24 Sep"
+            },
+            "account": "Main account"
+          }
+        },
+        {
+          "request": "now the water bill",
+          "data": {
+            "bill": {
+              "id": "b_13",
+              "payee": "City Water",
+              "amount": 31.2,
+              "due": "30 Sep"
+            },
+            "account": "Main account"
+          }
+        },
+        {
+          "request": "pay gas too",
+          "data": {
+            "bill": {
+              "id": "b_14",
+              "payee": "Octopus Energy",
+              "amount": 54.75,
+              "due": "2 Oct"
+            },
+            "account": "Main account"
+          }
+        }
+      ],
+      "stable": [
+        "payee",
+        "amount",
+        "due",
+        "from"
+      ],
+      "mayChange": [
+        "the confirm button's amount",
+        "the dialog title's payee"
+      ]
+    },
+    {
+      "id": "seq-checkout",
+      "domain": "commerce",
+      "intent": "commerce.checkout",
+      "capabilities": [
+        "order.place"
+      ],
+      "keys": {
+        "address": "Steps step / TextInput: delivery address",
+        "delivery_speed": "Choice: delivery speed",
+        "payment": "Choice: payment method",
+        "review": "Steps step with a DetailList: review"
+      },
+      "turns": [
+        {
+          "request": "check out",
+          "data": {
+            "cart": {
+              "id": "cart_7",
+              "total": 108.5
+            },
+            "draft": {
+              "address": "",
+              "speed": "standard",
+              "payment": null
+            },
+            "speeds": [
+              {
+                "value": "standard",
+                "label": "Standard (3–5 days, free)"
+              },
+              {
+                "value": "express",
+                "label": "Express (next day, £4.99)"
+              }
+            ],
+            "cards": [
+              {
+                "id": "pm_1",
+                "label": "Visa ending 4242"
+              }
+            ]
+          }
+        },
+        {
+          "request": "checkout please",
+          "data": {
+            "cart": {
+              "id": "cart_9",
+              "total": 23
+            },
+            "draft": {
+              "address": "12 Park Road, Leeds",
+              "speed": "standard",
+              "payment": "pm_1"
+            },
+            "speeds": [
+              {
+                "value": "standard",
+                "label": "Standard (3–5 days, free)"
+              },
+              {
+                "value": "express",
+                "label": "Express (next day, £4.99)"
+              }
+            ],
+            "cards": [
+              {
+                "id": "pm_1",
+                "label": "Visa ending 4242"
+              }
+            ]
+          }
+        },
+        {
+          "request": "buy these",
+          "data": {
+            "cart": {
+              "id": "cart_12",
+              "total": 61.2
+            },
+            "draft": {
+              "address": "12 Park Road, Leeds",
+              "speed": "express",
+              "payment": "pm_2"
+            },
+            "speeds": [
+              {
+                "value": "standard",
+                "label": "Standard (3–5 days, free)"
+              },
+              {
+                "value": "express",
+                "label": "Express (next day, £4.99)"
+              }
+            ],
+            "cards": [
+              {
+                "id": "pm_1",
+                "label": "Visa ending 4242"
+              },
+              {
+                "id": "pm_2",
+                "label": "Mastercard ending 0019"
+              }
+            ]
+          }
+        }
+      ],
+      "stable": [
+        "address",
+        "delivery_speed",
+        "payment",
+        "review"
+      ],
+      "mayChange": [
+        "pre-filled values",
+        "the finish label's amount"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "review",
+    "title": "Check your booking",
+    "intent": "travel.hotel.book",
+    "pattern": "review-and-submit"
+  },
+  "root": "form",
+  "components": [
+    {
+      "id": "form",
+      "component": "Form",
+      "children": [
+        "guest",
+        "stay",
+        "terms"
+      ],
+      "submit": {
+        "label": "Book and pay £312",
+        "action": {
+          "event": {
+            "name": "hotel.book",
+            "context": {
+              "offerId": {
+                "path": "/offer/id"
+              },
+              "acceptedTerms": {
+                "path": "/draft/terms"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "guest",
+      "component": "Section",
+      "title": "Guest",
+      "children": [
+        "guest-details"
+      ]
+    },
+    {
+      "id": "guest-details",
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "name",
+          "label": "Name",
+          "value": {
+            "path": "/guest/name"
+          }
+        },
+        {
+          "key": "email",
+          "label": "Email",
+          "value": {
+            "path": "/guest/email"
+          }
+        }
+      ]
+    },
+    {
+      "id": "stay",
+      "component": "Section",
+      "title": "Stay",
+      "children": [
+        "stay-details"
+      ]
+    },
+    {
+      "id": "stay-details",
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "hotel",
+          "label": "Hotel",
+          "value": {
+            "path": "/offer/hotel"
+          }
+        },
+        {
+          "key": "dates",
+          "label": "Dates",
+          "value": {
+            "path": "/offer/dates"
+          }
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "value": {
+            "path": "/offer/total"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        {
+          "key": "cancellation",
+          "label": "Cancellation",
+          "value": {
+            "path": "/offer/cancellation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "terms",
+      "component": "Toggle",
+      "key": "terms",
+      "label": "I agree to the hotel's booking terms",
+      "value": {
+        "path": "/draft/terms"
+      }
+    }
+  ],
+  "data": {
+    "guest": {
+      "name": "Neel S",
+      "email": "neel@example.com"
+    },
+    "offer": {
+      "id": "o_3",
+      "hotel": "Hotel Alfama",
+      "dates": "3–6 Oct (3 nights)",
+      "total": 312,
+      "cancellation": "Free until 1 Oct"
+    },
+    "draft": {
+      "terms": false
+    }
+  }
+}

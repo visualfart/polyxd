@@ -1,0 +1,92 @@
+{
+  "$schema": "../../packages/spec/schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "reading",
+    "title": "Reading list",
+    "intent": "personal.reading.list"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "books",
+        "bar"
+      ]
+    },
+    {
+      "id": "books",
+      "component": "Collection",
+      "key": "books",
+      "label": "Books to read",
+      "items": {
+        "path": "/books",
+        "componentId": "book"
+      },
+      "empty": "empty"
+    },
+    {
+      "id": "book",
+      "component": "Card",
+      "title": {
+        "path": "title"
+      },
+      "subtitle": {
+        "path": "author"
+      },
+      "action": {
+        "event": {
+          "name": "book.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "empty",
+      "component": "Status",
+      "kind": "empty",
+      "title": "Your reading list is empty",
+      "message": "Add a book you've been meaning to read."
+    },
+    {
+      "id": "bar",
+      "component": "ActionBar",
+      "children": [
+        "add",
+        "import"
+      ]
+    },
+    {
+      "id": "add",
+      "component": "Action",
+      "key": "add_book",
+      "label": "Add a book",
+      "emphasis": "primary",
+      "action": {
+        "event": {
+          "name": "book.create"
+        }
+      }
+    },
+    {
+      "id": "import",
+      "component": "Action",
+      "key": "import",
+      "label": "Import from Goodreads",
+      "action": {
+        "event": {
+          "name": "books.import"
+        }
+      }
+    }
+  ],
+  "data": {
+    "books": []
+  }
+}
