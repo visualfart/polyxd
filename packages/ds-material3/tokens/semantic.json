@@ -1,5 +1,5 @@
 {
-  "$description": "Polixd semantic tier for Material 3. Every token maps to an M3 system (md.sys.*) or reference (md.ref.*) token wherever an M3 equivalent exists; mode differences come from the system files.",
+  "$description": "Polyxd semantic tier for Material 3. Every token maps to an M3 system (md.sys.*) or reference (md.ref.*) token wherever an M3 equivalent exists; mode differences come from the system files.",
   "color": {
     "$type": "color",
     "surface": {
@@ -100,35 +100,35 @@
     "status": {
       "info": {
         "background": {
-          "$value": "{polixd.sys.color.info-container}"
+          "$value": "{polyxd.sys.color.info-container}"
         },
         "foreground": {
-          "$value": "{polixd.sys.color.on-info-container}"
+          "$value": "{polyxd.sys.color.on-info-container}"
         },
         "emphasis": {
-          "$value": "{polixd.sys.color.info}"
+          "$value": "{polyxd.sys.color.info}"
         }
       },
       "success": {
         "background": {
-          "$value": "{polixd.sys.color.success-container}"
+          "$value": "{polyxd.sys.color.success-container}"
         },
         "foreground": {
-          "$value": "{polixd.sys.color.on-success-container}"
+          "$value": "{polyxd.sys.color.on-success-container}"
         },
         "emphasis": {
-          "$value": "{polixd.sys.color.success}"
+          "$value": "{polyxd.sys.color.success}"
         }
       },
       "warning": {
         "background": {
-          "$value": "{polixd.sys.color.warning-container}"
+          "$value": "{polyxd.sys.color.warning-container}"
         },
         "foreground": {
-          "$value": "{polixd.sys.color.on-warning-container}"
+          "$value": "{polyxd.sys.color.on-warning-container}"
         },
         "emphasis": {
-          "$value": "{polixd.sys.color.warning}"
+          "$value": "{polyxd.sys.color.warning}"
         }
       },
       "danger": {
@@ -146,26 +146,26 @@
     "data": {
       "categorical": {
         "1": {
-          "$value": "{polixd.sys.color.chart-1}"
+          "$value": "{polyxd.sys.color.chart-1}"
         },
         "2": {
-          "$value": "{polixd.sys.color.chart-2}"
+          "$value": "{polyxd.sys.color.chart-2}"
         },
         "3": {
-          "$value": "{polixd.sys.color.chart-3}"
+          "$value": "{polyxd.sys.color.chart-3}"
         },
         "4": {
-          "$value": "{polixd.sys.color.chart-4}"
+          "$value": "{polyxd.sys.color.chart-4}"
         },
         "5": {
-          "$value": "{polixd.sys.color.chart-5}"
+          "$value": "{polyxd.sys.color.chart-5}"
         },
         "6": {
-          "$value": "{polixd.sys.color.chart-6}"
+          "$value": "{polyxd.sys.color.chart-6}"
         }
       },
       "positive": {
-        "$value": "{polixd.sys.color.success}"
+        "$value": "{polyxd.sys.color.success}"
       },
       "negative": {
         "$value": "{md.sys.color.error}"
@@ -271,38 +271,38 @@
     "$description": "M3 4dp grid",
     "inset": {
       "compact": {
-        "$value": "{polixd.ref.space.2}"
+        "$value": "{polyxd.ref.space.2}"
       },
       "default": {
-        "$value": "{polixd.ref.space.4}"
+        "$value": "{polyxd.ref.space.4}"
       },
       "comfortable": {
-        "$value": "{polixd.ref.space.6}"
+        "$value": "{polyxd.ref.space.6}"
       }
     },
     "stack": {
       "tight": {
-        "$value": "{polixd.ref.space.1}"
+        "$value": "{polyxd.ref.space.1}"
       },
       "default": {
-        "$value": "{polixd.ref.space.2}"
+        "$value": "{polyxd.ref.space.2}"
       },
       "loose": {
-        "$value": "{polixd.ref.space.4}"
+        "$value": "{polyxd.ref.space.4}"
       },
       "section": {
-        "$value": "{polixd.ref.space.8}"
+        "$value": "{polyxd.ref.space.8}"
       }
     },
     "inline": {
       "tight": {
-        "$value": "{polixd.ref.space.1}"
+        "$value": "{polyxd.ref.space.1}"
       },
       "default": {
-        "$value": "{polixd.ref.space.2}"
+        "$value": "{polyxd.ref.space.2}"
       },
       "loose": {
-        "$value": "{polixd.ref.space.4}"
+        "$value": "{polyxd.ref.space.4}"
       }
     }
   },
@@ -415,11 +415,11 @@
   "shadow": {
     "$type": "shadow",
     "raised": {
-      "$value": "{polixd.sys.elevation.shadow.level1}",
+      "$value": "{polyxd.sys.elevation.shadow.level1}",
       "$description": "md.sys.elevation.level1 (elevated card)"
     },
     "overlay": {
-      "$value": "{polixd.sys.elevation.shadow.level3}",
+      "$value": "{polyxd.sys.elevation.shadow.level3}",
       "$description": "md.sys.elevation.level3 (dialog)"
     }
   },

@@ -8,7 +8,7 @@
     "pattern": "confirm-destructive",
     "journey": "money.send",
     "specVersion": "0.1.0",
-    "generator": "polixd-3b@0.1.0",
+    "generator": "polyxd-3b@0.1.0",
     "direction": "calm-finance@0.1.0"
   },
   "actor": {

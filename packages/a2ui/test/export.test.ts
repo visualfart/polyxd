@@ -1,12 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
-import { checkComponentTree, createValidator, exportToA2UI, EXTENSION_KEY, POLIXD_CATALOG_ID, type A2UIMessage, type PolixdDocument } from "../src/index.ts";
+import { checkComponentTree, createValidator, exportToA2UI, EXTENSION_KEY, POLYXD_CATALOG_ID, type A2UIMessage, type PolyxdDocument } from "../src/index.ts";
 
-// @polixd/spec does not export examples/, so read them from the workspace.
+// @polyxd/spec does not export examples/, so read them from the workspace.
 const examplesDir = new URL("../../spec/examples/", import.meta.url);
 const files = readdirSync(examplesDir).filter((f) => f.endsWith(".json")).sort();
-const load = (f: string): PolixdDocument => JSON.parse(readFileSync(new URL(f, examplesDir), "utf8"));
+const load = (f: string): PolyxdDocument => JSON.parse(readFileSync(new URL(f, examplesDir), "utf8"));
 const validator = createValidator();
 
 const componentsOf = (messages: A2UIMessage[]) =>
@@ -39,12 +39,12 @@ for (const file of files) {
   });
 }
 
-test("createSurface uses the Polixd catalog and carries the data model", () => {
+test("createSurface uses the Polyxd catalog and carries the data model", () => {
   const doc = load("tasks-list.json");
   const [m] = exportToA2UI(doc).messages as any[];
   assert.equal(m.version, "v1.0");
   assert.equal(m.createSurface.surfaceId, "tasks");
-  assert.equal(m.createSurface.catalogId, POLIXD_CATALOG_ID);
+  assert.equal(m.createSurface.catalogId, POLYXD_CATALOG_ID);
   assert.deepEqual(m.createSurface.dataModel, doc.data);
   assert.equal(exportToA2UI(doc, { surfaceId: "tasks-42" }).messages.length, 1);
   assert.equal((exportToA2UI(doc, { surfaceId: "tasks-42" }).messages[0] as any).createSurface.surfaceId, "tasks-42");
@@ -65,7 +65,7 @@ test("ids, templated children, relative bindings and actions survive (tasks-list
   assert.deepEqual(byId(messages, "list").metadata, { extensions: { [EXTENSION_KEY]: { key: "tasks" } } });
 });
 
-test("the Polixd root is renamed to 'root' and every reference follows (money-send-form)", () => {
+test("the Polyxd root is renamed to 'root' and every reference follows (money-send-form)", () => {
   const doc = load("money-send-form.json");
   const { messages, idMap, lossy } = exportToA2UI(doc);
   assert.deepEqual(idMap, { form: "root" });
@@ -80,7 +80,7 @@ test("the Polixd root is renamed to 'root' and every reference follows (money-se
   assert.equal(byId(messages, "form"), undefined);
   assert.deepEqual(byId(messages, "amount").value, { path: "/draft/amount" });
   assert.deepEqual(byId(messages, "amount").validation, { min: 0.01, max: 5000, message: "Enter an amount between £0.01 and £5,000" });
-  // Format details are representable in the Polixd catalog, so they are not lossy.
+  // Format details are representable in the Polyxd catalog, so they are not lossy.
   assert.deepEqual(byId(messages, "fee-details").items[0].format, { type: "currency", currency: "GBP" });
   assert.ok(!lossy.some((p) => p.includes("format")));
   assert.deepEqual(lossy.filter((p) => p.startsWith("/surface")).sort(), ["/surface/intent", "/surface/pattern", "/surface/title"]);
@@ -99,7 +99,7 @@ test("Views and Steps panel references are remapped (travel-trip-overview, shop-
   }
 });
 
-test("renderer actions (ui.*) become A2UI local function calls from the Polixd catalog", () => {
+test("renderer actions (ui.*) become A2UI local function calls from the Polyxd catalog", () => {
   const { messages, lossy } = exportToA2UI(load("settings-delete-account.json"));
   assert.deepEqual(byId(messages, "root").cancel.action, { functionCall: { call: "dismiss" } });
   assert.ok(!lossy.some((p) => p.includes("context")));
@@ -120,7 +120,7 @@ test("accessibility maps onto the A2UI accessibility block", () => {
 });
 
 test("a non-root component already called 'root' is moved out of the way", () => {
-  const doc: PolixdDocument = {
+  const doc: PolyxdDocument = {
     specVersion: "0.1.0",
     surface: { id: "s", title: "S" },
     root: "top",

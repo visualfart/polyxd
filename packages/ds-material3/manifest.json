@@ -21,7 +21,7 @@
       "source": "npm:@material/material-color-utilities (https://github.com/material-foundation/material-color-utilities)",
       "version": "0.4.0",
       "license": "Apache-2.0",
-      "notes": "Polixd additions (M3 only defines error). polixd.ref.palette.success/warning/info = TonalPalette.fromInt(#2E7D32 / #F9A825 / #0288D1), used with the M3 custom-colour tone pattern (light 40/100/90/30, dark 80/20/30/90). polixd.ref.palette.chart-1..6 = TonalPalette.fromHueAndChroma(seed hue + 0/240/120/300/180/60 degrees, 48); chart colours use tone 40 (light) / 80 (dark)."
+      "notes": "Polyxd additions (M3 only defines error). polyxd.ref.palette.success/warning/info = TonalPalette.fromInt(#2E7D32 / #F9A825 / #0288D1), used with the M3 custom-colour tone pattern (light 40/100/90/30, dark 80/20/30/90). polyxd.ref.palette.chart-1..6 = TonalPalette.fromHueAndChroma(seed hue + 0/240/120/300/180/60 degrees, 48); chart colours use tone 40 (light) / 80 (dark)."
     },
     {
       "source": "github:material-components/material-web tokens/versions/v0_192/_md-ref-typeface.scss, _md-sys-typescale.scss, _md-sys-shape.scss, _md-sys-motion.scss, _md-sys-state.scss, _md-sys-elevation.scss (vendored in scripts/sources/material-web)",
@@ -42,9 +42,9 @@
       "notes": "Focus ring width 3px, outward offset 2px, colour md.sys.color.secondary. Elevation shadows: key layer (opacity 0.3) and ambient layer (opacity 0.15) per level, transcribed into scripts/generate.ts."
     },
     {
-      "source": "Polixd",
+      "source": "Polyxd",
       "license": "Apache-2.0",
-      "notes": "Spacing on the M3 4dp grid (polixd.ref.space.N = 4N px), size.target.min 48px (M3 minimum target), measure.max 65, and the semantic-tier mapping itself."
+      "notes": "Spacing on the M3 4dp grid (polyxd.ref.space.N = 4N px), size.target.min 48px (M3 minimum target), measure.max 65, and the semantic-tier mapping itself."
     }
   ]
 }

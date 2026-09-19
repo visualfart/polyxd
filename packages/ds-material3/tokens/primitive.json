@@ -1,5 +1,5 @@
 {
-  "$description": "Material 3 reference tier (md.ref.*) plus Polixd reference additions (polixd.ref.*). Palettes generated with @material/material-color-utilities 0.4.0 from seed #6750A4; typefaces from material-web v2.5.0 tokens/versions/v0_192/_md-ref-typeface.scss.",
+  "$description": "Material 3 reference tier (md.ref.*) plus Polyxd reference additions (polyxd.ref.*). Palettes generated with @material/material-color-utilities 0.4.0 from seed #6750A4; typefaces from material-web v2.5.0 tokens/versions/v0_192/_md-ref-typeface.scss.",
   "md": {
     "ref": {
       "palette": {
@@ -1032,7 +1032,7 @@
       }
     }
   },
-  "polixd": {
+  "polyxd": {
     "ref": {
       "palette": {
         "success": {
@@ -1180,7 +1180,7 @@
             }
           },
           "$type": "color",
-          "$description": "TonalPalette.fromInt(#2E7D32): Polixd status palette (M3 defines no success role). HCT hue 145.62, chroma 52.95."
+          "$description": "TonalPalette.fromInt(#2E7D32): Polyxd status palette (M3 defines no success role). HCT hue 145.62, chroma 52.95."
         },
         "warning": {
           "0": {
@@ -1327,7 +1327,7 @@
             }
           },
           "$type": "color",
-          "$description": "TonalPalette.fromInt(#F9A825): Polixd status palette (M3 defines no warning role). HCT hue 72.76, chroma 55.36."
+          "$description": "TonalPalette.fromInt(#F9A825): Polyxd status palette (M3 defines no warning role). HCT hue 72.76, chroma 55.36."
         },
         "info": {
           "0": {
@@ -1474,7 +1474,7 @@
             }
           },
           "$type": "color",
-          "$description": "TonalPalette.fromInt(#0288D1): Polixd status palette (M3 defines no info role). HCT hue 247.79, chroma 53.69."
+          "$description": "TonalPalette.fromInt(#0288D1): Polyxd status palette (M3 defines no info role). HCT hue 247.79, chroma 53.69."
         },
         "chart-1": {
           "0": {
@@ -2427,7 +2427,7 @@
           }
         },
         "$type": "dimension",
-        "$description": "M3 4dp layout grid: polixd.ref.space.N = N x 4px"
+        "$description": "M3 4dp layout grid: polyxd.ref.space.N = N x 4px"
       }
     }
   }

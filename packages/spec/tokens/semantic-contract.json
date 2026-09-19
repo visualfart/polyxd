@@ -1,7 +1,7 @@
 {
   "$schema": "../schema/token-contract.schema.json",
   "contractVersion": "0.1.0",
-  "description": "Semantic tokens every Polixd design-system pack must provide, in every mode. Generated UIs and renderers only reference these names, never raw values.",
+  "description": "Semantic tokens every Polyxd design-system pack must provide, in every mode. Generated UIs and renderers only reference these names, never raw values.",
   "tokens": {
     "color.surface.default": {
       "type": "color",

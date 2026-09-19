@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polixd.dev/schema/0.1/design-system.schema.json",
-  "title": "Polixd design-system pack manifest",
+  "$id": "https://polyxd.com/schema/0.1/design-system.schema.json",
+  "title": "Polyxd design-system pack manifest",
   "description": "Describes a design-system pack: which DTCG token files make up each mode. Files listed for a mode are merged in order, later files overriding earlier ones.",
   "type": "object",
   "required": ["name", "version", "contractVersion", "license", "modes", "defaultMode"],

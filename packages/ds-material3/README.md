@@ -1,10 +1,10 @@
-# @polixd/ds-material3
+# @polyxd/ds-material3
 
-The Material 3 design-system pack for Polixd. It has DTCG 2025.10 token files that satisfy the Polixd semantic token contract (`packages/spec/tokens/semantic-contract.json`, v0.1.0) in `light` and `dark` modes.
+The Material 3 design-system pack for Polyxd. It has DTCG 2025.10 token files that satisfy the Polyxd semantic token contract (`packages/spec/tokens/semantic-contract.json`, v0.1.0) in `light` and `dark` modes.
 
 ```sh
-npm run check -w @polixd/ds-material3     # contract check, both modes
-npm run generate -w @polixd/ds-material3  # regenerate tokens/*.json
+npm run check -w @polyxd/ds-material3     # contract check, both modes
+npm run generate -w @polyxd/ds-material3  # regenerate tokens/*.json
 ```
 
 ## Tiers
@@ -13,10 +13,10 @@ The M3 names are kept as they are, so you can trace every semantic token back to
 
 | Tier | File | Contents |
 |---|---|---|
-| Reference (primitive) | `tokens/primitive.json` | `md.ref.palette.<palette>.<tone>` (primary, secondary, tertiary, neutral, neutral-variant, error), `md.ref.typeface.*`. Polixd additions: `polixd.ref.palette.{success,warning,info,chart-1..6}` and `polixd.ref.space.N` (the 4dp grid, N × 4px). |
-| System | `tokens/system.json` | Values that are the same in every mode: `md.sys.typescale.*`, `md.sys.shape.*`, `md.sys.motion.*`, `md.sys.state.*`, `md.sys.elevation.level0..5`, and `polixd.sys.elevation.shadow.level1..5` (M3 elevation shown as DTCG shadows). |
-| System, per mode | `tokens/system.light.json`, `tokens/system.dark.json` | `md.sys.color.*` (all 49 material-web v0_192 roles), each an alias to a reference-palette tone. Polixd additions: `polixd.sys.color.{success,on-success,success-container,on-success-container,…,chart-1..6}`. |
-| Semantic | `tokens/semantic.json` | The Polixd contract tokens. Wherever M3 has an equivalent, the token is an `{alias}` to an `md.sys.*` / `md.ref.*` token. The file is the same in both modes; aliases pick up the mode's system file. |
+| Reference (primitive) | `tokens/primitive.json` | `md.ref.palette.<palette>.<tone>` (primary, secondary, tertiary, neutral, neutral-variant, error), `md.ref.typeface.*`. Polyxd additions: `polyxd.ref.palette.{success,warning,info,chart-1..6}` and `polyxd.ref.space.N` (the 4dp grid, N × 4px). |
+| System | `tokens/system.json` | Values that are the same in every mode: `md.sys.typescale.*`, `md.sys.shape.*`, `md.sys.motion.*`, `md.sys.state.*`, `md.sys.elevation.level0..5`, and `polyxd.sys.elevation.shadow.level1..5` (M3 elevation shown as DTCG shadows). |
+| System, per mode | `tokens/system.light.json`, `tokens/system.dark.json` | `md.sys.color.*` (all 49 material-web v0_192 roles), each an alias to a reference-palette tone. Polyxd additions: `polyxd.sys.color.{success,on-success,success-container,on-success-container,…,chart-1..6}`. |
+| Semantic | `tokens/semantic.json` | The Polyxd contract tokens. Wherever M3 has an equivalent, the token is an `{alias}` to an `md.sys.*` / `md.ref.*` token. The file is the same in both modes; aliases pick up the mode's system file. |
 
 `manifest.json` merges the files for each mode in this order: primitive → system → system.<mode> → semantic.
 

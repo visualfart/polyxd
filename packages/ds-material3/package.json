@@ -1,8 +1,8 @@
 {
-  "name": "@polixd/ds-material3",
+  "name": "@polyxd/ds-material3",
   "version": "0.0.0",
   "private": true,
-  "description": "Material 3 design-system pack for Polixd (DTCG 2025.10 tokens)",
+  "description": "Material 3 design-system pack for Polyxd (DTCG 2025.10 tokens)",
   "license": "Apache-2.0",
   "type": "module",
   "files": [

@@ -1,21 +1,21 @@
 /**
- * Builds the Polixd catalog in A2UI v1.0 catalog format from the Polixd component sources
- * (@polixd/spec components/*.json + schema/common.defs.json).
+ * Builds the Polyxd catalog in A2UI v1.0 catalog format from the Polyxd component sources
+ * (@polyxd/spec components/*.json + schema/common.defs.json).
  *
  * A2UI catalog rules this follows (A2UI v1.0 protocol, "Catalog Schema Rules and Conventions"):
  *  - top-level keys limited to $schema, $id, protocolVersion, title, description, catalogId, instructions, components, functions, $defs
- *  - $defs holds only anyComponent / anyFunction; no shared helpers, so Polixd helper types are inlined per prop
+ *  - $defs holds only anyComponent / anyFunction; no shared helpers, so Polyxd helper types are inlined per prop
  *  - external $refs only to common_types.json ComponentId, ChildList, Dynamic*, AccessibilityAttributes, CheckRule, Checkable, Action
  *  - component ids use ComponentId, child lists and templates use ChildList (validators find links by these refs)
  *  - id / catalogId / accessibility / metadata are envelope-level (ComponentCommon) and are not redeclared
  */
 import { readdirSync, readFileSync } from "node:fs";
-import { EXTENSION_KEY, POLIXD_CATALOG_ID, type Json } from "./a2ui.ts";
+import { EXTENSION_KEY, POLYXD_CATALOG_ID, type Json } from "./a2ui.ts";
 import { MAPPING } from "./mapping.ts";
 
 const COMMON = "common_types.json#/$defs/";
 
-/** Polixd defs that map one-to-one onto an A2UI common type. */
+/** Polyxd defs that map one-to-one onto an A2UI common type. */
 const DIRECT: Record<string, string> = {
   Id: "ComponentId",
   DynamicString: "DynamicString",
@@ -28,7 +28,7 @@ const DIRECT: Record<string, string> = {
 
 /**
  * Component props that may only reference certain component types (mirrors REFERENCE_TYPES in
- * @polixd/spec src/validate.ts). Emitted as A2UI `allowedChildren` when every child slot of a component is restricted.
+ * @polyxd/spec src/validate.ts). Emitted as A2UI `allowedChildren` when every child slot of a component is restricted.
  */
 const ALLOWED_CHILDREN: Record<string, string[]> = {
   ActionBar: ["Action"],
@@ -38,11 +38,11 @@ const ALLOWED_CHILDREN: Record<string, string[]> = {
   Table: ["Status"],
 };
 
-/** Renderer-handled Polixd actions (`ui.*`), exported as A2UI local function calls. */
+/** Renderer-handled Polyxd actions (`ui.*`), exported as A2UI local function calls. */
 export const RENDERER_FUNCTIONS: Record<string, { fn: string; description: string }> = {
-  "ui.dismiss": { fn: "dismiss", description: "Closes the surface without doing anything (Polixd 'ui.dismiss')." },
-  "ui.back": { fn: "back", description: "Returns to the previous step or surface (Polixd 'ui.back')." },
-  "ui.next": { fn: "next", description: "Advances to the next step (Polixd 'ui.next')." },
+  "ui.dismiss": { fn: "dismiss", description: "Closes the surface without doing anything (Polyxd 'ui.dismiss')." },
+  "ui.back": { fn: "back", description: "Returns to the previous step or surface (Polyxd 'ui.back')." },
+  "ui.next": { fn: "next", description: "Advances to the next step (Polyxd 'ui.next')." },
 };
 
 interface ComponentSource {
@@ -59,15 +59,15 @@ interface ComponentSource {
   a2ui: string;
 }
 
-const specRoot = new URL("./", import.meta.resolve("@polixd/spec/package.json"));
+const specRoot = new URL("./", import.meta.resolve("@polyxd/spec/package.json"));
 const readSpec = (p: string) => JSON.parse(readFileSync(new URL(p, specRoot), "utf8"));
 
-export function loadPolixdSources(): { common: Record<string, Json>; components: ComponentSource[] } {
+export function loadPolyxdSources(): { common: Record<string, Json>; components: ComponentSource[] } {
   const files = readdirSync(new URL("components/", specRoot)).filter((f) => f.endsWith(".json")).sort();
   return { common: readSpec("schema/common.defs.json"), components: files.map((f) => readSpec(`components/${f}`)) };
 }
 
-/** Rewrites a Polixd prop schema into an A2UI-catalog-compliant one (allowed $refs only, helpers inlined). */
+/** Rewrites a Polyxd prop schema into an A2UI-catalog-compliant one (allowed $refs only, helpers inlined). */
 function convert(schema: unknown, common: Record<string, Json>): any {
   if (Array.isArray(schema)) return schema.map((s) => convert(s, common));
   if (!schema || typeof schema !== "object") return schema;
@@ -84,7 +84,7 @@ function convert(schema: unknown, common: Record<string, Json>): any {
     }
     if (DIRECT[name]) return { $ref: `${COMMON}${DIRECT[name]}`, ...extra };
     const def = common[name];
-    if (!def) throw new Error(`unknown Polixd def ${name}`);
+    if (!def) throw new Error(`unknown Polyxd def ${name}`);
     return { ...convert(def, common), ...extra };
   }
   return Object.fromEntries(Object.entries(s).map(([k, v]) => [k, k === "enum" || k === "const" || k === "default" ? v : convert(v, common)]));
@@ -93,7 +93,7 @@ function convert(schema: unknown, common: Record<string, Json>): any {
 const bullets = (items: string[]) => items.map((x) => `  - ${x}`).join("\n");
 
 export function buildInstructions(components: ComponentSource[]): string {
-  const head = `# Polixd catalog for A2UI
+  const head = `# Polyxd catalog for A2UI
 
 Semantic components for just-in-time interfaces. The renderer maps each one onto its own native, design-system components and tokens. Pick components by meaning, not by look. Never send colours, sizes or fonts.
 
@@ -126,7 +126,7 @@ Semantic components for just-in-time interfaces. The renderer maps each one onto
 }
 
 export function buildCatalog(): Json {
-  const { common, components } = loadPolixdSources();
+  const { common, components } = loadPolyxdSources();
   const defs: Json = {};
   for (const c of components) {
     const decision = MAPPING[c.name];
@@ -162,12 +162,12 @@ export function buildCatalog(): Json {
   }
   return {
     $schema: "https://json-schema.org/draft/2020-12/schema",
-    $id: POLIXD_CATALOG_ID,
+    $id: POLYXD_CATALOG_ID,
     protocolVersion: "1.0",
-    title: "Polixd catalog",
+    title: "Polyxd catalog",
     description:
-      "Polixd semantic components as an A2UI v1.0 catalog. Every component is a faithful projection of the Polixd component with the same name and props. Generated from @polixd/spec components/*.json by @polixd/a2ui (npm run build:catalog).",
-    catalogId: POLIXD_CATALOG_ID,
+      "Polyxd semantic components as an A2UI v1.0 catalog. Every component is a faithful projection of the Polyxd component with the same name and props. Generated from @polyxd/spec components/*.json by @polyxd/a2ui (npm run build:catalog).",
+    catalogId: POLYXD_CATALOG_ID,
     instructions: buildInstructions(components),
     components: defs,
     functions,
@@ -186,4 +186,4 @@ export const catalogJson = () => JSON.stringify(buildCatalog(), null, 2) + "\n";
 export const CATALOG_FILE = new URL("../catalog/catalog.json", import.meta.url);
 
 /** The committed catalog (catalog/catalog.json). */
-export const loadPolixdCatalog = (): Json => JSON.parse(readFileSync(CATALOG_FILE, "utf8"));
+export const loadPolyxdCatalog = (): Json => JSON.parse(readFileSync(CATALOG_FILE, "utf8"));

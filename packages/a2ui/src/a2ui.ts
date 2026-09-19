@@ -8,15 +8,15 @@ import { readFileSync } from "node:fs";
 export const A2UI_VERSION = "v1.0";
 /** Commit of a2ui-project/a2ui the vendored schemas were taken from. */
 export const A2UI_COMMIT = "04e6f07fde12ff2638b3b489bd9e3033066cb957";
-/** `catalogId` (and `$id`) of the Polixd A2UI catalog. */
-export const POLIXD_CATALOG_ID = "https://polixd.dev/catalog/0.1/a2ui";
+/** `catalogId` (and `$id`) of the Polyxd A2UI catalog. */
+export const POLYXD_CATALOG_ID = "https://polyxd.com/catalog/0.1/a2ui";
 /** `catalogId` of the official Basic catalog (for reference; the exporter does not emit Basic components). */
 export const BASIC_CATALOG_ID = "https://a2ui.org/specification/v1_0/catalogs/basic/catalog.json";
 /**
- * Key under `metadata.extensions` for Polixd metadata that has no A2UI equivalent.
- * Third-party extension keys must be prefixed with an organisation id (A2UI v1.0 §Extensions); this is polixd.dev reversed.
+ * Key under `metadata.extensions` for Polyxd metadata that has no A2UI equivalent.
+ * Third-party extension keys must be prefixed with an organisation id (A2UI v1.0 §Extensions); this is polyxd.com reversed.
  */
-export const EXTENSION_KEY = "dev_polixd";
+export const EXTENSION_KEY = "com_polyxd";
 
 const VENDOR_DIR = new URL("../vendor/a2ui/v1_0-04e6f07/", import.meta.url);
 

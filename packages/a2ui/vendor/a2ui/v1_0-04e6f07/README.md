@@ -1,6 +1,6 @@
 # Vendored A2UI v1.0 schemas
 
-These files are unmodified copies of the official A2UI specification JSON Schemas. `@polixd/a2ui` validates its exported messages and its catalog against them.
+These files are unmodified copies of the official A2UI specification JSON Schemas. `@polyxd/a2ui` validates its exported messages and its catalog against them.
 
 - **Source:** https://github.com/a2ui-project/a2ui, directory `specification/v1_0/`
 - **Commit:** `04e6f07fde12ff2638b3b489bd9e3033066cb957` (tip of `main`, committed 2026-09-18T11:34:38Z)
@@ -12,7 +12,7 @@ These files are unmodified copies of the official A2UI specification JSON Schema
 |---|---|---|
 | `json/agent_to_renderer.json` | `specification/v1_0/json/agent_to_renderer.json` | Server-to-client message envelope (`createSurface`, `updateComponents`, `updateDataModel`, ...) |
 | `json/common_types.json` | `specification/v1_0/json/common_types.json` | Shared types (`ComponentCommon`, `ChildList`, `Dynamic*`, `Action`, `AccessibilityAttributes`, `Extensions`) |
-| `json/catalog_definition.json` | `specification/v1_0/json/catalog_definition.json` | Validates the Polixd catalog as an A2UI catalog |
+| `json/catalog_definition.json` | `specification/v1_0/json/catalog_definition.json` | Validates the Polyxd catalog as an A2UI catalog |
 | `catalogs/basic/catalog.json` | `specification/v1_0/catalogs/basic/catalog.json` | The Basic catalog, for comparison and as a sanity check of the catalog-definition schema |
 
 SHA-256 of the files as fetched:

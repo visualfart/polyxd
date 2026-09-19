@@ -1,20 +1,20 @@
 /**
- * Polixd UI document → A2UI v1.0 agent-to-renderer message stream.
+ * Polyxd UI document → A2UI v1.0 agent-to-renderer message stream.
  *
- * The Polixd component layer mirrors A2UI's shapes (flat adjacency list, JSON Pointer bindings,
- * `action.event {name, context}`, `accessibility`), and the Polixd A2UI catalog declares every component
- * with its Polixd props. So most of the export is an identity projection. The exceptions are:
+ * The Polyxd component layer mirrors A2UI's shapes (flat adjacency list, JSON Pointer bindings,
+ * `action.event {name, context}`, `accessibility`), and the Polyxd A2UI catalog declares every component
+ * with its Polyxd props. So most of the export is an identity projection. The exceptions are:
  *  - the top-level component is renamed to "root" (A2UI mounts the component with id "root"),
  *  - `ui.*` renderer actions become A2UI local function calls (`dismiss` / `back` / `next`),
- *  - Polixd metadata with no A2UI equivalent (spec version, surface title/intent/pattern/journey/dismissible,
+ *  - Polyxd metadata with no A2UI equivalent (spec version, surface title/intent/pattern/journey/dismissible,
  *    component `key`) is listed in `lossy`. Unless `extensions: false`, it is also carried as opaque
- *    `metadata.extensions.dev_polixd`, which A2UI renderers must ignore.
+ *    `metadata.extensions.com_polyxd`, which A2UI renderers must ignore.
  */
 import { readFileSync } from "node:fs";
-import { A2UI_VERSION, EXTENSION_KEY, POLIXD_CATALOG_ID, type Json } from "./a2ui.ts";
+import { A2UI_VERSION, EXTENSION_KEY, POLYXD_CATALOG_ID, type Json } from "./a2ui.ts";
 import { RENDERER_FUNCTIONS } from "./catalog.ts";
 
-export interface PolixdComponent {
+export interface PolyxdComponent {
   id: string;
   component: string;
   key?: string;
@@ -22,12 +22,12 @@ export interface PolixdComponent {
   [prop: string]: unknown;
 }
 
-export interface PolixdDocument {
+export interface PolyxdDocument {
   $schema?: string;
   specVersion: string;
   surface: { id: string; title: string; intent?: string; pattern?: string; journey?: string; dismissible?: boolean };
   root: string;
-  components: PolixdComponent[];
+  components: PolyxdComponent[];
   data?: Json;
 }
 
@@ -62,7 +62,7 @@ export interface ExportOptions {
   mode?: "inline" | "stream";
   /** Override the A2UI surfaceId (must be unique for the renderer's lifetime). Defaults to `surface.id`. */
   surfaceId?: string;
-  /** Carry Polixd-only metadata in `metadata.extensions.dev_polixd` (default true). The fields are listed in `lossy` either way. */
+  /** Carry Polyxd-only metadata in `metadata.extensions.com_polyxd` (default true). The fields are listed in `lossy` either way. */
   extensions?: boolean;
   /** Passed through to createSurface.sendDataModel. */
   sendDataModel?: boolean;
@@ -70,13 +70,13 @@ export interface ExportOptions {
 
 export interface ExportResult {
   messages: A2UIMessage[];
-  /** JSON Pointers into the Polixd document for every field with no A2UI representation. */
+  /** JSON Pointers into the Polyxd document for every field with no A2UI representation. */
   lossy: string[];
-  /** Component ids that were renamed (Polixd id → A2UI id). Only "root" handling renames. */
+  /** Component ids that were renamed (Polyxd id → A2UI id). Only "root" handling renames. */
   idMap: Record<string, string>;
 }
 
-const uiSchema: Json = JSON.parse(readFileSync(new URL(import.meta.resolve("@polixd/spec/schema/ui.schema.json")), "utf8"));
+const uiSchema: Json = JSON.parse(readFileSync(new URL(import.meta.resolve("@polyxd/spec/schema/ui.schema.json")), "utf8"));
 const defs: Json = uiSchema.$defs;
 const refName = (s: Json | undefined) => (typeof s?.$ref === "string" ? s.$ref.replace("#/$defs/", "") : undefined);
 const deref = (s: Json | undefined): Json | undefined => {
@@ -87,15 +87,15 @@ const deref = (s: Json | undefined): Json | undefined => {
 const pointer = (...parts: (string | number)[]) => "/" + parts.map((p) => String(p).replace(/~/g, "~0").replace(/\//g, "~1")).join("/");
 const clone = <T>(v: T): T => structuredClone(v);
 
-/** Fields of the Polixd envelope that A2UI has no place for. */
+/** Fields of the Polyxd envelope that A2UI has no place for. */
 const SURFACE_ONLY = ["title", "intent", "pattern", "journey", "dismissible"] as const;
 
-export function exportToA2UI(doc: PolixdDocument, options: ExportOptions = {}): ExportResult {
+export function exportToA2UI(doc: PolyxdDocument, options: ExportOptions = {}): ExportResult {
   const { mode = "inline", extensions = true } = options;
   const surfaceId = options.surfaceId ?? doc.surface.id;
   const lossy: string[] = [];
 
-  // A2UI mounts the component with id "root". Rename the Polixd root, moving any other "root" out of the way.
+  // A2UI mounts the component with id "root". Rename the Polyxd root, moving any other "root" out of the way.
   const ids = new Set(doc.components.map((c) => c.id));
   const idMap: Record<string, string> = {};
   if (doc.root !== "root") {
@@ -108,7 +108,7 @@ export function exportToA2UI(doc: PolixdDocument, options: ExportOptions = {}): 
   }
   const mapId = (id: string) => idMap[id] ?? id;
 
-  /** Copies a prop value, rewriting component ids and renderer actions where the Polixd schema says they are. */
+  /** Copies a prop value, rewriting component ids and renderer actions where the Polyxd schema says they are. */
   const project = (schema: Json | undefined, value: unknown, at: string): unknown => {
     const name = refName(schema);
     if (name === "Id" && typeof value === "string") return mapId(value);
@@ -154,7 +154,7 @@ export function exportToA2UI(doc: PolixdDocument, options: ExportOptions = {}): 
   }
   if (doc.root !== "root") surfaceExt.root = doc.root;
 
-  const createSurface: Extract<A2UIMessage, { createSurface: unknown }>["createSurface"] = { surfaceId, catalogId: POLIXD_CATALOG_ID };
+  const createSurface: Extract<A2UIMessage, { createSurface: unknown }>["createSurface"] = { surfaceId, catalogId: POLYXD_CATALOG_ID };
   if (options.sendDataModel !== undefined) createSurface.sendDataModel = options.sendDataModel;
   if (extensions && Object.keys(surfaceExt).length) createSurface.metadata = { extensions: { [EXTENSION_KEY]: surfaceExt } };
 

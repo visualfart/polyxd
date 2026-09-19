@@ -1,6 +1,6 @@
-# @polixd/spec
+# @polyxd/spec
 
-The Polixd spec: what a just-in-time interface is made of, and the tools to check one.
+The Polyxd spec: what a just-in-time interface is made of, and the tools to check one.
 
 A generated interface is a **UI document**: a flat list of semantic components (the same adjacency-list shape as A2UI), bound to data the host provides, with actions that name capabilities the host has registered. The document is data, never code. A renderer turns it into native components (shadcn on the web, SwiftUI, Compose), and a design-system pack decides how it looks.
 
@@ -26,23 +26,23 @@ A generated interface is a **UI document**: a flat list of semantic components (
 
 ```bash
 # validate UI documents (schema + structural and design rules)
-npm run validate -w @polixd/spec -- examples/*.json
+npm run validate -w @polyxd/spec -- examples/*.json
 
 # check a design-system pack against the token contract
-npm run check-ds -w @polixd/spec -- ../ds-material3/manifest.json
+npm run check-ds -w @polyxd/spec -- ../ds-material3/manifest.json
 
 # after editing components/*.json or schema/common.defs.json
-npm run build:schema -w @polixd/spec
+npm run build:schema -w @polyxd/spec
 
-npm test -w @polixd/spec
+npm test -w @polyxd/spec
 ```
 
 From code:
 
 ```ts
-import { validateDocument, checkDesignSystem } from "@polixd/spec";
-import { checkPattern, evaluateRules } from "@polixd/spec/patterns";
-import { checkCapabilities } from "@polixd/spec/capabilities";
+import { validateDocument, checkDesignSystem } from "@polyxd/spec";
+import { checkPattern, evaluateRules } from "@polyxd/spec/patterns";
+import { checkCapabilities } from "@polyxd/spec/capabilities";
 ```
 
 ## Rules the validator enforces beyond the schema

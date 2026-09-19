@@ -1,11 +1,11 @@
-# Polixd — Project Plan (draft v0)
+# Polyxd — Project Plan (draft v0)
 
 ## Status (2026-09-19)
 
 - **Phase 0 — done.** Decision [0001](docs/decisions/0001-a2ui-and-foundations.md): own schema as source of truth, exported to A2UI v1.0 and MCP Apps.
-- **Phase 1 — done.** `@polixd/spec` (24 components, UI schema, validator, 5 patterns, check vocabulary, capability/journey/event/direction schemas, 20 examples), `@polixd/ds-material3` (passes the token contract in light and dark), `@polixd/a2ui` (all 20 examples export to A2UI v1.0 RC and validate against the official schemas). 142 tests.
-  - Finding: none of the 24 components maps losslessly onto A2UI's Basic catalog, so the export is a custom Polixd catalog. The official `@a2ui/react` renderer supports only v0.8/v0.9, so rendering an exported surface in it is a follow-up.
-- **Next: Phase 2** — `@polixd/react` renderer, token theming, second design system, example gallery.
+- **Phase 1 — done.** `@polyxd/spec` (24 components, UI schema, validator, 5 patterns, check vocabulary, capability/journey/event/direction schemas, 20 examples), `@polyxd/ds-material3` (passes the token contract in light and dark), `@polyxd/a2ui` (all 20 examples export to A2UI v1.0 RC and validate against the official schemas). 142 tests.
+  - Finding: none of the 24 components maps losslessly onto A2UI's Basic catalog, so the export is a custom Polyxd catalog. The official `@a2ui/react` renderer supports only v0.8/v0.9, so rendering an exported surface in it is a follow-up.
+- **Next: Phase 2** — `@polyxd/react` renderer, token theming, second design system, example gallery.
 
 ## 1. What we're building
 
@@ -51,7 +51,7 @@ request ──► generator (small model, constrained to spec schema)
 | Generator | Small open-weight model, JSON-schema constrained decoding | AI |
 
 **Contract rules that make it embeddable in other software:**
-- **Generated UI is data, never code.** The UI JSON contains no scripts, URLs to load or styles. The host's renderer decides what can appear, so embedding Polixd can't run arbitrary code.
+- **Generated UI is data, never code.** The UI JSON contains no scripts, URLs to load or styles. The host's renderer decides what can appear, so embedding Polyxd can't run arbitrary code.
 - **Actions are declared intents.** The model emits `{"action": "transfer.confirm", ...}`, and the host binds each intent to its own handler. The host keeps control of what actually happens.
 - **Data comes from the host.** The model lays out and labels data it is given, and never invents values like balances or prices.
 - **The generator is swappable.** Anything that can emit spec-valid JSON can drive the runtime: our small model, a local model, or any hosted LLM. The spec and renderers are useful even to people who never use our model.
@@ -116,21 +116,21 @@ No fixed timeline. Each phase has an exit test, and we don't move on until it pa
 
 **Later:** SwiftUI/Compose renderers, the design-system generator (OKLCH palettes, modular type scale, and so on, checked by the same verifier), and a bring-your-own-design-system importer (Figma variables / Tokens Studio).
 
-## 5. Distribution: how other software uses Polixd
+## 5. Distribution: how other software uses Polyxd
 
-The goal is for any app, agent or tool to adopt Polixd one layer at a time. Each layer ships as its own package, so no one has to adopt all of it.
+The goal is for any app, agent or tool to adopt Polyxd one layer at a time. Each layer ships as its own package, so no one has to adopt all of it.
 
 | Layer | Who uses it | Ships as | Channel (free) |
 |---|---|---|---|
-| **Spec** (schema, types, tokens format) | Anyone generating or rendering UI | `@polixd/spec` (JSON Schema + TS types), `polixd-spec` (Python) | npm, PyPI, docs site |
-| **Design-system packs** | Apps bringing their brand | `@polixd/ds-material3`, `@polixd/ds-govuk`, and an importer for Figma variables / Tokens Studio | npm |
-| **Web renderer** | Web apps | `@polixd/react` (shadcn/Radix) | npm |
+| **Spec** (schema, types, tokens format) | Anyone generating or rendering UI | `@polyxd/spec` (JSON Schema + TS types), `polyxd-spec` (Python) | npm, PyPI, docs site |
+| **Design-system packs** | Apps bringing their brand | `@polyxd/ds-material3`, `@polyxd/ds-govuk`, and an importer for Figma variables / Tokens Studio | npm |
+| **Web renderer** | Web apps | `@polyxd/react` (shadcn/Radix) | npm |
 | **Native renderers** (later) | iOS / Android apps | Swift package, Compose library | SPM, Maven Central |
-| **Runtime SDK** (generator + memory + validation + streaming) | Apps that want the whole loop | `@polixd/runtime`, `polixd` (Python), with pluggable model backends and memory storage | npm, PyPI |
+| **Runtime SDK** (generator + memory + validation + streaming) | Apps that want the whole loop | `@polyxd/runtime`, `polyxd` (Python), with pluggable model backends and memory storage | npm, PyPI |
 | **Model** | Runs on-device or self-hosted | Weights in MLX, GGUF and safetensors formats | Hugging Face, Ollama library |
 | **Server** | Teams that want to self-host | Docker image: model server + HTTP API with streaming | GitHub Container Registry |
-| **Agent integration** | AI agents and assistants | MCP server (MCP Apps compatible), A2UI export | npm (`npx @polixd/mcp`) |
-| **Verifier and benchmark** | Anyone evaluating generative UI | `polixd verify` CLI, dataset, leaderboard | npm, Hugging Face Datasets |
+| **Agent integration** | AI agents and assistants | MCP server (MCP Apps compatible), A2UI export | npm (`npx @polyxd/mcp`) |
+| **Verifier and benchmark** | Anyone evaluating generative UI | `polyxd verify` CLI, dataset, leaderboard | npm, Hugging Face Datasets |
 | **Demo** | Everyone | Hosted playground | Hugging Face Spaces / GitHub Pages |
 
 **Where things run.** On-device is the default: private, free and fast. The same runtime can point at a self-hosted server or any model endpoint.
@@ -159,11 +159,11 @@ The goal is for any app, agent or tool to adopt Polixd one layer at a time. Each
 - **Model weights:** inherit the base model's license, so we pick a base model with a permissive license.
 - **Benchmark:** respects the licenses of its sources.
 
-**Names.** "Polixd" is a working name and can change before v0.1. Package names follow whatever the final name is.
+**Names.** The project is **Polyxd**, with the domain **polyxd.com** (bought 2026-09-19). Schema and catalog ids live under `https://polyxd.com/`. Packages are `@polyxd/*`.
 
 ## 6. Taste: how a company's designers direct it
 
-Tokens control how things *look*. Taste goes further: how dense a screen is, how much gets emphasized, the tone of the copy, which pattern a team prefers, what to leave out, how motion feels. A designer at a company using Polixd needs to shape all of that **without writing prompts or JSON, and without retraining a model**.
+Tokens control how things *look*. Taste goes further: how dense a screen is, how much gets emphasized, the tone of the copy, which pattern a team prefers, what to leave out, how motion feels. A designer at a company using Polyxd needs to shape all of that **without writing prompts or JSON, and without retraining a model**.
 
 ### The Design Direction package
 
@@ -196,7 +196,7 @@ When the model has no fitting pattern, it flags the gap for review.
 5. End-user preferences (for example density), within the company's bounds.
 6. Model defaults.
 
-### Where designers do this: Polixd Studio
+### Where designers do this: Polyxd Studio
 
 Studio is a web app for designers.
 - **Set direction.** Edit the profile, voice, rules and patterns through visual controls. Import tokens from Figma variables or Tokens Studio.
@@ -220,9 +220,9 @@ Studio is a web app for designers.
 
 ## 7. Product layer: features, flows and metrics
 
-With static software, a PM defines features, a designer draws the screens and flows, engineering builds them, and analytics measures funnels. When screens are generated, **PMs and designers stop drawing screens and define what sits one level above them**: what the product can do, which journeys must hold, and how success is measured. Polixd has to make each of these explicit.
+With static software, a PM defines features, a designer draws the screens and flows, engineering builds them, and analytics measures funnels. When screens are generated, **PMs and designers stop drawing screens and define what sits one level above them**: what the product can do, which journeys must hold, and how success is measured. Polyxd has to make each of these explicit.
 
-| Today | In Polixd | Who owns it |
+| Today | In Polyxd | Who owns it |
 |---|---|---|
 | Feature | **Capability**: a registered thing the product can do | PM + engineering |
 | Flow / user journey | **Journey**: a goal with required checkpoints | PM + designer (+ compliance) |
@@ -270,7 +270,7 @@ With static software, a PM defines features, a designer draws the screens and fl
   - **Recognition gain**: repeat tasks get faster.
   - Accessibility pass rate.
 - **All metrics split by human vs. agent**, and by assistive-technology use.
-- Events go to the company's own analytics (PostHog, Amplitude, Segment or OpenTelemetry) through adapters. Polixd itself collects nothing.
+- Events go to the company's own analytics (PostHog, Amplitude, Segment or OpenTelemetry) through adapters. Polyxd itself collects nothing.
 - **Unmet demand.** Requests that no registered capability could serve are logged as a ranked list: "what users asked for that we can't do yet." That's a feature backlog generated from real demand.
 
 ### Acceptance criteria and experiments
@@ -305,16 +305,16 @@ With static software, a PM defines features, a designer draws the screens and fl
 
 ```
 packages/
-  spec/            @polixd/spec: JSON Schema, TS types, components, patterns, mapping table
-  ds-material3/    @polixd/ds-material3 (DTCG tokens)
-  ds-govuk/        @polixd/ds-govuk
-  react/           @polixd/react: shadcn/Radix renderer
-  runtime/         @polixd/runtime: generator backends, memory, validation, streaming
-  verifier/        @polixd/verifier + `polixd verify` CLI
-  mcp/             @polixd/mcp: MCP server
+  spec/            @polyxd/spec: JSON Schema, TS types, components, patterns, mapping table
+  ds-material3/    @polyxd/ds-material3 (DTCG tokens)
+  ds-govuk/        @polyxd/ds-govuk
+  react/           @polyxd/react: shadcn/Radix renderer
+  runtime/         @polyxd/runtime: generator backends, memory, validation, streaming
+  verifier/        @polyxd/verifier + `polyxd verify` CLI
+  mcp/             @polyxd/mcp: MCP server
   direction/       Design Direction schema, precedence engine, rule compiler
   product/         capability registry, journeys, events, analytics + OpenFeature adapters
-python/            polixd SDK + polixd-spec (PyPI)
+python/            polyxd SDK + polyxd-spec (PyPI)
 model/             Python (uv + MLX): baselines, SFT, GRPO, export (MLX/GGUF)
 server/            Dockerfile + HTTP API
 bench/             requests, multi-turn sequences, tasks, gold set

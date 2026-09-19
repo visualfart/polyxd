@@ -1,6 +1,6 @@
 {
   "$schema": "../../schema/capabilities.schema.json",
-  "name": "polixd-examples",
+  "name": "polyxd-examples",
   "capabilities": {
     "account.delete": {
       "description": "Delete the user's account (restorable for 30 days)",

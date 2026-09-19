@@ -1,18 +1,18 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { a2uiSchemas, catalogJson, CATALOG_FILE, createValidator, loadPolixdCatalog, MAPPING, POLIXD_CATALOG_ID } from "../src/index.ts";
-import { loadPolixdSources } from "../src/catalog.ts";
+import { a2uiSchemas, catalogJson, CATALOG_FILE, createValidator, loadPolyxdCatalog, MAPPING, POLYXD_CATALOG_ID } from "../src/index.ts";
+import { loadPolyxdSources } from "../src/catalog.ts";
 
-const catalog = loadPolixdCatalog();
+const catalog = loadPolyxdCatalog();
 const validator = createValidator();
-const { components: sources } = loadPolixdSources();
+const { components: sources } = loadPolyxdSources();
 
 test("catalog/catalog.json is up to date (run npm run build:catalog)", () => {
   assert.equal(readFileSync(CATALOG_FILE, "utf8"), catalogJson());
 });
 
-test("Polixd catalog validates against the official A2UI catalog_definition.json", () => {
+test("Polyxd catalog validates against the official A2UI catalog_definition.json", () => {
   assert.deepEqual(validator.catalogDefinition(catalog), []);
 });
 
@@ -23,12 +23,12 @@ test("sanity: the official Basic catalog validates against catalog_definition.js
 });
 
 test("catalog id, protocol version and $id", () => {
-  assert.equal(catalog.catalogId, POLIXD_CATALOG_ID);
-  assert.equal(catalog.$id, POLIXD_CATALOG_ID);
+  assert.equal(catalog.catalogId, POLYXD_CATALOG_ID);
+  assert.equal(catalog.$id, POLYXD_CATALOG_ID);
   assert.equal(catalog.protocolVersion, "1.0");
 });
 
-test("every Polixd component is in the catalog, with a recorded mapping decision", () => {
+test("every Polyxd component is in the catalog, with a recorded mapping decision", () => {
   const names = sources.map((c) => c.name);
   assert.equal(names.length, 24);
   assert.deepEqual(Object.keys(catalog.components).sort(), [...names].sort());

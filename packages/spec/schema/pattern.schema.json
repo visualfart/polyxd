@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polixd.dev/schema/0.1/pattern.schema.json",
-  "title": "Polixd pattern",
+  "$id": "https://polyxd.com/schema/0.1/pattern.schema.json",
+  "title": "Polyxd pattern",
   "description": "A known arrangement of components for a task. Patterns are where recognition lives: the same task always takes the same shape.",
   "type": "object",
   "required": ["id", "name", "summary", "whenToUse", "structure", "checks", "journey"],

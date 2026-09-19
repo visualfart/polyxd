@@ -1,4 +1,4 @@
-# Polixd components
+# Polyxd components
 
 Generated from `components/*.json` (spec 0.1.0). The model chooses these semantic components; each platform renders them with its own native parts.
 

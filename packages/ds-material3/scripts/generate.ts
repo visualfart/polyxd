@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates the DTCG 2025.10 token files of @polixd/ds-material3.
+ * Generates the DTCG 2025.10 token files of @polyxd/ds-material3.
  *
  *   node scripts/generate.ts            regenerate tokens/*.json from the vendored sources
  *   node scripts/generate.ts --refresh  first re-download the material-web sources (pinned tag)
@@ -217,8 +217,8 @@ const schemes: Record<Mode, DynamicScheme> = {
   dark: new SchemeTonalSpot(seedHct, true, 0, SPEC_VERSION) as unknown as DynamicScheme,
 };
 
-/** Named palettes. `md` palettes come from the scheme; `polixd` palettes are Polixd additions. */
-const palettes: { ns: "md" | "polixd"; name: string; palette: Palette; description: string }[] = [
+/** Named palettes. `md` palettes come from the scheme; `polyxd` palettes are Polyxd additions. */
+const palettes: { ns: "md" | "polyxd"; name: string; palette: Palette; description: string }[] = [
   { ns: "md", name: "primary", palette: schemes.light.primaryPalette, description: "SchemeTonalSpot primary palette" },
   { ns: "md", name: "secondary", palette: schemes.light.secondaryPalette, description: "SchemeTonalSpot secondary palette" },
   { ns: "md", name: "tertiary", palette: schemes.light.tertiaryPalette, description: "SchemeTonalSpot tertiary palette" },
@@ -226,15 +226,15 @@ const palettes: { ns: "md" | "polixd"; name: string; palette: Palette; descripti
   { ns: "md", name: "neutral-variant", palette: schemes.light.neutralVariantPalette, description: "SchemeTonalSpot neutral-variant palette" },
   { ns: "md", name: "error", palette: schemes.light.errorPalette, description: "SchemeTonalSpot error palette" },
   ...Object.entries(STATUS_SEEDS).map(([name, hex]) => ({
-    ns: "polixd" as const,
+    ns: "polyxd" as const,
     name,
     palette: TonalPalette.fromInt(argbFromHex(hex)),
-    description: `TonalPalette.fromInt(${hex}): Polixd status palette (M3 defines no ${name} role)`,
+    description: `TonalPalette.fromInt(${hex}): Polyxd status palette (M3 defines no ${name} role)`,
   })),
   ...CHART_HUE_OFFSETS.map((offset, i) => {
     const hue = round((seedHct.hue + offset) % 360, 2);
     return {
-      ns: "polixd" as const,
+      ns: "polyxd" as const,
       name: `chart-${i + 1}`,
       palette: TonalPalette.fromHueAndChroma(hue, CHART_CHROMA),
       description: `TonalPalette.fromHueAndChroma(${hue}, ${CHART_CHROMA}): seed hue + ${offset} degrees`,
@@ -272,7 +272,7 @@ function systemColors(mode: Mode) {
   for (const role of SYS_COLOR_ROLES) colors[role] = token(roleAlias(scheme, role));
   put(tree, "md.sys.color", colors);
 
-  const custom: Json = { $type: "color", $description: "Polixd additions shaped like M3 custom-colour roles (M3 has no success/warning/info roles, nor chart colours)." };
+  const custom: Json = { $type: "color", $description: "Polyxd additions shaped like M3 custom-colour roles (M3 has no success/warning/info roles, nor chart colours)." };
   for (const name of Object.keys(STATUS_SEEDS)) {
     const p = palettes.find((x) => x.name === name)!;
     for (const [pattern, tone] of Object.entries(CUSTOM_ROLE_TONES[mode])) {
@@ -286,7 +286,7 @@ function systemColors(mode: Mode) {
     custom[p.name] = token(paletteRef(p, tone));
     tonesUsed.get(p.name)!.add(tone);
   }
-  put(tree, "polixd.sys.color", custom);
+  put(tree, "polyxd.sys.color", custom);
   return tree;
 }
 
@@ -299,12 +299,12 @@ const [typeface, typescale, shape, motion, state, elevation, scrim, filledButton
 const mw = (file: string) => `material-web ${MATERIAL_WEB_TAG} ${MATERIAL_WEB_TOKENS}/${file}`;
 
 // system.light.json / system.dark.json (computing these first records which palette tones are used)
-const systemLight = { $description: "Material 3 system tier, light mode: md.sys.color roles from material-color-utilities SchemeTonalSpot (spec 2021, contrast 0) aliased to reference palette tones, plus Polixd status and chart roles.", ...systemColors("light") };
-const systemDark = { $description: "Material 3 system tier, dark mode: md.sys.color roles from material-color-utilities SchemeTonalSpot (spec 2021, contrast 0) aliased to reference palette tones, plus Polixd status and chart roles.", ...systemColors("dark") };
+const systemLight = { $description: "Material 3 system tier, light mode: md.sys.color roles from material-color-utilities SchemeTonalSpot (spec 2021, contrast 0) aliased to reference palette tones, plus Polyxd status and chart roles.", ...systemColors("light") };
+const systemDark = { $description: "Material 3 system tier, dark mode: md.sys.color roles from material-color-utilities SchemeTonalSpot (spec 2021, contrast 0) aliased to reference palette tones, plus Polyxd status and chart roles.", ...systemColors("dark") };
 
 // primitive.json
 const primitive: Json = {
-  $description: `Material 3 reference tier (md.ref.*) plus Polixd reference additions (polixd.ref.*). Palettes generated with @material/material-color-utilities ${MCU_VERSION} from seed ${SEED}; typefaces from ${mw("_md-ref-typeface.scss")}.`,
+  $description: `Material 3 reference tier (md.ref.*) plus Polyxd reference additions (polyxd.ref.*). Palettes generated with @material/material-color-utilities ${MCU_VERSION} from seed ${SEED}; typefaces from ${mw("_md-ref-typeface.scss")}.`,
 };
 for (const p of palettes) {
   const group: Json = { $type: "color", $description: `${p.description}. HCT hue ${round(p.palette.hue, 2)}, chroma ${round(p.palette.chroma, 2)}.` };
@@ -315,9 +315,9 @@ const typefaceGroup: Json = { $description: `From ${mw("_md-ref-typeface.scss")}
 for (const key of ["brand", "plain"]) typefaceGroup[key] = token(get(typeface, key, "typeface").replace(/^\((.*)\)$/, "$1"), { $type: "fontFamily" });
 for (const key of ["weight-regular", "weight-medium", "weight-bold"]) typefaceGroup[key] = token(Number(get(typeface, key, "typeface")), { $type: "fontWeight" });
 put(primitive, "md.ref.typeface", typefaceGroup);
-const spaceGroup: Json = { $type: "dimension", $description: "M3 4dp layout grid: polixd.ref.space.N = N x 4px" };
+const spaceGroup: Json = { $type: "dimension", $description: "M3 4dp layout grid: polyxd.ref.space.N = N x 4px" };
 for (const n of [0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16]) spaceGroup[String(n)] = token(px(n * 4));
-put(primitive, "polixd.ref.space", spaceGroup);
+put(primitive, "polyxd.ref.space", spaceGroup);
 
 // system.json (mode-independent md.sys tokens)
 const system: Json = { $description: `Material 3 system tier, mode-independent: typescale, shape, motion, state and elevation from ${mw("_md-sys-*.scss")}.` };
@@ -362,7 +362,7 @@ for (let level = 1; level <= 5; level++) {
     }),
   );
 }
-put(system, "polixd.sys.elevation.shadow", shadowGroup);
+put(system, "polyxd.sys.elevation.shadow", shadowGroup);
 
 // semantic.json
 const typeStyle = (m3: string) => {
@@ -382,11 +382,11 @@ const typeStyle = (m3: string) => {
 const compNumber = (map: Map<string, string>, key: string, file: string) => Number(get(map, key, file));
 const compPx = (map: Map<string, string>, key: string, file: string) => px(parsePx(get(map, key, file)));
 const sys = (role: string) => token(`{md.sys.color.${role}}`);
-const ext = (role: string) => token(`{polixd.sys.color.${role}}`);
+const ext = (role: string) => token(`{polyxd.sys.color.${role}}`);
 
 const scrimOpacity = compNumber(scrim, "container-opacity", "scrim");
 const semantic = {
-  $description: "Polixd semantic tier for Material 3. Every token maps to an M3 system (md.sys.*) or reference (md.ref.*) token wherever an M3 equivalent exists; mode differences come from the system files.",
+  $description: "Polyxd semantic tier for Material 3. Every token maps to an M3 system (md.sys.*) or reference (md.ref.*) token wherever an M3 equivalent exists; mode differences come from the system files.",
   color: {
     $type: "color",
     surface: {
@@ -437,9 +437,9 @@ const semantic = {
   space: {
     $type: "dimension",
     $description: "M3 4dp grid",
-    inset: { compact: token("{polixd.ref.space.2}"), default: token("{polixd.ref.space.4}"), comfortable: token("{polixd.ref.space.6}") },
-    stack: { tight: token("{polixd.ref.space.1}"), default: token("{polixd.ref.space.2}"), loose: token("{polixd.ref.space.4}"), section: token("{polixd.ref.space.8}") },
-    inline: { tight: token("{polixd.ref.space.1}"), default: token("{polixd.ref.space.2}"), loose: token("{polixd.ref.space.4}") },
+    inset: { compact: token("{polyxd.ref.space.2}"), default: token("{polyxd.ref.space.4}"), comfortable: token("{polyxd.ref.space.6}") },
+    stack: { tight: token("{polyxd.ref.space.1}"), default: token("{polyxd.ref.space.2}"), loose: token("{polyxd.ref.space.4}"), section: token("{polyxd.ref.space.8}") },
+    inline: { tight: token("{polyxd.ref.space.1}"), default: token("{polyxd.ref.space.2}"), loose: token("{polyxd.ref.space.4}") },
   },
   size: {
     $type: "dimension",
@@ -482,8 +482,8 @@ const semantic = {
   },
   shadow: {
     $type: "shadow",
-    raised: token("{polixd.sys.elevation.shadow.level1}", { $description: "md.sys.elevation.level1 (elevated card)" }),
-    overlay: token("{polixd.sys.elevation.shadow.level3}", { $description: "md.sys.elevation.level3 (dialog)" }),
+    raised: token("{polyxd.sys.elevation.shadow.level1}", { $description: "md.sys.elevation.level1 (elevated card)" }),
+    overlay: token("{polyxd.sys.elevation.shadow.level3}", { $description: "md.sys.elevation.level3 (dialog)" }),
   },
   motion: {
     duration: {

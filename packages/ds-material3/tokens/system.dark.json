@@ -1,5 +1,5 @@
 {
-  "$description": "Material 3 system tier, dark mode: md.sys.color roles from material-color-utilities SchemeTonalSpot (spec 2021, contrast 0) aliased to reference palette tones, plus Polixd status and chart roles.",
+  "$description": "Material 3 system tier, dark mode: md.sys.color roles from material-color-utilities SchemeTonalSpot (spec 2021, contrast 0) aliased to reference palette tones, plus Polyxd status and chart roles.",
   "md": {
     "sys": {
       "color": {
@@ -154,64 +154,64 @@
       }
     }
   },
-  "polixd": {
+  "polyxd": {
     "sys": {
       "color": {
         "$type": "color",
-        "$description": "Polixd additions shaped like M3 custom-colour roles (M3 has no success/warning/info roles, nor chart colours).",
+        "$description": "Polyxd additions shaped like M3 custom-colour roles (M3 has no success/warning/info roles, nor chart colours).",
         "success": {
-          "$value": "{polixd.ref.palette.success.80}"
+          "$value": "{polyxd.ref.palette.success.80}"
         },
         "on-success": {
-          "$value": "{polixd.ref.palette.success.20}"
+          "$value": "{polyxd.ref.palette.success.20}"
         },
         "success-container": {
-          "$value": "{polixd.ref.palette.success.30}"
+          "$value": "{polyxd.ref.palette.success.30}"
         },
         "on-success-container": {
-          "$value": "{polixd.ref.palette.success.90}"
+          "$value": "{polyxd.ref.palette.success.90}"
         },
         "warning": {
-          "$value": "{polixd.ref.palette.warning.80}"
+          "$value": "{polyxd.ref.palette.warning.80}"
         },
         "on-warning": {
-          "$value": "{polixd.ref.palette.warning.20}"
+          "$value": "{polyxd.ref.palette.warning.20}"
         },
         "warning-container": {
-          "$value": "{polixd.ref.palette.warning.30}"
+          "$value": "{polyxd.ref.palette.warning.30}"
         },
         "on-warning-container": {
-          "$value": "{polixd.ref.palette.warning.90}"
+          "$value": "{polyxd.ref.palette.warning.90}"
         },
         "info": {
-          "$value": "{polixd.ref.palette.info.80}"
+          "$value": "{polyxd.ref.palette.info.80}"
         },
         "on-info": {
-          "$value": "{polixd.ref.palette.info.20}"
+          "$value": "{polyxd.ref.palette.info.20}"
         },
         "info-container": {
-          "$value": "{polixd.ref.palette.info.30}"
+          "$value": "{polyxd.ref.palette.info.30}"
         },
         "on-info-container": {
-          "$value": "{polixd.ref.palette.info.90}"
+          "$value": "{polyxd.ref.palette.info.90}"
         },
         "chart-1": {
-          "$value": "{polixd.ref.palette.chart-1.80}"
+          "$value": "{polyxd.ref.palette.chart-1.80}"
         },
         "chart-2": {
-          "$value": "{polixd.ref.palette.chart-2.80}"
+          "$value": "{polyxd.ref.palette.chart-2.80}"
         },
         "chart-3": {
-          "$value": "{polixd.ref.palette.chart-3.80}"
+          "$value": "{polyxd.ref.palette.chart-3.80}"
         },
         "chart-4": {
-          "$value": "{polixd.ref.palette.chart-4.80}"
+          "$value": "{polyxd.ref.palette.chart-4.80}"
         },
         "chart-5": {
-          "$value": "{polixd.ref.palette.chart-5.80}"
+          "$value": "{polyxd.ref.palette.chart-5.80}"
         },
         "chart-6": {
-          "$value": "{polixd.ref.palette.chart-6.80}"
+          "$value": "{polyxd.ref.palette.chart-6.80}"
         }
       }
     }

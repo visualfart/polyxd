@@ -1,7 +1,7 @@
 /**
- * Per-component export decision: Basic catalog component, or a custom component in the Polixd A2UI catalog.
+ * Per-component export decision: Basic catalog component, or a custom component in the Polyxd A2UI catalog.
  *
- * Rule: a Polixd component maps to a Basic component only when every Polixd prop has a Basic
+ * Rule: a Polyxd component maps to a Basic component only when every Polyxd prop has a Basic
  * equivalent with the same meaning. Otherwise it is exported as a custom component with the same name and
  * props, so the export stays a lossless projection rather than a lossy flattening
  * (docs/decisions/0001 §6: "a faithful export", custom catalogs being the endorsed A2UI path).
@@ -40,7 +40,7 @@ export const MAPPING: Record<string, MappingDecision> = {
   Choice: {
     target: "custom",
     basicAnalog: "ChoicePicker",
-    why: "ChoicePicker options must be literal (Polixd options can come from host data), option descriptions are missing, the value must be a string list, and there is no help text.",
+    why: "ChoicePicker options must be literal (Polyxd options can come from host data), option descriptions are missing, the value must be a string list, and there is no help text.",
   },
   Collection: {
     target: "custom",
@@ -85,7 +85,7 @@ export const MAPPING: Record<string, MappingDecision> = {
   Media: {
     target: "custom",
     basicAnalog: "Image",
-    why: "Image takes a URL string. Polixd's src is a host-data binding, and 'decorative' and the aspect hint have no Image equivalent (Image.variant is a size, not an aspect).",
+    why: "Image takes a URL string. Polyxd's src is a host-data binding, and 'decorative' and the aspect hint have no Image equivalent (Image.variant is a size, not an aspect).",
   },
   Metric: {
     target: "custom",
@@ -120,7 +120,7 @@ export const MAPPING: Record<string, MappingDecision> = {
   Text: {
     target: "custom",
     basicAnalog: "Text",
-    why: "Basic Text interprets Markdown (Polixd text is plain), has no 'supporting' variant and no value format.",
+    why: "Basic Text interprets Markdown (Polyxd text is plain), has no 'supporting' variant and no value format.",
   },
   TextInput: {
     target: "custom",

@@ -53,8 +53,8 @@ export function buildUiSchema(common: Record<string, unknown>, components: Compo
   };
   return {
     $schema: "https://json-schema.org/draft/2020-12/schema",
-    $id: "https://polixd.dev/schema/0.1/ui.schema.json",
-    title: "Polixd UI document",
+    $id: "https://polyxd.com/schema/0.1/ui.schema.json",
+    title: "Polyxd UI document",
     description:
       "A just-in-time interface: a flat list of semantic components (A2UI-style adjacency list) plus the surface it belongs to. Data comes from the host via bindings; actions are declared capability intents. Generated file: edit components/*.json and schema/common.defs.json instead.",
     type: "object",
@@ -86,9 +86,9 @@ export function buildUiSchema(common: Record<string, unknown>, components: Compo
 
 export function buildCatalog(components: ComponentSource[]) {
   return {
-    catalogId: "https://polixd.dev/catalog/0.1",
+    catalogId: "https://polyxd.com/catalog/0.1",
     specVersion: SPEC_VERSION,
-    description: "Polixd semantic component catalog: when to use each component, accessibility and agent requirements, rendering rules and platform mappings. Generated file.",
+    description: "Polyxd semantic component catalog: when to use each component, accessibility and agent requirements, rendering rules and platform mappings. Generated file.",
     components: Object.fromEntries(components.map(({ name, props: _p, required: _r, ...meta }) => [name, meta])),
   };
 }
@@ -101,7 +101,7 @@ export function buildComponentDocs(components: ComponentSource[]) {
   const m = (c: ComponentSource) => c.mappings as Record<string, string>;
   const list = (items: unknown) => (items as string[]).map((x) => `- ${x}`).join("\n");
   const lines = [
-    "# Polixd components",
+    "# Polyxd components",
     "",
     `Generated from \`components/*.json\` (spec ${SPEC_VERSION}). The model chooses these semantic components; each platform renders them with its own native parts.`,
     "",

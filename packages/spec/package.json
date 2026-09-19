@@ -1,8 +1,8 @@
 {
-  "name": "@polixd/spec",
+  "name": "@polyxd/spec",
   "version": "0.1.0",
   "private": true,
-  "description": "Polixd spec: JSON Schema and TypeScript types for just-in-time interfaces",
+  "description": "Polyxd spec: JSON Schema and TypeScript types for just-in-time interfaces",
   "license": "Apache-2.0",
   "type": "module",
   "main": "dist/index.js",
@@ -24,8 +24,8 @@
     "docs"
   ],
   "bin": {
-    "polixd-check-ds": "dist/cli/check-design-system.js",
-    "polixd-validate": "dist/cli/validate.js"
+    "polyxd-check-ds": "dist/cli/check-design-system.js",
+    "polyxd-validate": "dist/cli/validate.js"
   },
   "dependencies": {
     "ajv": "^8.20.0",

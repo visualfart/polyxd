@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polixd.dev/schema/0.1/journey.schema.json",
-  "title": "Polixd journey",
+  "$id": "https://polyxd.com/schema/0.1/journey.schema.json",
+  "title": "Polyxd journey",
   "description": "A goal with required checkpoints and a done-condition. The same format serves as a flow spec (PM/design), acceptance tests, and agent benchmark tasks.",
   "type": "object",
   "required": ["id", "goal", "mode", "done"],

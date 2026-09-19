@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polixd.dev/schema/0.1/direction.schema.json",
-  "title": "Polixd Design Direction",
+  "$id": "https://polyxd.com/schema/0.1/direction.schema.json",
+  "title": "Polyxd Design Direction",
   "description": "A company's taste, as a versioned package: profile, voice, pattern preferences, rules and exemplars. Tokens live in the design-system pack it references. Precedence: accessibility floor > user accessibility needs > rules > profile/voice/patterns > user preferences > model defaults.",
   "type": "object",
   "required": ["name", "version", "profile"],

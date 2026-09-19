@@ -1,4 +1,4 @@
-# Polixd
+# Polyxd
 
 Just-in-time interfaces: a small on-device model that generates ephemeral UIs that stay recognizable across generations, work for humans and agents alike, and render in any design system.
 

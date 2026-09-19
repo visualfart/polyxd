@@ -9,7 +9,7 @@
 import { Ajv2020, type ErrorObject, type ValidateFunction } from "ajv/dist/2020.js";
 import addFormatsModule from "ajv-formats";
 import { a2uiSchemas, type Json } from "./a2ui.ts";
-import { loadPolixdCatalog } from "./catalog.ts";
+import { loadPolyxdCatalog } from "./catalog.ts";
 
 const CATALOG_ALIAS = "https://a2ui.org/specification/v1_0/catalog.json";
 const addFormats = addFormatsModule as unknown as (ajv: Ajv2020) => Ajv2020;
@@ -32,7 +32,7 @@ export interface A2UIValidator {
   catalogDefinition(catalog: unknown): A2UIValidationError[];
 }
 
-export function createValidator(catalog: Json = loadPolixdCatalog()): A2UIValidator {
+export function createValidator(catalog: Json = loadPolyxdCatalog()): A2UIValidator {
   const ajv = newAjv();
   ajv.addSchema(a2uiSchemas.commonTypes());
   ajv.addSchema({ ...catalog, $id: CATALOG_ALIAS });
@@ -51,7 +51,7 @@ export function createValidator(catalog: Json = loadPolixdCatalog()): A2UIValida
  * `ComponentId` / `ChildList` references. It checks that exactly one component is `root`, ids are unique, and
  * every reference resolves. `allowedChildren` constraints are checked too.
  */
-export function checkComponentTree(components: Json[], catalog: Json = loadPolixdCatalog()): A2UIValidationError[] {
+export function checkComponentTree(components: Json[], catalog: Json = loadPolyxdCatalog()): A2UIValidationError[] {
   const errors: A2UIValidationError[] = [];
   const byId = new Map<string, Json>();
   components.forEach((c, i) => {

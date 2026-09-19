@@ -7,7 +7,7 @@
 
 ## Decision (TL;DR)
 
-**Option (b): Polixd defines its own schema as the source of truth, and exports to A2UI (and MCP Apps).** The Polixd component layer should still be a strict *superset-by-design* of A2UI: A2UI-shaped envelope, flat adjacency list, JSON Pointer bindings, `event {name, context}` actions, a catalog-style component registry. That way the A2UI export is a near-lossless projection rather than a translation. Re-evaluate once A2UI v1.0 is final (see open questions).
+**Option (b): Polyxd defines its own schema as the source of truth, and exports to A2UI (and MCP Apps).** The Polyxd component layer should still be a strict *superset-by-design* of A2UI: A2UI-shaped envelope, flat adjacency list, JSON Pointer bindings, `event {name, context}` actions, a catalog-style component registry. That way the A2UI export is a near-lossless projection rather than a translation. Re-evaluate once A2UI v1.0 is final (see open questions).
 
 ## 1. Generative-UI protocols
 
@@ -32,7 +32,7 @@
 - **Theming:** The host passes about 60 standardized CSS variables in `HostContext.styles.variables`, covering colors, type, borders and shadows. This is a useful target for mapping our semantic tokens.
 - **Streaming:** `ui/notifications/tool-input-partial` (best effort), then `tool-input`.
 - **Accessibility:** Left to the app's HTML. The spec defines nothing.
-- **For Polixd:** Export by shipping a single prebuilt `@polixd/react` bundle as the `ui://` resource, with the generated UI JSON as tool input. The generated content stays data and only our renderer is code.
+- **For Polyxd:** Export by shipping a single prebuilt `@polyxd/react` bundle as the `ui://` resource, with the generated UI JSON as tool input. The generated content stays data and only our renderer is code.
 
 ### Vercel AI SDK / json-render
 - AI SDK is at `ai` 7.0.107. **AI SDK RSC (`streamUI`) development is paused.** Vercel recommends AI SDK UI (typed tool parts rendered by the app's own React components). That is generative UI as "tool call → developer-written component," not a portable format. ([RSC docs](https://ai-sdk.dev/docs/ai-sdk-rsc/overview))
@@ -46,16 +46,16 @@
 - **OpenAI Apps SDK** is converging on MCP Apps.
 - **Oracle Agent Spec** is named by InfoQ as a competitor. I did not review it.
 
-**Cross-cutting gap:** None of these formats carries design tokens, task or journey semantics, capability risk levels, or consistency memory. A2UI v1.0's `accessibility` block is the most complete a11y model among the data formats, and it is still thin compared with what Polixd needs.
+**Cross-cutting gap:** None of these formats carries design tokens, task or journey semantics, capability risk levels, or consistency memory. A2UI v1.0's `accessibility` block is the most complete a11y model among the data formats, and it is still thin compared with what Polyxd needs.
 
 ## 2. Material 3 design tokens
-- **Tiers:** M3 uses three official tiers: `md.ref.*` (reference/primitive palettes and typefaces), `md.sys.*` (system/semantic: color roles, typescale, shape, elevation, motion, state) and `md.comp.*` (component, e.g. `md.comp.fab.primary.container.color`). This maps 1:1 onto Polixd's primitive → semantic → component. ([m3 tokens](https://m3.material.io/foundations/design-tokens/overview). I could not render this page; the tier names were confirmed via the material-web file names.)
+- **Tiers:** M3 uses three official tiers: `md.ref.*` (reference/primitive palettes and typefaces), `md.sys.*` (system/semantic: color roles, typescale, shape, elevation, motion, state) and `md.comp.*` (component, e.g. `md.comp.fab.primary.container.color`). This maps 1:1 onto Polyxd's primitive → semantic → component. ([m3 tokens](https://m3.material.io/foundations/design-tokens/overview). I could not render this page; the tier names were confirmed via the material-web file names.)
 - **No official DTCG export found.** The machine-readable sources are:
   - **Material Web** (`@material/web` 2.5.0, Apache-2.0, **in maintenance mode "pending new maintainers"**, though Google still commits to it in Sept 2026). `tokens/versions/v0_192/sass/_md-{ref,sys,comp}-*.scss` are **auto-generated from Google's internal token set**, with a README warning that they can break on any minor or patch release. ([repo](https://github.com/material-components/material-web))
   - **material-color-utilities** (Apache-2.0; `@material/material-color-utilities` 0.4.0, Jan 2026) generates HCT tonal palettes and dynamic-color schemes for `sys.color` roles, including contrast levels. ([repo](https://github.com/material-foundation/material-color-utilities))
   - **Material Theme Builder** exports "Material Theme (JSON)" in its own schemes/palettes format, not DTCG, with a known palette/scheme mismatch bug (#308). ([repo](https://github.com/material-foundation/material-theme-builder))
 - **License:** The code sources are Apache-2.0. The M3 *guidelines site* content has its own terms (not checked). We should derive tokens from the Apache-2.0 code, not by scraping the site.
-- **Recommendation:** Build `@polixd/ds-material3` by (1) generating `ref` and `sys.color` with material-color-utilities from a seed color, and (2) transcribing `sys` typescale, shape, motion and state plus the `comp` tokens we need from the material-web `v0_192` SCSS into DTCG JSON with a small one-off converter. Pin the source version and record provenance in `$extensions`.
+- **Recommendation:** Build `@polyxd/ds-material3` by (1) generating `ref` and `sys.color` with material-color-utilities from a seed color, and (2) transcribing `sys` typescale, shape, motion and state plus the `comp` tokens we need from the material-web `v0_192` SCSS into DTCG JSON with a small one-off converter. Pin the source version and record provenance in `$extensions`.
 
 ## 3. W3C DTCG format and tooling
 - **Spec:** The **Design Tokens Format Module 2025.10 is the first stable release** (Final Community Group Report, 2025-10-28). It is not on the W3C standards track. A separate **Resolver Module 2025.10** handles themes, modes and sets. Key features: `$value`, `$type`, `$description`, `$extensions`, `$deprecated`, `{alias}` and `$ref` JSON-Pointer references, group `$extends`/`$root`, structured `color` (`colorSpace` + `components`, so OKLCH is possible) and `dimension` (`{value, unit}`) objects, plus the composite types typography, shadow, border, transition and gradient. ([format](https://www.designtokens.org/tr/2025.10/format/), [announcement](https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/))
@@ -73,7 +73,7 @@ All three items were checked against the arXiv HTML full text and the arXiv API 
   - **Numbers:** Approval went 74%→61% across the session for Maru versus 71%→33% for the baseline. Satisfactory output took 5.58 versus 7.75 generations (p=.008). Maru UIs were 2.08× more likely to be accepted (95% CI 1.25–3.47). The study produced 838 rules, 76% of them inferred from UI interactions, and 94% of the rules that got explicit feedback were accepted.
   - **Caveat:** The participants with the most rules (~195) gave the *lowest* approval (33–50%), so rule accumulation needs pruning.
   - **Code:** The paper says the code is open source (`github.com/kixlab/Maru`), but **the GitHub API returned 404 today**.
-  - **Relevance to Polixd:** This is direct support for deterministic interface memory. Its four IA elements are a good schema for our memory records.
+  - **Relevance to Polyxd:** This is direct support for deterministic interface memory. Its four IA elements are a good schema for our memory records.
 - **Affora** exists. [arXiv:2609.19125](https://arxiv.org/abs/2609.19125), Jin Gao (independent), 2026-09-16, a single-author preprint with no peer review.
   - **Claim:** A design system plus **executable checks** (component S1–S8, flow FC1–FC8, site K1–K3) makes UIs reliable for computer-use agents without constraining the visuals.
   - **Numbers:**
@@ -82,12 +82,12 @@ All three items were checked against the arXiv HTML full text and the arXiv API 
     - Transfer to other interfaces was mixed. WebShop went from 8% (published rules) to 68% (extended coverage). shadcn-admin with unpredictable labels went 23%→64%. MUI went 79%→81%. Magento showed no gain.
     - In a workflow case, actions fell 21–40% and tokens fell 24–41%.
   - **Caveats:** The agent names ("Luna", "Terra") are as reported, and I could not identify them. I found no code repository.
-  - **Relevance to Polixd:** It directly informs the verifier's agent semantics and its checks. It also finds that confirmation steps and multi-step forms *add* agent cost, which matters for our pattern choices.
+  - **Relevance to Polyxd:** It directly informs the verifier's agent semantics and its checks. It also finds that confirmation steps and multi-step forms *add* agent cost, which matters for our pattern choices.
 - **Harness4GenUI is not a preprint.** It is the **1st Workshop on Harness Engineering for Generative UI** at ASE 2026, Munich, Oct 12–16 2026 ([site](https://conf.researchr.org/home/ase-2026/harness4genui-2026)). The workshop accepted 3 papers. The relevant one is **"Toward Frontier-Quality Declarative UI Generation at Small-Model Cost"** ([arXiv:2609.04184](https://arxiv.org/abs/2609.04184), Amazon).
   - **Setup:** LoRA SFT for **A2UI** generation on Qwen3.5 0.8B/2B/4B and SmolLM 3B, with 86- and 47-component catalogs and ~1.5k training pairs.
   - **Numbers:** A 4B student recovers **~98% of teacher semantic and ~97% of teacher visual quality** at under 1/10 of the cost. Perturbed-catalog augmentation (shuffle, dropout, 20% renames) Pareto-dominates. Path-binding correctness is 88–98%. Latency is ~8.1 s per request at 4B, which is **far over our 1 s first-render budget** unless we stream.
   - **Caveats:** It uses no grammar-constrained decoding, and it releases no code or data. If "Harness4GenUI" was meant to point at a specific paper, that attribution is unverified.
-  - **Relevance to Polixd:** This is the closest prior work to Phase 5. Adopt perturbed-catalog augmentation. Compare against it rather than claim novelty for "small model + A2UI".
+  - **Relevance to Polyxd:** This is the closest prior work to Phase 5. Adopt perturbed-catalog augmentation. Compare against it rather than claim novelty for "small model + A2UI".
 
 ## 5. Base models and MLX tooling
 
@@ -121,14 +121,14 @@ The 2.5 GB at 4-bit target favours 3–4B models.
 
 ## 6. Recommendation and reasoning
 
-**Chosen option: (b), our own schema as source of truth, with A2UI v1.0 and MCP Apps as export targets.** Reasoning tied to Polixd's needs:
+**Chosen option: (b), our own schema as source of truth, with A2UI v1.0 and MCP Apps as export targets.** Reasoning tied to Polyxd's needs:
 
 1. **Stability.** A2UI is pre-1.0 and has just made a breaking v0.9 → v1.0 change (theme removed, function model rewritten). Plan §8 already names "A2UI changes under us" as a risk. Owning the schema lets us version with `specVersion` and semver on our own terms, while an exporter absorbs A2UI churn.
 2. **Three-tier tokens.** A2UI deliberately has no tokens (v1.0 defers style to the native theme). Our tokens live beside the UI JSON anyway, so there is no conflict. But our components need `variant`/emphasis semantics tied to *our* semantic tokens, and our verifier checks token-only values. None of that exists in A2UI.
 3. **Design Direction, capabilities, journeys, events.** Profile, voice, rules, exemplars, capability risk levels, journey checkpoints and semantic analytics events are all outside A2UI's scope. Hanging them off A2UI would mean vendor extensions on every object. As first-class schema they can be validated and used in constrained decoding.
 4. **Consistency memory.** Maru's evidence argues for persistent structure (partition, hierarchy, order, vocabulary) carried across generations. That needs stable semantic identities (pattern ids, slot roles, stable component keys) that A2UI's surface-local `id`s do not provide.
 5. **Agent and a11y semantics.** A2UI's `accessibility` block is a minimum. Affora shows that agent success depends on named, enumerable, recoverable interaction semantics. We need roles, task and done semantics, and state recoverability in the core schema.
-6. **Native renderers and ecosystem reach.** A2UI's value is reach: Flutter, Lit, Angular, React, and planned SwiftUI and Compose, plus A2A, AG-UI and MCP transports. We get that reach through a **faithful export**, not by making A2UI our internal model. Custom catalogs are the officially endorsed path, so our export is a Polixd A2UI catalog (`catalogId: https://polixd.dev/catalog/…`) whose `instructions` carry our usage rules.
+6. **Native renderers and ecosystem reach.** A2UI's value is reach: Flutter, Lit, Angular, React, and planned SwiftUI and Compose, plus A2A, AG-UI and MCP transports. We get that reach through a **faithful export**, not by making A2UI our internal model. Custom catalogs are the officially endorsed path, so our export is a Polyxd A2UI catalog (`catalogId: https://polyxd.com/catalog/…`) whose `instructions` carry our usage rules.
 7. **Why not (a)?** Extending A2UI's catalog directly would tie the internal representation, the training data and the constrained-decoding grammar to a moving RC. Every A2UI break would then mean regenerating training data and retraining.
 
 **To keep export cheap, mirror A2UI's shapes internally:**
@@ -144,7 +144,7 @@ The 2.5 GB at 4-bit target favours 3–4B models.
 - They render in the official React renderer using our exported catalog.
 - The lossy fields (direction, journey and memory metadata) are listed explicitly.
 
-**MCP Apps:** Ship `@polixd/mcp`. Its `ui://` resource is our renderer bundle, the UI JSON travels as tool input, and our semantic tokens map onto the ~60 MCP host CSS variables so the UI inherits host theming.
+**MCP Apps:** Ship `@polyxd/mcp`. Its `ui://` resource is our renderer bundle, the UI JSON travels as tool input, and our semantic tokens map onto the ~60 MCP host CSS variables so the UI inherits host theming.
 
 **Token tooling:**
 - Author in DTCG 2025.10 using the Style Dictionary 5–compatible subset.

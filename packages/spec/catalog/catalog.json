@@ -1,7 +1,7 @@
 {
-  "catalogId": "https://polixd.dev/catalog/0.1",
+  "catalogId": "https://polyxd.com/catalog/0.1",
   "specVersion": "0.1.0",
-  "description": "Polixd semantic component catalog: when to use each component, accessibility and agent requirements, rendering rules and platform mappings. Generated file.",
+  "description": "Polyxd semantic component catalog: when to use each component, accessibility and agent requirements, rendering rules and platform mappings. Generated file.",
   "components": {
     "Action": {
       "category": "action",
