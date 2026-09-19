@@ -1,0 +1,143 @@
+{
+  "$comment": "Shared definitions. Source file: assembled into ui.schema.json by scripts/build-schema.ts. Shapes mirror A2UI v1.0 where one exists (see docs/decisions/0001).",
+  "Id": {
+    "type": "string",
+    "pattern": "^[A-Za-z][A-Za-z0-9_-]*$",
+    "description": "Component id, unique within the document"
+  },
+  "Key": {
+    "type": "string",
+    "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+    "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+  },
+  "Path": {
+    "type": "string",
+    "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+    "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+  },
+  "Binding": {
+    "type": "object",
+    "required": ["path"],
+    "properties": { "path": { "$ref": "#/$defs/Path" } },
+    "additionalProperties": false,
+    "description": "A value read from (and, for inputs, written to) host data. Data always comes from the host; the model never invents it."
+  },
+  "DynamicString": {
+    "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/Binding" }]
+  },
+  "DynamicNumber": {
+    "oneOf": [{ "type": "number" }, { "$ref": "#/$defs/Binding" }]
+  },
+  "DynamicBoolean": {
+    "oneOf": [{ "type": "boolean" }, { "$ref": "#/$defs/Binding" }]
+  },
+  "DynamicValue": {
+    "oneOf": [{ "type": ["string", "number", "boolean"] }, { "$ref": "#/$defs/Binding" }]
+  },
+  "Format": {
+    "type": "object",
+    "required": ["type"],
+    "properties": {
+      "type": { "enum": ["text", "number", "currency", "percent", "date", "time", "datetime", "relativeTime", "duration"] },
+      "currency": { "$ref": "#/$defs/DynamicString", "description": "ISO 4217 code, required for type 'currency'" },
+      "precision": { "type": "integer", "minimum": 0, "maximum": 6 }
+    },
+    "additionalProperties": false,
+    "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+  },
+  "Tone": {
+    "enum": ["neutral", "info", "success", "warning", "danger"]
+  },
+  "Accessibility": {
+    "type": "object",
+    "properties": {
+      "label": { "$ref": "#/$defs/DynamicString", "description": "Accessible name, when the visible label is absent or insufficient" },
+      "description": { "$ref": "#/$defs/DynamicString" },
+      "live": { "enum": ["off", "polite", "assertive"] },
+      "hidden": { "type": "boolean", "description": "Hide from assistive technology (decorative only)" }
+    },
+    "additionalProperties": false,
+    "description": "Same fields as A2UI v1.0 'accessibility'. Components already carry roles and names from their semantics; use this only to add to them."
+  },
+  "Capability": {
+    "type": "string",
+    "pattern": "^[a-z][a-zA-Z0-9]*(\\.[a-z][a-zA-Z0-9]*)+$",
+    "description": "Name of a host-registered capability (e.g. 'transfer.confirm'). The 'ui.' namespace is reserved for renderer-handled actions: ui.dismiss, ui.back, ui.next."
+  },
+  "Action": {
+    "type": "object",
+    "required": ["event"],
+    "properties": {
+      "event": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "$ref": "#/$defs/Capability" },
+          "context": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/$defs/DynamicValue" },
+            "description": "Values sent with the event, usually bindings to inputs or to the current template item"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false,
+    "description": "A declared intent. The host binds it to a handler; generated UI never runs code. Same shape as A2UI 'action.event'."
+  },
+  "ActionSpec": {
+    "type": "object",
+    "required": ["label", "action"],
+    "properties": {
+      "label": { "$ref": "#/$defs/DynamicString" },
+      "action": { "$ref": "#/$defs/Action" }
+    },
+    "additionalProperties": false
+  },
+  "ChildList": {
+    "type": "array",
+    "items": { "$ref": "#/$defs/Id" },
+    "minItems": 1,
+    "description": "Ordered child component ids"
+  },
+  "Template": {
+    "type": "object",
+    "required": ["path", "componentId"],
+    "properties": {
+      "path": { "$ref": "#/$defs/Path", "description": "Array in host data to repeat over" },
+      "componentId": { "$ref": "#/$defs/Id", "description": "Component rendered once per item; relative paths inside it resolve against the item" }
+    },
+    "additionalProperties": false,
+    "description": "Same shape as A2UI templated children"
+  },
+  "Options": {
+    "oneOf": [
+      {
+        "type": "array",
+        "minItems": 2,
+        "items": {
+          "type": "object",
+          "required": ["value", "label"],
+          "properties": {
+            "value": { "type": ["string", "number", "boolean"] },
+            "label": { "$ref": "#/$defs/DynamicString" },
+            "description": { "$ref": "#/$defs/DynamicString" }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "type": "object",
+        "required": ["path", "valuePath", "labelPath"],
+        "properties": {
+          "path": { "$ref": "#/$defs/Path" },
+          "valuePath": { "$ref": "#/$defs/Path" },
+          "labelPath": { "$ref": "#/$defs/Path" },
+          "descriptionPath": { "$ref": "#/$defs/Path" }
+        },
+        "additionalProperties": false
+      }
+    ],
+    "description": "Either a fixed list, or options read from host data"
+  }
+}

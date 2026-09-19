@@ -1,0 +1,57 @@
+{
+  "name": "Media",
+  "category": "content",
+  "summary": "An image supplied by the host.",
+  "props": {
+    "src": {
+      "$ref": "#/$defs/Binding",
+      "description": "Image reference in host data; generated UI never contains URLs"
+    },
+    "alt": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Required unless decorative"
+    },
+    "decorative": {
+      "type": "boolean",
+      "default": false
+    },
+    "aspect": {
+      "enum": [
+        "square",
+        "landscape",
+        "portrait",
+        "auto"
+      ],
+      "default": "auto"
+    }
+  },
+  "required": [
+    "src"
+  ],
+  "whenToUse": [
+    "Photos or illustrations that help identify something (a product, a place, a person)"
+  ],
+  "whenNotToUse": [
+    "Decoration with no information",
+    "Icons for actions (renderer supplies those)"
+  ],
+  "accessibility": {
+    "role": "img",
+    "requirements": [
+      "Has alt text unless decorative (then hidden from assistive technology)"
+    ]
+  },
+  "agent": "Reads the alt text.",
+  "rendering": [
+    "Images never convey information that is not also in text"
+  ],
+  "mappings": {
+    "web": "<img> / shadcn AspectRatio",
+    "ios": "AsyncImage",
+    "android": "AsyncImage (Coil) / Image"
+  },
+  "a2ui": "Image",
+  "sources": [
+    "WCAG 1.1.1"
+  ]
+}

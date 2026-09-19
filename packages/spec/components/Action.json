@@ -1,0 +1,66 @@
+{
+  "name": "Action",
+  "category": "action",
+  "summary": "A button that triggers a host capability.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Verb-first label saying what happens ('Send £20', not 'OK')"
+    },
+    "action": {
+      "$ref": "#/$defs/Action"
+    },
+    "emphasis": {
+      "enum": [
+        "primary",
+        "secondary",
+        "tertiary"
+      ],
+      "default": "secondary"
+    },
+    "tone": {
+      "enum": [
+        "default",
+        "danger"
+      ],
+      "default": "default"
+    },
+    "disabled": {
+      "$ref": "#/$defs/DynamicBoolean"
+    }
+  },
+  "required": [
+    "label",
+    "action"
+  ],
+  "whenToUse": [
+    "Anything the user can do that isn't typing or choosing"
+  ],
+  "whenNotToUse": [
+    "Navigating between views: use Views",
+    "Confirming something destructive: wrap in Confirm"
+  ],
+  "accessibility": {
+    "role": "button",
+    "requirements": [
+      "Label describes the outcome",
+      "Target at least size.target.min",
+      "Disabled actions explain why nearby"
+    ]
+  },
+  "agent": "Activate by label.",
+  "rendering": [
+    "At most one primary action visible at a time",
+    "danger tone uses color.action.danger.*"
+  ],
+  "mappings": {
+    "web": "shadcn Button (default / secondary / ghost / destructive)",
+    "ios": "Button with .borderedProminent / .bordered / .borderless; role: .destructive",
+    "android": "Button / FilledTonalButton / OutlinedButton / TextButton"
+  },
+  "a2ui": "Button",
+  "sources": [
+    "Fitts's law",
+    "Material 3 button hierarchy"
+  ]
+}

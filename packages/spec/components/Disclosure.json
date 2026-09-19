@@ -1,0 +1,50 @@
+{
+  "name": "Disclosure",
+  "category": "structure",
+  "summary": "Progressive disclosure: secondary content hidden behind a toggle.",
+  "props": {
+    "summary": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Always-visible label describing what is hidden"
+    },
+    "children": {
+      "$ref": "#/$defs/ChildList"
+    },
+    "open": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "summary",
+    "children"
+  ],
+  "whenToUse": [
+    "Details most people don't need (fees breakdown, advanced options, help text)"
+  ],
+  "whenNotToUse": [
+    "Content everyone needs to complete the task",
+    "Primary navigation"
+  ],
+  "accessibility": {
+    "role": "button (aria-expanded) + region",
+    "requirements": [
+      "Summary is a button with expanded state",
+      "Hidden content is not in the tab order while closed"
+    ]
+  },
+  "agent": "Expand by the summary text; state is exposed as expanded/collapsed.",
+  "rendering": [
+    "Never hide required inputs or the primary action inside a closed Disclosure"
+  ],
+  "mappings": {
+    "web": "shadcn Collapsible (or Accordion for several)",
+    "ios": "DisclosureGroup",
+    "android": "Expandable ListItem / AnimatedVisibility with a toggle row"
+  },
+  "a2ui": "No direct equivalent; exports as Column (content always shown)",
+  "sources": [
+    "Progressive disclosure",
+    "GOV.UK details component"
+  ]
+}

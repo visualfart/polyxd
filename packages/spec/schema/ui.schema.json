@@ -1,0 +1,1786 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polixd.dev/schema/0.1/ui.schema.json",
+  "title": "Polixd UI document",
+  "description": "A just-in-time interface: a flat list of semantic components (A2UI-style adjacency list) plus the surface it belongs to. Data comes from the host via bindings; actions are declared capability intents. Generated file: edit components/*.json and schema/common.defs.json instead.",
+  "type": "object",
+  "required": [
+    "specVersion",
+    "surface",
+    "root",
+    "components"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "specVersion": {
+      "type": "string",
+      "pattern": "^0\\.1\\.[0-9]+$"
+    },
+    "surface": {
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string",
+          "description": "Short title for the surface (page title / dialog title)"
+        },
+        "intent": {
+          "$ref": "#/$defs/Key",
+          "description": "What the user is trying to do, as a stable key (e.g. 'money.send'); memory is organised by intent"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Id of the pattern this surface follows, when one applies"
+        },
+        "journey": {
+          "type": "string",
+          "description": "Id of the journey this surface is a step of, when one applies"
+        },
+        "dismissible": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "root": {
+      "$ref": "#/$defs/Id",
+      "description": "Id of the top-level component"
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/Component"
+      }
+    },
+    "data": {
+      "type": "object",
+      "description": "Host data snapshot. Supplied by the host (or a test fixture), never by the model."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$",
+      "description": "Component id, unique within the document"
+    },
+    "Key": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+      "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+    },
+    "Path": {
+      "type": "string",
+      "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+      "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+    },
+    "Binding": {
+      "type": "object",
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/Path"
+        }
+      },
+      "additionalProperties": false,
+      "description": "A value read from (and, for inputs, written to) host data. Data always comes from the host; the model never invents it."
+    },
+    "DynamicString": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/$defs/Binding"
+        }
+      ]
+    },
+    "DynamicNumber": {
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "$ref": "#/$defs/Binding"
+        }
+      ]
+    },
+    "DynamicBoolean": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/$defs/Binding"
+        }
+      ]
+    },
+    "DynamicValue": {
+      "oneOf": [
+        {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        },
+        {
+          "$ref": "#/$defs/Binding"
+        }
+      ]
+    },
+    "Format": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "text",
+            "number",
+            "currency",
+            "percent",
+            "date",
+            "time",
+            "datetime",
+            "relativeTime",
+            "duration"
+          ]
+        },
+        "currency": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "ISO 4217 code, required for type 'currency'"
+        },
+        "precision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6
+        }
+      },
+      "additionalProperties": false,
+      "description": "How to present a value. The renderer localizes it; the model never pre-formats numbers or dates into strings."
+    },
+    "Tone": {
+      "enum": [
+        "neutral",
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ]
+    },
+    "Accessibility": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Accessible name, when the visible label is absent or insufficient"
+        },
+        "description": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "live": {
+          "enum": [
+            "off",
+            "polite",
+            "assertive"
+          ]
+        },
+        "hidden": {
+          "type": "boolean",
+          "description": "Hide from assistive technology (decorative only)"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Same fields as A2UI v1.0 'accessibility'. Components already carry roles and names from their semantics; use this only to add to them."
+    },
+    "Capability": {
+      "type": "string",
+      "pattern": "^[a-z][a-zA-Z0-9]*(\\.[a-z][a-zA-Z0-9]*)+$",
+      "description": "Name of a host-registered capability (e.g. 'transfer.confirm'). The 'ui.' namespace is reserved for renderer-handled actions: ui.dismiss, ui.back, ui.next."
+    },
+    "Action": {
+      "type": "object",
+      "required": [
+        "event"
+      ],
+      "properties": {
+        "event": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "$ref": "#/$defs/Capability"
+            },
+            "context": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/DynamicValue"
+              },
+              "description": "Values sent with the event, usually bindings to inputs or to the current template item"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "description": "A declared intent. The host binds it to a handler; generated UI never runs code. Same shape as A2UI 'action.event'."
+    },
+    "ActionSpec": {
+      "type": "object",
+      "required": [
+        "label",
+        "action"
+      ],
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "action": {
+          "$ref": "#/$defs/Action"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ChildList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Id"
+      },
+      "minItems": 1,
+      "description": "Ordered child component ids"
+    },
+    "Template": {
+      "type": "object",
+      "required": [
+        "path",
+        "componentId"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/Path",
+          "description": "Array in host data to repeat over"
+        },
+        "componentId": {
+          "$ref": "#/$defs/Id",
+          "description": "Component rendered once per item; relative paths inside it resolve against the item"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Same shape as A2UI templated children"
+    },
+    "Options": {
+      "oneOf": [
+        {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": [
+              "value",
+              "label"
+            ],
+            "properties": {
+              "value": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean"
+                ]
+              },
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "description": {
+                "$ref": "#/$defs/DynamicString"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "path",
+            "valuePath",
+            "labelPath"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/Path"
+            },
+            "valuePath": {
+              "$ref": "#/$defs/Path"
+            },
+            "labelPath": {
+              "$ref": "#/$defs/Path"
+            },
+            "descriptionPath": {
+              "$ref": "#/$defs/Path"
+            }
+          },
+          "additionalProperties": false
+        }
+      ],
+      "description": "Either a fixed list, or options read from host data"
+    },
+    "ComponentAction": {
+      "type": "object",
+      "description": "A button that triggers a host capability.",
+      "required": [
+        "id",
+        "component",
+        "label",
+        "action"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Action"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Verb-first label saying what happens ('Send £20', not 'OK')"
+        },
+        "action": {
+          "$ref": "#/$defs/Action"
+        },
+        "emphasis": {
+          "enum": [
+            "primary",
+            "secondary",
+            "tertiary"
+          ],
+          "default": "secondary"
+        },
+        "tone": {
+          "enum": [
+            "default",
+            "danger"
+          ],
+          "default": "default"
+        },
+        "disabled": {
+          "$ref": "#/$defs/DynamicBoolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentActionBar": {
+      "type": "object",
+      "description": "The set of actions for a surface or section; the renderer places it where that platform expects.",
+      "required": [
+        "id",
+        "component",
+        "children"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "ActionBar"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "children": {
+          "$ref": "#/$defs/ChildList",
+          "description": "Action component ids, in order of importance"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentCard": {
+      "type": "object",
+      "description": "One self-contained entity (an account, an order, a place), optionally actionable as a whole.",
+      "required": [
+        "id",
+        "component",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Card"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "title": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Name of the entity"
+        },
+        "subtitle": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "media": {
+          "$ref": "#/$defs/Id",
+          "description": "Optional Media component id"
+        },
+        "badge": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "$ref": "#/$defs/DynamicString"
+            },
+            "tone": {
+              "$ref": "#/$defs/Tone"
+            }
+          },
+          "additionalProperties": false
+        },
+        "children": {
+          "$ref": "#/$defs/ChildList"
+        },
+        "action": {
+          "$ref": "#/$defs/Action",
+          "description": "Activating the card as a whole (e.g. open details)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentChart": {
+      "type": "object",
+      "description": "A visual summary of data, always paired with a text summary.",
+      "required": [
+        "id",
+        "component",
+        "intent",
+        "data",
+        "title",
+        "summary",
+        "x",
+        "series"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Chart"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "intent": {
+          "enum": [
+            "trend",
+            "comparison",
+            "composition",
+            "distribution"
+          ],
+          "description": "What the chart should communicate; the renderer picks the chart type"
+        },
+        "data": {
+          "$ref": "#/$defs/Binding",
+          "description": "Array of data points in host data"
+        },
+        "title": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "summary": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Text alternative stating the takeaway (required)"
+        },
+        "x": {
+          "type": "object",
+          "required": [
+            "path",
+            "label"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/Path"
+            },
+            "label": {
+              "$ref": "#/$defs/DynamicString"
+            },
+            "format": {
+              "$ref": "#/$defs/Format"
+            }
+          },
+          "additionalProperties": false
+        },
+        "series": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "label"
+            ],
+            "properties": {
+              "key": {
+                "$ref": "#/$defs/Key"
+              },
+              "path": {
+                "$ref": "#/$defs/Path"
+              },
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "format": {
+                "$ref": "#/$defs/Format"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentChoice": {
+      "type": "object",
+      "description": "Pick one or several options from a known set. The renderer chooses the control.",
+      "required": [
+        "id",
+        "component",
+        "label",
+        "options",
+        "value"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Choice"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "options": {
+          "$ref": "#/$defs/Options"
+        },
+        "value": {
+          "$ref": "#/$defs/Binding",
+          "description": "Two-way binding into host data"
+        },
+        "mode": {
+          "enum": [
+            "single",
+            "multiple"
+          ],
+          "default": "single"
+        },
+        "help": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentCollection": {
+      "type": "object",
+      "description": "A list of items from host data, each rendered with the same template.",
+      "required": [
+        "id",
+        "component",
+        "items",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Collection"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "items": {
+          "$ref": "#/$defs/Template"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "What the list contains, e.g. 'Recent payments'"
+        },
+        "empty": {
+          "$ref": "#/$defs/Id",
+          "description": "Status component shown when there are no items"
+        },
+        "selection": {
+          "enum": [
+            "none",
+            "single",
+            "multiple"
+          ],
+          "default": "none"
+        },
+        "selected": {
+          "$ref": "#/$defs/Binding",
+          "description": "Selected item value(s) in host data when selection is not 'none'"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentComparison": {
+      "type": "object",
+      "description": "Compare a few options across the same attributes, and choose one.",
+      "required": [
+        "id",
+        "component",
+        "items",
+        "itemTitle",
+        "attributes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Comparison"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "items": {
+          "$ref": "#/$defs/Binding",
+          "description": "Array of options in host data (2–4 recommended)"
+        },
+        "itemTitle": {
+          "$ref": "#/$defs/Path",
+          "description": "Relative path to each item's name"
+        },
+        "attributes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "path"
+            ],
+            "properties": {
+              "key": {
+                "$ref": "#/$defs/Key"
+              },
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "path": {
+                "$ref": "#/$defs/Path"
+              },
+              "format": {
+                "$ref": "#/$defs/Format"
+              },
+              "better": {
+                "enum": [
+                  "higher",
+                  "lower",
+                  "none"
+                ],
+                "default": "none"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "choose": {
+          "$ref": "#/$defs/ActionSpec",
+          "description": "Action per item; context bindings resolve against the item"
+        },
+        "recommended": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Optional value of the recommended item's title, with a reason in 'summary'"
+        },
+        "summary": {
+          "$ref": "#/$defs/DynamicString"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentConfirm": {
+      "type": "object",
+      "description": "Asks the user to confirm a consequential or destructive action, showing what will happen.",
+      "required": [
+        "id",
+        "component",
+        "title",
+        "severity",
+        "confirm"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Confirm"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "title": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Question naming the action ('Send £250 to Alex?')"
+        },
+        "message": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "consequence": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "What happens and whether it can be undone"
+        },
+        "summary": {
+          "$ref": "#/$defs/Id",
+          "description": "Optional DetailList summarising what is being confirmed"
+        },
+        "severity": {
+          "enum": [
+            "consequential",
+            "destructive"
+          ]
+        },
+        "confirm": {
+          "$ref": "#/$defs/ActionSpec"
+        },
+        "cancel": {
+          "$ref": "#/$defs/ActionSpec",
+          "description": "Defaults to 'Cancel' → ui.dismiss"
+        },
+        "typeToConfirm": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Text the user must type before confirming (for irreversible, high-impact actions)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentDateInput": {
+      "type": "object",
+      "description": "A date, time, date-time or date range.",
+      "required": [
+        "id",
+        "component",
+        "label",
+        "value"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "DateInput"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "value": {
+          "$ref": "#/$defs/Binding",
+          "description": "ISO 8601 value(s) in host data"
+        },
+        "kind": {
+          "enum": [
+            "date",
+            "time",
+            "datetime",
+            "dateRange"
+          ],
+          "default": "date"
+        },
+        "min": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "max": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "help": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentDetailList": {
+      "type": "object",
+      "description": "Label/value pairs describing one thing (a summary, a receipt, a review step).",
+      "required": [
+        "id",
+        "component",
+        "items"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "DetailList"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "label",
+              "value"
+            ],
+            "properties": {
+              "key": {
+                "$ref": "#/$defs/Key"
+              },
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "value": {
+                "$ref": "#/$defs/DynamicValue"
+              },
+              "format": {
+                "$ref": "#/$defs/Format"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "title": {
+          "$ref": "#/$defs/DynamicString"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentDisclosure": {
+      "type": "object",
+      "description": "Progressive disclosure: secondary content hidden behind a toggle.",
+      "required": [
+        "id",
+        "component",
+        "summary",
+        "children"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Disclosure"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "summary": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Always-visible label describing what is hidden"
+        },
+        "children": {
+          "$ref": "#/$defs/ChildList"
+        },
+        "open": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentForm": {
+      "type": "object",
+      "description": "Collects inputs and submits them together.",
+      "required": [
+        "id",
+        "component",
+        "children",
+        "submit"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Form"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "children": {
+          "$ref": "#/$defs/ChildList"
+        },
+        "submit": {
+          "$ref": "#/$defs/ActionSpec"
+        },
+        "cancel": {
+          "$ref": "#/$defs/ActionSpec",
+          "description": "Optional; defaults to ui.dismiss when omitted and the surface is dismissible"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentGroup": {
+      "type": "object",
+      "description": "Visually groups closely related items without a heading (proximity).",
+      "required": [
+        "id",
+        "component",
+        "children"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Group"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "children": {
+          "$ref": "#/$defs/ChildList"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Accessible name for the group when it isn't obvious from its content"
+        },
+        "arrangement": {
+          "enum": [
+            "auto",
+            "inline",
+            "grid"
+          ],
+          "default": "auto",
+          "description": "Hint only. 'inline' for a few short peers (e.g. metrics); renderers stack on narrow screens."
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentMedia": {
+      "type": "object",
+      "description": "An image supplied by the host.",
+      "required": [
+        "id",
+        "component",
+        "src"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Media"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "src": {
+          "$ref": "#/$defs/Binding",
+          "description": "Image reference in host data; generated UI never contains URLs"
+        },
+        "alt": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Required unless decorative"
+        },
+        "decorative": {
+          "type": "boolean",
+          "default": false
+        },
+        "aspect": {
+          "enum": [
+            "square",
+            "landscape",
+            "portrait",
+            "auto"
+          ],
+          "default": "auto"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentMetric": {
+      "type": "object",
+      "description": "A key figure with a label, and optionally its change.",
+      "required": [
+        "id",
+        "component",
+        "label",
+        "value"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Metric"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "value": {
+          "$ref": "#/$defs/Binding",
+          "description": "Always bound to host data"
+        },
+        "format": {
+          "$ref": "#/$defs/Format"
+        },
+        "change": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/Binding"
+            },
+            "format": {
+              "$ref": "#/$defs/Format"
+            },
+            "favorable": {
+              "enum": [
+                "increase",
+                "decrease",
+                "none"
+              ],
+              "default": "increase",
+              "description": "Which direction is good, so color follows meaning, not sign"
+            }
+          },
+          "additionalProperties": false
+        },
+        "caption": {
+          "$ref": "#/$defs/DynamicString"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentRangeInput": {
+      "type": "object",
+      "description": "A number within known bounds where the exact value matters less than its position.",
+      "required": [
+        "id",
+        "component",
+        "label",
+        "value",
+        "min",
+        "max"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "RangeInput"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "value": {
+          "$ref": "#/$defs/Binding",
+          "description": "Number in host data"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "format": {
+          "$ref": "#/$defs/Format"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentSection": {
+      "type": "object",
+      "description": "A titled region of the surface that groups related content under a heading.",
+      "required": [
+        "id",
+        "component",
+        "title",
+        "children"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Section"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "title": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Heading for the section"
+        },
+        "description": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Optional one-line explanation under the heading"
+        },
+        "children": {
+          "$ref": "#/$defs/ChildList"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentStatus": {
+      "type": "object",
+      "description": "Feedback about state: info, success, warning, error, empty or loading.",
+      "required": [
+        "id",
+        "component",
+        "kind",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Status"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "kind": {
+          "enum": [
+            "info",
+            "success",
+            "warning",
+            "error",
+            "empty",
+            "loading"
+          ]
+        },
+        "title": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "message": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "action": {
+          "$ref": "#/$defs/Id",
+          "description": "Optional Action to recover or continue (e.g. 'Try again')"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentSteps": {
+      "type": "object",
+      "description": "A task split into ordered steps with visible progress.",
+      "required": [
+        "id",
+        "component",
+        "steps",
+        "finish"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Steps"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 7,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "title",
+              "content"
+            ],
+            "properties": {
+              "key": {
+                "$ref": "#/$defs/Key"
+              },
+              "title": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "content": {
+                "$ref": "#/$defs/Id"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "current": {
+          "$ref": "#/$defs/DynamicNumber",
+          "description": "Index of the current step (default 0)"
+        },
+        "finish": {
+          "$ref": "#/$defs/ActionSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentTable": {
+      "type": "object",
+      "description": "Tabular data: many items sharing the same attributes.",
+      "required": [
+        "id",
+        "component",
+        "rows",
+        "caption",
+        "columns"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Table"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "rows": {
+          "$ref": "#/$defs/Binding",
+          "description": "Array of row objects in host data"
+        },
+        "caption": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "What the table shows (required for accessibility)"
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "path"
+            ],
+            "properties": {
+              "key": {
+                "$ref": "#/$defs/Key"
+              },
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "path": {
+                "$ref": "#/$defs/Path",
+                "description": "Relative to the row"
+              },
+              "format": {
+                "$ref": "#/$defs/Format"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "rowAction": {
+          "$ref": "#/$defs/Action",
+          "description": "Activated per row; context bindings resolve against the row"
+        },
+        "empty": {
+          "$ref": "#/$defs/Id",
+          "description": "Status component shown when there are no rows"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentText": {
+      "type": "object",
+      "description": "A run of text.",
+      "required": [
+        "id",
+        "component",
+        "text"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Text"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "text": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "variant": {
+          "enum": [
+            "body",
+            "supporting",
+            "caption"
+          ],
+          "default": "body"
+        },
+        "format": {
+          "$ref": "#/$defs/Format",
+          "description": "Only when 'text' is bound to a non-string value"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentTextInput": {
+      "type": "object",
+      "description": "A single text-like value: text, number, email, phone, currency, search or long text.",
+      "required": [
+        "id",
+        "component",
+        "label",
+        "value"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "TextInput"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "value": {
+          "$ref": "#/$defs/Binding",
+          "description": "Two-way binding into host data"
+        },
+        "kind": {
+          "enum": [
+            "text",
+            "multiline",
+            "number",
+            "currency",
+            "email",
+            "phone",
+            "url",
+            "search"
+          ],
+          "default": "text"
+        },
+        "currency": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "ISO 4217 code when kind is 'currency'"
+        },
+        "help": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Hint shown below the label (not a placeholder)"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "validation": {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "minLength": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "message": {
+              "$ref": "#/$defs/DynamicString",
+              "description": "Error message shown when validation fails"
+            }
+          },
+          "additionalProperties": false
+        },
+        "autocomplete": {
+          "type": "string",
+          "description": "HTML autocomplete token hint (e.g. 'email', 'postal-code')"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentToggle": {
+      "type": "object",
+      "description": "An on/off setting.",
+      "required": [
+        "id",
+        "component",
+        "label",
+        "value"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Toggle"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "value": {
+          "$ref": "#/$defs/Binding",
+          "description": "Boolean in host data"
+        },
+        "description": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "action": {
+          "$ref": "#/$defs/Action",
+          "description": "Set when the change applies immediately (a setting); omit inside a Form"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentViews": {
+      "type": "object",
+      "description": "Switch between alternative views of the same subject (tabs).",
+      "required": [
+        "id",
+        "component",
+        "views"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Views"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "views": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "content"
+            ],
+            "properties": {
+              "key": {
+                "$ref": "#/$defs/Key"
+              },
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "content": {
+                "$ref": "#/$defs/Id"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "selected": {
+          "$ref": "#/$defs/Binding",
+          "description": "Key of the selected view in host data"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Component": {
+      "type": "object",
+      "required": [
+        "component"
+      ],
+      "discriminator": {
+        "propertyName": "component"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ComponentAction"
+        },
+        {
+          "$ref": "#/$defs/ComponentActionBar"
+        },
+        {
+          "$ref": "#/$defs/ComponentCard"
+        },
+        {
+          "$ref": "#/$defs/ComponentChart"
+        },
+        {
+          "$ref": "#/$defs/ComponentChoice"
+        },
+        {
+          "$ref": "#/$defs/ComponentCollection"
+        },
+        {
+          "$ref": "#/$defs/ComponentComparison"
+        },
+        {
+          "$ref": "#/$defs/ComponentConfirm"
+        },
+        {
+          "$ref": "#/$defs/ComponentDateInput"
+        },
+        {
+          "$ref": "#/$defs/ComponentDetailList"
+        },
+        {
+          "$ref": "#/$defs/ComponentDisclosure"
+        },
+        {
+          "$ref": "#/$defs/ComponentForm"
+        },
+        {
+          "$ref": "#/$defs/ComponentGroup"
+        },
+        {
+          "$ref": "#/$defs/ComponentMedia"
+        },
+        {
+          "$ref": "#/$defs/ComponentMetric"
+        },
+        {
+          "$ref": "#/$defs/ComponentRangeInput"
+        },
+        {
+          "$ref": "#/$defs/ComponentSection"
+        },
+        {
+          "$ref": "#/$defs/ComponentStatus"
+        },
+        {
+          "$ref": "#/$defs/ComponentSteps"
+        },
+        {
+          "$ref": "#/$defs/ComponentTable"
+        },
+        {
+          "$ref": "#/$defs/ComponentText"
+        },
+        {
+          "$ref": "#/$defs/ComponentTextInput"
+        },
+        {
+          "$ref": "#/$defs/ComponentToggle"
+        },
+        {
+          "$ref": "#/$defs/ComponentViews"
+        }
+      ]
+    }
+  }
+}

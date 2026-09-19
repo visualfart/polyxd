@@ -1,0 +1,77 @@
+{
+  "name": "Metric",
+  "category": "content",
+  "summary": "A key figure with a label, and optionally its change.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "Always bound to host data"
+    },
+    "format": {
+      "$ref": "#/$defs/Format"
+    },
+    "change": {
+      "type": "object",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/Binding"
+        },
+        "format": {
+          "$ref": "#/$defs/Format"
+        },
+        "favorable": {
+          "enum": [
+            "increase",
+            "decrease",
+            "none"
+          ],
+          "default": "increase",
+          "description": "Which direction is good, so color follows meaning, not sign"
+        }
+      },
+      "additionalProperties": false
+    },
+    "caption": {
+      "$ref": "#/$defs/DynamicString"
+    }
+  },
+  "required": [
+    "label",
+    "value"
+  ],
+  "whenToUse": [
+    "One to four headline numbers the user asked about"
+  ],
+  "whenNotToUse": [
+    "Many numbers: use Table or DetailList",
+    "Trends over time: use Chart"
+  ],
+  "accessibility": {
+    "role": "group (label + value)",
+    "requirements": [
+      "Change direction is conveyed in text as well as color",
+      "Screen readers read label, value and change as one sentence"
+    ]
+  },
+  "agent": "Read label and value.",
+  "rendering": [
+    "Value uses type.numeric.display",
+    "Change uses color.data.positive / negative according to 'favorable'"
+  ],
+  "mappings": {
+    "web": "Card-like block with semantic tokens (no dedicated shadcn primitive)",
+    "ios": "LabeledContent or a VStack; Gauge for bounded values",
+    "android": "Column with Text styles"
+  },
+  "a2ui": "Column of Text",
+  "sources": [
+    "Pre-attentive processing",
+    "WCAG 1.4.1 use of color"
+  ]
+}

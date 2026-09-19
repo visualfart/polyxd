@@ -1,0 +1,59 @@
+{
+  "name": "RangeInput",
+  "category": "input",
+  "summary": "A number within known bounds where the exact value matters less than its position.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "Number in host data"
+    },
+    "min": {
+      "type": "number"
+    },
+    "max": {
+      "type": "number"
+    },
+    "step": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "format": {
+      "$ref": "#/$defs/Format"
+    }
+  },
+  "required": [
+    "label",
+    "value",
+    "min",
+    "max"
+  ],
+  "whenToUse": [
+    "Approximate values within a range (budget cap, volume)"
+  ],
+  "whenNotToUse": [
+    "Exact values: use TextInput with kind 'number' or 'currency'"
+  ],
+  "accessibility": {
+    "role": "slider",
+    "requirements": [
+      "Current value is shown as text",
+      "Keyboard arrows change the value by step"
+    ]
+  },
+  "agent": "Set the value directly by label.",
+  "rendering": [
+    "Shows min, max and the current formatted value"
+  ],
+  "mappings": {
+    "web": "shadcn Slider",
+    "ios": "Slider",
+    "android": "Slider"
+  },
+  "a2ui": "Slider",
+  "sources": [
+    "Fitts's law: large thumb target"
+  ]
+}

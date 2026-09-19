@@ -1,0 +1,63 @@
+{
+  "name": "Status",
+  "category": "feedback",
+  "summary": "Feedback about state: info, success, warning, error, empty or loading.",
+  "props": {
+    "kind": {
+      "enum": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "empty",
+        "loading"
+      ]
+    },
+    "title": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "message": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "action": {
+      "$ref": "#/$defs/Id",
+      "description": "Optional Action to recover or continue (e.g. 'Try again')"
+    }
+  },
+  "required": [
+    "kind",
+    "title"
+  ],
+  "whenToUse": [
+    "Results of an action",
+    "Empty collections",
+    "Errors with a way to recover",
+    "Loading states"
+  ],
+  "whenNotToUse": [
+    "Validation errors on a field: inputs show their own errors",
+    "Confirmation before acting: use Confirm"
+  ],
+  "accessibility": {
+    "role": "status or alert (live region)",
+    "requirements": [
+      "success/info/loading are polite live regions; error is assertive",
+      "Meaning is in text, not only color or icon"
+    ]
+  },
+  "agent": "Reads the title and message; the recovery action is exposed.",
+  "rendering": [
+    "error and warning use color.status.* tokens and an icon",
+    "empty states explain why and what to do next",
+    "loading shows a skeleton when layout is known, otherwise a progress indicator"
+  ],
+  "mappings": {
+    "web": "shadcn Alert / Skeleton / Sonner toast",
+    "ios": "ContentUnavailableView / ProgressView / inline Label",
+    "android": "Snackbar / Card with status color / CircularProgressIndicator"
+  },
+  "a2ui": "Text + Icon",
+  "sources": [
+    "Nielsen: visibility of system status; help users recover from errors"
+  ]
+}

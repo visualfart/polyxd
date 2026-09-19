@@ -1,0 +1,161 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "checkout",
+    "title": "Checkout",
+    "intent": "commerce.checkout",
+    "pattern": "multi-step-form"
+  },
+  "root": "steps",
+  "components": [
+    {
+      "id": "steps",
+      "component": "Steps",
+      "key": "checkout",
+      "current": {
+        "path": "/checkout/step"
+      },
+      "steps": [
+        {
+          "key": "delivery",
+          "title": "Delivery",
+          "content": "delivery"
+        },
+        {
+          "key": "payment",
+          "title": "Payment",
+          "content": "payment"
+        },
+        {
+          "key": "review",
+          "title": "Review",
+          "content": "review"
+        }
+      ],
+      "finish": {
+        "label": "Place order",
+        "action": {
+          "event": {
+            "name": "order.place",
+            "context": {
+              "cartId": {
+                "path": "/cart/id"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "delivery",
+      "component": "Group",
+      "children": [
+        "address",
+        "speed"
+      ]
+    },
+    {
+      "id": "address",
+      "component": "TextInput",
+      "key": "address",
+      "label": "Delivery address",
+      "kind": "multiline",
+      "value": {
+        "path": "/checkout/address"
+      },
+      "autocomplete": "street-address",
+      "required": true
+    },
+    {
+      "id": "speed",
+      "component": "Choice",
+      "key": "delivery_speed",
+      "label": "Delivery speed",
+      "options": [
+        {
+          "value": "standard",
+          "label": "Standard (3–5 days)",
+          "description": "Free"
+        },
+        {
+          "value": "express",
+          "label": "Express (next day)",
+          "description": "£4.99"
+        }
+      ],
+      "value": {
+        "path": "/checkout/speed"
+      }
+    },
+    {
+      "id": "payment",
+      "component": "Choice",
+      "key": "payment_method",
+      "label": "Pay with",
+      "options": {
+        "path": "/wallet",
+        "valuePath": "id",
+        "labelPath": "label"
+      },
+      "value": {
+        "path": "/checkout/payment"
+      },
+      "required": true
+    },
+    {
+      "id": "review",
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "items",
+          "label": "Items",
+          "value": {
+            "path": "/cart/count"
+          }
+        },
+        {
+          "key": "delivery_speed",
+          "label": "Delivery",
+          "value": {
+            "path": "/checkout/speed"
+          }
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "value": {
+            "path": "/cart/total"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        }
+      ]
+    }
+  ],
+  "data": {
+    "checkout": {
+      "step": 0,
+      "address": "",
+      "speed": "standard",
+      "payment": null
+    },
+    "wallet": [
+      {
+        "id": "w1",
+        "label": "Visa ending 4242"
+      },
+      {
+        "id": "w2",
+        "label": "Apple Pay"
+      }
+    ],
+    "cart": {
+      "id": "cart_1",
+      "count": 3,
+      "total": 64.97
+    }
+  }
+}

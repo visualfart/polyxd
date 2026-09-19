@@ -1,0 +1,51 @@
+{
+  "name": "Form",
+  "category": "input",
+  "summary": "Collects inputs and submits them together.",
+  "props": {
+    "children": {
+      "$ref": "#/$defs/ChildList"
+    },
+    "submit": {
+      "$ref": "#/$defs/ActionSpec"
+    },
+    "cancel": {
+      "$ref": "#/$defs/ActionSpec",
+      "description": "Optional; defaults to ui.dismiss when omitted and the surface is dismissible"
+    }
+  },
+  "required": [
+    "children",
+    "submit"
+  ],
+  "whenToUse": [
+    "Any set of inputs that are submitted together"
+  ],
+  "whenNotToUse": [
+    "Settings that apply immediately: use Toggles with actions",
+    "Several distinct stages: use Steps"
+  ],
+  "accessibility": {
+    "role": "form",
+    "requirements": [
+      "Submit is a real submit button",
+      "On submit errors, focus moves to an error summary that links to each field"
+    ]
+  },
+  "agent": "Fill fields by label, then activate the submit button by its label.",
+  "rendering": [
+    "One column; labels above fields",
+    "Submit is the primary action; cancel is secondary",
+    "Submit context is built from the form's input bindings"
+  ],
+  "mappings": {
+    "web": "shadcn Form (react-hook-form + zod)",
+    "ios": "Form",
+    "android": "Column of fields + Button (no Form primitive)"
+  },
+  "a2ui": "Column + Button",
+  "sources": [
+    "GOV.UK question pages and error summary",
+    "Nielsen: error prevention"
+  ]
+}

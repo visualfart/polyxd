@@ -1,0 +1,111 @@
+{
+  "name": "Chart",
+  "category": "content",
+  "summary": "A visual summary of data, always paired with a text summary.",
+  "props": {
+    "intent": {
+      "enum": [
+        "trend",
+        "comparison",
+        "composition",
+        "distribution"
+      ],
+      "description": "What the chart should communicate; the renderer picks the chart type"
+    },
+    "data": {
+      "$ref": "#/$defs/Binding",
+      "description": "Array of data points in host data"
+    },
+    "title": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "summary": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Text alternative stating the takeaway (required)"
+    },
+    "x": {
+      "type": "object",
+      "required": [
+        "path",
+        "label"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/Path"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "format": {
+          "$ref": "#/$defs/Format"
+        }
+      },
+      "additionalProperties": false
+    },
+    "series": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "label"
+        ],
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/Key"
+          },
+          "path": {
+            "$ref": "#/$defs/Path"
+          },
+          "label": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "format": {
+            "$ref": "#/$defs/Format"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "intent",
+    "data",
+    "title",
+    "summary",
+    "x",
+    "series"
+  ],
+  "whenToUse": [
+    "A trend, comparison, share or spread matters more than exact values"
+  ],
+  "whenNotToUse": [
+    "Exact values matter most: use Table or Metric",
+    "A single number: use Metric"
+  ],
+  "accessibility": {
+    "role": "img (figure) with the summary as description, plus a data-table alternative",
+    "requirements": [
+      "'summary' states the takeaway in words",
+      "Series are distinguishable without color (labels, markers)",
+      "The underlying data is available as a table"
+    ]
+  },
+  "agent": "Reads the summary, and the data through the table alternative.",
+  "rendering": [
+    "trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram",
+    "Series colors use color.data.categorical.N in order"
+  ],
+  "mappings": {
+    "web": "shadcn Chart (Recharts)",
+    "ios": "Swift Charts (Chart)",
+    "android": "Third-party (e.g. Vico) or Canvas; no built-in M3 chart"
+  },
+  "a2ui": "No equivalent in the Basic catalog; exports as Text(summary) + List",
+  "sources": [
+    "Data visualization: choosing the form by intent",
+    "WCAG 1.1.1"
+  ]
+}

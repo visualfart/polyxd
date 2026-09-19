@@ -1,0 +1,183 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "trip",
+    "title": "Lisbon trip",
+    "intent": "travel.trip.overview"
+  },
+  "root": "views",
+  "components": [
+    {
+      "id": "views",
+      "component": "Views",
+      "key": "trip_views",
+      "selected": {
+        "path": "/ui/view"
+      },
+      "views": [
+        {
+          "key": "itinerary",
+          "label": "Itinerary",
+          "content": "itinerary"
+        },
+        {
+          "key": "bookings",
+          "label": "Bookings",
+          "content": "bookings"
+        },
+        {
+          "key": "budget",
+          "label": "Budget",
+          "content": "budget"
+        }
+      ]
+    },
+    {
+      "id": "itinerary",
+      "component": "Collection",
+      "key": "days",
+      "label": "Days",
+      "items": {
+        "path": "/days",
+        "componentId": "day"
+      }
+    },
+    {
+      "id": "day",
+      "component": "Card",
+      "title": {
+        "path": "label"
+      },
+      "children": [
+        "day-plan"
+      ]
+    },
+    {
+      "id": "day-plan",
+      "component": "Text",
+      "text": {
+        "path": "plan"
+      }
+    },
+    {
+      "id": "bookings",
+      "component": "Table",
+      "key": "bookings",
+      "caption": "Bookings for this trip",
+      "rows": {
+        "path": "/bookings"
+      },
+      "columns": [
+        {
+          "key": "what",
+          "label": "What",
+          "path": "what"
+        },
+        {
+          "key": "when",
+          "label": "When",
+          "path": "when",
+          "format": {
+            "type": "date"
+          }
+        },
+        {
+          "key": "ref",
+          "label": "Reference",
+          "path": "ref"
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "component": "Group",
+      "children": [
+        "spent",
+        "split"
+      ]
+    },
+    {
+      "id": "spent",
+      "component": "Metric",
+      "key": "trip_spent",
+      "label": "Spent of £900",
+      "value": {
+        "path": "/budget/spent"
+      },
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      }
+    },
+    {
+      "id": "split",
+      "component": "Chart",
+      "key": "spend_split",
+      "intent": "composition",
+      "title": "Where the money went",
+      "summary": "Flights and hotel are 80% of the spend.",
+      "data": {
+        "path": "/budget/split"
+      },
+      "x": {
+        "path": "category",
+        "label": "Category"
+      },
+      "series": [
+        {
+          "path": "amount",
+          "label": "Amount",
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        }
+      ]
+    }
+  ],
+  "data": {
+    "ui": {
+      "view": "itinerary"
+    },
+    "days": [
+      {
+        "label": "Fri 3 Oct",
+        "plan": "Arrive, Alfama walk"
+      },
+      {
+        "label": "Sat 4 Oct",
+        "plan": "Belém, LX Factory"
+      }
+    ],
+    "bookings": [
+      {
+        "what": "Flight TP1351",
+        "when": "2026-10-03",
+        "ref": "X7K2PL"
+      },
+      {
+        "what": "Hotel Alfama",
+        "when": "2026-10-03",
+        "ref": "H-99812"
+      }
+    ],
+    "budget": {
+      "spent": 612,
+      "split": [
+        {
+          "category": "Flights",
+          "amount": 178
+        },
+        {
+          "category": "Hotel",
+          "amount": 312
+        },
+        {
+          "category": "Food",
+          "amount": 122
+        }
+      ]
+    }
+  }
+}

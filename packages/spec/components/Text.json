@@ -1,0 +1,54 @@
+{
+  "name": "Text",
+  "category": "content",
+  "summary": "A run of text.",
+  "props": {
+    "text": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "variant": {
+      "enum": [
+        "body",
+        "supporting",
+        "caption"
+      ],
+      "default": "body"
+    },
+    "format": {
+      "$ref": "#/$defs/Format",
+      "description": "Only when 'text' is bound to a non-string value"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "whenToUse": [
+    "Explanations, instructions, messages"
+  ],
+  "whenNotToUse": [
+    "Headings: use Section title",
+    "Label/value pairs: use DetailList",
+    "Key figures: use Metric"
+  ],
+  "accessibility": {
+    "role": "text",
+    "requirements": [
+      "Body text is at least 16px (type.body.default)",
+      "Line length is capped by measure.max"
+    ]
+  },
+  "agent": "Read as text.",
+  "rendering": [
+    "'supporting' uses color.text.muted",
+    "No inline styling; emphasis comes from structure"
+  ],
+  "mappings": {
+    "web": "<p> with type tokens",
+    "ios": "Text",
+    "android": "Text"
+  },
+  "a2ui": "Text",
+  "sources": [
+    "Readability: line length and size"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "delete-account",
+    "title": "Delete account",
+    "intent": "settings.account.delete",
+    "pattern": "confirm-destructive"
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "id": "confirm",
+      "component": "Confirm",
+      "title": "Delete your account?",
+      "severity": "destructive",
+      "message": "You'll lose access straight away.",
+      "consequence": "Your data is erased after 30 days. You can restore the account until then by signing in.",
+      "typeToConfirm": "DELETE",
+      "confirm": {
+        "label": "Delete my account",
+        "action": {
+          "event": {
+            "name": "account.delete"
+          }
+        }
+      },
+      "cancel": {
+        "label": "Keep my account",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      }
+    }
+  ],
+  "data": {}
+}

@@ -1,0 +1,102 @@
+{
+  "name": "TextInput",
+  "category": "input",
+  "summary": "A single text-like value: text, number, email, phone, currency, search or long text.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "Two-way binding into host data"
+    },
+    "kind": {
+      "enum": [
+        "text",
+        "multiline",
+        "number",
+        "currency",
+        "email",
+        "phone",
+        "url",
+        "search"
+      ],
+      "default": "text"
+    },
+    "currency": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "ISO 4217 code when kind is 'currency'"
+    },
+    "help": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Hint shown below the label (not a placeholder)"
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "minLength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "message": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Error message shown when validation fails"
+        }
+      },
+      "additionalProperties": false
+    },
+    "autocomplete": {
+      "type": "string",
+      "description": "HTML autocomplete token hint (e.g. 'email', 'postal-code')"
+    }
+  },
+  "required": [
+    "label",
+    "value"
+  ],
+  "whenToUse": [
+    "Free-form values the user types"
+  ],
+  "whenNotToUse": [
+    "A value from a known set: use Choice",
+    "Dates: use DateInput",
+    "Secrets (passwords, card numbers): not generated; hosts provide their own secure flows"
+  ],
+  "accessibility": {
+    "role": "textbox / searchbox / spinbutton",
+    "requirements": [
+      "Visible label, never placeholder-only",
+      "Help and errors are associated with the field",
+      "Kind sets the right keyboard and autocomplete"
+    ]
+  },
+  "agent": "Fill by label.",
+  "rendering": [
+    "Width suggests expected length",
+    "Errors appear after the user leaves the field or submits, not while typing"
+  ],
+  "mappings": {
+    "web": "shadcn Input / Textarea with Label and FormMessage",
+    "ios": "TextField / TextEditor with .keyboardType and .textContentType",
+    "android": "OutlinedTextField with KeyboardOptions"
+  },
+  "a2ui": "TextField",
+  "sources": [
+    "GOV.UK text input and question pages",
+    "WCAG 3.3.2 labels"
+  ]
+}

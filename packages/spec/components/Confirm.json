@@ -1,0 +1,74 @@
+{
+  "name": "Confirm",
+  "category": "flow",
+  "summary": "Asks the user to confirm a consequential or destructive action, showing what will happen.",
+  "props": {
+    "title": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Question naming the action ('Send £250 to Alex?')"
+    },
+    "message": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "consequence": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "What happens and whether it can be undone"
+    },
+    "summary": {
+      "$ref": "#/$defs/Id",
+      "description": "Optional DetailList summarising what is being confirmed"
+    },
+    "severity": {
+      "enum": [
+        "consequential",
+        "destructive"
+      ]
+    },
+    "confirm": {
+      "$ref": "#/$defs/ActionSpec"
+    },
+    "cancel": {
+      "$ref": "#/$defs/ActionSpec",
+      "description": "Defaults to 'Cancel' → ui.dismiss"
+    },
+    "typeToConfirm": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Text the user must type before confirming (for irreversible, high-impact actions)"
+    }
+  },
+  "required": [
+    "title",
+    "severity",
+    "confirm"
+  ],
+  "whenToUse": [
+    "Moving money, deleting data, sending on someone's behalf, anything irreversible"
+  ],
+  "whenNotToUse": [
+    "Routine reversible actions (prefer undo)",
+    "Information only: use Status"
+  ],
+  "accessibility": {
+    "role": "alertdialog",
+    "requirements": [
+      "Focus starts on the least destructive option",
+      "Confirm label repeats the action verb",
+      "Escape cancels"
+    ]
+  },
+  "agent": "Reads title and consequence; confirm and cancel are named buttons.",
+  "rendering": [
+    "destructive uses color.action.danger.*",
+    "Capabilities with high risk level must use Confirm (enforced by the verifier)"
+  ],
+  "mappings": {
+    "web": "shadcn AlertDialog",
+    "ios": ".confirmationDialog / .alert with role: .destructive",
+    "android": "AlertDialog"
+  },
+  "a2ui": "Modal with Text and Buttons",
+  "sources": [
+    "Nielsen: error prevention",
+    "Material 3 dialogs"
+  ]
+}

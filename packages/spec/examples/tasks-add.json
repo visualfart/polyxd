@@ -1,0 +1,104 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "add-task",
+    "title": "New task",
+    "intent": "tasks.create"
+  },
+  "root": "form",
+  "components": [
+    {
+      "id": "form",
+      "component": "Form",
+      "children": [
+        "title",
+        "due",
+        "priority",
+        "notes"
+      ],
+      "submit": {
+        "label": "Add task",
+        "action": {
+          "event": {
+            "name": "task.save",
+            "context": {
+              "title": {
+                "path": "/draft/title"
+              },
+              "due": {
+                "path": "/draft/due"
+              },
+              "priority": {
+                "path": "/draft/priority"
+              },
+              "notes": {
+                "path": "/draft/notes"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "title",
+      "component": "TextInput",
+      "key": "title",
+      "label": "Task",
+      "value": {
+        "path": "/draft/title"
+      },
+      "required": true
+    },
+    {
+      "id": "due",
+      "component": "DateInput",
+      "key": "due",
+      "label": "Due",
+      "value": {
+        "path": "/draft/due"
+      }
+    },
+    {
+      "id": "priority",
+      "component": "Choice",
+      "key": "priority",
+      "label": "Priority",
+      "options": [
+        {
+          "value": "low",
+          "label": "Low"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "high",
+          "label": "High"
+        }
+      ],
+      "value": {
+        "path": "/draft/priority"
+      }
+    },
+    {
+      "id": "notes",
+      "component": "TextInput",
+      "key": "notes",
+      "label": "Notes",
+      "kind": "multiline",
+      "value": {
+        "path": "/draft/notes"
+      }
+    }
+  ],
+  "data": {
+    "draft": {
+      "title": "",
+      "due": null,
+      "priority": "normal",
+      "notes": ""
+    }
+  }
+}

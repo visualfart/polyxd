@@ -1,0 +1,796 @@
+{
+  "catalogId": "https://polixd.dev/catalog/0.1",
+  "specVersion": "0.1.0",
+  "description": "Polixd semantic component catalog: when to use each component, accessibility and agent requirements, rendering rules and platform mappings. Generated file.",
+  "components": {
+    "Action": {
+      "category": "action",
+      "summary": "A button that triggers a host capability.",
+      "whenToUse": [
+        "Anything the user can do that isn't typing or choosing"
+      ],
+      "whenNotToUse": [
+        "Navigating between views: use Views",
+        "Confirming something destructive: wrap in Confirm"
+      ],
+      "accessibility": {
+        "role": "button",
+        "requirements": [
+          "Label describes the outcome",
+          "Target at least size.target.min",
+          "Disabled actions explain why nearby"
+        ]
+      },
+      "agent": "Activate by label.",
+      "rendering": [
+        "At most one primary action visible at a time",
+        "danger tone uses color.action.danger.*"
+      ],
+      "mappings": {
+        "web": "shadcn Button (default / secondary / ghost / destructive)",
+        "ios": "Button with .borderedProminent / .bordered / .borderless; role: .destructive",
+        "android": "Button / FilledTonalButton / OutlinedButton / TextButton"
+      },
+      "a2ui": "Button",
+      "sources": [
+        "Fitts's law",
+        "Material 3 button hierarchy"
+      ]
+    },
+    "ActionBar": {
+      "category": "action",
+      "summary": "The set of actions for a surface or section; the renderer places it where that platform expects.",
+      "whenToUse": [
+        "Two or more actions that apply to the whole surface or section"
+      ],
+      "whenNotToUse": [
+        "A single action inline with content: use Action directly"
+      ],
+      "accessibility": {
+        "role": "toolbar / group",
+        "requirements": [
+          "Order in the accessibility tree is order of importance"
+        ]
+      },
+      "agent": "Actions are listed together.",
+      "rendering": [
+        "Web: bottom of the section, primary last on desktop and first on mobile stacks",
+        "iOS/Android: toolbar or bottom bar on compact screens"
+      ],
+      "mappings": {
+        "web": "Flex row of shadcn Buttons (DialogFooter-style)",
+        "ios": ".toolbar or .safeAreaInset(edge: .bottom)",
+        "android": "BottomAppBar or Row of Buttons"
+      },
+      "a2ui": "Row of Button",
+      "sources": [
+        "Platform conventions for action placement (Jakob's law)"
+      ]
+    },
+    "Card": {
+      "category": "structure",
+      "summary": "One self-contained entity (an account, an order, a place), optionally actionable as a whole.",
+      "whenToUse": [
+        "Items in a Collection that each represent an entity",
+        "A single entity summary in a larger surface"
+      ],
+      "whenNotToUse": [
+        "Plain grouping: use Group",
+        "Tabular data with many attributes: use Table"
+      ],
+      "accessibility": {
+        "role": "article (or link/button when it has an action)",
+        "requirements": [
+          "Title is the accessible name",
+          "When actionable, the whole card is one target; nested actions are not allowed then"
+        ]
+      },
+      "agent": "Activate the card by its title.",
+      "rendering": [
+        "If 'action' is set, children must not contain Actions (one target per card)",
+        "Uses surface.raised and radius.default"
+      ],
+      "mappings": {
+        "web": "shadcn Card (CardHeader/CardTitle/CardContent/CardFooter)",
+        "ios": "GroupBox, or a Button/NavigationLink with card styling in lists",
+        "android": "Card / ElevatedCard / OutlinedCard (onClick variant when actionable)"
+      },
+      "a2ui": "Card",
+      "sources": [
+        "Material 3 cards",
+        "Nielsen: recognition over recall"
+      ]
+    },
+    "Chart": {
+      "category": "content",
+      "summary": "A visual summary of data, always paired with a text summary.",
+      "whenToUse": [
+        "A trend, comparison, share or spread matters more than exact values"
+      ],
+      "whenNotToUse": [
+        "Exact values matter most: use Table or Metric",
+        "A single number: use Metric"
+      ],
+      "accessibility": {
+        "role": "img (figure) with the summary as description, plus a data-table alternative",
+        "requirements": [
+          "'summary' states the takeaway in words",
+          "Series are distinguishable without color (labels, markers)",
+          "The underlying data is available as a table"
+        ]
+      },
+      "agent": "Reads the summary, and the data through the table alternative.",
+      "rendering": [
+        "trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram",
+        "Series colors use color.data.categorical.N in order"
+      ],
+      "mappings": {
+        "web": "shadcn Chart (Recharts)",
+        "ios": "Swift Charts (Chart)",
+        "android": "Third-party (e.g. Vico) or Canvas; no built-in M3 chart"
+      },
+      "a2ui": "No equivalent in the Basic catalog; exports as Text(summary) + List",
+      "sources": [
+        "Data visualization: choosing the form by intent",
+        "WCAG 1.1.1"
+      ]
+    },
+    "Choice": {
+      "category": "input",
+      "summary": "Pick one or several options from a known set. The renderer chooses the control.",
+      "whenToUse": [
+        "Any choice from a known set of options"
+      ],
+      "whenNotToUse": [
+        "On/off setting: use Toggle",
+        "Picking between rich entities by comparing attributes: use Comparison"
+      ],
+      "accessibility": {
+        "role": "radiogroup / group of checkboxes / listbox / combobox (depends on rendering)",
+        "requirements": [
+          "Visible group label",
+          "Every option has a text label"
+        ]
+      },
+      "agent": "Select options by label.",
+      "rendering": [
+        "single, 2–4 short options → segmented control or radios",
+        "single, 5–10 → radios (or select on compact screens)",
+        "single, > 10 → searchable select",
+        "multiple, ≤ 10 → checkboxes; > 10 → searchable multi-select",
+        "Option order comes from host data or remembers the last order used"
+      ],
+      "mappings": {
+        "web": "shadcn ToggleGroup / RadioGroup / Select / Combobox (Command + Popover) / Checkbox",
+        "ios": "Picker (.segmented / .inline / .menu) or multi-select List",
+        "android": "SegmentedButton / RadioButton rows / ExposedDropdownMenuBox / Checkbox rows"
+      },
+      "a2ui": "ChoicePicker",
+      "sources": [
+        "Hick's law",
+        "GOV.UK radios and checkboxes guidance",
+        "Material 3 selection controls"
+      ]
+    },
+    "Collection": {
+      "category": "content",
+      "summary": "A list of items from host data, each rendered with the same template.",
+      "whenToUse": [
+        "Browsing a set of similar entities",
+        "Search results"
+      ],
+      "whenNotToUse": [
+        "Attributes compared across items: use Table or Comparison",
+        "Choosing an option in a form: use Choice"
+      ],
+      "accessibility": {
+        "role": "list / listitem (listbox when selectable)",
+        "requirements": [
+          "Announces the item count",
+          "An empty state is provided"
+        ]
+      },
+      "agent": "Items are enumerated with their titles; each item exposes its own actions.",
+      "rendering": [
+        "Long lists are virtualized by the renderer",
+        "Items keep their order from host data"
+      ],
+      "mappings": {
+        "web": "List markup with Card or row template; ScrollArea for long lists",
+        "ios": "List + ForEach",
+        "android": "LazyColumn + items"
+      },
+      "a2ui": "List (templated children)",
+      "sources": [
+        "Recognition over recall",
+        "Hick's law: filter before long lists"
+      ]
+    },
+    "Comparison": {
+      "category": "flow",
+      "summary": "Compare a few options across the same attributes, and choose one.",
+      "whenToUse": [
+        "Choosing between 2–4 plans, products, routes or offers"
+      ],
+      "whenNotToUse": [
+        "More than ~5 items: use Table with sorting",
+        "No decision needed: use Table"
+      ],
+      "accessibility": {
+        "role": "table (items as columns on wide screens) or list of cards",
+        "requirements": [
+          "Attribute names are headers",
+          "'better' is conveyed in text, not only color"
+        ]
+      },
+      "agent": "Reads attributes per item; choose actions are named with the item title.",
+      "rendering": [
+        "Wide: items as columns; compact: one card per item with the same attribute order",
+        "Best values per attribute are marked when 'better' is set"
+      ],
+      "mappings": {
+        "web": "shadcn Table or Cards grid",
+        "ios": "Grid / Table on regular width; List of GroupBox on compact",
+        "android": "LazyRow of Cards or Column of Cards"
+      },
+      "a2ui": "No direct equivalent; exports as List of Card",
+      "sources": [
+        "Hick's law",
+        "Choice architecture"
+      ]
+    },
+    "Confirm": {
+      "category": "flow",
+      "summary": "Asks the user to confirm a consequential or destructive action, showing what will happen.",
+      "whenToUse": [
+        "Moving money, deleting data, sending on someone's behalf, anything irreversible"
+      ],
+      "whenNotToUse": [
+        "Routine reversible actions (prefer undo)",
+        "Information only: use Status"
+      ],
+      "accessibility": {
+        "role": "alertdialog",
+        "requirements": [
+          "Focus starts on the least destructive option",
+          "Confirm label repeats the action verb",
+          "Escape cancels"
+        ]
+      },
+      "agent": "Reads title and consequence; confirm and cancel are named buttons.",
+      "rendering": [
+        "destructive uses color.action.danger.*",
+        "Capabilities with high risk level must use Confirm (enforced by the verifier)"
+      ],
+      "mappings": {
+        "web": "shadcn AlertDialog",
+        "ios": ".confirmationDialog / .alert with role: .destructive",
+        "android": "AlertDialog"
+      },
+      "a2ui": "Modal with Text and Buttons",
+      "sources": [
+        "Nielsen: error prevention",
+        "Material 3 dialogs"
+      ]
+    },
+    "DateInput": {
+      "category": "input",
+      "summary": "A date, time, date-time or date range.",
+      "whenToUse": [
+        "Any date or time entry"
+      ],
+      "whenNotToUse": [
+        "Relative choices like 'This month / Last month': use Choice"
+      ],
+      "accessibility": {
+        "role": "group of spinbuttons or a date picker dialog",
+        "requirements": [
+          "Typing the date is always possible, not only picking from a calendar"
+        ]
+      },
+      "agent": "Fill by label with an ISO date.",
+      "rendering": [
+        "Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar"
+      ],
+      "mappings": {
+        "web": "shadcn Calendar + Popover (Date Picker)",
+        "ios": "DatePicker",
+        "android": "DatePicker / DateRangePicker"
+      },
+      "a2ui": "DateTimeInput",
+      "sources": [
+        "GOV.UK date input"
+      ]
+    },
+    "DetailList": {
+      "category": "content",
+      "summary": "Label/value pairs describing one thing (a summary, a receipt, a review step).",
+      "whenToUse": [
+        "Reviewing before submitting",
+        "Showing the attributes of one entity",
+        "Receipts"
+      ],
+      "whenNotToUse": [
+        "Many entities with the same attributes: use Table",
+        "Comparing entities: use Comparison"
+      ],
+      "accessibility": {
+        "role": "list of term/definition pairs (dl)",
+        "requirements": [
+          "Label and value are programmatically associated"
+        ]
+      },
+      "agent": "Read each label with its value.",
+      "rendering": [
+        "Keeps the item order stable across generations (keys are remembered)"
+      ],
+      "mappings": {
+        "web": "<dl> with semantic tokens",
+        "ios": "LabeledContent rows in a Form/List section",
+        "android": "ListItem(headlineContent, trailingContent) rows"
+      },
+      "a2ui": "Column of Row(Text, Text)",
+      "sources": [
+        "GOV.UK summary list"
+      ]
+    },
+    "Disclosure": {
+      "category": "structure",
+      "summary": "Progressive disclosure: secondary content hidden behind a toggle.",
+      "whenToUse": [
+        "Details most people don't need (fees breakdown, advanced options, help text)"
+      ],
+      "whenNotToUse": [
+        "Content everyone needs to complete the task",
+        "Primary navigation"
+      ],
+      "accessibility": {
+        "role": "button (aria-expanded) + region",
+        "requirements": [
+          "Summary is a button with expanded state",
+          "Hidden content is not in the tab order while closed"
+        ]
+      },
+      "agent": "Expand by the summary text; state is exposed as expanded/collapsed.",
+      "rendering": [
+        "Never hide required inputs or the primary action inside a closed Disclosure"
+      ],
+      "mappings": {
+        "web": "shadcn Collapsible (or Accordion for several)",
+        "ios": "DisclosureGroup",
+        "android": "Expandable ListItem / AnimatedVisibility with a toggle row"
+      },
+      "a2ui": "No direct equivalent; exports as Column (content always shown)",
+      "sources": [
+        "Progressive disclosure",
+        "GOV.UK details component"
+      ]
+    },
+    "Form": {
+      "category": "input",
+      "summary": "Collects inputs and submits them together.",
+      "whenToUse": [
+        "Any set of inputs that are submitted together"
+      ],
+      "whenNotToUse": [
+        "Settings that apply immediately: use Toggles with actions",
+        "Several distinct stages: use Steps"
+      ],
+      "accessibility": {
+        "role": "form",
+        "requirements": [
+          "Submit is a real submit button",
+          "On submit errors, focus moves to an error summary that links to each field"
+        ]
+      },
+      "agent": "Fill fields by label, then activate the submit button by its label.",
+      "rendering": [
+        "One column; labels above fields",
+        "Submit is the primary action; cancel is secondary",
+        "Submit context is built from the form's input bindings"
+      ],
+      "mappings": {
+        "web": "shadcn Form (react-hook-form + zod)",
+        "ios": "Form",
+        "android": "Column of fields + Button (no Form primitive)"
+      },
+      "a2ui": "Column + Button",
+      "sources": [
+        "GOV.UK question pages and error summary",
+        "Nielsen: error prevention"
+      ]
+    },
+    "Group": {
+      "category": "structure",
+      "summary": "Visually groups closely related items without a heading (proximity).",
+      "whenToUse": [
+        "A few items that belong together (a key figure and its caption, several metrics)"
+      ],
+      "whenNotToUse": [
+        "The group needs a heading: use Section",
+        "Choosing between items: use Choice or Comparison"
+      ],
+      "accessibility": {
+        "role": "group",
+        "requirements": [
+          "Has an accessible name when it contains interactive items"
+        ]
+      },
+      "agent": "Treated as one unit when its label is present.",
+      "rendering": [
+        "'inline' collapses to a stack below the compact breakpoint",
+        "Gap uses space.stack.default or space.inline.default"
+      ],
+      "mappings": {
+        "web": "<div role=group> with flex/grid and semantic spacing tokens",
+        "ios": "VStack / HStack / Grid (ViewThatFits for inline)",
+        "android": "Column / Row / FlowRow"
+      },
+      "a2ui": "Column or Row",
+      "sources": [
+        "Gestalt: proximity"
+      ]
+    },
+    "Media": {
+      "category": "content",
+      "summary": "An image supplied by the host.",
+      "whenToUse": [
+        "Photos or illustrations that help identify something (a product, a place, a person)"
+      ],
+      "whenNotToUse": [
+        "Decoration with no information",
+        "Icons for actions (renderer supplies those)"
+      ],
+      "accessibility": {
+        "role": "img",
+        "requirements": [
+          "Has alt text unless decorative (then hidden from assistive technology)"
+        ]
+      },
+      "agent": "Reads the alt text.",
+      "rendering": [
+        "Images never convey information that is not also in text"
+      ],
+      "mappings": {
+        "web": "<img> / shadcn AspectRatio",
+        "ios": "AsyncImage",
+        "android": "AsyncImage (Coil) / Image"
+      },
+      "a2ui": "Image",
+      "sources": [
+        "WCAG 1.1.1"
+      ]
+    },
+    "Metric": {
+      "category": "content",
+      "summary": "A key figure with a label, and optionally its change.",
+      "whenToUse": [
+        "One to four headline numbers the user asked about"
+      ],
+      "whenNotToUse": [
+        "Many numbers: use Table or DetailList",
+        "Trends over time: use Chart"
+      ],
+      "accessibility": {
+        "role": "group (label + value)",
+        "requirements": [
+          "Change direction is conveyed in text as well as color",
+          "Screen readers read label, value and change as one sentence"
+        ]
+      },
+      "agent": "Read label and value.",
+      "rendering": [
+        "Value uses type.numeric.display",
+        "Change uses color.data.positive / negative according to 'favorable'"
+      ],
+      "mappings": {
+        "web": "Card-like block with semantic tokens (no dedicated shadcn primitive)",
+        "ios": "LabeledContent or a VStack; Gauge for bounded values",
+        "android": "Column with Text styles"
+      },
+      "a2ui": "Column of Text",
+      "sources": [
+        "Pre-attentive processing",
+        "WCAG 1.4.1 use of color"
+      ]
+    },
+    "RangeInput": {
+      "category": "input",
+      "summary": "A number within known bounds where the exact value matters less than its position.",
+      "whenToUse": [
+        "Approximate values within a range (budget cap, volume)"
+      ],
+      "whenNotToUse": [
+        "Exact values: use TextInput with kind 'number' or 'currency'"
+      ],
+      "accessibility": {
+        "role": "slider",
+        "requirements": [
+          "Current value is shown as text",
+          "Keyboard arrows change the value by step"
+        ]
+      },
+      "agent": "Set the value directly by label.",
+      "rendering": [
+        "Shows min, max and the current formatted value"
+      ],
+      "mappings": {
+        "web": "shadcn Slider",
+        "ios": "Slider",
+        "android": "Slider"
+      },
+      "a2ui": "Slider",
+      "sources": [
+        "Fitts's law: large thumb target"
+      ]
+    },
+    "Section": {
+      "category": "structure",
+      "summary": "A titled region of the surface that groups related content under a heading.",
+      "whenToUse": [
+        "The surface has two or more distinct topics (e.g. 'Recipient' and 'Amount')",
+        "Content would otherwise exceed one screen and needs signposting"
+      ],
+      "whenNotToUse": [
+        "Only one topic: put content directly under the root",
+        "Visual grouping without a heading: use Group"
+      ],
+      "accessibility": {
+        "role": "region (with heading)",
+        "requirements": [
+          "Title is rendered as a real heading; nesting depth sets the heading level",
+          "Title is the region's accessible name"
+        ]
+      },
+      "agent": "Navigate by heading; the title names the region.",
+      "rendering": [
+        "Heading level follows nesting depth, never chosen by the model",
+        "Spacing between sections uses space.stack.section"
+      ],
+      "mappings": {
+        "web": "<section> + heading; shadcn has no Section primitive (plain markup with semantic tokens)",
+        "ios": "Section(header:) inside List/Form, or VStack with .accessibilityAddTraits(.isHeader) on the title",
+        "android": "Column with a Text heading marked Modifier.semantics { heading() }"
+      },
+      "a2ui": "No direct equivalent; exports as Column with a Text(variant: h2) first child",
+      "sources": [
+        "Gestalt: common region",
+        "Material 3 layout guidance",
+        "GOV.UK headings"
+      ]
+    },
+    "Status": {
+      "category": "feedback",
+      "summary": "Feedback about state: info, success, warning, error, empty or loading.",
+      "whenToUse": [
+        "Results of an action",
+        "Empty collections",
+        "Errors with a way to recover",
+        "Loading states"
+      ],
+      "whenNotToUse": [
+        "Validation errors on a field: inputs show their own errors",
+        "Confirmation before acting: use Confirm"
+      ],
+      "accessibility": {
+        "role": "status or alert (live region)",
+        "requirements": [
+          "success/info/loading are polite live regions; error is assertive",
+          "Meaning is in text, not only color or icon"
+        ]
+      },
+      "agent": "Reads the title and message; the recovery action is exposed.",
+      "rendering": [
+        "error and warning use color.status.* tokens and an icon",
+        "empty states explain why and what to do next",
+        "loading shows a skeleton when layout is known, otherwise a progress indicator"
+      ],
+      "mappings": {
+        "web": "shadcn Alert / Skeleton / Sonner toast",
+        "ios": "ContentUnavailableView / ProgressView / inline Label",
+        "android": "Snackbar / Card with status color / CircularProgressIndicator"
+      },
+      "a2ui": "Text + Icon",
+      "sources": [
+        "Nielsen: visibility of system status; help users recover from errors"
+      ]
+    },
+    "Steps": {
+      "category": "flow",
+      "summary": "A task split into ordered steps with visible progress.",
+      "whenToUse": [
+        "Tasks with dependent stages or too many inputs for one view (checkout, onboarding)"
+      ],
+      "whenNotToUse": [
+        "Independent views: use Views",
+        "Under ~6 inputs: a single Form"
+      ],
+      "accessibility": {
+        "role": "group with step progress (aria-current on the current step)",
+        "requirements": [
+          "Current step and total are announced",
+          "Back never loses entered data"
+        ]
+      },
+      "agent": "Reads 'step N of M'; next/back are exposed as buttons.",
+      "rendering": [
+        "Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'",
+        "Each step validates before moving on"
+      ],
+      "mappings": {
+        "web": "Progress + step content (no shadcn stepper primitive)",
+        "ios": "NavigationStack pushes or a paged view with a ProgressView",
+        "android": "Custom stepper Row + content; LinearProgressIndicator"
+      },
+      "a2ui": "No direct equivalent; exports as Column of the current step",
+      "sources": [
+        "GOV.UK one thing per page",
+        "Nielsen: visibility of system status"
+      ]
+    },
+    "Table": {
+      "category": "content",
+      "summary": "Tabular data: many items sharing the same attributes.",
+      "whenToUse": [
+        "Scanning or comparing many rows by several attributes"
+      ],
+      "whenNotToUse": [
+        "One entity: use DetailList",
+        "A few entities where the user must choose: use Comparison"
+      ],
+      "accessibility": {
+        "role": "table with caption and column headers",
+        "requirements": [
+          "Has a caption",
+          "Column headers are real header cells",
+          "Numeric columns are right-aligned by format"
+        ]
+      },
+      "agent": "Read by row and column headers; rows with rowAction are activatable.",
+      "rendering": [
+        "On compact screens, rows become stacked cards with label/value pairs",
+        "Alignment follows the column format, never chosen by the model"
+      ],
+      "mappings": {
+        "web": "shadcn Table (optionally Data Table with TanStack)",
+        "ios": "Table on regular width; List of rows on compact width",
+        "android": "LazyColumn of rows with a header row (no built-in M3 table)"
+      },
+      "a2ui": "No direct equivalent; exports as List of Row",
+      "sources": [
+        "GOV.UK tables",
+        "WAI data tables"
+      ]
+    },
+    "Text": {
+      "category": "content",
+      "summary": "A run of text.",
+      "whenToUse": [
+        "Explanations, instructions, messages"
+      ],
+      "whenNotToUse": [
+        "Headings: use Section title",
+        "Label/value pairs: use DetailList",
+        "Key figures: use Metric"
+      ],
+      "accessibility": {
+        "role": "text",
+        "requirements": [
+          "Body text is at least 16px (type.body.default)",
+          "Line length is capped by measure.max"
+        ]
+      },
+      "agent": "Read as text.",
+      "rendering": [
+        "'supporting' uses color.text.muted",
+        "No inline styling; emphasis comes from structure"
+      ],
+      "mappings": {
+        "web": "<p> with type tokens",
+        "ios": "Text",
+        "android": "Text"
+      },
+      "a2ui": "Text",
+      "sources": [
+        "Readability: line length and size"
+      ]
+    },
+    "TextInput": {
+      "category": "input",
+      "summary": "A single text-like value: text, number, email, phone, currency, search or long text.",
+      "whenToUse": [
+        "Free-form values the user types"
+      ],
+      "whenNotToUse": [
+        "A value from a known set: use Choice",
+        "Dates: use DateInput",
+        "Secrets (passwords, card numbers): not generated; hosts provide their own secure flows"
+      ],
+      "accessibility": {
+        "role": "textbox / searchbox / spinbutton",
+        "requirements": [
+          "Visible label, never placeholder-only",
+          "Help and errors are associated with the field",
+          "Kind sets the right keyboard and autocomplete"
+        ]
+      },
+      "agent": "Fill by label.",
+      "rendering": [
+        "Width suggests expected length",
+        "Errors appear after the user leaves the field or submits, not while typing"
+      ],
+      "mappings": {
+        "web": "shadcn Input / Textarea with Label and FormMessage",
+        "ios": "TextField / TextEditor with .keyboardType and .textContentType",
+        "android": "OutlinedTextField with KeyboardOptions"
+      },
+      "a2ui": "TextField",
+      "sources": [
+        "GOV.UK text input and question pages",
+        "WCAG 3.3.2 labels"
+      ]
+    },
+    "Toggle": {
+      "category": "input",
+      "summary": "An on/off setting.",
+      "whenToUse": [
+        "Settings that take effect immediately",
+        "A single yes/no inside a form"
+      ],
+      "whenNotToUse": [
+        "Choosing between named options: use Choice"
+      ],
+      "accessibility": {
+        "role": "switch (immediate) / checkbox (in a form)",
+        "requirements": [
+          "Label says what 'on' means"
+        ]
+      },
+      "agent": "Toggle by label; state is exposed as on/off.",
+      "rendering": [
+        "With 'action' it renders as a switch; inside a Form without action, as a checkbox"
+      ],
+      "mappings": {
+        "web": "shadcn Switch / Checkbox",
+        "ios": "Toggle",
+        "android": "Switch / Checkbox"
+      },
+      "a2ui": "CheckBox",
+      "sources": [
+        "Nielsen: match between system and the real world"
+      ]
+    },
+    "Views": {
+      "category": "structure",
+      "summary": "Switch between alternative views of the same subject (tabs).",
+      "whenToUse": [
+        "2–6 peer views of the same data (Overview / Transactions / Settings)"
+      ],
+      "whenNotToUse": [
+        "Sequential steps: use Steps",
+        "Filtering one list: use Choice"
+      ],
+      "accessibility": {
+        "role": "tablist / tab / tabpanel",
+        "requirements": [
+          "Each tab has a visible label",
+          "Arrow keys move between tabs"
+        ]
+      },
+      "agent": "Select a view by its label.",
+      "rendering": [
+        "More than 4 views on compact screens become a menu or scrollable tabs"
+      ],
+      "mappings": {
+        "web": "shadcn Tabs",
+        "ios": "Picker(.segmented) switching content, or TabView for top-level",
+        "android": "PrimaryTabRow + content"
+      },
+      "a2ui": "Tabs",
+      "sources": [
+        "WAI-ARIA tabs pattern",
+        "Material 3 tabs"
+      ]
+    }
+  }
+}

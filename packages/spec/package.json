@@ -1,6 +1,6 @@
 {
   "name": "@polixd/spec",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "Polixd spec: JSON Schema and TypeScript types for just-in-time interfaces",
   "license": "Apache-2.0",
@@ -10,18 +10,21 @@
   "scripts": {
     "build": "tsc -b",
     "test": "node --test \"test/**/*.test.ts\"",
-    "check-ds": "node src/cli/check-design-system.ts"
+    "check-ds": "node src/cli/check-design-system.ts",
+    "build:schema": "node scripts/build-schema.ts",
+    "validate": "node src/cli/validate.ts"
   },
   "files": [
     "dist",
     "schema",
+    "catalog",
     "tokens",
     "components",
-    "patterns",
     "examples"
   ],
   "bin": {
-    "polixd-check-ds": "dist/cli/check-design-system.js"
+    "polixd-check-ds": "dist/cli/check-design-system.js",
+    "polixd-validate": "dist/cli/validate.js"
   },
   "dependencies": {
     "ajv": "^8.20.0",

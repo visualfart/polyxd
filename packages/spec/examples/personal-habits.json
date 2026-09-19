@@ -1,0 +1,159 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "habits",
+    "title": "Habits",
+    "intent": "personal.habits.today"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "streaks",
+        "week",
+        "list"
+      ]
+    },
+    {
+      "id": "streaks",
+      "component": "Group",
+      "arrangement": "inline",
+      "label": "Streaks",
+      "children": [
+        "best",
+        "current"
+      ]
+    },
+    {
+      "id": "best",
+      "component": "Metric",
+      "key": "best_streak",
+      "label": "Best streak (days)",
+      "value": {
+        "path": "/stats/best"
+      },
+      "format": {
+        "type": "number"
+      }
+    },
+    {
+      "id": "current",
+      "component": "Metric",
+      "key": "current_streak",
+      "label": "Current streak (days)",
+      "value": {
+        "path": "/stats/current"
+      },
+      "format": {
+        "type": "number"
+      }
+    },
+    {
+      "id": "week",
+      "component": "Chart",
+      "key": "week",
+      "intent": "comparison",
+      "title": "Habits done this week",
+      "summary": {
+        "path": "/stats/summary"
+      },
+      "data": {
+        "path": "/stats/week"
+      },
+      "x": {
+        "path": "day",
+        "label": "Day"
+      },
+      "series": [
+        {
+          "path": "done",
+          "label": "Habits done",
+          "format": {
+            "type": "number"
+          }
+        }
+      ]
+    },
+    {
+      "id": "list",
+      "component": "Collection",
+      "key": "habits",
+      "label": "Today's habits",
+      "items": {
+        "path": "/habits",
+        "componentId": "habit"
+      }
+    },
+    {
+      "id": "habit",
+      "component": "Toggle",
+      "label": {
+        "path": "name"
+      },
+      "value": {
+        "path": "done"
+      },
+      "action": {
+        "event": {
+          "name": "habit.check",
+          "context": {
+            "id": {
+              "path": "id"
+            },
+            "done": {
+              "path": "done"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "data": {
+    "stats": {
+      "best": 21,
+      "current": 6,
+      "summary": "You did the most on Tuesday and missed Saturday.",
+      "week": [
+        {
+          "day": "Mon",
+          "done": 3
+        },
+        {
+          "day": "Tue",
+          "done": 4
+        },
+        {
+          "day": "Wed",
+          "done": 2
+        },
+        {
+          "day": "Thu",
+          "done": 3
+        },
+        {
+          "day": "Fri",
+          "done": 3
+        },
+        {
+          "day": "Sat",
+          "done": 0
+        }
+      ]
+    },
+    "habits": [
+      {
+        "id": "h1",
+        "name": "Read 20 minutes",
+        "done": true
+      },
+      {
+        "id": "h2",
+        "name": "Walk 8k steps",
+        "done": false
+      }
+    ]
+  }
+}

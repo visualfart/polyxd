@@ -1,0 +1,96 @@
+{
+  "name": "Comparison",
+  "category": "flow",
+  "summary": "Compare a few options across the same attributes, and choose one.",
+  "props": {
+    "items": {
+      "$ref": "#/$defs/Binding",
+      "description": "Array of options in host data (2–4 recommended)"
+    },
+    "itemTitle": {
+      "$ref": "#/$defs/Path",
+      "description": "Relative path to each item's name"
+    },
+    "attributes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "path"
+        ],
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/Key"
+          },
+          "label": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "path": {
+            "$ref": "#/$defs/Path"
+          },
+          "format": {
+            "$ref": "#/$defs/Format"
+          },
+          "better": {
+            "enum": [
+              "higher",
+              "lower",
+              "none"
+            ],
+            "default": "none"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "choose": {
+      "$ref": "#/$defs/ActionSpec",
+      "description": "Action per item; context bindings resolve against the item"
+    },
+    "recommended": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Optional value of the recommended item's title, with a reason in 'summary'"
+    },
+    "summary": {
+      "$ref": "#/$defs/DynamicString"
+    }
+  },
+  "required": [
+    "items",
+    "itemTitle",
+    "attributes"
+  ],
+  "whenToUse": [
+    "Choosing between 2–4 plans, products, routes or offers"
+  ],
+  "whenNotToUse": [
+    "More than ~5 items: use Table with sorting",
+    "No decision needed: use Table"
+  ],
+  "accessibility": {
+    "role": "table (items as columns on wide screens) or list of cards",
+    "requirements": [
+      "Attribute names are headers",
+      "'better' is conveyed in text, not only color"
+    ]
+  },
+  "agent": "Reads attributes per item; choose actions are named with the item title.",
+  "rendering": [
+    "Wide: items as columns; compact: one card per item with the same attribute order",
+    "Best values per attribute are marked when 'better' is set"
+  ],
+  "mappings": {
+    "web": "shadcn Table or Cards grid",
+    "ios": "Grid / Table on regular width; List of GroupBox on compact",
+    "android": "LazyRow of Cards or Column of Cards"
+  },
+  "a2ui": "No direct equivalent; exports as List of Card",
+  "sources": [
+    "Hick's law",
+    "Choice architecture"
+  ]
+}

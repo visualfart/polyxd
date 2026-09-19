@@ -1,0 +1,64 @@
+{
+  "name": "Collection",
+  "category": "content",
+  "summary": "A list of items from host data, each rendered with the same template.",
+  "props": {
+    "items": {
+      "$ref": "#/$defs/Template"
+    },
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "What the list contains, e.g. 'Recent payments'"
+    },
+    "empty": {
+      "$ref": "#/$defs/Id",
+      "description": "Status component shown when there are no items"
+    },
+    "selection": {
+      "enum": [
+        "none",
+        "single",
+        "multiple"
+      ],
+      "default": "none"
+    },
+    "selected": {
+      "$ref": "#/$defs/Binding",
+      "description": "Selected item value(s) in host data when selection is not 'none'"
+    }
+  },
+  "required": [
+    "items",
+    "label"
+  ],
+  "whenToUse": [
+    "Browsing a set of similar entities",
+    "Search results"
+  ],
+  "whenNotToUse": [
+    "Attributes compared across items: use Table or Comparison",
+    "Choosing an option in a form: use Choice"
+  ],
+  "accessibility": {
+    "role": "list / listitem (listbox when selectable)",
+    "requirements": [
+      "Announces the item count",
+      "An empty state is provided"
+    ]
+  },
+  "agent": "Items are enumerated with their titles; each item exposes its own actions.",
+  "rendering": [
+    "Long lists are virtualized by the renderer",
+    "Items keep their order from host data"
+  ],
+  "mappings": {
+    "web": "List markup with Card or row template; ScrollArea for long lists",
+    "ios": "List + ForEach",
+    "android": "LazyColumn + items"
+  },
+  "a2ui": "List (templated children)",
+  "sources": [
+    "Recognition over recall",
+    "Hick's law: filter before long lists"
+  ]
+}

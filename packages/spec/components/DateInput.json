@@ -1,0 +1,65 @@
+{
+  "name": "DateInput",
+  "category": "input",
+  "summary": "A date, time, date-time or date range.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "ISO 8601 value(s) in host data"
+    },
+    "kind": {
+      "enum": [
+        "date",
+        "time",
+        "datetime",
+        "dateRange"
+      ],
+      "default": "date"
+    },
+    "min": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "max": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "help": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "label",
+    "value"
+  ],
+  "whenToUse": [
+    "Any date or time entry"
+  ],
+  "whenNotToUse": [
+    "Relative choices like 'This month / Last month': use Choice"
+  ],
+  "accessibility": {
+    "role": "group of spinbuttons or a date picker dialog",
+    "requirements": [
+      "Typing the date is always possible, not only picking from a calendar"
+    ]
+  },
+  "agent": "Fill by label with an ISO date.",
+  "rendering": [
+    "Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar"
+  ],
+  "mappings": {
+    "web": "shadcn Calendar + Popover (Date Picker)",
+    "ios": "DatePicker",
+    "android": "DatePicker / DateRangePicker"
+  },
+  "a2ui": "DateTimeInput",
+  "sources": [
+    "GOV.UK date input"
+  ]
+}

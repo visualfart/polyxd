@@ -1,0 +1,211 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "balance",
+    "title": "Your balance",
+    "intent": "money.overview"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "figures",
+        "trend",
+        "recent"
+      ]
+    },
+    {
+      "id": "figures",
+      "component": "Group",
+      "arrangement": "inline",
+      "label": "Key figures",
+      "children": [
+        "balance",
+        "spent"
+      ]
+    },
+    {
+      "id": "balance",
+      "component": "Metric",
+      "key": "balance",
+      "label": "Balance",
+      "value": {
+        "path": "/account/balance"
+      },
+      "format": {
+        "type": "currency",
+        "currency": {
+          "path": "/account/currency"
+        }
+      }
+    },
+    {
+      "id": "spent",
+      "component": "Metric",
+      "key": "spent_month",
+      "label": "Spent this month",
+      "value": {
+        "path": "/month/spent"
+      },
+      "format": {
+        "type": "currency",
+        "currency": {
+          "path": "/account/currency"
+        }
+      },
+      "change": {
+        "value": {
+          "path": "/month/spentChange"
+        },
+        "format": {
+          "type": "percent"
+        },
+        "favorable": "decrease"
+      },
+      "caption": "Compared with last month"
+    },
+    {
+      "id": "trend",
+      "component": "Chart",
+      "key": "balance_trend",
+      "intent": "trend",
+      "title": "Balance over 6 months",
+      "summary": {
+        "path": "/trend/summary"
+      },
+      "data": {
+        "path": "/trend/points"
+      },
+      "x": {
+        "path": "month",
+        "label": "Month",
+        "format": {
+          "type": "date"
+        }
+      },
+      "series": [
+        {
+          "path": "balance",
+          "label": "Balance",
+          "format": {
+            "type": "currency",
+            "currency": {
+              "path": "/account/currency"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "recent",
+      "component": "Collection",
+      "key": "recent_transactions",
+      "label": "Recent transactions",
+      "items": {
+        "path": "/transactions",
+        "componentId": "txn"
+      },
+      "empty": "no-txn"
+    },
+    {
+      "id": "txn",
+      "component": "Card",
+      "title": {
+        "path": "merchant"
+      },
+      "subtitle": {
+        "path": "date"
+      },
+      "children": [
+        "txn-amount"
+      ],
+      "action": {
+        "event": {
+          "name": "transactions.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "txn-amount",
+      "component": "Text",
+      "key": "amount",
+      "text": {
+        "path": "amount"
+      },
+      "format": {
+        "type": "currency",
+        "currency": {
+          "path": "/account/currency"
+        }
+      }
+    },
+    {
+      "id": "no-txn",
+      "component": "Status",
+      "kind": "empty",
+      "title": "No transactions yet",
+      "message": "Payments you make will show here."
+    }
+  ],
+  "data": {
+    "account": {
+      "balance": 2450.12,
+      "currency": "GBP"
+    },
+    "month": {
+      "spent": 812.4,
+      "spentChange": -0.08
+    },
+    "trend": {
+      "summary": "Your balance rose steadily, up 12% since April.",
+      "points": [
+        {
+          "month": "2026-04-01",
+          "balance": 2180
+        },
+        {
+          "month": "2026-05-01",
+          "balance": 2250
+        },
+        {
+          "month": "2026-06-01",
+          "balance": 2300
+        },
+        {
+          "month": "2026-07-01",
+          "balance": 2390
+        },
+        {
+          "month": "2026-08-01",
+          "balance": 2420
+        },
+        {
+          "month": "2026-09-01",
+          "balance": 2450
+        }
+      ]
+    },
+    "transactions": [
+      {
+        "id": "t1",
+        "merchant": "Grocer",
+        "date": "2026-09-18",
+        "amount": -42.1
+      },
+      {
+        "id": "t2",
+        "merchant": "Salary",
+        "date": "2026-09-15",
+        "amount": 2100
+      }
+    ]
+  }
+}

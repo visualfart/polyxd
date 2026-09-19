@@ -1,0 +1,99 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "flights",
+    "title": "Flights to Lisbon",
+    "intent": "travel.flights.search"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Table",
+      "key": "flights",
+      "caption": "Flights from London to Lisbon, Fri 3 Oct",
+      "rows": {
+        "path": "/flights"
+      },
+      "columns": [
+        {
+          "key": "depart",
+          "label": "Departs",
+          "path": "depart",
+          "format": {
+            "type": "time"
+          }
+        },
+        {
+          "key": "arrive",
+          "label": "Arrives",
+          "path": "arrive",
+          "format": {
+            "type": "time"
+          }
+        },
+        {
+          "key": "stops",
+          "label": "Stops",
+          "path": "stops",
+          "format": {
+            "type": "number"
+          }
+        },
+        {
+          "key": "airline",
+          "label": "Airline",
+          "path": "airline"
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "path": "price",
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        }
+      ],
+      "rowAction": {
+        "event": {
+          "name": "flight.select",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      },
+      "empty": "none"
+    },
+    {
+      "id": "none",
+      "component": "Status",
+      "kind": "empty",
+      "title": "No flights that day",
+      "message": "Try a day earlier or later."
+    }
+  ],
+  "data": {
+    "flights": [
+      {
+        "id": "f1",
+        "depart": "2026-10-03T07:10:00Z",
+        "arrive": "2026-10-03T09:55:00Z",
+        "stops": 0,
+        "airline": "TAP",
+        "price": 89
+      },
+      {
+        "id": "f2",
+        "depart": "2026-10-03T12:40:00Z",
+        "arrive": "2026-10-03T17:30:00Z",
+        "stops": 1,
+        "airline": "Iberia",
+        "price": 72
+      }
+    ]
+  }
+}

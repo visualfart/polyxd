@@ -1,0 +1,87 @@
+{
+  "name": "Table",
+  "category": "content",
+  "summary": "Tabular data: many items sharing the same attributes.",
+  "props": {
+    "rows": {
+      "$ref": "#/$defs/Binding",
+      "description": "Array of row objects in host data"
+    },
+    "caption": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "What the table shows (required for accessibility)"
+    },
+    "columns": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "path"
+        ],
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/Key"
+          },
+          "label": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "path": {
+            "$ref": "#/$defs/Path",
+            "description": "Relative to the row"
+          },
+          "format": {
+            "$ref": "#/$defs/Format"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rowAction": {
+      "$ref": "#/$defs/Action",
+      "description": "Activated per row; context bindings resolve against the row"
+    },
+    "empty": {
+      "$ref": "#/$defs/Id",
+      "description": "Status component shown when there are no rows"
+    }
+  },
+  "required": [
+    "rows",
+    "caption",
+    "columns"
+  ],
+  "whenToUse": [
+    "Scanning or comparing many rows by several attributes"
+  ],
+  "whenNotToUse": [
+    "One entity: use DetailList",
+    "A few entities where the user must choose: use Comparison"
+  ],
+  "accessibility": {
+    "role": "table with caption and column headers",
+    "requirements": [
+      "Has a caption",
+      "Column headers are real header cells",
+      "Numeric columns are right-aligned by format"
+    ]
+  },
+  "agent": "Read by row and column headers; rows with rowAction are activatable.",
+  "rendering": [
+    "On compact screens, rows become stacked cards with label/value pairs",
+    "Alignment follows the column format, never chosen by the model"
+  ],
+  "mappings": {
+    "web": "shadcn Table (optionally Data Table with TanStack)",
+    "ios": "Table on regular width; List of rows on compact width",
+    "android": "LazyColumn of rows with a header row (no built-in M3 table)"
+  },
+  "a2ui": "No direct equivalent; exports as List of Row",
+  "sources": [
+    "GOV.UK tables",
+    "WAI data tables"
+  ]
+}

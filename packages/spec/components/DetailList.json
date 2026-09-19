@@ -1,0 +1,67 @@
+{
+  "name": "DetailList",
+  "category": "content",
+  "summary": "Label/value pairs describing one thing (a summary, a receipt, a review step).",
+  "props": {
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "label",
+          "value"
+        ],
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/Key"
+          },
+          "label": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "value": {
+            "$ref": "#/$defs/DynamicValue"
+          },
+          "format": {
+            "$ref": "#/$defs/Format"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "title": {
+      "$ref": "#/$defs/DynamicString"
+    }
+  },
+  "required": [
+    "items"
+  ],
+  "whenToUse": [
+    "Reviewing before submitting",
+    "Showing the attributes of one entity",
+    "Receipts"
+  ],
+  "whenNotToUse": [
+    "Many entities with the same attributes: use Table",
+    "Comparing entities: use Comparison"
+  ],
+  "accessibility": {
+    "role": "list of term/definition pairs (dl)",
+    "requirements": [
+      "Label and value are programmatically associated"
+    ]
+  },
+  "agent": "Read each label with its value.",
+  "rendering": [
+    "Keeps the item order stable across generations (keys are remembered)"
+  ],
+  "mappings": {
+    "web": "<dl> with semantic tokens",
+    "ios": "LabeledContent rows in a Form/List section",
+    "android": "ListItem(headlineContent, trailingContent) rows"
+  },
+  "a2ui": "Column of Row(Text, Text)",
+  "sources": [
+    "GOV.UK summary list"
+  ]
+}

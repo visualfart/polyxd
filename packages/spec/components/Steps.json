@@ -1,0 +1,72 @@
+{
+  "name": "Steps",
+  "category": "flow",
+  "summary": "A task split into ordered steps with visible progress.",
+  "props": {
+    "steps": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "title",
+          "content"
+        ],
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/Key"
+          },
+          "title": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "content": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "current": {
+      "$ref": "#/$defs/DynamicNumber",
+      "description": "Index of the current step (default 0)"
+    },
+    "finish": {
+      "$ref": "#/$defs/ActionSpec"
+    }
+  },
+  "required": [
+    "steps",
+    "finish"
+  ],
+  "whenToUse": [
+    "Tasks with dependent stages or too many inputs for one view (checkout, onboarding)"
+  ],
+  "whenNotToUse": [
+    "Independent views: use Views",
+    "Under ~6 inputs: a single Form"
+  ],
+  "accessibility": {
+    "role": "group with step progress (aria-current on the current step)",
+    "requirements": [
+      "Current step and total are announced",
+      "Back never loses entered data"
+    ]
+  },
+  "agent": "Reads 'step N of M'; next/back are exposed as buttons.",
+  "rendering": [
+    "Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'",
+    "Each step validates before moving on"
+  ],
+  "mappings": {
+    "web": "Progress + step content (no shadcn stepper primitive)",
+    "ios": "NavigationStack pushes or a paged view with a ProgressView",
+    "android": "Custom stepper Row + content; LinearProgressIndicator"
+  },
+  "a2ui": "No direct equivalent; exports as Column of the current step",
+  "sources": [
+    "GOV.UK one thing per page",
+    "Nielsen: visibility of system status"
+  ]
+}

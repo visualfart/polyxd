@@ -1,0 +1,102 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "order",
+    "title": "Order #4821",
+    "intent": "commerce.order.track"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "state",
+        "details",
+        "items"
+      ]
+    },
+    {
+      "id": "state",
+      "component": "Status",
+      "kind": "success",
+      "title": "Out for delivery",
+      "message": {
+        "path": "/order/eta"
+      }
+    },
+    {
+      "id": "details",
+      "component": "DetailList",
+      "title": "Delivery",
+      "items": [
+        {
+          "key": "address",
+          "label": "Address",
+          "value": {
+            "path": "/order/address"
+          }
+        },
+        {
+          "key": "courier",
+          "label": "Courier",
+          "value": {
+            "path": "/order/courier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "items",
+      "component": "Collection",
+      "key": "order_items",
+      "label": "Items in this order",
+      "items": {
+        "path": "/order/items",
+        "componentId": "item"
+      }
+    },
+    {
+      "id": "item",
+      "component": "Card",
+      "title": {
+        "path": "name"
+      },
+      "subtitle": {
+        "path": "qty"
+      },
+      "media": "item-img"
+    },
+    {
+      "id": "item-img",
+      "component": "Media",
+      "src": {
+        "path": "image"
+      },
+      "alt": {
+        "path": "name"
+      },
+      "aspect": "square"
+    }
+  ],
+  "data": {
+    "order": {
+      "eta": "Arriving between 2pm and 4pm today",
+      "address": "12 Park Road, Leeds",
+      "courier": "DPD",
+      "items": [
+        {
+          "name": "Desk lamp",
+          "qty": "1 item",
+          "image": "img_lamp"
+        },
+        {
+          "name": "LED bulbs",
+          "qty": "4 items",
+          "image": "img_bulbs"
+        }
+      ]
+    }
+  }
+}
