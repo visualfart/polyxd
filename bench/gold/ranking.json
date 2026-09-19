@@ -1,6 +1,6 @@
 {
   "$comment": "Fill humanRank for each group with its variant file names ordered best → worst, e.g. [\"send-form-a\", \"send-form-b\", \"send-form-c\"]. Rank from the rendered UIs (apps/gallery or the verifier harness) without reading the notes or scores first. See README.md.",
-  "rater": null,
+  "rater": "Neel",
   "groups": [
     {
       "id": "send-form",
@@ -11,7 +11,36 @@
         "send-form-b",
         "send-form-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "send-form-c",
+        "send-form-a",
+        "send-form-b"
+      ],
+      "annotations": {
+        "send-form-c": [
+          {
+            "id": "recipient",
+            "component": "TextInput",
+            "note": "should've been a select dropfown"
+          }
+        ],
+        "send-form-a": [
+          {
+            "id": "fees",
+            "component": "Disclosure",
+            "note": "this can be more compact and show as a receipt kind of format"
+          },
+          {
+            "id": "recipient",
+            "component": "Choice",
+            "note": "does not scale"
+          }
+        ]
+      },
+      "notes": {
+        "send-form-c": "this is simple but the name should be selected first, then the amount. Also amount should eb larger. it is missing fees and time or other metadata. That should make it look good. You will have to see how wise app, and other payment apps d o it."
+      },
+      "comment": "The only reason I ranked this way is that the first one is better. The second one has better copy I think. It's it."
     },
     {
       "id": "send-confirm",
@@ -22,7 +51,31 @@
         "send-confirm-b",
         "send-confirm-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "send-confirm-a",
+        "send-confirm-b",
+        "send-confirm-c"
+      ],
+      "notes": {
+        "send-confirm-a": "Would expect the payment element to be much larger. The numbers, where we show the numbers, is the main part. Numbers are usually read from the right not from the left. The name, it can be more visual. Instead of just like a key-value pair. "
+      },
+      "annotations": {
+        "send-confirm-c": [
+          {
+            "id": "confirm",
+            "component": "Confirm",
+            "note": "Does not tell the user anything. They have to remember what was on the previous step so this is not good. "
+          }
+        ],
+        "send-confirm-b": [
+          {
+            "id": "confirm",
+            "component": "Confirm",
+            "part": "button \"Yes, go ahead and send the £250.00 to Alex Kim\"",
+            "note": "The CTA is too verbose. "
+          }
+        ]
+      }
     },
     {
       "id": "delete-account",
@@ -33,7 +86,16 @@
         "delete-account-b",
         "delete-account-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "delete-account-a",
+        "delete-account-b",
+        "delete-account-c"
+      ],
+      "notes": {
+        "delete-account-a": "The top red bar looks bad. This confirmatio pattern for typing must only be used with important actions, not for ddleeting emails or messages etc etc",
+        "delete-account-b": "The top red bar looks bad",
+        "delete-account-c": "This is good but can not be useed for delete account, can work for deloeting sometihing low risk.e"
+      }
     },
     {
       "id": "browse-lamps",
@@ -44,7 +106,17 @@
         "browse-lamps-b",
         "browse-lamps-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "browse-lamps-a",
+        "browse-lamps-b",
+        "browse-lamps-c"
+      ],
+      "comment": "The cards need to come as a grid in desktop mode. currently its all fill and repsonsive.",
+      "notes": {
+        "browse-lamps-a": "The word \"Filter\" works but \"Search\" could just have been a proper search bar with a search icon and placeholder text. You don't need a \"Search\" label's separate text outside. It can be inside as a placeholder and there is no proper spacing between the groups of data. The checkboxes in Type are too far away from each other and so on.\n\nThe filter on mobile or in other places should be like a bottom sheet. If there are fewer than 5 filters then it can be just small chips. If it is on desktop then it can be a separate column itself on the left side. Currently it all flows linearly, which is not that great. There should be a price range not just a single price. There should be a price range not just a single price.",
+        "browse-lamps-c": "Never do this. The person doesn't even find that there are these filters because the number of products can't be controlled so you will never reach the filters till you scroll to the bottom or enter the price directly. It's a bit weird. ",
+        "browse-lamps-b": "Nobody understands the word \"options.\" What do you search for? Price is a single thing and that's it. It's not that great. "
+      }
     },
     {
       "id": "compare-plans",
@@ -55,7 +127,12 @@
         "compare-plans-b",
         "compare-plans-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "compare-plans-a",
+        "compare-plans-b",
+        "compare-plans-c"
+      ],
+      "comment": "Everything looks very tabular, like a key-value pair. It should not be more visual. It is very difficult to do this and there can be more items for each plan so this will not scale that well. It is not very easy to scan here and also you have put \"Best\" twice. There can only be one \"Best\" and you need to look into how that can work."
     },
     {
       "id": "hotel-review",
@@ -66,7 +143,17 @@
         "hotel-review-b",
         "hotel-review-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "hotel-review-a",
+        "hotel-review-b",
+        "hotel-review-c"
+      ],
+      "notes": {
+        "hotel-review-c": "info missing",
+        "hotel-review-a": "Can do better with layout",
+        "hotel-review-b": "cofirmation must always be near the CTA"
+      },
+      "comment": "We need betetr visual layouts this is bland and vanilla. Where is the taste?"
     },
     {
       "id": "add-task",
@@ -77,7 +164,17 @@
         "add-task-b",
         "add-task-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "add-task-b",
+        "add-task-a",
+        "add-task-c"
+      ],
+      "notes": {
+        "add-task-b": "It is missing things like project, assignee, tags, and estimate, which can all be optional. You can show these basic fields that you're showing first but then show the other items as optional or hidden, progressively disclosed. ",
+        "add-task-a": "It's better to have notes second item after the task so that people can actually decide what to do, and then put a priority on it and then put a date on it. ",
+        "add-task-c": "There are a lot of fields together, which can make somebody feel overwhelmed. Be more progressive disclosure about it. "
+      },
+      "comment": "For web it might be fine but for mobile we might want to think about progressively disclosing step by step."
     },
     {
       "id": "notifications",
@@ -88,7 +185,16 @@
         "notifications-b",
         "notifications-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "notifications-a",
+        "notifications-b",
+        "notifications-c"
+      ],
+      "notes": {
+        "notifications-a": "uses human language labels which is good",
+        "notifications-b": "Sounds like a system",
+        "notifications-c": "does not provide details or group notification by type"
+      }
     },
     {
       "id": "find-slot",
@@ -99,7 +205,16 @@
         "find-slot-b",
         "find-slot-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "find-slot-c",
+        "find-slot-a",
+        "find-slot-b"
+      ],
+      "notes": {
+        "find-slot-c": "It's missing the section which could show when everybody is free once people are selected. Date and time are being repeated twice. That is wrong. The only thing I called it best for is that it first asks who is coming before saying \"Find a Time,\" which is important. Otherwise the two fields are wrong. ",
+        "find-slot-a": "I like the section which says \"times everyone is free.\" That is good. Apart from that there should be a way to actually select some other time so that you can actually propose. That part is missing. \"Who is coming?\" at the end is wrong. "
+      },
+      "comment": "The spacing between all these layouts is completely off. There is too much space between the checkboxes and there is very little space between each item because of it. All of that is just too much off-space-density."
     },
     {
       "id": "reading-list",
@@ -110,7 +225,15 @@
         "reading-list-b",
         "reading-list-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "reading-list-a",
+        "reading-list-b",
+        "reading-list-c"
+      ],
+      "notes": {
+        "reading-list-a": "The copy is more encouraging. Instead of saying \"no books yet,\" it basically says, \"This is how you can fill it.\" That is what we want. ",
+        "reading-list-b": "The empty state copy can be better. "
+      }
     }
   ]
 }

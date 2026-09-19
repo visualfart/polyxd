@@ -13,6 +13,33 @@ This is Polyxd's running improvement report. Each entry states a question, what 
 
 ## Entries
 
+### 2026-09-20 · A designer ranked the gold set: the verifier knows safety, not taste (Phase 3 exit)
+
+**Question.** Does the verifier's score agree with a designer's judgement? This was the last Phase 3 exit test.
+
+**Setup.** Neel ranked all 10 gold groups (three versions of the same interface each) blind, in a shuffled order with neutral names, trying them live in the ranking page (`/?rank` in the local gallery). He also left 20 option notes, 5 group notes and 5 element-level annotations. `npm run gold -w @polyxd/verifier` compared his order with the verifier's.
+
+**Result.**
+
+| | |
+|---|---|
+| Groups where the verifier's order exactly matches the designer's | 5 of 10 |
+| Mean rank correlation (Kendall tau-b; 1 = identical, 0 = unrelated) | 0.63 |
+
+**Where they agree:** safety and clarity. Confirmations that don't say what will happen, destructive actions with no way back, two controls with the same name, missing summaries before paying. These are what the verifier's checks were built for, and the designer ranked them the same way.
+
+**Where they disagree:**
+
+- **Flow order.** In "send money" and "find a time" the designer preferred the version the verifier ranked last. That version had real flaws the verifier caught (money sent with no review; two fields with the same name), but it asked *who* first, and the designer valued the order of questions more. The verifier has no notion of a good question order.
+- **Copy quality.** In "browse lamps" and "reading list" the verifier tied versions the designer clearly separated: vague labels ("Options"), weaker empty-state copy, a single price box instead of a range.
+- **Field order.** In "add task" the designer preferred notes right after the task name; the verifier can't see field order at all.
+
+**What the notes say, beyond the ranking.** The strongest theme is visual quality, which the verifier doesn't measure and the renderer doesn't yet deliver: "bland and vanilla — where is the taste?", "everything looks tabular, like key-value pairs", "the amount should be much larger", "spacing between all these layouts is completely off", filters that should be chips, a bottom sheet on mobile or a sidebar on desktop, cards that should form a grid on desktop, a real search bar, a price range, a more visual recipient, one "Best" rather than two, and a strict limit on typed confirmation to genuinely high-risk actions.
+
+**What it means.** The verifier is a good *floor* (unsafe, unclear or inaccessible interfaces lose) but not a measure of *quality*. And the model can only be as good as the renderer and the examples it learns from, which are now the ceiling. Training harder against this verifier would optimise the floor, not the product.
+
+**Next.** A design pass before more model training: design the key flows properly (desktop and mobile), review them with the designer, then work backwards into missing spec components (search, range, filter chips and sheets, grid collections, prominent amounts, visual entities), renderer hierarchy, spacing and density, rebuilt examples and gold set, and new verifier checks for question order and visual hierarchy. Then return to the model with a higher ceiling.
+
 ### 2026-09-20 · How to ship the fine-tune: keep the adapter separate (Phase 5, packaging)
 
 **Question.** Run 2's adapter slowed generation from 74 to 56 tokens/s. Merging the adapter into the model should restore speed, but at what cost?
