@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polyxd — interfaces that show up when you need them</title>
+<meta name="description" content="Polyxd turns a request into a real, accessible interface, built from your design system, usable by people and agents, and gone when the task is done.">
+<!--HEAD-->
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<!--HEADER-->
+<main id="main">
+
+<section class="hero" aria-labelledby="hero-title">
+<div class="wrap">
+<div class="hero-top">
+<div>
+<span class="badge"><span class="badge-dot" aria-hidden="true"></span>Early preview · spec v0.1</span>
+<h1 id="hero-title">Interfaces that show up when you need them.</h1>
+</div>
+<div class="hero-lede">
+<p>Polyxd turns a request into a real, accessible interface, built from your design system, usable by people and agents, and gone when the task is done.</p>
+<div class="cta-row">
+<a class="btn btn-signal" href="/docs/">Read the docs</a>
+<a class="btn btn-line" href="/gallery/">Try the live gallery</a>
+</div>
+</div>
+</div>
+
+<div class="demo" aria-label="Example: one request rendered in three design systems">
+<div class="demo-flow">
+<div class="demo-ask"><span class="demo-label">You ask</span><span>send alex the rent</span><span class="caret" aria-hidden="true"></span></div>
+<svg class="demo-arrow" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+<div class="demo-json" aria-label="The model's output: a Confirm component">{ "component": <span class="s">"Confirm"</span>, "severity": <span class="s">"consequential"</span>, "confirm": { "label": <span class="s">"Send £250.00"</span> … }</div>
+</div>
+
+<div class="demo-tabs" role="tablist" aria-label="Design system">
+<button type="button" role="tab" id="tab-m3" aria-controls="render-m3" aria-selected="true">Material 3</button>
+<button type="button" role="tab" id="tab-carbon" aria-controls="render-carbon" aria-selected="false" tabindex="-1">Carbon</button>
+<button type="button" role="tab" id="tab-antd" aria-controls="render-antd" aria-selected="false" tabindex="-1">Ant Design</button>
+</div>
+
+<div class="renders">
+<figure class="render" id="render-m3" role="tabpanel" aria-labelledby="tab-m3">
+<div class="stage m3" aria-hidden="true">
+<div class="card"><div class="t">Send £250.00 to Alex Kim?</div><div class="d">The money leaves your account immediately and can't be recalled.</div><div><div class="row"><span>To</span><span>Alex Kim</span></div><div class="row"><span>Amount</span><span>£250.00</span></div></div><div class="acts"><span class="b b2">Cancel</span><span class="b b1">Send £250.00</span></div></div>
+</div>
+<figcaption><strong>Material 3</strong><span>axe 0 · agent ✓</span></figcaption>
+</figure>
+<figure class="render" id="render-carbon" role="tabpanel" aria-labelledby="tab-carbon">
+<div class="stage carbon" aria-hidden="true">
+<div class="card"><div class="in"><div class="t">Send £250.00 to Alex Kim?</div><div class="d">The money leaves your account immediately and can't be recalled.</div><div><div class="row"><span>To</span><span>Alex Kim</span></div><div class="row"><span>Amount</span><span>£250.00</span></div></div></div><div class="acts"><span class="b b2">Cancel</span><span class="b b1">Send £250.00</span></div></div>
+</div>
+<figcaption><strong>Carbon</strong><span>axe 0 · agent ✓</span></figcaption>
+</figure>
+<figure class="render" id="render-antd" role="tabpanel" aria-labelledby="tab-antd">
+<div class="stage antd" aria-hidden="true">
+<div class="card"><div class="t">Send £250.00 to Alex Kim?</div><div class="d">The money leaves your account immediately and can't be recalled.</div><div><div class="row"><span>To</span><span>Alex Kim</span></div><div class="row"><span>Amount</span><span>£250.00</span></div></div><div class="acts"><span class="b b2">Cancel</span><span class="b b1">Send £250.00</span></div></div>
+</div>
+<figcaption><strong>Ant Design</strong><span>axe 0 · agent ✓</span></figcaption>
+</figure>
+</div>
+<p class="demo-note">One UI document, three design systems. The model chose the meaning; the design system chose the look. <a href="/gallery/?example=money-send-confirm">See it live</a>.</p>
+</div>
+</div>
+</section>
+
+<section class="proof" aria-label="Results so far">
+<dl class="wrap">
+<div class="stat"><dt>semantic components, one vocabulary</dt><dd>24</dd></div>
+<div class="stat"><dt>verified renders, zero accessibility violations</dt><dd>240</dd></div>
+<div class="stat"><dt>agent tasks completed by name alone</dt><dd>216/216</dd></div>
+<div class="stat"><dt>injected defects caught by the verifier</dt><dd>20/20</dd></div>
+</dl>
+</section>
+
+<section class="section" id="how" aria-labelledby="how-title">
+<div class="wrap">
+<div class="section-head">
+<h2 class="display" id="how-title">The model picks meaning. Everything else is yours.</h2>
+<p>No pixels, no colours, no code. A small model chooses semantic components, and every surface is checked before anyone sees it.</p>
+</div>
+<ol class="steps">
+<li class="step"><span class="eyebrow">01</span><h3>Ask</h3><p>A person or an agent says what they need, in their own words.</p><div class="step-foot quote">"send alex the rent"</div></li>
+<li class="step"><span class="eyebrow">02</span><h3>Mean</h3><p>A small on-device model picks components and a pattern, and binds your data. It never invents a balance.</p><div class="step-foot code-mini">Choice    recipient
+TextInput amount
+Confirm   transfer.confirm</div></li>
+<li class="step"><span class="eyebrow">03</span><h3>Render</h3><p>Your design system decides the look, natively: Material 3, Carbon, Ant Design, or your own tokens.</p><div class="step-foot swatches" aria-hidden="true"><span style="background:#65558f;border-radius:22px"></span><span style="background:#0f62fe"></span><span style="background:#0958d9;border-radius:6px"></span></div></li>
+<li class="step"><span class="eyebrow">04</span><h3>Verify</h3><p>Every surface is checked before it ships: accessibility, layout, safety, and whether an agent can finish the task.</p><div class="step-foot chips"><span class="chip">WCAG 2.2 AA</span><span class="chip">agent ✓</span><span class="chip chip-signal">score 100</span></div></li>
+</ol>
+</div>
+</section>
+
+<section class="band" id="agents" aria-labelledby="agents-title">
+<div class="split">
+<div class="split-text">
+<span class="eyebrow">People &amp; agents</span>
+<h2 class="display" id="agents-title">One interface. Every kind of user.</h2>
+<p>Screen readers read the same tree that agents operate. If an agent can't finish the task using names alone, the surface fails verification, so what works for one works for all.</p>
+</div>
+<pre class="tree" aria-label="Accessibility tree and agent run for the confirmation"><span class="c">accessibility tree</span>
+alertdialog <span class="s">"Send £250.00 to Alex Kim?"</span>
+  term <span class="s">"Amount"</span>  definition <span class="s">"£250.00"</span>
+  button <span class="s">"Send £250.00"</span>
+  button <span class="s">"Cancel"</span>
+
+<span class="c">agent</span>
+press <span class="s">"Send £250.00"</span>
+→ transfer.confirm { quoteId: "q_91" }  <span class="ok">✓</span></pre>
+</div>
+</section>
+
+<section class="section" id="memory" aria-labelledby="memory-title">
+<div class="wrap split">
+<div class="split-text">
+<span class="eyebrow">Recognition, not recall</span>
+<h2 class="display" id="memory-title">Here for a moment. Familiar every time.</h2>
+<p>Interfaces made on demand still need to feel known. Polyxd remembers where each thing sat, what it was called and which control it used, and keeps it that way the next time you ask.</p>
+</div>
+<div class="stack">
+<div class="turns" aria-hidden="true">
+<div class="turn"><span class="when">MONDAY</span><span class="bar"></span><span class="field"></span><span class="field"></span><span class="pill"></span></div>
+<div class="turn"><span class="when">FRIDAY</span><span class="bar"></span><span class="field"></span><span class="field"></span><span class="pill"></span></div>
+</div>
+<ul class="chips" aria-label="What stays the same" style="list-style:none;margin:0;padding:0">
+<li class="chip chip-soft">same pattern ✓</li><li class="chip chip-soft">same order ✓</li><li class="chip chip-soft">same labels ✓</li><li class="chip chip-soft">same controls ✓</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="section taste" id="taste" aria-labelledby="taste-title" style="padding-top:0">
+<div class="wrap split">
+<div class="direction">
+<div class="direction-head"><strong>calm-finance</strong><span>Design Direction v0.1.0</span></div>
+<dl>
+<div><dt>Voice</dt><dd>Plain, calm, specific. No exclamation marks.</dd></div>
+<div><dt>Glossary</dt><dd>Say "payment", not "transaction"</dd></div>
+<div><dt>Freedom</dt><dd>Strict: approved patterns only</dd></div>
+<div><dt>Rule</dt><dd>Money only moves from a confirmation</dd></div>
+</dl>
+<p class="flag"><strong>Flagged:</strong> "Recent transactions" breaks the glossary. Say "payments".</p>
+</div>
+<div class="split-text">
+<span class="eyebrow">For design &amp; product teams</span>
+<h2 class="display" id="taste-title">Your taste, enforced.</h2>
+<p>Designers set the direction: density, voice, patterns and rules. PMs define what the product can do and what done looks like. Every generated surface is held to both, and you can see exactly why it came out the way it did.</p>
+</div>
+</div>
+</section>
+
+<section class="cta" id="access" aria-labelledby="access-title">
+<div>
+<h2 class="display" id="access-title">Open spec. Any model. Your design system.</h2>
+<p>The spec, renderer, design-system packs and verifier are Apache-2.0. They work with any model that can write JSON, and with ours when it ships.</p>
+<div class="cta-row" style="margin-top:28px"><a class="btn btn-ink" href="/docs/">Read the docs</a><a class="btn btn-line" href="/gallery/">Live gallery</a></div>
+</div>
+<form class="waitlist" action="/api/waitlist" method="post" data-waitlist>
+<label for="email">Get early access</label>
+<input id="email" name="email" type="email" autocomplete="email" required placeholder="you@company.com">
+<input class="hp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+<button class="btn btn-ink" type="submit">Join the waitlist</button>
+<p class="waitlist-status" role="status" aria-live="polite"></p>
+</form>
+</section>
+
+</main>
+<!--FOOTER-->
+<script src="/assets/site.js" defer></script>
+</body>
+</html>
