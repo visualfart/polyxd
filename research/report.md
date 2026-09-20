@@ -73,6 +73,35 @@ Five charts, from the same runs as the table below. Each one opens the numbers b
 
 ---
 
+### 2026-09-20 · Models agree with each other about UI quality, and with a designer at chance
+
+**Question.** The verifier can't rank three honest attempts at the same request (tau −0.07). Can a frontier model, looking at the same screens a designer looked at?
+
+**Setup.** 23 groups from two ranking rounds — a request, three candidates from `sft-v3`, all rendered at 390 and 1100 px. Option letters shuffled per group, judged blind by agents with no access to the designer's ranking and no path to the repository that holds it. Then the whole thing again with a second, independent judge as a control. Separately, six already-ranked groups were rebuilt under fresh letters and the designer ranked them a second time (`npm run rerank -w @polyxd/verifier`).
+
+**Result.**
+
+| | tau-b | exact order | same top pick |
+|---|---|---|---|
+| Verifier reward vs designer | −0.07 / −0.11 | 0% | — |
+| Judge A vs designer | +0.10 | 22% | 26% |
+| Judge B vs designer | +0.16 | 22% | 30% |
+| Judge A vs judge B | **+0.71** | 65% | 83% |
+| Designer vs himself | **+0.67** | 67% | 67% |
+| Chance | 0 | 17% | 33% |
+
+**What it means.** Two reliable raters, each reproducing itself, measuring different things. The models are not failing to judge — they converge strongly with each other, and on the 15 groups where they ranked identically, agreement with the designer is still 0.24. They are judging something else.
+
+Reading their reasons against his, the split is plain. The judges rank on defects in the artefact: a binding that renders `[object Object]`, an empty state where data exists, a missing call to action, copy that repeats itself. The designer ranked on which thing should be biggest, what order the page reads in, whether the visual form suits the data, and what the equivalent screen looks like in products he knows.
+
+So: **conventional quality is recoverable from the artefact; taste is not.** That is this project's premise, measured rather than asserted — and it settles the question that prompted the experiment, which was whether a cheaper or faster judge would give us a reward for taste. Speed was never what was missing.
+
+**Where the designer flipped, the options were equivalent.** The two groups he re-ordered are the two the judges had independently called near-identical. That is information, not error: best-versus-worst survived in 5 of 6 groups, the adjacent pairs in 10 of 12. Preference training now weights a pair by the distance between its members and drops the ones a re-rank reverses — 69 pairs, 23 at weight 2.
+
+**What it changed.** A model judge is worth keeping as a second verifier even though it can't rank taste: it found three defect classes the static checks missed, and all three are checks now (`text:template-placeholder`, `data:not-text`, `copy:raw-identifier`) and rules in the generator's prompt. The reward's coverage term multiplies rather than adds, because on "find 30 minutes with Tom and Priya" the candidate that attempted nothing scored 96 and was ranked last — a document that doesn't try can't make mistakes.
+
+**Caveats.** One designer, 23 groups for the judge comparison and 6 for the self-consistency; tau over samples this size is noisy, and the differences between reward shapes are inside that noise. What survives the noise is the gap between 0.71 and 0.10, which is large.
+
 ### 2026-09-20 · The mean score hides a bimodal result
 
 **Question.** The best run scores 79 on average. Is that "mostly good with rough edges", or two populations?
