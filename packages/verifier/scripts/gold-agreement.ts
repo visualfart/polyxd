@@ -97,7 +97,7 @@ else console.log(`\n${ranking.groups.length} groups of the model's own options, 
 
 const rated = rows.filter((r) => r.tau !== undefined);
 if (!rated.length) {
-  const url = SET === "model" ? "http://localhost:5173/?rank&set=model" : "http://localhost:5173/?rank";
+  const url = SET === "rank-set" ? "http://localhost:5173/?rank&set=model" : "http://localhost:5173/?rank";
   console.log(`Human ranking pending: rank them at ${url} (npm run dev -w @polyxd/gallery), or fill humanRank in bench/${SET}/ranking.json.`);
 } else {
   const agreement = rated.filter((r) => r.match).length / rated.length;
