@@ -1,0 +1,477 @@
+{
+  "$description": "Polyxd semantic tier for Bootstrap 5. Every token aliases a Bootstrap variable wherever one exists; polyxd.* marks what Bootstrap leaves to its Sass scale or doesn't define. The file is the same in both modes.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{bs.body-bg}"
+      },
+      "subtle": {
+        "$value": "{bs.secondary-bg}",
+        "$description": "Bootstrap's secondary background, used for wells and table stripes"
+      },
+      "raised": {
+        "$value": "{bs.body-bg}",
+        "$description": "Bootstrap cards sit on the body background with a border, not a tone"
+      },
+      "overlay": {
+        "$value": "{bs.body-bg}"
+      },
+      "inverse": {
+        "$value": "{bs.emphasis-color}"
+      }
+    },
+    "scrim": {
+      "$value": "rgba(0, 0, 0, 0.5)",
+      "$description": "Bootstrap's .modal-backdrop is #000 at 50%"
+    },
+    "text": {
+      "default": {
+        "$value": "{bs.body-color}"
+      },
+      "muted": {
+        "$value": "{bs.secondary-color}"
+      },
+      "inverse": {
+        "$value": "{bs.body-bg}"
+      },
+      "link": {
+        "$value": "{bs.link-color}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{bs.border-color}"
+      },
+      "strong": {
+        "$value": "{bs.secondary-color}",
+        "$description": "Bootstrap's border-color is 1.3:1 on white; its secondary text colour is the nearest of its own that carries a 3:1 stroke"
+      },
+      "focus": {
+        "$value": "{bs.primary}",
+        "$description": "Bootstrap's focus ring is the primary colour at 25% in a 0.25rem ring"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{bs.primary}"
+        },
+        "foreground": {
+          "$value": "{bs.white}",
+          "$description": "Bootstrap's .btn-primary text"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{bs.body-bg}"
+        },
+        "foreground": {
+          "$value": "{bs.body-color}"
+        },
+        "border": {
+          "$value": "{bs.border-color}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{bs.danger}"
+        },
+        "foreground": {
+          "$value": "{bs.white}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{bs.primary-bg-subtle}",
+        "$description": "Bootstrap's subtle primary background marks selection"
+      },
+      "foreground": {
+        "$value": "{bs.primary-text-emphasis}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{bs.info-bg-subtle}"
+        },
+        "foreground": {
+          "$value": "{bs.info-text-emphasis}"
+        },
+        "emphasis": {
+          "$value": "{bs.info-text-emphasis}",
+          "$description": "Bootstrap's cyan #0dcaf0 is 1.35:1 on white; its own text-emphasis step is mode-aware and passes in both"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{bs.success-bg-subtle}"
+        },
+        "foreground": {
+          "$value": "{bs.success-text-emphasis}"
+        },
+        "emphasis": {
+          "$value": "{bs.success-text-emphasis}",
+          "$description": "Bootstrap's raw hue is too light to carry a 3:1 accent in light mode (cyan 1.35:1, yellow 1.23:1); its own text-emphasis step is mode-aware"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{bs.warning-bg-subtle}"
+        },
+        "foreground": {
+          "$value": "{bs.warning-text-emphasis}"
+        },
+        "emphasis": {
+          "$value": "{bs.warning-text-emphasis}",
+          "$description": "Bootstrap's raw hue is too light to carry a 3:1 accent in light mode (cyan 1.35:1, yellow 1.23:1); its own text-emphasis step is mode-aware"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{bs.danger-bg-subtle}"
+        },
+        "foreground": {
+          "$value": "{bs.danger-text-emphasis}"
+        },
+        "emphasis": {
+          "$value": "{bs.danger-text-emphasis}",
+          "$description": "Bootstrap's raw hue is too light to carry a 3:1 accent in light mode (cyan 1.35:1, yellow 1.23:1); its own text-emphasis step is mode-aware"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polyxd.sys.data-1}"
+        },
+        "2": {
+          "$value": "{polyxd.sys.data-2}"
+        },
+        "3": {
+          "$value": "{polyxd.sys.data-3}"
+        },
+        "4": {
+          "$value": "{polyxd.sys.data-4}"
+        },
+        "5": {
+          "$value": "{polyxd.sys.data-5}"
+        },
+        "6": {
+          "$value": "{polyxd.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{polyxd.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{polyxd.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{polyxd.sys.data-neutral}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{bs.font-sans-serif}",
+          "fontSize": "{polyxd.sys.type.h1}",
+          "fontWeight": 500,
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{bs.font-sans-serif}",
+          "fontSize": "{polyxd.sys.type.h4}",
+          "fontWeight": 500,
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{bs.font-sans-serif}",
+          "fontSize": "{polyxd.sys.type.h5}",
+          "fontWeight": 500,
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{bs.font-sans-serif}",
+          "fontSize": "{bs.body-font-size}",
+          "fontWeight": 400,
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{bs.font-sans-serif}",
+          "fontSize": "{polyxd.sys.type.small}",
+          "fontWeight": 400,
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{bs.font-sans-serif}",
+          "fontSize": "{bs.body-font-size}",
+          "fontWeight": 500,
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{bs.font-sans-serif}",
+          "fontSize": "{polyxd.sys.type.small}",
+          "fontWeight": 500,
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{bs.font-sans-serif}",
+          "fontSize": "{polyxd.sys.type.h1}",
+          "fontWeight": 600,
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{polyxd.sys.space.2}"
+      },
+      "default": {
+        "$value": "{polyxd.sys.space.3}"
+      },
+      "comfortable": {
+        "$value": "{polyxd.sys.space.4}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{polyxd.sys.space.1}"
+      },
+      "default": {
+        "$value": "{polyxd.sys.space.2}"
+      },
+      "loose": {
+        "$value": "{polyxd.sys.space.3}"
+      },
+      "section": {
+        "$value": "{polyxd.sys.space.5}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{polyxd.sys.space.1}"
+      },
+      "default": {
+        "$value": "{polyxd.sys.space.2}"
+      },
+      "loose": {
+        "$value": "{polyxd.sys.space.3}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{polyxd.sys.target.min}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{polyxd.sys.icon.small}"
+      },
+      "default": {
+        "$value": "{polyxd.sys.icon.default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{bs.border-radius-sm}"
+    },
+    "control": {
+      "$value": "{bs.border-radius}",
+      "$description": "Bootstrap buttons and inputs use the default radius"
+    },
+    "default": {
+      "$value": "{bs.border-radius}"
+    },
+    "large": {
+      "$value": "{bs.border-radius-lg}"
+    },
+    "full": {
+      "$value": "{bs.border-radius-pill}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{bs.border-width}"
+      },
+      "strong": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{bs.focus-ring-width}"
+      },
+      "offset": {
+        "$value": {
+          "value": 0,
+          "unit": "px"
+        },
+        "$description": "Bootstrap's focus ring sits on the control, not outside it"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": 65,
+      "$type": "number",
+      "$description": "Characters per line for running text (Polyxd; Bootstrap has no measure token)"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{bs.box-shadow-sm}"
+    },
+    "overlay": {
+      "$value": "{bs.box-shadow}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{polyxd.sys.motion.instant}"
+      },
+      "short": {
+        "$value": "{polyxd.sys.motion.short}"
+      },
+      "medium": {
+        "$value": "{polyxd.sys.motion.medium}"
+      },
+      "long": {
+        "$value": "{polyxd.sys.motion.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{polyxd.sys.easing.standard}"
+      },
+      "enter": {
+        "$value": "{polyxd.sys.easing.enter}"
+      },
+      "exit": {
+        "$value": "{polyxd.sys.easing.exit}"
+      }
+    }
+  }
+}

@@ -90,11 +90,15 @@ for (const r of rows) {
     if (checks.length) console.log(`      ${v}: ${checks.join(", ")}`);
   }
 }
-console.log(`\nVerifier orders a > b > c (the intended order) in ${intended}/${ranking.groups.length} groups.`);
+// The hand-made set has an intended order (a better than b better than c); the model's own
+// options have none — they are three tries at the same request.
+if (SET === "gold") console.log(`\nVerifier orders a > b > c (the intended order) in ${intended}/${ranking.groups.length} groups.`);
+else console.log(`\n${ranking.groups.length} groups of the model's own options, scored. No intended order: the designer's ranking is the answer.`);
 
 const rated = rows.filter((r) => r.tau !== undefined);
 if (!rated.length) {
-  console.log("Human ranking pending: fill humanRank in bench/gold/ranking.json (see bench/gold/README.md).");
+  const url = SET === "model" ? "http://localhost:5173/?rank&set=model" : "http://localhost:5173/?rank";
+  console.log(`Human ranking pending: rank them at ${url} (npm run dev -w @polyxd/gallery), or fill humanRank in bench/${SET}/ranking.json.`);
 } else {
   const agreement = rated.filter((r) => r.match).length / rated.length;
   const tau = rated.reduce((s, r) => s + r.tau!, 0) / rated.length;

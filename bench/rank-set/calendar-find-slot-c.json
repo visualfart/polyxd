@@ -1,0 +1,93 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "slots": [
+      {
+        "start": "09:30",
+        "label": "9:30–10:00"
+      },
+      {
+        "start": "13:00",
+        "label": "13:00–13:30"
+      },
+      {
+        "start": "16:00",
+        "label": "16:00–16:30"
+      }
+    ],
+    "contacts": [
+      {
+        "id": 1,
+        "name": "Priya"
+      },
+      {
+        "id": 2,
+        "name": "Tom"
+      }
+    ],
+    "draft": {
+      "date": "2026-09-22",
+      "slot": null,
+      "people": [
+        "c1",
+        "c2"
+      ]
+    }
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Schedule meeting",
+      "description": "Find a 30-minute slot for Tom and Priya on Tuesday",
+      "children": [
+        "group"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Group",
+      "children": [
+        "date-input",
+        "person-a",
+        "person-b"
+      ],
+      "label": "Details",
+      "arrangement": "inline",
+      "id": "group"
+    },
+    {
+      "component": "TextInput",
+      "key": "date_input",
+      "label": "Date",
+      "value": {
+        "path": "/draft/date"
+      },
+      "required": true,
+      "id": "date-input"
+    },
+    {
+      "component": "TextInput",
+      "key": "person_a",
+      "label": "Tom",
+      "value": {
+        "path": "/contacts/1/name"
+      },
+      "id": "person-a"
+    },
+    {
+      "component": "TextInput",
+      "key": "person_b",
+      "label": "Priya",
+      "value": {
+        "path": "/contacts/2/name"
+      },
+      "id": "person-b"
+    }
+  ],
+  "surface": {
+    "id": "calendar_scheduling",
+    "title": "Find availability",
+    "intent": "calendar.schedule"
+  }
+}

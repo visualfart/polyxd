@@ -1,0 +1,21 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "bootstrap",
+  "displayName": "Bootstrap 5",
+  "version": "0.0.0",
+  "contractVersion": "0.2.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": ["tokens/system.light.json", "tokens/semantic.json"],
+    "dark": ["tokens/system.dark.json", "tokens/semantic.json"]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:bootstrap dist/css/bootstrap.css (https://github.com/twbs/bootstrap)",
+      "version": "5.3.8",
+      "license": "MIT",
+      "notes": "The :root and [data-bs-theme=dark] custom-property blocks, vendored as scripts/sources/bootstrap/{light,dark}.json. The dark file is the merge of both, as a browser resolves it."
+    }
+  ]
+}

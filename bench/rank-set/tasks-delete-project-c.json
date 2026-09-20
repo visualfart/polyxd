@@ -1,0 +1,68 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "project": {
+      "id": "pr_9",
+      "name": "Old website",
+      "tasks": 18,
+      "members": 4,
+      "confirmPhrase": "Old website"
+    }
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "component": "Confirm",
+      "title": "Delete Old website project?",
+      "message": "This action will delete the Old website project and all its tasks for everyone.",
+      "consequence": "The Old website project will be permanently deleted.",
+      "summary": "project_summary",
+      "severity": "destructive",
+      "confirm": {
+        "label": "Delete project",
+        "action": {
+          "event": {
+            "name": "project.delete",
+            "context": {
+              "id": {
+                "path": "/project/id"
+              },
+              "confirmPhrase": {
+                "path": "/project/confirmPhrase"
+              }
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "confirm"
+    },
+    {
+      "id": "project_summary",
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "project_name",
+          "label": "Project Name",
+          "value": {
+            "path": "/project/name"
+          }
+        }
+      ],
+      "title": "Project Details"
+    }
+  ],
+  "surface": {
+    "id": "delete_project",
+    "title": "Delete Old website project",
+    "intent": "tasks.project.delete",
+    "pattern": "confirm-destructive"
+  }
+}

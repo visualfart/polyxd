@@ -1,0 +1,43 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "overdueTotal": 18240,
+    "invoices": 12,
+    "oldestDays": 41,
+    "byAge": [
+      {
+        "band": "1–30 days",
+        "amount": 9200
+      },
+      {
+        "band": "31–60 days",
+        "amount": 6100
+      },
+      {
+        "band": "61+ days",
+        "amount": 2940
+      }
+    ]
+  },
+  "root": "metric",
+  "components": [
+    {
+      "component": "Metric",
+      "label": "Total overdue payment",
+      "value": {
+        "path": "/overdueTotal"
+      },
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      },
+      "caption": "You have 12 invoices outstanding, with the oldest being 41 days overdue.",
+      "id": "metric"
+    }
+  ],
+  "surface": {
+    "id": "billing_overdue",
+    "title": "Overdue payment summary",
+    "intent": "billing.overdue"
+  }
+}

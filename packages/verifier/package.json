@@ -16,7 +16,7 @@
     "verify": "node src/cli.ts",
     "test": "npm run build:harness && node --test \"test/**/*.test.ts\"",
     "verify:examples": "npm run build:harness && node src/cli.ts ../spec/examples/*.json --registry ../spec/examples/registry/capabilities.json --tasks ../../bench/tasks.json -q",
-    "verify:packs": "npm run build:harness && node src/cli.ts ../spec/examples/*.json --registry ../spec/examples/registry/capabilities.json --tasks ../../bench/tasks.json --themes material3,carbon,antd,fluent,shadcn --widths 390,1100 -q",
+    "verify:packs": "npm run build:harness && node src/cli.ts ../spec/examples/*.json --registry ../spec/examples/registry/capabilities.json --tasks ../../bench/tasks.json --themes material3,carbon,antd,fluent,shadcn,bootstrap --widths 390,1100 -q",
     "gold": "npm run build:harness && node scripts/gold-agreement.ts",
     "score": "npm run build:harness && node scripts/score-run.ts",
     "leaderboard": "node scripts/leaderboard.ts"

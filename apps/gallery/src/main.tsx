@@ -28,6 +28,7 @@ const PACK_INFO: Record<string, { name: string; by: string }> = {
   antd: { name: "Ant Design", by: "Ant Group" },
   fluent: { name: "Fluent 2", by: "Microsoft · Segoe UI" },
   shadcn: { name: "shadcn/ui", by: "Tailwind CSS v4" },
+  bootstrap: { name: "Bootstrap 5", by: "Bootstrap team" },
 };
 const packs: Pack[] = themes.map((key) => ({ key, ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) }));
 

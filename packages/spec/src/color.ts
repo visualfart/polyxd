@@ -66,10 +66,13 @@ export function oklchToRgb([l, c, h]: [number, number, number]): Rgb {
 
 const clamp = (x: number) => Math.min(1, Math.max(0, x));
 
+/** `#rgb`, `#rgba`, `#rrggbb` and `#rrggbbaa`: design systems write hex both ways. */
 export function hexToRgb(hex: string): Rgb {
-  const m = /^#([0-9a-f]{6})([0-9a-f]{2})?$/i.exec(hex);
-  if (!m) throw new Error(`Invalid hex color "${hex}"`);
-  const n = parseInt(m[1], 16);
+  const m = /^#([0-9a-f]{3,8})$/i.exec(hex.trim());
+  const digits = m?.[1] ?? "";
+  const full = digits.length === 3 || digits.length === 4 ? [...digits].map((d) => d + d).join("") : digits;
+  if (!m || (full.length !== 6 && full.length !== 8)) throw new Error(`Invalid hex color "${hex}"`);
+  const n = parseInt(full.slice(0, 6), 16);
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 }
 
@@ -89,8 +92,8 @@ export const alphaOf = (value: ColorValue) => (typeof value === "string" ? strin
 /** The alpha of a hex string, `oklch(… / a)` or `rgba(…)`; 1 when there is none. */
 function stringAlpha(value: string): number {
   const s = value.trim();
-  const hex = /^#[0-9a-f]{6}([0-9a-f]{2})$/i.exec(s);
-  if (hex) return parseInt(hex[1], 16) / 255;
+  const hex = /^#(?:[0-9a-f]{3}([0-9a-f])|[0-9a-f]{6}([0-9a-f]{2}))$/i.exec(s);
+  if (hex) return hex[1] ? parseInt(hex[1] + hex[1], 16) / 255 : parseInt(hex[2], 16) / 255;
   const fn = /^(?:oklch|rgba?)\(([^)]+)\)$/i.exec(s);
   if (!fn) return 1;
   const slash = fn[1].split("/")[1];

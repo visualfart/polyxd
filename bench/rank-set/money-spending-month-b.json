@@ -1,0 +1,65 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "period": "September 2026",
+    "currency": "GBP",
+    "spent": 1843.2,
+    "budget": 2200,
+    "lastMonth": 1978.5,
+    "byCategory": [
+      {
+        "category": "Rent",
+        "amount": 950
+      },
+      {
+        "category": "Groceries",
+        "amount": 312.4
+      },
+      {
+        "category": "Eating out",
+        "amount": 221.8
+      },
+      {
+        "category": "Transport",
+        "amount": 148
+      },
+      {
+        "category": "Other",
+        "amount": 211
+      }
+    ],
+    "recent": [
+      {
+        "id": {}
+      },
+      "merchant",
+      "Tesco",
+      "amount:-42.18",
+      "date",
+      "2026-09-18"
+    ],
+    "id": {}
+  },
+  "root": "metric",
+  "components": [
+    {
+      "component": "Metric",
+      "label": "You have spent this month",
+      "value": {
+        "path": "/spent"
+      },
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      },
+      "caption": "Your budget is £2200, and you have spent £1843.2 this month.",
+      "id": "metric"
+    }
+  ],
+  "surface": {
+    "id": "money_summary",
+    "title": "Spending summary",
+    "intent": "money.spending.summary",
+    "pattern": "compare-and-choose"
+  }
+}

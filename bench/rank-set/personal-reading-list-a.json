@@ -1,0 +1,89 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "books": [
+      {
+        "id": "bk_1",
+        "title": "The Left Hand of Darkness",
+        "author": "Ursula K. Le Guin",
+        "status": "Reading"
+      },
+      {
+        "id": "bk_2",
+        "title": "Piranesi",
+        "author": "Susanna Clarke",
+        "status": "Up next"
+      },
+      {
+        "id": "bk_3",
+        "title": "The Dispossessed",
+        "author": "Ursula K. Le Guin",
+        "status": "Up next"
+      }
+    ]
+  },
+  "root": "collection",
+  "components": [
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/books/{id}",
+        "componentId": "card"
+      },
+      "label": "Books",
+      "empty": "status",
+      "selection": "single",
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "Your reading list is empty.",
+      "message": "Start by adding a book to your reading list.",
+      "id": "status"
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/title"
+      },
+      "subtitle": {
+        "path": "/author"
+      },
+      "children": [
+        "text"
+      ],
+      "action": {
+        "event": {
+          "name": "book.open",
+          "context": {
+            "id": {
+              "path": "/id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/status"
+        },
+        "label": {
+          "path": "/status"
+        }
+      },
+      "id": "card"
+    },
+    {
+      "component": "Text",
+      "text": {
+        "path": "/status"
+      },
+      "id": "text"
+    }
+  ],
+  "surface": {
+    "id": "personal_reading_list",
+    "title": "My reading list",
+    "intent": "personal.reading.list"
+  }
+}

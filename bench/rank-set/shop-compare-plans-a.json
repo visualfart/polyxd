@@ -1,0 +1,75 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "current": "basic",
+    "plans": [
+      {
+        "id": "basic",
+        "name": "Basic",
+        "price": 0,
+        "storage": 5,
+        "support": "Community"
+      },
+      {
+        "id": "plus",
+        "name": "Plus",
+        "price": 4.99,
+        "storage": 200,
+        "support": "Email"
+      },
+      {
+        "id": "pro",
+        "name": "Pro",
+        "price": 11.99,
+        "storage": 2000,
+        "support": "Priority"
+      }
+    ]
+  },
+  "root": "comparison",
+  "components": [
+    {
+      "component": "Comparison",
+      "items": {
+        "path": "/plans"
+      },
+      "itemTitle": "Plan Details",
+      "attributes": [
+        {
+          "key": "name",
+          "label": "Plan Name",
+          "path": "/name"
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "path": "/price",
+          "format": {
+            "type": "currency",
+            "currency": "USD"
+          }
+        }
+      ],
+      "choose": {
+        "label": "Choose",
+        "action": {
+          "event": {
+            "name": "plan.select",
+            "context": {
+              "plan": {
+                "path": "/id"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Select the plan that best fits your storage needs.",
+      "id": "comparison"
+    }
+  ],
+  "surface": {
+    "id": "commerce_plan_choose",
+    "title": "Which plan should I get?",
+    "intent": "commerce.plan.choose"
+  }
+}

@@ -1,0 +1,608 @@
+{
+  "$description": "Values Bootstrap does not define, for the dark theme.",
+  "bs": {
+    "$type": "color",
+    "black": {
+      "$value": "#000"
+    },
+    "blue": {
+      "$value": "#0d6efd"
+    },
+    "body-bg": {
+      "$value": "#212529"
+    },
+    "body-color": {
+      "$value": "#dee2e6"
+    },
+    "border-color": {
+      "$value": "#495057"
+    },
+    "border-color-translucent": {
+      "$value": "rgba(255, 255, 255, 0.15)"
+    },
+    "code-color": {
+      "$value": "#e685b5"
+    },
+    "cyan": {
+      "$value": "#0dcaf0"
+    },
+    "danger": {
+      "$value": "#dc3545"
+    },
+    "danger-bg-subtle": {
+      "$value": "#2c0b0e"
+    },
+    "danger-border-subtle": {
+      "$value": "#842029"
+    },
+    "danger-text-emphasis": {
+      "$value": "#ea868f"
+    },
+    "dark": {
+      "$value": "#212529"
+    },
+    "dark-bg-subtle": {
+      "$value": "#1a1d20"
+    },
+    "dark-border-subtle": {
+      "$value": "#343a40"
+    },
+    "dark-text-emphasis": {
+      "$value": "#dee2e6"
+    },
+    "emphasis-color": {
+      "$value": "#fff"
+    },
+    "focus-ring-color": {
+      "$value": "rgba(13, 110, 253, 0.25)"
+    },
+    "form-invalid-border-color": {
+      "$value": "#ea868f"
+    },
+    "form-invalid-color": {
+      "$value": "#ea868f"
+    },
+    "form-valid-border-color": {
+      "$value": "#75b798"
+    },
+    "form-valid-color": {
+      "$value": "#75b798"
+    },
+    "gray": {
+      "$value": "#6c757d"
+    },
+    "gray-100": {
+      "$value": "#f8f9fa"
+    },
+    "gray-200": {
+      "$value": "#e9ecef"
+    },
+    "gray-300": {
+      "$value": "#dee2e6"
+    },
+    "gray-400": {
+      "$value": "#ced4da"
+    },
+    "gray-500": {
+      "$value": "#adb5bd"
+    },
+    "gray-600": {
+      "$value": "#6c757d"
+    },
+    "gray-700": {
+      "$value": "#495057"
+    },
+    "gray-800": {
+      "$value": "#343a40"
+    },
+    "gray-900": {
+      "$value": "#212529"
+    },
+    "gray-dark": {
+      "$value": "#343a40"
+    },
+    "green": {
+      "$value": "#198754"
+    },
+    "highlight-bg": {
+      "$value": "#664d03"
+    },
+    "highlight-color": {
+      "$value": "#dee2e6"
+    },
+    "indigo": {
+      "$value": "#6610f2"
+    },
+    "info": {
+      "$value": "#0dcaf0"
+    },
+    "info-bg-subtle": {
+      "$value": "#032830"
+    },
+    "info-border-subtle": {
+      "$value": "#087990"
+    },
+    "info-text-emphasis": {
+      "$value": "#6edff6"
+    },
+    "light": {
+      "$value": "#f8f9fa"
+    },
+    "light-bg-subtle": {
+      "$value": "#343a40"
+    },
+    "light-border-subtle": {
+      "$value": "#495057"
+    },
+    "light-text-emphasis": {
+      "$value": "#f8f9fa"
+    },
+    "link-color": {
+      "$value": "#6ea8fe"
+    },
+    "link-hover-color": {
+      "$value": "#8bb9fe"
+    },
+    "orange": {
+      "$value": "#fd7e14"
+    },
+    "pink": {
+      "$value": "#d63384"
+    },
+    "primary": {
+      "$value": "#0d6efd"
+    },
+    "primary-bg-subtle": {
+      "$value": "#031633"
+    },
+    "primary-border-subtle": {
+      "$value": "#084298"
+    },
+    "primary-text-emphasis": {
+      "$value": "#6ea8fe"
+    },
+    "purple": {
+      "$value": "#6f42c1"
+    },
+    "red": {
+      "$value": "#dc3545"
+    },
+    "secondary": {
+      "$value": "#6c757d"
+    },
+    "secondary-bg": {
+      "$value": "#343a40"
+    },
+    "secondary-bg-subtle": {
+      "$value": "#161719"
+    },
+    "secondary-border-subtle": {
+      "$value": "#41464b"
+    },
+    "secondary-color": {
+      "$value": "rgba(222, 226, 230, 0.75)"
+    },
+    "secondary-text-emphasis": {
+      "$value": "#a7acb1"
+    },
+    "success": {
+      "$value": "#198754"
+    },
+    "success-bg-subtle": {
+      "$value": "#051b11"
+    },
+    "success-border-subtle": {
+      "$value": "#0f5132"
+    },
+    "success-text-emphasis": {
+      "$value": "#75b798"
+    },
+    "teal": {
+      "$value": "#20c997"
+    },
+    "tertiary-bg": {
+      "$value": "#2b3035"
+    },
+    "tertiary-color": {
+      "$value": "rgba(222, 226, 230, 0.5)"
+    },
+    "warning": {
+      "$value": "#ffc107"
+    },
+    "warning-bg-subtle": {
+      "$value": "#332701"
+    },
+    "warning-border-subtle": {
+      "$value": "#997404"
+    },
+    "warning-text-emphasis": {
+      "$value": "#ffda6a"
+    },
+    "white": {
+      "$value": "#fff"
+    },
+    "yellow": {
+      "$value": "#ffc107"
+    },
+    "body-font-family": {
+      "$value": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", \"Liberation Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+      "$type": "fontFamily"
+    },
+    "body-font-size": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "body-font-weight": {
+      "$value": 400,
+      "$type": "number"
+    },
+    "body-line-height": {
+      "$value": 1.5,
+      "$type": "number"
+    },
+    "border-radius": {
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "border-radius-2xl": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "border-radius-lg": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "border-radius-pill": {
+      "$value": {
+        "value": 800,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "border-radius-sm": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "border-radius-xl": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "border-radius-xxl": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "border-width": {
+      "$value": {
+        "value": 1,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "box-shadow": {
+      "$value": [
+        {
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 8,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 16,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          },
+          "color": "rgba(0, 0, 0, 0.15)"
+        }
+      ],
+      "$type": "shadow"
+    },
+    "box-shadow-inset": {
+      "$value": [
+        {
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 2,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          },
+          "color": "rgba(0, 0, 0, 0.075)",
+          "inset": true
+        }
+      ],
+      "$type": "shadow"
+    },
+    "box-shadow-lg": {
+      "$value": [
+        {
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 16,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 48,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          },
+          "color": "rgba(0, 0, 0, 0.175)"
+        }
+      ],
+      "$type": "shadow"
+    },
+    "box-shadow-sm": {
+      "$value": [
+        {
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 2,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 4,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          },
+          "color": "rgba(0, 0, 0, 0.075)"
+        }
+      ],
+      "$type": "shadow"
+    },
+    "focus-ring-opacity": {
+      "$value": 0.25,
+      "$type": "number"
+    },
+    "focus-ring-width": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "font-monospace": {
+      "$value": "SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace",
+      "$type": "fontFamily"
+    },
+    "font-sans-serif": {
+      "$value": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", \"Liberation Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+      "$type": "fontFamily"
+    }
+  },
+  "polyxd": {
+    "sys": {
+      "$type": "color",
+      "data-1": {
+        "$value": "{bs.primary-text-emphasis}"
+      },
+      "data-2": {
+        "$value": "{bs.success-text-emphasis}"
+      },
+      "data-3": {
+        "$value": "{bs.danger-text-emphasis}"
+      },
+      "data-4": {
+        "$value": "{bs.warning-text-emphasis}"
+      },
+      "data-5": {
+        "$value": "{bs.info-text-emphasis}"
+      },
+      "data-6": {
+        "$value": "{bs.secondary-text-emphasis}"
+      },
+      "data-positive": {
+        "$value": "{bs.success-text-emphasis}"
+      },
+      "data-negative": {
+        "$value": "{bs.danger-text-emphasis}"
+      },
+      "data-neutral": {
+        "$value": "{bs.gray-500}"
+      },
+      "state": {
+        "$type": "number",
+        "hover": {
+          "$value": 0.08,
+          "$description": "Bootstrap shades hover with separate colour variables; Polyxd needs a state-layer opacity"
+        },
+        "pressed": {
+          "$value": 0.12
+        },
+        "focus": {
+          "$value": "{bs.focus-ring-opacity}"
+        },
+        "disabled": {
+          "$value": 0.6,
+          "$description": "Bootstrap's .disabled is 0.65; the contract caps it at 0.6 so disabled content stays perceivable"
+        }
+      },
+      "target": {
+        "$type": "dimension",
+        "min": {
+          "$value": {
+            "value": 44,
+            "unit": "px"
+          },
+          "$description": "Bootstrap's default button is 38px; 44px is the touch target a generated surface is held to"
+        }
+      },
+      "icon": {
+        "$type": "dimension",
+        "small": {
+          "$value": {
+            "value": 16,
+            "unit": "px"
+          }
+        },
+        "default": {
+          "$value": {
+            "value": 20,
+            "unit": "px"
+          }
+        }
+      },
+      "space": {
+        "1": {
+          "$value": {
+            "value": 4,
+            "unit": "px"
+          }
+        },
+        "2": {
+          "$value": {
+            "value": 8,
+            "unit": "px"
+          }
+        },
+        "3": {
+          "$value": {
+            "value": 16,
+            "unit": "px"
+          }
+        },
+        "4": {
+          "$value": {
+            "value": 24,
+            "unit": "px"
+          }
+        },
+        "5": {
+          "$value": {
+            "value": 48,
+            "unit": "px"
+          }
+        },
+        "$type": "dimension"
+      },
+      "type": {
+        "$type": "dimension",
+        "h1": {
+          "$value": {
+            "value": 40,
+            "unit": "px"
+          }
+        },
+        "h4": {
+          "$value": {
+            "value": 24,
+            "unit": "px"
+          }
+        },
+        "h5": {
+          "$value": {
+            "value": 20,
+            "unit": "px"
+          }
+        },
+        "small": {
+          "$value": {
+            "value": 14,
+            "unit": "px"
+          }
+        }
+      },
+      "motion": {
+        "$type": "duration",
+        "instant": {
+          "$value": {
+            "value": 100,
+            "unit": "ms"
+          }
+        },
+        "short": {
+          "$value": {
+            "value": 150,
+            "unit": "ms"
+          }
+        },
+        "medium": {
+          "$value": {
+            "value": 200,
+            "unit": "ms"
+          }
+        },
+        "long": {
+          "$value": {
+            "value": 300,
+            "unit": "ms"
+          }
+        }
+      },
+      "easing": {
+        "$type": "cubicBezier",
+        "standard": {
+          "$value": [
+            0.25,
+            0.1,
+            0.25,
+            1
+          ],
+          "$description": "Bootstrap's default transition-timing-function is ease"
+        },
+        "enter": {
+          "$value": [
+            0,
+            0,
+            0.2,
+            1
+          ]
+        },
+        "exit": {
+          "$value": [
+            0.4,
+            0,
+            1,
+            1
+          ]
+        }
+      }
+    }
+  }
+}

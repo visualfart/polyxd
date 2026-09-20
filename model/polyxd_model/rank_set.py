@@ -94,6 +94,13 @@ def main() -> None:
         groups.append({"id": req["id"], "request": req["request"], "variants": names, "humanRank": None})
         print(f"{req['id']}: {len(names)} options")
 
+    # Models author trees; the ranking page and the verifier read the flat form.
+    import subprocess
+
+    files = sorted(str(f) for f in out.glob("*.json") if f.name != "ranking.json")
+    if files:
+        subprocess.run(["node", str(REPO / "packages/spec/src/cli/flatten.ts"), *files], check=True)
+
     (out / "ranking.json").write_text(
         json.dumps(
             {

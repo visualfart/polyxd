@@ -1,0 +1,77 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "slots": [
+      {}
+    ]
+  },
+  "root": "collection",
+  "components": [
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/slots_items",
+        "componentId": "slot_item"
+      },
+      "label": "Available timeslots",
+      "empty": "status",
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No slots found",
+      "message": "Please check back later or adjust your search criteria.",
+      "id": "status"
+    },
+    {
+      "id": "slot_item",
+      "component": "Card",
+      "title": {
+        "path": "/slots/label"
+      },
+      "subtitle": {
+        "path": "/slots/start"
+      },
+      "children": [
+        "text"
+      ],
+      "action": {
+        "event": {
+          "name": "meeting.invite",
+          "context": {
+            "date": {
+              "path": "/draft/date"
+            },
+            "slot": {
+              "path": "/slots/start"
+            },
+            "people": {
+              "path": "/draft/people"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/slots/start"
+        },
+        "label": {
+          "path": "/slots/label"
+        }
+      }
+    },
+    {
+      "component": "Text",
+      "text": {
+        "path": "/slots/label"
+      },
+      "id": "text"
+    }
+  ],
+  "surface": {
+    "id": "calendar_scheduling",
+    "title": "Schedule meeting",
+    "intent": "calendar.schedule"
+  }
+}

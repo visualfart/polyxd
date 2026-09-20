@@ -1,0 +1,117 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "slots": [
+      {
+        "start": "09:30",
+        "label": "9:30–10:00"
+      },
+      {
+        "start": "13:00",
+        "label": "13:00–13:30"
+      },
+      {
+        "start": "16:00",
+        "label": "16:00–16:30"
+      }
+    ],
+    "contacts": [
+      {
+        "id": "c1",
+        "name": "Priya"
+      },
+      {
+        "id": "c2",
+        "name": "Tom"
+      }
+    ],
+    "draft": {
+      "date": "2026-09-22",
+      "slot": null,
+      "people": [
+        "c1",
+        "c2"
+      ]
+    }
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Find availability",
+      "description": "Find a 30-minute slot on Tuesday with Tom and Priya",
+      "children": [
+        "collection"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/slots/{id}",
+        "componentId": "card"
+      },
+      "label": "Available slots",
+      "empty": "status",
+      "selection": "single",
+      "selected": {
+        "path": "/selectedSlot"
+      },
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No slots found",
+      "message": "Please check different dates.",
+      "id": "status"
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/slots/label"
+      },
+      "subtitle": {
+        "path": "/slots/start"
+      },
+      "children": [
+        "text"
+      ],
+      "action": {
+        "event": {
+          "name": "meeting.invite",
+          "context": {
+            "date": {
+              "path": "/draft/date"
+            },
+            "slot": {
+              "path": "/slots/start"
+            },
+            "people": {
+              "path": "/draft/people"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/slots/start"
+        },
+        "label": {
+          "path": "/slots/start"
+        }
+      },
+      "id": "card"
+    },
+    {
+      "component": "Text",
+      "text": "This slot is available for a 30-minute meeting.",
+      "id": "text"
+    }
+  ],
+  "surface": {
+    "id": "calendar_schedule",
+    "title": "Find availability",
+    "intent": "calendar.schedule"
+  }
+}

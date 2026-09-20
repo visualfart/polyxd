@@ -1,0 +1,85 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "email": {
+      "path": "/draft/email"
+    },
+    "role": {
+      "path": "/draft/role"
+    }
+  },
+  "root": "form",
+  "components": [
+    {
+      "component": "Form",
+      "children": [
+        "email",
+        "role"
+      ],
+      "submit": {
+        "label": "Send invite",
+        "action": {
+          "event": {
+            "name": "team.invite",
+            "context": {
+              "email": {
+                "path": "/draft/email"
+              },
+              "role": {
+                "path": "/draft/role"
+              }
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "form"
+    },
+    {
+      "component": "TextInput",
+      "key": "email",
+      "label": "Email address",
+      "value": {
+        "path": "/draft/email"
+      },
+      "required": true,
+      "id": "email"
+    },
+    {
+      "component": "Choice",
+      "key": "role",
+      "label": "Select role",
+      "options": [
+        {
+          "value": "admin",
+          "label": "Admin"
+        },
+        {
+          "value": "billing",
+          "label": "Billing manager"
+        },
+        {
+          "value": "viewer",
+          "label": "Viewer"
+        }
+      ],
+      "value": {
+        "path": "/draft/role"
+      },
+      "required": true,
+      "id": "role"
+    }
+  ],
+  "surface": {
+    "id": "invite_billing_manager",
+    "title": "Invite to team",
+    "intent": "team.invite"
+  }
+}
