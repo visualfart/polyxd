@@ -122,7 +122,7 @@ async function build(n: number): Promise<void> {
 async function score(): Promise<void> {
   const key: { id: string; letters: Record<string, string>; earlier: string[] }[] = JSON.parse(await readFile(KEY, "utf8"));
   const now = JSON.parse(await readFile(join(SET, "ranking.json"), "utf8"));
-  let sum = 0, exact = 0, top = 0, n = 0;
+  let sum = 0, exact = 0, top = 0, n = 0, extremes = 0, adjacent = 0;
   for (const k of key) {
     const g = now.groups.find((x: Group) => x.id === k.id);
     if (!g?.humanRank?.length) continue;
@@ -135,11 +135,18 @@ async function score(): Promise<void> {
     n++;
     if (again.every((v: string, i: number) => v === k.earlier[i])) exact++;
     if (again[0] === k.earlier[0]) top++;
+    // Which pairs survive matters more than the whole order: DPO trains on pairs, and a pair the
+    // rater reverses is a pair whose two options they cannot tell apart.
+    const held = (x: string, y: string) => again.indexOf(x) < again.indexOf(y);
+    if (held(k.earlier[0], k.earlier[2])) extremes++;
+    if (held(k.earlier[0], k.earlier[1])) adjacent++;
+    if (held(k.earlier[1], k.earlier[2])) adjacent++;
     const strip = (v: string) => v.slice(k.id.length + 1);
     console.log(`  ${k.id.padEnd(24)} before ${k.earlier.map(strip).join(">")}   again ${again.map(strip).join(">")}   tau ${tau.toFixed(2)}`);
   }
   if (!n) return console.log("no re-ranked groups yet");
   console.log(`\n${n} groups · the designer agrees with himself: tau ${(sum / n).toFixed(2)} · exact ${((exact / n) * 100).toFixed(0)}% · same top pick ${((top / n) * 100).toFixed(0)}%`);
+  console.log(`  of which best-vs-worst held in ${extremes}/${n} and the adjacent pairs in ${adjacent}/${n * 2}: a preference over two options a rater can't tell apart is the noisy half`);
   console.log(`For comparison: two model judges agree with each other at 0.71, and with the designer at 0.10–0.16. Chance is 0.00 / 17% / 33%.`);
 }
 

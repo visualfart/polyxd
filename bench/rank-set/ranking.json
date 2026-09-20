@@ -1,6 +1,6 @@
 {
   "$comment": "A re-rank of groups already ranked, under fresh letters. Measures the designer's agreement with himself.",
-  "rater": "",
+  "rater": "Neel",
   "model": "re-rank",
   "generatedAt": "2026-09-20",
   "groups": [
@@ -12,7 +12,14 @@
         "money-send-alex-b",
         "money-send-alex-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "money-send-alex-b",
+        "money-send-alex-c",
+        "money-send-alex-a"
+      ],
+      "notes": {
+        "money-send-alex-b": "amoun is too small, visual design can be better"
+      }
     },
     {
       "id": "shop-compare-plans",
@@ -22,7 +29,14 @@
         "shop-compare-plans-b",
         "shop-compare-plans-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "shop-compare-plans-c",
+        "shop-compare-plans-a",
+        "shop-compare-plans-b"
+      ],
+      "notes": {
+        "shop-compare-plans-a": "storage missing"
+      }
     },
     {
       "id": "b2b-cancel-subscription",
@@ -32,7 +46,11 @@
         "b2b-cancel-subscription-b",
         "b2b-cancel-subscription-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "b2b-cancel-subscription-c",
+        "b2b-cancel-subscription-b",
+        "b2b-cancel-subscription-a"
+      ]
     },
     {
       "id": "settings-stop-emails",
@@ -42,7 +60,12 @@
         "settings-stop-emails-b",
         "settings-stop-emails-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "settings-stop-emails-a",
+        "settings-stop-emails-c",
+        "settings-stop-emails-b"
+      ],
+      "comment": "remove redundant data"
     },
     {
       "id": "b2b-overdue-money",
@@ -52,7 +75,11 @@
         "b2b-overdue-money-b",
         "b2b-overdue-money-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "b2b-overdue-money-c",
+        "b2b-overdue-money-a",
+        "b2b-overdue-money-b"
+      ]
     },
     {
       "id": "calendar-find-slot",
@@ -62,7 +89,28 @@
         "calendar-find-slot-b",
         "calendar-find-slot-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "calendar-find-slot-c",
+        "calendar-find-slot-a",
+        "calendar-find-slot-b"
+      ],
+      "annotations": {
+        "calendar-find-slot-b": [
+          {
+            "id": "person-a",
+            "component": "TextInput",
+            "note": "not required"
+          },
+          {
+            "id": "person-b",
+            "component": "TextInput",
+            "note": "not required"
+          }
+        ]
+      },
+      "notes": {
+        "calendar-find-slot-b": "why are names input??? that iswrong"
+      }
     }
   ]
 }

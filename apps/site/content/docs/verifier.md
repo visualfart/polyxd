@@ -180,7 +180,20 @@ So the task is reliably judgeable, and models converge on an answer. It is simpl
 
 This is the project's premise, measured rather than asserted: **conventional quality is recoverable from the artefact; taste is not.** A model judge is worth having as a second verifier — it found three real defect classes the static checks missed, and they are checks now — but it cannot stand in for a designer, and neither a faster nor a cheaper judge would change that, because speed was never what was missing.
 
-The open control is on the other side: nobody has measured the designer's agreement with *himself*. A re-rank of groups already ranked would say whether this is a specific taste to learn from or noise to ignore, and that question should be settled before preference training leans on it.
+### The designer agrees with himself as much as the models agree with each other
+
+The control on the other side: six already-ranked groups, shown again under freshly shuffled letters. `npm run rerank -w @polyxd/verifier` builds it, `-- --score` compares the two sittings.
+
+| | tau-b | exact order | same top pick |
+|---|---|---|---|
+| Designer vs himself | **+0.67** | 67% | 67% |
+| Judge A vs judge B | +0.71 | 65% | 83% |
+| Judge vs designer | +0.10 / +0.16 | 22% | 26–30% |
+| Chance | 0 | 17% | 33% |
+
+Two reliable raters, each reproducing itself, measuring different things. That settles it: the rankings are not noise, and the disagreement with models is not a failure of either side — it is the gap the project exists to cross.
+
+**Where the rater flips, the options are equivalent.** The two groups he re-ordered are the two where independent judges also called the candidates near-identical ("near-identical confirm dialogs", "2 and 3 are clean"). That is information, not error: it says those pairs carry no preference. The numbers follow — the best-versus-worst pair survived in 5 of 6 groups, the adjacent pairs in 10 of 12. So preference training should weight a pair by the distance between its members and drop the ones a re-rank reverses, rather than treating all three pairs in a group as equal evidence.
 
 ### The three checks this ranking added
 
