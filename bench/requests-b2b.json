@@ -156,6 +156,20 @@
           "payment.record",
           "Recording a payment without a confirmation"
         ]
+      },
+      "task": {
+        "instruction": "Open invoice INV-2041.",
+        "steps": [
+          {
+            "press": "INV-2041"
+          }
+        ],
+        "expect": {
+          "event": "invoice.open",
+          "context": {
+            "id": "i1"
+          }
+        }
       }
     },
     {
@@ -196,7 +210,21 @@
         "capability": "accounts.remindStart",
         "mustNot": [
           "Sending reminders before the user has seen who they go to"
+        ],
+        "names": [
+          "Review reminders"
         ]
+      },
+      "task": {
+        "instruction": "Start the reminders for the three overdue accounts.",
+        "steps": [
+          {
+            "press": "Review reminders"
+          }
+        ],
+        "expect": {
+          "event": "accounts.remindStart"
+        }
       }
     },
     {
@@ -228,6 +256,9 @@
         "capability": "subscription.cancel",
         "mustNot": [
           "Cancelling without saying what happens to the 48 people using it"
+        ],
+        "names": [
+          "Cancel subscription"
         ]
       },
       "task": {
@@ -290,6 +321,20 @@
         "names": [
           "Send invite"
         ]
+      },
+      "task": {
+        "instruction": "Send the invite to priya@acme.com as a billing manager.",
+        "steps": [
+          {
+            "press": "Send invite"
+          }
+        ],
+        "expect": {
+          "event": "team.invite",
+          "context": {
+            "email": "priya@acme.com"
+          }
+        }
       }
     },
     {
@@ -369,6 +414,9 @@
         ],
         "mustNot": [
           "Changing someone's role without the user asking"
+        ],
+        "names": [
+          "Rhea Mills"
         ]
       }
     },

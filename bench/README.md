@@ -7,10 +7,13 @@ This benchmark tests whether a model can turn a request into a good just-in-time
 | File | What it is |
 |---|---|
 | `registry.json` | One capability registry (`capabilities.schema.json`) covering every request: 58 capabilities with risk levels, input schemas, side effects and flags (`csv-export`, `seat-maps`, `price-alerts`, `reading-import`). Risk levels follow the spec: anything that moves money, notifies other people irreversibly or weakens security is `consequential`, and anything that erases data or can't be refunded is `destructive`. |
-| `requests.json` | 50 single-turn requests (7 per domain, 8 for personal). See below. |
+| `requests.json` | 50 single-turn requests (7 per domain, 8 for personal). See below. Frozen: runs stay comparable across model versions. |
+| `requests-b2b.json` | 8 business requests — records people scan, sort, select and act on in bulk — in the same shape. Kept separate so the 50-request benchmark's numbers don't move when the set grows. |
 | `sequences.json` | 10 multi-turn sequences of 3–5 turns for the same or a related intent, used to measure consistency. |
-| `tasks.json` | Agent tasks for the 20 spec examples, used to test the verifier itself (`npm run verify:examples`). |
-| `gold/` | 30 documents in 10 groups of 3 (a = original, b = mild drift, c = clearly worse), plus `ranking.json` for a designer's ranking. See `gold/README.md`. |
+| `tasks.json` | Agent tasks for the spec examples, used to test the verifier itself (`npm run verify:examples`). |
+| `gold/` | 30 documents in 10 groups of 3 (a = original, b = mild drift, c = clearly worse), plus `ranking.json` for a designer's ranking. Asks whether the verifier agrees with a designer about interfaces *we* wrote. See `gold/README.md`. |
+| `rank-set/` | Three of the model's *own* options per request, for a designer to rank. Asks whether the model's first options are any good. Built by `polyxd_model.rank_set` after a training run. See `rank-set/README.md`. |
+| `results/` | `leaderboard.md` and `leaderboard.json` — every scored run, and the data the research log's charts are drawn from. |
 
 ### A request
 
