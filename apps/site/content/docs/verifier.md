@@ -162,6 +162,26 @@ Three honest numbers about this, measured rather than hoped for:
 
 The length penalty is gone. It existed so that padding a document to satisfy checks wouldn't pay, but it pushed the same way as everything else: on "stop emailing me" the designer ranked the four-toggle version first and the one-toggle version last, and the reward was already biased towards the small one.
 
+### A model judge agrees with other models, not with the designer
+
+If the verifier can't rank honest attempts, can a frontier model? The experiment: 23 groups from both ranking rounds, each candidate rendered at 390 and 1100 px, option letters shuffled per group, judged blind by agents with no access to the designer's ranking — the same screenshots the designer saw. Then the whole thing again with a second, independent judge as a control.
+
+| | tau-b | exact order | same top pick |
+|---|---|---|---|
+| Verifier reward | −0.07 / −0.11 | 0% | — |
+| Judge A vs designer | +0.10 | 22% | 26% |
+| Judge B vs designer | +0.16 | 22% | 30% |
+| **Judge A vs judge B** | **+0.71** | **65%** | **83%** |
+| Chance | 0 | 17% | 33% |
+
+The control is the result. Two judges who never met agree strongly with each other and with the designer at chance — on the 15 groups where they ranked *identically*, agreement with the designer is still only 0.24.
+
+So the task is reliably judgeable, and models converge on an answer. It is simply a different answer. Read the judges' reasons and the split is plain: they rank on defects in the artefact — a binding that renders `[object Object]`, an empty state where data exists, a missing call to action, copy that repeats itself. The designer ranked on which thing should be biggest, what order the page reads in, whether the visual form suits the data, and what the equivalent screen looks like in products he knows.
+
+This is the project's premise, measured rather than asserted: **conventional quality is recoverable from the artefact; taste is not.** A model judge is worth having as a second verifier — it found three real defect classes the static checks missed, and they are checks now — but it cannot stand in for a designer, and neither a faster nor a cheaper judge would change that, because speed was never what was missing.
+
+The open control is on the other side: nobody has measured the designer's agreement with *himself*. A re-rank of groups already ranked would say whether this is a specific taste to learn from or noise to ignore, and that question should be settled before preference training leans on it.
+
 ### The three checks this ranking added
 
 | Check | What it catches | From |
@@ -169,6 +189,14 @@ The length penalty is gone. It existed so that padding a document to satisfy che
 | `data:progress-not-a-fraction` | a progress bar bound to something that isn't a fraction — £40, or a field that isn't there, drawing a bar whose length means nothing | "why show the indicator horizontal bar, it's not useful at all" |
 | `flow:unnamed-commit` | a card that runs a capability above risk `none` when the whole card is clicked: a card opens a thing, a button does a thing | "CTA missing in all" |
 | `copy:empty-description` | a description that is its own label again with filler around it ("Email" → "Receive email alerts") | "the descriptions of each notification are not useful … must not be redundant" |
+
+### The three the model judges added
+
+| Check | What it catches |
+|---|---|
+| `text:template-placeholder` | `{{budget}}` reaching the screen — the model writing a template for an engine that doesn't exist |
+| `data:not-text` | a binding that resolves to an object or a list where text belongs, which renders as `[object Object]`. An input's own `value` is exempt: a multi-select holds a list |
+| `copy:raw-identifier` | `pr_9` shown as a project name when the same record carries `name` right beside it |
 
 ## Consistency
 

@@ -159,6 +159,60 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
     }
   }
 
+  // A template the model has no engine for. "{{budget}}" reaches the screen verbatim.
+  for (const c of order) {
+    for (const [prop, value] of Object.entries(c)) {
+      if (typeof value !== "string") continue;
+      const found = value.match(/\{\{[^}]*\}\}|\$\{[^}]*\}/)?.[0];
+      if (found) out.push({ severity: "error", check: "text:template-placeholder", message: `${c.id}.${prop}: "${found}" is a template placeholder, not text — bind the value instead` });
+    }
+  }
+
+  // A binding that resolves to an object or an array where text belongs prints "[object Object]".
+  const TEXT_BINDINGS: [string, (c: any) => { where: string; path?: string }[]][] = [
+    ["items", (c) => (Array.isArray(c.items) ? c.items.flatMap((i: any, n: number) => [{ where: `items[${n}].value`, path: i.value?.path }]) : [])],
+    ["value", (c) => [{ where: "value", path: c.value?.path }]],
+    ["text", (c) => [{ where: "text", path: c.text?.path }]],
+    ["title", (c) => [{ where: "title", path: c.title?.path }]],
+    ["subtitle", (c) => [{ where: "subtitle", path: c.subtitle?.path }]],
+  ];
+  for (const c of order) {
+    // An input's `value` is its state, not text: a multi-select holds a list, a range holds a pair.
+    if (INPUTS.has(c.component)) continue;
+    for (const [, read] of TEXT_BINDINGS) {
+      for (const { where, path } of read(c)) {
+        if (!path) continue;
+        const value = valueAt(itemScope(doc, c) ?? doc.data, pointerIn(path));
+        if (value !== null && typeof value === "object") {
+          out.push({ severity: "error", check: "data:not-text", message: `${c.id}.${where} reads ${path}, which is ${Array.isArray(value) ? "a list" : "an object"}: it would print as [object Object]` });
+        }
+      }
+    }
+  }
+
+  // An internal id is not a name. "pr_1" tells a person nothing about which project they are
+  // deleting, and the record it came from usually carries the name right next to it.
+  const ID = /^[a-z]{1,4}[-_]?\d+$/i;
+  for (const c of order) {
+    // Same reason: the value an input holds is a key, and a key is allowed to look like one.
+    if (INPUTS.has(c.component)) continue;
+    const scope = itemScope(doc, c) ?? doc.data;
+    const shown: { where: string; path?: string }[] = [
+      ...(Array.isArray(c.items) ? c.items.map((i: any, n: number) => ({ where: `items[${n}]`, path: i.value?.path })) : []),
+      { where: "value", path: c.value?.path },
+      { where: "title", path: c.title?.path },
+    ];
+    for (const { where, path } of shown) {
+      if (!path) continue;
+      const value = valueAt(scope, pointerIn(path));
+      if (typeof value !== "string" || !ID.test(value)) continue;
+      // Only a problem when the same record offers something readable instead.
+      const record = valueAt(scope, pointerIn(path.replace(/\/[^/]+$/, ""))) as any;
+      const better = record && typeof record === "object" ? ["name", "title", "label"].find((k) => typeof record[k] === "string") : undefined;
+      if (better) out.push({ severity: "warning", check: "copy:raw-identifier", message: `${c.id}.${where} shows "${value}", an internal id, where ${path.replace(/\/[^/]+$/, "")}/${better} is a name` });
+    }
+  }
+
   // Action labels should say what happens.
   for (const c of order) {
     const labels: [string, unknown][] = [[c.id, c.component === "Action" ? c.label : undefined], ...["submit", "confirm", "finish"].map((p): [string, unknown] => [`${c.id}.${p}`, c[p]?.label])];
