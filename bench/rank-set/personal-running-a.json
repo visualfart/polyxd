@@ -1,0 +1,123 @@
+{
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "personal_running_stats",
+    "title": "Running Stats",
+    "intent": "personal.running.stats"
+  },
+  "root": {
+    "component": "Section",
+    "title": "Running Summary",
+    "description": "Comparison of this month's running against last month's.",
+    "children": [
+      {
+        "component": "Group",
+        "children": [
+          {
+            "component": "Metric",
+            "label": "This month's distance",
+            "value": {
+              "path": "/thisMonth/km"
+            },
+            "format": {
+              "type": "number",
+              "currency": {
+                "path": "/thisMonth/km"
+              }
+            }
+          },
+          {
+            "component": "Metric",
+            "label": "Last month's distance",
+            "value": {
+              "path": "/lastMonth/km"
+            },
+            "format": {
+              "type": "number",
+              "currency": {
+                "path": "/lastMonth/km"
+              }
+            }
+          },
+          {
+            "component": "Metric",
+            "label": "This month's runs",
+            "value": {
+              "path": "/thisMonth/runs"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "component": "Metric",
+            "label": "Last month's runs",
+            "value": {
+              "path": "/lastMonth/runs"
+            },
+            "format": {
+              "type": "number"
+            }
+          }
+        ]
+      },
+      {
+        "component": "Section",
+        "title": "Weekly Breakdown",
+        "description": "Here is a summary of your recent runs.",
+        "children": [
+          {
+            "component": "Collection",
+            "key": "weekly_runs",
+            "items": {
+              "path": "/weekly",
+              "item": {
+                "component": "Card",
+                "title": {
+                  "path": "/week"
+                },
+                "subtitle": {
+                  "path": "/km"
+                },
+                "children": [
+                  {
+                    "component": "Text",
+                    "text": "Distance run this week"
+                  }
+                ]
+              }
+            },
+            "label": "Recent Runs",
+            "layout": "list"
+          }
+        ]
+      }
+    ]
+  },
+  "data": {
+    "thisMonth": {
+      "km": 64.2,
+      "runs": 11,
+      "avgPace": "5:42 /km"
+    },
+    "lastMonth": {
+      "km": 51.8,
+      "runs": 9,
+      "avgPace": "5:55 /km"
+    },
+    "weekly": [
+      {
+        "week": "1 Sep",
+        "km": 14.1
+      },
+      {
+        "week": "8 Sep",
+        "km": 18.6
+      },
+      {
+        "week": "15 Sep",
+        "km": 21.5
+      }
+    ]
+  }
+}

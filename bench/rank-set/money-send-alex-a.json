@@ -1,39 +1,32 @@
 {
   "specVersion": "0.1.0",
-  "data": {
-    "payees": [
-      {
-        "id": 1,
-        "name": "Alex Kim"
-      },
-      {
-        "id": 2,
-        "name": "Sam Patel"
-      },
-      {
-        "id": 3,
-        "name": "Landlord"
-      }
-    ],
-    "draft": {
-      "recipient": "p1",
-      "amount": 40,
-      "reference": "Concert tickets"
-    },
-    "limits": {
-      "max": 5000,
-      "currency": "GBP"
-    }
+  "surface": {
+    "id": "money_send",
+    "title": "Send money",
+    "intent": "money.send"
   },
-  "root": "card",
-  "components": [
-    {
-      "component": "Card",
-      "title": "Send payment",
-      "subtitle": "Review before sending",
-      "children": [
-        "detaillist"
+  "root": {
+    "component": "Confirm",
+    "title": "Send £40 to Alex Kim?",
+    "message": "Are you sure you want to send £40 to Alex Kim for concert tickets?",
+    "consequence": "This payment will be sent and cannot be undone.",
+    "summary": {
+      "id": "draft",
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "recipient",
+          "label": "Recipient",
+          "value": {
+            "path": "/payees/id"
+          }
+        }
       ],
+      "title": "Payment Details"
+    },
+    "severity": "consequential",
+    "confirm": {
+      "label": "Review payment",
       "action": {
         "event": {
           "name": "transfer.review",
@@ -49,34 +42,40 @@
             }
           }
         }
-      },
-      "progress": {
-        "value": {
-          "path": "/draft/amount"
-        },
-        "label": "Amount to send"
-      },
-      "id": "card"
+      }
     },
-    {
-      "component": "DetailList",
-      "items": [
-        {
-          "key": "recipient",
-          "label": "Recipient",
-          "value": {
-            "path": "/payees/0/name"
-          }
+    "cancel": {
+      "label": "Cancel",
+      "action": {
+        "event": {
+          "name": "ui.dismiss"
         }
-      ],
-      "title": "Payment details",
-      "variant": "receipt",
-      "id": "detaillist"
+      }
     }
-  ],
-  "surface": {
-    "id": "money_send",
-    "title": "Send money",
-    "intent": "money.send"
+  },
+  "data": {
+    "payees": [
+      {
+        "id": "p1",
+        "name": "Alex Kim"
+      },
+      {
+        "id": "p2",
+        "name": "Sam Patel"
+      },
+      {
+        "id": "p3",
+        "name": "Landlord"
+      }
+    ],
+    "draft": {
+      "recipient": "p1",
+      "amount": 40,
+      "reference": "Concert tickets"
+    },
+    "limits": {
+      "max": 5000,
+      "currency": "GBP"
+    }
   }
 }

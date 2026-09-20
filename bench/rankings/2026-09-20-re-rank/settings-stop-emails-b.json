@@ -1,0 +1,43 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "prefs": {
+      "email": true
+    }
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Notification preferences",
+      "description": "Manage how you receive updates",
+      "children": [
+        "email-preference"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Toggle",
+      "key": "email_preference",
+      "label": "Email",
+      "value": {
+        "path": "/prefs/email"
+      },
+      "description": "Receive email alerts",
+      "action": {
+        "event": {
+          "name": "prefs.set",
+          "context": {
+            "email": false
+          }
+        }
+      },
+      "id": "email-preference"
+    }
+  ],
+  "surface": {
+    "id": "settings_notifications",
+    "title": "Notification preferences",
+    "intent": "settings.notifications"
+  }
+}

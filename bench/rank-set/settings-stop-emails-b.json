@@ -1,43 +1,73 @@
 {
   "specVersion": "0.1.0",
-  "data": {
-    "prefs": {
-      "email": true
-    }
-  },
-  "root": "section",
-  "components": [
-    {
-      "component": "Section",
-      "title": "Notification preferences",
-      "description": "Manage how you receive updates",
-      "children": [
-        "email-preference"
-      ],
-      "id": "section"
-    },
-    {
-      "component": "Toggle",
-      "key": "email_preference",
-      "label": "Email",
-      "value": {
-        "path": "/prefs/email"
-      },
-      "description": "Receive email alerts",
-      "action": {
-        "event": {
-          "name": "prefs.set",
-          "context": {
-            "email": false
-          }
-        }
-      },
-      "id": "email-preference"
-    }
-  ],
   "surface": {
     "id": "settings_notifications",
     "title": "Notification preferences",
     "intent": "settings.notifications"
+  },
+  "root": {
+    "component": "Section",
+    "title": "Notification preferences",
+    "description": "Manage how you receive alerts.",
+    "children": [
+      {
+        "component": "Toggle",
+        "key": "email_notification",
+        "label": "Email",
+        "value": {
+          "path": "/prefs/email"
+        },
+        "description": "Receive emails about your account activity.",
+        "action": {
+          "event": {
+            "name": "prefs.set",
+            "context": {
+              "email": false
+            }
+          }
+        }
+      },
+      {
+        "component": "Toggle",
+        "key": "push_notification",
+        "label": "Push",
+        "value": {
+          "path": "/prefs/push"
+        },
+        "description": "Receive alerts via push notifications.",
+        "action": {
+          "event": {
+            "name": "prefs.set",
+            "context": {
+              "push": false
+            }
+          }
+        }
+      },
+      {
+        "component": "Toggle",
+        "key": "sms_notification",
+        "label": "SMS",
+        "value": {
+          "path": "/prefs/sms"
+        },
+        "description": "Receive alerts via SMS.",
+        "action": {
+          "event": {
+            "name": "prefs.set",
+            "context": {
+              "sms": false
+            }
+          }
+        }
+      }
+    ]
+  },
+  "data": {
+    "prefs": {
+      "push": true,
+      "email": true,
+      "sms": false
+    }
   }
 }

@@ -6,6 +6,7 @@
  * npm run score -w @polyxd/verifier -- ../../model/runs/Qwen3.5-4B-4bit
  */
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { checkSet } from "../src/checkset.ts";
 import { join, resolve } from "node:path";
 import { validateDocument, flattenTree, isTree, directionRules } from "@polyxd/spec";
 import { evaluateRules } from "@polyxd/spec/patterns";
@@ -143,5 +144,7 @@ const summary = {
   medianTps: median(rows.map((r) => r.tps)),
   consistency: Object.fromEntries(["sequences", "sequences-nomem"].map((k) => [k, seqRows.filter((s) => s.kind === k).length ? +(seqRows.filter((s) => s.kind === k).reduce((a, s) => a + s.consistency, 0) / seqRows.filter((s) => s.kind === k).length).toFixed(3) : null])),
 };
-writeFileSync(join(runDir, "summary.json"), JSON.stringify({ summary, rows, sequences: seqRows }, null, 2));
+// The checks a score was produced under travel with it: a number from a different set is not
+// comparable, and looks identical if nobody writes it down.
+writeFileSync(join(runDir, "summary.json"), JSON.stringify({ summary, checkSet: checkSet(), rows, sequences: seqRows }, null, 2));
 console.log("\n" + JSON.stringify(summary, null, 2));

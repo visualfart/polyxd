@@ -1,98 +1,56 @@
 {
   "specVersion": "0.1.0",
+  "surface": {
+    "id": "settings_notifications",
+    "title": "Notification preferences",
+    "intent": "settings.notifications"
+  },
+  "root": {
+    "component": "Section",
+    "title": "Notification preferences",
+    "description": "Manage how you receive alerts.",
+    "children": [
+      {
+        "component": "Toggle",
+        "key": "email_notifications",
+        "label": "Email",
+        "value": {
+          "path": "/prefs/email"
+        },
+        "description": "Turn off email alerts",
+        "action": {
+          "event": {
+            "name": "prefs.set",
+            "context": {
+              "email": false
+            }
+          }
+        }
+      },
+      {
+        "component": "Toggle",
+        "key": "push_notifications",
+        "label": "Push",
+        "value": {
+          "path": "/prefs/push"
+        },
+        "description": "Turn off push alerts",
+        "action": {
+          "event": {
+            "name": "prefs.set",
+            "context": {
+              "push": false
+            }
+          }
+        }
+      }
+    ]
+  },
   "data": {
     "prefs": {
       "push": true,
       "email": true,
       "sms": false
     }
-  },
-  "root": "section",
-  "components": [
-    {
-      "component": "Section",
-      "title": "Notification preferences",
-      "description": "Manage how you receive updates",
-      "children": [
-        "email-toggle",
-        "push-toggle",
-        "sms-toggle",
-        "action"
-      ],
-      "id": "section"
-    },
-    {
-      "component": "Toggle",
-      "key": "email_toggle",
-      "label": "Email",
-      "value": {
-        "path": "/prefs/email"
-      },
-      "description": "Receive email alerts",
-      "action": {
-        "event": {
-          "name": "prefs.set",
-          "context": {
-            "email": false
-          }
-        }
-      },
-      "id": "email-toggle"
-    },
-    {
-      "component": "Toggle",
-      "key": "push_toggle",
-      "label": "Push",
-      "value": {
-        "path": "/prefs/push"
-      },
-      "description": "Receive push alerts",
-      "action": {
-        "event": {
-          "name": "prefs.set",
-          "context": {
-            "push": true
-          }
-        }
-      },
-      "id": "push-toggle"
-    },
-    {
-      "component": "Toggle",
-      "key": "sms_toggle",
-      "label": "SMS",
-      "value": {
-        "path": "/prefs/sms"
-      },
-      "description": "Receive SMS alerts",
-      "action": {
-        "event": {
-          "name": "prefs.set",
-          "context": {
-            "sms": false
-          }
-        }
-      },
-      "id": "sms-toggle"
-    },
-    {
-      "component": "Action",
-      "label": "Email",
-      "action": {
-        "event": {
-          "name": "prefs.set",
-          "context": {
-            "email": false
-          }
-        }
-      },
-      "emphasis": "primary",
-      "id": "action"
-    }
-  ],
-  "surface": {
-    "id": "settings_notifications",
-    "title": "Notification preferences",
-    "intent": "settings.notifications"
   }
 }

@@ -1,77 +1,103 @@
 {
   "specVersion": "0.1.0",
-  "data": {
-    "slots": [
-      {}
-    ]
+  "surface": {
+    "id": "calendar_schedule",
+    "title": "Find availability",
+    "intent": "calendar.schedule"
   },
-  "root": "collection",
-  "components": [
-    {
-      "component": "Collection",
-      "items": {
-        "path": "/slots_items",
-        "componentId": "slot_item"
+  "root": {
+    "component": "Section",
+    "title": "Find availability",
+    "description": "Please confirm the details for the meeting.",
+    "children": [
+      {
+        "component": "Collection",
+        "key": "available_slots",
+        "items": {
+          "path": "/slots",
+          "item": {
+            "component": "Card",
+            "title": {
+              "path": "/slots[*]/label"
+            },
+            "subtitle": {
+              "path": "/slots[*]/start"
+            },
+            "children": [
+              {
+                "component": "Text",
+                "text": "Available slots found."
+              }
+            ]
+          }
+        },
+        "label": "Available timeslots",
+        "empty": {
+          "component": "Status",
+          "kind": "empty",
+          "title": "No slots found",
+          "message": "Please check back later."
+        }
       },
-      "label": "Available timeslots",
-      "empty": "status",
-      "id": "collection"
-    },
-    {
-      "component": "Status",
-      "kind": "empty",
-      "title": "No slots found",
-      "message": "Please check back later or adjust your search criteria.",
-      "id": "status"
-    },
-    {
-      "id": "slot_item",
-      "component": "Card",
-      "title": {
-        "path": "/slots/label"
-      },
-      "subtitle": {
-        "path": "/slots/start"
-      },
-      "children": [
-        "text"
-      ],
-      "action": {
-        "event": {
-          "name": "meeting.invite",
-          "context": {
-            "date": {
+      {
+        "component": "Group",
+        "children": [
+          {
+            "component": "TextInput",
+            "key": "date_str",
+            "label": "Date",
+            "value": {
               "path": "/draft/date"
             },
-            "slot": {
-              "path": "/slots/start"
-            },
-            "people": {
+            "kind": "text",
+            "required": true
+          },
+          {
+            "component": "TextInput",
+            "key": "attendee_str",
+            "label": "Invitees",
+            "value": {
               "path": "/draft/people"
-            }
+            },
+            "kind": "text",
+            "required": true
           }
-        }
-      },
-      "progress": {
-        "value": {
-          "path": "/slots/start"
-        },
-        "label": {
-          "path": "/slots/label"
-        }
+        ]
       }
+    ]
+  },
+  "data": {
+    "draft": {
+      "date": "2026-09-22",
+      "slot": null,
+      "people": [
+        "c1",
+        "c2"
+      ]
     },
-    {
-      "component": "Text",
-      "text": {
-        "path": "/slots/label"
+    "slots": [
+      {
+        "start": "09:30",
+        "label": "9:30–10:00"
       },
-      "id": "text"
-    }
-  ],
-  "surface": {
-    "id": "calendar_scheduling",
-    "title": "Schedule meeting",
-    "intent": "calendar.schedule"
+      {
+        "start": "13:00",
+        "label": "13:00–13:30"
+      },
+      {
+        "start": "16:00",
+        "label": "16:00–16:30"
+      }
+    ],
+    "contacts": [
+      {
+        "id": "c1",
+        "name": "Priya"
+      },
+      {
+        "id": "c2",
+        "name": "Tom"
+      }
+    ]
   }
 }

@@ -1,98 +1,56 @@
 {
   "specVersion": "0.1.0",
+  "surface": {
+    "id": "settings_notifications",
+    "title": "Notification preferences",
+    "intent": "settings.notifications"
+  },
+  "root": {
+    "component": "Section",
+    "title": "Notification preferences",
+    "description": "Manage how you receive alerts.",
+    "children": [
+      {
+        "component": "Toggle",
+        "key": "email_notification_setting",
+        "label": "Email",
+        "value": {
+          "path": "/prefs/email"
+        },
+        "description": "Turn off email alerts for this account.",
+        "action": {
+          "event": {
+            "name": "prefs.set",
+            "context": {
+              "email": false
+            }
+          }
+        }
+      },
+      {
+        "component": "Toggle",
+        "key": "push_notification_setting",
+        "label": "Push",
+        "value": {
+          "path": "/prefs/push"
+        },
+        "description": "Turn off push alerts for this account.",
+        "action": {
+          "event": {
+            "name": "prefs.set",
+            "context": {
+              "push": false
+            }
+          }
+        }
+      }
+    ]
+  },
   "data": {
     "prefs": {
       "push": true,
       "email": true,
       "sms": false
     }
-  },
-  "root": "section",
-  "components": [
-    {
-      "component": "Section",
-      "title": "Notification preferences",
-      "description": "Manage your notification preferences",
-      "children": [
-        "email",
-        "push",
-        "sms",
-        "action"
-      ],
-      "id": "section"
-    },
-    {
-      "component": "Toggle",
-      "key": "email",
-      "label": "Email",
-      "value": {
-        "path": "/prefs/email"
-      },
-      "description": "Receive email alerts for important activity",
-      "action": {
-        "event": {
-          "name": "prefs.set",
-          "context": {
-            "email": false
-          }
-        }
-      },
-      "id": "email"
-    },
-    {
-      "component": "Toggle",
-      "key": "push",
-      "label": "Push",
-      "value": {
-        "path": "/prefs/push"
-      },
-      "description": "Receive push alerts for important activity",
-      "action": {
-        "event": {
-          "name": "prefs.set",
-          "context": {
-            "push": true
-          }
-        }
-      },
-      "id": "push"
-    },
-    {
-      "component": "Toggle",
-      "key": "sms",
-      "label": "SMS",
-      "value": {
-        "path": "/prefs/sms"
-      },
-      "description": "Receive SMS alerts for important activity",
-      "action": {
-        "event": {
-          "name": "prefs.set",
-          "context": {
-            "sms": false
-          }
-        }
-      },
-      "id": "sms"
-    },
-    {
-      "component": "Action",
-      "label": "Email",
-      "action": {
-        "event": {
-          "name": "prefs.set",
-          "context": {
-            "email": false
-          }
-        }
-      },
-      "emphasis": "primary",
-      "id": "action"
-    }
-  ],
-  "surface": {
-    "id": "settings_notifications",
-    "title": "Notification preferences",
-    "intent": "settings.notifications"
   }
 }

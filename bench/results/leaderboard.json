@@ -9,7 +9,7 @@
     {
       "run": "gemma-4-e4b-it-4bit+sft-v2-tree-constrained",
       "valid": 100,
-      "score": 79,
+      "score": 78,
       "tasks": 16,
       "taskTotal": 37,
       "expectations": 56,
@@ -17,30 +17,6 @@
       "latency": 4.148,
       "ttft": 0.862,
       "tps": 56.1
-    },
-    {
-      "run": "gemma-4-e4b-it-4bit+sft-v1 (score-only selection)",
-      "valid": 100,
-      "score": 76,
-      "tasks": 10,
-      "taskTotal": 37,
-      "expectations": 42,
-      "direction": null,
-      "latency": 3.41,
-      "ttft": 0.862,
-      "tps": 56.2
-    },
-    {
-      "run": "gemma-4-e4b-it-4bit+sft-v3-tree-constrained",
-      "valid": 100,
-      "score": 76,
-      "tasks": 14,
-      "taskTotal": 37,
-      "expectations": 61,
-      "direction": 96,
-      "latency": 4.998,
-      "ttft": 1.006,
-      "tps": 55.4
     },
     {
       "run": "gemma-4-e4b-sft-v2-fused-q6-tree-constrained",
@@ -67,6 +43,18 @@
       "tps": 47.3
     },
     {
+      "run": "gemma-4-e4b-it-4bit+sft-v1-tree-constrained",
+      "valid": 98,
+      "score": 74,
+      "tasks": 10,
+      "taskTotal": 37,
+      "expectations": 42,
+      "direction": 96,
+      "latency": 3.41,
+      "ttft": 0.862,
+      "tps": 56.2
+    },
+    {
       "run": "gemma-4-e4b-sft-v2-fused-tree-constrained",
       "valid": 100,
       "score": 74,
@@ -79,13 +67,25 @@
       "tps": 76.1
     },
     {
-      "run": "gemma-4-e4b-it-4bit-tree-constrained",
+      "run": "gemma-4-e4b-it-4bit+rl-1-tree-constrained",
       "valid": 98,
-      "score": 71,
+      "score": 69,
+      "tasks": 14,
+      "taskTotal": 37,
+      "expectations": 53,
+      "direction": 96,
+      "latency": 4.222,
+      "ttft": 1.022,
+      "tps": 55.7
+    },
+    {
+      "run": "gemma-4-e4b-it-4bit-tree-constrained",
+      "valid": 96,
+      "score": 68,
       "tasks": 14,
       "taskTotal": 37,
       "expectations": 64,
-      "direction": null,
+      "direction": 93,
       "latency": 3.477,
       "ttft": 0.928,
       "tps": 74.2
@@ -101,6 +101,18 @@
       "latency": 6.585,
       "ttft": 2.378,
       "tps": 54
+    },
+    {
+      "run": "gemma-4-e4b-it-4bit+sft-v3-tree-constrained",
+      "valid": 98,
+      "score": 64,
+      "tasks": 14,
+      "taskTotal": 37,
+      "expectations": 61,
+      "direction": 96,
+      "latency": 4.998,
+      "ttft": 1.006,
+      "tps": 55.4
     },
     {
       "run": "Qwen3.5-4B-4bit-tree-constrained",
@@ -175,7 +187,7 @@
       60,
       100,
       100,
-      36,
+      16,
       36,
       60,
       100,
@@ -194,25 +206,25 @@
       100,
       100,
       100,
-      100,
+      96,
       56,
       100,
       100,
       56,
       56,
-      36,
+      16,
       96,
       100,
       60,
       60,
       100,
       56,
-      100,
+      80,
       56,
       60,
       100,
       76,
-      76,
+      56,
       56,
       100,
       56
@@ -236,7 +248,7 @@
       },
       {
         "name": "Other",
-        "count": 4
+        "count": 9
       },
       {
         "name": "Accessibility",

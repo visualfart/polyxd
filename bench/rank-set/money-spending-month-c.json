@@ -1,0 +1,85 @@
+{
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "money_spending_summary",
+    "title": "Spending summary",
+    "intent": "money.spending.summary"
+  },
+  "root": {
+    "component": "Section",
+    "title": "This month's spending",
+    "description": "Here is a summary of your payments for September 2026.",
+    "children": [
+      {
+        "component": "Metric",
+        "label": "Total spent",
+        "value": {
+          "path": "/spent"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "change": {
+          "value": {
+            "path": "/lastMonth"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          },
+          "favorable": "none"
+        }
+      }
+    ]
+  },
+  "data": {
+    "period": "September 2026",
+    "currency": "GBP",
+    "spent": 1843.2,
+    "budget": 2200,
+    "lastMonth": 1978.5,
+    "byCategory": [
+      {
+        "category": "Rent",
+        "amount": 950
+      },
+      {
+        "category": "Groceries",
+        "amount": 312.4
+      },
+      {
+        "category": "Eating out",
+        "amount": 221.8
+      },
+      {
+        "category": "Transport",
+        "amount": 148
+      },
+      {
+        "category": "Other",
+        "amount": 211
+      }
+    ],
+    "recent": [
+      {
+        "id": "t31",
+        "merchant": "Tesco",
+        "amount": -42.18,
+        "date": "2026-09-18"
+      },
+      {
+        "id": "t30",
+        "merchant": "TfL",
+        "amount": -8.4,
+        "date": "2026-09-18"
+      },
+      {
+        "id": "t29",
+        "merchant": "Dishoom",
+        "amount": -63.5,
+        "date": "2026-09-17"
+      }
+    ]
+  }
+}

@@ -1,7 +1,55 @@
 {
   "specVersion": "0.1.0",
+  "surface": {
+    "id": "commerce_plan_choose",
+    "title": "Which plan should I get?",
+    "intent": "commerce.plan.choose"
+  },
+  "root": {
+    "component": "Comparison",
+    "items": {
+      "path": "/plans"
+    },
+    "itemTitle": "Plan Details",
+    "attributes": [
+      {
+        "key": "name",
+        "label": "Plan Name",
+        "path": "/name"
+      },
+      {
+        "key": "price",
+        "label": "Price",
+        "path": "/price",
+        "format": {
+          "type": "currency",
+          "currency": "USD"
+        }
+      },
+      {
+        "key": "storage",
+        "label": "Storage",
+        "path": "/storage",
+        "format": {
+          "type": "number"
+        }
+      }
+    ],
+    "choose": {
+      "label": "Choose",
+      "action": {
+        "event": {
+          "name": "plan.select",
+          "context": {
+            "plan": {
+              "path": "/id"
+            }
+          }
+        }
+      }
+    }
+  },
   "data": {
-    "current": "basic",
     "plans": [
       {
         "id": "basic",
@@ -25,51 +73,5 @@
         "support": "Priority"
       }
     ]
-  },
-  "root": "comparison",
-  "components": [
-    {
-      "component": "Comparison",
-      "items": {
-        "path": "/plans"
-      },
-      "itemTitle": "Plan Details",
-      "attributes": [
-        {
-          "key": "name",
-          "label": "Plan Name",
-          "path": "/name"
-        },
-        {
-          "key": "storage",
-          "label": "Storage Available",
-          "path": "/storage",
-          "format": {
-            "type": "number"
-          }
-        }
-      ],
-      "choose": {
-        "label": "Choose",
-        "action": {
-          "event": {
-            "name": "plan.select",
-            "context": {
-              "plan": {
-                "path": "/id"
-              }
-            }
-          }
-        }
-      },
-      "summary": "Which plan matches your needs?",
-      "recommendedReason": "If you need more storage, Plus or Pro are options.",
-      "id": "comparison"
-    }
-  ],
-  "surface": {
-    "id": "plan_choice",
-    "title": "Which plan should I get?",
-    "intent": "commerce.plan.choose"
   }
 }

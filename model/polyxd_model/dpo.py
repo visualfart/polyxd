@@ -84,8 +84,18 @@ def build(min_weight: int = 1) -> None:
     reversed_pairs: set[tuple[str, str]] = set()
     if key_path.exists():
         key = json.loads(key_path.read_text())
-        current = BENCH / "rank-set" / "ranking.json"
-        again = {g["id"]: g for g in json.loads(current.read_text())["groups"]} if current.exists() else {}
+        # The re-rank may still be in bench/rank-set or may have been archived by a later round.
+        # Losing track of it would silently stop any pair from being dropped, which looks like
+        # agreement rather than like a missing file.
+        again: dict = {}
+        candidates = [BENCH / "rank-set" / "ranking.json", *sorted(RANKINGS.glob("*/ranking.json"))]
+        for path in candidates:
+            if not path.exists():
+                continue
+            parsed = json.loads(path.read_text())
+            if parsed.get("model") == "re-rank" and any(g.get("humanRank") for g in parsed.get("groups", [])):
+                again = {g["id"]: g for g in parsed["groups"]}
+                break
         for k in key:
             group = again.get(k["id"])
             if not group or not group.get("humanRank"):

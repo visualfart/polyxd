@@ -1,6 +1,89 @@
 {
   "specVersion": "0.1.0",
+  "surface": {
+    "id": "calendar_schedule",
+    "title": "Find availability",
+    "intent": "calendar.schedule"
+  },
+  "root": {
+    "component": "Section",
+    "title": "Find availability",
+    "description": "Please confirm the details for the meeting.",
+    "children": [
+      {
+        "component": "TextInput",
+        "key": "date_str",
+        "label": "Date",
+        "value": {
+          "path": "/draft/date"
+        },
+        "kind": "text",
+        "required": true
+      },
+      {
+        "component": "TextInput",
+        "key": "duration_str",
+        "label": "Duration",
+        "value": {
+          "path": "/draft/duration"
+        },
+        "kind": "text",
+        "required": true
+      },
+      {
+        "component": "Collection",
+        "items": {
+          "path": "/slots",
+          "item": {
+            "component": "Card",
+            "title": {
+              "path": "/slots[*]/label"
+            },
+            "subtitle": {
+              "path": "/slots[*]/start"
+            },
+            "action": {
+              "event": {
+                "name": "meeting.invite",
+                "context": {
+                  "date": {
+                    "path": "/draft/date"
+                  },
+                  "slot": {
+                    "path": "/slots[*]/start"
+                  },
+                  "people": {
+                    "path": "/draft/people"
+                  }
+                }
+              }
+            },
+            "progress": {
+              "value": {
+                "path": "/slots[*]/value"
+              }
+            }
+          }
+        },
+        "label": "Available slots",
+        "empty": {
+          "component": "Status",
+          "kind": "info",
+          "title": "No slots found",
+          "message": "No available slots found for this date."
+        }
+      }
+    ]
+  },
   "data": {
+    "draft": {
+      "date": "2026-09-22",
+      "slot": null,
+      "people": [
+        "c1",
+        "c2"
+      ]
+    },
     "slots": [
       {
         "start": "09:30",
@@ -17,77 +100,13 @@
     ],
     "contacts": [
       {
-        "id": 1,
+        "id": "c1",
         "name": "Priya"
       },
       {
-        "id": 2,
+        "id": "c2",
         "name": "Tom"
       }
-    ],
-    "draft": {
-      "date": "2026-09-22",
-      "slot": null,
-      "people": [
-        "c1",
-        "c2"
-      ]
-    }
-  },
-  "root": "section",
-  "components": [
-    {
-      "component": "Section",
-      "title": "Schedule meeting",
-      "description": "Find a 30-minute slot for Tom and Priya on Tuesday",
-      "children": [
-        "group"
-      ],
-      "id": "section"
-    },
-    {
-      "component": "Group",
-      "children": [
-        "date-input",
-        "person-a",
-        "person-b"
-      ],
-      "label": "Details",
-      "arrangement": "inline",
-      "id": "group"
-    },
-    {
-      "component": "TextInput",
-      "key": "date_input",
-      "label": "Date",
-      "value": {
-        "path": "/draft/date"
-      },
-      "required": true,
-      "id": "date-input"
-    },
-    {
-      "component": "TextInput",
-      "key": "person_a",
-      "label": "Tom",
-      "value": {
-        "path": "/contacts/1/name"
-      },
-      "id": "person-a"
-    },
-    {
-      "component": "TextInput",
-      "key": "person_b",
-      "label": "Priya",
-      "value": {
-        "path": "/contacts/2/name"
-      },
-      "id": "person-b"
-    }
-  ],
-  "surface": {
-    "id": "calendar_scheduling",
-    "title": "Find availability",
-    "intent": "calendar.schedule"
+    ]
   }
 }
