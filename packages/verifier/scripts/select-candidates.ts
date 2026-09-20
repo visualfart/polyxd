@@ -72,7 +72,7 @@ try {
       let scored: { score: number; reward: number };
       try {
         scored = values.reward
-          ? await rewardFor(flat, browser, offered, { registry: hostRegistry(offered) })
+          ? await rewardFor(flat, browser, offered, { registry: hostRegistry(offered) }, 0, scenario.expect)
           : { score: (await verifyDocument(flat, { browser, registry: hostRegistry(offered), themes: ["material3"], modes: ["light"], widths: [390] })).score, reward: 0 };
       } catch (e) {
         console.log(`  !  ${scenario.id}: could not be scored (${(e as Error).message.split("\n")[0]})`);

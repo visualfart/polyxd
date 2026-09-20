@@ -132,7 +132,35 @@ That number is the most useful result the verifier has produced, because of *how
 - **It rewards a document for being small.** On "stop emailing me", the verifier's favourite has one toggle and the designer's has four: the one-toggle version can't trip the ambiguous-name check, has fewer inputs and doesn't attempt the job. The designer ranked it last, because "stop emailing me" is a question about which emails.
 - **A document that doesn't attempt the task can't make mistakes.** On "find 30 minutes with Tom and Priya", the two options that tried to send the invitation now carry an error for doing it from a card click; the option that does nothing at all scores 96 and comes top. The designer ranked that one last.
 
-None of this means the checks are wrong — the three added from this ranking each catch something real (see below). It means the score is a **floor**, not a ranking: it answers *is this correct, accessible and operable by an agent*, and it has no term at all for *does this do the job it was asked to do*. Those are two numbers, and flattening them into one makes both worse. Taste is the ranking's job, and the ranking is preference data for training, not a check.
+None of this means the checks are wrong — the three added from this ranking each catch something real (see below). It means the score is a **floor**, not a ranking: it answers *is this correct, accessible and operable by an agent*, and it has no term at all for *does this do the job it was asked to do*. Those are two numbers, and flattening them into one makes both worse.
+
+### It measures damage, not quality
+
+The same designer also ranked the hand-made gold set — thirty documents in ten groups of *original*, *mild drift* and *clearly worse*. There the verifier agrees: **50% exact order, mean tau-b +0.63**.
+
+So the verifier is reliable at "is this a degraded version of a good interface" and has nothing to say about "which of these three honest attempts is best". That second case is the one that matters for training, because expert iteration is exactly a choice between honest attempts.
+
+### What the reward does about it
+
+The reward, not the score, is what picks which candidates the model trains on (`--reward` measures that instead). It now reads what the bench already declares per request — the capability an answer has to wire, and the control the task presses by name — as a **coverage** term, and coverage multiplies rather than adds:
+
+```
+reward = score × (0.2 + 0.8 × coverage) + 20 if an agent could act
+```
+
+Multiplying matters. On "find 30 minutes with Tom and Priya", the candidate that attempted nothing scored 96 and the two that tried to send the invitation scored 56, because trying earned them two errors. Adding a coverage bonus left the empty one ahead; multiplying puts it last, which is where the designer put it.
+
+Three honest numbers about this, measured rather than hoped for:
+
+| Reward shape | tau-b on the model's own options |
+|---|---|
+| score alone | −0.29 |
+| score + coverage bonus (any additive weight tried) | −0.16 |
+| score × coverage (shipped) | −0.07 |
+
+**Coverage separates the candidates in 1 of 12 groups.** In ten of the twelve, all three candidates cover 100% of what the request asked for and the term is silent. So coverage is a gate, not a ranker: it catches the surface that attempted nothing — a real failure mode that expert iteration would otherwise reward — and adds no ordering signal beyond that. Nothing computable that we have separates honest attempts, which is why taste has to be learned from preferences rather than checked.
+
+The length penalty is gone. It existed so that padding a document to satisfy checks wouldn't pay, but it pushed the same way as everything else: on "stop emailing me" the designer ranked the four-toggle version first and the one-toggle version last, and the reward was already biased towards the small one.
 
 ### The three checks this ranking added
 

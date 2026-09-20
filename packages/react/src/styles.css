@@ -566,8 +566,14 @@
   gap: var(--pxd-space-stack-tight);
 }
 .pxd-required {
+  margin-inline-start: 0.125em;
   font-weight: 400;
+  color: var(--pxd-color-status-danger-emphasis);
+}
+.pxd-required-legend {
+  margin: 0;
   color: var(--pxd-color-text-muted);
+  font-size: var(--pxd-type-body-small-size);
 }
 .pxd-input {
   width: 100%;

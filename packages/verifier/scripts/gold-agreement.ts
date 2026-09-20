@@ -5,19 +5,34 @@
  * group's variants by score, and — when the set's ranking.json has humanRank filled in — reports
  * how often the verifier's ordering matches the designer's, and the mean Kendall tau-b.
  *
- *   npm run gold -w @polyxd/verifier              the hand-made gold set (bench/gold)
- *   npm run gold -w @polyxd/verifier -- --model   the model's own options (bench/rank-set)
+ *   npm run gold -w @polyxd/verifier               the hand-made gold set (bench/gold)
+ *   npm run gold -w @polyxd/verifier -- --model    the model's own options (bench/rank-set)
+ *   npm run gold -w @polyxd/verifier -- --reward   rank by the training reward, not the score
+ *
+ * --reward is the one that matters for training: the reward is what picks which candidates the
+ * model learns from, so it is the thing whose agreement with a designer is worth knowing. The
+ * score is a floor — correct, accessible, operable — and was never meant to rank taste.
  */
 import { readFileSync } from "node:fs";
-import { launch, verifyDocument, type Report } from "../src/index.ts";
+import { launch, rewardFor, verifyDocument, type Report, type RequestExpectation } from "../src/index.ts";
 
 const SET = process.argv.includes("--model") ? "rank-set" : "gold";
+const BY_REWARD = process.argv.includes("--reward");
 const GOLD = new URL(`../../../bench/${SET}/`, import.meta.url);
 const registry = JSON.parse(readFileSync(new URL("../../spec/examples/registry/capabilities.json", import.meta.url), "utf8"));
 const ranking: { groups: { id: string; variants: string[]; humanRank: string[] | null }[] } = JSON.parse(
   readFileSync(new URL("ranking.json", GOLD), "utf8"),
 );
 const MATRIX = { themes: ["material3", "carbon", "antd"], modes: ["light" as const], widths: [390, 1100] };
+
+/** What the bench says each request needs, by request id — the rank set's groups share those ids. */
+const BENCH: Record<string, { capabilities?: string[]; expect?: RequestExpectation }> = Object.fromEntries(
+  ["requests.json", "requests-b2b.json"].flatMap((file) => {
+    const parsed = JSON.parse(readFileSync(new URL(`../../../bench/${file}`, import.meta.url), "utf8"));
+    const list = Array.isArray(parsed) ? parsed : (parsed.requests ?? []);
+    return list.map((r: any) => [r.id, { capabilities: r.capabilities, expect: r.expect }]);
+  }),
+);
 
 /** Kendall tau-b between two rankings given as maps item → position (lower is better; equal = tie). */
 export function kendallTauB(x: Map<string, number>, y: Map<string, number>): number {
@@ -52,21 +67,28 @@ const resolve = (group: { variants: string[] }, name: string) => group.variants.
 
 const browser = await launch();
 const reports = new Map<string, Report>();
+const rewards = new Map<string, { reward: number; coverage: number; missing: string[]; actionable: boolean }>();
 try {
   for (const g of ranking.groups) {
+    const bench = BENCH[g.id];
     for (const v of g.variants) {
       const doc = JSON.parse(readFileSync(new URL(`${v}.json`, GOLD), "utf8"));
       reports.set(v, await verifyDocument(doc, { ...MATRIX, browser, registry }));
+      if (BY_REWARD) rewards.set(v, await rewardFor(doc, browser, bench?.capabilities ?? [], { registry }, 0, bench?.expect));
     }
   }
 } finally {
   await browser.close();
 }
+if (BY_REWARD) {
+  const unknown = ranking.groups.filter((g) => !BENCH[g.id]).map((g) => g.id);
+  if (unknown.length) console.log(`No bench request for ${unknown.join(", ")}: those groups fall back to wiring.\n`);
+}
 
 const rows: { id: string; order: string; tau?: number; match?: boolean }[] = [];
 let intended = 0;
 for (const g of ranking.groups) {
-  const scores = new Map(g.variants.map((v) => [v, reports.get(v)!.score]));
+  const scores = new Map(g.variants.map((v) => [v, BY_REWARD ? Math.round(rewards.get(v)!.reward) : reports.get(v)!.score]));
   const verifier = positionsFromScores(scores);
   const sorted = [...g.variants].sort((a, b) => scores.get(b)! - scores.get(a)!);
   const order = sorted.map((v, i) => `${v.slice(g.id.length + 1)} (${scores.get(v)})${i < sorted.length - 1 ? (scores.get(v) === scores.get(sorted[i + 1]) ? " = " : " > ") : ""}`).join("");
@@ -79,7 +101,7 @@ for (const g of ranking.groups) {
   }
 }
 
-console.log(`Verifier ranking (score, ${MATRIX.themes.length} themes × light × ${MATRIX.widths.join("/")} px):\n`);
+console.log(`Verifier ranking (${BY_REWARD ? "training reward" : "score"}, ${MATRIX.themes.length} themes × light × ${MATRIX.widths.join("/")} px):\n`);
 for (const r of rows) {
   const human = ranking.groups.find((g) => g.id === r.id)!.humanRank;
   const extra = r.tau === undefined ? "" : `   human: ${human!.join(" > ")}   tau ${r.tau.toFixed(2)}${r.match ? "" : "   (disagrees)"}`;
@@ -87,7 +109,10 @@ for (const r of rows) {
   for (const v of ranking.groups.find((g) => g.id === r.id)!.variants) {
     const rep = reports.get(v)!;
     const checks = [...new Set([...rep.static, ...rep.targets.flatMap((t) => t.findings)].map((f) => `${f.severity}:${f.check}`))];
-    if (checks.length) console.log(`      ${v}: ${checks.join(", ")}`);
+    const r = rewards.get(v);
+    const missing = r ? [`coverage ${(r.coverage * 100).toFixed(0)}%`, ...(r.actionable ? [] : ["not actionable"]), ...r.missing.map((m) => `no ${m}`)] : [];
+    const parts = [...missing, ...checks];
+    if (parts.length) console.log(`      ${v}: ${parts.join(", ")}`);
   }
 }
 // The hand-made set has an intended order (a better than b better than c); the model's own

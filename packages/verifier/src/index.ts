@@ -4,4 +4,4 @@ export { axeAudit, layoutAudit, type Finding } from "./rendered.ts";
 export { runTask, type Task, type Step, type AgentResult } from "./agent.ts";
 export { compare, signature, type Consistency } from "./consistency.ts";
 export { launch, renderPage, type RenderTarget } from "./browser.ts";
-export { rewardFor, wiredCapabilities, probeActionable, type Reward } from "./reward.ts";
+export { rewardFor, wiredCapabilities, probeActionable, coverageOf, type Reward, type RequestExpectation } from "./reward.ts";

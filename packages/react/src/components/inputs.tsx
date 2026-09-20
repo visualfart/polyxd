@@ -7,13 +7,24 @@ import { Render, useA11y } from "../surface.tsx";
 import { Children } from "./structure.tsx";
 import { Avatar, Icon } from "./avatar.tsx";
 
+/**
+ * The required mark. It is aria-hidden on purpose: every control it appears on also carries the
+ * native `required` / `aria-required`, which is what a screen reader announces. The asterisk is
+ * for the eye, and a form that has one explains it once (see RequiredLegend).
+ */
+const RequiredMark = () => (
+  <span className="pxd-required" aria-hidden="true">
+    *
+  </span>
+);
+
 /** Label + help + control, with help associated to the control. */
 function Field({ label, help, required, children, id, helpId }: { label: string; help?: string; required?: boolean; children: React.ReactNode; id: string; helpId: string }) {
   return (
     <div className="pxd-field">
       <label className="pxd-field-label" htmlFor={id}>
         {label}
-        {required && <span className="pxd-required" aria-hidden="true"> (required)</span>}
+        {required && <RequiredMark />}
       </label>
       {help && (
         <p className="pxd-field-help" id={helpId}>
@@ -214,7 +225,7 @@ export function Choice({ node }: { node: Node }) {
   const heading = (
     <div className="pxd-field-label" id={labelId}>
       {label}
-      {node.required && <span className="pxd-required" aria-hidden="true"> (required)</span>}
+      {node.required && <RequiredMark />}
     </div>
   );
   const search = searchable && (
@@ -611,6 +622,8 @@ export function RangeInput({ node }: { node: Node }) {
 export function Form({ node }: { node: Node }) {
   const b = useBindings();
   const s = useSurface();
+  // An asterisk has to say what it means, once, before the fields it marks.
+  const anyRequired = (node.children ?? []).some((id: string) => s.byId.get(id)?.required);
   return (
     <form
       className={`pxd-form${node.aside ? " pxd-form-with-aside" : ""}${node.layout === "horizontal" ? " pxd-form-horizontal" : ""}`}
@@ -626,6 +639,14 @@ export function Form({ node }: { node: Node }) {
         </aside>
       )}
       <div className="pxd-stack pxd-form-fields">
+        {anyRequired && (
+          <p className="pxd-required-legend">
+            <span className="pxd-required" aria-hidden="true">
+              *
+            </span>{" "}
+            Required
+          </p>
+        )}
         <Children ids={node.children} />
       </div>
       <div className="pxd-action-bar">
