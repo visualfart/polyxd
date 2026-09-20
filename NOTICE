@@ -1,0 +1,177 @@
+Polyxd
+Copyright 2026 the Polyxd authors
+
+This product includes software developed at Polyxd, licensed under the Apache
+License, Version 2.0 (see LICENSE).
+
+It also includes material from the projects below. Each is used under its own
+licence, and each licence is included in full beside the material it covers.
+
+
+## Design-system packs
+
+A pack reads a design system's published tokens and maps them onto Polyxd's
+semantic token contract. The upstream token files are vendored verbatim — so a
+pack can be regenerated and audited without a network — under that pack's
+`scripts/sources/` directory, together with the upstream licence.
+
+The packs are Polyxd's work, not the work of the design systems they read. The
+names below identify whose tokens a pack reads. Polyxd is not affiliated with,
+endorsed by, or sponsored by any of these projects or their owners, and each
+name is the trademark of its owner.
+
+### Ant Design  (`@polyxd/ds-antd`)
+
+Upstream: https://github.com/ant-design/ant-design
+
+- npm:antd 6.6.4 — MIT
+- npm:@ant-design/colors 8.0.1 — MIT
+
+Vendored under `packages/ds-antd/scripts/sources/`, with the upstream licence file beside it.
+
+### Bootstrap 5  (`@polyxd/ds-bootstrap`)
+
+Upstream: https://github.com/twbs/bootstrap
+
+- npm:bootstrap dist/css/bootstrap.css 5.3.8 — MIT
+
+Vendored under `packages/ds-bootstrap/scripts/sources/`, with the upstream licence file beside it.
+
+### IBM Carbon  (`@polyxd/ds-carbon`)
+
+Upstream: https://github.com/carbon-design-system/carbon
+
+- npm:@carbon/colors 11.58.0 — Apache-2.0
+- npm:@carbon/themes 11.81.0 — Apache-2.0
+- npm:@carbon/layout 11.59.0 — Apache-2.0
+- npm:@carbon/type 11.67.0 — Apache-2.0
+- npm:@carbon/motion 11.52.0 — Apache-2.0
+- npm:@carbon/charts scss/_color-palette.scss 1.27.20 — Apache-2.0
+- npm:@carbon/styles scss/utilities/_box-shadow.scss and _focus-outline.scss 1.115.0 — Apache-2.0
+
+Vendored under `packages/ds-carbon/scripts/sources/`, with the upstream licence file beside it.
+
+### Chakra UI 3  (`@polyxd/ds-chakra`)
+
+Upstream: https://github.com/chakra-ui/chakra-ui
+
+- npm:@chakra-ui/react defaultSystem.getTokenCss 3.37.0 — MIT
+
+Vendored under `packages/ds-chakra/scripts/sources/`, with the upstream licence file beside it.
+
+### Microsoft Fluent 2  (`@polyxd/ds-fluent`)
+
+Upstream: https://github.com/microsoft/fluentui
+
+- npm:@fluentui/tokens 1.0.0-alpha.24 — MIT
+
+Vendored under `packages/ds-fluent/scripts/sources/`, with the upstream licence file beside it.
+
+### GOV.UK Frontend  (`@polyxd/ds-govuk`)
+
+Upstream: https://github.com/alphagov/govuk-frontend
+
+- npm:govuk-frontend dist/govuk/settings 6.5.1 — MIT
+
+Vendored under `packages/ds-govuk/scripts/sources/`, with the upstream licence file beside it.
+
+### Mantine 8  (`@polyxd/ds-mantine`)
+
+Upstream: https://github.com/mantinedev/mantine
+
+- npm:@mantine/core styles.css 8.4.2 — MIT
+
+Vendored under `packages/ds-mantine/scripts/sources/`, with the upstream licence file beside it.
+
+### Material 3  (`@polyxd/ds-material3`)
+
+Upstream: https://github.com/material-components/material-web
+
+- npm:@material/material-color-utilities 0.4.0 — Apache-2.0
+- github:material-components/material-web tokens/versions/v0_192/_md-ref-typeface.scss, _md-sys-typescale.scss, _md-sys-shape.scss, _md-sys-motion.scss, _md-sys-state.scss, _md-sys-elevation.scss v2.5.0 (commit b4de401eb665ec63474f39319a4ba8f2145974cc) — Apache-2.0
+- github:material-components/material-web tokens/versions/v0_192/_md-comp-scrim.scss, _md-comp-filled-button.scss, _md-comp-icon-button.scss, _md-comp-outlined-text-field.scss v2.5.0 (commit b4de401eb665ec63474f39319a4ba8f2145974cc) — Apache-2.0
+- github:material-components/material-web tokens/_md-comp-focus-ring.scss and elevation/internal/_elevation.scss v2.5.0 (commit b4de401eb665ec63474f39319a4ba8f2145974cc) — Apache-2.0
+
+Vendored under `packages/ds-material3/scripts/sources/`, with the upstream licence file beside it.
+
+### Shopify Polaris  (`@polyxd/ds-polaris`)
+
+Upstream: https://github.com/Shopify/polaris
+
+- npm:@shopify/polaris-tokens dist/css/styles.css 9.4.2 — MIT
+
+Vendored under `packages/ds-polaris/scripts/sources/`, with the upstream licence file beside it.
+
+### GitHub Primer  (`@polyxd/ds-primer`)
+
+Upstream: https://github.com/primer/primitives
+
+- npm:@primer/primitives dist/css 11.10.0 — MIT
+
+Vendored under `packages/ds-primer/scripts/sources/`, with the upstream licence file beside it.
+
+### Radix Themes 3  (`@polyxd/ds-radix`)
+
+Upstream: https://github.com/radix-ui/themes
+
+- npm:@radix-ui/themes styles.css 3.3.0 — MIT
+
+Vendored under `packages/ds-radix/scripts/sources/`, with the upstream licence file beside it.
+
+### shadcn/ui on Tailwind CSS  (`@polyxd/ds-shadcn`)
+
+Upstream: https://github.com/shadcn-ui/ui
+
+- shadcn/ui default theme main @ 2026-09-20 — MIT
+- npm:tailwindcss theme.css 4.3.3 — MIT
+
+Vendored under `packages/ds-shadcn/scripts/sources/`, with the upstream licence file beside it.
+
+### Adobe Spectrum 2  (`@polyxd/ds-spectrum`)
+
+Upstream: https://github.com/adobe/spectrum-tokens
+
+- npm:@adobe/spectrum-tokens dist/json/variables.json 15.4.1 — Apache-2.0
+
+Vendored under `packages/ds-spectrum/scripts/sources/`, with the upstream licence file beside it.
+
+## Specification
+
+### A2UI
+
+- `packages/a2ui/vendor/a2ui/v1_0-04e6f07/` — Apache-2.0
+
+Vendored at a pinned commit so the component catalogue can be checked against
+A2UI's schema without a network.
+
+
+## Dependencies
+
+Everything Polyxd depends on at runtime or to build is fetched from npm rather
+than vendored, so the licences below are recorded rather than reproduced.
+
+Apache-2.0: playwright
+MIT: react, react-dom, radix-ui, ajv, ajv-formats, vite, @vitejs/plugin-react,
+     marked, lenis, @types/react, @types/react-dom
+MIT OR Apache-2.0: wrangler, @cloudflare/workers-types
+
+Two need a word.
+
+**axe-core** (Mozilla Public License 2.0) runs inside the verifier's rendered
+audit. MPL-2.0 is file-level copyleft: it attaches to modified MPL files, and
+axe-core is used unmodified, as a library. No Polyxd file is covered by it.
+
+**GSAP** (https://gsap.com/standard-license) drives the motion on polyxd.com
+only, and is not an OSI-approved licence. It is not used by the spec, the
+renderer, the packs or the verifier, none of which it can reach; and no GSAP
+file is committed to this repository — the site's build copies them out of
+node_modules into its own output. Anyone building the site is therefore subject
+to GSAP's licence, and anyone using the rest of Polyxd is not.
+
+
+## Fonts
+
+No font files are distributed. polyxd.com loads its typefaces from Google Fonts
+at request time, and a design-system pack names the typeface its system
+specifies without shipping it — a pack that asks for Adobe Clean, for example,
+names an open metric-compatible fallback for anyone who does not have it.
