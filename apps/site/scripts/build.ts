@@ -401,7 +401,7 @@ await cp(join(SITE, "src/assets"), join(DIST, "assets"), { recursive: true });
 
 // GSAP and Lenis drive the landing page's motion. They ship as UMD builds, and we serve
 // them from our own origin rather than a CDN, so the page depends on nothing third-party.
-const VENDOR = ["gsap/dist/gsap.min.js", "gsap/dist/ScrollTrigger.min.js", "gsap/dist/SplitText.min.js", "lenis/dist/lenis.min.js"];
+const VENDOR = ["gsap/dist/gsap.min.js", "gsap/dist/ScrollTrigger.min.js", "gsap/dist/SplitText.min.js", "gsap/dist/DrawSVGPlugin.min.js", "lenis/dist/lenis.min.js"];
 await mkdir(join(DIST, "assets/vendor"), { recursive: true });
 await Promise.all(VENDOR.map((f) => cp(join(REPO, "node_modules", f), join(DIST, "assets/vendor", f.split("/").pop()!))));
 await write(join(DIST, "favicon.svg"), LOGO.replace('aria-hidden="true"', 'xmlns="http://www.w3.org/2000/svg"').replace(/currentColor/g, "#141414"));

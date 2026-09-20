@@ -6,6 +6,7 @@
 <title>Polyxd — interfaces that show up when you need them</title>
 <meta name="description" content="Polyxd turns a request into a real, accessible interface, built from your design system, usable by people and agents, and gone when the task is done.">
 <!--HEAD-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap">
 <link rel="stylesheet" href="/assets/story.css">
 <script>
 // Motion is opt-in and self-cancelling: the class turns on story.js's starting states, and
@@ -23,10 +24,11 @@
 <!--HEADER-->
 <main id="main">
 
-<!-- One interface is the whole story. It is asked for, taken apart into its meaning, rebuilt
-     by one design system after another, read and pressed by an agent, forgotten and recognised,
-     then checked. With motion on, the stage is pinned and each act plays as you scroll. Without
-     it, the acts stack as plain sections and the card sits once at the top. -->
+<!-- One interface is the whole story. On load it is asked for, sketched in pencil, and takes
+     form as its design system's tokens arrive. Then, pinned, each chapter plays as you scroll:
+     it lifts into its layers, is torn down and rebuilt by other design systems, is read and
+     pressed by an agent, goes and comes back, and is stamped. Without motion the chapters stack
+     as plain sections and the card sits once at the top. -->
 <section class="story" id="how" aria-label="How Polyxd works">
 <div class="story-pin">
 
@@ -34,21 +36,21 @@
 <div class="act is-current" data-act="ask">
 <span class="badge"><span class="badge-dot" aria-hidden="true"></span>Early preview · spec v0.1</span>
 <h1 id="hero-title">Interfaces that show up when you need them.</h1>
-<p class="lede">Ask for something. A real, accessible interface is built for that moment, in your design system. When the task is done, it goes.</p>
+<p class="lede">Ask for something. A real, accessible interface is drawn for that moment, in your design system. When the task is done, it goes.</p>
 <div class="cta-row"><a class="btn btn-signal" href="/gallery/">Try the live gallery</a><a class="btn btn-line" href="/docs/">Read the docs</a></div>
 <p class="scroll-hint" aria-hidden="true">Scroll to watch it happen</p>
 </div>
 
 <div class="act" data-act="mean">
 <span class="eyebrow">Meaning, not pixels</span>
-<h2 class="display">The model chooses what it means.</h2>
-<p>A pattern, a few components, an intent. Never a colour, a size or a line of code.</p>
+<h2 class="display">Four layers. The model touches one.</h2>
+<p>It chooses the intent, the pattern and the components. Your design system supplies every token. The verifier signs the top.</p>
 </div>
 
 <div class="act" data-act="skin">
 <span class="eyebrow">Any design system</span>
 <h2 class="display">Taken apart. Rebuilt in yours.</h2>
-<p>The same document, reconstructed from <!--PACKCOUNT--> design systems' real tokens. No retraining.</p>
+<p>The same document, drawn again from <!--PACKCOUNT--> design systems' real tokens. No retraining.</p>
 </div>
 
 <div class="act" data-act="agents">
@@ -82,28 +84,44 @@
 
 <div class="scene" aria-hidden="true">
 <div class="grid"></div>
-<div class="hud"><span><b>intent</b><i data-hud="intent">transfer.confirm</i></span><span><b>pattern</b><i data-hud="pattern">confirm</i></span><span><b>pack</b><i data-hud="pack">material3</i></span><span><b>axe</b><i data-hud="axe">–</i></span><span><b>agent</b><i data-hud="agent">–</i></span></div>
+<div class="hud"><span><b>intent</b><i data-hud="intent">transfer.confirm</i></span><span><b>pattern</b><i data-hud="pattern">confirm</i></span><span><b>pack</b><i data-hud="pack">—</i></span><span><b>axe</b><i data-hud="axe">—</i></span><span><b>agent</b><i data-hud="agent">—</i></span></div>
 
 <div class="ask"><span class="ask-label">You ask</span><span class="ask-text">send alex the rent</span><span class="caret"></span></div>
-
 <div class="packname"><!--PACKNAMES--></div>
 
 <div class="slot">
-<div class="ghost"></div>
-<svg class="wire"></svg>
-<div class="when"><span data-when="monday">Monday</span><span data-when="friday">Friday</span></div>
+<div class="stack">
+<div class="plate plate-intent"><span class="plate-line">intent · transfer.confirm</span><span class="plate-line plate-foot">pattern · confirm &nbsp;·&nbsp; risk · consequential</span></div>
+<div class="plate plate-parts"><span class="box" style="left:5%;top:10%;width:68%;height:11%"><i>Confirm.title</i></span><span class="box" style="left:5%;top:26%;width:90%;height:12%"><i>Confirm.description</i></span><span class="box" style="left:5%;top:44%;width:90%;height:24%"><i>DetailList · receipt</i></span><span class="box" style="left:54%;top:76%;width:19%;height:15%"><i>cancel</i></span><span class="box" style="left:75%;top:76%;width:20%;height:15%"><i>primary</i></span></div>
+<div class="plate plate-tokens"><span class="sw"><b data-token="primary"></b>primary</span><span class="sw"><b data-token="secondary"></b>secondary</span><span class="sw"><b data-token="surface"></b>surface</span><span class="sw"><b data-token="border"></b>border</span><span class="type-sample">Aa <small data-token="type">Roboto 22 / 1.27</small></span><span class="plate-line plate-foot" data-token="metrics">radius 28 · inset 24 · stack 14 · target 40</span></div>
 <div class="stage" data-pxd-theme="material3" data-pxd-mode="light">
 <div class="card">
-<span class="tag tag-card">Confirm · consequential</span>
-<div class="t"><span class="tag">title</span>Send £250.00 to Alex Kim?</div>
-<div class="d"><span class="tag">description</span>The money leaves your account immediately and can't be recalled.</div>
-<div class="sum"><span class="tag">summary</span><div class="row"><span>To</span><span>Alex Kim</span></div><div class="row"><span>Amount</span><span>£250.00</span></div></div>
-<div class="acts-row"><span class="b b2"><span class="tag">cancel</span>Cancel</span><span class="b b1"><span class="tag tag-primary">primary · transfer.confirm</span>Send £250.00</span></div>
+<div class="t">Send £250.00 to Alex Kim?</div>
+<div class="d">The money leaves your account immediately and can't be recalled.</div>
+<div class="sum"><div class="row"><span>To</span><span>Alex Kim</span></div><div class="row"><span>Amount</span><span>£250.00</span></div></div>
+<div class="acts-row"><span class="b b2">Cancel</span><span class="b b1">Send £250.00</span></div>
 </div>
 </div>
+<div class="plate plate-checks"><span>axe · 0</span><span>contrast · AA</span><span>target ≥ 40</span><span>agent ✓</span><span>direction ✓</span></div>
+</div>
+<svg class="sketch"></svg>
+<div class="ghost"></div>
+<div class="when"><span data-when="monday">Monday</span><span data-when="friday">Friday</span></div>
 <div class="cursor"></div>
 <ul class="same"><li>same pattern</li><li>same order</li><li>same labels</li><li>same controls</li></ul>
 <div class="stamps"><span class="stamp">WCAG 2.2 AA</span><span class="stamp">agent ✓</span><span class="stamp">direction ✓</span><span class="stamp stamp-signal">score 100</span></div>
+</div>
+
+<ul class="layers"><li><b>verifier</b><span>checks, stamped on top</span></li><li><b>surface</b><span>what people and agents get</span></li><li><b>tokens</b><span>from your design system</span></li><li><b>components</b><span>what the model chose</span></li><li><b>intent · pattern</b><span>what the request means</span></li></ul>
+
+<svg class="leaders"></svg>
+<div class="chips">
+<span class="chip" data-target="b1" data-from="left"><b style="background:#65558f"></b>primary #65558f</span>
+<span class="chip" data-target="t" data-from="top">Aa · Roboto 22 / 1.27</span>
+<span class="chip" data-target="corner" data-from="left">radius 28</span>
+<span class="chip" data-target="edge" data-from="right">inset 24 · stack 14</span>
+<span class="chip" data-target="card" data-from="bottom"><b style="background:#f8f2fa"></b>surface #f8f2fa</span>
+<span class="chip" data-target="b1" data-from="right">target ≥ 40</span>
 </div>
 
 <pre class="tree"><span class="c">accessibility tree</span>
@@ -118,10 +136,35 @@ press <span class="s">"Send £250.00"</span>  →  transfer.confirm <span class=
 </div>
 </section>
 
+<section class="studio" id="studio" aria-labelledby="studio-title">
+<div class="studio-words">
+<span class="eyebrow">Polyxd Studio · for design and product teams</span>
+<h2 class="display" id="studio-title">Your taste, enforced. Your product, measured.</h2>
+<p>Designers set the direction: voice, rules, patterns, how much freedom the model gets. Product managers register what the product can do and what done looks like. Studio shows every surface the model made, why it came out that way, and how it performed.</p>
+<div class="cta-row"><a class="btn btn-line" href="/docs/designers/">The designer's job</a><a class="btn btn-line" href="/docs/product/">Capabilities and journeys</a></div>
+</div>
+<div class="studio-shell" aria-hidden="true">
+<div class="st-bar"><span class="st-brand">Studio</span><span class="st-dir">calm-finance</span><span class="st-state"><i></i>v0.1.1 draft · 3 unpublished changes</span><span class="st-publish">Publish…</span></div>
+<div class="st-body">
+<nav class="st-nav"><span>Direction</span><span>Preview</span><span class="on">Review<em>12</em></span><span>Rules</span><span>Exemplars</span><span class="st-sep"></span><span>Capabilities</span><span>Journeys</span><span class="st-sep"></span><span>Metrics</span><span>Flow map</span><span>Unmet demand</span><span class="st-sep"></span><span>Publish</span></nav>
+<div class="st-main">
+<div class="st-head"><div><strong>“send alex the rent”</strong><span>money.send · pattern confirm · material3 · phone · generated 14 min ago</span></div><span class="st-seg"><b>Phone</b><span>Web</span><span>Tree</span></span></div>
+<div class="st-surface"><div class="st-phone"><div class="stage" data-pxd-theme="material3" data-pxd-mode="light"><div class="card"><div class="t">Send £250.00 to Alex Kim?</div><div class="d">The money leaves your account immediately and can't be recalled.</div><div class="d st-flagline">Recent <mark>transactions</mark><span class="st-pin">1</span></div><div class="sum"><div class="row"><span>To</span><span>Alex Kim</span></div><div class="row"><span>Fee</span><span>Free</span></div><div class="row"><span>Amount</span><span>£250.00</span></div></div><div class="acts-row"><span class="b b2">Cancel</span><span class="b b1">Send £250.00</span></div></div></div></div></div>
+<div class="st-actions"><span class="st-btn st-btn-ink">Approve as exemplar</span><span class="st-btn">Fix the copy</span><span class="st-btn">Reject</span></div>
+</div>
+<div class="st-side">
+<div class="st-panel"><h3>Checks</h3><div class="st-check"><span>Accessibility · axe</span><i class="ok">0 violations</i></div><div class="st-check"><span>Contrast · targets</span><i class="ok">AA · ≥ 40px</i></div><div class="st-check"><span>Agent task</span><i class="ok">done in 1 step</i></div><div class="st-check"><span>Journey · money.send</span><i class="ok">3/3 checkpoints</i></div><div class="st-check"><span>Direction · glossary</span><i class="warn">1 flag</i></div></div>
+<div class="st-panel"><h3>Annotations</h3><div class="st-flag"><span class="st-pin">1</span><div><strong>Glossary:</strong> “Recent transactions” → say “payments”. <em>Same flag on 3 surfaces this week.</em></div></div><div class="st-suggest">You've moved the fee above the amount <strong>6 times</strong> in review. <b>Make it a rule →</b></div></div>
+<div class="st-metrics"><div><b>94%</b><span>task success</span></div><div><b>6%</b><span>regeneration</span></div><div><b class="up">+31%</b><span>recognition gain</span></div></div>
+</div>
+</div>
+</div>
+</section>
+
 <section class="built" id="built" aria-labelledby="built-title">
 <div class="built-head">
-<span class="eyebrow">Already built</span>
-<h2 class="display" id="built-title"><!--EXAMPLECOUNT--> scenarios, rendered by the real renderer.</h2>
+<div><span class="eyebrow">Already built</span>
+<h2 class="display" id="built-title"><!--EXAMPLECOUNT--> scenarios, rendered by the real renderer.</h2></div>
 <p>Every example in the spec, each in a different design system. Nothing here is a picture.</p>
 </div>
 <ul class="specimens"><!--SCENARIOS--></ul>
@@ -140,7 +183,7 @@ press <span class="s">"Send £250.00"</span>  →  transfer.confirm <span class=
 <section class="cta" id="access" aria-labelledby="access-title">
 <div>
 <h2 class="display" id="access-title">Open spec. Any model. Your design system.</h2>
-<p>Spec, renderer, design-system packs and verifier are Apache-2.0. They work with any model that writes JSON.</p>
+<p>Spec, renderer, design-system packs and verifier are Apache-2.0. They work with any model that writes JSON. Studio is where your team directs it.</p>
 <div class="cta-row" style="margin-top:28px"><a class="btn btn-ink" href="/docs/">Read the docs</a><a class="btn btn-line" href="/gallery/">Live gallery</a></div>
 </div>
 <form class="waitlist" action="/api/waitlist" method="post" data-waitlist>
@@ -158,6 +201,7 @@ press <span class="s">"Send £250.00"</span>  →  transfer.confirm <span class=
 <script src="/assets/vendor/gsap.min.js" defer></script>
 <script src="/assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/vendor/SplitText.min.js" defer></script>
+<script src="/assets/vendor/DrawSVGPlugin.min.js" defer></script>
 <script src="/assets/vendor/lenis.min.js" defer></script>
 <script src="/assets/story.js" defer></script>
 </body>

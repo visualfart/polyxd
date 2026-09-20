@@ -1,12 +1,12 @@
 /* polyxd.com landing page: one interface tells the whole story, on a dark drafting table.
    Layout for the pinned stage, the card, and every layer that appears around it. Starting
-   states for motion live under `.motion` only, so without JS or with reduced motion the acts
-   stack as plain sections and nothing is hidden. The card's colours, type and radii come from
-   the pack's own tokens (themes.css); nothing here names one. */
+   states for motion live under `.motion` only, so without JS or with reduced motion the
+   chapters stack as plain sections and nothing is hidden. The card's colours, type and radii
+   come from the pack's own tokens (themes.css); nothing here names one. */
 
-/* ---------- The landing page's own ground: graphite, ice for the drafting lines, the brand's
-   signal orange for intent. Everything the site shares (header, buttons, footer) is re-inked
-   here, docs pages keep the paper. ---------- */
+/* ---------- The landing page's own ground: graphite, ice for the pencil, the brand's signal
+   orange for intent. What the site shares (header, buttons, footer) is re-inked here; docs
+   pages keep the paper. ---------- */
 .landing {
   --void: #0b0d12;
   --panel: #12151b;
@@ -18,6 +18,7 @@
   --faint: #626b7d;
   --ice: #a9d6ff;
   --ice-dim: rgb(169 214 255 / 0.45);
+  --hand: "Architects Daughter", "Geist Mono", monospace;
   --ground: var(--void);
   --paper: var(--panel);
   --ink: var(--text);
@@ -181,7 +182,6 @@
   border: 1px solid var(--hair);
   border-radius: 24px;
   background: var(--panel);
-  overflow: visible;
 }
 .scene > * {
   position: absolute;
@@ -195,7 +195,6 @@
   background-position: 11px 11px;
   -webkit-mask-image: radial-gradient(ellipse at center, #000 40%, transparent 78%);
   mask-image: radial-gradient(ellipse at center, #000 40%, transparent 78%);
-  opacity: 0.9;
 }
 /* The readout: what the model decided and what the verifier found, live. */
 .hud {
@@ -212,6 +211,7 @@
   font: 11px var(--mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  z-index: 3;
 }
 .hud span {
   display: flex;
@@ -246,6 +246,7 @@
   font-size: 17px;
   white-space: nowrap;
   box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+  z-index: 3;
 }
 .ask-label {
   font: 11px var(--mono);
@@ -264,7 +265,6 @@
     opacity: 0;
   }
 }
-
 /* The design system's name, rolling past like a departures board while the card is rebuilt. */
 .packname {
   top: 22px;
@@ -286,12 +286,151 @@
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* The card, and the plates it lifts into. */
 .slot {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: min(440px, calc(100% - 48px));
 }
+.stack {
+  position: relative;
+  transform: rotateX(var(--rx, 0deg)) rotateZ(var(--rz, 0deg)) scale(calc(var(--s, 1) * var(--base, 1)));
+  transform-style: preserve-3d;
+}
+.plate {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  border: 1px solid var(--ice-dim);
+  background: rgb(18 21 27 / 0.94);
+  opacity: 0;
+  pointer-events: none;
+}
+.plate-intent {
+  background-color: rgb(11 13 18 / 0.94);
+  background-image: radial-gradient(var(--ice-dim) 1px, transparent 1.2px);
+  background-size: 20px 20px;
+}
+.plate-line {
+  position: absolute;
+  left: 20px;
+  top: 16px;
+  font: 11px var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ice);
+}
+.plate-foot {
+  top: auto;
+  bottom: 16px;
+}
+.plate-parts .box {
+  position: absolute;
+  border: 1.5px dashed var(--ice);
+  border-radius: 6px;
+}
+.plate-parts .box i {
+  position: absolute;
+  left: 8px;
+  top: -8px;
+  padding: 0 6px;
+  background: #0b0d12;
+  font: 9px var(--mono);
+  font-style: normal;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ice);
+  white-space: nowrap;
+}
+.plate-tokens {
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  align-content: start;
+}
+.plate-tokens .sw {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 10px var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ice);
+}
+.plate-tokens .sw b {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1px solid rgb(255 255 255 / 0.2);
+}
+.plate-tokens .type-sample {
+  position: absolute;
+  right: 20px;
+  top: 16px;
+  font-size: 22px;
+  color: var(--text);
+}
+.plate-tokens .type-sample small {
+  font: 12px var(--mono);
+  color: var(--dim);
+}
+.plate-checks {
+  border-style: dashed;
+  background: rgb(169 214 255 / 0.06);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-content: center;
+  justify-content: center;
+  padding: 20px;
+}
+.plate-checks span {
+  padding: 6px 10px;
+  border: 1.5px solid var(--ice);
+  border-radius: 999px;
+  background: #0b0d12;
+  font: 10px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ice);
+}
+.stack.is-lifted .stage {
+  transform-style: preserve-3d;
+}
+.layers {
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  z-index: 2;
+}
+.layers li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  transform: translateX(10px);
+}
+.layers b {
+  font: 11px var(--mono);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ice);
+}
+.layers span {
+  font-size: 12px;
+  color: var(--dim);
+  white-space: nowrap;
+}
+
 .stage {
   padding: clamp(18px, 2.2vw, 28px);
   border-radius: 20px;
@@ -300,16 +439,8 @@
   font-family: var(--pxd-type-body-default-family);
   box-shadow: 0 30px 80px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(255 255 255 / 0.06);
 }
-.ghost {
-  position: absolute;
-  inset: 0;
-  border: 1.5px dashed var(--ice-dim);
-  border-radius: 20px;
-  opacity: 0;
-}
-/* The blueprint: every part of the card measured and outlined, drawn by story.js from the
-   card's real geometry so it always matches the pack the card is wearing. */
-.wire {
+/* Pencil: the card as a hand would draw it, in the pack it wears right now. Drawn by story.js. */
+.sketch {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -317,26 +448,29 @@
   overflow: visible;
   opacity: 0;
   pointer-events: none;
+  z-index: 2;
 }
-.wire rect,
-.wire line {
+.sketch .stroke {
   fill: none;
   stroke: var(--ice);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sketch .faint {
   stroke-width: 1;
-  vector-effect: non-scaling-stroke;
+  opacity: 0.45;
 }
-.wire .box {
-  stroke-dasharray: 4 3;
-  stroke: var(--ice-dim);
-}
-.wire .outer {
-  stroke: var(--ice);
-}
-.wire text {
+.sketch .note {
   fill: var(--ice);
-  font: 10px var(--mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font: 14px var(--hand);
+}
+.ghost {
+  position: absolute;
+  inset: 0;
+  border: 1.5px dashed var(--ice-dim);
+  border-radius: 20px;
+  opacity: 0;
 }
 .when {
   position: absolute;
@@ -354,16 +488,7 @@
   opacity: 0;
 }
 
-/* Every colour, size and face below is the pack's. Transitions on those properties are what
-   make one design system turn into the next instead of snapping. */
-.stage,
-.stage .card,
-.stage .t,
-.stage .d,
-.stage .row,
-.stage .b {
-  transition: background-color 0.4s, color 0.4s, border-color 0.4s, border-radius 0.4s, box-shadow 0.4s, padding 0.4s, font-size 0.4s, letter-spacing 0.4s;
-}
+/* Every colour, size and face below is the pack's. */
 .stage .card {
   position: relative;
   display: flex;
@@ -374,22 +499,6 @@
   border: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
   border-radius: var(--pxd-radius-large);
   box-shadow: var(--pxd-shadow-raised);
-}
-.stage .card.is-exploded {
-  background: transparent;
-  border-color: var(--ice-dim);
-  border-style: dashed;
-  box-shadow: none;
-}
-.stage.is-blueprint {
-  background: transparent;
-  box-shadow: none;
-}
-.stage .t,
-.stage .d,
-.stage .sum,
-.stage .b {
-  position: relative;
 }
 .stage .t {
   font-family: var(--pxd-type-title-section-family);
@@ -446,40 +555,55 @@
   color: var(--pxd-color-action-primary-foreground);
 }
 
-/* Semantic labels: what the model actually chose, pinned to the part it chose it for. */
-.scene .tag {
-  position: absolute;
-  left: 0;
-  bottom: calc(100% + 4px);
-  padding: 3px 8px;
-  background: var(--void);
-  border: 1px solid var(--ice-dim);
-  color: var(--ice);
-  border-radius: 4px;
-  font: 10px var(--mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  opacity: 0;
-  transform: translateY(4px);
+/* Tokens arriving: chips that fly in from the edges along leaders that draw themselves. */
+.leaders {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
   z-index: 2;
 }
-.scene .tag-card {
-  left: auto;
-  right: 0;
-  bottom: auto;
-  top: calc(100% + 10px);
-  background: var(--signal);
-  border-color: var(--signal);
-  color: #fff;
+.leaders path {
+  fill: none;
+  stroke: var(--ice);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+  opacity: 0.75;
 }
-.scene .tag-primary {
-  background: var(--signal);
-  border-color: var(--signal);
-  color: #fff;
+.leaders circle {
+  fill: var(--ice);
 }
-.scene .b .tag {
-  bottom: calc(100% + 6px);
+.chips {
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.chip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 10px;
+  background: var(--void);
+  border: 1px solid var(--ice);
+  border-radius: 6px;
+  font: 10px var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ice);
+  white-space: nowrap;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.35);
+  opacity: 0;
+}
+.chip b {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgb(255 255 255 / 0.25);
 }
 
 .cursor {
@@ -492,11 +616,13 @@
   border-radius: 50%;
   box-shadow: 0 0 0 5px rgb(255 90 31 / 0.18), 0 0 24px rgb(255 90 31 / 0.5);
   opacity: 0;
+  z-index: 3;
 }
 .stamps {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 3;
 }
 .stamp {
   position: absolute;
@@ -536,7 +662,6 @@
   color: #fff;
   box-shadow: 0 10px 30px rgb(0 0 0 / 0.5), 0 0 24px rgb(255 90 31 / 0.45);
 }
-
 .tree {
   left: 16px;
   right: 16px;
@@ -553,6 +678,7 @@
   opacity: 0;
   transform: translateY(24px);
   box-shadow: 0 20px 50px rgb(0 0 0 / 0.5);
+  z-index: 4;
 }
 .tree .c {
   color: var(--faint);
@@ -594,6 +720,349 @@
 .same li::after {
   content: " ✓";
   color: var(--ok);
+}
+
+/* ---------- Studio: for design and product teams ---------- */
+.studio {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(72px, 9vw, 120px) var(--gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+  border-top: 1px solid var(--hair);
+}
+.studio-words {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+.studio-words h2 {
+  margin: 0;
+  font-size: clamp(34px, 3.4vw, 52px);
+  line-height: 1;
+  text-wrap: balance;
+}
+.studio-words p {
+  margin: 0;
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.55;
+  color: var(--dim);
+  text-wrap: pretty;
+}
+/* The screen is Studio's Review page, on paper, the way the tool itself is drawn. */
+.studio-shell {
+  --st-ground: #f4f1ea;
+  --st-paper: #fff;
+  --st-ink: #141414;
+  --st-ink2: #3f3e3a;
+  --st-muted: #6b6a63;
+  --st-faint: #9a988f;
+  --st-line: #ddd8cc;
+  --st-soft: #ece8de;
+  --st-ok: #1f7a3f;
+  --st-okbg: #e6f4ea;
+  --st-warnbg: #fff1ea;
+  --st-sigink: #b8350a;
+  background: var(--st-ground);
+  color: var(--st-ink);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(255 255 255 / 0.08);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.st-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 44px;
+  padding: 0 16px;
+  background: var(--st-paper);
+  border-bottom: 1px solid var(--st-line);
+}
+.st-brand {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 15px;
+}
+.st-dir {
+  padding: 4px 8px;
+  border: 1px solid var(--st-line);
+  border-radius: 6px;
+  font-weight: 600;
+}
+.st-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 1px solid var(--st-line);
+  border-radius: 999px;
+  font: 10px var(--mono);
+}
+.st-state i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--signal);
+}
+.st-publish {
+  margin-left: auto;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--st-ink);
+  color: #fff;
+  font-weight: 600;
+}
+.st-body {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr) 210px;
+  min-height: 420px;
+}
+.st-nav {
+  padding: 12px 8px;
+  border-right: 1px solid var(--st-line);
+  background: var(--st-paper);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.st-nav span {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--st-ink2);
+  font-weight: 500;
+}
+.st-nav .on {
+  background: var(--st-soft);
+  color: var(--st-ink);
+  font-weight: 600;
+}
+.st-nav em {
+  font: 10px var(--mono);
+  color: var(--st-sigink);
+}
+.st-sep {
+  height: 1px;
+  margin: 6px 4px;
+  background: var(--st-line);
+  padding: 0;
+}
+.st-main {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.st-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.st-head div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.st-head strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.st-head span {
+  font: 9px var(--mono);
+  color: var(--st-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.st-seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--st-soft);
+  border-radius: 7px;
+  flex: none;
+}
+.st-seg > * {
+  padding: 4px 8px;
+  border-radius: 5px;
+  color: var(--st-ink2);
+}
+.st-seg b {
+  background: var(--st-paper);
+  color: var(--st-ink);
+}
+.st-surface {
+  display: flex;
+  justify-content: center;
+  padding: 18px;
+  background: var(--st-soft);
+  border-radius: 12px;
+}
+.st-phone {
+  width: 250px;
+  padding: 14px 10px 18px;
+  border-radius: 24px;
+  background: #fdf7ff;
+  box-shadow: 0 12px 30px rgb(20 20 20 / 0.12);
+}
+.st-phone .stage {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 11px;
+}
+.st-phone .card {
+  gap: 8px;
+  padding: 14px;
+}
+.st-phone .t {
+  font-size: 15px;
+}
+.st-phone .d,
+.st-phone .row {
+  font-size: 11px;
+}
+.st-phone .b {
+  min-height: 30px;
+  font-size: 11px;
+}
+.st-flagline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.st-flagline mark {
+  background: rgb(255 90 31 / 0.28);
+  border-bottom: 2px solid var(--signal);
+  color: inherit;
+}
+.st-pin {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--signal);
+  color: #fff;
+  font: 9px var(--mono);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px rgb(255 90 31 / 0.2);
+}
+.st-actions {
+  display: flex;
+  gap: 6px;
+}
+.st-btn {
+  white-space: nowrap;
+  padding: 7px 11px;
+  border: 1px solid var(--st-line);
+  border-radius: 999px;
+  background: var(--st-paper);
+  font-weight: 600;
+}
+.st-btn-ink {
+  background: var(--st-ink);
+  border-color: var(--st-ink);
+  color: #fff;
+}
+.st-side {
+  padding: 14px 12px;
+  border-left: 1px solid var(--st-line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.st-panel {
+  padding: 10px 12px;
+  background: var(--st-paper);
+  border: 1px solid var(--st-line);
+  border-radius: 10px;
+}
+.st-panel h3 {
+  margin: 0 0 6px;
+  font-size: 12px;
+}
+.st-check {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--st-soft);
+  font-size: 11px;
+}
+.st-check i {
+  font: 9px var(--mono);
+  font-style: normal;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+.st-check .ok {
+  background: var(--st-okbg);
+  color: var(--st-ok);
+}
+.st-check .warn {
+  background: var(--st-warnbg);
+  color: var(--st-sigink);
+}
+.st-flag {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgb(255 90 31 / 0.5);
+  background: var(--st-warnbg);
+  border-radius: 8px;
+  font-size: 11px;
+}
+.st-flag em {
+  color: var(--st-muted);
+  font-style: normal;
+}
+.st-suggest {
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid var(--st-line);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--st-ink2);
+}
+.st-suggest b {
+  color: var(--st-ink);
+}
+.st-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: auto;
+}
+.st-metrics div {
+  display: flex;
+  flex-direction: column;
+}
+.st-metrics b {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+.st-metrics .up {
+  color: var(--st-ok);
+}
+.st-metrics span {
+  font: 9px var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--st-faint);
 }
 
 /* ---------- Already built: real examples, drifting past ---------- */
@@ -685,7 +1154,6 @@
 .built-note a:hover {
   color: var(--ice);
 }
-/* With motion, the row drifts; a hand on it stops it. story.js sets --drift to the row's width. */
 .motion .specimens {
   animation: drift var(--drift-time, 90s) linear infinite;
 }
@@ -756,6 +1224,8 @@ html:not(.motion) .specimens {
   min-height: 60vh;
   justify-content: center;
 }
+.motion .studio-words > *,
+.motion .studio-shell,
 .motion .stat,
 .motion .built-head > *,
 .motion .cta > div,
@@ -777,7 +1247,7 @@ html.lenis body {
   pointer-events: none;
 }
 
-/* ---------- Without motion: the acts stack, the card sits once at the top ---------- */
+/* ---------- Without motion: the chapters stack, the card sits once at the top ---------- */
 html:not(.motion) .story-pin {
   display: block;
   padding-block: clamp(40px, 6vw, 80px);
@@ -785,15 +1255,18 @@ html:not(.motion) .story-pin {
 html:not(.motion) .rail,
 html:not(.motion) .scroll-hint,
 html:not(.motion) .packname,
+html:not(.motion) .plate,
+html:not(.motion) .layers,
+html:not(.motion) .sketch,
+html:not(.motion) .leaders,
+html:not(.motion) .chips,
 html:not(.motion) .ghost,
-html:not(.motion) .wire,
 html:not(.motion) .when,
 html:not(.motion) .cursor,
 html:not(.motion) .stamps,
 html:not(.motion) .tree,
 html:not(.motion) .same,
-html:not(.motion) .agent-line,
-html:not(.motion) .scene .tag {
+html:not(.motion) .agent-line {
   display: none;
 }
 html:not(.motion) .act {
@@ -828,6 +1301,16 @@ html:not(.motion) .slot {
 }
 
 /* ---------- Narrow screens: scene on top, words below, chapters along the bottom ---------- */
+@media (max-width: 1100px) {
+  .layers {
+    display: none;
+  }
+}
+@media (max-width: 1200px) {
+  .studio {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 900px) {
   .story-pin {
     --rail: 0px;
@@ -840,8 +1323,14 @@ html:not(.motion) .slot {
   }
   .scene {
     order: -1;
-    height: auto;
-    min-height: 0;
+    height: 52svh;
+    min-height: 320px;
+  }
+  .stack {
+    --base: 0.86;
+  }
+  .st-state {
+    display: none;
   }
   .hud {
     gap: 4px 14px;
@@ -857,7 +1346,9 @@ html:not(.motion) .slot {
   }
   .stage {
     padding: 12px;
-    scale: 0.9;
+  }
+  .layers {
+    display: none;
   }
   .acts,
   .motion .act.is-current {
@@ -924,6 +1415,16 @@ html:not(.motion) .slot {
     bottom: 44px;
     font-size: 10px;
     padding: 10px 12px;
+  }
+  .studio {
+    grid-template-columns: 1fr;
+  }
+  .st-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .st-nav,
+  .st-side {
+    display: none;
   }
   .built-head {
     grid-template-columns: 1fr;
