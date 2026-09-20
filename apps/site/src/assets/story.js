@@ -183,9 +183,9 @@
       .call(() => setHud({ pack: "material3", axe: "0 violations" }), [], 3.3)
       // 5 · it comes to you
       .to(slot, { scale: 1.05, duration: 0.5, ease: "power2.out" }, 3.4)
-      .to(stage, { boxShadow: "0 40px 100px rgba(0,0,0,.6), 0 0 60px rgba(169,214,255,.22)", duration: 0.5 }, 3.4)
+      .to(stage, { boxShadow: "0 40px 100px rgba(20,20,20,.28), 0 0 60px rgba(255,90,31,.16)", duration: 0.5 }, 3.4)
       .to(slot, { scale: 1, duration: 0.6, ease: "power2.inOut" }, 4.3)
-      .to(stage, { boxShadow: "0 30px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06)", duration: 0.6 }, 4.3)
+      .to(stage, { boxShadow: "0 24px 60px rgba(20,20,20,.16), 0 0 0 1px rgba(20,20,20,.04)", duration: 0.6 }, 4.3)
       .to(".sketch", { opacity: 0, duration: 0.4 }, 4.3)
       .to($(".scroll-hint", first), { opacity: 1, y: 0, duration: 0.5 }, 3.9);
   }
@@ -260,11 +260,18 @@
   // smaller stack, so the projection stays inside the scene.
   const SPREAD = 78;
   const lift = () => Math.min(1, (scene.getBoundingClientRect().width - 40) / 640);
-  gsap.set(stack, { "--rx": "0deg", "--rz": "0deg", "--s": 1 });
+  // The angles and scale live on a plain object; the stylesheet applies them in the right order.
+  const view = { rx: 0, rz: 0, s: 1 };
+  const applyView = () => {
+    stack.style.setProperty("--rx", `${view.rx}deg`);
+    stack.style.setProperty("--rz", `${view.rz}deg`);
+    stack.style.setProperty("--s", String(view.s));
+  };
+  applyView();
   gsap.set(slot, { xPercent: -50, yPercent: -50, x: 0, y: 0 });
   tl.to(".ask", { opacity: 0, y: -10, duration: 0.2 }, 1)
     .set(stack, { className: "stack is-lifted" }, 1.05)
-    .to(stack, { "--rx": "58deg", "--rz": "-42deg", "--s": lift, duration: 0.6, ease: "power2.inOut" }, 1.1)
+    .to(view, { rx: 58, rz: -42, s: lift, duration: 0.6, ease: "power2.inOut", onUpdate: applyView }, 1.1)
     .to(slot, { y: () => 90 * lift(), duration: 0.6, ease: "power2.inOut" }, 1.1) // the lift rises; keep it centred
     .to(plates, { opacity: 1, duration: 0.3, stagger: 0.05 }, 1.2)
     .to(plates[0], { z: 0, duration: 0.6, ease: "power2.inOut" }, 1.1)
@@ -276,7 +283,7 @@
     .to(".layers li", { opacity: 0, duration: 0.15 }, 1.75)
     .to([...plates, stage], { z: 0, duration: 0.45, ease: "power2.inOut" }, 1.8)
     .to(plates, { opacity: 0, duration: 0.25 }, 1.85)
-    .to(stack, { "--rx": "0deg", "--rz": "0deg", "--s": 1, duration: 0.45, ease: "power2.inOut" }, 1.8)
+    .to(view, { rx: 0, rz: 0, s: 1, duration: 0.45, ease: "power2.inOut", onUpdate: applyView }, 1.8)
     .to(slot, { y: 0, duration: 0.45, ease: "power2.inOut" }, 1.8)
     .set(stack, { className: "stack" }, 2.3);
 
