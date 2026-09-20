@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 import random
 import subprocess
 import sys
@@ -18,8 +19,9 @@ DATA = REPO / "model" / "data"
 ADAPTERS = REPO / "model" / "adapters"
 
 
-def build(valid_fraction: float = 0.1, seed: int = 7) -> None:
-    rows = [json.loads(l) for l in (DATA / "selected.jsonl").read_text().splitlines() if l.strip()]
+def build(valid_fraction: float = 0.1, seed: int = 7, source: str | None = None) -> None:
+    path = Path(source) if source else DATA / "selected.jsonl"
+    rows = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
     random.Random(seed).shuffle(rows)
     n_valid = max(1, int(len(rows) * valid_fraction))
     out = DATA / "sft"
@@ -61,5 +63,6 @@ if __name__ == "__main__":
     ap.add_argument("--model", default="mlx-community/gemma-4-e4b-it-4bit")
     ap.add_argument("--iters", type=int, default=600)
     ap.add_argument("--name")
+    ap.add_argument("--input", help="selected examples to train on (default: data/selected.jsonl)")
     a = ap.parse_args()
-    build() if a.step == "build" else train(a.model, a.iters, a.name)
+    build(source=a.input) if a.step == "build" else train(a.model, a.iters, a.name)

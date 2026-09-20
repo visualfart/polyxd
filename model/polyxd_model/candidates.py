@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 
 from mlx_lm import load
 
@@ -23,14 +24,16 @@ def main() -> None:
     ap.add_argument("--samples", type=int, default=4)
     ap.add_argument("--temp", type=float, default=0.7)
     ap.add_argument("--limit", type=int)
+    ap.add_argument("--adapter", help="LoRA adapter to generate with (a later round of expert iteration)")
+    ap.add_argument("--out", help="output directory (default: model/data/candidates/<model>)")
     args = ap.parse_args()
 
     scenarios = [json.loads(l) for l in (DATA / "scenarios.jsonl").read_text().splitlines() if l.strip()]
     if args.limit:
         scenarios = scenarios[: args.limit]
-    out = DATA / "candidates" / args.model.split("/")[-1]
+    out = Path(args.out) if args.out else DATA / "candidates" / args.model.split("/")[-1]
     out.mkdir(parents=True, exist_ok=True)
-    model, tokenizer = load(args.model)
+    model, tokenizer = load(args.model, adapter_path=args.adapter) if args.adapter else load(args.model)
     for sc in scenarios:
         path = out / f"{sc['id']}.json"
         if path.exists():

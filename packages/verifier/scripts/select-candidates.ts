@@ -9,6 +9,9 @@
  * --require-wiring: when the host offers capabilities, a candidate must attach at least one of them to
  *   something a person or agent can operate, and candidates are ranked by score plus wiring. Without it,
  *   selection by verifier score alone favours timid interfaces with nothing to do (research log, Phase 5).
+ * --reward: rank by the full training reward (decision 0003) instead of score plus wiring: it also asks
+ *   whether a scripted agent can set one of the offered capabilities in motion. Slower (one extra render
+ *   per candidate), and what expert-iteration rounds use.
  * --max-nocap F: at most this fraction of kept examples may come from scenarios offering no capability.
  */
 
@@ -16,7 +19,7 @@ import { appendFileSync, existsSync, readFileSync, readdirSync, writeFileSync } 
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { validateDocument, flattenTree, isTree } from "@polyxd/spec";
-import { launch, verifyDocument } from "../src/index.ts";
+import { launch, rewardFor, verifyDocument } from "../src/index.ts";
 
 /** Capabilities attached to an operable control: Action, Form submit, Card/Table row actions, Toggle, Confirm, Comparison, Steps finish. */
 function wiredCapabilities(flat: any): Set<string> {
@@ -31,7 +34,7 @@ function wiredCapabilities(flat: any): Set<string> {
 }
 const { values, positionals } = parseArgs({
   allowPositionals: true,
-  options: { min: { type: "string" }, out: { type: "string" }, "require-wiring": { type: "boolean" }, "max-nocap": { type: "string" } },
+  options: { min: { type: "string" }, out: { type: "string" }, "require-wiring": { type: "boolean" }, "max-nocap": { type: "string" }, reward: { type: "boolean" } },
 });
 const dir = resolve(positionals[0] ?? "");
 if (!existsSync(dir)) {
@@ -52,7 +55,7 @@ try {
   for (const f of readdirSync(dir).filter((f) => f.endsWith(".json")).sort()) {
     const { scenario, user, samples } = JSON.parse(readFileSync(join(dir, f), "utf8"));
     total++;
-    let best: { tree: any; score: number; wired: number } | null = null;
+    let best: { tree: any; score: number; wired: number; reward: number } | null = null;
     for (const s of samples) {
       if (!s.doc || !isTree(s.doc)) continue;
       let flat: any;
@@ -66,15 +69,18 @@ try {
       const wiredSet = wiredCapabilities(flat);
       const wired = offered.filter((c) => wiredSet.has(c)).length;
       if (values["require-wiring"] && offered.length && wired === 0) continue;
-      let rep;
+      let scored: { score: number; reward: number };
       try {
-        rep = await verifyDocument(flat, { browser, registry: hostRegistry(offered), themes: ["material3"], modes: ["light"], widths: [390] });
+        scored = values.reward
+          ? await rewardFor(flat, browser, offered, { registry: hostRegistry(offered) })
+          : { score: (await verifyDocument(flat, { browser, registry: hostRegistry(offered), themes: ["material3"], modes: ["light"], widths: [390] })).score, reward: 0 };
       } catch (e) {
         console.log(`  !  ${scenario.id}: could not be scored (${(e as Error).message.split("\n")[0]})`);
         continue;
       }
-      const rank = (x: { score: number; wired: number }) => x.score + (values["require-wiring"] && offered.length ? (20 * x.wired) / offered.length : 0);
-      const cand = { tree: s.doc, score: rep.score, wired };
+      const rank = (x: { score: number; wired: number; reward: number }) =>
+        values.reward ? x.reward : x.score + (values["require-wiring"] && offered.length ? (20 * x.wired) / offered.length : 0);
+      const cand = { tree: s.doc, score: scored.score, wired, reward: scored.reward };
       if (!best || rank(cand) > rank(best) || (rank(cand) === rank(best) && wired > best.wired)) best = cand;
     }
     if (best) scores.push(best.score);
