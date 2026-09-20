@@ -1,0 +1,27 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "radix",
+  "displayName": "Radix Themes 3",
+  "version": "0.0.0",
+  "contractVersion": "0.2.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": [
+      "tokens/system.light.json",
+      "tokens/semantic.json"
+    ],
+    "dark": [
+      "tokens/system.dark.json",
+      "tokens/semantic.json"
+    ]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:@radix-ui/themes styles.css (https://github.com/radix-ui/themes)",
+      "version": "3.3.0",
+      "license": "MIT",
+      "notes": "The stylesheet is vendored verbatim as scripts/sources/radix/styles.css. The pack reads its sRGB custom properties at Radix's default settings (accent indigo, radius medium, scaling 100%)."
+    }
+  ]
+}

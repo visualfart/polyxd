@@ -1,0 +1,461 @@
+{
+  "$description": "Polyxd semantic tier for Radix Themes 3 (indigo accent, medium radius, 100% scaling — its own defaults). Radix's steps carry meaning: 9 is a solid fill, 11 is text that passes on its scale's background, 12 is high-contrast text.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{radix.color-background}"
+      },
+      "subtle": {
+        "$value": "{radix.gray-2}",
+        "$description": "Radix's second step: a subtle background"
+      },
+      "raised": {
+        "$value": "{radix.color-panel-solid}",
+        "$description": "Radix's solid panel"
+      },
+      "overlay": {
+        "$value": "{radix.color-panel-solid}"
+      },
+      "inverse": {
+        "$value": "{radix.gray-12}"
+      }
+    },
+    "scrim": {
+      "$value": "{radix.color-overlay}",
+      "$description": "Radix's overlay colour"
+    },
+    "text": {
+      "default": {
+        "$value": "{radix.gray-12}",
+        "$description": "Radix's high-contrast text step"
+      },
+      "muted": {
+        "$value": "{radix.gray-11}",
+        "$description": "Radix's step 11, which passes 4.5:1 on steps 1–2 by construction"
+      },
+      "inverse": {
+        "$value": "{radix.gray-1}"
+      },
+      "link": {
+        "$value": "{radix.accent-11}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{radix.gray-6}",
+        "$description": "Radix's subtle border step"
+      },
+      "strong": {
+        "$value": "{radix.gray-9}",
+        "$description": "Radix's gray-8 is its strong border but only 1.86:1 in light mode; gray-9 is the next step and carries 3:1"
+      },
+      "focus": {
+        "$value": "{radix.accent-9}",
+        "$description": "Radix's focus-8 is 2.36:1 on a light page; accent-9 is the same hue one step on, at 5.08:1"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{radix.accent-9}",
+          "$description": "Radix's solid accent fill"
+        },
+        "foreground": {
+          "$value": "{radix.accent-contrast}",
+          "$description": "The text colour Radix pairs with step 9"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{radix.gray-3}"
+        },
+        "foreground": {
+          "$value": "{radix.gray-12}"
+        },
+        "border": {
+          "$value": "{radix.gray-7}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{radix.red-11}",
+          "$description": "Radix's solid red steps carry white at 3.91:1 at best; step 11 with step 1 passes in both modes"
+        },
+        "foreground": {
+          "$value": "{radix.gray-1}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{radix.accent-4}",
+        "$description": "Radix's selected component fill"
+      },
+      "foreground": {
+        "$value": "{radix.accent-12}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{radix.blue-3}"
+        },
+        "foreground": {
+          "$value": "{radix.blue-12}",
+          "$description": "Radix's blue-11 on blue-3 is 4.25:1, under 4.5:1 for text"
+        },
+        "emphasis": {
+          "$value": "{radix.blue-11}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{radix.green-3}"
+        },
+        "foreground": {
+          "$value": "{radix.green-12}",
+          "$description": "Radix's green-11 on green-3 is 4.21:1"
+        },
+        "emphasis": {
+          "$value": "{radix.green-11}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{radix.amber-3}"
+        },
+        "foreground": {
+          "$value": "{radix.amber-12}",
+          "$description": "Radix's amber-11 on amber-3 is 4.25:1"
+        },
+        "emphasis": {
+          "$value": "{radix.amber-11}",
+          "$description": "Radix's amber-9 is a bright fill: 1.54:1 on the page, so the accent uses step 11"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{radix.red-3}"
+        },
+        "foreground": {
+          "$value": "{radix.red-12}",
+          "$description": "Radix's red-11 on red-3 is 4.54:1 in light and passes, but dark mode pairs 12 with 3 the same way"
+        },
+        "emphasis": {
+          "$value": "{radix.red-11}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{radix.indigo-11}"
+        },
+        "2": {
+          "$value": "{radix.green-11}"
+        },
+        "3": {
+          "$value": "{radix.purple-11}"
+        },
+        "4": {
+          "$value": "{radix.amber-11}"
+        },
+        "5": {
+          "$value": "{radix.crimson-11}"
+        },
+        "6": {
+          "$value": "{radix.cyan-11}"
+        }
+      },
+      "positive": {
+        "$value": "{radix.green-11}"
+      },
+      "negative": {
+        "$value": "{radix.red-11}"
+      },
+      "neutral": {
+        "$value": "{radix.gray-11}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{radix.default-font-family}",
+          "fontSize": "{radix.font-size-7}",
+          "fontWeight": "{radix.font-weight-bold}",
+          "lineHeight": "{radix.line-height-7}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{radix.default-font-family}",
+          "fontSize": "{radix.font-size-5}",
+          "fontWeight": "{radix.font-weight-bold}",
+          "lineHeight": "{radix.line-height-5}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{radix.default-font-family}",
+          "fontSize": "{radix.font-size-3}",
+          "fontWeight": "{radix.font-weight-medium}",
+          "lineHeight": "{radix.line-height-3}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{radix.default-font-family}",
+          "fontSize": "{radix.font-size-3}",
+          "fontWeight": "{radix.font-weight-regular}",
+          "lineHeight": "{radix.line-height-3}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{radix.default-font-family}",
+          "fontSize": "{radix.font-size-2}",
+          "fontWeight": "{radix.font-weight-regular}",
+          "lineHeight": "{radix.line-height-2}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{radix.default-font-family}",
+          "fontSize": "{radix.font-size-2}",
+          "fontWeight": "{radix.font-weight-medium}",
+          "lineHeight": "{radix.line-height-2}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{radix.default-font-family}",
+          "fontSize": "{radix.font-size-1}",
+          "fontWeight": "{radix.font-weight-medium}",
+          "lineHeight": "{radix.line-height-1}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{radix.default-font-family}",
+          "fontSize": "{radix.font-size-8}",
+          "fontWeight": "{radix.font-weight-bold}",
+          "lineHeight": "{radix.line-height-8}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{radix.space-2}"
+      },
+      "default": {
+        "$value": "{radix.space-3}"
+      },
+      "comfortable": {
+        "$value": "{radix.space-5}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{radix.space-1}"
+      },
+      "default": {
+        "$value": "{radix.space-2}"
+      },
+      "loose": {
+        "$value": "{radix.space-4}"
+      },
+      "section": {
+        "$value": "{radix.space-6}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{radix.space-1}"
+      },
+      "default": {
+        "$value": "{radix.space-2}"
+      },
+      "loose": {
+        "$value": "{radix.space-4}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{polyxd.sys.target.min}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{radix.font-size-2}"
+      },
+      "default": {
+        "$value": "{radix.font-size-5}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{radix.radius-1}"
+    },
+    "control": {
+      "$value": "{radix.radius-3}",
+      "$description": "Radix's control radius at its default medium setting"
+    },
+    "default": {
+      "$value": "{radix.radius-3}"
+    },
+    "large": {
+      "$value": "{radix.radius-4}"
+    },
+    "full": {
+      "$value": {
+        "value": 9999,
+        "unit": "px"
+      },
+      "$description": "Radix's --radius-full"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        }
+      },
+      "strong": {
+        "$value": "{polyxd.sys.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{polyxd.sys.focusRing.width}"
+      },
+      "offset": {
+        "$value": "{polyxd.sys.focusRing.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": 65,
+      "$type": "number",
+      "$description": "Characters per line for running text (Polyxd; Radix has no measure token)"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{radix.shadow-2}",
+      "$description": "Radix's second elevation"
+    },
+    "overlay": {
+      "$value": "{radix.shadow-5}",
+      "$description": "Radix's dialog elevation"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{polyxd.sys.motion.instant}"
+      },
+      "short": {
+        "$value": "{polyxd.sys.motion.short}"
+      },
+      "medium": {
+        "$value": "{polyxd.sys.motion.medium}"
+      },
+      "long": {
+        "$value": "{polyxd.sys.motion.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{polyxd.sys.easing.standard}"
+      },
+      "enter": {
+        "$value": "{polyxd.sys.easing.enter}"
+      },
+      "exit": {
+        "$value": "{polyxd.sys.easing.exit}"
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "mantine",
+  "displayName": "Mantine 8",
+  "version": "0.0.0",
+  "contractVersion": "0.2.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": [
+      "tokens/system.light.json",
+      "tokens/semantic.json"
+    ],
+    "dark": [
+      "tokens/system.dark.json",
+      "tokens/semantic.json"
+    ]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:@mantine/core styles.css (https://github.com/mantinedev/mantine)",
+      "version": "8.4.2",
+      "license": "MIT",
+      "notes": "The stylesheet is vendored verbatim as scripts/sources/mantine/styles.css; the generator reads its custom properties."
+    }
+  ]
+}

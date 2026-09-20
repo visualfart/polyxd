@@ -1,0 +1,14 @@
+{
+  "name": "@polyxd/ds-kit",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared parts of building a Polyxd design-system pack: CSS variable reading, DTCG conversion, manifest writing",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@polyxd/spec": "*"
+  }
+}

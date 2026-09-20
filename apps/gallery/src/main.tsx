@@ -29,6 +29,8 @@ const PACK_INFO: Record<string, { name: string; by: string }> = {
   fluent: { name: "Fluent 2", by: "Microsoft · Segoe UI" },
   shadcn: { name: "shadcn/ui", by: "Tailwind CSS v4" },
   bootstrap: { name: "Bootstrap 5", by: "Bootstrap team" },
+  mantine: { name: "Mantine 8", by: "Mantine" },
+  radix: { name: "Radix Themes", by: "WorkOS · indigo" },
 };
 const packs: Pack[] = themes.map((key) => ({ key, ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) }));
 

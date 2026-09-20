@@ -17,9 +17,13 @@ export function toRgb(value: ColorValue): Rgb {
   throw new Error(`Unsupported color space "${value.colorSpace}" (srgb and oklch, or a hex fallback)`);
 }
 
-/** A hex string, `oklch(L C H [/ A])`, `rgb()` or `rgba()`. */
+/** The CSS keywords a design system actually writes in its tokens. */
+const KEYWORDS: Record<string, string> = { white: "#ffffff", black: "#000000", transparent: "#00000000" };
+
+/** A hex string, a plain keyword, `oklch(L C H [/ A])`, `rgb()` or `rgba()`. */
 export function parseColor(value: string): Rgb {
   const s = value.trim();
+  if (KEYWORDS[s.toLowerCase()]) return hexToRgb(KEYWORDS[s.toLowerCase()]);
   if (s.startsWith("#")) return hexToRgb(s);
   const ok = /^oklch\(([^)]+)\)$/i.exec(s);
   if (ok) {
@@ -92,6 +96,7 @@ export const alphaOf = (value: ColorValue) => (typeof value === "string" ? strin
 /** The alpha of a hex string, `oklch(… / a)` or `rgba(…)`; 1 when there is none. */
 function stringAlpha(value: string): number {
   const s = value.trim();
+  if (KEYWORDS[s.toLowerCase()]) return s.toLowerCase() === "transparent" ? 0 : 1;
   const hex = /^#(?:[0-9a-f]{3}([0-9a-f])|[0-9a-f]{6}([0-9a-f]{2}))$/i.exec(s);
   if (hex) return hex[1] ? parseInt(hex[1] + hex[1], 16) / 255 : parseInt(hex[2], 16) / 255;
   const fn = /^(?:oklch|rgba?)\(([^)]+)\)$/i.exec(s);

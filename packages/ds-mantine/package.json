@@ -1,0 +1,18 @@
+{
+  "name": "@polyxd/ds-mantine",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Mantine 8 design-system pack for Polyxd (DTCG 2025.10 tokens)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "manifest.json",
+    "tokens",
+    "README.md"
+  ],
+  "scripts": {
+    "generate": "node scripts/generate.ts",
+    "check": "node ../spec/src/cli/check-design-system.ts manifest.json",
+    "test": "npm run check"
+  }
+}

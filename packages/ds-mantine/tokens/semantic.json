@@ -1,0 +1,450 @@
+{
+  "$description": "Polyxd semantic tier for Mantine 8. Every token aliases a Mantine variable wherever one exists; polyxd.* marks what Mantine leaves to its components. The file is the same in both schemes.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{mantine.color-body}"
+      },
+      "subtle": {
+        "$value": "{mantine.color-default-hover}",
+        "$description": "Mantine's hovered default surface, its subtle fill"
+      },
+      "raised": {
+        "$value": "{mantine.color-default}",
+        "$description": "Mantine Paper and Card"
+      },
+      "overlay": {
+        "$value": "{mantine.color-default}"
+      },
+      "inverse": {
+        "$value": "{mantine.color-text}",
+        "$description": "Mantine has no inverse surface; its text colour is the opposite end of the same ramp"
+      }
+    },
+    "scrim": {
+      "$value": "rgba(0, 0, 0, 0.6)",
+      "$description": "Mantine's Overlay default is #000 at 60%"
+    },
+    "text": {
+      "default": {
+        "$value": "{mantine.color-text}"
+      },
+      "muted": {
+        "$value": "{polyxd.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{mantine.color-body}"
+      },
+      "link": {
+        "$value": "{polyxd.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{mantine.color-default-border}"
+      },
+      "strong": {
+        "$value": "{polyxd.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{mantine.primary-color-filled}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{polyxd.sys.action-primary}"
+        },
+        "foreground": {
+          "$value": "{mantine.color-white}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{mantine.color-default}"
+        },
+        "foreground": {
+          "$value": "{mantine.color-text}"
+        },
+        "border": {
+          "$value": "{mantine.color-default-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.action-danger}"
+        },
+        "foreground": {
+          "$value": "{mantine.color-white}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{mantine.primary-color-light}",
+        "$description": "Mantine's light variant of the primary colour"
+      },
+      "foreground": {
+        "$value": "{mantine.primary-color-light-color}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{polyxd.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{polyxd.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{polyxd.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polyxd.sys.data-1}"
+        },
+        "2": {
+          "$value": "{polyxd.sys.data-2}"
+        },
+        "3": {
+          "$value": "{polyxd.sys.data-3}"
+        },
+        "4": {
+          "$value": "{polyxd.sys.data-4}"
+        },
+        "5": {
+          "$value": "{polyxd.sys.data-5}"
+        },
+        "6": {
+          "$value": "{polyxd.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{polyxd.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{polyxd.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{polyxd.sys.data-neutral}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{mantine.font-family}",
+          "fontSize": "{mantine.font-size-xl}",
+          "fontWeight": 700,
+          "lineHeight": "{mantine.line-height-sm}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{mantine.font-family}",
+          "fontSize": "{mantine.font-size-lg}",
+          "fontWeight": 600,
+          "lineHeight": "{mantine.line-height-sm}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{mantine.font-family}",
+          "fontSize": "{mantine.font-size-md}",
+          "fontWeight": 600,
+          "lineHeight": "{mantine.line-height-md}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{mantine.font-family}",
+          "fontSize": "{mantine.font-size-md}",
+          "fontWeight": 400,
+          "lineHeight": "{mantine.line-height-md}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{mantine.font-family}",
+          "fontSize": "{mantine.font-size-sm}",
+          "fontWeight": 400,
+          "lineHeight": "{mantine.line-height-md}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{mantine.font-family}",
+          "fontSize": "{mantine.font-size-sm}",
+          "fontWeight": 500,
+          "lineHeight": "{mantine.line-height-md}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{mantine.font-family}",
+          "fontSize": "{mantine.font-size-xs}",
+          "fontWeight": 500,
+          "lineHeight": "{mantine.line-height-md}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{mantine.font-family}",
+          "fontSize": "{mantine.font-size-xl}",
+          "fontWeight": 700,
+          "lineHeight": "{mantine.line-height-sm}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{mantine.spacing-xs}"
+      },
+      "default": {
+        "$value": "{mantine.spacing-md}"
+      },
+      "comfortable": {
+        "$value": "{mantine.spacing-lg}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{mantine.spacing-xs}"
+      },
+      "default": {
+        "$value": "{mantine.spacing-sm}"
+      },
+      "loose": {
+        "$value": "{mantine.spacing-md}"
+      },
+      "section": {
+        "$value": "{mantine.spacing-xl}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{mantine.spacing-xs}"
+      },
+      "default": {
+        "$value": "{mantine.spacing-sm}"
+      },
+      "loose": {
+        "$value": "{mantine.spacing-md}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{polyxd.sys.target.min}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{mantine.font-size-sm}"
+      },
+      "default": {
+        "$value": "{mantine.font-size-lg}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{mantine.radius-xs}"
+    },
+    "control": {
+      "$value": "{mantine.radius-sm}",
+      "$description": "Mantine's default control radius"
+    },
+    "default": {
+      "$value": "{mantine.radius-md}"
+    },
+    "large": {
+      "$value": "{mantine.radius-lg}"
+    },
+    "full": {
+      "$value": {
+        "value": 9999,
+        "unit": "px"
+      },
+      "$description": "Mantine's radius=\"xl\" on a round control"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        }
+      },
+      "strong": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{polyxd.sys.focusRing.width}"
+      },
+      "offset": {
+        "$value": "{polyxd.sys.focusRing.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": 65,
+      "$type": "number",
+      "$description": "Characters per line for running text (Polyxd; Mantine has no measure token)"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{mantine.shadow-sm}"
+    },
+    "overlay": {
+      "$value": "{mantine.shadow-lg}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{polyxd.sys.motion.instant}"
+      },
+      "short": {
+        "$value": "{polyxd.sys.motion.short}"
+      },
+      "medium": {
+        "$value": "{polyxd.sys.motion.medium}"
+      },
+      "long": {
+        "$value": "{polyxd.sys.motion.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{polyxd.sys.easing.standard}"
+      },
+      "enter": {
+        "$value": "{polyxd.sys.easing.enter}"
+      },
+      "exit": {
+        "$value": "{polyxd.sys.easing.exit}"
+      }
+    }
+  }
+}
