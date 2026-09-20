@@ -2,13 +2,17 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent 
 import { PolyxdSurface, type UIDocument } from "@polyxd/react";
 
 /**
- * Blind ranking of the gold set (bench/gold). Each group shows three versions of one interface in a
- * shuffled order with neutral names, so the rater can't tell which is the original. Rankings are saved
- * to bench/gold/ranking.json through the dev server (see vite.config.ts).
+ * Blind ranking. Each group shows versions of one interface in a shuffled order with neutral names,
+ * so the rater can't tell which is which. Two sets:
+ *   ?rank              the hand-made gold set (bench/gold): does the verifier agree with a designer?
+ *   ?rank&set=model    the model's own options (bench/rank-set): are its first options any good?
+ * Rankings are saved through the dev server (see vite.config.ts).
  */
 const goldFiles = import.meta.glob<{ default: UIDocument }>("../../../bench/gold/*.json", { eager: true });
+const modelFiles = import.meta.glob<{ default: UIDocument }>("../../../bench/rank-set/*.json", { eager: true });
+export const rankSet = new URLSearchParams(location.search).get("set") === "model" ? "model" : "gold";
 const docs = Object.fromEntries(
-  Object.entries(goldFiles)
+  Object.entries(rankSet === "model" ? modelFiles : goldFiles)
     .filter(([p]) => !p.endsWith("ranking.json"))
     .map(([p, m]) => [p.split("/").pop()!.replace(".json", ""), m.default]),
 );
@@ -91,7 +95,7 @@ export function RankPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/gold-ranking")
+    fetch(`/api/gold-ranking?set=${rankSet}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((file) => {
         setGroups(file.groups);
@@ -141,7 +145,7 @@ export function RankPage() {
   const save = async (next: Record<string, string[]> = ranks) => {
     setStatus("Saving…");
     try {
-      const res = await fetch("/api/gold-ranking", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ rater, ranks: next, notes, comments, annotations: annotationsRef.current }) });
+      const res = await fetch(`/api/gold-ranking?set=${rankSet}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ rater, ranks: next, notes, comments, annotations: annotationsRef.current }) });
       const body = await res.json();
       setStatus(res.ok ? `Saved · ${body.ranked} of ${groups.length} groups ranked` : `Couldn't save: ${body.error}`);
     } catch {
@@ -290,7 +294,7 @@ export function RankPage() {
       </div>
       {done === groups.length && (
         <p className="r-finished" role="status">
-          All {groups.length} groups ranked and saved to <code>bench/gold/ranking.json</code>. Tell Claude, or run <code>npm run gold -w @polyxd/verifier</code> to see how the verifier agrees.
+          All {groups.length} groups ranked and saved to <code>{rankSet === "model" ? "bench/rank-set" : "bench/gold"}/ranking.json</code>. Tell Claude, or run <code>npm run gold -w @polyxd/verifier</code> to see how the verifier agrees.
         </p>
       )}
     </div>

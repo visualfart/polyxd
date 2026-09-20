@@ -1,0 +1,425 @@
+{
+  "$comment": "Business requests: records people scan, sort, select and act on in bulk. Kept separate from requests.json so the 50-request benchmark stays comparable across runs.",
+  "requests": [
+    {
+      "id": "b2b-accounts-past-due",
+      "domain": "business",
+      "request": "show me accounts that are past due",
+      "intent": "accounts.browse",
+      "direction": "calm-finance",
+      "data": {
+        "counts": {
+          "all": 1284,
+          "mine": 212,
+          "pastdue": 31,
+          "trials": 58
+        },
+        "view": "pastdue",
+        "sort": {
+          "column": "mrr",
+          "direction": "descending"
+        },
+        "page": 1,
+        "pageSize": 50,
+        "selected": [],
+        "accounts": [
+          {
+            "id": "a1",
+            "name": "Acme Corp",
+            "owner": "Rhea Mills",
+            "plan": "Enterprise",
+            "mrr": 4200,
+            "seats": "48 / 50",
+            "status": "Past due",
+            "renews": "12 Oct 2026",
+            "initials": "AC"
+          },
+          {
+            "id": "a5",
+            "name": "Hooli",
+            "owner": "Jo Rivera",
+            "plan": "Starter",
+            "mrr": 120,
+            "seats": "3 / 5",
+            "status": "Trial",
+            "renews": "27 Sep 2026",
+            "initials": "HO"
+          },
+          {
+            "id": "a2",
+            "name": "Globex",
+            "owner": "Tom Walsh",
+            "plan": "Pro",
+            "mrr": 1180,
+            "seats": "22 / 25",
+            "status": "Active",
+            "renews": "3 Nov 2026",
+            "initials": "GL"
+          },
+          {
+            "id": "a3",
+            "name": "Initech",
+            "owner": "Rhea Mills",
+            "plan": "Pro",
+            "mrr": 940,
+            "seats": "18 / 20",
+            "status": "Active",
+            "renews": "21 Oct 2026",
+            "initials": "IN"
+          }
+        ]
+      },
+      "capabilities": [
+        "accounts.sort",
+        "accounts.page",
+        "account.open",
+        "accounts.remindStart",
+        "accounts.export"
+      ],
+      "expect": {
+        "components": [
+          "Table"
+        ],
+        "capability": "account.open",
+        "mustNot": [
+          "accounts.remind",
+          "Sending a reminder without a review step"
+        ]
+      },
+      "task": {
+        "instruction": "Open the Acme Corp account.",
+        "steps": [
+          {
+            "press": "Acme Corp"
+          }
+        ],
+        "expect": {
+          "event": "account.open",
+          "context": {
+            "id": "a1"
+          }
+        }
+      }
+    },
+    {
+      "id": "b2b-account-open",
+      "domain": "business",
+      "request": "open Acme Corp",
+      "intent": "account.view",
+      "direction": "calm-finance",
+      "data": {
+        "account": {
+          "id": "a1",
+          "name": "Acme Corp",
+          "plan": "Enterprise, annual",
+          "status": "Past due",
+          "mrr": 4200,
+          "seats": "48 of 50",
+          "outstanding": 1250,
+          "owner": "Rhea Mills",
+          "renews": "12 October 2026",
+          "billingEmail": "ap@acme.com"
+        },
+        "invoices": [
+          {
+            "id": "i1",
+            "ref": "INV-2041",
+            "issued": "1 Sep 2026",
+            "due": "15 Sep 2026",
+            "amount": 1250,
+            "status": "Overdue"
+          },
+          {
+            "id": "i2",
+            "ref": "INV-1987",
+            "issued": "1 Aug 2026",
+            "due": "15 Aug 2026",
+            "amount": 4200,
+            "status": "Paid"
+          }
+        ]
+      },
+      "capabilities": [
+        "invoice.open",
+        "invoice.remindStart",
+        "payment.recordStart",
+        "account.edit"
+      ],
+      "expect": {
+        "components": [
+          "DetailList"
+        ],
+        "names": [
+          "Acme Corp"
+        ],
+        "mustNot": [
+          "payment.record",
+          "Recording a payment without a confirmation"
+        ]
+      }
+    },
+    {
+      "id": "b2b-bulk-reminder",
+      "domain": "business",
+      "request": "send a payment reminder to everyone who's overdue",
+      "intent": "accounts.remind",
+      "direction": "calm-finance",
+      "data": {
+        "overdue": [
+          {
+            "id": "a1",
+            "name": "Acme Corp",
+            "amount": 1250,
+            "daysLate": 5
+          },
+          {
+            "id": "a5",
+            "name": "Soylent",
+            "amount": 1020,
+            "daysLate": 12
+          },
+          {
+            "id": "a9",
+            "name": "Pied Piper",
+            "amount": 780,
+            "daysLate": 3
+          }
+        ],
+        "total": 3050
+      },
+      "capabilities": [
+        "accounts.remindStart",
+        "accounts.remind"
+      ],
+      "expect": {
+        "pattern": "review-and-submit",
+        "capability": "accounts.remindStart",
+        "mustNot": [
+          "Sending reminders before the user has seen who they go to"
+        ]
+      }
+    },
+    {
+      "id": "b2b-cancel-subscription",
+      "domain": "business",
+      "request": "cancel Acme's subscription, they're not renewing",
+      "intent": "subscription.cancel",
+      "direction": "calm-finance",
+      "data": {
+        "account": {
+          "id": "a1",
+          "name": "Acme Corp",
+          "plan": "Enterprise, annual",
+          "mrr": 4200,
+          "seats": "48 of 50",
+          "until": "12 October 2026",
+          "refund": 0,
+          "initials": "AC"
+        }
+      },
+      "capabilities": [
+        "subscription.cancel"
+      ],
+      "expect": {
+        "pattern": "confirm-destructive",
+        "components": [
+          "Confirm"
+        ],
+        "capability": "subscription.cancel",
+        "mustNot": [
+          "Cancelling without saying what happens to the 48 people using it"
+        ]
+      },
+      "task": {
+        "instruction": "Confirm the cancellation.",
+        "steps": [
+          {
+            "fill": "Type CANCEL to confirm",
+            "value": "CANCEL"
+          },
+          {
+            "press": "Cancel subscription"
+          }
+        ],
+        "expect": {
+          "event": "subscription.cancel",
+          "context": {
+            "account": "a1"
+          }
+        }
+      }
+    },
+    {
+      "id": "b2b-invite-teammate",
+      "domain": "business",
+      "request": "invite priya@acme.com as a billing manager",
+      "intent": "team.invite",
+      "direction": "calm-finance",
+      "data": {
+        "roles": [
+          {
+            "id": "admin",
+            "name": "Admin"
+          },
+          {
+            "id": "billing",
+            "name": "Billing manager"
+          },
+          {
+            "id": "viewer",
+            "name": "Viewer"
+          }
+        ],
+        "seats": {
+          "used": 5,
+          "total": 10
+        },
+        "draft": {
+          "email": "priya@acme.com",
+          "role": "billing"
+        }
+      },
+      "capabilities": [
+        "team.invite"
+      ],
+      "expect": {
+        "components": [
+          "Form"
+        ],
+        "capability": "team.invite",
+        "names": [
+          "Send invite"
+        ]
+      }
+    },
+    {
+      "id": "b2b-overdue-money",
+      "domain": "business",
+      "request": "how much money is overdue right now?",
+      "intent": "billing.overdue",
+      "direction": "calm-finance",
+      "data": {
+        "overdueTotal": 18240,
+        "invoices": 12,
+        "oldestDays": 41,
+        "byAge": [
+          {
+            "band": "1–30 days",
+            "amount": 9200
+          },
+          {
+            "band": "31–60 days",
+            "amount": 6100
+          },
+          {
+            "band": "61+ days",
+            "amount": 2940
+          }
+        ]
+      },
+      "capabilities": [
+        "invoice.open"
+      ],
+      "expect": {
+        "components": [
+          "Metric"
+        ],
+        "mustNot": [
+          "Inventing figures that aren't in the data"
+        ]
+      }
+    },
+    {
+      "id": "b2b-team-access",
+      "domain": "business",
+      "request": "who can change billing?",
+      "intent": "team.access",
+      "direction": "calm-finance",
+      "data": {
+        "members": [
+          {
+            "id": "m1",
+            "name": "Rhea Mills",
+            "email": "rhea@acme.com",
+            "role": "Admin",
+            "lastActive": "Now"
+          },
+          {
+            "id": "m2",
+            "name": "Tom Walsh",
+            "email": "tom@acme.com",
+            "role": "Billing manager",
+            "lastActive": "2 hours ago"
+          },
+          {
+            "id": "m3",
+            "name": "Jo Rivera",
+            "email": "jo@acme.com",
+            "role": "Viewer",
+            "lastActive": "3 days ago"
+          }
+        ]
+      },
+      "capabilities": [
+        "team.save"
+      ],
+      "expect": {
+        "components": [
+          "Table"
+        ],
+        "mustNot": [
+          "Changing someone's role without the user asking"
+        ]
+      }
+    },
+    {
+      "id": "b2b-vague-churn",
+      "domain": "business",
+      "request": "churn",
+      "intent": "analytics.churn",
+      "direction": "calm-finance",
+      "data": {
+        "monthly": [
+          {
+            "month": "Apr",
+            "rate": 2.4
+          },
+          {
+            "month": "May",
+            "rate": 2.2
+          },
+          {
+            "month": "Jun",
+            "rate": 2.1
+          },
+          {
+            "month": "Jul",
+            "rate": 2.3
+          },
+          {
+            "month": "Aug",
+            "rate": 2.1
+          },
+          {
+            "month": "Sep",
+            "rate": 1.8
+          }
+        ],
+        "current": 1.8,
+        "accountsLost": 11,
+        "mrrLost": 8400
+      },
+      "capabilities": [
+        "account.open"
+      ],
+      "expect": {
+        "components": [
+          "Chart"
+        ],
+        "mustNot": [
+          "Asking the user what they meant instead of showing something useful"
+        ]
+      }
+    }
+  ]
+}

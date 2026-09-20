@@ -3,9 +3,14 @@ import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 import { readFileSync, writeFileSync } from "node:fs";
 
-const rankingFile = fileURLToPath(new URL("../../bench/gold/ranking.json", import.meta.url));
+const rankingFiles = {
+  gold: fileURLToPath(new URL("../../bench/gold/ranking.json", import.meta.url)),
+  model: fileURLToPath(new URL("../../bench/rank-set/ranking.json", import.meta.url)),
+};
+/** Which set the page is ranking: the hand-made gold set, or the model's own options. */
+const fileFor = (url = "") => (new URLSearchParams(url.split("?")[1] ?? "").get("set") === "model" ? rankingFiles.model : rankingFiles.gold);
 
-/** Dev-only endpoint the gold-set ranking page saves to (writes bench/gold/ranking.json). */
+/** Dev-only endpoint the ranking page saves to. */
 function goldRanking(): Plugin {
   return {
     name: "polyxd-gold-ranking",
@@ -13,7 +18,7 @@ function goldRanking(): Plugin {
       server.middlewares.use("/api/gold-ranking", (req, res) => {
         if (req.method === "GET") {
           res.setHeader("content-type", "application/json");
-          return res.end(readFileSync(rankingFile, "utf8"));
+          return res.end(readFileSync(fileFor(req.url), "utf8"));
         }
         if (req.method !== "POST") return (res.statusCode = 405), res.end();
         let body = "";
@@ -27,6 +32,7 @@ function goldRanking(): Plugin {
               comments?: Record<string, string>;
               annotations?: Record<string, Record<string, { id: string; component: string; part?: string; note: string }[]>>;
             };
+            const rankingFile = fileFor(req.url);
             const file = JSON.parse(readFileSync(rankingFile, "utf8"));
             file.rater = rater || null;
             for (const g of file.groups) {
