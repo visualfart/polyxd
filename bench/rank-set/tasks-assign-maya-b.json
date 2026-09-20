@@ -1,0 +1,90 @@
+{
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "tasks_assign",
+    "title": "Assign task",
+    "intent": "tasks.assign"
+  },
+  "root": {
+    "component": "Form",
+    "children": [
+      {
+        "component": "TextInput",
+        "key": "title",
+        "label": "Task title",
+        "value": {
+          "path": "/task/title"
+        },
+        "required": true
+      },
+      {
+        "component": "Choice",
+        "key": "assignee",
+        "label": "Select assignee",
+        "options": [
+          {
+            "value": "m1",
+            "label": "Neel Shah"
+          },
+          {
+            "value": "m2",
+            "label": "Maya Chen"
+          },
+          {
+            "value": "m3",
+            "label": "Dan Okafor"
+          }
+        ],
+        "value": {
+          "path": "/task/assignee"
+        },
+        "required": true
+      }
+    ],
+    "submit": {
+      "label": "Assign task",
+      "action": {
+        "event": {
+          "name": "task.assign",
+          "context": {
+            "taskId": {
+              "path": "/task/id"
+            },
+            "assignee": {
+              "path": "/task/assignee"
+            }
+          }
+        }
+      }
+    },
+    "cancel": {
+      "label": "Cancel",
+      "action": {
+        "event": {
+          "name": "ui.dismiss"
+        }
+      }
+    }
+  },
+  "data": {
+    "task": {
+      "id": "k7",
+      "title": "Write landing page copy",
+      "assignee": "m1"
+    },
+    "members": [
+      {
+        "id": "m1",
+        "name": "Neel Shah"
+      },
+      {
+        "id": "m2",
+        "name": "Maya Chen"
+      },
+      {
+        "id": "m3",
+        "name": "Dan Okafor"
+      }
+    ]
+  }
+}

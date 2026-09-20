@@ -1,0 +1,67 @@
+{
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "money_budget_edit",
+    "title": "Edit groceries budget",
+    "intent": "money.budget.edit"
+  },
+  "root": {
+    "component": "Section",
+    "title": "Set your monthly groceries budget",
+    "description": "Set your spending limit and configure alerts.",
+    "children": [
+      {
+        "component": "TextInput",
+        "key": "category_input",
+        "label": "Category",
+        "value": {
+          "path": "/budget/category"
+        },
+        "required": true
+      },
+      {
+        "component": "RangeInput",
+        "key": "limit_input",
+        "label": "Monthly limit",
+        "value": {
+          "path": "/budget/limit"
+        },
+        "min": 0,
+        "max": 1000,
+        "step": 10,
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "mode": "single"
+      },
+      {
+        "component": "Toggle",
+        "key": "alerts_input",
+        "label": "Alerts",
+        "value": {
+          "path": "/budget/alerts"
+        },
+        "description": "Receive warnings when you approach your budget limit.",
+        "action": {
+          "event": {
+            "name": "budget.setAlerts",
+            "context": {
+              "enabled": true
+            }
+          }
+        }
+      }
+    ]
+  },
+  "data": {
+    "budget": {
+      "category": "groceries",
+      "label": "Groceries",
+      "limit": 300,
+      "spent": 312.4,
+      "currency": "GBP",
+      "alerts": false
+    }
+  }
+}

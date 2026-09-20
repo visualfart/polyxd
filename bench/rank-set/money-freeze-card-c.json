@@ -1,0 +1,44 @@
+{
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "money_card_freeze",
+    "title": "Freeze debit card",
+    "intent": "money.card.freeze"
+  },
+  "root": {
+    "component": "Card",
+    "title": "Debit card",
+    "subtitle": "Last used at Pret A Manger, 18 Sep, 08:12",
+    "children": [
+      {
+        "component": "Text",
+        "text": "Your card ending in 4421 is currently active."
+      }
+    ],
+    "action": {
+      "event": {
+        "name": "card.freeze",
+        "context": {
+          "cardId": {
+            "path": "/card/id"
+          }
+        }
+      }
+    },
+    "progress": {
+      "value": {
+        "path": "/card/status"
+      },
+      "label": "Active"
+    }
+  },
+  "data": {
+    "card": {
+      "id": "card_1",
+      "name": "Debit card",
+      "last4": "4421",
+      "status": "active",
+      "lastUsed": "Pret A Manger, 18 Sep, 08:12"
+    }
+  }
+}

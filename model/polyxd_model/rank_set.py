@@ -12,8 +12,10 @@ Output: bench/rank-set/<request-id>-{a,b,c}.json plus ranking.json for the ranki
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import random
+import shutil
 
 from mlx_lm import load
 
@@ -60,6 +62,19 @@ def main() -> None:
 
     out = BENCH / "rank-set"
     out.mkdir(parents=True, exist_ok=True)
+    # A finished ranking is preference data, and it is the only thing here that can't be
+    # regenerated. Archive it under bench/rankings/ before the set is replaced.
+    existing = out / "ranking.json"
+    if existing.exists():
+        done = json.loads(existing.read_text())
+        if any(g.get("humanRank") for g in done.get("groups", [])):
+            stamp = done.get("generatedAt") or datetime.date.today().isoformat()
+            label = (done.get("model") or "model").split("+")[-1].replace("/", "-")
+            archive = BENCH / "rankings" / f"{stamp}-{label}"
+            archive.mkdir(parents=True, exist_ok=True)
+            for f in out.glob("*.json"):
+                shutil.copy2(f, archive / f.name)
+            print(f"archived the finished ranking to {archive.relative_to(REPO)}")
     for old in out.glob("*.json"):
         if old.name != "ranking.json":
             old.unlink()

@@ -1,0 +1,226 @@
+{
+  "$comment": "The model's own options, ranked by a designer. Best to worst in humanRank.",
+  "rater": "Neel",
+  "model": "mlx-community/gemma-4-e4b-it-4bit+sft-v3",
+  "generatedAt": "2026-09-20",
+  "groups": [
+    {
+      "id": "money-send-alex",
+      "request": "send Alex £40 for the concert tickets",
+      "variants": [
+        "money-send-alex-a",
+        "money-send-alex-b",
+        "money-send-alex-c"
+      ],
+      "humanRank": [
+        "money-send-alex-c",
+        "money-send-alex-b",
+        "money-send-alex-a"
+      ],
+      "comment": "CTA missing in all, none of them are good. Why are the cards having a hover color change for background, that's so weried.  The amount to be sent should be larger. The IA in all cards is off. Also wh yshow the indicator horizontal bar, it's not useful at all."
+    },
+    {
+      "id": "money-spending-month",
+      "request": "how much have I spent this month?",
+      "variants": [
+        "money-spending-month-a",
+        "money-spending-month-b",
+        "money-spending-month-c"
+      ],
+      "humanRank": [
+        "money-spending-month-a",
+        "money-spending-month-c",
+        "money-spending-month-b"
+      ],
+      "notes": {
+        "money-spending-month-a": "Selected as best as it shows teh budget and month"
+      },
+      "comment": "None of them show how much is left in the budget. Also these cars could be more visual like a stacked horizontal bar ."
+    },
+    {
+      "id": "tasks-add-passport",
+      "request": "add a task: renew passport, due 10 October, high priority, put it under Admin",
+      "variants": [
+        "tasks-add-passport-a",
+        "tasks-add-passport-b",
+        "tasks-add-passport-c"
+      ],
+      "humanRank": [
+        "tasks-add-passport-a",
+        "tasks-add-passport-b",
+        "tasks-add-passport-c"
+      ]
+    },
+    {
+      "id": "tasks-delete-project",
+      "request": "delete the Old website project, we're not doing it anymore",
+      "variants": [
+        "tasks-delete-project-a",
+        "tasks-delete-project-b",
+        "tasks-delete-project-c"
+      ],
+      "humanRank": [
+        "tasks-delete-project-a",
+        "tasks-delete-project-c",
+        "tasks-delete-project-b"
+      ]
+    },
+    {
+      "id": "shop-compare-plans",
+      "request": "which plan should I get? I mostly just need more storage",
+      "variants": [
+        "shop-compare-plans-a",
+        "shop-compare-plans-b",
+        "shop-compare-plans-c"
+      ],
+      "humanRank": [
+        "shop-compare-plans-c",
+        "shop-compare-plans-a",
+        "shop-compare-plans-b"
+      ],
+      "comment": "all are bad, we has better pln sekection screens earlier"
+    },
+    {
+      "id": "calendar-find-slot",
+      "request": "find 30 minutes with Tom and Priya on Tuesday",
+      "variants": [
+        "calendar-find-slot-a",
+        "calendar-find-slot-b",
+        "calendar-find-slot-c"
+      ],
+      "humanRank": [
+        "calendar-find-slot-a",
+        "calendar-find-slot-b",
+        "calendar-find-slot-c"
+      ],
+      "comment": "all are bad, none to the job they were meant to",
+      "annotations": {
+        "calendar-find-slot-c": [
+          {
+            "id": "person-a",
+            "component": "TextInput",
+            "note": "why is this required?"
+          },
+          {
+            "id": "person-b",
+            "component": "TextInput",
+            "note": "why is this required?"
+          }
+        ]
+      }
+    },
+    {
+      "id": "settings-stop-emails",
+      "request": "stop emailing me",
+      "variants": [
+        "settings-stop-emails-a",
+        "settings-stop-emails-b",
+        "settings-stop-emails-c"
+      ],
+      "humanRank": [
+        "settings-stop-emails-a",
+        "settings-stop-emails-c",
+        "settings-stop-emails-b"
+      ],
+      "annotations": {
+        "settings-stop-emails-c": [
+          {
+            "id": "section",
+            "component": "Section",
+            "part": "heading \"Notification preferences\"",
+            "note": "not required as its redundant"
+          }
+        ],
+        "settings-stop-emails-a": [
+          {
+            "id": "section",
+            "component": "Section",
+            "part": "heading \"Notification preferences\"",
+            "note": "not required as its redundant"
+          }
+        ]
+      },
+      "comment": "the descriptins of each notificaition is not useful. if they ar epresnet tehy must not be redundant and be meaningful"
+    },
+    {
+      "id": "personal-reading-list",
+      "request": "my reading list",
+      "variants": [
+        "personal-reading-list-a",
+        "personal-reading-list-b",
+        "personal-reading-list-c"
+      ],
+      "humanRank": [
+        "personal-reading-list-c",
+        "personal-reading-list-a",
+        "personal-reading-list-b"
+      ],
+      "annotations": {
+        "personal-reading-list-c": [
+          {
+            "id": "status",
+            "component": "Status",
+            "part": "text \"No books found to add to your reading list.\"",
+            "note": "the text is wrong , it should be - Start by adding a book to your reading list."
+          }
+        ]
+      }
+    },
+    {
+      "id": "b2b-accounts-past-due",
+      "request": "show me accounts that are past due",
+      "variants": [
+        "b2b-accounts-past-due-a",
+        "b2b-accounts-past-due-b",
+        "b2b-accounts-past-due-c"
+      ],
+      "humanRank": [
+        "b2b-accounts-past-due-c",
+        "b2b-accounts-past-due-a",
+        "b2b-accounts-past-due-b"
+      ]
+    },
+    {
+      "id": "b2b-cancel-subscription",
+      "request": "cancel Acme's subscription, they're not renewing",
+      "variants": [
+        "b2b-cancel-subscription-a",
+        "b2b-cancel-subscription-b",
+        "b2b-cancel-subscription-c"
+      ],
+      "humanRank": [
+        "b2b-cancel-subscription-b",
+        "b2b-cancel-subscription-a",
+        "b2b-cancel-subscription-c"
+      ]
+    },
+    {
+      "id": "b2b-overdue-money",
+      "request": "how much money is overdue right now?",
+      "variants": [
+        "b2b-overdue-money-a",
+        "b2b-overdue-money-b",
+        "b2b-overdue-money-c"
+      ],
+      "humanRank": [
+        "b2b-overdue-money-b",
+        "b2b-overdue-money-a",
+        "b2b-overdue-money-c"
+      ]
+    },
+    {
+      "id": "b2b-invite-teammate",
+      "request": "invite priya@acme.com as a billing manager",
+      "variants": [
+        "b2b-invite-teammate-a",
+        "b2b-invite-teammate-b",
+        "b2b-invite-teammate-c"
+      ],
+      "humanRank": [
+        "b2b-invite-teammate-a",
+        "b2b-invite-teammate-c",
+        "b2b-invite-teammate-b"
+      ]
+    }
+  ]
+}

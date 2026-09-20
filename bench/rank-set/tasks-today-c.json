@@ -1,0 +1,91 @@
+{
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "tasks_today",
+    "title": "What's on my plate today",
+    "intent": "tasks.today"
+  },
+  "root": {
+    "component": "Collection",
+    "items": {
+      "path": "/tasks/{id}",
+      "item": {
+        "component": "Card",
+        "title": {
+          "path": "/title"
+        },
+        "subtitle": {
+          "path": "/project"
+        },
+        "children": [
+          {
+            "component": "Text",
+            "text": "Due: {{date}}"
+          }
+        ],
+        "action": {
+          "event": {
+            "name": "task.open",
+            "context": {
+              "id": {
+                "path": "/id"
+              }
+            }
+          }
+        },
+        "progress": {
+          "value": {
+            "path": "/done"
+          },
+          "label": {
+            "path": "/done_label"
+          }
+        }
+      }
+    },
+    "label": "Today's tasks",
+    "empty": {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No tasks found for today",
+      "message": "You have no tasks scheduled for today.",
+      "action": {
+        "id": "ui_dismiss",
+        "component": "Action",
+        "label": "Dismiss",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      }
+    },
+    "selection": "none"
+  },
+  "data": {
+    "date": "2026-09-19",
+    "tasks": [
+      {
+        "id": "k1",
+        "title": "Send Q3 invoice",
+        "project": "Freelance",
+        "priority": "high",
+        "done": false
+      },
+      {
+        "id": "k2",
+        "title": "Book dentist",
+        "project": "Personal",
+        "priority": "normal",
+        "done": false
+      },
+      {
+        "id": "k3",
+        "title": "Review Maya's draft",
+        "project": "Website relaunch",
+        "priority": "normal",
+        "done": true
+      }
+    ]
+  }
+}

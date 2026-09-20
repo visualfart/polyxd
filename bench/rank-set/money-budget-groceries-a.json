@@ -1,0 +1,65 @@
+{
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "money_budget_edit",
+    "title": "Edit groceries budget",
+    "intent": "money.budget.edit"
+  },
+  "root": {
+    "component": "Form",
+    "children": [
+      {
+        "component": "TextInput",
+        "key": "category",
+        "label": "Category",
+        "value": {
+          "path": "/budget/category"
+        },
+        "required": true
+      },
+      {
+        "component": "TextInput",
+        "key": "limit",
+        "label": "New monthly limit",
+        "value": {
+          "path": "/budget/limit"
+        },
+        "required": true
+      }
+    ],
+    "submit": {
+      "label": "Set budget and alerts",
+      "action": {
+        "event": {
+          "name": "budget.setLimit",
+          "context": {
+            "category": {
+              "path": "/budget/category"
+            },
+            "limit": {
+              "path": "/budget/limit"
+            }
+          }
+        }
+      }
+    },
+    "cancel": {
+      "label": "Cancel",
+      "action": {
+        "event": {
+          "name": "ui.dismiss"
+        }
+      }
+    }
+  },
+  "data": {
+    "budget": {
+      "category": "groceries",
+      "label": "Groceries",
+      "limit": 300,
+      "spent": 312.4,
+      "currency": "GBP",
+      "alerts": false
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "specVersion": "0.1.0",
+  "surface": {
+    "id": "tasks_today",
+    "title": "My tasks for today",
+    "intent": "tasks.today"
+  },
+  "root": {
+    "component": "Collection",
+    "items": {
+      "path": "/tasks/{id}",
+      "item": {
+        "component": "Card",
+        "title": {
+          "path": "/title"
+        },
+        "subtitle": {
+          "path": "/project"
+        },
+        "children": [
+          {
+            "component": "Metric",
+            "label": {
+              "path": "/done"
+            },
+            "value": {
+              "path": "/done"
+            },
+            "format": {
+              "type": "text"
+            }
+          }
+        ],
+        "action": {
+          "event": {
+            "name": "task.open",
+            "context": {
+              "id": {
+                "path": "/id"
+              }
+            }
+          }
+        },
+        "progress": {
+          "value": {
+            "path": "/done"
+          },
+          "label": {
+            "path": "/done"
+          }
+        }
+      }
+    },
+    "label": "Tasks",
+    "empty": {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No tasks found for today",
+      "message": "You have no tasks scheduled for today."
+    },
+    "selection": "single",
+    "selected": {
+      "path": "/selectedId"
+    }
+  },
+  "data": {
+    "tasks": [
+      {}
+    ]
+  }
+}
