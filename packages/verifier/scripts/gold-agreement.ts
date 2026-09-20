@@ -1,16 +1,18 @@
 /**
- * Gold-set agreement: does the verifier rank UIs the way a designer does?
+ * Ranking agreement: does the verifier rank UIs the way a designer does?
  *
- * Verifies every document in bench/gold/ (3 design systems, light mode, 390 and 1100 px), ranks
- * each group's variants by score, and — when bench/gold/ranking.json has humanRank filled in —
- * reports how often the verifier's ordering matches the human's and the mean Kendall tau-b.
+ * Verifies every document in the set (3 design systems, light mode, 390 and 1100 px), ranks each
+ * group's variants by score, and — when the set's ranking.json has humanRank filled in — reports
+ * how often the verifier's ordering matches the designer's, and the mean Kendall tau-b.
  *
- *   npm run gold -w @polyxd/verifier
+ *   npm run gold -w @polyxd/verifier              the hand-made gold set (bench/gold)
+ *   npm run gold -w @polyxd/verifier -- --model   the model's own options (bench/rank-set)
  */
 import { readFileSync } from "node:fs";
 import { launch, verifyDocument, type Report } from "../src/index.ts";
 
-const GOLD = new URL("../../../bench/gold/", import.meta.url);
+const SET = process.argv.includes("--model") ? "rank-set" : "gold";
+const GOLD = new URL(`../../../bench/${SET}/`, import.meta.url);
 const registry = JSON.parse(readFileSync(new URL("../../spec/examples/registry/capabilities.json", import.meta.url), "utf8"));
 const ranking: { groups: { id: string; variants: string[]; humanRank: string[] | null }[] } = JSON.parse(
   readFileSync(new URL("ranking.json", GOLD), "utf8"),
