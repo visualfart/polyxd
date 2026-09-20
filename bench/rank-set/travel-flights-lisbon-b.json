@@ -1,0 +1,72 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "id": "flights_data_id"
+  },
+  "root": "collection",
+  "components": [
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/flights_item_id",
+        "componentId": "flight_id"
+      },
+      "label": "Flights",
+      "empty": "status",
+      "selection": "single",
+      "selected": {
+        "path": "/selected_flight_id"
+      },
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "info",
+      "title": "No flights found",
+      "message": "Please adjust your search criteria.",
+      "id": "status"
+    },
+    {
+      "id": "flight_id",
+      "component": "Card",
+      "title": {
+        "path": "/route"
+      },
+      "subtitle": {
+        "path": "/date"
+      },
+      "children": [
+        "text"
+      ],
+      "action": {
+        "event": {
+          "name": "flight.select",
+          "context": {
+            "id": {
+              "path": "/id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/price"
+        },
+        "label": "Price"
+      }
+    },
+    {
+      "component": "Text",
+      "text": "Depart: {depart}",
+      "format": {
+        "type": "time"
+      },
+      "id": "text"
+    }
+  ],
+  "surface": {
+    "id": "travel_flights_search",
+    "title": "Flights",
+    "intent": "travel.flights.search"
+  }
+}

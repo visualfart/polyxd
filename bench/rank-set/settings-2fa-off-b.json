@@ -1,0 +1,59 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "security": {
+      "twoFactor": true,
+      "method": "Authenticator app",
+      "lastChanged": "2026-03-02"
+    }
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "component": "Confirm",
+      "title": "Turn off two-factor authentication?",
+      "message": "If you turn off 2FA, you will lose the added security layer for your account.",
+      "consequence": "Your two-factor authentication will be disabled.",
+      "summary": "security_summary",
+      "severity": "consequential",
+      "confirm": {
+        "label": "Turn off two-factor",
+        "action": {
+          "event": {
+            "name": "twoFactor.set",
+            "context": {
+              "enabled": false
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "confirm"
+    },
+    {
+      "id": "security_summary",
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "method",
+          "label": "Method",
+          "value": {
+            "path": "/security/twoFactor/method"
+          }
+        }
+      ]
+    }
+  ],
+  "surface": {
+    "id": "settings_security",
+    "title": "Security settings",
+    "intent": "settings.security.turn_off_2fa"
+  }
+}

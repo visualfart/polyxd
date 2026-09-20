@@ -1,0 +1,41 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "security": {}
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "component": "Confirm",
+      "title": "Turn off two-factor authentication?",
+      "message": "This will disable your two-factor authentication method.",
+      "consequence": "You will lose access to your account if you do not have backup codes.",
+      "severity": "consequential",
+      "confirm": {
+        "label": "Turn off two-factor",
+        "action": {
+          "event": {
+            "name": "twoFactor.set",
+            "context": {
+              "enabled": false
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "confirm"
+    }
+  ],
+  "surface": {
+    "id": "settings_security",
+    "title": "Security settings",
+    "intent": "settings.security.turn_off_2fa"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "path": "/thisMonth/runs_count_path",
+    "label": "Runs logged"
+  },
+  "root": "comparison",
+  "components": [
+    {
+      "component": "Comparison",
+      "items": {
+        "path": "/thisMonth"
+      },
+      "itemTitle": "This month",
+      "attributes": [
+        {
+          "key": "km",
+          "label": "Kilometers",
+          "path": "/thisMonth/km",
+          "format": {
+            "type": "number"
+          }
+        }
+      ],
+      "id": "comparison"
+    }
+  ],
+  "surface": {
+    "id": "personal_running_stats",
+    "title": "My running stats",
+    "intent": "personal.running.stats"
+  }
+}

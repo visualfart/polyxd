@@ -1,83 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "tasks_assign",
-    "title": "Assign Task",
-    "intent": "tasks.assign"
-  },
-  "root": {
-    "component": "Section",
-    "title": "Assign task",
-    "description": "Select the person for the task.",
-    "children": [
-      {
-        "component": "Collection",
-        "items": {
-          "path": "/tasks/0",
-          "item": {
-            "id": "task_item",
-            "component": "Card",
-            "title": {
-              "path": "/title"
-            },
-            "subtitle": {
-              "path": "/assignee"
-            },
-            "children": [
-              {
-                "component": "DetailList",
-                "items": [
-                  {
-                    "key": "title",
-                    "label": "Title",
-                    "value": {
-                      "path": "/title"
-                    }
-                  },
-                  {
-                    "key": "assignee",
-                    "label": "Assignee",
-                    "value": {
-                      "path": "/assignee"
-                    }
-                  }
-                ]
-              },
-              {
-                "component": "Action",
-                "label": "Assign task",
-                "action": {
-                  "event": {
-                    "name": "task.assign",
-                    "context": {
-                      "taskId": {
-                        "path": "/id"
-                      },
-                      "assignee": {
-                        "path": "/assignee"
-                      }
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "label": "Tasks",
-        "empty": {
-          "id": "Status",
-          "component": "Status",
-          "kind": "empty",
-          "title": "No tasks found",
-          "message": "There are no tasks to assign."
-        },
-        "selection": "single",
-        "selected": {
-          "path": "/id"
-        }
-      }
-    ]
-  },
   "data": {
     "task": {
       "id": "k7",
@@ -98,5 +20,95 @@
         "name": "Dan Okafor"
       }
     ]
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Assign task",
+      "description": "Select the person for the task.",
+      "children": [
+        "collection"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/tasks/0",
+        "componentId": "task_item"
+      },
+      "label": "Tasks",
+      "empty": "Status",
+      "selection": "single",
+      "selected": {
+        "path": "/id"
+      },
+      "id": "collection"
+    },
+    {
+      "id": "Status",
+      "component": "Status",
+      "kind": "empty",
+      "title": "No tasks found",
+      "message": "There are no tasks to assign."
+    },
+    {
+      "id": "task_item",
+      "component": "Card",
+      "title": {
+        "path": "/title"
+      },
+      "subtitle": {
+        "path": "/assignee"
+      },
+      "children": [
+        "detaillist",
+        "action"
+      ]
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "title",
+          "label": "Title",
+          "value": {
+            "path": "/title"
+          }
+        },
+        {
+          "key": "assignee",
+          "label": "Assignee",
+          "value": {
+            "path": "/assignee"
+          }
+        }
+      ],
+      "id": "detaillist"
+    },
+    {
+      "component": "Action",
+      "label": "Assign task",
+      "action": {
+        "event": {
+          "name": "task.assign",
+          "context": {
+            "taskId": {
+              "path": "/id"
+            },
+            "assignee": {
+              "path": "/assignee"
+            }
+          }
+        }
+      },
+      "id": "action"
+    }
+  ],
+  "surface": {
+    "id": "tasks_assign",
+    "title": "Assign Task",
+    "intent": "tasks.assign"
   }
 }

@@ -1,0 +1,70 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "order": {
+      "id": "o_5521",
+      "status": "Out for delivery",
+      "eta": "Today, 14:00–16:00",
+      "carrier": "DPD",
+      "items": [
+        {
+          "id": "i1",
+          "name": "Blue enamel mug",
+          "qty": 2
+        },
+        {
+          "id": "i2",
+          "name": "Pour-over kettle",
+          "qty": 1
+        }
+      ]
+    }
+  },
+  "root": "card",
+  "components": [
+    {
+      "component": "Card",
+      "title": "Order o_5521",
+      "subtitle": "Out for delivery",
+      "children": [
+        "detaillist"
+      ],
+      "action": {
+        "event": {
+          "name": "order.open",
+          "context": {
+            "id": {
+              "path": "/order/id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/order/status"
+        },
+        "label": "Out for delivery"
+      },
+      "id": "card"
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "order_status",
+          "label": "Status",
+          "value": {
+            "path": "/order/status"
+          }
+        }
+      ],
+      "title": "Order Details",
+      "id": "detaillist"
+    }
+  ],
+  "surface": {
+    "id": "commerce_order_tracking",
+    "title": "Order details",
+    "intent": "commerce.order.track"
+  }
+}

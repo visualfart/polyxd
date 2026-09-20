@@ -1,57 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "tasks_assign",
-    "title": "Assign task",
-    "intent": "tasks.assign"
-  },
-  "root": {
-    "component": "Form",
-    "children": [
-      {
-        "component": "TextInput",
-        "key": "task_id",
-        "label": "Task ID",
-        "value": {
-          "path": "/task/id"
-        },
-        "required": true
-      },
-      {
-        "component": "TextInput",
-        "key": "assignee_id",
-        "label": "Assignee ID",
-        "value": {
-          "path": "/task/assignee"
-        },
-        "required": true
-      }
-    ],
-    "submit": {
-      "label": "Assign task",
-      "action": {
-        "event": {
-          "name": "task.assign",
-          "context": {
-            "taskId": {
-              "path": "/task/id"
-            },
-            "assignee": {
-              "path": "/task/assignee"
-            }
-          }
-        }
-      }
-    },
-    "cancel": {
-      "label": "Cancel",
-      "action": {
-        "event": {
-          "name": "ui.dismiss"
-        }
-      }
-    }
-  },
   "data": {
     "task": {
       "id": "k7",
@@ -72,5 +20,65 @@
         "name": "Dan Okafor"
       }
     ]
+  },
+  "root": "form",
+  "components": [
+    {
+      "component": "Form",
+      "children": [
+        "task-id",
+        "assignee-id"
+      ],
+      "submit": {
+        "label": "Assign task",
+        "action": {
+          "event": {
+            "name": "task.assign",
+            "context": {
+              "taskId": {
+                "path": "/task/id"
+              },
+              "assignee": {
+                "path": "/task/assignee"
+              }
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "form"
+    },
+    {
+      "component": "TextInput",
+      "key": "task_id",
+      "label": "Task ID",
+      "value": {
+        "path": "/task/id"
+      },
+      "required": true,
+      "id": "task-id"
+    },
+    {
+      "component": "TextInput",
+      "key": "assignee_id",
+      "label": "Assignee ID",
+      "value": {
+        "path": "/task/assignee"
+      },
+      "required": true,
+      "id": "assignee-id"
+    }
+  ],
+  "surface": {
+    "id": "tasks_assign",
+    "title": "Assign task",
+    "intent": "tasks.assign"
   }
 }

@@ -1,17 +1,47 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "money_card_freeze",
-    "title": "Freeze debit card",
-    "intent": "money.card.freeze",
-    "pattern": "confirm-destructive"
+  "data": {
+    "card": {
+      "id": "card_1",
+      "name": "Debit card",
+      "last4": "4421",
+      "status": "active",
+      "lastUsed": "Pret A Manger, 18 Sep, 08:12"
+    }
   },
-  "root": {
-    "component": "Confirm",
-    "title": "Freeze debit card",
-    "message": "Are you sure you want to freeze your card?",
-    "consequence": "Your card will be frozen and inaccessible",
-    "summary": {
+  "root": "confirm",
+  "components": [
+    {
+      "component": "Confirm",
+      "title": "Freeze debit card",
+      "message": "Are you sure you want to freeze your card?",
+      "consequence": "Your card will be frozen and inaccessible",
+      "summary": "card_summary",
+      "severity": "consequential",
+      "confirm": {
+        "label": "Freeze card",
+        "action": {
+          "event": {
+            "name": "card.freeze",
+            "context": {
+              "cardId": {
+                "path": "/card/id"
+              }
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "confirm"
+    },
+    {
       "id": "card_summary",
       "component": "DetailList",
       "items": [
@@ -24,37 +54,12 @@
         }
       ],
       "title": "Card details"
-    },
-    "severity": "consequential",
-    "confirm": {
-      "label": "Freeze card",
-      "action": {
-        "event": {
-          "name": "card.freeze",
-          "context": {
-            "cardId": {
-              "path": "/card/id"
-            }
-          }
-        }
-      }
-    },
-    "cancel": {
-      "label": "Cancel",
-      "action": {
-        "event": {
-          "name": "ui.dismiss"
-        }
-      }
     }
-  },
-  "data": {
-    "card": {
-      "id": "card_1",
-      "name": "Debit card",
-      "last4": "4421",
-      "status": "active",
-      "lastUsed": "Pret A Manger, 18 Sep, 08:12"
-    }
+  ],
+  "surface": {
+    "id": "money_card_freeze",
+    "title": "Freeze debit card",
+    "intent": "money.card.freeze",
+    "pattern": "confirm-destructive"
   }
 }

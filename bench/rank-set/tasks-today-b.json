@@ -1,63 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "tasks_today",
-    "title": "My tasks today",
-    "intent": "tasks.today"
-  },
-  "root": {
-    "component": "Collection",
-    "items": {
-      "path": "/tasks/{id:task_id}",
-      "item": {
-        "component": "Card",
-        "title": {
-          "path": "/title"
-        },
-        "subtitle": {
-          "path": "/project"
-        },
-        "children": [
-          {
-            "component": "Text",
-            "text": "Priority: {priority}",
-            "format": {
-              "type": "text"
-            }
-          }
-        ],
-        "action": {
-          "event": {
-            "name": "task.open",
-            "context": {
-              "id": {
-                "path": "/id"
-              }
-            }
-          }
-        },
-        "progress": {
-          "value": {
-            "path": "/done"
-          },
-          "label": {
-            "path": "/done_label"
-          }
-        }
-      }
-    },
-    "label": "Tasks",
-    "empty": {
-      "component": "Status",
-      "kind": "empty",
-      "title": "No tasks found",
-      "message": "You have no tasks scheduled for today."
-    },
-    "selection": "single",
-    "selected": {
-      "path": "/selected_id"
-    }
-  },
   "data": {
     "tasks": [
       {
@@ -82,5 +24,73 @@
         "done": true
       }
     ]
+  },
+  "root": "collection",
+  "components": [
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/tasks/{id:task_id}",
+        "componentId": "card"
+      },
+      "label": "Tasks",
+      "empty": "status",
+      "selection": "single",
+      "selected": {
+        "path": "/selected_id"
+      },
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No tasks found",
+      "message": "You have no tasks scheduled for today.",
+      "id": "status"
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/title"
+      },
+      "subtitle": {
+        "path": "/project"
+      },
+      "children": [
+        "text"
+      ],
+      "action": {
+        "event": {
+          "name": "task.open",
+          "context": {
+            "id": {
+              "path": "/id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/done"
+        },
+        "label": {
+          "path": "/done_label"
+        }
+      },
+      "id": "card"
+    },
+    {
+      "component": "Text",
+      "text": "Priority: {priority}",
+      "format": {
+        "type": "text"
+      },
+      "id": "text"
+    }
+  ],
+  "surface": {
+    "id": "tasks_today",
+    "title": "My tasks today",
+    "intent": "tasks.today"
   }
 }

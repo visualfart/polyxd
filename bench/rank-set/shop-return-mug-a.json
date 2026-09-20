@@ -1,0 +1,166 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "order": {
+      "id": "o_5521",
+      "placed": "2026-09-12"
+    },
+    "items": [
+      {
+        "id": "i1",
+        "name": "Blue enamel mug",
+        "price": 14
+      },
+      {
+        "id": "i2",
+        "name": "Pour-over kettle",
+        "price": 45
+      }
+    ],
+    "reasons": [
+      {
+        "value": "damaged",
+        "label": "Arrived damaged"
+      },
+      {
+        "value": "wrong",
+        "label": "Wrong item"
+      },
+      {
+        "value": "unwanted",
+        "label": "No longer needed"
+      }
+    ],
+    "draft": {
+      "items": [],
+      "reason": "damaged"
+    }
+  },
+  "root": "form",
+  "components": [
+    {
+      "component": "Form",
+      "children": [
+        "order-id",
+        "collection",
+        "reason"
+      ],
+      "submit": {
+        "label": "Start return",
+        "action": {
+          "event": {
+            "name": "return.start",
+            "context": {
+              "orderId": {
+                "path": "/order/id"
+              },
+              "items": {
+                "path": "/items"
+              },
+              "reason": {
+                "path": "/draft/reason"
+              }
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "form"
+    },
+    {
+      "component": "TextInput",
+      "key": "order_id",
+      "label": "Order ID",
+      "value": {
+        "path": "/order/id"
+      },
+      "required": true,
+      "id": "order-id"
+    },
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/items/{id}",
+        "componentId": "card"
+      },
+      "label": "Items to return",
+      "empty": "status",
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "Your basket is empty",
+      "message": "Please select items to return.",
+      "id": "status"
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/name"
+      },
+      "subtitle": {
+        "path": "/price"
+      },
+      "action": {
+        "event": {
+          "name": "return.start",
+          "context": {
+            "orderId": {
+              "path": "/order/id"
+            },
+            "items": {
+              "path": "/items"
+            },
+            "reason": {
+              "path": "/reason"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/price"
+        },
+        "label": "Price"
+      },
+      "id": "card"
+    },
+    {
+      "component": "Choice",
+      "key": "reason",
+      "label": "Reason for return",
+      "options": [
+        {
+          "value": "damaged",
+          "label": "Arrived damaged"
+        },
+        {
+          "value": "wrong",
+          "label": "Wrong item"
+        },
+        {
+          "value": "unwanted",
+          "label": "No longer needed"
+        }
+      ],
+      "value": {
+        "path": "/draft/reason"
+      },
+      "required": true,
+      "id": "reason"
+    }
+  ],
+  "surface": {
+    "id": "commerce_return",
+    "title": "Start return",
+    "intent": "commerce.return"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "event": {
+      "id": "e4",
+      "title": "Acme sync",
+      "time": "Mon 21 Sep, 15:00–15:45",
+      "attendees": [
+        "Jordan Lee (Acme)",
+        {
+          "path": "/attendees/0/id"
+        },
+        "Priya"
+      ]
+    }
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "component": "Confirm",
+      "title": "Cancel 'Acme sync'?",
+      "message": "This will cancel the event for everyone and notify attendees.",
+      "consequence": "The event 'Acme sync' scheduled for Mon 21 Sep, 15:00–15:45 will be cancelled.",
+      "severity": "consequential",
+      "confirm": {
+        "label": "Cancel meeting",
+        "action": {
+          "event": {
+            "name": "event.cancel",
+            "context": {
+              "id": "e4",
+              "message": "Cancelling Acme sync"
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Keep event",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "confirm"
+    }
+  ],
+  "surface": {
+    "id": "calendar_event_cancel",
+    "title": "Cancel event",
+    "intent": "calendar.event.cancel"
+  }
+}

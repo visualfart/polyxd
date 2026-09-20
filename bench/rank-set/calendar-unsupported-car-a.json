@@ -1,0 +1,51 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "integrations": [
+      {
+        "id": "google",
+        "name": "Google Calendar",
+        "connected": true
+      }
+    ]
+  },
+  "root": "card",
+  "components": [
+    {
+      "component": "Card",
+      "title": "Integrations",
+      "subtitle": "Connected calendars",
+      "children": [
+        "detaillist"
+      ],
+      "action": {
+        "event": {
+          "name": "ui.dismiss"
+        }
+      },
+      "id": "card"
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "google_calendar",
+          "label": "Google Calendar",
+          "value": {
+            "path": "/integrations/0/name"
+          },
+          "format": {
+            "type": "text"
+          }
+        }
+      ],
+      "title": "Connected accounts",
+      "id": "detaillist"
+    }
+  ],
+  "surface": {
+    "id": "calendar_integration",
+    "title": "Sync calendar to car dashboard",
+    "intent": "calendar.integration.car"
+  }
+}

@@ -5,221 +5,178 @@
   "generatedAt": "2026-09-20",
   "groups": [
     {
-      "id": "money-send-alex",
-      "request": "send Alex £40 for the concert tickets",
+      "id": "money-freeze-card",
+      "request": "I think I lost my debit card, can you freeze it",
       "variants": [
-        "money-send-alex-a",
-        "money-send-alex-b",
-        "money-send-alex-c"
+        "money-freeze-card-a",
+        "money-freeze-card-b",
+        "money-freeze-card-c"
       ],
       "humanRank": [
-        "money-send-alex-c",
-        "money-send-alex-b",
-        "money-send-alex-a"
-      ],
-      "comment": "CTA missing in all, none of them are good. Why are the cards having a hover color change for background, that's so weried.  The amount to be sent should be larger. The IA in all cards is off. Also wh yshow the indicator horizontal bar, it's not useful at all."
+        "money-freeze-card-b",
+        "money-freeze-card-c",
+        "money-freeze-card-a"
+      ]
     },
     {
-      "id": "money-spending-month",
-      "request": "how much have I spent this month?",
+      "id": "money-budget-groceries",
+      "request": "set my groceries budget to £350 a month and warn me when I'm close",
       "variants": [
-        "money-spending-month-a",
-        "money-spending-month-b",
-        "money-spending-month-c"
+        "money-budget-groceries-a",
+        "money-budget-groceries-b",
+        "money-budget-groceries-c"
       ],
       "humanRank": [
-        "money-spending-month-a",
-        "money-spending-month-c",
-        "money-spending-month-b"
+        "money-budget-groceries-c",
+        "money-budget-groceries-b",
+        "money-budget-groceries-a"
       ],
       "notes": {
-        "money-spending-month-a": "Selected as best as it shows teh budget and month"
-      },
-      "comment": "None of them show how much is left in the budget. Also these cars could be more visual like a stacked horizontal bar ."
-    },
-    {
-      "id": "tasks-add-passport",
-      "request": "add a task: renew passport, due 10 October, high priority, put it under Admin",
-      "variants": [
-        "tasks-add-passport-a",
-        "tasks-add-passport-b",
-        "tasks-add-passport-c"
-      ],
-      "humanRank": [
-        "tasks-add-passport-a",
-        "tasks-add-passport-b",
-        "tasks-add-passport-c"
-      ]
-    },
-    {
-      "id": "tasks-delete-project",
-      "request": "delete the Old website project, we're not doing it anymore",
-      "variants": [
-        "tasks-delete-project-a",
-        "tasks-delete-project-b",
-        "tasks-delete-project-c"
-      ],
-      "humanRank": [
-        "tasks-delete-project-a",
-        "tasks-delete-project-c",
-        "tasks-delete-project-b"
-      ]
-    },
-    {
-      "id": "shop-compare-plans",
-      "request": "which plan should I get? I mostly just need more storage",
-      "variants": [
-        "shop-compare-plans-a",
-        "shop-compare-plans-b",
-        "shop-compare-plans-c"
-      ],
-      "humanRank": [
-        "shop-compare-plans-c",
-        "shop-compare-plans-a",
-        "shop-compare-plans-b"
-      ],
-      "comment": "all are bad, we has better pln sekection screens earlier"
-    },
-    {
-      "id": "calendar-find-slot",
-      "request": "find 30 minutes with Tom and Priya on Tuesday",
-      "variants": [
-        "calendar-find-slot-a",
-        "calendar-find-slot-b",
-        "calendar-find-slot-c"
-      ],
-      "humanRank": [
-        "calendar-find-slot-a",
-        "calendar-find-slot-b",
-        "calendar-find-slot-c"
-      ],
-      "comment": "all are bad, none to the job they were meant to",
-      "annotations": {
-        "calendar-find-slot-c": [
-          {
-            "id": "person-a",
-            "component": "TextInput",
-            "note": "why is this required?"
-          },
-          {
-            "id": "person-b",
-            "component": "TextInput",
-            "note": "why is this required?"
-          }
-        ]
+        "money-budget-groceries-c": "cta missing"
       }
     },
     {
-      "id": "settings-stop-emails",
-      "request": "stop emailing me",
+      "id": "tasks-today",
+      "request": "what's on my plate today",
       "variants": [
-        "settings-stop-emails-a",
-        "settings-stop-emails-b",
-        "settings-stop-emails-c"
+        "tasks-today-a",
+        "tasks-today-b",
+        "tasks-today-c"
       ],
       "humanRank": [
-        "settings-stop-emails-a",
-        "settings-stop-emails-c",
-        "settings-stop-emails-b"
-      ],
-      "annotations": {
-        "settings-stop-emails-c": [
-          {
-            "id": "section",
-            "component": "Section",
-            "part": "heading \"Notification preferences\"",
-            "note": "not required as its redundant"
-          }
-        ],
-        "settings-stop-emails-a": [
-          {
-            "id": "section",
-            "component": "Section",
-            "part": "heading \"Notification preferences\"",
-            "note": "not required as its redundant"
-          }
-        ]
-      },
-      "comment": "the descriptins of each notificaition is not useful. if they ar epresnet tehy must not be redundant and be meaningful"
+        "tasks-today-b",
+        "tasks-today-c",
+        "tasks-today-a"
+      ]
     },
     {
-      "id": "personal-reading-list",
-      "request": "my reading list",
+      "id": "tasks-assign-maya",
+      "request": "give the landing page copy task to Maya",
       "variants": [
-        "personal-reading-list-a",
-        "personal-reading-list-b",
-        "personal-reading-list-c"
+        "tasks-assign-maya-a",
+        "tasks-assign-maya-b",
+        "tasks-assign-maya-c"
       ],
       "humanRank": [
-        "personal-reading-list-c",
-        "personal-reading-list-a",
-        "personal-reading-list-b"
+        "tasks-assign-maya-b",
+        "tasks-assign-maya-c",
+        "tasks-assign-maya-a"
+      ]
+    },
+    {
+      "id": "calendar-cancel-acme",
+      "request": "cancel my 3pm with the Acme folks and let them know",
+      "variants": [
+        "calendar-cancel-acme-a",
+        "calendar-cancel-acme-b",
+        "calendar-cancel-acme-c"
       ],
-      "annotations": {
-        "personal-reading-list-c": [
-          {
-            "id": "status",
-            "component": "Status",
-            "part": "text \"No books found to add to your reading list.\"",
-            "note": "the text is wrong , it should be - Start by adding a book to your reading list."
-          }
-        ]
+      "humanRank": [
+        "calendar-cancel-acme-a",
+        "calendar-cancel-acme-b",
+        "calendar-cancel-acme-c"
+      ]
+    },
+    {
+      "id": "calendar-plan-offsite",
+      "request": "set up the team offsite: I need a title, start and end dates, the location, who's coming, an agenda, catering preference, whether we need breakout rooms, and the budget",
+      "variants": [
+        "calendar-plan-offsite-a",
+        "calendar-plan-offsite-b",
+        "calendar-plan-offsite-c"
+      ],
+      "humanRank": [
+        "calendar-plan-offsite-b",
+        "calendar-plan-offsite-c",
+        "calendar-plan-offsite-a"
+      ]
+    },
+    {
+      "id": "shop-where-order",
+      "request": "where's my order??",
+      "variants": [
+        "shop-where-order-a",
+        "shop-where-order-b",
+        "shop-where-order-c"
+      ],
+      "humanRank": [
+        "shop-where-order-c",
+        "shop-where-order-b",
+        "shop-where-order-a"
+      ]
+    },
+    {
+      "id": "shop-return-mug",
+      "request": "one of the mugs arrived chipped, I want to send it back",
+      "variants": [
+        "shop-return-mug-a",
+        "shop-return-mug-b",
+        "shop-return-mug-c"
+      ],
+      "humanRank": [
+        "shop-return-mug-c",
+        "shop-return-mug-a",
+        "shop-return-mug-b"
+      ],
+      "notes": {
+        "shop-return-mug-c": "reason for retrurn missing"
       }
     },
     {
-      "id": "b2b-accounts-past-due",
-      "request": "show me accounts that are past due",
+      "id": "travel-flights-lisbon",
+      "request": "flights to Lisbon on the 3rd, morning if possible",
       "variants": [
-        "b2b-accounts-past-due-a",
-        "b2b-accounts-past-due-b",
-        "b2b-accounts-past-due-c"
+        "travel-flights-lisbon-a",
+        "travel-flights-lisbon-b",
+        "travel-flights-lisbon-c"
       ],
       "humanRank": [
-        "b2b-accounts-past-due-c",
-        "b2b-accounts-past-due-a",
-        "b2b-accounts-past-due-b"
+        "travel-flights-lisbon-a",
+        "travel-flights-lisbon-c",
+        "travel-flights-lisbon-b"
       ]
     },
     {
-      "id": "b2b-cancel-subscription",
-      "request": "cancel Acme's subscription, they're not renewing",
+      "id": "settings-2fa-off",
+      "request": "turn off two-factor, it's annoying",
       "variants": [
-        "b2b-cancel-subscription-a",
-        "b2b-cancel-subscription-b",
-        "b2b-cancel-subscription-c"
+        "settings-2fa-off-a",
+        "settings-2fa-off-b",
+        "settings-2fa-off-c"
       ],
       "humanRank": [
-        "b2b-cancel-subscription-b",
-        "b2b-cancel-subscription-a",
-        "b2b-cancel-subscription-c"
+        "settings-2fa-off-a",
+        "settings-2fa-off-c",
+        "settings-2fa-off-b"
       ]
     },
     {
-      "id": "b2b-overdue-money",
-      "request": "how much money is overdue right now?",
+      "id": "personal-running",
+      "request": "how's my running going this month compared to last?",
       "variants": [
-        "b2b-overdue-money-a",
-        "b2b-overdue-money-b",
-        "b2b-overdue-money-c"
+        "personal-running-a",
+        "personal-running-b",
+        "personal-running-c"
       ],
       "humanRank": [
-        "b2b-overdue-money-b",
-        "b2b-overdue-money-a",
-        "b2b-overdue-money-c"
-      ]
+        "personal-running-a",
+        "personal-running-b",
+        "personal-running-c"
+      ],
+      "comment": "the cards are empty"
     },
     {
-      "id": "b2b-invite-teammate",
-      "request": "invite priya@acme.com as a billing manager",
+      "id": "calendar-unsupported-car",
+      "request": "sync my calendar to my car's dashboard so it tells me when to leave",
       "variants": [
-        "b2b-invite-teammate-a",
-        "b2b-invite-teammate-b",
-        "b2b-invite-teammate-c"
+        "calendar-unsupported-car-a",
+        "calendar-unsupported-car-b",
+        "calendar-unsupported-car-c"
       ],
       "humanRank": [
-        "b2b-invite-teammate-a",
-        "b2b-invite-teammate-c",
-        "b2b-invite-teammate-b"
+        "calendar-unsupported-car-b",
+        "calendar-unsupported-car-c",
+        "calendar-unsupported-car-a"
       ]
     }
   ]

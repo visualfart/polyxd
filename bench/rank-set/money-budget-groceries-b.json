@@ -1,72 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "money_budget_edit",
-    "title": "Edit groceries budget",
-    "intent": "money.budget.edit"
-  },
-  "root": {
-    "component": "Section",
-    "title": "Set your monthly groceries budget",
-    "description": "Manage your spending limit and alerts for groceries.",
-    "children": [
-      {
-        "component": "TextInput",
-        "key": "category",
-        "label": "Category",
-        "value": {
-          "path": "/budget/category"
-        },
-        "required": true
-      },
-      {
-        "component": "TextInput",
-        "key": "limit",
-        "label": "New limit",
-        "value": {
-          "path": "/budget/limit"
-        },
-        "required": true
-      },
-      {
-        "component": "Toggle",
-        "key": "alerts_enabled",
-        "label": "Alerts",
-        "value": {
-          "path": "/budget/alerts"
-        },
-        "description": "Receive warnings when you approach your spending limit",
-        "action": {
-          "event": {
-            "name": "budget.setAlerts",
-            "context": {
-              "enabled": {
-                "path": "/budget/alerts"
-              }
-            }
-          }
-        }
-      },
-      {
-        "component": "Action",
-        "label": "Set budget",
-        "action": {
-          "event": {
-            "name": "budget.setLimit",
-            "context": {
-              "category": {
-                "path": "/budget/category"
-              },
-              "limit": {
-                "path": "/budget/limit"
-              }
-            }
-          }
-        },
-        "emphasis": "primary"
-      }
-    ]
-  },
   "data": {
     "budget": {
       "category": "groceries",
@@ -76,5 +9,84 @@
       "currency": "GBP",
       "alerts": false
     }
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Set your monthly groceries budget",
+      "description": "Manage your spending limit and alerts for groceries.",
+      "children": [
+        "category",
+        "limit",
+        "alerts-enabled",
+        "action"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "TextInput",
+      "key": "category",
+      "label": "Category",
+      "value": {
+        "path": "/budget/category"
+      },
+      "required": true,
+      "id": "category"
+    },
+    {
+      "component": "TextInput",
+      "key": "limit",
+      "label": "New limit",
+      "value": {
+        "path": "/budget/limit"
+      },
+      "required": true,
+      "id": "limit"
+    },
+    {
+      "component": "Toggle",
+      "key": "alerts_enabled",
+      "label": "Alerts",
+      "value": {
+        "path": "/budget/alerts"
+      },
+      "description": "Receive warnings when you approach your spending limit",
+      "action": {
+        "event": {
+          "name": "budget.setAlerts",
+          "context": {
+            "enabled": {
+              "path": "/budget/alerts"
+            }
+          }
+        }
+      },
+      "id": "alerts-enabled"
+    },
+    {
+      "component": "Action",
+      "label": "Set budget",
+      "action": {
+        "event": {
+          "name": "budget.setLimit",
+          "context": {
+            "category": {
+              "path": "/budget/category"
+            },
+            "limit": {
+              "path": "/budget/limit"
+            }
+          }
+        }
+      },
+      "emphasis": "primary",
+      "id": "action"
+    }
+  ],
+  "surface": {
+    "id": "money_budget_edit",
+    "title": "Edit groceries budget",
+    "intent": "money.budget.edit"
   }
 }

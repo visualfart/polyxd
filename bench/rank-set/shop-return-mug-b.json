@@ -1,0 +1,97 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "order": {
+      "id": "o_5521",
+      "placed": "2026-09-12"
+    },
+    "items": [
+      {
+        "id": "i1",
+        "name": "Blue enamel mug",
+        "price": 14
+      },
+      {
+        "id": "i2",
+        "name": "Pour-over kettle",
+        "price": 45
+      }
+    ],
+    "reasons": [
+      {
+        "value": "damaged",
+        "label": "Arrived damaged"
+      },
+      {
+        "value": "wrong",
+        "label": "Wrong item"
+      },
+      {
+        "value": "unwanted",
+        "label": "No longer needed"
+      }
+    ],
+    "draft": {
+      "items": [],
+      "reason": "damaged"
+    }
+  },
+  "root": "collection",
+  "components": [
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/items/{id}",
+        "componentId": "card"
+      },
+      "label": "Items to return",
+      "empty": "status",
+      "layout": "list",
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "Your basket is empty",
+      "message": "No items selected for return.",
+      "id": "status"
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/name"
+      },
+      "subtitle": {
+        "path": "/id"
+      },
+      "action": {
+        "event": {
+          "name": "return.start",
+          "context": {
+            "orderId": {
+              "path": "/order/id"
+            },
+            "items": {
+              "path": "/items"
+            },
+            "reason": {
+              "path": "/reasons/value"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/price"
+        },
+        "label": "Price"
+      },
+      "id": "card"
+    }
+  ],
+  "surface": {
+    "id": "return_screen",
+    "title": "Return items",
+    "intent": "commerce.return"
+  }
+}

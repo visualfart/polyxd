@@ -1,67 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "tasks_today",
-    "title": "What's on my plate today",
-    "intent": "tasks.today"
-  },
-  "root": {
-    "component": "Collection",
-    "items": {
-      "path": "/tasks/{id}",
-      "item": {
-        "component": "Card",
-        "title": {
-          "path": "/title"
-        },
-        "subtitle": {
-          "path": "/project"
-        },
-        "children": [
-          {
-            "component": "Text",
-            "text": "Due: {{date}}"
-          }
-        ],
-        "action": {
-          "event": {
-            "name": "task.open",
-            "context": {
-              "id": {
-                "path": "/id"
-              }
-            }
-          }
-        },
-        "progress": {
-          "value": {
-            "path": "/done"
-          },
-          "label": {
-            "path": "/done_label"
-          }
-        }
-      }
-    },
-    "label": "Today's tasks",
-    "empty": {
-      "component": "Status",
-      "kind": "empty",
-      "title": "No tasks found for today",
-      "message": "You have no tasks scheduled for today.",
-      "action": {
-        "id": "ui_dismiss",
-        "component": "Action",
-        "label": "Dismiss",
-        "action": {
-          "event": {
-            "name": "ui.dismiss"
-          }
-        }
-      }
-    },
-    "selection": "none"
-  },
   "data": {
     "date": "2026-09-19",
     "tasks": [
@@ -87,5 +25,78 @@
         "done": true
       }
     ]
+  },
+  "root": "collection",
+  "components": [
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/tasks/{id}",
+        "componentId": "card"
+      },
+      "label": "Today's tasks",
+      "empty": "status",
+      "selection": "none",
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No tasks found for today",
+      "message": "You have no tasks scheduled for today.",
+      "action": "ui_dismiss",
+      "id": "status"
+    },
+    {
+      "id": "ui_dismiss",
+      "component": "Action",
+      "label": "Dismiss",
+      "action": {
+        "event": {
+          "name": "ui.dismiss"
+        }
+      }
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/title"
+      },
+      "subtitle": {
+        "path": "/project"
+      },
+      "children": [
+        "text"
+      ],
+      "action": {
+        "event": {
+          "name": "task.open",
+          "context": {
+            "id": {
+              "path": "/id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/done"
+        },
+        "label": {
+          "path": "/done_label"
+        }
+      },
+      "id": "card"
+    },
+    {
+      "component": "Text",
+      "text": "Due: {{date}}",
+      "id": "text"
+    }
+  ],
+  "surface": {
+    "id": "tasks_today",
+    "title": "What's on my plate today",
+    "intent": "tasks.today"
   }
 }

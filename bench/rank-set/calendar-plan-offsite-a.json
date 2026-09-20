@@ -1,0 +1,241 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "draft": {
+      "title": "",
+      "start": null,
+      "end": null,
+      "location": "",
+      "attendees": [],
+      "agenda": "",
+      "catering": null,
+      "rooms": false,
+      "budget": null
+    },
+    "team": [
+      {
+        "id": "u1",
+        "name": "Neel Shah"
+      },
+      {
+        "id": "u2",
+        "name": "Maya Chen"
+      },
+      {
+        "id": "u3",
+        "name": "Dan Okafor"
+      },
+      {
+        "id": "u4",
+        "name": "Priya Rao"
+      }
+    ],
+    "catering": [
+      {
+        "value": "none",
+        "label": "No catering"
+      },
+      {
+        "value": "lunch",
+        "label": "Lunch only"
+      },
+      {
+        "value": "full",
+        "label": "Breakfast, lunch and dinner"
+      }
+    ],
+    "currency": "GBP"
+  },
+  "root": "form",
+  "components": [
+    {
+      "component": "Form",
+      "children": [
+        "title",
+        "location",
+        "start",
+        "end",
+        "attendees",
+        "agenda",
+        "catering",
+        "rooms",
+        "budget"
+      ],
+      "submit": {
+        "label": "Create event",
+        "action": {
+          "event": {
+            "name": "event.create",
+            "context": {
+              "title": {
+                "path": "/draft/title"
+              },
+              "start": {
+                "path": "/draft/start"
+              },
+              "end": {
+                "path": "/draft/end"
+              },
+              "location": {
+                "path": "/draft/location"
+              },
+              "attendees": {
+                "path": "/draft/attendees"
+              },
+              "agenda": {
+                "path": "/draft/agenda"
+              },
+              "catering": {
+                "path": "/draft/catering"
+              },
+              "rooms": {
+                "path": "/draft/rooms"
+              },
+              "budget": {
+                "path": "/draft/budget"
+              }
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "form"
+    },
+    {
+      "component": "TextInput",
+      "key": "title",
+      "label": "Title",
+      "value": {
+        "path": "/draft/title"
+      },
+      "required": true,
+      "id": "title"
+    },
+    {
+      "component": "TextInput",
+      "key": "location",
+      "label": "Location",
+      "value": {
+        "path": "/draft/location"
+      },
+      "required": true,
+      "id": "location"
+    },
+    {
+      "component": "TextInput",
+      "key": "start",
+      "label": "Start date",
+      "value": {
+        "path": "/draft/start"
+      },
+      "required": true,
+      "id": "start"
+    },
+    {
+      "component": "TextInput",
+      "key": "end",
+      "label": "End date",
+      "value": {
+        "path": "/draft/end"
+      },
+      "required": true,
+      "id": "end"
+    },
+    {
+      "component": "Collection",
+      "key": "attendees",
+      "items": {
+        "path": "/team/{id}",
+        "componentId": "id"
+      },
+      "label": "Attendees",
+      "empty": "status",
+      "selection": "multiple",
+      "selected": {
+        "path": "/draft/attendees"
+      },
+      "layout": "list",
+      "id": "attendees"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No attendees added",
+      "message": "Please add attendees to proceed.",
+      "id": "status"
+    },
+    {
+      "id": "id",
+      "component": "Text",
+      "text": {
+        "path": "/name"
+      }
+    },
+    {
+      "component": "TextInput",
+      "key": "agenda",
+      "label": "Agenda",
+      "value": {
+        "path": "/draft/agenda"
+      },
+      "required": false,
+      "id": "agenda"
+    },
+    {
+      "component": "Choice",
+      "key": "catering",
+      "label": "Catering preference",
+      "options": [
+        {
+          "value": "none",
+          "label": "No catering"
+        },
+        {
+          "value": "lunch",
+          "label": "Lunch only"
+        },
+        {
+          "value": "full",
+          "label": "Breakfast, lunch and dinner"
+        }
+      ],
+      "value": {
+        "path": "/draft/catering"
+      },
+      "required": false,
+      "id": "catering"
+    },
+    {
+      "component": "Toggle",
+      "key": "rooms",
+      "label": "Need breakout rooms",
+      "value": {
+        "path": "/draft/rooms"
+      },
+      "description": "Select if dedicated rooms are required for the offsite.",
+      "id": "rooms"
+    },
+    {
+      "component": "TextInput",
+      "key": "budget",
+      "label": "Budget",
+      "value": {
+        "path": "/draft/budget"
+      },
+      "required": true,
+      "id": "budget"
+    }
+  ],
+  "surface": {
+    "id": "calendar_event_creation",
+    "title": "Set up the team offsite",
+    "intent": "calendar.event.create"
+  }
+}

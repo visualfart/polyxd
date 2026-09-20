@@ -1,56 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "money_card_freeze",
-    "title": "Freeze debit card",
-    "intent": "money.card.freeze"
-  },
-  "root": {
-    "component": "Card",
-    "title": {
-      "path": "/card/name"
-    },
-    "subtitle": {
-      "path": "/card/last4"
-    },
-    "children": [
-      {
-        "component": "Action",
-        "label": {
-          "path": "/card/name"
-        },
-        "action": {
-          "event": {
-            "name": "card.freeze",
-            "context": {
-              "cardId": {
-                "path": "/card/id"
-              }
-            }
-          }
-        },
-        "emphasis": "primary"
-      }
-    ],
-    "action": {
-      "event": {
-        "name": "card.freeze",
-        "context": {
-          "cardId": {
-            "path": "/card/id"
-          }
-        }
-      }
-    },
-    "progress": {
-      "value": {
-        "path": "/card/status"
-      },
-      "label": {
-        "path": "/card/status"
-      }
-    }
-  },
   "data": {
     "card": {
       "id": "card_1",
@@ -59,5 +8,62 @@
       "status": "active",
       "lastUsed": "Pret A Manger, 18 Sep, 08:12"
     }
+  },
+  "root": "card",
+  "components": [
+    {
+      "component": "Card",
+      "title": {
+        "path": "/card/name"
+      },
+      "subtitle": {
+        "path": "/card/last4"
+      },
+      "children": [
+        "action"
+      ],
+      "action": {
+        "event": {
+          "name": "card.freeze",
+          "context": {
+            "cardId": {
+              "path": "/card/id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/card/status"
+        },
+        "label": {
+          "path": "/card/status"
+        }
+      },
+      "id": "card"
+    },
+    {
+      "component": "Action",
+      "label": {
+        "path": "/card/name"
+      },
+      "action": {
+        "event": {
+          "name": "card.freeze",
+          "context": {
+            "cardId": {
+              "path": "/card/id"
+            }
+          }
+        }
+      },
+      "emphasis": "primary",
+      "id": "action"
+    }
+  ],
+  "surface": {
+    "id": "money_card_freeze",
+    "title": "Freeze debit card",
+    "intent": "money.card.freeze"
   }
 }

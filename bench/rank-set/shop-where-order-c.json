@@ -1,0 +1,141 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "order": {
+      "id": "o_5521",
+      "status": "Out for delivery",
+      "eta": "Today, 14:00–16:00",
+      "carrier": "DPD",
+      "items": [
+        {
+          "id": "i1",
+          "name": "Blue enamel mug",
+          "qty": 2
+        },
+        {
+          "id": "i2",
+          "name": "Pour-over kettle",
+          "qty": 1
+        }
+      ]
+    }
+  },
+  "root": "card",
+  "components": [
+    {
+      "component": "Card",
+      "title": "Order o_5521",
+      "subtitle": "Status: Out for delivery",
+      "children": [
+        "detaillist",
+        "detaillist-2",
+        "detaillist-3",
+        "detaillist-4",
+        "detaillist-5",
+        "detaillist-6"
+      ],
+      "action": {
+        "event": {
+          "name": "order.open",
+          "context": {
+            "id": {
+              "path": "/order/id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/order/status"
+        },
+        "label": {
+          "path": "/order/status"
+        }
+      },
+      "id": "card"
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "item_id",
+          "label": "Item",
+          "value": {
+            "path": "/order/items/0/id"
+          }
+        }
+      ],
+      "id": "detaillist"
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "item_id",
+          "label": "Item",
+          "value": {
+            "path": "/order/items/1/id"
+          }
+        }
+      ],
+      "id": "detaillist-2"
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "item_id",
+          "label": "Item",
+          "value": {
+            "path": "/order/items/2/id"
+          }
+        }
+      ],
+      "id": "detaillist-3"
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "item_id",
+          "label": "Item",
+          "value": {
+            "path": "/order/items/3/id"
+          }
+        }
+      ],
+      "id": "detaillist-4"
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "item_id",
+          "label": "Item",
+          "value": {
+            "path": "/order/items/4/id"
+          }
+        }
+      ],
+      "id": "detaillist-5"
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "item_id",
+          "label": "Item",
+          "value": {
+            "path": "/order/items/5/id"
+          }
+        }
+      ],
+      "id": "detaillist-6"
+    }
+  ],
+  "surface": {
+    "id": "commerce_order_tracking",
+    "title": "My order status",
+    "intent": "commerce.order.track"
+  }
+}

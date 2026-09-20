@@ -1,0 +1,226 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "team": [
+      {
+        "id": {}
+      }
+    ],
+    "catering": [
+      {
+        "value": {
+          "path": "/catering/value"
+        },
+        "label": {
+          "path": "/catering/label"
+        }
+      }
+    ],
+    "currency": {
+      "path": "/currency"
+    }
+  },
+  "root": "steps",
+  "components": [
+    {
+      "component": "Steps",
+      "steps": [
+        {
+          "key": "details",
+          "title": "Event details",
+          "content": "form"
+        },
+        {
+          "key": "attendees",
+          "title": "Select attendees",
+          "content": "collection"
+        },
+        {
+          "key": "agenda",
+          "title": "Agenda and budget",
+          "content": "group"
+        }
+      ],
+      "current": 1,
+      "finish": {
+        "label": "Proceed to review",
+        "action": {
+          "event": {
+            "name": "event.create",
+            "context": {
+              "title": {
+                "path": "/draft/title"
+              },
+              "start": {
+                "path": "/draft/start"
+              },
+              "end": {
+                "path": "/draft/end"
+              },
+              "location": {
+                "path": "/draft/location"
+              },
+              "attendees": {
+                "path": "/draft/attendees"
+              },
+              "agenda": {
+                "path": "/draft/agenda"
+              },
+              "catering": {
+                "path": "/draft/catering"
+              },
+              "rooms": {
+                "path": "/draft/rooms"
+              },
+              "budget": {
+                "path": "/draft/budget"
+              }
+            }
+          }
+        }
+      },
+      "id": "steps"
+    },
+    {
+      "component": "Form",
+      "children": [
+        "title",
+        "start",
+        "end",
+        "location"
+      ],
+      "submit": {
+        "label": "Review and confirm",
+        "action": {
+          "event": {
+            "name": "event.create",
+            "context": {
+              "title": {
+                "path": "/draft/title"
+              },
+              "start": {
+                "path": "/draft/start"
+              },
+              "end": {
+                "path": "/draft/end"
+              },
+              "location": {
+                "path": "/draft/location"
+              }
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "form"
+    },
+    {
+      "component": "TextInput",
+      "key": "title",
+      "label": "Title",
+      "value": {
+        "path": "/draft/title"
+      },
+      "required": true,
+      "id": "title"
+    },
+    {
+      "component": "TextInput",
+      "key": "start",
+      "label": "Start date and time",
+      "value": {
+        "path": "/draft/start"
+      },
+      "required": true,
+      "id": "start"
+    },
+    {
+      "component": "TextInput",
+      "key": "end",
+      "label": "End date and time",
+      "value": {
+        "path": "/draft/end"
+      },
+      "required": true,
+      "id": "end"
+    },
+    {
+      "component": "TextInput",
+      "key": "location",
+      "label": "Location",
+      "value": {
+        "path": "/draft/location"
+      },
+      "required": true,
+      "id": "location"
+    },
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/team/{id}",
+        "componentId": "text"
+      },
+      "label": "Select attendees",
+      "empty": "status",
+      "selection": "multiple",
+      "selected": {
+        "path": "/draft/attendees"
+      },
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No attendees added",
+      "message": "Please add attendees to proceed.",
+      "id": "status"
+    },
+    {
+      "component": "Text",
+      "text": {
+        "path": "/name"
+      },
+      "id": "text"
+    },
+    {
+      "component": "Group",
+      "children": [
+        "agenda",
+        "budget"
+      ],
+      "id": "group"
+    },
+    {
+      "component": "TextInput",
+      "key": "agenda",
+      "label": "Agenda",
+      "value": {
+        "path": "/draft/agenda"
+      },
+      "required": true,
+      "id": "agenda"
+    },
+    {
+      "component": "TextInput",
+      "key": "budget",
+      "label": "Budget",
+      "value": {
+        "path": "/draft/budget"
+      },
+      "required": true,
+      "id": "budget"
+    }
+  ],
+  "surface": {
+    "id": "calendar_event_creation",
+    "title": "Create team offsite event",
+    "intent": "calendar.event.create"
+  }
+}
