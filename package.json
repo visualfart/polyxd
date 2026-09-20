@@ -10,7 +10,8 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "typecheck": "tsc -b",
-    "check:licences": "node scripts/check-licences.ts"
+    "check:licences": "node scripts/check-licences.ts",
+    "test:all": "node scripts/test-all.ts"
   },
   "engines": {
     "node": ">=22"

@@ -565,10 +565,13 @@
   flex-direction: column;
   gap: var(--pxd-space-stack-tight);
 }
+/* Not the danger colour: that one is only guaranteed 3:1, which is the floor for a graphic, and
+   this is a character someone reads. What marks the field is the mark's presence and the legend
+   that explains it, not its redness. */
 .pxd-required {
   margin-inline-start: 0.125em;
   font-weight: 400;
-  color: var(--pxd-color-status-danger-emphasis);
+  color: var(--pxd-color-text-default);
 }
 .pxd-required-legend {
   margin: 0;
