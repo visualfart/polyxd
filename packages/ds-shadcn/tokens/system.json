@@ -1,0 +1,300 @@
+{
+  "$description": "Tailwind CSS v4 scales (4.3.3) and shadcn's --radius, the same in both modes.",
+  "tailwind": {
+    "text": {
+      "$type": "dimension",
+      "xs": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "sm": {
+        "$value": {
+          "value": 14,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "base": {
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "lg": {
+        "$value": {
+          "value": 18,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "xl": {
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "2xl": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      },
+      "3xl": {
+        "$value": {
+          "value": 30,
+          "unit": "px"
+        },
+        "$type": "dimension"
+      }
+    },
+    "space": {
+      "1": {
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "2": {
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      },
+      "3": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "4": {
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "6": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "8": {
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      },
+      "11": {
+        "$value": {
+          "value": 44,
+          "unit": "px"
+        }
+      },
+      "12": {
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        }
+      },
+      "$type": "dimension"
+    },
+    "font": {
+      "sans": {
+        "$value": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial,\n    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+        "$type": "fontFamily"
+      },
+      "mono": {
+        "$value": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',\n    monospace",
+        "$type": "fontFamily"
+      }
+    },
+    "weight": {
+      "$type": "number",
+      "normal": {
+        "$value": 400
+      },
+      "medium": {
+        "$value": 500
+      },
+      "semibold": {
+        "$value": 600
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "sm": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 3,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.1)"
+          },
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 2,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -1,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.1)"
+          }
+        ]
+      },
+      "lg": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 10,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 15,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -3,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.1)"
+          },
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 4,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 6,
+              "unit": "px"
+            },
+            "spread": {
+              "value": -4,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.1)"
+          }
+        ]
+      }
+    },
+    "ease": {
+      "$type": "cubicBezier",
+      "out": {
+        "$value": [
+          0,
+          0,
+          0.2,
+          1
+        ]
+      },
+      "in": {
+        "$value": [
+          0.4,
+          0,
+          1,
+          1
+        ]
+      },
+      "in-out": {
+        "$value": [
+          0.4,
+          0,
+          0.2,
+          1
+        ]
+      }
+    },
+    "duration": {
+      "75": {
+        "$value": {
+          "value": 75,
+          "unit": "ms"
+        }
+      },
+      "150": {
+        "$value": {
+          "value": 150,
+          "unit": "ms"
+        }
+      },
+      "200": {
+        "$value": {
+          "value": 200,
+          "unit": "ms"
+        }
+      },
+      "300": {
+        "$value": {
+          "value": 300,
+          "unit": "ms"
+        }
+      },
+      "$type": "duration"
+    }
+  },
+  "shadcn": {
+    "radius": {
+      "$type": "dimension",
+      "sm": {
+        "$value": {
+          "value": 6,
+          "unit": "px"
+        }
+      },
+      "md": {
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      },
+      "lg": {
+        "$value": {
+          "value": 10,
+          "unit": "px"
+        }
+      },
+      "full": {
+        "$value": {
+          "value": 9999,
+          "unit": "px"
+        }
+      }
+    }
+  }
+}

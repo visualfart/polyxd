@@ -1,0 +1,27 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "shadcn",
+  "displayName": "shadcn/ui on Tailwind CSS",
+  "version": "0.0.0",
+  "contractVersion": "0.1.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": ["tokens/system.json", "tokens/system.light.json", "tokens/semantic.json"],
+    "dark": ["tokens/system.json", "tokens/system.dark.json", "tokens/semantic.json"]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "shadcn/ui default theme (https://github.com/shadcn-ui/ui, apps/v4/app/globals.css)",
+      "version": "main @ 2026-09-20",
+      "license": "MIT",
+      "notes": "The :root and .dark variable blocks, vendored verbatim as scripts/sources/shadcn/{light,dark}.json."
+    },
+    {
+      "source": "npm:tailwindcss theme.css (https://github.com/tailwindlabs/tailwindcss)",
+      "version": "4.3.3",
+      "license": "MIT",
+      "notes": "The palette, type scale, spacing base, radii, shadows and easings, vendored as scripts/sources/shadcn/tailwind.json."
+    }
+  ]
+}

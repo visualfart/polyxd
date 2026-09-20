@@ -26,6 +26,8 @@ const PACK_INFO: Record<string, { name: string; by: string }> = {
   material3: { name: "Material 3", by: "Google · Roboto" },
   carbon: { name: "Carbon", by: "IBM · IBM Plex Sans" },
   antd: { name: "Ant Design", by: "Ant Group" },
+  fluent: { name: "Fluent 2", by: "Microsoft · Segoe UI" },
+  shadcn: { name: "shadcn/ui", by: "Tailwind CSS v4" },
 };
 const packs: Pack[] = themes.map((key) => ({ key, ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) }));
 

@@ -1,0 +1,479 @@
+{
+  "$description": "Polyxd semantic tier for shadcn/ui on Tailwind v4. Every token aliases a shadcn variable or a Tailwind scale wherever one exists; polyxd.* marks what shadcn's default theme leaves out (status colours, chart hues). The file is the same in both modes.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{shadcn.background}"
+      },
+      "subtle": {
+        "$value": "{shadcn.muted}",
+        "$description": "shadcn's muted fill, used for table headers and wells"
+      },
+      "raised": {
+        "$value": "{shadcn.card}",
+        "$description": "shadcn's card surface"
+      },
+      "overlay": {
+        "$value": "{shadcn.popover}",
+        "$description": "shadcn's popover and dialog surface"
+      },
+      "inverse": {
+        "$value": "{shadcn.primary}"
+      }
+    },
+    "scrim": {
+      "$value": "rgba(0, 0, 0, 0.5)",
+      "$description": "shadcn's overlay is bg-black/50"
+    },
+    "text": {
+      "default": {
+        "$value": "{shadcn.foreground}"
+      },
+      "muted": {
+        "$value": "{polyxd.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{shadcn.primary-foreground}"
+      },
+      "link": {
+        "$value": "{shadcn.foreground}",
+        "$description": "shadcn links are the foreground colour with an underline; the default theme has no separate link colour"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{shadcn.border}"
+      },
+      "strong": {
+        "$value": "{polyxd.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.focus-ring}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{shadcn.primary}"
+        },
+        "foreground": {
+          "$value": "{shadcn.primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{shadcn.secondary}"
+        },
+        "foreground": {
+          "$value": "{shadcn.secondary-foreground}"
+        },
+        "border": {
+          "$value": "{shadcn.border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{shadcn.destructive}"
+        },
+        "foreground": {
+          "$value": "{shadcn.background}",
+          "$description": "White on shadcn's destructive red; its own destructive-foreground is a near-red that doesn't carry text"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{shadcn.accent}",
+        "$description": "shadcn's accent fill marks selection"
+      },
+      "foreground": {
+        "$value": "{shadcn.accent-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{polyxd.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{polyxd.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{polyxd.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polyxd.sys.data-1}"
+        },
+        "2": {
+          "$value": "{polyxd.sys.data-2}"
+        },
+        "3": {
+          "$value": "{polyxd.sys.data-3}"
+        },
+        "4": {
+          "$value": "{polyxd.sys.data-4}"
+        },
+        "5": {
+          "$value": "{polyxd.sys.data-5}"
+        },
+        "6": {
+          "$value": "{polyxd.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{polyxd.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{polyxd.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{polyxd.sys.data-neutral}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{tailwind.font.sans}",
+          "fontSize": "{tailwind.text.3xl}",
+          "fontWeight": "{tailwind.weight.semibold}",
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{tailwind.font.sans}",
+          "fontSize": "{tailwind.text.xl}",
+          "fontWeight": "{tailwind.weight.semibold}",
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{tailwind.font.sans}",
+          "fontSize": "{tailwind.text.base}",
+          "fontWeight": "{tailwind.weight.semibold}",
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{tailwind.font.sans}",
+          "fontSize": "{tailwind.text.base}",
+          "fontWeight": "{tailwind.weight.normal}",
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{tailwind.font.sans}",
+          "fontSize": "{tailwind.text.sm}",
+          "fontWeight": "{tailwind.weight.normal}",
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{tailwind.font.sans}",
+          "fontSize": "{tailwind.text.sm}",
+          "fontWeight": "{tailwind.weight.medium}",
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{tailwind.font.sans}",
+          "fontSize": "{tailwind.text.xs}",
+          "fontWeight": "{tailwind.weight.medium}",
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{tailwind.font.sans}",
+          "fontSize": "{tailwind.text.2xl}",
+          "fontWeight": "{tailwind.weight.semibold}",
+          "lineHeight": {
+            "value": 1.5,
+            "unit": "px"
+          },
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{tailwind.space.2}"
+      },
+      "default": {
+        "$value": "{tailwind.space.4}"
+      },
+      "comfortable": {
+        "$value": "{tailwind.space.6}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{tailwind.space.1}"
+      },
+      "default": {
+        "$value": "{tailwind.space.2}"
+      },
+      "loose": {
+        "$value": "{tailwind.space.4}"
+      },
+      "section": {
+        "$value": "{tailwind.space.8}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{tailwind.space.1}"
+      },
+      "default": {
+        "$value": "{tailwind.space.2}"
+      },
+      "loose": {
+        "$value": "{tailwind.space.4}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": {
+          "value": 44,
+          "unit": "px"
+        },
+        "$description": "shadcn's default button is 36px (h-9); 44px is the touch target a generated surface is held to"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{tailwind.text.sm}"
+      },
+      "default": {
+        "$value": "{tailwind.text.lg}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{shadcn.radius.sm}"
+    },
+    "default": {
+      "$value": "{shadcn.radius.md}"
+    },
+    "large": {
+      "$value": "{shadcn.radius.lg}"
+    },
+    "full": {
+      "$value": "{shadcn.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        }
+      },
+      "strong": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        },
+        "$description": "shadcn's focus-visible:ring-[3px]"
+      },
+      "offset": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": 65,
+      "$type": "number",
+      "$description": "Characters per line for running text (Polyxd; Tailwind has no measure token beyond prose)"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{tailwind.shadow.sm}"
+    },
+    "overlay": {
+      "$value": "{tailwind.shadow.lg}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{tailwind.duration.75}"
+      },
+      "short": {
+        "$value": "{tailwind.duration.150}"
+      },
+      "medium": {
+        "$value": "{tailwind.duration.200}"
+      },
+      "long": {
+        "$value": "{tailwind.duration.300}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{tailwind.ease.in-out}"
+      },
+      "enter": {
+        "$value": "{tailwind.ease.out}"
+      },
+      "exit": {
+        "$value": "{tailwind.ease.in}"
+      }
+    }
+  }
+}

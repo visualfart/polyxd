@@ -1,0 +1,21 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "fluent",
+  "displayName": "Microsoft Fluent 2",
+  "version": "0.0.0",
+  "contractVersion": "0.1.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": ["tokens/system.light.json", "tokens/semantic.json"],
+    "dark": ["tokens/system.dark.json", "tokens/semantic.json"]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:@fluentui/tokens (https://github.com/microsoft/fluentui/tree/master/packages/tokens)",
+      "version": "1.0.0-alpha.24",
+      "license": "MIT",
+      "notes": "webLightTheme and webDarkTheme, vendored verbatim as scripts/sources/fluent/{light,dark}.json. Token names are kept as Fluent publishes them."
+    }
+  ]
+}

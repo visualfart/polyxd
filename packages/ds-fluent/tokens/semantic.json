@@ -1,0 +1,444 @@
+{
+  "$description": "Polyxd semantic tier for Fluent 2 (light = webLightTheme, dark = webDarkTheme). Every token aliases a Fluent token wherever Fluent has one; polyxd.* marks values Fluent does not define. The file is the same in both modes.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{fluent.colorNeutralBackground2}",
+        "$description": "Fluent's page canvas; cards sit on Background1 above it"
+      },
+      "subtle": {
+        "$value": "{fluent.colorNeutralBackground3}"
+      },
+      "raised": {
+        "$value": "{fluent.colorNeutralBackground1}",
+        "$description": "Fluent cards and surfaces"
+      },
+      "overlay": {
+        "$value": "{fluent.colorNeutralBackground1}",
+        "$description": "Fluent dialogs and flyouts"
+      },
+      "inverse": {
+        "$value": "{fluent.colorNeutralBackgroundInverted}"
+      }
+    },
+    "scrim": {
+      "$value": "{fluent.colorBackgroundOverlay}"
+    },
+    "text": {
+      "default": {
+        "$value": "{fluent.colorNeutralForeground1}"
+      },
+      "muted": {
+        "$value": "{fluent.colorNeutralForeground2}"
+      },
+      "inverse": {
+        "$value": "{fluent.colorNeutralForegroundInverted}"
+      },
+      "link": {
+        "$value": "{fluent.colorBrandForegroundLink}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{fluent.colorNeutralStroke2}",
+        "$description": "Fluent's divider stroke"
+      },
+      "strong": {
+        "$value": "{fluent.colorNeutralStrokeAccessible}",
+        "$description": "Fluent's own 3:1 stroke; colorNeutralStroke1 is 1.46:1 in light and 2.87:1 in dark, below the contract's floor for a graphic"
+      },
+      "focus": {
+        "$value": "{fluent.colorStrokeFocus2}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{fluent.colorBrandBackgroundStatic}",
+          "$description": "Contrast adjustment (dark): Fluent's colorBrandBackground is 2.48:1 on the dark canvas; Static is the same brand ramp and passes at 3.06:1, with white text on it at 5.38:1"
+        },
+        "foreground": {
+          "$value": "{fluent.colorNeutralForegroundOnBrand}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{fluent.colorNeutralBackground1}",
+          "$description": "Fluent's secondary button: Background1 with a stroke"
+        },
+        "foreground": {
+          "$value": "{fluent.colorNeutralForeground1}"
+        },
+        "border": {
+          "$value": "{fluent.colorNeutralStroke1}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{fluent.colorPaletteRedBackground3}"
+        },
+        "foreground": {
+          "$value": "{fluent.colorNeutralForegroundOnBrand}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{fluent.colorBrandBackground2}",
+        "$description": "Fluent's selected row tint"
+      },
+      "foreground": {
+        "$value": "{fluent.colorBrandForeground2}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{polyxd.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{fluent.colorStatusSuccessBackground1}"
+        },
+        "foreground": {
+          "$value": "{fluent.colorStatusSuccessForeground1}"
+        },
+        "emphasis": {
+          "$value": "{fluent.colorStatusSuccessBorderActive}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{fluent.colorStatusWarningBackground1}"
+        },
+        "foreground": {
+          "$value": "{fluent.colorStatusWarningForeground2}"
+        },
+        "emphasis": {
+          "$value": "{fluent.colorStatusWarningBorder2}",
+          "$description": "Contrast adjustment (light): colorStatusWarningBorderActive is 2.98:1 on the light canvas; Border2 is the next step of the same ramp"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{fluent.colorStatusDangerBackground1}"
+        },
+        "foreground": {
+          "$value": "{fluent.colorStatusDangerForeground1}"
+        },
+        "emphasis": {
+          "$value": "{fluent.colorStatusDangerBorderActive}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polyxd.sys.data-1}"
+        },
+        "2": {
+          "$value": "{polyxd.sys.data-2}"
+        },
+        "3": {
+          "$value": "{polyxd.sys.data-3}"
+        },
+        "4": {
+          "$value": "{polyxd.sys.data-4}"
+        },
+        "5": {
+          "$value": "{polyxd.sys.data-5}"
+        },
+        "6": {
+          "$value": "{polyxd.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{polyxd.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{polyxd.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{polyxd.sys.data-neutral}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{fluent.fontFamilyBase}",
+          "fontSize": "{fluent.fontSizeHero800}",
+          "fontWeight": "{fluent.fontWeightSemibold}",
+          "lineHeight": "{fluent.lineHeightHero800}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{fluent.fontFamilyBase}",
+          "fontSize": "{fluent.fontSizeBase500}",
+          "fontWeight": "{fluent.fontWeightSemibold}",
+          "lineHeight": "{fluent.lineHeightBase500}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{fluent.fontFamilyBase}",
+          "fontSize": "{fluent.fontSizeBase400}",
+          "fontWeight": "{fluent.fontWeightSemibold}",
+          "lineHeight": "{fluent.lineHeightBase400}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{fluent.fontFamilyBase}",
+          "fontSize": "{fluent.fontSizeBase400}",
+          "fontWeight": "{fluent.fontWeightRegular}",
+          "lineHeight": "{fluent.lineHeightBase400}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{fluent.fontFamilyBase}",
+          "fontSize": "{fluent.fontSizeBase300}",
+          "fontWeight": "{fluent.fontWeightRegular}",
+          "lineHeight": "{fluent.lineHeightBase300}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{fluent.fontFamilyBase}",
+          "fontSize": "{fluent.fontSizeBase300}",
+          "fontWeight": "{fluent.fontWeightSemibold}",
+          "lineHeight": "{fluent.lineHeightBase300}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{fluent.fontFamilyBase}",
+          "fontSize": "{fluent.fontSizeBase200}",
+          "fontWeight": "{fluent.fontWeightSemibold}",
+          "lineHeight": "{fluent.lineHeightBase200}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{fluent.fontFamilyBase}",
+          "fontSize": "{fluent.fontSizeHero700}",
+          "fontWeight": "{fluent.fontWeightSemibold}",
+          "lineHeight": "{fluent.lineHeightHero700}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{fluent.spacingHorizontalS}"
+      },
+      "default": {
+        "$value": "{fluent.spacingHorizontalM}"
+      },
+      "comfortable": {
+        "$value": "{fluent.spacingHorizontalXL}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{fluent.spacingVerticalXS}"
+      },
+      "default": {
+        "$value": "{fluent.spacingVerticalS}"
+      },
+      "loose": {
+        "$value": "{fluent.spacingVerticalL}"
+      },
+      "section": {
+        "$value": "{fluent.spacingVerticalXXXL}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{fluent.spacingHorizontalXS}"
+      },
+      "default": {
+        "$value": "{fluent.spacingHorizontalS}"
+      },
+      "loose": {
+        "$value": "{fluent.spacingHorizontalL}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{polyxd.sys.target.min}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{fluent.fontSizeBase200}"
+      },
+      "default": {
+        "$value": "{fluent.fontSizeBase500}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{fluent.borderRadiusSmall}"
+    },
+    "default": {
+      "$value": "{fluent.borderRadiusMedium}"
+    },
+    "large": {
+      "$value": "{fluent.borderRadiusLarge}"
+    },
+    "full": {
+      "$value": {
+        "value": 9999,
+        "unit": "px"
+      },
+      "$description": "Fluent's borderRadiusCircular"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{fluent.strokeWidthThin}"
+      },
+      "strong": {
+        "$value": "{fluent.strokeWidthThick}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{fluent.strokeWidthThick}"
+      },
+      "offset": {
+        "$value": "{polyxd.sys.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": 65,
+      "$type": "number",
+      "$description": "Characters per line for running text (Polyxd; Fluent has no measure token)"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{fluent.shadow4}"
+    },
+    "overlay": {
+      "$value": "{fluent.shadow16}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{fluent.durationUltraFast}"
+      },
+      "short": {
+        "$value": "{fluent.durationFaster}"
+      },
+      "medium": {
+        "$value": "{fluent.durationNormal}"
+      },
+      "long": {
+        "$value": "{fluent.durationSlow}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{fluent.curveEasyEase}"
+      },
+      "enter": {
+        "$value": "{fluent.curveDecelerateMid}"
+      },
+      "exit": {
+        "$value": "{fluent.curveAccelerateMid}"
+      }
+    }
+  }
+}
