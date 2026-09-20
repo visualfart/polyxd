@@ -1,6 +1,6 @@
 {
   "$comment": "The model's own options, ranked by a designer. Best to worst in humanRank.",
-  "rater": "",
+  "rater": null,
   "model": "mlx-community/gemma-4-e4b-it-4bit+sft-v3",
   "generatedAt": "2026-09-20",
   "groups": [
@@ -12,7 +12,12 @@
         "money-send-alex-b",
         "money-send-alex-c"
       ],
-      "humanRank": null
+      "humanRank": [
+        "money-send-alex-c",
+        "money-send-alex-b",
+        "money-send-alex-a"
+      ],
+      "comment": "CTA missing in all, none of them are good. Why are the cards having a hover color change for background, that's so weried.  The amount to be sent should be larger. The IA in all cards is off."
     },
     {
       "id": "money-spending-month",

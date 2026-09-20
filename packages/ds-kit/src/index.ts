@@ -223,6 +223,8 @@ export interface PackFiles {
   shared?: Json;
   /** The modes the pack actually has. A system with one theme ships one mode rather than a copy. */
   modes?: string[];
+  /** Layout variables the renderer defines and this pack sets; see the manifest schema. */
+  layout?: Record<string, string>;
 }
 
 /** Writes a pack's token files, manifest and package.json. */
@@ -249,6 +251,7 @@ export async function writePack(pack: PackFiles): Promise<void> {
         license: "Apache-2.0",
         modes: Object.fromEntries(modes.map((mode) => [mode, files(mode)])),
         defaultMode: modes[0],
+        ...(pack.layout ? { layout: pack.layout } : {}),
         provenance: pack.provenance,
       },
       null,

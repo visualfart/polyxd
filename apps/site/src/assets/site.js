@@ -1,21 +1,24 @@
 // Landing page: the demo's design-system tabs and the waitlist form.
 (() => {
   const tabs = [...document.querySelectorAll('.demo-tabs [role="tab"]')];
-  const select = (tab, focus) => {
+  const select = (tab, focus, reveal) => {
     for (const t of tabs) {
       const on = t === tab;
       t.setAttribute("aria-selected", String(on));
       t.tabIndex = on ? 0 : -1;
       document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
     }
+    // The row scrolls sideways, so a tab you chose has to come into it — but not on load, when
+    // the demo is still below the fold and scrolling it into view would move the whole page.
+    if (reveal) tab.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
     if (focus) tab.focus();
   };
   const sync = () => select(tabs.find((t) => t.getAttribute("aria-selected") === "true") ?? tabs[0], false);
   tabs.forEach((tab, i) => {
-    tab.addEventListener("click", () => select(tab, false));
+    tab.addEventListener("click", () => select(tab, false, true));
     tab.addEventListener("keydown", (e) => {
       const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
-      if (d) select(tabs[(i + d + tabs.length) % tabs.length], true);
+      if (d) select(tabs[(i + d + tabs.length) % tabs.length], true, true);
     });
   });
   if (tabs.length) sync();

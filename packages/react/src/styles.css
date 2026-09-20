@@ -888,6 +888,17 @@ textarea.pxd-input {
     align-items: stretch;
   }
 }
+/* A dialog's footer is the one place design systems disagree about layout rather than about
+   values: Carbon's runs the full width of the dialog in equal halves, Material's and Ant's sit
+   inline at the trailing edge. A pack sets these three variables in its manifest; the defaults
+   here are the inline footer, so a pack that says nothing keeps it. */
+.pxd-dialog > .pxd-action-bar {
+  gap: var(--pxd-layout-action-gap, var(--pxd-space-inline-default));
+  margin: var(--pxd-layout-action-bleed, 0);
+}
+.pxd-dialog > .pxd-action-bar > .pxd-button {
+  flex: var(--pxd-layout-action-item, 0 0 auto);
+}
 
 /* Flow */
 .pxd-steps {

@@ -23,6 +23,12 @@
       }
     },
     "defaultMode": { "type": "string" },
+    "layout": {
+      "type": "object",
+      "description": "Layout variables this system's components differ on, which tokens can't express: Carbon's modal footer runs the full width of the dialog, Material's sits inline at the trailing edge. The renderer defines the variables and their defaults; a pack may set them and may not add rules.",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": { "type": "string" }
+    },
     "provenance": {
       "type": "array",
       "description": "Where the values came from, so packs stay auditable",

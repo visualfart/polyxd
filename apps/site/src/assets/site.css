@@ -322,17 +322,27 @@ a {
 .demo-arrow {
   color: var(--night-faint);
 }
-/* Thirteen packs, so the row wraps rather than dividing the width thirteen ways. */
+/* Thirteen packs and counting, so one row that scrolls sideways rather than a block that wraps:
+   the row stays one line at every width, and the mask says there is more of it off the edge. */
 .demo-tabs {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   gap: 6px;
   padding: 6px;
   background: var(--night-3);
   border-radius: 16px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+}
+.demo-tabs::-webkit-scrollbar {
+  display: none;
 }
 .demo-tabs button {
+  flex: none;
+  scroll-snap-align: center;
   min-height: 40px;
   padding: 0 14px;
   border: 0;
@@ -340,6 +350,7 @@ a {
   background: transparent;
   color: var(--night-muted);
   font: 600 14px var(--body);
+  white-space: nowrap;
   cursor: pointer;
 }
 .demo-tabs button[aria-selected="true"] {
@@ -446,10 +457,17 @@ a {
 .stage .row span:first-child {
   color: var(--pxd-color-text-muted);
 }
+/* The footer follows the pack's own layout variables, the same ones the renderer's dialog uses:
+   Carbon's runs the full width of the card in equal halves, everyone else's sits at the end. */
 .stage .acts {
   display: flex;
   justify-content: flex-end;
-  gap: var(--pxd-space-inline-default);
+  gap: var(--pxd-layout-action-gap, var(--pxd-space-inline-default));
+  margin: var(--pxd-layout-action-bleed, 0);
+}
+.stage .acts .b {
+  flex: var(--pxd-layout-action-item, 0 0 auto);
+  justify-content: center;
 }
 .stage .b {
   display: inline-flex;

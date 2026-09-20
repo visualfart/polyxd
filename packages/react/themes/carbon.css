@@ -122,6 +122,11 @@
   --pxd-motion-easing-enter: cubic-bezier(0, 0, 0.38, 0.9);
   --pxd-motion-easing-exit: cubic-bezier(0.2, 0, 1, 0.9);
 
+  /* Layout this system's components differ on, which tokens can't express (see the manifest) */
+  --pxd-layout-action-gap: 1px;
+  --pxd-layout-action-item: 1 1 0;
+  --pxd-layout-action-bleed: var(--pxd-space-stack-default) calc(-1 * var(--pxd-space-inset-comfortable)) calc(-1 * var(--pxd-space-inset-comfortable));
+
   /* shadcn/ui variable names, so shadcn components follow this pack too */
   --background: var(--pxd-color-surface-default);
   --foreground: var(--pxd-color-text-default);
@@ -270,6 +275,11 @@
   --pxd-motion-easing-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
   --pxd-motion-easing-enter: cubic-bezier(0, 0, 0.38, 0.9);
   --pxd-motion-easing-exit: cubic-bezier(0.2, 0, 1, 0.9);
+
+  /* Layout this system's components differ on, which tokens can't express (see the manifest) */
+  --pxd-layout-action-gap: 1px;
+  --pxd-layout-action-item: 1 1 0;
+  --pxd-layout-action-bleed: var(--pxd-space-stack-default) calc(-1 * var(--pxd-space-inset-comfortable)) calc(-1 * var(--pxd-space-inset-comfortable));
 
   /* shadcn/ui variable names, so shadcn components follow this pack too */
   --background: var(--pxd-color-surface-default);

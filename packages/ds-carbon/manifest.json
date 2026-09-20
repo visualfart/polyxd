@@ -20,6 +20,11 @@
     ]
   },
   "defaultMode": "light",
+  "layout": {
+    "action-gap": "1px",
+    "action-item": "1 1 0",
+    "action-bleed": "var(--pxd-space-stack-default) calc(-1 * var(--pxd-space-inset-comfortable)) calc(-1 * var(--pxd-space-inset-comfortable))"
+  },
   "provenance": [
     {
       "source": "npm:@carbon/colors (https://github.com/carbon-design-system/carbon/tree/main/packages/colors)",

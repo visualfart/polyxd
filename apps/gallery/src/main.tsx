@@ -83,7 +83,11 @@ function Gallery() {
   const [file, setFile] = useState(() => readParam("example", examples.map((e) => e.file), examples[0].file));
   const [theme, setTheme] = useState(() => readParam("theme", themes, themes.includes("material3") ? "material3" : themes[0]));
   const [mode, setMode] = useState<"light" | "dark">(() => readParam("mode", ["light", "dark"] as const, "light"));
-  const [width, setWidth] = useState<Width>(() => readParam("width", ["phone", "tablet", "desktop"] as const, "desktop"));
+  // A phone opens on the phone preview: a 1100px frame on a 375px screen is a horizontal scrollbar
+  // with a corner of a UI in it. Picking a wider frame still works and still scrolls the stage.
+  const [width, setWidth] = useState<Width>(() =>
+    readParam("width", ["phone", "tablet", "desktop"] as const, typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches ? "phone" : "desktop"),
+  );
   const [density, setDensity] = useState<Density>(() => readParam("density", ["comfortable", "compact", "spacious"] as const, "comfortable"));
   const [panel, setPanel] = useState<"log" | "json">("log");
   const [search, setSearch] = useState("");
@@ -178,7 +182,7 @@ function Gallery() {
         </div>
 
         <div className="g-stage">
-          <div className="g-stage-inner">
+          <div className="g-stage-inner" data-width={width}>
           <div className="g-caption" style={{ width: WIDTHS[width] }}>
             <span className="g-caption-text">{caption}</span>
             <span className="g-caption-width">{WIDTHS[width]}px</span>

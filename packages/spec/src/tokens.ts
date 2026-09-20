@@ -24,6 +24,8 @@ export interface DesignSystemManifest {
   license: string;
   modes: Record<string, string[]>;
   defaultMode: string;
+  /** Layout variables the renderer defines and this pack sets; see the schema. */
+  layout?: Record<string, string>;
 }
 
 export interface ContractIssue {
