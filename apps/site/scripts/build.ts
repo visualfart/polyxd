@@ -297,6 +297,7 @@ ${footer}
   });
 })();
 </script>
+${page.html.includes("figure class=\"chart\"") ? '<script src="/assets/charts.js" defer></script>' : ""}
 </body>
 </html>
 `;

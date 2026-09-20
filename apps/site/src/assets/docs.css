@@ -388,6 +388,46 @@
 .chart-line-dot {
   fill: var(--ink);
 }
+
+/* Marks: every point and bar is a tab stop, so it needs a focus ring and a hover state. */
+.chart-mark {
+  cursor: pointer;
+  outline: none;
+  transition:
+    opacity 120ms ease,
+    filter 120ms ease;
+}
+.chart-mark:focus-visible :is(circle, rect) {
+  stroke: var(--signal);
+  stroke-width: 3;
+  paint-order: stroke;
+}
+.chart-mark.is-active :is(circle, rect) {
+  filter: brightness(1.15);
+}
+.chart-mark.is-active circle {
+  r: 8;
+}
+/* Hovering one series in the training chart quietens the others rather than hiding them. */
+.chart-mark.is-quiet {
+  opacity: 0.35;
+}
+.chart-readout {
+  min-height: 1.5em;
+  margin: 8px 0 0;
+  font: 500 14px var(--body);
+  color: var(--ink);
+}
+.chart-readout:empty::before {
+  content: "Hover a point, or tab into the chart, for the numbers";
+  color: var(--muted);
+  font-weight: 400;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chart-mark {
+    transition: none;
+  }
+}
 .chart-line-2 {
   stroke: var(--signal);
   stroke-width: 2.5;

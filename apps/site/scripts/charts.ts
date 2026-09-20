@@ -45,6 +45,14 @@ export const shortName = (run: string) =>
     .replace("-sft-v2-fused", " + SFT v2 fused")
     .trim();
 
+/**
+ * One readable, reachable mark. A native <title> only appears on hover and never for a keyboard,
+ * so every mark is also a tab stop with its own label, and charts.js reads `data-readout` into a
+ * styled readout that follows both the pointer and the focus ring.
+ */
+const mark = (shape: string, readout: string, extra = "") =>
+  `<g class="chart-mark" tabindex="0" role="img" aria-label="${esc(readout)}" data-readout="${esc(readout)}"${extra}>${shape}</g>`;
+
 function figure(id: string, title: string, desc: string, svg: string, table: string): string {
   return `<figure class="chart" id="${id}">
 <svg viewBox="0 0 720 320" role="img" aria-labelledby="${id}-t ${id}-d" class="chart-svg">
@@ -52,6 +60,7 @@ function figure(id: string, title: string, desc: string, svg: string, table: str
 <desc id="${id}-d">${esc(desc)}</desc>
 ${svg}
 </svg>
+<p class="chart-readout" data-readout-for="${id}" role="status" aria-live="polite"></p>
 <figcaption>${esc(desc)}</figcaption>
 <details class="chart-data"><summary>The numbers behind this chart</summary>${table}</details>
 </figure>`;
@@ -82,14 +91,15 @@ export function qualityVsSpeed(lb: Leaderboard): string {
   const dots = runs
     .map((r) => {
       const isBest = r.run === best.run;
-      return `<circle cx="${x(r.latency).toFixed(1)}" cy="${y(r.score).toFixed(1)}" r="${isBest ? 8 : 5}" class="${isBest ? "chart-dot chart-dot-best" : "chart-dot"}"><title>${esc(shortName(r.run))}: ${r.score} in ${r.latency}s</title></circle>`;
+      const circle = `<circle cx="${x(r.latency).toFixed(1)}" cy="${y(r.score).toFixed(1)}" r="${isBest ? 8 : 5}" class="${isBest ? "chart-dot chart-dot-best" : "chart-dot"}"/>`;
+      return mark(circle, `${shortName(r.run)}: scored ${r.score} out of 100, ${r.latency.toFixed(1)} seconds a surface, ${Math.round(r.tps)} tokens a second`);
     })
     .join("");
   const label = `<text x="${x(best.latency) + 14}" y="${y(best.score) + 4}" class="chart-label">${esc(shortName(best.run))}</text>`;
   return figure(
     "chart-quality-speed",
     "Mean score against median latency, one point per model run",
-    `Each point is one model run: how well it scored out of 100, against how long a surface took to generate. The best run, ${shortName(best.run)}, scores ${best.score} in ${best.latency} seconds.`,
+    `Each point is one model run: how well it scored out of 100, against how long a surface took to generate. The best run, ${shortName(best.run)}, scores ${best.score} in ${best.latency.toFixed(1)} seconds.`,
     `${grid}${ticks}<text x="${pad.l}" y="${H - 8}" class="chart-axis">Median latency (seconds) →</text><text x="${pad.l - 44}" y="12" class="chart-axis">Score</text>${dots}${label}`,
     table(
       ["Run", "Score", "Latency (s)", "Tokens/s"],
@@ -111,7 +121,10 @@ export function validRates(lb: Leaderboard): string {
       const yy = pad.t + i * bandH + 3;
       const h = Math.max(6, bandH - 8);
       return `<text x="${pad.l - 10}" y="${yy + h / 2 + 4}" text-anchor="end" class="chart-tick">${esc(shortName(r.run))}</text>
-<rect x="${pad.l}" y="${yy}" width="${barW(r.valid ?? 0).toFixed(1)}" height="${h}" rx="3" class="${(r.valid ?? 0) >= 98 ? "chart-bar chart-bar-best" : "chart-bar"}"><title>${esc(shortName(r.run))}: ${r.valid}% valid</title></rect>
+${mark(
+        `<rect x="${pad.l}" y="${yy}" width="${barW(r.valid ?? 0).toFixed(1)}" height="${h}" rx="3" class="${(r.valid ?? 0) >= 98 ? "chart-bar chart-bar-best" : "chart-bar"}"/>`,
+        `${shortName(r.run)}: ${r.valid ?? "no"}% of 50 requests produced a valid document`,
+      )}
 <text x="${pad.l + barW(r.valid ?? 0) + 8}" y="${yy + h / 2 + 4}" class="chart-tick">${r.valid ?? "—"}%</text>`;
     })
     .join("");
@@ -142,7 +155,10 @@ export function lostPoints(lb: Leaderboard): string {
       const h = Math.max(8, bandH - 10);
       const w = (it.count / max) * (W - pad.l - pad.r);
       return `<text x="${pad.l - 10}" y="${yy + h / 2 + 4}" text-anchor="end" class="chart-tick">${esc(it.name)}</text>
-<rect x="${pad.l}" y="${yy}" width="${w.toFixed(1)}" height="${h}" rx="3" class="chart-bar"><title>${esc(it.name)}: ${it.count}</title></rect>
+${mark(
+        `<rect x="${pad.l}" y="${yy}" width="${w.toFixed(1)}" height="${h}" rx="3" class="chart-bar"/>`,
+        `${it.name}: ${it.count} findings`,
+      )}
 <text x="${pad.l + w + 8}" y="${yy + h / 2 + 4}" class="chart-tick">${it.count}</text>`;
     })
     .join("");
@@ -175,7 +191,10 @@ export function scoreSpread(lb: Leaderboard): string {
     .map((b, i) => {
       const h = (b.n / max) * (H - pad.t - pad.b);
       const xx = pad.l + i * bw + 12;
-      return `<rect x="${xx}" y="${H - pad.b - h}" width="${bw - 24}" height="${h}" rx="4" class="${b.lo >= 80 ? "chart-bar chart-bar-best" : "chart-bar"}"><title>${b.label}: ${b.n} requests</title></rect>
+      return `${mark(
+        `<rect x="${xx}" y="${H - pad.b - h}" width="${bw - 24}" height="${h}" rx="4" class="${b.lo >= 80 ? "chart-bar chart-bar-best" : "chart-bar"}"/>`,
+        `${b.n} of ${scores.length} requests scored ${b.label}`,
+      )}
 <text x="${xx + (bw - 24) / 2}" y="${H - pad.b - h - 8}" text-anchor="middle" class="chart-tick">${b.n}</text>
 <text x="${xx + (bw - 24) / 2}" y="${H - pad.b + 20}" text-anchor="middle" class="chart-tick">${b.label}</text>`;
     })
@@ -207,7 +226,9 @@ export function trainingProgress(lb: Leaderboard): string {
     const pts = steps.map((s, i) => `${x(i).toFixed(1)},${y(get(s)).toFixed(1)}`).join(" ");
     const last = steps[steps.length - 1];
     return `<polyline points="${pts}" class="${cls}" fill="none"/>${steps
-      .map((s, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(get(s)).toFixed(1)}" r="5" class="${cls}-dot"><title>${label} at ${esc(shortName(s.run))}: ${Math.round(get(s))}</title></circle>`)
+      .map((s, i) =>
+        mark(`<circle cx="${x(i).toFixed(1)}" cy="${y(get(s)).toFixed(1)}" r="5" class="${cls}-dot"/>`, `${label} at ${shortName(s.run)}: ${Math.round(get(s))}`, ` data-series="${cls}"`),
+      )
       .join("")}<text x="${x(steps.length - 1) + 12}" y="${y(get(last)) + 4}" class="chart-label">${esc(label)}</text>`;
   };
   const labels = steps.map((s, i) => `<text x="${x(i)}" y="${H - pad.b + 22}" text-anchor="middle" class="chart-tick">${esc(shortName(s.run).replace("Gemma 4 E4B", "Base").replace(" · tree", ""))}</text>`).join("");
