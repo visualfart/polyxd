@@ -181,10 +181,7 @@
           "fontFamily": "{bs.font-sans-serif}",
           "fontSize": "{polyxd.sys.type.h1}",
           "fontWeight": 500,
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -196,10 +193,7 @@
           "fontFamily": "{bs.font-sans-serif}",
           "fontSize": "{polyxd.sys.type.h4}",
           "fontWeight": 500,
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -211,10 +205,7 @@
           "fontFamily": "{bs.font-sans-serif}",
           "fontSize": "{polyxd.sys.type.h5}",
           "fontWeight": 500,
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -228,10 +219,7 @@
           "fontFamily": "{bs.font-sans-serif}",
           "fontSize": "{bs.body-font-size}",
           "fontWeight": 400,
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -243,10 +231,7 @@
           "fontFamily": "{bs.font-sans-serif}",
           "fontSize": "{polyxd.sys.type.small}",
           "fontWeight": 400,
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -260,10 +245,7 @@
           "fontFamily": "{bs.font-sans-serif}",
           "fontSize": "{bs.body-font-size}",
           "fontWeight": 500,
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -275,10 +257,7 @@
           "fontFamily": "{bs.font-sans-serif}",
           "fontSize": "{polyxd.sys.type.small}",
           "fontWeight": 500,
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -292,10 +271,7 @@
           "fontFamily": "{bs.font-sans-serif}",
           "fontSize": "{polyxd.sys.type.h1}",
           "fontWeight": 600,
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"

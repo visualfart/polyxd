@@ -177,10 +177,7 @@
           "fontFamily": "{tailwind.font.sans}",
           "fontSize": "{tailwind.text.3xl}",
           "fontWeight": "{tailwind.weight.semibold}",
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -192,10 +189,7 @@
           "fontFamily": "{tailwind.font.sans}",
           "fontSize": "{tailwind.text.xl}",
           "fontWeight": "{tailwind.weight.semibold}",
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -207,10 +201,7 @@
           "fontFamily": "{tailwind.font.sans}",
           "fontSize": "{tailwind.text.base}",
           "fontWeight": "{tailwind.weight.semibold}",
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -224,10 +215,7 @@
           "fontFamily": "{tailwind.font.sans}",
           "fontSize": "{tailwind.text.base}",
           "fontWeight": "{tailwind.weight.normal}",
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -239,10 +227,7 @@
           "fontFamily": "{tailwind.font.sans}",
           "fontSize": "{tailwind.text.sm}",
           "fontWeight": "{tailwind.weight.normal}",
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -256,10 +241,7 @@
           "fontFamily": "{tailwind.font.sans}",
           "fontSize": "{tailwind.text.sm}",
           "fontWeight": "{tailwind.weight.medium}",
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -271,10 +253,7 @@
           "fontFamily": "{tailwind.font.sans}",
           "fontSize": "{tailwind.text.xs}",
           "fontWeight": "{tailwind.weight.medium}",
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"
@@ -288,10 +267,7 @@
           "fontFamily": "{tailwind.font.sans}",
           "fontSize": "{tailwind.text.2xl}",
           "fontWeight": "{tailwind.weight.semibold}",
-          "lineHeight": {
-            "value": 1.5,
-            "unit": "px"
-          },
+          "lineHeight": 1.5,
           "letterSpacing": {
             "value": 0,
             "unit": "px"

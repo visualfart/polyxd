@@ -4667,11 +4667,8 @@
       "$type": "dimension"
     },
     "radius-factor": {
-      "$value": {
-        "value": 1,
-        "unit": "px"
-      },
-      "$type": "dimension"
+      "$value": 1,
+      "$type": "number"
     },
     "radius-full": {
       "$value": {

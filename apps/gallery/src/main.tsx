@@ -31,6 +31,8 @@ const PACK_INFO: Record<string, { name: string; by: string }> = {
   bootstrap: { name: "Bootstrap 5", by: "Bootstrap team" },
   mantine: { name: "Mantine 8", by: "Mantine" },
   radix: { name: "Radix Themes", by: "WorkOS · indigo" },
+  polaris: { name: "Shopify Polaris", by: "Shopify · Inter" },
+  primer: { name: "GitHub Primer", by: "GitHub · Mona Sans" },
 };
 const packs: Pack[] = themes.map((key) => ({ key, ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) }));
 

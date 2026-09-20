@@ -1,0 +1,27 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "polaris",
+  "displayName": "Shopify Polaris",
+  "version": "0.0.0",
+  "contractVersion": "0.2.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": [
+      "tokens/system.light.json",
+      "tokens/semantic.json"
+    ],
+    "dark": [
+      "tokens/system.dark.json",
+      "tokens/semantic.json"
+    ]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:@shopify/polaris-tokens dist/css/styles.css (https://github.com/Shopify/polaris)",
+      "version": "9.4.2",
+      "license": "MIT",
+      "notes": "The stylesheet is vendored verbatim as scripts/sources/polaris/styles.css; the generator reads its custom properties."
+    }
+  ]
+}

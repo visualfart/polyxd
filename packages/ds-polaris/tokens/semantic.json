@@ -1,0 +1,438 @@
+{
+  "$description": "Polyxd semantic tier for Shopify Polaris. Every token aliases a Polaris variable wherever one exists; polyxd.* marks what Polaris leaves to its components. The file is the same in both themes.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{polaris.color-bg-surface}",
+        "$description": "Polaris's card and page surface"
+      },
+      "subtle": {
+        "$value": "{polyxd.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{polaris.color-bg-surface}"
+      },
+      "overlay": {
+        "$value": "{polaris.color-bg-surface}"
+      },
+      "inverse": {
+        "$value": "{polaris.color-bg-fill-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{polaris.color-backdrop-bg}",
+      "$description": "Polaris's modal backdrop"
+    },
+    "text": {
+      "default": {
+        "$value": "{polaris.color-text}"
+      },
+      "muted": {
+        "$value": "{polyxd.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{polaris.color-text-inverse}"
+      },
+      "link": {
+        "$value": "{polyxd.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{polaris.color-border-tertiary}",
+        "$description": "Polaris's card and table divider"
+      },
+      "strong": {
+        "$value": "{polaris.color-border}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{polaris.color-bg-fill-brand}"
+        },
+        "foreground": {
+          "$value": "{polaris.color-text-brand-on-bg-fill}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{polaris.color-bg-fill}"
+        },
+        "foreground": {
+          "$value": "{polaris.color-text}"
+        },
+        "border": {
+          "$value": "{polaris.color-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{polaris.color-bg-surface-emphasis}"
+      },
+      "foreground": {
+        "$value": "{polaris.color-text-emphasis}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{polaris.color-bg-surface-info}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{polaris.color-bg-surface-success}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{polaris.color-bg-surface-warning}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polaris.color-bg-surface-critical}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polyxd.sys.data-1}"
+        },
+        "2": {
+          "$value": "{polyxd.sys.data-2}"
+        },
+        "3": {
+          "$value": "{polyxd.sys.data-3}"
+        },
+        "4": {
+          "$value": "{polyxd.sys.data-4}"
+        },
+        "5": {
+          "$value": "{polyxd.sys.data-5}"
+        },
+        "6": {
+          "$value": "{polyxd.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{polyxd.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{polyxd.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{polyxd.sys.data-neutral}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{polaris.font-family-sans}",
+          "fontSize": "{polaris.font-size-600}",
+          "fontWeight": "{polaris.font-weight-bold}",
+          "lineHeight": "{polaris.font-line-height-800}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{polaris.font-family-sans}",
+          "fontSize": "{polaris.font-size-400}",
+          "fontWeight": "{polaris.font-weight-semibold}",
+          "lineHeight": "{polaris.font-line-height-600}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{polaris.font-family-sans}",
+          "fontSize": "{polaris.font-size-350}",
+          "fontWeight": "{polaris.font-weight-semibold}",
+          "lineHeight": "{polaris.font-line-height-500}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{polaris.font-family-sans}",
+          "fontSize": "{polaris.font-size-400}",
+          "fontWeight": "{polaris.font-weight-regular}",
+          "lineHeight": "{polaris.font-line-height-600}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{polaris.font-family-sans}",
+          "fontSize": "{polaris.font-size-350}",
+          "fontWeight": "{polaris.font-weight-regular}",
+          "lineHeight": "{polaris.font-line-height-500}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{polaris.font-family-sans}",
+          "fontSize": "{polaris.font-size-325}",
+          "fontWeight": "{polaris.font-weight-medium}",
+          "lineHeight": "{polaris.font-line-height-500}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{polaris.font-family-sans}",
+          "fontSize": "{polaris.font-size-300}",
+          "fontWeight": "{polaris.font-weight-medium}",
+          "lineHeight": "{polaris.font-line-height-400}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{polaris.font-family-sans}",
+          "fontSize": "{polaris.font-size-600}",
+          "fontWeight": "{polaris.font-weight-bold}",
+          "lineHeight": "{polaris.font-line-height-800}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{polaris.space-200}"
+      },
+      "default": {
+        "$value": "{polaris.space-400}"
+      },
+      "comfortable": {
+        "$value": "{polaris.space-500}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{polaris.space-100}"
+      },
+      "default": {
+        "$value": "{polaris.space-200}"
+      },
+      "loose": {
+        "$value": "{polaris.space-400}"
+      },
+      "section": {
+        "$value": "{polaris.space-800}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{polaris.space-100}"
+      },
+      "default": {
+        "$value": "{polaris.space-200}"
+      },
+      "loose": {
+        "$value": "{polaris.space-400}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{polyxd.sys.target.min}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{polaris.font-size-350}"
+      },
+      "default": {
+        "$value": "{polaris.font-size-500}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{polaris.border-radius-100}"
+    },
+    "control": {
+      "$value": "{polaris.border-radius-200}",
+      "$description": "Polaris's button and input radius"
+    },
+    "default": {
+      "$value": "{polaris.border-radius-300}"
+    },
+    "large": {
+      "$value": "{polaris.border-radius-400}"
+    },
+    "full": {
+      "$value": "{polaris.border-radius-full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{polaris.border-width-025}"
+      },
+      "strong": {
+        "$value": "{polaris.border-width-050}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{polyxd.sys.focusRing.width}"
+      },
+      "offset": {
+        "$value": "{polyxd.sys.focusRing.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": 65,
+      "$type": "number",
+      "$description": "Characters per line for running text (Polyxd; Polaris has no measure token)"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{polaris.shadow-200}"
+    },
+    "overlay": {
+      "$value": "{polaris.shadow-400}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{polaris.motion-duration-50}"
+      },
+      "short": {
+        "$value": "{polaris.motion-duration-150}"
+      },
+      "medium": {
+        "$value": "{polaris.motion-duration-200}"
+      },
+      "long": {
+        "$value": "{polaris.motion-duration-300}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{polyxd.sys.easing.standard}"
+      },
+      "enter": {
+        "$value": "{polyxd.sys.easing.enter}"
+      },
+      "exit": {
+        "$value": "{polyxd.sys.easing.exit}"
+      }
+    }
+  }
+}

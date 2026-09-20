@@ -171,7 +171,11 @@ export function systemTier(vars: Vars, namespace: string, rules: TypeRule[], des
     // A value a design system writes as a colour: hex, a colour function, or a plain keyword.
     const looksLikeColour = /^(#|rgb|hsl|oklch|color-mix|white$|black$|transparent$)/.test(value.trim());
     if (!rule && !looksLikeColour) continue;
-    const type = rule?.type ?? "color";
+    // A unitless number is never a CSS length (except 0), but it is how every design system writes
+    // a line height. Typing one as a dimension produces `line-height: 1.5px`, which collapses every
+    // line box in the pack, so a rule that says "dimension" yields to what the value actually is.
+    const unitless = /^-?\d*\.?\d+$/.test(value.trim()) && Number(value) !== 0;
+    const type = rule ? (rule.type === "dimension" && unitless ? "number" : rule.type) : "color";
     tokens[key] = { $value: CONVERT[type](value), $type: type };
   }
   return { $description: description, [namespace]: tokens };

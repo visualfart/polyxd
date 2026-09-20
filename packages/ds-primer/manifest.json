@@ -1,0 +1,29 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "primer",
+  "displayName": "GitHub Primer",
+  "version": "0.0.0",
+  "contractVersion": "0.2.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": [
+      "tokens/system.json",
+      "tokens/system.light.json",
+      "tokens/semantic.json"
+    ],
+    "dark": [
+      "tokens/system.json",
+      "tokens/system.dark.json",
+      "tokens/semantic.json"
+    ]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:@primer/primitives dist/css (https://github.com/primer/primitives)",
+      "version": "11.10.0",
+      "license": "MIT",
+      "notes": "Primer's base and functional scales and its two theme files are vendored verbatim under scripts/sources/primer; the generator reads their custom properties."
+    }
+  ]
+}

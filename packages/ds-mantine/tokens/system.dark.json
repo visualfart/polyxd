@@ -162,39 +162,24 @@
       "$type": "dimension"
     },
     "line-height-xs": {
-      "$value": {
-        "value": 1.4,
-        "unit": "px"
-      },
-      "$type": "dimension"
+      "$value": 1.4,
+      "$type": "number"
     },
     "line-height-sm": {
-      "$value": {
-        "value": 1.45,
-        "unit": "px"
-      },
-      "$type": "dimension"
+      "$value": 1.45,
+      "$type": "number"
     },
     "line-height-md": {
-      "$value": {
-        "value": 1.55,
-        "unit": "px"
-      },
-      "$type": "dimension"
+      "$value": 1.55,
+      "$type": "number"
     },
     "line-height-lg": {
-      "$value": {
-        "value": 1.6,
-        "unit": "px"
-      },
-      "$type": "dimension"
+      "$value": 1.6,
+      "$type": "number"
     },
     "line-height-xl": {
-      "$value": {
-        "value": 1.65,
-        "unit": "px"
-      },
-      "$type": "dimension"
+      "$value": 1.65,
+      "$type": "number"
     },
     "shadow-xs": {
       "$value": [

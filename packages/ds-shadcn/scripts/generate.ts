@@ -172,7 +172,7 @@ function semanticTier(): Json {
   const t = (path: string) => ({ $value: `{tailwind.${path}}` });
   const p = (name: string) => ({ $value: `{polyxd.sys.${name}}` });
   const typo = (size: string, weight: string) => ({
-    $value: { fontFamily: "{tailwind.font.sans}", fontSize: `{tailwind.text.${size}}`, fontWeight: `{tailwind.weight.${weight}}`, lineHeight: { value: 1.5, unit: "px" }, letterSpacing: { value: 0, unit: "px" } },
+    $value: { fontFamily: "{tailwind.font.sans}", fontSize: `{tailwind.text.${size}}`, fontWeight: `{tailwind.weight.${weight}}`, lineHeight: 1.5, letterSpacing: { value: 0, unit: "px" } },
   });
   return {
     $description:

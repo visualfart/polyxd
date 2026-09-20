@@ -1,0 +1,435 @@
+{
+  "$description": "Polyxd semantic tier for GitHub Primer. Every token aliases a Primer variable wherever one exists; polyxd.* marks what Primer leaves to its components. The file is the same in both themes.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{primer.bgColor-default}"
+      },
+      "subtle": {
+        "$value": "{primer.bgColor-muted}"
+      },
+      "raised": {
+        "$value": "{primer.bgColor-default}",
+        "$description": "Primer's Box and card sit on the default background with a border, not a raised fill"
+      },
+      "overlay": {
+        "$value": "{primer.overlay-bgColor}"
+      },
+      "inverse": {
+        "$value": "{primer.bgColor-emphasis}"
+      }
+    },
+    "scrim": {
+      "$value": "{primer.overlay-backdrop-bgColor}",
+      "$description": "Primer's dialog backdrop"
+    },
+    "text": {
+      "default": {
+        "$value": "{primer.fgColor-default}"
+      },
+      "muted": {
+        "$value": "{primer.fgColor-muted}"
+      },
+      "inverse": {
+        "$value": "{primer.fgColor-onEmphasis}"
+      },
+      "link": {
+        "$value": "{primer.fgColor-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{primer.borderColor-default}"
+      },
+      "strong": {
+        "$value": "{primer.borderColor-emphasis}"
+      },
+      "focus": {
+        "$value": "{primer.focus-outlineColor}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{primer.button-primary-bgColor-rest}"
+        },
+        "foreground": {
+          "$value": "{primer.button-primary-fgColor-rest}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{primer.button-default-bgColor-rest}"
+        },
+        "foreground": {
+          "$value": "{primer.button-default-fgColor-rest}"
+        },
+        "border": {
+          "$value": "{primer.button-default-borderColor-rest}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{primer.bgColor-danger-emphasis}"
+        },
+        "foreground": {
+          "$value": "{primer.fgColor-onEmphasis}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{polyxd.sys.status-info-background}"
+      },
+      "foreground": {
+        "$value": "{polyxd.sys.status-info-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{polyxd.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{polyxd.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{polyxd.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{primer.data-blue-color-emphasis}"
+        },
+        "2": {
+          "$value": "{primer.data-green-color-emphasis}"
+        },
+        "3": {
+          "$value": "{primer.data-purple-color-emphasis}"
+        },
+        "4": {
+          "$value": "{primer.data-orange-color-emphasis}"
+        },
+        "5": {
+          "$value": "{primer.data-pink-color-emphasis}"
+        },
+        "6": {
+          "$value": "{primer.data-teal-color-emphasis}"
+        }
+      },
+      "positive": {
+        "$value": "{primer.data-green-color-emphasis}"
+      },
+      "negative": {
+        "$value": "{primer.data-red-color-emphasis}"
+      },
+      "neutral": {
+        "$value": "{primer.data-gray-color-emphasis}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{primer.fontStack-sansSerif}",
+          "fontSize": "{primer.base-text-size-xl}",
+          "fontWeight": "{primer.base-text-weight-semibold}",
+          "lineHeight": "{primer.base-text-lineHeight-tight}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{primer.fontStack-sansSerif}",
+          "fontSize": "{primer.base-text-size-lg}",
+          "fontWeight": "{primer.base-text-weight-semibold}",
+          "lineHeight": "{primer.base-text-lineHeight-snug}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{primer.fontStack-sansSerif}",
+          "fontSize": "{primer.base-text-size-md}",
+          "fontWeight": "{primer.base-text-weight-semibold}",
+          "lineHeight": "{primer.base-text-lineHeight-snug}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{primer.fontStack-sansSerif}",
+          "fontSize": "{primer.base-text-size-md}",
+          "fontWeight": "{primer.base-text-weight-normal}",
+          "lineHeight": "{primer.base-text-lineHeight-normal}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{primer.fontStack-sansSerif}",
+          "fontSize": "{primer.base-text-size-sm}",
+          "fontWeight": "{primer.base-text-weight-normal}",
+          "lineHeight": "{primer.base-text-lineHeight-relaxed}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{primer.fontStack-sansSerif}",
+          "fontSize": "{primer.base-text-size-sm}",
+          "fontWeight": "{primer.base-text-weight-medium}",
+          "lineHeight": "{primer.base-text-lineHeight-normal}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{primer.fontStack-sansSerif}",
+          "fontSize": "{primer.base-text-size-xs}",
+          "fontWeight": "{primer.base-text-weight-medium}",
+          "lineHeight": "{primer.base-text-lineHeight-normal}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{primer.fontStack-sansSerif}",
+          "fontSize": "{primer.base-text-size-xl}",
+          "fontWeight": "{primer.base-text-weight-semibold}",
+          "lineHeight": "{primer.base-text-lineHeight-tight}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{primer.space-sm}"
+      },
+      "default": {
+        "$value": "{primer.space-lg}"
+      },
+      "comfortable": {
+        "$value": "{primer.space-xl}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{primer.space-xs}"
+      },
+      "default": {
+        "$value": "{primer.space-sm}"
+      },
+      "loose": {
+        "$value": "{primer.space-md}"
+      },
+      "section": {
+        "$value": "{primer.space-xl}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{primer.space-xs}"
+      },
+      "default": {
+        "$value": "{primer.space-sm}"
+      },
+      "loose": {
+        "$value": "{primer.space-md}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{polyxd.sys.target.min}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{primer.base-size-16}"
+      },
+      "default": {
+        "$value": "{primer.base-size-20}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{primer.borderRadius-small}"
+    },
+    "control": {
+      "$value": "{primer.borderRadius-medium}",
+      "$description": "Primer's button and input radius"
+    },
+    "default": {
+      "$value": "{primer.borderRadius-medium}"
+    },
+    "large": {
+      "$value": "{primer.borderRadius-large}"
+    },
+    "full": {
+      "$value": "{primer.borderRadius-full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{primer.borderWidth-thin}"
+      },
+      "strong": {
+        "$value": "{primer.borderWidth-thick}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{primer.focus-outline-width}"
+      },
+      "offset": {
+        "$value": "{primer.focus-outline-offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{polyxd.sys.measure.max}"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{primer.shadow-resting-medium}"
+    },
+    "overlay": {
+      "$value": "{primer.shadow-floating-small}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{primer.base-duration-50}"
+      },
+      "short": {
+        "$value": "{primer.motion-duration-short}"
+      },
+      "medium": {
+        "$value": "{primer.motion-duration-medium}"
+      },
+      "long": {
+        "$value": "{primer.motion-duration-long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{primer.base-easing-easeInOut}"
+      },
+      "enter": {
+        "$value": "{primer.motion-easing-enter}"
+      },
+      "exit": {
+        "$value": "{primer.motion-easing-exit}"
+      }
+    }
+  }
+}

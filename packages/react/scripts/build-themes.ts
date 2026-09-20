@@ -70,7 +70,9 @@ export function declarations(name: string, type: string, value: unknown): [strin
         [`${v}-family`, family(t.fontFamily)],
         [`${v}-size`, dim(t.fontSize)],
         [`${v}-weight`, String(t.fontWeight)],
-        [`${v}-line-height`, String(t.lineHeight)],
+        // A line height is either a ratio (Material's 1.5) or a length (Polaris's 1.25rem); both
+        // are valid CSS, and a DTCG dimension has to keep its unit or the declaration is dropped.
+        [`${v}-line-height`, dim(t.lineHeight)],
         [`${v}-letter-spacing`, t.letterSpacing === undefined ? "normal" : dim(t.letterSpacing)],
       ];
     }

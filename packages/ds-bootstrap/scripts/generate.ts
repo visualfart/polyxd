@@ -151,7 +151,7 @@ function semanticTier(): Json {
   const bd = (name: string, description: string) => ({ $value: `{bs.${name}}`, $description: description });
   const p = (name: string) => ({ $value: `{polyxd.sys.${name}}` });
   const typo = (size: string, weight: number) => ({
-    $value: { fontFamily: "{bs.font-sans-serif}", fontSize: size.startsWith("{") ? size : `{polyxd.sys.type.${size}}`, fontWeight: weight, lineHeight: { value: 1.5, unit: "px" }, letterSpacing: { value: 0, unit: "px" } },
+    $value: { fontFamily: "{bs.font-sans-serif}", fontSize: size.startsWith("{") ? size : `{polyxd.sys.type.${size}}`, fontWeight: weight, lineHeight: 1.5, letterSpacing: { value: 0, unit: "px" } },
   });
   return {
     $description:
