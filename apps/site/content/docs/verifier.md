@@ -119,7 +119,28 @@ Start at 100. Then:
 - Failed agent runs cost up to 40, in proportion: `40 × (1 − successes / runs)`.
 - The score floors at 0. A document that fails the spec schema or structure scores 0.
 
-These weights are a starting point. The gold set in `bench/gold` (30 documents in 10 groups of original, mild drift and clearly worse) exists to calibrate them against a designer's ranking with `npm run gold -w @polyxd/verifier`. The human ranking has not been recorded yet. Known blind spot in v0: vaguer labels, terser empty-state copy and reordered actions aren't checked, so two of the mild-drift variants score the same as their originals.
+These weights are a starting point. `npm run gold -w @polyxd/verifier` measures them against a designer's ranking. Known blind spot in v0: vaguer labels, terser empty-state copy and reordered actions aren't checked, so two of the mild-drift variants score the same as their originals.
+
+## What the score is not
+
+A designer has now ranked the model's own output: twelve requests, three options each, best to worst, with notes (`bench/rank-set/ranking.json`, `npm run gold -w @polyxd/verifier -- --model`). The verifier agrees with none of it — **0% exact order, mean Kendall tau-b −0.29**.
+
+That number is the most useful result the verifier has produced, because of *how* it disagrees:
+
+- **In six of the twelve groups it can't separate the options at all.** All three score the same. Whatever the designer saw — the amount not being the biggest thing on a payment screen, an information architecture that reads in the wrong order, a horizontal bar that means nothing — the score is blind to it.
+- **Where it does discriminate, it mostly runs backwards.** Five groups score −0.82 or −1.00.
+- **It rewards a document for being small.** On "stop emailing me", the verifier's favourite has one toggle and the designer's has four: the one-toggle version can't trip the ambiguous-name check, has fewer inputs and doesn't attempt the job. The designer ranked it last, because "stop emailing me" is a question about which emails.
+- **A document that doesn't attempt the task can't make mistakes.** On "find 30 minutes with Tom and Priya", the two options that tried to send the invitation now carry an error for doing it from a card click; the option that does nothing at all scores 96 and comes top. The designer ranked that one last.
+
+None of this means the checks are wrong — the three added from this ranking each catch something real (see below). It means the score is a **floor**, not a ranking: it answers *is this correct, accessible and operable by an agent*, and it has no term at all for *does this do the job it was asked to do*. Those are two numbers, and flattening them into one makes both worse. Taste is the ranking's job, and the ranking is preference data for training, not a check.
+
+### The three checks this ranking added
+
+| Check | What it catches | From |
+|---|---|---|
+| `data:progress-not-a-fraction` | a progress bar bound to something that isn't a fraction — £40, or a field that isn't there, drawing a bar whose length means nothing | "why show the indicator horizontal bar, it's not useful at all" |
+| `flow:unnamed-commit` | a card that runs a capability above risk `none` when the whole card is clicked: a card opens a thing, a button does a thing | "CTA missing in all" |
+| `copy:empty-description` | a description that is its own label again with filler around it ("Email" → "Receive email alerts") | "the descriptions of each notification are not useful … must not be redundant" |
 
 ## Consistency
 

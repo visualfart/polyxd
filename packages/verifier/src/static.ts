@@ -28,6 +28,20 @@ function valueAt(data: unknown, pointer?: string): unknown {
 }
 
 /**
+ * The first item a component renders, when it is a collection's template rather than a component
+ * in its own right: a Card inside a Collection reads its bindings from each item, so a path like
+ * `progress` means the item's progress, not the document's.
+ */
+function itemScope(doc: any, node: any): unknown {
+  const owner = (doc.components ?? []).find((c: any) => c.items?.componentId === node.id);
+  const items = owner ? valueAt(doc.data, owner.items.path) : undefined;
+  return Array.isArray(items) ? items[0] : undefined;
+}
+
+/** An item-scoped path has no leading slash; make it a pointer either way. */
+const pointerIn = (path?: string) => (path === undefined ? undefined : path.startsWith("/") ? path : `/${path}`);
+
+/**
  * Document-level checks that need no rendering: the spec validator, the declared pattern,
  * capabilities, direction/acceptance rules, plus agent-readiness heuristics.
  */
@@ -97,6 +111,51 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
     const matches = items.filter((it: any) => String(valueAt(it, "/" + c.itemTitle) ?? "") === String(wanted ?? ""));
     if (matches.length !== 1) {
       out.push({ severity: matches.length ? "error" : "warning", check: "choice:one-recommendation", message: `${c.id} recommends "${wanted}", which matches ${matches.length} of ${items.length} options` });
+    }
+  }
+
+  // A whole-card click has no label of its own: its accessible name is the card's title, which
+  // says what the thing is, not what pressing it does. Opening something that way is fine (risk
+  // "none"); inviting people to a meeting is not. A card opens a thing, a button does a thing.
+  if (opts.registry) {
+    for (const c of order) {
+      if (c.component !== "Card" && c.component !== "Collection") continue;
+      const event = c.action?.event?.name;
+      const risk = event ? opts.registry.capabilities[event]?.risk : undefined;
+      if (risk && risk !== "none") {
+        out.push({
+          severity: "error",
+          check: "flow:unnamed-commit",
+          message: `${c.id} runs ${event} (${risk}) when the whole card is clicked: a card opens a thing, a button does a thing`,
+        });
+      }
+    }
+  }
+
+  // A progress bar is a fraction of something finished. Bound to an amount of money, or to a
+  // field that isn't there, it draws a bar whose length means nothing.
+  for (const c of order) {
+    if (!c.progress) continue;
+    const value = typeof c.progress.value === "number" ? c.progress.value : valueAt(itemScope(doc, c) ?? doc.data, pointerIn(c.progress.value?.path));
+    if (typeof value !== "number" || Number.isNaN(value)) {
+      out.push({ severity: "error", check: "data:progress-not-a-fraction", message: `${c.id}.progress reads ${c.progress.value?.path ?? "a value"}, which isn't a number` });
+    } else if (value < 0 || value > 1) {
+      out.push({ severity: "error", check: "data:progress-not-a-fraction", message: `${c.id}.progress is ${value}: progress runs from 0 to 1, so this bar's length means nothing` });
+    }
+  }
+
+  // A description under a label has to add something. "Email → Receive email alerts" is the label
+  // again with filler around it, and it costs a line of reading for nothing.
+  const FILLER = /^(receive|get|send|show|enable|allow|turn|on|off|and|or|the|a|an|your|you|via|by|to|for|of|with|in|me|us|notification|notifications|alert|alerts|email|emails|message|messages|update|updates|setting|settings)$/i;
+  const words = (s: string) => s.toLowerCase().match(/[a-z0-9']+/g) ?? [];
+  for (const c of order) {
+    const label = typeof c.label === "string" ? c.label : typeof c.title === "string" ? c.title : undefined;
+    const description = typeof c.description === "string" ? c.description : typeof c.subtitle === "string" ? c.subtitle : undefined;
+    if (!label || !description) continue;
+    const inLabel = new Set(words(label));
+    const extra = words(description).filter((w) => !inLabel.has(w) && !FILLER.test(w));
+    if (extra.length === 0) {
+      out.push({ severity: "warning", check: "copy:empty-description", message: `${c.id}: "${description}" is "${label}" again — a description has to say something the label doesn't` });
     }
   }
 
