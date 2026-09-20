@@ -31,6 +31,9 @@ Besides the validator, pattern, capability and rule checks, the document layer a
 | `agent:ambiguous-name` | error | Two controls in one view with the same name, so neither people nor agents can tell them apart |
 | `copy:generic-label` | warning | A button labelled "OK", "Yes", "Submit", "Click here", "Continue", "Done" and similar |
 | `copy:long-label` | warning | A button label over 40 characters |
+| `flow:entity-first` | warning | A picker of people or things that comes *after* the amount, date or range it belongs to: ask who before how much |
+| `safety:typed-confirm` | warning | A typed confirmation ("type DELETE") on an action that isn't destructive, which teaches people to type past it |
+| `choice:one-recommendation` | error when several match, warning when none | A comparison whose recommended option matches no option, or more than one |
 
 ### Rendered checks in detail
 
@@ -39,8 +42,10 @@ Besides the validator, pattern, capability and rule checks, the document layer a
 | `axe:<rule>` | error for critical or serious, warning otherwise | axe-core violations with the WCAG 2.0, 2.1 and 2.2 A and AA tags |
 | `layout:overflow` | error | Content wider than the surface (horizontal scrolling) |
 | `layout:target-size` | error | Targets under 24px without the WCAG spacing exception |
-| `layout:target-size-pack` | warning | Buttons below the pack's own `size.target.min` |
+| `layout:target-size-pack` | warning | Buttons below the pack's own `size.target.min`. Controls inside a dense row are held to WCAG's 24px instead, since a row is dense by design |
+| `layout:consequence-placement` | error | A confirmation's consequence that isn't directly above the buttons it warns about |
 | `runtime` | error | Page errors and console errors during rendering |
+| `runtime:render` | error | The surface never rendered, or never finished rendering, in that design system, mode and width |
 
 ## The default matrix
 
