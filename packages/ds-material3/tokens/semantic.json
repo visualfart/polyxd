@@ -339,6 +339,10 @@
     "small": {
       "$value": "{md.sys.shape.corner-extra-small}"
     },
+    "control": {
+      "$value": "{md.sys.shape.corner-full}",
+      "$description": "Material 3 buttons, chips and segmented controls are fully rounded"
+    },
     "default": {
       "$value": "{md.sys.shape.corner-medium}"
     },

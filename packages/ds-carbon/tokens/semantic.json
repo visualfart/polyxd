@@ -269,6 +269,10 @@
       "$value": "{carbon.border-radius.00}",
       "$description": "Carbon components have square corners"
     },
+    "control": {
+      "$value": "{carbon.border-radius.00}",
+      "$description": "Carbon buttons are square"
+    },
     "default": {
       "$value": "{carbon.border-radius.00}"
     },

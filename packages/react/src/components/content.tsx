@@ -1,6 +1,6 @@
 import { useId } from "react";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
-import { absolute, childPointer, get } from "../data.ts";
+import { asList, absolute, childPointer, get } from "../data.ts";
 import { formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Icon } from "./avatar.tsx";
@@ -91,7 +91,7 @@ export function Collection({ node }: { node: Node }) {
   const s = useSurface();
   const labelId = useId();
   const pointer = absolute(node.items.path, b.scope);
-  const items = (get(s.data, pointer) as unknown[]) ?? [];
+  const items = asList(get(s.data, pointer));
   const selection = node.selection ?? "none";
   const selected = selection !== "none" && node.selected ? b.value<unknown>(node.selected) : undefined;
   const isSelected = (v: unknown) => (Array.isArray(selected) ? selected.includes(v) : selected === v);

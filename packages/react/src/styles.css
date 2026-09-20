@@ -833,7 +833,7 @@ textarea.pxd-input {
   min-height: var(--polyxd-control);
   min-width: var(--pxd-size-target-min);
   padding: 0 var(--pxd-space-inset-default);
-  border-radius: var(--pxd-radius-default);
+  border-radius: var(--pxd-radius-control);
   border: var(--pxd-border-width-default) solid transparent;
   cursor: pointer;
   transition: background var(--pxd-motion-duration-short) var(--pxd-motion-easing-standard);
@@ -1124,7 +1124,7 @@ textarea.pxd-input {
   min-height: var(--polyxd-control);
   padding: 0 var(--pxd-space-inset-default);
   border: var(--pxd-border-width-default) solid var(--pxd-color-border-strong);
-  border-radius: var(--pxd-radius-default);
+  border-radius: var(--pxd-radius-control);
   background: transparent;
   color: var(--pxd-color-text-default);
   font-family: var(--pxd-type-label-default-family);
@@ -1184,7 +1184,9 @@ textarea.pxd-input {
   cursor: pointer;
 }
 .pxd-person-tile[data-state="checked"] .pxd-avatar {
-  box-shadow: 0 0 0 3px var(--pxd-color-surface-default), 0 0 0 6px var(--pxd-color-action-primary-background);
+  box-shadow:
+    0 0 0 var(--pxd-border-width-strong) var(--pxd-color-surface-default),
+    0 0 0 calc(var(--pxd-border-width-strong) * 2) var(--pxd-color-action-primary-background);
 }
 .pxd-person-face {
   position: relative;
@@ -1648,7 +1650,7 @@ textarea.pxd-input {
   width: var(--pxd-size-target-min);
   height: var(--polyxd-control);
   border: 0;
-  border-radius: var(--pxd-radius-full);
+  border-radius: var(--pxd-radius-control);
   background: transparent;
   color: var(--pxd-color-text-default);
   cursor: pointer;
@@ -1955,7 +1957,7 @@ textarea.pxd-input {
 /* Selected rows are marked at the edge, not tinted: link text is only guaranteed
    readable on the default surface. */
 .pxd-row-selected > :first-child {
-  box-shadow: inset 3px 0 0 0 var(--pxd-color-action-primary-background);
+  box-shadow: inset calc(var(--pxd-border-width-strong) + 1px) 0 0 0 var(--pxd-color-action-primary-background);
 }
 .pxd-entity {
   display: flex;

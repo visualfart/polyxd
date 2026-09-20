@@ -1,6 +1,6 @@
 {
   "$schema": "../schema/token-contract.schema.json",
-  "contractVersion": "0.1.0",
+  "contractVersion": "0.2.0",
   "description": "Semantic tokens every Polyxd design-system pack must provide, in every mode. Generated UIs and renderers only reference these names, never raw values.",
   "tokens": {
     "color.surface.default": {
@@ -262,6 +262,10 @@
     "radius.small": {
       "type": "dimension",
       "description": "Corner radius: small"
+    },
+    "radius.control": {
+      "type": "dimension",
+      "description": "Corner radius of a control: buttons, chips, segmented controls. Separate from radius.default because systems differ — Material 3's buttons are fully rounded, Carbon's are square, and one radius can't say both"
     },
     "radius.default": {
       "type": "dimension",

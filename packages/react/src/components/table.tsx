@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { Checkbox, DropdownMenu } from "radix-ui";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
-import { absolute, childPointer, get, type Scope } from "../data.ts";
+import { asList, absolute, childPointer, get, type Scope } from "../data.ts";
 import { formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Avatar, Icon } from "./avatar.tsx";
@@ -24,7 +24,7 @@ export function Table({ node }: { node: Node }) {
   const ref = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
   const pointer = absolute(node.rows.path, b.scope);
-  const rows = (get(s.data, pointer) as any[]) ?? [];
+  const rows = asList(get(s.data, pointer));
   const caption = b.text(node.caption);
 
   useLayoutEffect(() => {
@@ -40,7 +40,7 @@ export function Table({ node }: { node: Node }) {
   // Selection is host state: an array of row values.
   const selection = node.selection === "multiple";
   const selected: unknown[] = selection && node.selected ? (b.value<unknown[]>(node.selected) ?? []) : [];
-  const valueOf = (scope: Scope, i: number) => (node.rowValuePath ? get(s.data, absolute(node.rowValuePath, scope)) : (rows[i]?.id ?? i));
+  const valueOf = (scope: Scope, i: number) => (node.rowValuePath ? get(s.data, absolute(node.rowValuePath, scope)) : ((rows[i] as { id?: unknown })?.id ?? i));
   const toggle = (v: unknown) => b.write(node.selected, selected.includes(v) ? selected.filter((x) => x !== v) : [...selected, v]);
   const allValues = rows.map((_, i) => valueOf({ pointer: childPointer(pointer, i) }, i));
   const allSelected = rows.length > 0 && allValues.every((v) => selected.includes(v));

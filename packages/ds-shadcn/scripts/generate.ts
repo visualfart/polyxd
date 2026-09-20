@@ -235,7 +235,7 @@ function semanticTier(): Json {
       target: { min: { $value: { value: 44, unit: "px" }, $description: "shadcn's default button is 36px (h-9); 44px is the touch target a generated surface is held to" } },
       icon: { small: t("text.sm"), default: t("text.lg") },
     },
-    radius: { $type: "dimension", small: { $value: "{shadcn.radius.sm}" }, default: { $value: "{shadcn.radius.md}" }, large: { $value: "{shadcn.radius.lg}" }, full: { $value: "{shadcn.radius.full}" } },
+    radius: { $type: "dimension", small: { $value: "{shadcn.radius.sm}" }, control: { $value: "{shadcn.radius.md}", $description: "shadcn buttons are rounded-md" }, default: { $value: "{shadcn.radius.md}" }, large: { $value: "{shadcn.radius.lg}" }, full: { $value: "{shadcn.radius.full}" } },
     border: { width: { $type: "dimension", default: { $value: { value: 1, unit: "px" } }, strong: { $value: { value: 2, unit: "px" } } } },
     focus: { ring: { $type: "dimension", width: { $value: { value: 3, unit: "px" }, $description: "shadcn's focus-visible:ring-[3px]" }, offset: { $value: { value: 2, unit: "px" } } } },
     measure: { max: { $value: 65, $type: "number", $description: "Characters per line for running text (Polyxd; Tailwind has no measure token beyond prose)" } },

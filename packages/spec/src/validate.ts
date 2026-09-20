@@ -234,6 +234,21 @@ export function validateDocument(doc: Json, opts: ValidateOptions = {}): Validat
     }
   }
 
+  // A binding that a component repeats over has to point at a list. A model that points one at an
+  // object gives the renderer something it can't iterate: schema-valid, and impossible to display.
+  const LIST_BINDINGS: Record<string, string> = { Collection: "items", Table: "rows", Comparison: "items", Chart: "data", Choice: "options" };
+  if (d.data !== undefined) {
+    for (const [, { c, index }] of byId) {
+      const prop = LIST_BINDINGS[c.component];
+      const path = prop && c[prop] && typeof c[prop] === "object" ? c[prop].path : undefined;
+      if (typeof path !== "string" || !path.startsWith("/")) continue;
+      const value = resolvePointer(d.data, path);
+      if (value !== undefined && !Array.isArray(value)) {
+        error(`/components/${index}/${prop}/path`, `${c.component}.${prop} must point at a list; "${path}" is ${value === null ? "null" : typeof value} in data`);
+      }
+    }
+  }
+
   // Relative paths only where an item is in scope; absolute paths should resolve when data is given.
   for (const [id, found] of refs) {
     const scoped = itemScopedIds.has(id);

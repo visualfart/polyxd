@@ -452,6 +452,7 @@ const semantic = {
   radius: {
     $type: "dimension",
     small: token("{md.sys.shape.corner-extra-small}"),
+    control: token("{md.sys.shape.corner-full}", { $description: "Material 3 buttons, chips and segmented controls are fully rounded" }),
     default: token("{md.sys.shape.corner-medium}"),
     large: token("{md.sys.shape.corner-extra-large}"),
     full: token("{md.sys.shape.corner-full}"),

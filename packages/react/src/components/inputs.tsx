@@ -1,7 +1,7 @@
 import { useId, useState, type FormEvent } from "react";
 import { Checkbox, RadioGroup, Slider, Switch } from "radix-ui";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
-import { absolute, childPointer, get, type Scope } from "../data.ts";
+import { asList, absolute, childPointer, get, type Scope } from "../data.ts";
 import { currencySymbol, formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Children } from "./structure.tsx";
@@ -156,7 +156,7 @@ export function optionsOf(node: Node, data: unknown, scope: Scope, text: (v: unk
   const o = node.options;
   if (Array.isArray(o)) return o.map((x: any) => ({ value: x.value, label: text(x.label), description: x.description !== undefined ? text(x.description) : undefined }));
   const pointer = absolute(o.path, scope);
-  const items = (get(data, pointer) as unknown[]) ?? [];
+  const items = asList(get(data, pointer));
   return items.map((_, i) => {
     const p = { pointer: childPointer(pointer, i) };
     const at = (path?: string) => (path ? get(data, absolute(path, p)) : undefined);

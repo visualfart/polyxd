@@ -1,6 +1,6 @@
 import { useId } from "react";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
-import { absolute, childPointer, get } from "../data.ts";
+import { asList, absolute, childPointer, get } from "../data.ts";
 import { formatValue } from "../format.ts";
 import { useA11y } from "../surface.tsx";
 
@@ -41,7 +41,7 @@ export function Chart({ node }: { node: Node }) {
   const titleId = useId();
   const summaryId = useId();
   const pointer = absolute(node.data.path, b.scope);
-  const points = ((get(s.data, pointer) as unknown[]) ?? []).map((_, i) => childPointer(pointer, i));
+  const points = asList(get(s.data, pointer)).map((_, i) => childPointer(pointer, i));
   const x = (p: string) => get(s.data, absolute(node.x.path, { pointer: p }));
   const y = (p: string, series: any) => Number(get(s.data, absolute(series.path, { pointer: p }))) || 0;
   const color = (i: number) => `var(--pxd-color-data-categorical-${(i % 6) + 1})`;

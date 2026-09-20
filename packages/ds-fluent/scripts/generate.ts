@@ -196,7 +196,7 @@ function semanticTier(): Json {
       inline: { tight: f("spacingHorizontalXS"), default: f("spacingHorizontalS"), loose: f("spacingHorizontalL") },
     },
     size: { $type: "dimension", target: { min: p("target.min") }, icon: { small: f("fontSizeBase200"), default: f("fontSizeBase500") } },
-    radius: { $type: "dimension", small: f("borderRadiusSmall"), default: f("borderRadiusMedium"), large: f("borderRadiusLarge"), full: { $value: { value: 9999, unit: "px" }, $description: "Fluent's borderRadiusCircular" } },
+    radius: { $type: "dimension", small: f("borderRadiusSmall"), control: fd("borderRadiusMedium", "Fluent buttons and inputs share the medium radius"), default: f("borderRadiusMedium"), large: f("borderRadiusLarge"), full: { $value: { value: 9999, unit: "px" }, $description: "Fluent's borderRadiusCircular" } },
     border: { width: { $type: "dimension", default: f("strokeWidthThin"), strong: f("strokeWidthThick") } },
     focus: { ring: { $type: "dimension", width: f("strokeWidthThick"), offset: p("focus.offset") } },
     measure: { max: { $value: 65, $type: "number", $description: "Characters per line for running text (Polyxd; Fluent has no measure token)" } },

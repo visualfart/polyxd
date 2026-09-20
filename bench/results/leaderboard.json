@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-19",
+  "generatedAt": "2026-09-20",
   "benchmark": {
     "requests": 50,
     "withTasks": 37,
@@ -13,7 +13,7 @@
       "tasks": 16,
       "taskTotal": 37,
       "expectations": 56,
-      "direction": null,
+      "direction": 93,
       "latency": 4.148,
       "ttft": 0.862,
       "tps": 56.1
@@ -29,6 +29,18 @@
       "latency": 3.41,
       "ttft": 0.862,
       "tps": 56.2
+    },
+    {
+      "run": "gemma-4-e4b-it-4bit+sft-v3-tree-constrained",
+      "valid": 100,
+      "score": 76,
+      "tasks": 14,
+      "taskTotal": 37,
+      "expectations": 61,
+      "direction": 96,
+      "latency": 4.998,
+      "ttft": 1.006,
+      "tps": 55.4
     },
     {
       "run": "gemma-4-e4b-sft-v2-fused-q6-tree-constrained",
@@ -149,18 +161,6 @@
       "latency": 5.76,
       "ttft": 1.394,
       "tps": 93.4
-    },
-    {
-      "run": "gemma-4-e4b-it-4bit+sft-v3-tree-constrained",
-      "valid": null,
-      "score": 0,
-      "tasks": 0,
-      "taskTotal": 0,
-      "expectations": null,
-      "direction": null,
-      "latency": 0,
-      "ttft": 0,
-      "tps": 0
     }
   ],
   "best": {
@@ -235,12 +235,12 @@
         "count": 9
       },
       {
-        "name": "Accessibility",
-        "count": 3
+        "name": "Other",
+        "count": 4
       },
       {
-        "name": "Other",
-        "count": 1
+        "name": "Accessibility",
+        "count": 3
       }
     ]
   }

@@ -346,6 +346,10 @@
     "small": {
       "$value": "{antd.token.borderRadiusSM}"
     },
+    "control": {
+      "$value": "{antd.token.borderRadius}",
+      "$description": "antd buttons and inputs use the default radius"
+    },
     "default": {
       "$value": "{antd.token.borderRadius}"
     },

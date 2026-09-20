@@ -343,6 +343,10 @@
     "small": {
       "$value": "{fluent.borderRadiusSmall}"
     },
+    "control": {
+      "$value": "{fluent.borderRadiusMedium}",
+      "$description": "Fluent buttons and inputs share the medium radius"
+    },
     "default": {
       "$value": "{fluent.borderRadiusMedium}"
     },

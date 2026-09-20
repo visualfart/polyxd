@@ -47,6 +47,13 @@ export function set(data: Data, pointer: string, value: unknown): Data {
   return write(data, 0);
 }
 
+/**
+ * Host data as a list. A binding that a component repeats over should point at an array; when the
+ * host (or a generated document) points it somewhere else, the component shows nothing instead of
+ * throwing. The validator reports the mismatch.
+ */
+export const asList = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
+
 /** Resolves a literal-or-binding value. */
 export function resolve<T = unknown>(value: unknown, data: unknown, scope: Scope): T {
   return (isBinding(value) ? get(data, absolute(value.path, scope)) : value) as T;

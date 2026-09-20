@@ -498,6 +498,7 @@ const semantic = {
   radius: {
     $type: "dimension",
     small: token("{carbon.border-radius.00}", { $description: "Carbon components have square corners" }),
+    control: token("{carbon.border-radius.00}", { $description: "Carbon buttons are square" }),
     default: token("{carbon.border-radius.00}"),
     large: token("{carbon.border-radius.00}"),
     full: token("{carbon.border-radius.max}", { $description: "Pills and avatars (tags, toggles)" }),

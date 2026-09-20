@@ -369,6 +369,10 @@
     "small": {
       "$value": "{shadcn.radius.sm}"
     },
+    "control": {
+      "$value": "{shadcn.radius.md}",
+      "$description": "shadcn buttons are rounded-md"
+    },
     "default": {
       "$value": "{shadcn.radius.md}"
     },

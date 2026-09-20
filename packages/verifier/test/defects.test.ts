@@ -70,3 +70,15 @@ test("catch rate is at least 90% of 20 defects", () => {
   assert.equal(DEFECTS.length, 20);
   assert.ok(caught.length / DEFECTS.length >= 0.9, `caught ${caught.length}/20`);
 });
+
+test("catches: a list binding pointing at something that isn't a list", async () => {
+  const doc = {
+    specVersion: "0.1.0",
+    surface: { id: "running", title: "Running" },
+    root: "cmp",
+    components: [{ id: "cmp", component: "Comparison", items: { path: "/thisMonth" }, itemTitle: "name", attributes: [{ key: "km", label: "Kilometres", path: "km" }] }],
+    data: { thisMonth: { km: 42 } },
+  };
+  const r = await verifyDocument(doc, { browser });
+  assert.match(r.static.map((f) => f.message).join(), /must point at a list/);
+});

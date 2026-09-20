@@ -99,6 +99,7 @@
   --pxd-size-icon-small: 18px;
   --pxd-size-icon-default: 24px;
   --pxd-radius-small: 4px;
+  --pxd-radius-control: 9999px;
   --pxd-radius-default: 12px;
   --pxd-radius-large: 28px;
   --pxd-radius-full: 9999px;
@@ -247,6 +248,7 @@
   --pxd-size-icon-small: 18px;
   --pxd-size-icon-default: 24px;
   --pxd-radius-small: 4px;
+  --pxd-radius-control: 9999px;
   --pxd-radius-default: 12px;
   --pxd-radius-large: 28px;
   --pxd-radius-full: 9999px;

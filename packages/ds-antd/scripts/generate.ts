@@ -537,6 +537,7 @@ const semantic = {
   radius: {
     $type: "dimension",
     small: a("borderRadiusSM"),
+    control: a("borderRadius", "antd buttons and inputs use the default radius"),
     default: a("borderRadius"),
     large: a("borderRadiusLG"),
     full: token("{polyxd.sys.radius.full}"),

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useId, useRef, useState } from "react";
 import { AlertDialog } from "radix-ui";
 import { StepsContext, resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
-import { absolute, childPointer, get } from "../data.ts";
+import { asList, absolute, childPointer, get } from "../data.ts";
 import { formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Heading } from "./structure.tsx";
@@ -235,7 +235,7 @@ export function Comparison({ node }: { node: Node }) {
   const b = useBindings();
   const s = useSurface();
   const pointer = absolute(node.items.path, b.scope);
-  const items = (get(s.data, pointer) as unknown[]) ?? [];
+  const items = asList(get(s.data, pointer));
   const scopes = items.map((_, i) => ({ pointer: childPointer(pointer, i) }));
   const at = (path: string, i: number) => get(s.data, absolute(path, scopes[i]));
   const recommended = node.recommended !== undefined ? b.text(node.recommended) : undefined;
