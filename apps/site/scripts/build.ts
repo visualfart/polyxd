@@ -12,6 +12,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { allCharts, type Leaderboard } from "./charts.ts";
 import { Marked } from "marked";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { PolyxdSurface, type UIDocument } from "@polyxd/react";
 import { loadDesignSystem, loadContract } from "@polyxd/spec";
 
 const here = (p: string) => fileURLToPath(new URL(p, import.meta.url));
@@ -68,8 +71,7 @@ function header(current: "home" | "docs") {
 <a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">polyxd</span></a>
 <nav class="site-nav" aria-label="Main">
 <a class="nav-optional" href="/#how">How it works</a>
-<a class="nav-optional" href="/#agents">People &amp; agents</a>
-<a class="nav-optional" href="/#taste">For design teams</a>
+<a class="nav-optional" href="/docs/designers/">For design teams</a>
 <a class="nav-wide" href="/gallery/">Gallery</a>
 <a href="/docs/"${cur("docs")}>Docs</a>
 <a class="btn btn-ink btn-small" href="/#access">Early access</a>
@@ -312,7 +314,7 @@ ${page.html.includes("figure class=\"chart\"") ? '<script src="/assets/charts.js
  * the renderer. The themes come from @polyxd/react's compiled files, concatenated into one
  * stylesheet so the page depends on nothing built at request time.
  */
-async function demoHtml(): Promise<{ html: string; themes: string; count: number }> {
+async function demoHtml(): Promise<{ html: string; themes: string; count: number; packs: { key: string; name: string }[] }> {
   // ds-kit is the shared builder, not a pack: a pack is a directory with a manifest.
   const dirs = (await readdir(join(REPO, "packages"))).filter((d) => d.startsWith("ds-") && existsSync(join(REPO, "packages", d, "manifest.json"))).sort();
   const packs = await Promise.all(
@@ -346,9 +348,45 @@ async function demoHtml(): Promise<{ html: string; themes: string; count: number
 
   return {
     count: packs.length,
+    packs,
     themes,
     html: `<div class="demo-tabs" role="tablist" aria-label="Design system">\n${tabs}\n</div>\n\n<div class="renders">\n${renders}\n</div>`,
   };
+}
+
+// ---------- The landing page's scenarios ----------
+
+/**
+ * Real examples from the spec, rendered at build time by @polyxd/react in a pack each, so the
+ * landing page shows what the renderer actually produces rather than a picture of it. Each one
+ * is captioned with the request that would have produced it and links to the live gallery.
+ */
+const SCENARIOS: { file: string; ask: string; pack: string; width: number }[] = [
+  { file: "travel-flight-results", ask: "flights to lisbon on friday", pack: "carbon", width: 640 },
+  { file: "calendar-find-slot", ask: "find 30 minutes with priya this week", pack: "material3", width: 420 },
+  { file: "shop-compare-plans", ask: "which plan should I pick", pack: "shadcn", width: 560 },
+  { file: "tasks-list", ask: "what's on my plate today", pack: "polaris", width: 460 },
+  { file: "settings-notifications", ask: "stop emailing me at night", pack: "govuk", width: 440 },
+  { file: "money-balance-overview", ask: "how am I doing this month", pack: "fluent", width: 480 },
+  { file: "shop-checkout", ask: "check out", pack: "spectrum", width: 460 },
+  { file: "crm-account-record", ask: "show me acme", pack: "primer", width: 640 },
+  { file: "personal-reading-log", ask: "log the book I finished", pack: "mantine", width: 440 },
+  { file: "travel-booking-review", ask: "review my trip", pack: "radix", width: 480 },
+];
+
+async function scenariosHtml(packs: { key: string; name: string }[]): Promise<string> {
+  const name = (key: string) => packs.find((p) => p.key === key)?.name ?? key;
+  const items = await Promise.all(
+    SCENARIOS.map(async (sc) => {
+      const doc = JSON.parse(await readFile(join(REPO, "packages/spec/examples", `${sc.file}.json`), "utf8")) as UIDocument;
+      const surface = renderToStaticMarkup(createElement(PolyxdSurface, { document: doc, theme: sc.pack }));
+      return `<li class="specimen" style="--w:${sc.width}px">
+<a class="specimen-link" href="/gallery/?example=${sc.file}&amp;theme=${sc.pack}"><span class="specimen-ask">${esc(sc.ask)}</span><span class="specimen-pack">${esc(name(sc.pack))}</span></a>
+<div class="specimen-frame" data-pxd-theme="${sc.pack}" data-pxd-mode="light" inert aria-hidden="true">${surface}</div>
+</li>`;
+    }),
+  );
+  return items.join("\n");
 }
 
 // ---------- Build ----------
@@ -370,12 +408,17 @@ await write(join(DIST, "favicon.svg"), LOGO.replace('aria-hidden="true"', 'xmlns
 
 const demo = await demoHtml();
 await write(join(DIST, "assets/themes.css"), demo.themes);
+await cp(join(REPO, "packages/react/src/styles.css"), join(DIST, "assets/renderer.css"));
 const spelled = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen"];
 const landing = (await readFile(join(SITE, "src/index.html"), "utf8"))
-  .replace("<!--HEAD-->", head({ title: "Polyxd — interfaces that show up when you need them", description: "Polyxd turns a request into a real, accessible interface, built from your design system, usable by people and agents, and gone when the task is done.", path: "/", css: ["/assets/themes.css"] }))
+  .replace("<!--HEAD-->", head({ title: "Polyxd — interfaces that show up when you need them", description: "Polyxd turns a request into a real, accessible interface, built from your design system, usable by people and agents, and gone when the task is done.", path: "/", css: ["/assets/themes.css", "/assets/renderer.css"] }))
   .replace("<!--HEADER-->", header("home"))
   .replace("<!--DEMO-->", demo.html)
   .replace("<!--PACKCOUNT-->", spelled[demo.count - 1] ?? String(demo.count))
+  // The story's "any design system" act rolls through every pack by name; story.js reads the keys off these spans.
+  .replace("<!--PACKNAMES-->", demo.packs.map((p) => `<span data-pack="${p.key}">${esc(p.name)}</span>`).join(""))
+  .replace("<!--SCENARIOS-->", await scenariosHtml(demo.packs))
+  .replace("<!--EXAMPLECOUNT-->", String((await readdir(join(REPO, "packages/spec/examples"))).filter((f) => f.endsWith(".json")).length))
   .replace("<!--FOOTER-->", footer);
 await write(join(DIST, "index.html"), landing);
 
