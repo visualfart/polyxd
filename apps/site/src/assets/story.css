@@ -1,0 +1,934 @@
+/* polyxd.com landing page: one interface tells the whole story, on a dark drafting table.
+   Layout for the pinned stage, the card, and every layer that appears around it. Starting
+   states for motion live under `.motion` only, so without JS or with reduced motion the acts
+   stack as plain sections and nothing is hidden. The card's colours, type and radii come from
+   the pack's own tokens (themes.css); nothing here names one. */
+
+/* ---------- The landing page's own ground: graphite, ice for the drafting lines, the brand's
+   signal orange for intent. Everything the site shares (header, buttons, footer) is re-inked
+   here, docs pages keep the paper. ---------- */
+.landing {
+  --void: #0b0d12;
+  --panel: #12151b;
+  --panel-2: #181c24;
+  --hair: #262b36;
+  --hair-2: #333a48;
+  --text: #eef1f6;
+  --dim: #9aa3b5;
+  --faint: #626b7d;
+  --ice: #a9d6ff;
+  --ice-dim: rgb(169 214 255 / 0.45);
+  --ground: var(--void);
+  --paper: var(--panel);
+  --ink: var(--text);
+  --ink-2: var(--dim);
+  --muted: var(--dim);
+  --line: var(--hair);
+  --line-soft: var(--hair);
+  --signal-ink: #ff8a5f;
+  background: var(--void);
+  color: var(--text);
+}
+.landing .site-header {
+  background: rgb(11 13 18 / 0.82);
+  border-bottom-color: var(--hair);
+  backdrop-filter: blur(10px);
+}
+.landing .btn-ink {
+  background: var(--text);
+  color: var(--void);
+}
+.landing .btn-line {
+  border-color: var(--hair-2);
+  color: var(--text);
+}
+.landing .btn-line:hover {
+  border-color: var(--text);
+}
+.landing .badge {
+  border-color: var(--hair-2);
+  color: var(--dim);
+}
+.landing .eyebrow {
+  color: var(--ice);
+}
+.landing .site-footer {
+  border-top: 1px solid var(--hair);
+}
+.landing .site-footer a:hover {
+  color: var(--ice);
+}
+.landing :focus-visible {
+  outline-color: var(--ice);
+}
+
+/* ---------- The pinned stage ---------- */
+.story {
+  position: relative;
+}
+.story-pin {
+  --rail: 72px; /* room for the chapter rail in the left gutter */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+  min-height: 100svh;
+  padding: 0 var(--gutter) 0 calc(var(--gutter) + var(--rail));
+  max-width: var(--max);
+  margin: 0 auto;
+}
+.acts {
+  position: relative;
+  min-height: 60vh;
+}
+.act {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 22px;
+}
+.act h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(44px, 5.4vw, 84px);
+  line-height: 0.95;
+  letter-spacing: -0.037em;
+  text-wrap: balance;
+}
+.act h2 {
+  margin: 0;
+  font-size: clamp(34px, 3.6vw, 56px);
+  line-height: 1;
+  text-wrap: balance;
+}
+.act p {
+  margin: 0;
+  max-width: 40ch;
+  font-size: clamp(17px, 1.3vw, 19px);
+  line-height: 1.55;
+  color: var(--dim);
+  text-wrap: pretty;
+}
+.act .lede {
+  font-size: clamp(18px, 1.5vw, 21px);
+  max-width: 36ch;
+}
+.scroll-hint {
+  font: 12px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.scroll-hint::before {
+  content: "↓";
+  display: inline-block;
+  margin-right: 10px;
+  color: var(--ice);
+  animation: nudge 1.6s ease-in-out infinite;
+}
+@keyframes nudge {
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* Chapters. A list because the page really is a sequence: the same interface, in order. */
+.rail {
+  position: absolute;
+  left: max(16px, calc(var(--gutter) - 48px));
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.rail a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 11px var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  text-decoration: none;
+}
+.rail a::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.rail a[aria-current] {
+  color: var(--text);
+}
+.rail a[aria-current]::before {
+  background: var(--ice);
+  border-color: var(--ice);
+  box-shadow: 0 0 12px var(--ice-dim);
+  transform: scale(1.35);
+}
+
+/* ---------- The scene and its layers ---------- */
+.scene {
+  position: relative;
+  height: min(74vh, 720px);
+  border: 1px solid var(--hair);
+  border-radius: 24px;
+  background: var(--panel);
+  overflow: visible;
+}
+.scene > * {
+  position: absolute;
+}
+/* Drafting paper: a fine dot grid that fades towards the edges. */
+.grid {
+  inset: 0;
+  border-radius: inherit;
+  background-image: radial-gradient(var(--hair-2) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 40%, transparent 78%);
+  mask-image: radial-gradient(ellipse at center, #000 40%, transparent 78%);
+  opacity: 0.9;
+}
+/* The readout: what the model decided and what the verifier found, live. */
+.hud {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--hair);
+  border-radius: 0 0 24px 24px;
+  background: rgb(11 13 18 / 0.6);
+  font: 11px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hud span {
+  display: flex;
+  gap: 8px;
+}
+.hud b {
+  font-weight: 400;
+  color: var(--faint);
+}
+.hud i {
+  font-style: normal;
+  color: var(--ice);
+  transition: color 0.25s;
+}
+.hud i[data-live] {
+  color: var(--text);
+}
+.ask {
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(100% - 40px);
+  min-height: 52px;
+  padding: 0 20px;
+  background: var(--void);
+  border: 1px solid var(--hair-2);
+  color: var(--text);
+  border-radius: 999px;
+  font-size: 17px;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+}
+.ask-label {
+  font: 11px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.caret {
+  width: 2px;
+  height: 20px;
+  background: var(--signal);
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* The design system's name, rolling past like a departures board while the card is rebuilt. */
+.packname {
+  top: 22px;
+  left: 0;
+  right: 0;
+  height: 1.1em;
+  overflow: hidden;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(28px, 3vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-align: center;
+  color: var(--text);
+  opacity: 0;
+}
+.packname span {
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.slot {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(440px, calc(100% - 48px));
+}
+.stage {
+  padding: clamp(18px, 2.2vw, 28px);
+  border-radius: 20px;
+  background: var(--pxd-color-surface-subtle);
+  color: var(--pxd-color-text-default);
+  font-family: var(--pxd-type-body-default-family);
+  box-shadow: 0 30px 80px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+.ghost {
+  position: absolute;
+  inset: 0;
+  border: 1.5px dashed var(--ice-dim);
+  border-radius: 20px;
+  opacity: 0;
+}
+/* The blueprint: every part of the card measured and outlined, drawn by story.js from the
+   card's real geometry so it always matches the pack the card is wearing. */
+.wire {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0;
+  pointer-events: none;
+}
+.wire rect,
+.wire line {
+  fill: none;
+  stroke: var(--ice);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.wire .box {
+  stroke-dasharray: 4 3;
+  stroke: var(--ice-dim);
+}
+.wire .outer {
+  stroke: var(--ice);
+}
+.wire text {
+  fill: var(--ice);
+  font: 10px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.when {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 12px);
+  font: 12px var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ice);
+}
+.when span {
+  position: absolute;
+  left: 0;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+/* Every colour, size and face below is the pack's. Transitions on those properties are what
+   make one design system turn into the next instead of snapping. */
+.stage,
+.stage .card,
+.stage .t,
+.stage .d,
+.stage .row,
+.stage .b {
+  transition: background-color 0.4s, color 0.4s, border-color 0.4s, border-radius 0.4s, box-shadow 0.4s, padding 0.4s, font-size 0.4s, letter-spacing 0.4s;
+}
+.stage .card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-loose);
+  padding: var(--pxd-space-inset-comfortable);
+  background: var(--pxd-color-surface-raised);
+  border: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  border-radius: var(--pxd-radius-large);
+  box-shadow: var(--pxd-shadow-raised);
+}
+.stage .card.is-exploded {
+  background: transparent;
+  border-color: var(--ice-dim);
+  border-style: dashed;
+  box-shadow: none;
+}
+.stage.is-blueprint {
+  background: transparent;
+  box-shadow: none;
+}
+.stage .t,
+.stage .d,
+.stage .sum,
+.stage .b {
+  position: relative;
+}
+.stage .t {
+  font-family: var(--pxd-type-title-section-family);
+  font-size: var(--pxd-type-title-section-size);
+  font-weight: var(--pxd-type-title-section-weight);
+  line-height: var(--pxd-type-title-section-line-height);
+  color: var(--pxd-color-text-default);
+}
+.stage .d {
+  font-size: var(--pxd-type-body-small-size);
+  line-height: var(--pxd-type-body-small-line-height);
+  color: var(--pxd-color-text-muted);
+}
+.stage .row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--pxd-space-inline-default);
+  padding: var(--pxd-space-stack-default) 0;
+  border-bottom: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  font-size: var(--pxd-type-body-small-size);
+}
+.stage .row span:first-child {
+  color: var(--pxd-color-text-muted);
+}
+/* The footer follows the pack's own layout variables, the same ones the renderer's dialog uses. */
+.stage .acts-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--pxd-layout-action-gap, var(--pxd-space-inline-default));
+  margin: var(--pxd-layout-action-bleed, 0);
+}
+.stage .acts-row .b {
+  flex: var(--pxd-layout-action-item, 0 0 auto);
+  justify-content: center;
+}
+.stage .b {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--pxd-size-target-min);
+  padding: 0 var(--pxd-space-inset-default);
+  border: var(--pxd-border-width-default) solid transparent;
+  border-radius: var(--pxd-radius-control);
+  font-family: var(--pxd-type-label-default-family);
+  font-size: var(--pxd-type-label-default-size);
+  font-weight: var(--pxd-type-label-default-weight);
+}
+.stage .b2 {
+  background: var(--pxd-color-action-secondary-background);
+  border-color: var(--pxd-color-action-secondary-border);
+  color: var(--pxd-color-action-secondary-foreground);
+}
+.stage .b1 {
+  background: var(--pxd-color-action-primary-background);
+  color: var(--pxd-color-action-primary-foreground);
+}
+
+/* Semantic labels: what the model actually chose, pinned to the part it chose it for. */
+.scene .tag {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 4px);
+  padding: 3px 8px;
+  background: var(--void);
+  border: 1px solid var(--ice-dim);
+  color: var(--ice);
+  border-radius: 4px;
+  font: 10px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  z-index: 2;
+}
+.scene .tag-card {
+  left: auto;
+  right: 0;
+  bottom: auto;
+  top: calc(100% + 10px);
+  background: var(--signal);
+  border-color: var(--signal);
+  color: #fff;
+}
+.scene .tag-primary {
+  background: var(--signal);
+  border-color: var(--signal);
+  color: #fff;
+}
+.scene .b .tag {
+  bottom: calc(100% + 6px);
+}
+
+.cursor {
+  position: absolute;
+  left: -12px;
+  top: 100%;
+  width: 24px;
+  height: 24px;
+  border: 2.5px solid var(--signal);
+  border-radius: 50%;
+  box-shadow: 0 0 0 5px rgb(255 90 31 / 0.18), 0 0 24px rgb(255 90 31 / 0.5);
+  opacity: 0;
+}
+.stamps {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.stamp {
+  position: absolute;
+  padding: 8px 14px;
+  border: 1.5px solid var(--ice);
+  border-radius: 999px;
+  background: var(--void);
+  color: var(--ice);
+  font: 600 12px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.5), 0 0 18px var(--ice-dim);
+  opacity: 0;
+}
+.stamp:nth-child(1) {
+  top: -16px;
+  right: -22px;
+  rotate: -6deg;
+}
+.stamp:nth-child(2) {
+  bottom: -16px;
+  right: -18px;
+  rotate: 4deg;
+}
+.stamp:nth-child(3) {
+  top: -16px;
+  left: -22px;
+  rotate: -4deg;
+}
+.stamp-signal {
+  bottom: 30%;
+  left: -56px;
+  rotate: -5deg;
+  background: var(--signal);
+  border-color: var(--signal);
+  color: #fff;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.5), 0 0 24px rgb(255 90 31 / 0.45);
+}
+
+.tree {
+  left: 16px;
+  right: 16px;
+  bottom: 52px;
+  margin: 0;
+  padding: clamp(14px, 1.8vw, 22px);
+  background: var(--void);
+  border: 1px solid var(--hair-2);
+  border-radius: 16px;
+  font: clamp(11px, 0.95vw, 13px) / 1.75 var(--mono);
+  color: #d5dbe6;
+  white-space: pre;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(24px);
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.5);
+}
+.tree .c {
+  color: var(--faint);
+}
+.tree .s {
+  color: var(--ice);
+}
+.tree .ok {
+  color: var(--ok);
+}
+.tree .agent-line {
+  display: block;
+  opacity: 0;
+}
+.same {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 16px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.same li {
+  padding: 5px 10px;
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  background: var(--void);
+  color: var(--text);
+  font: 11px var(--mono);
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transform: translateY(8px);
+}
+.same li::after {
+  content: " ✓";
+  color: var(--ok);
+}
+
+/* ---------- Already built: real examples, drifting past ---------- */
+.built {
+  padding: clamp(72px, 9vw, 120px) 0 clamp(56px, 6vw, 80px);
+  border-top: 1px solid var(--hair);
+  overflow: hidden;
+}
+.built-head {
+  max-width: var(--max);
+  margin: 0 auto clamp(36px, 4vw, 56px);
+  padding: 0 var(--gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(20px, 5vw, 64px);
+  align-items: end;
+}
+.built-head h2 {
+  margin: 12px 0 0;
+  font-size: clamp(34px, 4vw, 60px);
+  text-wrap: balance;
+}
+.built-head p {
+  margin: 0;
+  font-size: clamp(17px, 1.3vw, 19px);
+  color: var(--dim);
+}
+.specimens {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--gutter);
+  display: flex;
+  gap: 24px;
+  width: max-content;
+}
+.specimen {
+  flex: none;
+  width: min(var(--w), 86vw);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.specimen-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  text-decoration: none;
+  font-size: 15px;
+}
+.specimen-link:hover .specimen-ask {
+  color: var(--ice);
+}
+.specimen-ask::before {
+  content: "“";
+}
+.specimen-ask::after {
+  content: "”";
+}
+.specimen-pack {
+  font: 11px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.specimen-frame {
+  height: 400px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--pxd-color-surface-default);
+  box-shadow: 0 30px 80px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(255 255 255 / 0.06);
+  -webkit-mask-image: linear-gradient(#000 78%, transparent);
+  mask-image: linear-gradient(#000 78%, transparent);
+}
+.specimen-frame .pxd-surface {
+  min-height: 100%;
+}
+.built-note {
+  max-width: var(--max);
+  margin: clamp(28px, 3vw, 40px) auto 0;
+  padding: 0 var(--gutter);
+  font-size: 15px;
+}
+.built-note a {
+  color: var(--dim);
+  text-decoration: none;
+}
+.built-note a:hover {
+  color: var(--ice);
+}
+/* With motion, the row drifts; a hand on it stops it. story.js sets --drift to the row's width. */
+.motion .specimens {
+  animation: drift var(--drift-time, 90s) linear infinite;
+}
+.motion .specimens:hover,
+.motion .specimens:focus-within {
+  animation-play-state: paused;
+}
+@keyframes drift {
+  to {
+    transform: translateX(calc(-1 * var(--drift, 0px)));
+  }
+}
+html:not(.motion) .specimens {
+  width: auto;
+  overflow-x: auto;
+  padding-bottom: 16px;
+}
+
+/* ---------- Proof and call to action, re-inked ---------- */
+.landing .proof {
+  border-color: var(--hair);
+}
+.landing .stat dt {
+  color: var(--dim);
+}
+.landing .cta {
+  background: var(--signal);
+  color: #14100e;
+}
+.landing .cta p {
+  color: #3a2418;
+}
+.landing .cta .btn-ink {
+  background: #14100e;
+  color: #fff;
+}
+.landing .cta .btn-line {
+  border-color: #14100e;
+  color: #14100e;
+}
+.landing .waitlist label,
+.landing .waitlist-status {
+  color: #14100e;
+}
+.landing .waitlist input[type="email"] {
+  background: #fff5f0;
+  border-color: #14100e;
+  color: #14100e;
+}
+
+/* ---------- Starting states, only when motion will run ---------- */
+.motion .act > * {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.motion .act h1 {
+  opacity: 1;
+  transform: none; /* its words are animated individually */
+}
+.motion .act:not(.is-current) {
+  position: absolute;
+  inset: 0;
+  justify-content: center;
+  opacity: 0;
+}
+.motion .act.is-current {
+  position: relative;
+  min-height: 60vh;
+  justify-content: center;
+}
+.motion .stat,
+.motion .built-head > *,
+.motion .cta > div,
+.motion .waitlist {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.motion {
+  scroll-behavior: auto; /* Lenis owns the scroll. */
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ---------- Without motion: the acts stack, the card sits once at the top ---------- */
+html:not(.motion) .story-pin {
+  display: block;
+  padding-block: clamp(40px, 6vw, 80px);
+}
+html:not(.motion) .rail,
+html:not(.motion) .scroll-hint,
+html:not(.motion) .packname,
+html:not(.motion) .ghost,
+html:not(.motion) .wire,
+html:not(.motion) .when,
+html:not(.motion) .cursor,
+html:not(.motion) .stamps,
+html:not(.motion) .tree,
+html:not(.motion) .same,
+html:not(.motion) .agent-line,
+html:not(.motion) .scene .tag {
+  display: none;
+}
+html:not(.motion) .act {
+  padding-block: clamp(28px, 4vw, 48px);
+  border-bottom: 1px solid var(--hair);
+}
+html:not(.motion) .act:last-child {
+  border-bottom: 0;
+}
+html:not(.motion) .scene {
+  position: relative;
+  height: auto;
+  padding: 24px 24px 64px;
+  margin-bottom: 24px;
+}
+html:not(.motion) .scene > * {
+  position: static;
+  transform: none;
+}
+html:not(.motion) .scene .grid,
+html:not(.motion) .scene .hud {
+  position: absolute;
+}
+html:not(.motion) .ask {
+  display: inline-flex;
+  margin-bottom: 20px;
+}
+html:not(.motion) .slot {
+  position: relative;
+  width: min(440px, 100%);
+  margin: 0 auto;
+}
+
+/* ---------- Narrow screens: scene on top, words below, chapters along the bottom ---------- */
+@media (max-width: 900px) {
+  .story-pin {
+    --rail: 0px;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: stretch;
+    padding-top: 12px;
+    padding-bottom: 56px;
+  }
+  .scene {
+    order: -1;
+    height: auto;
+    min-height: 0;
+  }
+  .hud {
+    gap: 4px 14px;
+    padding: 10px 14px;
+    font-size: 10px;
+  }
+  .hud span:nth-child(n + 4) {
+    display: none;
+  }
+  .slot {
+    top: 52%;
+    width: min(440px, calc(100% - 32px));
+  }
+  .stage {
+    padding: 12px;
+    scale: 0.9;
+  }
+  .acts,
+  .motion .act.is-current {
+    min-height: 0;
+  }
+  .act {
+    gap: 14px;
+    padding-bottom: 8px;
+  }
+  .act h1 {
+    font-size: clamp(34px, 9.5vw, 44px);
+  }
+  .act h2 {
+    font-size: clamp(26px, 7vw, 34px);
+  }
+  .act p,
+  .act .lede {
+    font-size: 16px;
+  }
+  .scroll-hint {
+    display: none;
+  }
+  .rail {
+    left: var(--gutter);
+    right: var(--gutter);
+    top: auto;
+    bottom: 18px;
+    transform: none;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .rail a {
+    font-size: 10px;
+    gap: 6px;
+  }
+  .ask {
+    top: 14px;
+    font-size: 14px;
+    min-height: 42px;
+    padding: 0 14px;
+  }
+  .packname {
+    top: 16px;
+    font-size: 24px;
+  }
+  .stamp {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+  .stamp:nth-child(1),
+  .stamp:nth-child(2) {
+    right: -6px;
+  }
+  .stamp:nth-child(3) {
+    left: -6px;
+  }
+  .stamp-signal {
+    left: -8px;
+  }
+  .tree {
+    left: 10px;
+    right: 10px;
+    bottom: 44px;
+    font-size: 10px;
+    padding: 10px 12px;
+  }
+  .built-head {
+    grid-template-columns: 1fr;
+  }
+  .specimen-frame {
+    height: 320px;
+  }
+}
