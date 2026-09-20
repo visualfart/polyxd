@@ -76,11 +76,11 @@
         run = assemble();
       });
     }
-    // Switching design system on narrow screens rebuilds the surface you just revealed.
+    // Switching design system rebuilds the surface, so the change is something you watch happen.
     document.querySelectorAll('.demo-tabs [role="tab"]').forEach((tab) => {
       tab.addEventListener("click", () => {
         const stage = document.getElementById(tab.getAttribute("aria-controls"))?.querySelector(".stage");
-        if (stage && window.matchMedia("(max-width: 1000px)").matches) build(stage, 0);
+        if (stage) build(stage, 0);
       });
     });
   }

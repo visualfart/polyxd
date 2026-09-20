@@ -1,0 +1,23 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "govuk",
+  "displayName": "GOV.UK Frontend",
+  "version": "0.0.0",
+  "contractVersion": "0.2.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": [
+      "tokens/system.light.json",
+      "tokens/semantic.json"
+    ]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:govuk-frontend dist/govuk/settings (https://github.com/alphagov/govuk-frontend)",
+      "version": "6.5.1",
+      "license": "MIT",
+      "notes": "GOV.UK publishes no token file; its Sass settings are vendored verbatim under scripts/sources/govuk and the generator reads their maps."
+    }
+  ]
+}

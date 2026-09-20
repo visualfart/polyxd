@@ -1,0 +1,442 @@
+{
+  "$description": "Polyxd semantic tier for GOV.UK Frontend. Every token aliases a GOV.UK functional colour, spacing point or type step wherever one exists; polyxd.* marks what GOV.UK leaves to its components or does not have.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{govuk.body-background}"
+      },
+      "subtle": {
+        "$value": "{govuk.surface-background}",
+        "$description": "GOV.UK's generic surface: a blue tint-95 panel"
+      },
+      "raised": {
+        "$value": "{polyxd.sys.surface.raised}"
+      },
+      "overlay": {
+        "$value": "{govuk.body-background}"
+      },
+      "inverse": {
+        "$value": "{govuk.text}"
+      }
+    },
+    "scrim": {
+      "$value": "{polyxd.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{govuk.text}"
+      },
+      "muted": {
+        "$value": "{govuk.secondary-text}"
+      },
+      "inverse": {
+        "$value": "{govuk.inverse-text}"
+      },
+      "link": {
+        "$value": "{govuk.link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{govuk.border}"
+      },
+      "strong": {
+        "$value": "{polyxd.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{govuk.focus-text}",
+        "$description": "GOV.UK's focus bar, the black half of its yellow-and-black focus state"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{polyxd.sys.action-primary}"
+        },
+        "foreground": {
+          "$value": "{govuk.inverse-text}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{govuk.border}",
+          "$description": "GOV.UK's secondary button is its mid grey"
+        },
+        "foreground": {
+          "$value": "{govuk.text}"
+        },
+        "border": {
+          "$value": "{govuk.input-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.action-danger}"
+        },
+        "foreground": {
+          "$value": "{govuk.inverse-text}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{govuk.surface-background}"
+      },
+      "foreground": {
+        "$value": "{govuk.text}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{polyxd.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{polyxd.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{polyxd.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polyxd.sys.data-1}"
+        },
+        "2": {
+          "$value": "{polyxd.sys.data-2}"
+        },
+        "3": {
+          "$value": "{polyxd.sys.data-3}"
+        },
+        "4": {
+          "$value": "{polyxd.sys.data-4}"
+        },
+        "5": {
+          "$value": "{polyxd.sys.data-5}"
+        },
+        "6": {
+          "$value": "{polyxd.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{polyxd.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{polyxd.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{polyxd.sys.data-neutral}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{govuk.font-family}",
+          "fontSize": "{govuk.font-size-36}",
+          "fontWeight": "{govuk.font-weight-bold}",
+          "lineHeight": "{govuk.line-height-36}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{govuk.font-family}",
+          "fontSize": "{govuk.font-size-24}",
+          "fontWeight": "{govuk.font-weight-bold}",
+          "lineHeight": "{govuk.line-height-24}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{govuk.font-family}",
+          "fontSize": "{govuk.font-size-19}",
+          "fontWeight": "{govuk.font-weight-bold}",
+          "lineHeight": "{govuk.line-height-19}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{govuk.font-family}",
+          "fontSize": "{govuk.font-size-19}",
+          "fontWeight": "{govuk.font-weight-regular}",
+          "lineHeight": "{govuk.line-height-19}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{govuk.font-family}",
+          "fontSize": "{govuk.font-size-16}",
+          "fontWeight": "{govuk.font-weight-regular}",
+          "lineHeight": "{govuk.line-height-16}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{govuk.font-family}",
+          "fontSize": "{govuk.font-size-19}",
+          "fontWeight": "{govuk.font-weight-bold}",
+          "lineHeight": "{govuk.line-height-19}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{govuk.font-family}",
+          "fontSize": "{govuk.font-size-16}",
+          "fontWeight": "{govuk.font-weight-bold}",
+          "lineHeight": "{govuk.line-height-16}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{govuk.font-family}",
+          "fontSize": "{govuk.font-size-36}",
+          "fontWeight": "{govuk.font-weight-bold}",
+          "lineHeight": "{govuk.line-height-36}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{govuk.spacing-2}"
+      },
+      "default": {
+        "$value": "{govuk.spacing-4}"
+      },
+      "comfortable": {
+        "$value": "{govuk.spacing-6}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{govuk.spacing-1}"
+      },
+      "default": {
+        "$value": "{govuk.spacing-2}"
+      },
+      "loose": {
+        "$value": "{govuk.spacing-4}"
+      },
+      "section": {
+        "$value": "{govuk.spacing-7}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{govuk.spacing-1}"
+      },
+      "default": {
+        "$value": "{govuk.spacing-2}"
+      },
+      "loose": {
+        "$value": "{govuk.spacing-4}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{polyxd.sys.target.min}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{govuk.font-size-16}"
+      },
+      "default": {
+        "$value": "{govuk.font-size-19}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{polyxd.sys.radius.none}"
+    },
+    "control": {
+      "$value": "{polyxd.sys.radius.none}"
+    },
+    "default": {
+      "$value": "{polyxd.sys.radius.none}"
+    },
+    "large": {
+      "$value": "{polyxd.sys.radius.none}"
+    },
+    "full": {
+      "$value": "{polyxd.sys.radius.none}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        }
+      },
+      "strong": {
+        "$value": "{govuk.border-width-form-element}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{govuk.focus-width}"
+      },
+      "offset": {
+        "$value": {
+          "value": 0,
+          "unit": "px"
+        },
+        "$description": "GOV.UK's focus style is a solid yellow block behind the element, with no gap"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{polyxd.sys.measure.max}"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{polyxd.sys.shadow.none}"
+    },
+    "overlay": {
+      "$value": "{polyxd.sys.shadow.none}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{polyxd.sys.motion.instant}"
+      },
+      "short": {
+        "$value": "{polyxd.sys.motion.short}"
+      },
+      "medium": {
+        "$value": "{polyxd.sys.motion.medium}"
+      },
+      "long": {
+        "$value": "{polyxd.sys.motion.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{polyxd.sys.easing.standard}"
+      },
+      "enter": {
+        "$value": "{polyxd.sys.easing.enter}"
+      },
+      "exit": {
+        "$value": "{polyxd.sys.easing.exit}"
+      }
+    }
+  }
+}

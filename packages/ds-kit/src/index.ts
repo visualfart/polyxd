@@ -122,14 +122,43 @@ export function duration(value: string): { value: number; unit: "ms" } {
 /** A cubic-bezier() string as its four numbers. */
 export const bezier = (value: string): number[] => (String(value).match(/-?\d*\.?\d+/g) ?? [0, 0, 1, 1]).map(Number).slice(-4);
 
+/** Splits a comma-separated list on the commas that aren't inside brackets. */
+function splitLayers(css: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let current = "";
+  for (const ch of css) {
+    if (ch === "(") depth++;
+    if (ch === ")") depth--;
+    if (ch === "," && depth === 0) {
+      parts.push(current);
+      current = "";
+    } else current += ch;
+  }
+  parts.push(current);
+  return parts;
+}
+
+/** The colour of one shadow layer, including a `color-mix()` whose own commas nest. */
+function layerColour(layer: string): string | undefined {
+  const mix = layer.indexOf("color-mix(");
+  if (mix > -1) {
+    let depth = 0;
+    for (let i = layer.indexOf("(", mix); i < layer.length; i++) {
+      if (layer[i] === "(") depth++;
+      else if (layer[i] === ")" && --depth === 0) return layer.slice(mix, i + 1);
+    }
+  }
+  return layer.match(/(rgba?\([^)]*\)|hsla?\([^)]*\)|oklch\([^)]*\)|#[0-9a-f]{3,8})/i)?.[0];
+}
+
 /** A CSS box-shadow (one or more layers) as DTCG shadow layers. */
 export function shadowLayers(css: string): Json[] {
-  return String(css)
-    .split(/,(?![^(]*\))/)
+  return splitLayers(String(css))
     .map((layer) => layer.trim())
     .filter(Boolean)
     .map((layer) => {
-      const colour = layer.match(/(rgba?\([^)]*\)|hsla?\([^)]*\)|oklch\([^)]*\)|#[0-9a-f]{3,8})/i)?.[0] ?? "rgba(0, 0, 0, 0.15)";
+      const colour = layerColour(layer) ?? "rgba(0, 0, 0, 0.15)";
       const lengths = splitOutside(layer.replace(colour, "").replace("inset", "").trim()).filter(Boolean);
       const [offsetX = "0", offsetY = "0", blur = "0", spread = "0"] = lengths;
       return {
@@ -192,6 +221,8 @@ export interface PackFiles {
   semantic: Json;
   /** Tokens shared by both modes, if the pack has any. */
   shared?: Json;
+  /** The modes the pack actually has. A system with one theme ships one mode rather than a copy. */
+  modes?: string[];
 }
 
 /** Writes a pack's token files, manifest and package.json. */
@@ -199,9 +230,10 @@ export async function writePack(pack: PackFiles): Promise<void> {
   const tokens = join(pack.dir, "tokens");
   await mkdir(tokens, { recursive: true });
   const write = (file: string, data: Json) => writeFile(join(tokens, file), JSON.stringify(data, null, 2) + "\n");
+  const modes = pack.modes ?? ["light", "dark"];
   if (pack.shared) await write("system.json", pack.shared);
-  await write("system.light.json", pack.light);
-  await write("system.dark.json", pack.dark);
+  if (modes.includes("light")) await write("system.light.json", pack.light);
+  if (modes.includes("dark")) await write("system.dark.json", pack.dark);
   await write("semantic.json", pack.semantic);
 
   const files = (mode: string) => [...(pack.shared ? ["tokens/system.json"] : []), `tokens/system.${mode}.json`, "tokens/semantic.json"];
@@ -215,8 +247,8 @@ export async function writePack(pack: PackFiles): Promise<void> {
         version: "0.0.0",
         contractVersion: pack.contractVersion,
         license: "Apache-2.0",
-        modes: { light: files("light"), dark: files("dark") },
-        defaultMode: "light",
+        modes: Object.fromEntries(modes.map((mode) => [mode, files(mode)])),
+        defaultMode: modes[0],
         provenance: pack.provenance,
       },
       null,

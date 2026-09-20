@@ -33,6 +33,9 @@ const PACK_INFO: Record<string, { name: string; by: string }> = {
   radix: { name: "Radix Themes", by: "WorkOS · indigo" },
   polaris: { name: "Shopify Polaris", by: "Shopify · Inter" },
   primer: { name: "GitHub Primer", by: "GitHub · Mona Sans" },
+  spectrum: { name: "Adobe Spectrum 2", by: "Adobe · Source Sans" },
+  govuk: { name: "GOV.UK Frontend", by: "GDS · one theme, no dark" },
+  chakra: { name: "Chakra UI 3", by: "Chakra · Inter" },
 };
 const packs: Pack[] = themes.map((key) => ({ key, ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) }));
 

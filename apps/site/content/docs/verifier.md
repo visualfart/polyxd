@@ -143,7 +143,7 @@ The score runs from 0 (nothing recognisable) to 1 (same structure, order and lab
 ## Results today
 
 - **Injected defects:** 20 of 20 deliberately injected defects are caught (`test/defects.test.ts`). They span schema, structure, patterns, capabilities, copy, rendered accessibility, layout and agent operability: two primary actions, a destructive capability outside a confirmation, a generic "OK" confirm label, results before filters, eight inputs in one view, an image without alt text, a hard-coded balance, a required field removed so the task can't be done, unbreakable text overflowing on a phone, and more. The Phase 3 exit test asks for at least 90%.
-- **Examples:** all 20 spec examples score 100 across 240 renders.
+- **Examples:** all 24 spec examples score 100 across 1,248 renders — 13 design-system packs at two widths, both modes.
 - **Agents:** 216 of 216 agent task runs succeed (18 tasks × 12 targets).
 
 ## Bugs it found in the renderer

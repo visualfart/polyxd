@@ -1,0 +1,441 @@
+{
+  "$description": "Polyxd semantic tier for Chakra UI 3. Every token aliases a Chakra variable wherever one exists; polyxd.* marks what Chakra leaves to its components. The file is the same in both modes.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{chakra.colors-bg}"
+      },
+      "subtle": {
+        "$value": "{chakra.colors-bg-subtle}"
+      },
+      "raised": {
+        "$value": "{chakra.colors-bg-panel}",
+        "$description": "Chakra's panel surface: its cards, menus and dialogs"
+      },
+      "overlay": {
+        "$value": "{chakra.colors-bg-panel}"
+      },
+      "inverse": {
+        "$value": "{chakra.colors-bg-inverted}"
+      }
+    },
+    "scrim": {
+      "$value": "rgba(0, 0, 0, 0.48)",
+      "$description": "Chakra's dialog backdrop is black at 48%, set in its recipe rather than in a token"
+    },
+    "text": {
+      "default": {
+        "$value": "{chakra.colors-fg}"
+      },
+      "muted": {
+        "$value": "{polyxd.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{chakra.colors-fg-inverted}"
+      },
+      "link": {
+        "$value": "{polyxd.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{chakra.colors-border}"
+      },
+      "strong": {
+        "$value": "{polyxd.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{polyxd.sys.action-primary}"
+        },
+        "foreground": {
+          "$value": "{chakra.colors-fg-inverted}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{chakra.colors-bg-subtle}"
+        },
+        "foreground": {
+          "$value": "{chakra.colors-fg}"
+        },
+        "border": {
+          "$value": "{chakra.colors-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.action-danger}"
+        },
+        "foreground": {
+          "$value": "{chakra.colors-fg-inverted}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{polyxd.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{polyxd.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{chakra.colors-bg-info}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{chakra.colors-bg-success}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{chakra.colors-bg-warning}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{chakra.colors-bg-error}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polyxd.sys.data-1}"
+        },
+        "2": {
+          "$value": "{polyxd.sys.data-2}"
+        },
+        "3": {
+          "$value": "{polyxd.sys.data-3}"
+        },
+        "4": {
+          "$value": "{polyxd.sys.data-4}"
+        },
+        "5": {
+          "$value": "{polyxd.sys.data-5}"
+        },
+        "6": {
+          "$value": "{polyxd.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{polyxd.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{polyxd.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{polyxd.sys.data-neutral}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{chakra.fonts-body}",
+          "fontSize": "{chakra.font-sizes-2xl}",
+          "fontWeight": "{chakra.font-weights-bold}",
+          "lineHeight": "{chakra.line-heights-shorter}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{chakra.fonts-body}",
+          "fontSize": "{chakra.font-sizes-xl}",
+          "fontWeight": "{chakra.font-weights-semibold}",
+          "lineHeight": "{chakra.line-heights-short}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{chakra.fonts-body}",
+          "fontSize": "{chakra.font-sizes-md}",
+          "fontWeight": "{chakra.font-weights-semibold}",
+          "lineHeight": "{chakra.line-heights-short}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{chakra.fonts-body}",
+          "fontSize": "{chakra.font-sizes-md}",
+          "fontWeight": "{chakra.font-weights-normal}",
+          "lineHeight": "{chakra.line-heights-moderate}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{chakra.fonts-body}",
+          "fontSize": "{chakra.font-sizes-sm}",
+          "fontWeight": "{chakra.font-weights-normal}",
+          "lineHeight": "{chakra.line-heights-moderate}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{chakra.fonts-body}",
+          "fontSize": "{chakra.font-sizes-sm}",
+          "fontWeight": "{chakra.font-weights-medium}",
+          "lineHeight": "{chakra.line-heights-short}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{chakra.fonts-body}",
+          "fontSize": "{chakra.font-sizes-xs}",
+          "fontWeight": "{chakra.font-weights-medium}",
+          "lineHeight": "{chakra.line-heights-short}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{chakra.fonts-body}",
+          "fontSize": "{chakra.font-sizes-2xl}",
+          "fontWeight": "{chakra.font-weights-bold}",
+          "lineHeight": "{chakra.line-heights-shorter}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{chakra.spacing-2}"
+      },
+      "default": {
+        "$value": "{chakra.spacing-4}"
+      },
+      "comfortable": {
+        "$value": "{chakra.spacing-6}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{chakra.spacing-1}"
+      },
+      "default": {
+        "$value": "{chakra.spacing-2}"
+      },
+      "loose": {
+        "$value": "{chakra.spacing-4}"
+      },
+      "section": {
+        "$value": "{chakra.spacing-8}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{chakra.spacing-1}"
+      },
+      "default": {
+        "$value": "{chakra.spacing-2}"
+      },
+      "loose": {
+        "$value": "{chakra.spacing-4}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{polyxd.sys.target.min}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{chakra.font-sizes-sm}"
+      },
+      "default": {
+        "$value": "{chakra.font-sizes-lg}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{chakra.radii-sm}"
+    },
+    "control": {
+      "$value": "{chakra.radii-l2}",
+      "$description": "Chakra's control radius: the second step of its layered radius scale"
+    },
+    "default": {
+      "$value": "{chakra.radii-md}"
+    },
+    "large": {
+      "$value": "{chakra.radii-lg}"
+    },
+    "full": {
+      "$value": "{chakra.radii-full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        }
+      },
+      "strong": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{polyxd.sys.focusRing.width}"
+      },
+      "offset": {
+        "$value": "{polyxd.sys.focusRing.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{polyxd.sys.measure.max}"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{chakra.shadows-sm}"
+    },
+    "overlay": {
+      "$value": "{chakra.shadows-lg}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{chakra.durations-fastest}"
+      },
+      "short": {
+        "$value": "{chakra.durations-fast}"
+      },
+      "medium": {
+        "$value": "{chakra.durations-moderate}"
+      },
+      "long": {
+        "$value": "{chakra.durations-slow}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{chakra.easings-ease-in-out}"
+      },
+      "enter": {
+        "$value": "{chakra.easings-ease-out}"
+      },
+      "exit": {
+        "$value": "{chakra.easings-ease-in}"
+      }
+    }
+  }
+}

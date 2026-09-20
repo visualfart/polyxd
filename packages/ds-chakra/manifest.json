@@ -1,0 +1,27 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "chakra",
+  "displayName": "Chakra UI 3",
+  "version": "0.0.0",
+  "contractVersion": "0.2.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": [
+      "tokens/system.light.json",
+      "tokens/semantic.json"
+    ],
+    "dark": [
+      "tokens/system.dark.json",
+      "tokens/semantic.json"
+    ]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "npm:@chakra-ui/react defaultSystem.getTokenCss() (https://github.com/chakra-ui/chakra-ui)",
+      "version": "3.37.0",
+      "license": "MIT",
+      "notes": "Chakra publishes its theme as JavaScript, so scripts/extract.ts runs Chakra's own CSS emitter against the pinned package and vendors the result as scripts/sources/chakra/tokens.css."
+    }
+  ]
+}

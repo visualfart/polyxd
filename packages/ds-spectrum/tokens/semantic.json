@@ -1,0 +1,434 @@
+{
+  "$description": "Polyxd semantic tier for Adobe Spectrum 2. Every token aliases a Spectrum token wherever one exists; polyxd.* marks what Spectrum's token package does not publish. The file is the same in both schemes.",
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": {
+        "$value": "{spectrum.background-base-color}",
+        "$description": "Spectrum's base background, gray-25"
+      },
+      "subtle": {
+        "$value": "{spectrum.background-layer-1-color}"
+      },
+      "raised": {
+        "$value": "{spectrum.background-layer-2-color}"
+      },
+      "overlay": {
+        "$value": "{spectrum.background-elevated-color}"
+      },
+      "inverse": {
+        "$value": "{spectrum.gray-800}"
+      }
+    },
+    "scrim": {
+      "$value": "{polyxd.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{spectrum.neutral-content-color-default}"
+      },
+      "muted": {
+        "$value": "{polyxd.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{spectrum.gray-25}"
+      },
+      "link": {
+        "$value": "{polyxd.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{spectrum.gray-300}"
+      },
+      "strong": {
+        "$value": "{polyxd.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{spectrum.focus-indicator-color}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{polyxd.sys.action-primary}"
+        },
+        "foreground": {
+          "$value": "{spectrum.gray-25}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{spectrum.gray-100}"
+        },
+        "foreground": {
+          "$value": "{spectrum.neutral-content-color-default}"
+        },
+        "border": {
+          "$value": "{spectrum.gray-300}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.action-danger}"
+        },
+        "foreground": {
+          "$value": "{spectrum.gray-25}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{polyxd.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{polyxd.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{polyxd.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{polyxd.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{polyxd.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{polyxd.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{polyxd.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{polyxd.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{polyxd.sys.data-1}"
+        },
+        "2": {
+          "$value": "{polyxd.sys.data-2}"
+        },
+        "3": {
+          "$value": "{polyxd.sys.data-3}"
+        },
+        "4": {
+          "$value": "{polyxd.sys.data-4}"
+        },
+        "5": {
+          "$value": "{polyxd.sys.data-5}"
+        },
+        "6": {
+          "$value": "{polyxd.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{polyxd.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{polyxd.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{polyxd.sys.data-neutral}"
+      }
+    }
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{polyxd.sys.family.sans}",
+          "fontSize": "{spectrum.heading-size-m}",
+          "fontWeight": "{polyxd.sys.weight.bold}",
+          "lineHeight": "{spectrum.heading-line-height}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{polyxd.sys.family.sans}",
+          "fontSize": "{spectrum.heading-size-s}",
+          "fontWeight": "{polyxd.sys.weight.bold}",
+          "lineHeight": "{spectrum.heading-line-height}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{polyxd.sys.family.sans}",
+          "fontSize": "{spectrum.heading-size-xs}",
+          "fontWeight": "{polyxd.sys.weight.medium}",
+          "lineHeight": "{spectrum.heading-line-height}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{polyxd.sys.family.sans}",
+          "fontSize": "{spectrum.body-size-m}",
+          "fontWeight": "{polyxd.sys.weight.regular}",
+          "lineHeight": "{spectrum.body-line-height}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{polyxd.sys.family.sans}",
+          "fontSize": "{spectrum.body-size-s}",
+          "fontWeight": "{polyxd.sys.weight.regular}",
+          "lineHeight": "{spectrum.body-line-height}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{polyxd.sys.family.sans}",
+          "fontSize": "{spectrum.detail-size-m}",
+          "fontWeight": "{polyxd.sys.weight.medium}",
+          "lineHeight": "{spectrum.detail-line-height}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{polyxd.sys.family.sans}",
+          "fontSize": "{spectrum.detail-size-s}",
+          "fontWeight": "{polyxd.sys.weight.medium}",
+          "lineHeight": "{spectrum.detail-line-height}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{polyxd.sys.family.sans}",
+          "fontSize": "{spectrum.heading-size-m}",
+          "fontWeight": "{polyxd.sys.weight.bold}",
+          "lineHeight": "{spectrum.heading-line-height}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{spectrum.spacing-100}"
+      },
+      "default": {
+        "$value": "{spectrum.spacing-300}"
+      },
+      "comfortable": {
+        "$value": "{spectrum.spacing-400}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{spectrum.spacing-50}"
+      },
+      "default": {
+        "$value": "{spectrum.spacing-100}"
+      },
+      "loose": {
+        "$value": "{spectrum.spacing-200}"
+      },
+      "section": {
+        "$value": "{spectrum.spacing-500}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{spectrum.spacing-50}"
+      },
+      "default": {
+        "$value": "{spectrum.spacing-100}"
+      },
+      "loose": {
+        "$value": "{spectrum.spacing-200}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{polyxd.sys.target.min}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{spectrum.font-size-100}"
+      },
+      "default": {
+        "$value": "{spectrum.font-size-300}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{spectrum.corner-radius-small-default}"
+    },
+    "control": {
+      "$value": "{spectrum.corner-radius-medium-default}",
+      "$description": "Spectrum's default control radius"
+    },
+    "default": {
+      "$value": "{spectrum.corner-radius-medium-default}"
+    },
+    "large": {
+      "$value": "{spectrum.corner-radius-large-default}"
+    },
+    "full": {
+      "$value": "{polyxd.sys.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{spectrum.border-width-100}"
+      },
+      "strong": {
+        "$value": "{spectrum.border-width-200}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{spectrum.focus-indicator-thickness}"
+      },
+      "offset": {
+        "$value": "{spectrum.focus-indicator-gap}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{polyxd.sys.measure.max}"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{polyxd.sys.state.hover}"
+      },
+      "pressed": {
+        "$value": "{polyxd.sys.state.pressed}"
+      },
+      "focus": {
+        "$value": "{polyxd.sys.state.focus}"
+      },
+      "disabled": {
+        "$value": "{polyxd.sys.state.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{polyxd.sys.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{polyxd.sys.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{polyxd.sys.motion.instant}"
+      },
+      "short": {
+        "$value": "{polyxd.sys.motion.short}"
+      },
+      "medium": {
+        "$value": "{polyxd.sys.motion.medium}"
+      },
+      "long": {
+        "$value": "{polyxd.sys.motion.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{polyxd.sys.easing.standard}"
+      },
+      "enter": {
+        "$value": "{polyxd.sys.easing.enter}"
+      },
+      "exit": {
+        "$value": "{polyxd.sys.easing.exit}"
+      }
+    }
+  }
+}

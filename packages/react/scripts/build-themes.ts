@@ -120,10 +120,14 @@ export function themeCss(pack: string, modes: Map<string, TokenSet>, defaultMode
     lines.push("", "  /* shadcn/ui variable names, so shadcn components follow this pack too */");
     for (const [k, token] of Object.entries(SHADCN)) lines.push(`  ${k}: var(${cssVar(token)});`);
     lines.push(`  color-scheme: ${mode === "dark" ? "dark" : "light"};`);
+    // A pack with one mode renders that mode whichever mode is asked for: GOV.UK has no dark theme,
+    // and a surface that asks for one should still be themed rather than fall back to nothing.
     const selector =
-      mode === defaultMode
-        ? `[data-pxd-theme="${pack}"]:not([data-pxd-mode]),\n[data-pxd-theme="${pack}"][data-pxd-mode="${mode}"]`
-        : `[data-pxd-theme="${pack}"][data-pxd-mode="${mode}"]`;
+      modes.size === 1
+        ? `[data-pxd-theme="${pack}"]`
+        : mode === defaultMode
+          ? `[data-pxd-theme="${pack}"]:not([data-pxd-mode]),\n[data-pxd-theme="${pack}"][data-pxd-mode="${mode}"]`
+          : `[data-pxd-theme="${pack}"][data-pxd-mode="${mode}"]`;
     blocks.push(`${selector} {\n${lines.join("\n")}\n}`);
   }
   return blocks.join("\n\n") + "\n";

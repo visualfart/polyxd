@@ -1,13 +1,12 @@
-// Landing page: design-system tabs in the demo (narrow screens) and the waitlist form.
+// Landing page: the demo's design-system tabs and the waitlist form.
 (() => {
   const tabs = [...document.querySelectorAll('.demo-tabs [role="tab"]')];
-  const narrow = window.matchMedia("(max-width: 1000px)");
   const select = (tab, focus) => {
     for (const t of tabs) {
       const on = t === tab;
       t.setAttribute("aria-selected", String(on));
       t.tabIndex = on ? 0 : -1;
-      document.getElementById(t.getAttribute("aria-controls")).hidden = narrow.matches && !on;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
     }
     if (focus) tab.focus();
   };
@@ -19,10 +18,7 @@
       if (d) select(tabs[(i + d + tabs.length) % tabs.length], true);
     });
   });
-  if (tabs.length) {
-    narrow.addEventListener("change", sync);
-    sync();
-  }
+  if (tabs.length) sync();
 
   const form = document.querySelector("[data-waitlist]");
   if (!form) return;

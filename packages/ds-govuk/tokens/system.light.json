@@ -1,0 +1,816 @@
+{
+  "$description": "Values GOV.UK Frontend does not define, and contrast adjustments.",
+  "govuk": {
+    "palette-blue-primary": {
+      "$value": "#1d70b8",
+      "$type": "color"
+    },
+    "palette-blue-tint-25": {
+      "$value": "#5694ca",
+      "$type": "color"
+    },
+    "palette-blue-tint-50": {
+      "$value": "#8eb8dc",
+      "$type": "color"
+    },
+    "palette-blue-tint-80": {
+      "$value": "#d2e2f1",
+      "$type": "color"
+    },
+    "palette-blue-tint-95": {
+      "$value": "#f4f8fb",
+      "$type": "color"
+    },
+    "palette-blue-shade-25": {
+      "$value": "#16548a",
+      "$type": "color"
+    },
+    "palette-blue-shade-50": {
+      "$value": "#0f385c",
+      "$type": "color"
+    },
+    "palette-blue-shade-10": {
+      "$value": "#1a65a6",
+      "$type": "color"
+    },
+    "palette-green-primary": {
+      "$value": "#0f7a52",
+      "$type": "color"
+    },
+    "palette-green-tint-25": {
+      "$value": "#4b9b7d",
+      "$type": "color"
+    },
+    "palette-green-tint-50": {
+      "$value": "#87bca8",
+      "$type": "color"
+    },
+    "palette-green-tint-80": {
+      "$value": "#cfe4dc",
+      "$type": "color"
+    },
+    "palette-green-tint-95": {
+      "$value": "#f3f8f6",
+      "$type": "color"
+    },
+    "palette-green-shade-25": {
+      "$value": "#0b5c3e",
+      "$type": "color"
+    },
+    "palette-green-shade-50": {
+      "$value": "#083d29",
+      "$type": "color"
+    },
+    "palette-teal-primary": {
+      "$value": "#158187",
+      "$type": "color"
+    },
+    "palette-teal-tint-25": {
+      "$value": "#50a1a5",
+      "$type": "color"
+    },
+    "palette-teal-tint-50": {
+      "$value": "#8ac0c3",
+      "$type": "color"
+    },
+    "palette-teal-tint-80": {
+      "$value": "#d0e6e7",
+      "$type": "color"
+    },
+    "palette-teal-tint-95": {
+      "$value": "#f3f9f9",
+      "$type": "color"
+    },
+    "palette-teal-shade-25": {
+      "$value": "#106165",
+      "$type": "color"
+    },
+    "palette-teal-shade-50": {
+      "$value": "#0b4144",
+      "$type": "color"
+    },
+    "palette-teal-accent": {
+      "$value": "#00ffe0",
+      "$type": "color"
+    },
+    "palette-purple-primary": {
+      "$value": "#54319f",
+      "$type": "color"
+    },
+    "palette-purple-tint-25": {
+      "$value": "#7f65b7",
+      "$type": "color"
+    },
+    "palette-purple-tint-50": {
+      "$value": "#aa98cf",
+      "$type": "color"
+    },
+    "palette-purple-tint-80": {
+      "$value": "#ddd6ec",
+      "$type": "color"
+    },
+    "palette-purple-tint-95": {
+      "$value": "#f6f5fa",
+      "$type": "color"
+    },
+    "palette-purple-shade-25": {
+      "$value": "#3f2577",
+      "$type": "color"
+    },
+    "palette-purple-shade-50": {
+      "$value": "#2a1950",
+      "$type": "color"
+    },
+    "palette-magenta-primary": {
+      "$value": "#ca357c",
+      "$type": "color"
+    },
+    "palette-magenta-tint-25": {
+      "$value": "#d7689d",
+      "$type": "color"
+    },
+    "palette-magenta-tint-50": {
+      "$value": "#e59abe",
+      "$type": "color"
+    },
+    "palette-magenta-tint-80": {
+      "$value": "#f4d7e5",
+      "$type": "color"
+    },
+    "palette-magenta-tint-95": {
+      "$value": "#fcf5f8",
+      "$type": "color"
+    },
+    "palette-magenta-shade-25": {
+      "$value": "#98285d",
+      "$type": "color"
+    },
+    "palette-magenta-shade-50": {
+      "$value": "#651b3e",
+      "$type": "color"
+    },
+    "palette-red-primary": {
+      "$value": "#ca3535",
+      "$type": "color"
+    },
+    "palette-red-tint-25": {
+      "$value": "#d76868",
+      "$type": "color"
+    },
+    "palette-red-tint-50": {
+      "$value": "#e59a9a",
+      "$type": "color"
+    },
+    "palette-red-tint-80": {
+      "$value": "#f4d7d7",
+      "$type": "color"
+    },
+    "palette-red-tint-95": {
+      "$value": "#fcf5f5",
+      "$type": "color"
+    },
+    "palette-red-shade-25": {
+      "$value": "#982828",
+      "$type": "color"
+    },
+    "palette-red-shade-50": {
+      "$value": "#651b1b",
+      "$type": "color"
+    },
+    "palette-orange-primary": {
+      "$value": "#f47738",
+      "$type": "color"
+    },
+    "palette-orange-tint-25": {
+      "$value": "#f7996a",
+      "$type": "color"
+    },
+    "palette-orange-tint-50": {
+      "$value": "#fabb9c",
+      "$type": "color"
+    },
+    "palette-orange-tint-80": {
+      "$value": "#fde4d7",
+      "$type": "color"
+    },
+    "palette-orange-tint-95": {
+      "$value": "#fef8f5",
+      "$type": "color"
+    },
+    "palette-orange-shade-25": {
+      "$value": "#b7592a",
+      "$type": "color"
+    },
+    "palette-orange-shade-50": {
+      "$value": "#7a3c1c",
+      "$type": "color"
+    },
+    "palette-yellow-primary": {
+      "$value": "#ffdd00",
+      "$type": "color"
+    },
+    "palette-yellow-tint-25": {
+      "$value": "#ffe640",
+      "$type": "color"
+    },
+    "palette-yellow-tint-50": {
+      "$value": "#ffee80",
+      "$type": "color"
+    },
+    "palette-yellow-tint-80": {
+      "$value": "#fff8cc",
+      "$type": "color"
+    },
+    "palette-yellow-tint-95": {
+      "$value": "#fffdf2",
+      "$type": "color"
+    },
+    "palette-yellow-shade-25": {
+      "$value": "#bfa600",
+      "$type": "color"
+    },
+    "palette-yellow-shade-50": {
+      "$value": "#806f00",
+      "$type": "color"
+    },
+    "palette-brown-primary": {
+      "$value": "#99704a",
+      "$type": "color"
+    },
+    "palette-brown-tint-25": {
+      "$value": "#b39477",
+      "$type": "color"
+    },
+    "palette-brown-tint-50": {
+      "$value": "#ccb8a5",
+      "$type": "color"
+    },
+    "palette-brown-tint-95": {
+      "$value": "#faf8f6",
+      "$type": "color"
+    },
+    "palette-black-primary": {
+      "$value": "#0b0c0c",
+      "$type": "color"
+    },
+    "palette-black-tint-25": {
+      "$value": "#484949",
+      "$type": "color"
+    },
+    "palette-black-tint-50": {
+      "$value": "#858686",
+      "$type": "color"
+    },
+    "palette-black-tint-80": {
+      "$value": "#cecece",
+      "$type": "color"
+    },
+    "palette-black-tint-95": {
+      "$value": "#f3f3f3",
+      "$type": "color"
+    },
+    "palette-primary-primary": {
+      "$value": "#1d70b8",
+      "$type": "color"
+    },
+    "palette-tint-25-primary": {
+      "$value": "#5694ca",
+      "$type": "color"
+    },
+    "palette-tint-50-primary": {
+      "$value": "#8eb8dc",
+      "$type": "color"
+    },
+    "palette-tint-80-primary": {
+      "$value": "#d2e2f1",
+      "$type": "color"
+    },
+    "palette-tint-95-primary": {
+      "$value": "#f4f8fb",
+      "$type": "color"
+    },
+    "palette-shade-25-primary": {
+      "$value": "#16548a",
+      "$type": "color"
+    },
+    "palette-shade-50-primary": {
+      "$value": "#0f385c",
+      "$type": "color"
+    },
+    "palette-shade-10-primary": {
+      "$value": "#1a65a6",
+      "$type": "color"
+    },
+    "palette-accent-primary": {
+      "$value": "#00ffe0",
+      "$type": "color"
+    },
+    "palette-white-primary": {
+      "$value": "#ffffff",
+      "$type": "color"
+    },
+    "brand": {
+      "$value": "#1d70b8",
+      "$type": "color"
+    },
+    "text": {
+      "$value": "#0b0c0c",
+      "$type": "color"
+    },
+    "inverse-text": {
+      "$value": "#ffffff",
+      "$type": "color"
+    },
+    "template-background": {
+      "$value": "#f4f8fb",
+      "$type": "color"
+    },
+    "body-background": {
+      "$value": "#ffffff",
+      "$type": "color"
+    },
+    "print-text": {
+      "$value": "#000000",
+      "$type": "color"
+    },
+    "secondary-text": {
+      "$value": "#484949",
+      "$type": "color"
+    },
+    "focus": {
+      "$value": "#ffdd00",
+      "$type": "color"
+    },
+    "focus-text": {
+      "$value": "#0b0c0c",
+      "$type": "color"
+    },
+    "error": {
+      "$value": "#ca3535",
+      "$type": "color"
+    },
+    "success": {
+      "$value": "#0f7a52",
+      "$type": "color"
+    },
+    "border": {
+      "$value": "#cecece",
+      "$type": "color"
+    },
+    "input-border": {
+      "$value": "#0b0c0c",
+      "$type": "color"
+    },
+    "hover": {
+      "$value": "#cecece",
+      "$type": "color"
+    },
+    "link": {
+      "$value": "#1a65a6",
+      "$type": "color"
+    },
+    "link-visited": {
+      "$value": "#54319f",
+      "$type": "color"
+    },
+    "link-hover": {
+      "$value": "#0f385c",
+      "$type": "color"
+    },
+    "link-active": {
+      "$value": "#0b0c0c",
+      "$type": "color"
+    },
+    "surface-background": {
+      "$value": "#f4f8fb",
+      "$type": "color"
+    },
+    "surface-text": {
+      "$value": "#0b0c0c",
+      "$type": "color"
+    },
+    "surface-border": {
+      "$value": "#8eb8dc",
+      "$type": "color"
+    },
+    "spacing-0": {
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "spacing-1": {
+      "$value": {
+        "value": 5,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "spacing-2": {
+      "$value": {
+        "value": 10,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "spacing-3": {
+      "$value": {
+        "value": 15,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "spacing-4": {
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "spacing-5": {
+      "$value": {
+        "value": 25,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "spacing-6": {
+      "$value": {
+        "value": 30,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "spacing-7": {
+      "$value": {
+        "value": 40,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "spacing-8": {
+      "$value": {
+        "value": 50,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "spacing-9": {
+      "$value": {
+        "value": 60,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "font-size-16": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "line-height-16": {
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "font-size-19": {
+      "$value": {
+        "value": 19,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "line-height-19": {
+      "$value": {
+        "value": 25,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "font-size-24": {
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "line-height-24": {
+      "$value": {
+        "value": 30,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "font-size-27": {
+      "$value": {
+        "value": 27,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "line-height-27": {
+      "$value": {
+        "value": 30,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "font-size-36": {
+      "$value": {
+        "value": 36,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "line-height-36": {
+      "$value": {
+        "value": 40,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "font-size-48": {
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "line-height-48": {
+      "$value": {
+        "value": 50,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "font-size-80": {
+      "$value": {
+        "value": 80,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "line-height-80": {
+      "$value": {
+        "value": 80,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "font-family": {
+      "$value": "\"GDS Transport\", arial, sans-serif",
+      "$type": "fontFamily"
+    },
+    "font-weight-regular": {
+      "$value": 400,
+      "$type": "number"
+    },
+    "font-weight-bold": {
+      "$value": 700,
+      "$type": "number"
+    },
+    "focus-width": {
+      "$value": {
+        "value": 3,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "border-width": {
+      "$value": {
+        "value": 5,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    },
+    "border-width-form-element": {
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$type": "dimension"
+    }
+  },
+  "polyxd": {
+    "sys": {
+      "$type": "color",
+      "status-info-background": {
+        "$value": "{govuk.palette-blue-tint-95}"
+      },
+      "status-info-foreground": {
+        "$value": "{govuk.palette-blue-shade-25}"
+      },
+      "status-info-emphasis": {
+        "$value": "{govuk.palette-blue-primary}"
+      },
+      "status-success-background": {
+        "$value": "{govuk.palette-green-tint-95}"
+      },
+      "status-success-foreground": {
+        "$value": "{govuk.palette-green-shade-25}"
+      },
+      "status-success-emphasis": {
+        "$value": "{govuk.palette-green-primary}"
+      },
+      "status-warning-background": {
+        "$value": "{govuk.palette-orange-tint-95}"
+      },
+      "status-warning-foreground": {
+        "$value": "{govuk.palette-orange-shade-50}",
+        "$description": "Contrast adjustment: GOV.UK's orange shade-25 doesn't reach 4.5:1 here; orange-shade-50 is the nearest variant of the same colour that does (8.01:1)"
+      },
+      "status-warning-emphasis": {
+        "$value": "{govuk.palette-orange-shade-25}",
+        "$description": "Contrast adjustment: GOV.UK's orange primary doesn't reach 3:1 here; orange-shade-25 is the nearest variant of the same colour that does (4.69:1)"
+      },
+      "status-danger-background": {
+        "$value": "{govuk.palette-red-tint-95}"
+      },
+      "status-danger-foreground": {
+        "$value": "{govuk.palette-red-shade-25}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{govuk.palette-red-primary}"
+      },
+      "data-1": {
+        "$value": "{govuk.palette-blue-primary}"
+      },
+      "data-2": {
+        "$value": "{govuk.palette-green-primary}"
+      },
+      "data-3": {
+        "$value": "{govuk.palette-purple-primary}"
+      },
+      "data-4": {
+        "$value": "{govuk.palette-orange-shade-25}",
+        "$description": "Contrast adjustment: GOV.UK's orange primary doesn't reach 3:1 here; orange-shade-25 is the nearest variant of the same colour that does (4.69:1)"
+      },
+      "data-5": {
+        "$value": "{govuk.palette-magenta-primary}"
+      },
+      "data-6": {
+        "$value": "{govuk.palette-teal-primary}"
+      },
+      "data-positive": {
+        "$value": "{govuk.palette-green-primary}"
+      },
+      "data-negative": {
+        "$value": "{govuk.palette-red-primary}"
+      },
+      "data-neutral": {
+        "$value": "{govuk.palette-brown-primary}"
+      },
+      "action-primary": {
+        "$value": "{govuk.palette-green-primary}"
+      },
+      "action-danger": {
+        "$value": "{govuk.palette-red-primary}"
+      },
+      "border-strong": {
+        "$value": "{govuk.palette-black-tint-50}"
+      },
+      "surface": {
+        "$type": "color",
+        "raised": {
+          "$value": "#ffffff",
+          "$description": "GOV.UK draws cards as bordered panels on the page background rather than on a raised fill"
+        }
+      },
+      "scrim": {
+        "$type": "color",
+        "$value": "rgba(11, 12, 12, 0.6)",
+        "$description": "GOV.UK has no modal, so no scrim; this is its black at 60%"
+      },
+      "radius": {
+        "$type": "dimension",
+        "none": {
+          "$value": {
+            "value": 0,
+            "unit": "px"
+          },
+          "$description": "GOV.UK's corners are square, everywhere — the one shape decision the whole system is built on"
+        }
+      },
+      "target": {
+        "$type": "dimension",
+        "min": {
+          "$value": {
+            "value": 44,
+            "unit": "px"
+          },
+          "$description": "GOV.UK's form controls are 40px; 44px is the touch target a generated surface is held to"
+        }
+      },
+      "measure": {
+        "$type": "number",
+        "max": {
+          "$value": 65,
+          "$description": "GOV.UK writes to about 65 characters a line; the setting is in its grid, not in a token"
+        }
+      },
+      "state": {
+        "$type": "number",
+        "hover": {
+          "$value": 0.06,
+          "$description": "GOV.UK shades hover with separate palette colours; Polyxd needs a state-layer opacity"
+        },
+        "pressed": {
+          "$value": 0.12
+        },
+        "focus": {
+          "$value": 0.12
+        },
+        "disabled": {
+          "$value": 0.5,
+          "$description": "GOV.UK's disabled controls are its standard controls at half opacity"
+        }
+      },
+      "shadow": {
+        "$type": "shadow",
+        "none": {
+          "$value": [
+            {
+              "offsetX": {
+                "value": 0,
+                "unit": "px"
+              },
+              "offsetY": {
+                "value": 0,
+                "unit": "px"
+              },
+              "blur": {
+                "value": 0,
+                "unit": "px"
+              },
+              "spread": {
+                "value": 0,
+                "unit": "px"
+              },
+              "color": "rgba(0, 0, 0, 0)"
+            }
+          ],
+          "$description": "GOV.UK draws no shadows at all: depth is a border, not a blur"
+        }
+      },
+      "motion": {
+        "$type": "duration",
+        "instant": {
+          "$value": {
+            "value": 0,
+            "unit": "ms"
+          }
+        },
+        "short": {
+          "$value": {
+            "value": 0,
+            "unit": "ms"
+          }
+        },
+        "medium": {
+          "$value": {
+            "value": 0,
+            "unit": "ms"
+          }
+        },
+        "long": {
+          "$value": {
+            "value": 0,
+            "unit": "ms"
+          },
+          "$description": "GOV.UK animates nothing; these durations are zero rather than invented"
+        }
+      },
+      "easing": {
+        "$type": "cubicBezier",
+        "standard": {
+          "$value": [
+            0,
+            0,
+            1,
+            1
+          ]
+        },
+        "enter": {
+          "$value": [
+            0,
+            0,
+            1,
+            1
+          ]
+        },
+        "exit": {
+          "$value": [
+            0,
+            0,
+            1,
+            1
+          ]
+        }
+      }
+    }
+  }
+}

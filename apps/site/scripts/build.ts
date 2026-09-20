@@ -302,6 +302,54 @@ ${footer}
 `;
 }
 
+
+// ---------- The landing page's demo ----------
+
+/**
+ * The same Confirm document, rendered by every pack the repo ships. The card's markup is fixed;
+ * what changes between tabs is only which pack's theme block the surface asks for, exactly as in
+ * the renderer. The themes come from @polyxd/react's compiled files, concatenated into one
+ * stylesheet so the page depends on nothing built at request time.
+ */
+async function demoHtml(): Promise<{ html: string; themes: string; count: number }> {
+  // ds-kit is the shared builder, not a pack: a pack is a directory with a manifest.
+  const dirs = (await readdir(join(REPO, "packages"))).filter((d) => d.startsWith("ds-") && existsSync(join(REPO, "packages", d, "manifest.json"))).sort();
+  const packs = await Promise.all(
+    dirs.map(async (dir) => {
+      const manifest = JSON.parse(await readFile(join(REPO, "packages", dir, "manifest.json"), "utf8"));
+      return { key: manifest.name as string, name: manifest.displayName as string };
+    }),
+  );
+  // Material 3 first, because it is the one most people recognise; the rest keep pack order.
+  packs.sort((a, b) => Number(b.key === "material3") - Number(a.key === "material3"));
+
+  const card = `<div class="card"><div class="t">Send £250.00 to Alex Kim?</div><div class="d">The money leaves your account immediately and can't be recalled.</div><div><div class="row"><span>To</span><span>Alex Kim</span></div><div class="row"><span>Amount</span><span>£250.00</span></div></div><div class="acts"><span class="b b2">Cancel</span><span class="b b1">Send £250.00</span></div></div>`;
+  const tabs = packs
+    .map(
+      (p, i) =>
+        `<button type="button" role="tab" id="tab-${p.key}" aria-controls="render-${p.key}" aria-selected="${i === 0}"${i === 0 ? "" : ' tabindex="-1"'}>${esc(p.name)}</button>`,
+    )
+    .join("\n");
+  const renders = packs
+    .map(
+      (p, i) =>
+        `<figure class="render" id="render-${p.key}" role="tabpanel" aria-labelledby="tab-${p.key}"${i === 0 ? "" : " hidden"}>
+<div class="stage" data-pxd-theme="${p.key}" data-pxd-mode="light" aria-hidden="true">${card}</div>
+<figcaption><strong>${esc(p.name)}</strong><span>axe 0 · agent ✓</span></figcaption>
+</figure>`,
+    )
+    .join("\n");
+
+  const themeFiles = (await readdir(join(REPO, "packages/react/themes"))).filter((f) => f.endsWith(".css")).sort();
+  const themes = (await Promise.all(themeFiles.map((f) => readFile(join(REPO, "packages/react/themes", f), "utf8")))).join("\n");
+
+  return {
+    count: packs.length,
+    themes,
+    html: `<div class="demo-tabs" role="tablist" aria-label="Design system">\n${tabs}\n</div>\n\n<div class="renders">\n${renders}\n</div>`,
+  };
+}
+
 // ---------- Build ----------
 
 async function write(path: string, content: string) {
@@ -319,9 +367,14 @@ await mkdir(join(DIST, "assets/vendor"), { recursive: true });
 await Promise.all(VENDOR.map((f) => cp(join(REPO, "node_modules", f), join(DIST, "assets/vendor", f.split("/").pop()!))));
 await write(join(DIST, "favicon.svg"), LOGO.replace('aria-hidden="true"', 'xmlns="http://www.w3.org/2000/svg"').replace(/currentColor/g, "#141414"));
 
+const demo = await demoHtml();
+await write(join(DIST, "assets/themes.css"), demo.themes);
+const spelled = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen"];
 const landing = (await readFile(join(SITE, "src/index.html"), "utf8"))
-  .replace("<!--HEAD-->", head({ title: "Polyxd — interfaces that show up when you need them", description: "Polyxd turns a request into a real, accessible interface, built from your design system, usable by people and agents, and gone when the task is done.", path: "/" }))
+  .replace("<!--HEAD-->", head({ title: "Polyxd — interfaces that show up when you need them", description: "Polyxd turns a request into a real, accessible interface, built from your design system, usable by people and agents, and gone when the task is done.", path: "/", css: ["/assets/themes.css"] }))
   .replace("<!--HEADER-->", header("home"))
+  .replace("<!--DEMO-->", demo.html)
+  .replace("<!--PACKCOUNT-->", spelled[demo.count - 1] ?? String(demo.count))
   .replace("<!--FOOTER-->", footer);
 await write(join(DIST, "index.html"), landing);
 

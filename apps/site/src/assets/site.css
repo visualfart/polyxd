@@ -322,16 +322,19 @@ a {
 .demo-arrow {
   color: var(--night-faint);
 }
+/* Thirteen packs, so the row wraps rather than dividing the width thirteen ways. */
 .demo-tabs {
-  display: none;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 6px;
-  padding: 4px;
+  padding: 6px;
   background: var(--night-3);
-  border-radius: 14px;
+  border-radius: 16px;
 }
 .demo-tabs button {
-  min-height: 44px;
+  min-height: 40px;
+  padding: 0 14px;
   border: 0;
   border-radius: 10px;
   background: transparent;
@@ -345,8 +348,9 @@ a {
 }
 .renders {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+}
+.render[hidden] {
+  display: none;
 }
 .render {
   display: flex;
@@ -394,182 +398,78 @@ a {
   .demo-json {
     display: none;
   }
-  .demo-tabs {
-    display: grid;
-  }
-  .renders {
-    grid-template-columns: 1fr;
-  }
-  .render[hidden] {
-    display: none;
-  }
   .stage {
     min-height: 320px;
     padding: 20px 16px;
   }
 }
 
-/* The three renderings use each design system's real token values (see packages/ds-*). */
-.m3 {
-  background: #fdf7ff;
+/* The rendering uses the selected pack's own tokens — the same theme files @polyxd/react ships,
+   served as /assets/themes.css. Nothing below names a colour, a size or a typeface. */
+.stage {
+  background: var(--pxd-color-surface-subtle);
+  color: var(--pxd-color-text-default);
+  font-family: var(--pxd-type-body-default-family);
 }
-.m3 .card {
+.stage .card {
   width: 100%;
-  padding: 24px;
-  background: #ece6ee;
-  border-radius: 28px;
-  font-family: Roboto, sans-serif;
-  color: #1d1b20;
+  max-width: 460px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--pxd-space-stack-loose);
+  padding: var(--pxd-space-inset-comfortable);
+  background: var(--pxd-color-surface-raised);
+  border: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  border-radius: var(--pxd-radius-large);
+  box-shadow: var(--pxd-shadow-raised);
 }
-.m3 .t {
-  font-size: 20px;
+.stage .t {
+  font-family: var(--pxd-type-title-section-family);
+  font-size: var(--pxd-type-title-section-size);
+  font-weight: var(--pxd-type-title-section-weight);
+  line-height: var(--pxd-type-title-section-line-height);
+  color: var(--pxd-color-text-default);
 }
-.m3 .d {
-  font-size: 14px;
-  line-height: 1.45;
-  color: #49454e;
+.stage .d {
+  font-size: var(--pxd-type-body-small-size);
+  line-height: var(--pxd-type-body-small-line-height);
+  color: var(--pxd-color-text-muted);
 }
-.m3 .row {
+.stage .row {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #cac4cf;
-  font-size: 14px;
+  gap: var(--pxd-space-inline-default);
+  padding: var(--pxd-space-stack-default) 0;
+  border-bottom: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  font-size: var(--pxd-type-body-small-size);
 }
-.m3 .row span:first-child {
-  color: #49454e;
+.stage .row span:first-child {
+  color: var(--pxd-color-text-muted);
 }
-.m3 .acts {
+.stage .acts {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  padding-top: 4px;
+  gap: var(--pxd-space-inline-default);
 }
-.m3 .b {
+.stage .b {
   display: inline-flex;
   align-items: center;
-  height: 40px;
-  padding: 0 20px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
+  min-height: var(--pxd-size-target-min);
+  padding: 0 var(--pxd-space-inset-default);
+  border: var(--pxd-border-width-default) solid transparent;
+  border-radius: var(--pxd-radius-control);
+  font-family: var(--pxd-type-label-default-family);
+  font-size: var(--pxd-type-label-default-size);
+  font-weight: var(--pxd-type-label-default-weight);
 }
-.m3 .b2 {
-  background: #e8def8;
-  border: 1px solid #7a757f;
-  color: #4a4458;
+.stage .b2 {
+  background: var(--pxd-color-action-secondary-background);
+  border-color: var(--pxd-color-action-secondary-border);
+  color: var(--pxd-color-action-secondary-foreground);
 }
-.m3 .b1 {
-  background: #65558f;
-  color: #fff;
-}
-.carbon {
-  background: #fff;
-}
-.carbon .card {
-  width: 100%;
-  background: #f4f4f4;
-  font-family: "IBM Plex Sans", sans-serif;
-  color: #161616;
-}
-.carbon .in {
-  padding: 20px 20px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.carbon .t {
-  font-size: 20px;
-}
-.carbon .d {
-  font-size: 14px;
-  line-height: 1.45;
-  color: #525252;
-}
-.carbon .row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #c6c6c6;
-  font-size: 14px;
-}
-.carbon .row span:first-child {
-  color: #525252;
-}
-.carbon .acts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin-top: 24px;
-}
-.carbon .b {
-  height: 56px;
-  padding: 14px 16px;
-  font-size: 14px;
-  color: #fff;
-}
-.carbon .b2 {
-  background: #393939;
-}
-.carbon .b1 {
-  background: #0f62fe;
-}
-.antd {
-  background: #f5f5f5;
-}
-.antd .card {
-  width: 100%;
-  padding: 20px 24px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 6px 16px rgb(0 0 0 / 0.08), 0 3px 6px -4px rgb(0 0 0 / 0.12);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #1f1f1f;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.antd .t {
-  font-size: 16px;
-  font-weight: 600;
-}
-.antd .d {
-  font-size: 14px;
-  line-height: 1.5;
-  color: #595959;
-}
-.antd .row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 14px;
-}
-.antd .row span:first-child {
-  color: #595959;
-}
-.antd .acts {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 4px;
-}
-.antd .b {
-  display: inline-flex;
-  align-items: center;
-  height: 32px;
-  padding: 0 15px;
-  border-radius: 6px;
-  font-size: 14px;
-}
-.antd .b2 {
-  border: 1px solid #d9d9d9;
-}
-.antd .b1 {
-  background: #0958d9;
-  color: #fff;
+.stage .b1 {
+  background: var(--pxd-color-action-primary-background);
+  color: var(--pxd-color-action-primary-foreground);
 }
 
 /* Proof strip */

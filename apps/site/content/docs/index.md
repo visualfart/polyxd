@@ -76,7 +76,7 @@ Polyxd is an **early preview**. The spec is at `specVersion` 0.1 and may still c
 | 3: Verifier and benchmark | In progress. The verifier is done; the benchmark is in progress |
 | 4–7: Model baselines, fine-tuning, RL, demo and release | Planned |
 
-**The small model does not exist yet.** Today you can write or generate UI documents with any tool, validate them, render them in three design systems, and verify them. Training and releasing the model are Phases 4 to 7. See the [roadmap](/docs/roadmap).
+**The small model does not exist yet.** Today you can write or generate UI documents with any tool, validate them, render them in thirteen design systems, and verify them. Training and releasing the model are Phases 4 to 7. See the [roadmap](/docs/roadmap).
 
 ## Next steps
 
