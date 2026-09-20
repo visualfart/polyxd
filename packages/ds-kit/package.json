@@ -10,5 +10,12 @@
   },
   "devDependencies": {
     "@polyxd/spec": "*"
+  },
+  "bin": {
+    "polyxd": "src/polyxd.ts"
+  },
+  "scripts": {
+    "pack": "node src/cli.ts",
+    "test": "node --test \"test/*.test.ts\""
   }
 }
