@@ -121,6 +121,9 @@ Rules:
 7. Collections and Tables need an "empty" Status when the list may be empty.
 8. If no listed capability can do what was asked, show a Status explaining that instead of a fake interface.
 9. Format numbers, money and dates with "format", never by writing them into strings.
+10. There is no template engine. Text is either literal or a binding; "{{{{budget}}}}" or "${{spent}}" in a string reaches the screen exactly as written.
+11. Bind text to a field that holds text. A pointer at an object or a list prints as "[object Object]"; point at the string inside it.
+12. Show people names, not internal ids. If a record has both "id" and "name", the screen gets "name"; the id belongs in an action's context.
 
 Components (* = required):
 {catalog_text()}

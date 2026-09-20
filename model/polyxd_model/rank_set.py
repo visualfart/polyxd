@@ -70,7 +70,14 @@ def main() -> None:
         if any(g.get("humanRank") for g in done.get("groups", [])):
             stamp = done.get("generatedAt") or datetime.date.today().isoformat()
             label = (done.get("model") or "model").split("+")[-1].replace("/", "-")
+            # Two rounds from the same adapter on the same day would collide, and the second
+            # would overwrite the first. The rankings are the only thing here that can't be
+            # regenerated, so a taken name gets a suffix rather than the contents.
             archive = BENCH / "rankings" / f"{stamp}-{label}"
+            n = 2
+            while (archive / "ranking.json").exists():
+                archive = BENCH / "rankings" / f"{stamp}-{label}-{n}"
+                n += 1
             archive.mkdir(parents=True, exist_ok=True)
             for f in out.glob("*.json"):
                 shutil.copy2(f, archive / f.name)

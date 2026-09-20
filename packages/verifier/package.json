@@ -19,7 +19,8 @@
     "verify:packs": "npm run build:harness && node src/cli.ts ../spec/examples/*.json --registry ../spec/examples/registry/capabilities.json --tasks ../../bench/tasks.json --themes material3,carbon,antd,fluent,shadcn,bootstrap,mantine,radix,polaris,primer,spectrum,govuk,chakra --widths 390,1100 -q",
     "gold": "npm run build:harness && node scripts/gold-agreement.ts",
     "score": "npm run build:harness && node scripts/score-run.ts",
-    "leaderboard": "node scripts/leaderboard.ts"
+    "leaderboard": "node scripts/leaderboard.ts",
+    "rerank": "node scripts/rerank-set.ts"
   },
   "devDependencies": {
     "@polyxd/react": "^0.0.0",

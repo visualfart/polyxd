@@ -1,183 +1,68 @@
 {
-  "$comment": "The model's own options, ranked by a designer. Best to worst in humanRank.",
-  "rater": "Neel",
-  "model": "mlx-community/gemma-4-e4b-it-4bit+sft-v3",
+  "$comment": "A re-rank of groups already ranked, under fresh letters. Measures the designer's agreement with himself.",
+  "rater": "",
+  "model": "re-rank",
   "generatedAt": "2026-09-20",
   "groups": [
     {
-      "id": "money-freeze-card",
-      "request": "I think I lost my debit card, can you freeze it",
+      "id": "money-send-alex",
+      "request": "send Alex £40 for the concert tickets",
       "variants": [
-        "money-freeze-card-a",
-        "money-freeze-card-b",
-        "money-freeze-card-c"
+        "money-send-alex-a",
+        "money-send-alex-b",
+        "money-send-alex-c"
       ],
-      "humanRank": [
-        "money-freeze-card-b",
-        "money-freeze-card-c",
-        "money-freeze-card-a"
-      ]
+      "humanRank": null
     },
     {
-      "id": "money-budget-groceries",
-      "request": "set my groceries budget to £350 a month and warn me when I'm close",
+      "id": "shop-compare-plans",
+      "request": "which plan should I get? I mostly just need more storage",
       "variants": [
-        "money-budget-groceries-a",
-        "money-budget-groceries-b",
-        "money-budget-groceries-c"
+        "shop-compare-plans-a",
+        "shop-compare-plans-b",
+        "shop-compare-plans-c"
       ],
-      "humanRank": [
-        "money-budget-groceries-c",
-        "money-budget-groceries-b",
-        "money-budget-groceries-a"
-      ],
-      "notes": {
-        "money-budget-groceries-c": "cta missing"
-      }
+      "humanRank": null
     },
     {
-      "id": "tasks-today",
-      "request": "what's on my plate today",
+      "id": "b2b-cancel-subscription",
+      "request": "cancel Acme's subscription, they're not renewing",
       "variants": [
-        "tasks-today-a",
-        "tasks-today-b",
-        "tasks-today-c"
+        "b2b-cancel-subscription-a",
+        "b2b-cancel-subscription-b",
+        "b2b-cancel-subscription-c"
       ],
-      "humanRank": [
-        "tasks-today-b",
-        "tasks-today-c",
-        "tasks-today-a"
-      ]
+      "humanRank": null
     },
     {
-      "id": "tasks-assign-maya",
-      "request": "give the landing page copy task to Maya",
+      "id": "settings-stop-emails",
+      "request": "stop emailing me",
       "variants": [
-        "tasks-assign-maya-a",
-        "tasks-assign-maya-b",
-        "tasks-assign-maya-c"
+        "settings-stop-emails-a",
+        "settings-stop-emails-b",
+        "settings-stop-emails-c"
       ],
-      "humanRank": [
-        "tasks-assign-maya-b",
-        "tasks-assign-maya-c",
-        "tasks-assign-maya-a"
-      ]
+      "humanRank": null
     },
     {
-      "id": "calendar-cancel-acme",
-      "request": "cancel my 3pm with the Acme folks and let them know",
+      "id": "b2b-overdue-money",
+      "request": "how much money is overdue right now?",
       "variants": [
-        "calendar-cancel-acme-a",
-        "calendar-cancel-acme-b",
-        "calendar-cancel-acme-c"
+        "b2b-overdue-money-a",
+        "b2b-overdue-money-b",
+        "b2b-overdue-money-c"
       ],
-      "humanRank": [
-        "calendar-cancel-acme-a",
-        "calendar-cancel-acme-b",
-        "calendar-cancel-acme-c"
-      ]
+      "humanRank": null
     },
     {
-      "id": "calendar-plan-offsite",
-      "request": "set up the team offsite: I need a title, start and end dates, the location, who's coming, an agenda, catering preference, whether we need breakout rooms, and the budget",
+      "id": "calendar-find-slot",
+      "request": "find 30 minutes with Tom and Priya on Tuesday",
       "variants": [
-        "calendar-plan-offsite-a",
-        "calendar-plan-offsite-b",
-        "calendar-plan-offsite-c"
+        "calendar-find-slot-a",
+        "calendar-find-slot-b",
+        "calendar-find-slot-c"
       ],
-      "humanRank": [
-        "calendar-plan-offsite-b",
-        "calendar-plan-offsite-c",
-        "calendar-plan-offsite-a"
-      ]
-    },
-    {
-      "id": "shop-where-order",
-      "request": "where's my order??",
-      "variants": [
-        "shop-where-order-a",
-        "shop-where-order-b",
-        "shop-where-order-c"
-      ],
-      "humanRank": [
-        "shop-where-order-c",
-        "shop-where-order-b",
-        "shop-where-order-a"
-      ]
-    },
-    {
-      "id": "shop-return-mug",
-      "request": "one of the mugs arrived chipped, I want to send it back",
-      "variants": [
-        "shop-return-mug-a",
-        "shop-return-mug-b",
-        "shop-return-mug-c"
-      ],
-      "humanRank": [
-        "shop-return-mug-c",
-        "shop-return-mug-a",
-        "shop-return-mug-b"
-      ],
-      "notes": {
-        "shop-return-mug-c": "reason for retrurn missing"
-      }
-    },
-    {
-      "id": "travel-flights-lisbon",
-      "request": "flights to Lisbon on the 3rd, morning if possible",
-      "variants": [
-        "travel-flights-lisbon-a",
-        "travel-flights-lisbon-b",
-        "travel-flights-lisbon-c"
-      ],
-      "humanRank": [
-        "travel-flights-lisbon-a",
-        "travel-flights-lisbon-c",
-        "travel-flights-lisbon-b"
-      ]
-    },
-    {
-      "id": "settings-2fa-off",
-      "request": "turn off two-factor, it's annoying",
-      "variants": [
-        "settings-2fa-off-a",
-        "settings-2fa-off-b",
-        "settings-2fa-off-c"
-      ],
-      "humanRank": [
-        "settings-2fa-off-a",
-        "settings-2fa-off-c",
-        "settings-2fa-off-b"
-      ]
-    },
-    {
-      "id": "personal-running",
-      "request": "how's my running going this month compared to last?",
-      "variants": [
-        "personal-running-a",
-        "personal-running-b",
-        "personal-running-c"
-      ],
-      "humanRank": [
-        "personal-running-a",
-        "personal-running-b",
-        "personal-running-c"
-      ],
-      "comment": "the cards are empty"
-    },
-    {
-      "id": "calendar-unsupported-car",
-      "request": "sync my calendar to my car's dashboard so it tells me when to leave",
-      "variants": [
-        "calendar-unsupported-car-a",
-        "calendar-unsupported-car-b",
-        "calendar-unsupported-car-c"
-      ],
-      "humanRank": [
-        "calendar-unsupported-car-b",
-        "calendar-unsupported-car-c",
-        "calendar-unsupported-car-a"
-      ]
+      "humanRank": null
     }
   ]
 }

@@ -1,0 +1,80 @@
+[
+ {
+  "id": "money-send-alex",
+  "letters": {
+   "money-send-alex-a": "money-send-alex-a",
+   "money-send-alex-b": "money-send-alex-c",
+   "money-send-alex-c": "money-send-alex-b"
+  },
+  "earlier": [
+   "money-send-alex-c",
+   "money-send-alex-b",
+   "money-send-alex-a"
+  ]
+ },
+ {
+  "id": "shop-compare-plans",
+  "letters": {
+   "shop-compare-plans-a": "shop-compare-plans-a",
+   "shop-compare-plans-b": "shop-compare-plans-b",
+   "shop-compare-plans-c": "shop-compare-plans-c"
+  },
+  "earlier": [
+   "shop-compare-plans-c",
+   "shop-compare-plans-a",
+   "shop-compare-plans-b"
+  ]
+ },
+ {
+  "id": "b2b-cancel-subscription",
+  "letters": {
+   "b2b-cancel-subscription-a": "b2b-cancel-subscription-b",
+   "b2b-cancel-subscription-b": "b2b-cancel-subscription-c",
+   "b2b-cancel-subscription-c": "b2b-cancel-subscription-a"
+  },
+  "earlier": [
+   "b2b-cancel-subscription-b",
+   "b2b-cancel-subscription-a",
+   "b2b-cancel-subscription-c"
+  ]
+ },
+ {
+  "id": "settings-stop-emails",
+  "letters": {
+   "settings-stop-emails-a": "settings-stop-emails-a",
+   "settings-stop-emails-b": "settings-stop-emails-b",
+   "settings-stop-emails-c": "settings-stop-emails-c"
+  },
+  "earlier": [
+   "settings-stop-emails-a",
+   "settings-stop-emails-c",
+   "settings-stop-emails-b"
+  ]
+ },
+ {
+  "id": "b2b-overdue-money",
+  "letters": {
+   "b2b-overdue-money-a": "b2b-overdue-money-b",
+   "b2b-overdue-money-b": "b2b-overdue-money-c",
+   "b2b-overdue-money-c": "b2b-overdue-money-a"
+  },
+  "earlier": [
+   "b2b-overdue-money-b",
+   "b2b-overdue-money-a",
+   "b2b-overdue-money-c"
+  ]
+ },
+ {
+  "id": "calendar-find-slot",
+  "letters": {
+   "calendar-find-slot-a": "calendar-find-slot-b",
+   "calendar-find-slot-b": "calendar-find-slot-c",
+   "calendar-find-slot-c": "calendar-find-slot-a"
+  },
+  "earlier": [
+   "calendar-find-slot-a",
+   "calendar-find-slot-b",
+   "calendar-find-slot-c"
+  ]
+ }
+]
