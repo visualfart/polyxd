@@ -58,25 +58,45 @@ def _requests() -> dict:
     return out
 
 
-def _rounds() -> list[dict]:
-    """Every archived ranking, plus whatever is in bench/rank-set if it has been ranked."""
+def _by_claude(round_: dict) -> bool:
+    return "claude" in str(round_.get("rater", "")).lower()
+
+
+def _rounds(include_claude: bool = False) -> list[dict]:
+    """
+    Every archived ranking, plus whatever is in bench/rank-set if it has been ranked.
+
+    A round Claude ranked is left out unless asked for. The approved flow designs are Claude
+    Design output, and design/flows/README.md is explicit that they are not training data, so the
+    weights stay clean to publish. A ranking Claude made against those designs is Claude's
+    judgement, and training on it would cross that line by another route. It is still useful as
+    an evaluation; it only enters training when someone decides it should.
+    """
     out = []
     for path in sorted(RANKINGS.glob("*/ranking.json")):
-        out.append(json.loads(path.read_text()) | {"dir": path.parent})
+        parsed = json.loads(path.read_text())
+        if _by_claude(parsed) and not include_claude:
+            continue
+        # A re-rank is a second sitting on groups already counted, wherever it has been archived
+        # to. It removes the pairs it reverses; it does not add the same preferences again.
+        if parsed.get("model") == "re-rank":
+            continue
+        out.append(parsed | {"dir": path.parent})
     current = BENCH / "rank-set" / "ranking.json"
     if current.exists():
         parsed = json.loads(current.read_text())
         # A re-rank is a second sitting on groups already counted; it contributes by dropping the
         # pairs it reverses, not by supplying the same preferences twice under shuffled names.
         if parsed.get("model") != "re-rank" and any(g.get("humanRank") for g in parsed.get("groups", [])):
-            out.append(parsed | {"dir": current.parent})
+            if include_claude or not _by_claude(parsed):
+                out.append(parsed | {"dir": current.parent})
     return out
 
 
-def build(min_weight: int = 1) -> None:
+def build(min_weight: int = 1, include_claude: bool = False) -> None:
     """Writes one line per preference pair: the prompt, the two documents, and what the pair is worth."""
     requests = _requests()
-    rounds = _rounds()
+    rounds = _rounds(include_claude)
 
     # A re-rank is a second sitting on groups already ranked. Where the two sittings disagree about
     # a pair, that pair is dropped: the rater is telling us the two options are interchangeable.
@@ -279,6 +299,7 @@ def main() -> None:
 
     b = sub.add_parser("build", help="rankings → preference pairs")
     b.add_argument("--min-weight", type=int, default=1, help="2 keeps only best-versus-worst pairs")
+    b.add_argument("--include-claude", action="store_true", help="also train on rounds Claude ranked (off by default; see _rounds)")
 
     t = sub.add_parser("train", help="train a LoRA adapter on the pairs")
     t.add_argument("--model", default="mlx-community/gemma-4-e4b-it-4bit")
@@ -293,7 +314,7 @@ def main() -> None:
 
     args = ap.parse_args()
     if args.command == "build":
-        build(args.min_weight)
+        build(args.min_weight, args.include_claude)
     else:
         train(args.model, args.reference, args.name, args.iters, args.beta, args.learning_rate, args.num_layers, args.seed, args.limit)
 
