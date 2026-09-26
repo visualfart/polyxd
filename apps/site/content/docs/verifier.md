@@ -53,29 +53,27 @@ Material 3, Carbon and Ant Design × light and dark × 390px and 1100px wide. Th
 
 ## CLI
 
-Inside the monorepo (the packages are not on npm yet; they are coming with v0.1):
-
 ```bash
-# once: build the render harness the verifier loads in Chromium
-npm run build:harness -w @polyxd/verifier
+npm install -D @polyxd/verifier
+npx playwright install chromium   # once
 
 # one or more documents
-npm run verify -w @polyxd/verifier -- my-ui.json other-ui.json
+npx polyxd-verify my-ui.json other-ui.json
 
 # a narrower matrix, with a capability registry, agent tasks and a JSON report
-npm run verify -w @polyxd/verifier -- my-ui.json \
+npx polyxd-verify my-ui.json \
   --themes carbon,antd --modes light --widths 390 \
   --registry capabilities.json \
   --tasks tasks.json \
   --json report.json
 
-# all 20 spec examples, full matrix, with agent tasks
-npm run verify:examples -w @polyxd/verifier
 ```
+
+Inside the Polyxd repository, `npm run verify:examples -w @polyxd/verifier` runs every spec example through the full matrix with agent tasks.
 
 | Flag | What it does |
 |---|---|
-| `--themes a,b` | Design-system packs to render in. Default `material3,carbon,antd` |
+| `--themes a,b` | Design-system packs to render in, any of the thirteen. Default `material3,carbon,antd` |
 | `--modes light,dark` | Modes. Default both |
 | `--widths 390,1100` | Viewport widths in CSS pixels. Default `390,1100` |
 | `--registry file` | Capability registry for capability checks |
@@ -83,7 +81,7 @@ npm run verify:examples -w @polyxd/verifier
 | `--json out` | Write the full report as JSON |
 | `-q`, `--quiet` | Print only the score line per document |
 
-When published, the binary is `polyxd-verify`. Output looks like this:
+Output looks like this:
 
 ```
 100  money-send-confirm  (0 errors, 0 warnings agent 12/12)

@@ -50,19 +50,18 @@ These rules make a Polyxd surface safe to embed in other software:
 
 ## What's in the box today
 
-All packages live in one monorepo. None is published to npm yet; they are coming to npm with v0.1.
+Everything is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) scope, from one [open-source monorepo](https://github.com/visualfart/polyxd).
 
 | Package | What it does |
 |---|---|
-| `@polyxd/spec` | JSON Schema and TypeScript types for UI documents; 26 semantic components; 6 core patterns and a shared check vocabulary; the semantic token contract; schemas for capabilities, journeys, analytics events and Design Direction; a validator; 20 example documents across six domains |
-| `@polyxd/react` | React renderer for all 26 components, built on Radix primitives and styled only by token CSS variables; a theme compiler |
-| `@polyxd/ds-material3` | Material 3 design-system pack (DTCG tokens, light and dark) |
-| `@polyxd/ds-carbon` | IBM Carbon pack (White and Gray 100 themes) |
-| `@polyxd/ds-antd` | Ant Design pack (light and dark) |
+| `@polyxd/spec` | JSON Schema and TypeScript types for UI documents; 26 semantic components; 6 core patterns and a shared check vocabulary; the semantic token contract; schemas for capabilities, journeys, analytics events and Design Direction; a validator (`polyxd-validate`); example documents across six domains |
+| `@polyxd/react` | React renderer for all 26 components, built on Radix primitives and styled only by token CSS variables, with theme CSS for every pack |
+| `@polyxd/ds-*` | Thirteen design-system packs as DTCG tokens: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend and Chakra UI |
+| `polyxd` | The `polyxd pack` command, which makes a pack from your own tokens. See [Your design system](/docs/your-design-system) |
 | `@polyxd/a2ui` | Exports UI documents to A2UI v1.0 (release candidate) messages, with a Polyxd A2UI catalog |
 | `@polyxd/verifier` | The `polyxd-verify` CLI and library: document checks, rendered accessibility and layout checks, scripted agent tasks, and a consistency score |
-| `bench/` | 50 single-turn requests, 10 multi-turn sequences, agent tasks, and a 30-document gold set |
-| `apps/gallery` | Every example in every pack, mode and width, with an action log |
+
+The repository also holds the benchmark (`bench/`: 50 requests, multi-turn sequences, agent tasks and a gold set) and the [gallery](/gallery/).
 
 ## Status
 

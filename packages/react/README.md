@@ -5,7 +5,7 @@ Renders Polyxd UI documents in React. Behaviour comes from Radix primitives (the
 ```tsx
 import { PolyxdSurface } from "@polyxd/react";
 import "@polyxd/react/styles.css";
-import "@polyxd/react/themes/material3.css"; // or carbon.css, antd.css
+import "@polyxd/react/themes/material3.css"; // one file per pack: carbon.css, polaris.css, govuk.css…
 
 <PolyxdSurface
   document={doc}                  // a Polyxd UI document (validated with @polyxd/spec)

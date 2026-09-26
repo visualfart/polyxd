@@ -23,7 +23,7 @@ Each pack keeps its design system's own names in the primitive and system tiers,
 
 `packages/spec/tokens/semantic-contract.json` (contract version 0.1.0) lists what every pack must provide, in every mode it declares:
 
-- **86 tokens**: colour (43: surfaces, text, borders, actions, selection, status, data), type (8), space (10), motion (7), radius (4), opacity (4), size (3), border (2), focus (2), shadow (2) and measure (1).
+- **87 tokens**: colour (43: surfaces, text, borders, actions, selection, status, data), type (8), space (10), motion (7), radius (5), opacity (4), size (3), border (2), focus (2), shadow (2) and measure (1).
 - **34 contrast pairs**: 18 text pairs at WCAG 2.2 1.4.3 (4.5:1) and 16 non-text pairs at WCAG 2.2 1.4.11 (3:1).
 - **4 constraints**:
 

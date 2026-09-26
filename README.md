@@ -31,14 +31,8 @@ All 24 examples score 100 across **1,248 renders** (13 packs × 2 widths × ligh
 
 ## Try it
 
-The packages aren't on npm yet, so work inside the repo. Tested on Node 26; the scripts run TypeScript directly, so you need a Node that strips types without a flag.
-
 ```sh
-git clone https://github.com/visualfart/polyxd.git && cd polyxd
-npm install
-npm run dev -w @polyxd/gallery          # every example, in every pack, at phone, tablet and desktop
-npm run test:all                        # every workspace's tests, with one total
-npm run verify:packs -w @polyxd/verifier   # the 1,248 renders
+npm install @polyxd/react @polyxd/spec
 ```
 
 Render a document:
@@ -59,13 +53,43 @@ import "@polyxd/react/themes/carbon.css";
 />
 ```
 
+Validate and verify it:
+
+```sh
+npx polyxd-validate my-ui.json                 # schema and structural rules, from @polyxd/spec
+npm install -D @polyxd/verifier && npx playwright install chromium
+npx polyxd-verify my-ui.json --themes carbon   # rendered light and dark, phone and desktop; axe, contrast, layout
+```
+
 Point it at **your** design system:
 
 ```sh
-node packages/ds-kit/src/polyxd.ts pack ./src/tokens.css
+npx polyxd pack ./src/tokens.css
 ```
 
 It reads your CSS custom properties, maps what it can onto the contract, writes a pack plus a mapping file of every guess it made, and reports what's still missing — including any of your own colour pairs that fail contrast. [How it guesses](https://polyxd.com/docs/your-design-system/).
+
+| Package | |
+|---|---|
+| [`@polyxd/react`](https://www.npmjs.com/package/@polyxd/react) | The renderer, with compiled theme CSS for every pack |
+| [`@polyxd/spec`](https://www.npmjs.com/package/@polyxd/spec) | Types, JSON Schema, validator, patterns, token contract; `polyxd-validate` |
+| [`@polyxd/verifier`](https://www.npmjs.com/package/@polyxd/verifier) | `polyxd-verify`: static, rendered and agent checks |
+| [`@polyxd/a2ui`](https://www.npmjs.com/package/@polyxd/a2ui) | Export to A2UI v1.0 |
+| [`polyxd`](https://www.npmjs.com/package/polyxd) | The `polyxd` command: `pack` and `check` |
+| [`@polyxd/ds-kit`](https://www.npmjs.com/package/@polyxd/ds-kit) | The library behind `polyxd pack` |
+| `@polyxd/ds-*` | The thirteen packs as DTCG tokens, for building your own themes. The renderer already includes their CSS |
+
+### From source
+
+Tested on Node 26; the repository's scripts run TypeScript directly, so you need a Node that strips types without a flag.
+
+```sh
+git clone https://github.com/visualfart/polyxd.git && cd polyxd
+npm install
+npm run dev -w @polyxd/gallery          # every example, in every pack, at phone, tablet and desktop
+npm run test:all                        # every workspace's tests, with one total
+npm run verify:packs -w @polyxd/verifier   # the 1,248 renders
+```
 
 ## Who it's for
 

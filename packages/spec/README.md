@@ -13,7 +13,7 @@ A generated interface is a **UI document**: a flat list of semantic components (
 | `catalog/catalog.json` | Usage guidance per component, generated |
 | `docs/components.md` | Readable component reference with the web / iOS / Android / A2UI mapping table, generated |
 | `patterns/*.json` | 6 core patterns, each with self-checking rules and journey semantics |
-| `tokens/semantic-contract.json` | The 86 semantic tokens every design-system pack must provide, plus 34 WCAG contrast pairs and constraints |
+| `tokens/semantic-contract.json` | The 87 semantic tokens every design-system pack must provide, plus 34 WCAG contrast pairs and constraints |
 | `schema/design-system.schema.json` | Design-system pack manifest |
 | `schema/check.schema.json` | The shared rule vocabulary used by patterns, Design Direction rules and acceptance criteria |
 | `schema/capabilities.schema.json` | Capability registry (features): risk levels, inputs, flags |
@@ -25,11 +25,16 @@ A generated interface is a **UI document**: a flat list of semantic components (
 ## Using it
 
 ```bash
-# validate UI documents (schema + structural and design rules)
-npm run validate -w @polyxd/spec -- examples/*.json
+npm install @polyxd/spec
 
-# check a design-system pack against the token contract
-npm run check-ds -w @polyxd/spec -- ../ds-material3/manifest.json
+npx polyxd-validate my-ui.json                  # schema + structural and design rules
+npx polyxd-check-ds path/to/manifest.json       # a design-system pack against the token contract
+```
+
+Inside the Polyxd repository:
+
+```bash
+npm run validate -w @polyxd/spec -- examples/*.json
 
 # after editing components/*.json or schema/common.defs.json
 npm run build:schema -w @polyxd/spec

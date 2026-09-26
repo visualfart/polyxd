@@ -9,7 +9,11 @@ section: Start
 
 This page takes one UI document through the three steps: render it, validate it, and verify it.
 
-> **Not on npm yet.** The `@polyxd/*` packages are private workspaces in the Polyxd monorepo for now. They are coming to npm with v0.1. Until then, work inside the repo (Node 22 or later, npm workspaces). The import paths below are the ones the packages will have when published.
+Install the renderer and the spec:
+
+```bash
+npm install @polyxd/react @polyxd/spec
+```
 
 ## 1. Render a document
 
@@ -18,7 +22,7 @@ This page takes one UI document through the three steps: render it, validate it,
 ```tsx
 import { PolyxdSurface } from "@polyxd/react";
 import "@polyxd/react/styles.css";
-import "@polyxd/react/themes/material3.css"; // or carbon.css, antd.css
+import "@polyxd/react/themes/material3.css"; // one file per pack: carbon.css, polaris.css, govuk.css…
 
 import doc from "./money-send-confirm.json";
 
@@ -45,7 +49,7 @@ export function SendConfirm({ quote, close }) {
 |---|---|---|
 | `document` | `UIDocument` | The UI document to render. Validate it first (step 2). |
 | `data` | `object` | Host data the document binds to. Defaults to `document.data`. The surface keeps its own copy as inputs change it. |
-| `theme` | `string` | Design-system pack name: `"material3"`, `"carbon"` or `"antd"`. Must match a theme CSS file you imported. |
+| `theme` | `string` | Design-system pack name, such as `"material3"`, `"carbon"` or `"polaris"`. Must match a theme CSS file you imported. See [Design systems](/docs/design-systems) for all thirteen. |
 | `mode` | `"light" \| "dark"` | Colour mode. Without it the pack's default mode (light) applies. |
 | `onAction` | `(event) => void` | Called for every capability action. `event` is `{ name, context, source }`: the capability name, the resolved context values, and the id of the component that sent it. |
 | `onDismiss` | `() => void` | Called for `ui.dismiss`, for example Cancel on a confirmation dialog. |
@@ -59,11 +63,7 @@ The renderer handles `ui.back` and `ui.next` itself inside `Steps`. Every other 
 
 ### Try it without writing code
 
-The gallery renders every example in every pack, mode and width, and logs each action:
-
-```bash
-npm run dev -w @polyxd/gallery
-```
+The [gallery](/gallery/) renders every example in every pack, mode and width, and logs each action.
 
 ## 2. Validate it
 
@@ -84,10 +84,10 @@ const patternResults = checkPattern(doc);
 const capabilityIssues = checkCapabilities(doc, registry);
 ```
 
-From the command line, inside the repo:
+From the command line:
 
 ```bash
-npm run validate -w @polyxd/spec -- examples/*.json
+npx polyxd-validate my-ui.json
 ```
 
 ```
@@ -96,18 +96,17 @@ npm run validate -w @polyxd/spec -- examples/*.json
     error /components/1/value/path: relative path "draft/title" used outside a repeated item
 ```
 
-When published, the same command is the `polyxd-validate` binary.
-
 ## 3. Verify it
 
-The verifier renders the document in headless Chromium, in each design system, mode and width, and checks it the way it will actually be used. It needs Playwright's Chromium and the verifier's render harness.
+The verifier renders the document in headless Chromium, in each design system, mode and width, and checks it the way it will actually be used. It needs Playwright's Chromium.
 
 ```bash
-npm run build:harness -w @polyxd/verifier   # once, builds the render harness
+npm install -D @polyxd/verifier
+npx playwright install chromium   # once
 
-npm run verify -w @polyxd/verifier -- my-ui.json \
+npx polyxd-verify my-ui.json \
   --themes carbon --modes light --widths 390 \
-  --registry ../spec/examples/registry/capabilities.json \
+  --registry capabilities.json \
   --json report.json
 ```
 
@@ -117,13 +116,7 @@ Each document gets a score from 0 to 100:
 100  money-send-confirm  (0 errors, 0 warnings agent 12/12)
 ```
 
-Run the full matrix with agent tasks on all 20 examples:
-
-```bash
-npm run verify:examples -w @polyxd/verifier
-```
-
-When published, the CLI is the `polyxd-verify` binary. See [Verifier](/docs/verifier) for every flag and check.
+See [Verifier](/docs/verifier) for every flag and check.
 
 ## Next
 

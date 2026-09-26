@@ -3,9 +3,12 @@
 Scores a Polyxd UI document the way it will actually be used: rendered, in every design system, by people and by agents.
 
 ```bash
-npm run verify:examples -w @polyxd/verifier            # all spec examples, full matrix, with agent tasks
-npm run verify -w @polyxd/verifier -- my-ui.json --themes carbon --modes light --widths 390 --json report.json
+npm install -D @polyxd/verifier
+npx playwright install chromium    # once
+npx polyxd-verify my-ui.json --themes carbon --modes light --widths 390 --json report.json
 ```
+
+Inside the Polyxd repository, `npm run verify:examples -w @polyxd/verifier` runs every spec example through the full matrix with agent tasks.
 
 ## What it checks
 
