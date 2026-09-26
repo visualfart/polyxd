@@ -10,7 +10,7 @@ import { scan } from "../import/scan.ts";
 import { mapRoles, candidatesFor, scalar, type Contract, type Override } from "../import/map.ts";
 import { checkRegistryUrl, fetchPackage, findTokenFiles, untar } from "../import/package.ts";
 import { decrypt, encrypt, newApiKey, sha256 } from "./crypto.ts";
-import { endSession, now, rememberState, startSession, takeState, upsertUser, userFromRequest, workosExchange, workosStartUrl, type Ctx, type Env, type User } from "./auth.ts";
+import { isLocal, makeAuth, now, sendEmail, userFromRequest, type Ctx, type Env, type User } from "./auth.ts";
 
 type Vars = { user: User | null; apiWorkspace: string | null };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -18,8 +18,7 @@ const CONTRACT = contract as unknown as Contract;
 const ROLES = ["owner", "design-system", "designer", "product", "engineer", "viewer"] as const;
 const CAN_EDIT_TOKENS = new Set(["owner", "design-system", "engineer"]);
 const CAN_EDIT_RULES = new Set(["owner", "design-system", "designer"]);
-const dev = (env: Env) => env.DEV_AUTH === "1" && !env.APP_URL.startsWith("https");
-const secretsKey = (env: Env) => env.SECRETS_KEY ?? (dev(env) ? "dev-only-not-a-secret" : "");
+const secretsKey = (env: Env) => env.SECRETS_KEY ?? (isLocal(env) ? "dev-only-not-a-secret" : "");
 
 class Fail extends Error {
   constructor(public status: number, message: string) {
@@ -47,6 +46,8 @@ const text = (v: unknown, max: number, what: string): string => {
 
 const MAX_UPLOAD = 25 * 1024 * 1024;
 
+app.on(["GET", "POST"], "/api/auth/*", (c) => makeAuth(c.env).handler(c.req.raw));
+
 app.use("/api/*", async (c, next) => {
   c.header("X-Content-Type-Options", "nosniff");
   c.header("Cache-Control", "no-store");
@@ -60,7 +61,7 @@ app.use("/api/*", async (c, next) => {
     const len = Number(c.req.header("content-length") ?? 0);
     if (len > MAX_UPLOAD) throw new Fail(413, "That's over 25 MB");
   }
-  const { user, apiWorkspace } = await userFromRequest(c as Ctx);
+  const { user, apiWorkspace } = await userFromRequest(c as Ctx, makeAuth(c.env));
   c.set("user", user);
   c.set("apiWorkspace", apiWorkspace);
   await next();
@@ -105,43 +106,11 @@ async function ws(c: Ctx, allowed?: ReadonlySet<string>): Promise<Workspace> {
 
 app.get("/api/me", async (c) => {
   const user = c.get("user");
-  if (!user) return c.json({ user: null, workspaces: [], signIn: { dev: dev(c.env), workos: !!c.env.WORKOS_CLIENT_ID } });
+  const signIn = { google: !!(c.env.GOOGLE_CLIENT_ID && c.env.GOOGLE_CLIENT_SECRET), emailVerification: !isLocal(c.env) };
+  if (!user) return c.json({ user: null, workspaces: [], signIn });
   const workspaces = await c.env.DB.prepare("SELECT w.id, w.slug, w.name, m.role FROM workspaces w JOIN memberships m ON m.workspace_id = w.id WHERE m.user_id = ? ORDER BY w.name")
     .bind(user.id).all<Workspace>();
-  return c.json({ user, workspaces: workspaces.results });
-});
-
-app.post("/api/auth/dev", async (c) => {
-  if (!dev(c.env)) throw new Fail(404, "Not here");
-  const { email, name } = await body<{ email?: string; name?: string }>(c as Ctx);
-  if (!email?.includes("@") || email.length > 254) throw new Fail(400, "Enter an email address");
-  if (name !== undefined) text(name, 120, "Name");
-  const user = await upsertUser(c.env.DB, email, name ?? "");
-  await startSession(c as Ctx, user);
-  return c.json({ user });
-});
-
-app.get("/api/auth/workos/start", (c) => {
-  const url = workosStartUrl(c.env, rememberState(c as Ctx));
-  if (!url) throw new Fail(404, "WorkOS isn't configured");
-  return c.redirect(url);
-});
-
-app.get("/api/auth/workos/callback", async (c) => {
-  const code = c.req.query("code");
-  const state = c.req.query("state");
-  if (c.req.query("error")) throw new Fail(400, `Sign-in didn't complete: ${c.req.query("error_description") ?? c.req.query("error")}`);
-  if (!code) throw new Fail(400, "No code in the callback");
-  if (!state || state !== takeState(c as Ctx)) throw new Fail(400, "This sign-in didn't start here. Try again from the sign-in page.");
-  const { email, name } = await workosExchange(c.env, code);
-  const user = await upsertUser(c.env.DB, email, name);
-  await startSession(c as Ctx, user);
-  return c.redirect("/");
-});
-
-app.post("/api/auth/signout", async (c) => {
-  await endSession(c as Ctx);
-  return c.json({ ok: true });
+  return c.json({ user, workspaces: workspaces.results, signIn });
 });
 
 // ---------------------------------------------------------------- workspaces, members, invites
@@ -164,7 +133,7 @@ app.post("/api/workspaces", async (c) => {
 
 app.get("/api/w/:slug", async (c) => {
   const w = await ws(c as Ctx);
-  const members = await c.env.DB.prepare("SELECT u.id, u.email, u.name, m.role, m.created_at FROM memberships m JOIN users u ON u.id = m.user_id WHERE m.workspace_id = ? ORDER BY m.created_at")
+  const members = await c.env.DB.prepare("SELECT u.id, u.email, u.name, m.role, m.created_at FROM memberships m JOIN user u ON u.id = m.user_id WHERE m.workspace_id = ? ORDER BY m.created_at")
     .bind(w.id).all();
   const invites = await c.env.DB.prepare("SELECT id, email, role, created_at, expires_at FROM invites WHERE workspace_id = ? AND accepted_at IS NULL AND expires_at > ?").bind(w.id, now()).all();
   return c.json({ ...w, members: members.results, invites: invites.results });
@@ -179,7 +148,7 @@ app.post("/api/w/:slug/invites", async (c) => {
   const list = [...new Set((Array.isArray(emails) ? emails : []).map((e) => String(e).trim().toLowerCase()).filter((e) => /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/.test(e)))];
   if (!list.length) throw new Fail(400, "Enter at least one email address");
   if (list.length > 50) throw new Fail(400, "Up to 50 invites at a time");
-  const members = await c.env.DB.prepare("SELECT u.email FROM memberships m JOIN users u ON u.id = m.user_id WHERE m.workspace_id = ?").bind(w.id).all<{ email: string }>();
+  const members = await c.env.DB.prepare("SELECT u.email FROM memberships m JOIN user u ON u.id = m.user_id WHERE m.workspace_id = ?").bind(w.id).all<{ email: string }>();
   const already = list.filter((e) => members.results.some((m) => m.email === e));
   if (already.length) throw new Fail(409, `${already.join(", ")} ${already.length === 1 ? "is" : "are"} already in this workspace`);
   const made = [];
@@ -187,16 +156,17 @@ app.post("/api/w/:slug/invites", async (c) => {
     const id = crypto.randomUUID();
     await c.env.DB.prepare("INSERT INTO invites (id, workspace_id, email, role, message, invited_by, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
       .bind(id, w.id, email, role, message ?? "", user.id, now(), new Date(Date.now() + 7 * 86400e3).toISOString()).run();
-    // Email sending is the host's job (Resend, or the company's SMTP); until it's wired, the link
-    // is returned so the inviter can pass it on.
-    made.push({ id, email, link: `${c.env.APP_URL}/invite/${id}` });
+    const link = `${c.env.APP_URL}/invite/${id}`;
+    const sent = await sendEmail(c.env, email, `${user.name || user.email} invited you to ${w.name} on Polyxd Studio`, `<div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #141414;"><h2 style="font-size: 20px; margin: 0 0 12px;">Join ${w.name} on Studio</h2><p style="font-size: 15px; line-height: 22px;">${user.name || user.email} invited you as ${role}.${message ? ` “${String(message).replace(/[<>]/g, "")}”` : ""}</p><p><a href="${link}" style="display: inline-block; background: #141414; color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600;">Accept the invite</a></p><p style="font-size: 12px; color: #5e5c55;">It expires in 7 days. Or paste this into your browser: ${link}</p></div>`);
+    // Without an email sender, the link comes back so the inviter can pass it on.
+    made.push({ id, email, link: sent ? undefined : link, sent });
   }
   return c.json({ invites: made }, 201);
 });
 
 app.get("/api/invites/:id", async (c) => {
   const inv = await c.env.DB.prepare(
-    "SELECT i.id, i.email, i.role, i.message, i.expires_at, i.accepted_at, w.name AS workspace, u.name AS inviter FROM invites i JOIN workspaces w ON w.id = i.workspace_id JOIN users u ON u.id = i.invited_by WHERE i.id = ?",
+    "SELECT i.id, i.email, i.role, i.message, i.expires_at, i.accepted_at, w.name AS workspace, u.name AS inviter FROM invites i JOIN workspaces w ON w.id = i.workspace_id JOIN user u ON u.id = i.invited_by WHERE i.id = ?",
   ).bind(c.req.param("id")).first();
   if (!inv) throw new Fail(404, "That invite doesn't exist");
   // The link is the credential; the page still needn't spell the whole address out.
@@ -615,7 +585,7 @@ app.delete("/api/w/:slug/components/:name", async (c) => {
 
 app.get("/api/w/:slug/rules", async (c) => {
   const w = await ws(c as Ctx);
-  const rows = await c.env.DB.prepare("SELECT r.*, u.name AS owner FROM rules r JOIN users u ON u.id = r.created_by WHERE r.workspace_id = ? ORDER BY r.created_at DESC").bind(w.id).all<{ check_json: string }>();
+  const rows = await c.env.DB.prepare("SELECT r.*, u.name AS owner FROM rules r JOIN user u ON u.id = r.created_by WHERE r.workspace_id = ? ORDER BY r.created_at DESC").bind(w.id).all<{ check_json: string }>();
   return c.json({ rules: rows.results.map((r) => ({ ...r, check: JSON.parse(r.check_json), check_json: undefined })) });
 });
 

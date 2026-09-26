@@ -15,7 +15,7 @@ export function Team({ ws }: { ws: Ws }) {
   const [inviting, setInviting] = useState(false);
   const [emails, setEmails] = useState("");
   const [role, setRole] = useState("designer");
-  const [links, setLinks] = useState<{ email: string; link: string }[]>([]);
+  const [links, setLinks] = useState<{ email: string; link?: string; sent?: boolean }[]>([]);
   const [newKey, setNewKey] = useState<string | null>(null);
   const load = () => {
     api<Detail>("GET", `/api/w/${ws.slug}`).then(setD);
@@ -26,7 +26,7 @@ export function Team({ ws }: { ws: Ws }) {
   }, [ws.slug]);
   const invite = async () => {
     try {
-      const r = await api<{ invites: { email: string; link: string }[] }>("POST", `/api/w/${ws.slug}/invites`, { emails: emails.split(/[\s,]+/), role });
+      const r = await api<{ invites: { email: string; link?: string; sent?: boolean }[] }>("POST", `/api/w/${ws.slug}/invites`, { emails: emails.split(/[\s,]+/), role });
       setLinks(r.invites);
       setEmails("");
       load();
@@ -72,7 +72,7 @@ export function Team({ ws }: { ws: Ws }) {
             <div className="body">
               <div className="field"><label htmlFor="em">Email addresses</label><textarea id="em" className="textarea" value={emails} onChange={(e) => setEmails(e.target.value)} placeholder="ana@northwind.io, leo@northwind.io" /><span className="help">Separate with commas or new lines.</span></div>
               <div className="field"><label htmlFor="rl">Role</label><select id="rl" className="select" value={role} onChange={(e) => setRole(e.target.value)}>{ROLES.map(([r, desc]) => <option key={r} value={r}>{desc}</option>)}</select></div>
-              {!!links.length && <div className="notice ok"><div className="body"><b>Invites made. Email isn't wired yet, so send these links yourself:</b>{links.map((l) => <div key={l.email} className="small mono" style={{ userSelect: "all" }}>{l.email}: {l.link}</div>)}</div></div>}
+              {!!links.length && <div className="notice ok"><div className="body"><b>{links.every((l) => l.sent) ? "Invites sent." : "Invites made. No email sender is set up, so pass these links on yourself:"}</b>{links.filter((l) => l.link).map((l) => <div key={l.email} className="small mono" style={{ userSelect: "all" }}>{l.email}: {l.link}</div>)}</div></div>}
             </div>
             <footer><button type="button" className="btn" onClick={() => setInviting(false)}>Done</button><button type="button" className="btn primary" onClick={invite}>Send invites</button></footer>
           </div>

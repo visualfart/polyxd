@@ -1,13 +1,12 @@
 /**
- * Who is asking. A session cookie for people; a workspace API key for `polyxd studio push`.
- *
- * Sign-in providers: `dev` (email only, local development, DEV_AUTH=1) and WorkOS AuthKit for
- * production, which covers email + password, Google, and SSO for customers that need it. The
- * WorkOS flow here follows their User Management API; confirm the endpoint paths against the
- * WorkOS docs before enabling it.
+ * Who is asking. People sign in through better-auth (open source, running in this Worker on D1):
+ * email and password with verification, password reset, Google when a client is configured, and
+ * later two-step verification and SAML/OIDC single sign-on through its plugins. `polyxd studio
+ * push` uses a workspace API key instead.
  */
 import type { Context } from "hono";
-import { getCookie, setCookie, deleteCookie } from "hono/cookie";
+import { betterAuth } from "better-auth";
+import { D1Dialect } from "kysely-d1";
 import { sha256 } from "./crypto.ts";
 
 export interface Env {
@@ -15,10 +14,14 @@ export interface Env {
   FILES: R2Bucket;
   ASSETS: Fetcher;
   APP_URL: string;
-  DEV_AUTH?: string;
+  /** Signs sessions and tokens. Any long random string; set with `wrangler secret put`. */
+  AUTH_SECRET?: string;
   SECRETS_KEY?: string;
-  WORKOS_CLIENT_ID?: string;
-  WORKOS_API_KEY?: string;
+  /** Sends verification, reset and invite emails when set; otherwise links are logged (dev). */
+  RESEND_API_KEY?: string;
+  EMAIL_FROM?: string;
+  GOOGLE_CLIENT_ID?: string;
+  GOOGLE_CLIENT_SECRET?: string;
 }
 
 export interface User {
@@ -30,82 +33,72 @@ export interface User {
 export type Ctx = Context<{ Bindings: Env; Variables: { user: User | null; apiWorkspace: string | null } }>;
 
 export const now = () => new Date().toISOString();
-const days = (n: number) => new Date(Date.now() + n * 86400e3).toISOString();
+export const isLocal = (env: Env) => !env.APP_URL.startsWith("https");
 
-export async function userFromRequest(c: Ctx): Promise<{ user: User | null; apiWorkspace: string | null }> {
+/** An email through Resend, or to the log when no key is set. Never throws: a lost email is reported, not fatal. */
+export async function sendEmail(env: Env, to: string, subject: string, html: string): Promise<boolean> {
+  if (!env.RESEND_API_KEY) {
+    console.log(`[email to ${to}] ${subject}\n${html.replace(/<[^>]+>/g, "")}`);
+    return false;
+  }
+  const r = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, "content-type": "application/json" },
+    body: JSON.stringify({ from: env.EMAIL_FROM ?? "Polyxd Studio <studio@polyxd.com>", to, subject, html }),
+  });
+  if (!r.ok) console.error(`Resend answered ${r.status} for ${subject}`);
+  return r.ok;
+}
+
+const page = (title: string, body: string, cta?: { text: string; url: string }) =>
+  `<div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #141414;"><h2 style="font-size: 20px; margin: 0 0 12px;">${title}</h2><p style="font-size: 15px; line-height: 22px; margin: 0 0 20px;">${body}</p>${cta ? `<p><a href="${cta.url}" style="display: inline-block; background: #141414; color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600;">${cta.text}</a></p><p style="font-size: 12px; color: #5e5c55;">Or paste this into your browser: ${cta.url}</p>` : ""}</div>`;
+
+/** One auth instance per request: the D1 binding is per request on Workers. */
+export function makeAuth(env: Env) {
+  const local = isLocal(env);
+  return betterAuth({
+    baseURL: env.APP_URL,
+    basePath: "/api/auth",
+    secret: env.AUTH_SECRET ?? (local ? "dev-only-not-a-secret-change-me" : undefined),
+    trustedOrigins: [env.APP_URL],
+    database: { dialect: new D1Dialect({ database: env.DB }), type: "sqlite" },
+    emailAndPassword: {
+      enabled: true,
+      minPasswordLength: 12,
+      // Locally, no email goes out, so a sign-up works without a click on a link.
+      requireEmailVerification: !local,
+      revokeSessionsOnPasswordReset: true,
+      sendResetPassword: async ({ user, url }) => {
+        await sendEmail(env, user.email, "Reset your Studio password", page("Choose a new password", "Someone asked to reset the password for this email on Polyxd Studio. If it wasn't you, ignore this; nothing changes.", { text: "Reset password", url }));
+      },
+    },
+    emailVerification: {
+      sendOnSignUp: !local,
+      autoSignInAfterVerification: true,
+      sendVerificationEmail: async ({ user, url }) => {
+        await sendEmail(env, user.email, "Verify your email for Studio", page("Verify your email", "One click and you're in. The link works for an hour.", { text: "Verify email", url }));
+      },
+    },
+    socialProviders: env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? { google: { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } } : {},
+    session: { expiresIn: 30 * 86400, updateAge: 86400, cookieCache: { enabled: true, maxAge: 300 } },
+    advanced: { useSecureCookies: !local, cookiePrefix: "studio" },
+    user: { deleteUser: { enabled: true } },
+  });
+}
+
+export type Auth = ReturnType<typeof makeAuth>;
+
+export async function userFromRequest(c: Ctx, auth: Auth): Promise<{ user: User | null; apiWorkspace: string | null }> {
   const bearer = c.req.header("authorization")?.match(/^Bearer (pxs_[a-f0-9]+)$/)?.[1];
   if (bearer) {
     const hash = await sha256(bearer);
     const key = await c.env.DB.prepare("SELECT id, workspace_id, created_by FROM api_keys WHERE key_hash = ?").bind(hash).first<{ id: string; workspace_id: string; created_by: string }>();
     if (!key) return { user: null, apiWorkspace: null };
     await c.env.DB.prepare("UPDATE api_keys SET last_used_at = ? WHERE id = ?").bind(now(), key.id).run();
-    const user = await c.env.DB.prepare("SELECT id, email, name FROM users WHERE id = ?").bind(key.created_by).first<User>();
+    const user = await c.env.DB.prepare("SELECT id, email, name FROM user WHERE id = ?").bind(key.created_by).first<User>();
     return { user, apiWorkspace: key.workspace_id };
   }
-  const sid = getCookie(c, SID(c.env));
-  if (!sid) return { user: null, apiWorkspace: null };
-  const user = await c.env.DB.prepare(
-    "SELECT u.id, u.email, u.name FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.id = ? AND s.expires_at > ?",
-  ).bind(sid, now()).first<User>();
-  return { user, apiWorkspace: null };
-}
-
-export async function upsertUser(db: D1Database, email: string, name: string): Promise<User> {
-  const e = email.trim().toLowerCase();
-  const existing = await db.prepare("SELECT id, email, name FROM users WHERE email = ?").bind(e).first<User>();
-  if (existing) {
-    if (name && !existing.name) await db.prepare("UPDATE users SET name = ? WHERE id = ?").bind(name, existing.id).run();
-    return { ...existing, name: existing.name || name };
-  }
-  const user = { id: crypto.randomUUID(), email: e, name: name.trim() };
-  await db.prepare("INSERT INTO users (id, email, name, created_at) VALUES (?, ?, ?, ?)").bind(user.id, user.email, user.name, now()).run();
-  return user;
-}
-
-const secure = (env: Env) => env.APP_URL.startsWith("https");
-const SID = (env: Env) => (secure(env) ? "__Host-sid" : "sid");
-
-export async function startSession(c: Ctx, user: User): Promise<void> {
-  // Whatever session the browser had ends first, so a sign-in can't be planted on top of one.
-  await endSession(c);
-  const id = crypto.randomUUID();
-  await c.env.DB.prepare("INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)").bind(id, user.id, days(30)).run();
-  setCookie(c, SID(c.env), id, { httpOnly: true, sameSite: "Lax", secure: secure(c.env), path: "/", maxAge: 30 * 86400 });
-}
-
-export async function endSession(c: Ctx): Promise<void> {
-  const sid = getCookie(c, SID(c.env));
-  if (sid) await c.env.DB.prepare("DELETE FROM sessions WHERE id = ?").bind(sid).run();
-  deleteCookie(c, SID(c.env), { path: "/" });
-}
-
-export function workosStartUrl(env: Env, state: string): string | null {
-  if (!env.WORKOS_CLIENT_ID) return null;
-  const q = new URLSearchParams({ response_type: "code", client_id: env.WORKOS_CLIENT_ID, redirect_uri: `${env.APP_URL}/api/auth/workos/callback`, provider: "authkit", state });
-  return `https://api.workos.com/user_management/authorize?${q}`;
-}
-
-/** A one-time value that ties the callback to the browser that started sign-in. */
-export function rememberState(c: Ctx): string {
-  const state = crypto.randomUUID();
-  setCookie(c, "oauth_state", state, { httpOnly: true, sameSite: "Lax", secure: c.env.APP_URL.startsWith("https"), path: "/api/auth", maxAge: 600 });
-  return state;
-}
-
-export function takeState(c: Ctx): string | undefined {
-  const s = getCookie(c, "oauth_state");
-  deleteCookie(c, "oauth_state", { path: "/api/auth" });
-  return s;
-}
-
-export async function workosExchange(env: Env, code: string): Promise<{ email: string; name: string }> {
-  const r = await fetch("https://api.workos.com/user_management/authenticate", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ client_id: env.WORKOS_CLIENT_ID, client_secret: env.WORKOS_API_KEY, grant_type: "authorization_code", code }),
-  });
-  if (!r.ok) throw new Error(`WorkOS refused the code (${r.status})`);
-  const j = (await r.json()) as { user: { email: string; email_verified?: boolean; first_name?: string; last_name?: string } };
-  if (j.user.email_verified === false) throw new Error("Verify your email with your sign-in provider first");
-  return { email: j.user.email, name: [j.user.first_name, j.user.last_name].filter(Boolean).join(" ") };
+  const s = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (!s) return { user: null, apiWorkspace: null };
+  return { user: { id: s.user.id, email: s.user.email.toLowerCase(), name: s.user.name ?? "" }, apiWorkspace: null };
 }

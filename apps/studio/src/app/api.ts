@@ -22,7 +22,7 @@ export async function api<T = unknown>(method: string, path: string, body?: unkn
 export interface Me {
   user: { id: string; email: string; name: string } | null;
   workspaces: { id: string; slug: string; name: string; role: string }[];
-  signIn?: { dev: boolean; workos: boolean };
+  signIn?: { google: boolean; emailVerification: boolean };
 }
 
 export interface Scan {

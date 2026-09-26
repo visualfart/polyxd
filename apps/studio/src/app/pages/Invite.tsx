@@ -36,7 +36,7 @@ export function Invite() {
               {inv.accepted_at ? <p>This invite was already used.</p> : new Date(inv.expires_at) < new Date() ? <p>This invite has expired. Ask {inv.inviter} for a new one.</p> : me.user ? (
                 me.user.email === inv.email ? <button type="button" className="btn primary full" onClick={accept}>Accept and join</button> : <p>This invite is for {inv.email}, and you're signed in as {me.user.email}.</p>
               ) : (
-                <><p className="small muted">Sign in as {inv.email} first, then come back to this link.</p><Link className="btn primary full" to="/signin">Sign in</Link></>
+                <><p className="small muted">Sign in or create an account as {inv.email} first, then come back to this link.</p><Link className="btn primary full" to="/signin">Sign in</Link></>
               )}
             </>
           )}

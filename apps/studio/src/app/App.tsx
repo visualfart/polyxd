@@ -40,6 +40,7 @@ export function App() {
     <SessionCtx.Provider value={session}>
       <Routes>
         <Route path="/signin" element={me.user ? <Navigate to="/" replace /> : <SignIn />} />
+        <Route path="/reset-password" element={<SignIn start="reset" />} />
         <Route path="/invite/:id" element={<Invite />} />
         <Route path="/" element={me.user ? <Workspaces /> : <Navigate to="/signin" replace />} />
         <Route path="/w/:slug/*" element={me.user ? <Shell /> : <Navigate to="/signin" replace />} />
@@ -67,7 +68,7 @@ function Shell() {
   const ws = me.workspaces.find((w) => w.slug === slug);
   if (!ws) return <Navigate to="/" replace />;
   const signOut = async () => {
-    await api("POST", "/api/auth/signout");
+    await fetch("/api/auth/sign-out", { method: "POST", headers: { "content-type": "application/json" }, body: "{}", credentials: "same-origin" });
     await refresh();
     navigate("/signin");
   };
