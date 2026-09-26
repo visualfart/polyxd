@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-20",
+  "generatedAt": "2026-09-21",
   "benchmark": {
     "requests": 50,
     "withTasks": 37,
@@ -77,6 +77,18 @@
       "latency": 4.222,
       "ttft": 1.022,
       "tps": 55.7
+    },
+    {
+      "run": "gemma-4-e4b-it-4bit+rl-2-tree-constrained",
+      "valid": 96,
+      "score": 68,
+      "tasks": 13,
+      "taskTotal": 37,
+      "expectations": 59,
+      "direction": 96,
+      "latency": 4.041,
+      "ttft": 1.063,
+      "tps": 55.4
     },
     {
       "run": "gemma-4-e4b-it-4bit-tree-constrained",
