@@ -15,8 +15,27 @@ export interface Entry {
 
 /** A gzipped tar, unpacked. Tar is 512-byte headers followed by the file's blocks. */
 export async function untar(tgz: ArrayBuffer): Promise<Entry[]> {
-  const stream = new Blob([tgz]).stream().pipeThrough(new DecompressionStream("gzip"));
-  const tar = new Uint8Array(await new Response(stream).arrayBuffer());
+  if (tgz.byteLength > MAX_TARBALL) throw new Error("That tarball is over 50 MB");
+  // Decompress with a ceiling, so a small file that inflates to gigabytes stops early.
+  const reader = new Blob([tgz]).stream().pipeThrough(new DecompressionStream("gzip")).getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > MAX_UNPACKED) {
+      await reader.cancel();
+      throw new Error("That tarball unpacks to more than 200 MB");
+    }
+    chunks.push(value);
+  }
+  const tar = new Uint8Array(total);
+  let at = 0;
+  for (const ch of chunks) {
+    tar.set(ch, at);
+    at += ch.byteLength;
+  }
   const entries: Entry[] = [];
   const text = new TextDecoder();
   const field = (at: number, len: number) => text.decode(tar.subarray(at, at + len)).replace(/\0.*$/s, "");
@@ -25,6 +44,7 @@ export async function untar(tgz: ArrayBuffer): Promise<Entry[]> {
     if (tar[off] === 0) break;
     let name = field(off, 100);
     const size = parseInt(field(off + 124, 12).trim() || "0", 8);
+    if (!Number.isFinite(size) || size < 0 || off + 512 + size > tar.length) break;
     const type = String.fromCharCode(tar[off + 156]);
     const prefix = field(off + 345, 155);
     if (prefix) name = `${prefix}/${name}`;
@@ -90,10 +110,31 @@ export interface Registry {
 const NPM: Registry = { url: "https://registry.npmjs.org" };
 
 /** `@acme/tokens@1.4.0` → its metadata and tarball, from the registry that holds it. */
+const MAX_TARBALL = 50 * 1024 * 1024;
+const MAX_UNPACKED = 200 * 1024 * 1024;
+
+/** A registry is a public https host by name: never a private address, never plain http. */
+export function checkRegistryUrl(url: string): string {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    throw new Error("That isn't a URL");
+  }
+  if (u.protocol !== "https:") throw new Error("A registry URL has to start with https://");
+  if (u.username || u.password) throw new Error("Put the token in the token field, not in the URL");
+  const h = u.hostname.toLowerCase();
+  if (/^(localhost|.*\.local|.*\.internal|.*\.localhost)$/.test(h) || /^\d+\.\d+\.\d+\.\d+$/.test(h) || h.includes(":") || h === "metadata.google.internal") {
+    throw new Error("A registry has to be a public host name");
+  }
+  return u.origin + u.pathname.replace(/\/$/, "");
+}
+
 export async function fetchPackage(spec: string, registry: Registry = NPM): Promise<{ name: string; version: string; tgz: ArrayBuffer }> {
   const m = spec.trim().match(/^((?:@[^/@]+\/)?[^/@]+)(?:@(.+))?$/);
-  if (!m) throw new Error(`"${spec}" isn't a package name`);
+  if (!m || !/^[a-z0-9@][\w.@/-]*$/i.test(spec.trim())) throw new Error(`"${spec}" isn't a package name`);
   const [, name, wanted] = m;
+  checkRegistryUrl(registry.url);
   const headers: Record<string, string> = { accept: "application/json" };
   if (registry.token) headers.authorization = `Bearer ${registry.token}`;
   const base = registry.url.replace(/\/$/, "");
@@ -105,7 +146,16 @@ export async function fetchPackage(spec: string, registry: Registry = NPM): Prom
   const version = wanted && doc.versions?.[wanted] ? wanted : (doc["dist-tags"]?.[wanted ?? "latest"] ?? doc["dist-tags"]?.latest);
   const v = version ? doc.versions?.[version] : undefined;
   if (!version || !v) throw new Error(`${name}@${wanted ?? "latest"} isn't a version the registry lists`);
-  const tarball = await fetch(v.dist.tarball, { headers: registry.token ? { authorization: `Bearer ${registry.token}` } : {} });
+  // The token goes only to the registry's own host, never to wherever the tarball URL points.
+  const tarballUrl = new URL(v.dist.tarball);
+  if (tarballUrl.protocol !== "https:") throw new Error(`${name}'s tarball isn't served over https`);
+  const sameHost = tarballUrl.host === new URL(base).host;
+  const tarball = await fetch(tarballUrl, { headers: registry.token && sameHost ? { authorization: `Bearer ${registry.token}` } : {}, redirect: "manual" });
+  if (tarball.status >= 300 && tarball.status < 400) throw new Error(`${name}'s tarball redirects elsewhere; Studio doesn't follow that with a token`);
   if (!tarball.ok) throw new Error(`Couldn't download ${name}@${version} (${tarball.status})`);
-  return { name, version, tgz: await tarball.arrayBuffer() };
+  const size = Number(tarball.headers.get("content-length") ?? 0);
+  if (size > MAX_TARBALL) throw new Error(`${name}@${version} is ${Math.round(size / 1e6)} MB; Studio reads packages up to 50 MB`);
+  const tgz = await tarball.arrayBuffer();
+  if (tgz.byteLength > MAX_TARBALL) throw new Error(`${name}@${version} is over 50 MB`);
+  return { name, version, tgz };
 }

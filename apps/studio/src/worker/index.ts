@@ -8,9 +8,9 @@ import catalog from "@polyxd/spec/catalog/catalog.json";
 import { read, resolve, index, type Graph } from "../import/read.ts";
 import { scan } from "../import/scan.ts";
 import { mapRoles, candidatesFor, scalar, type Contract, type Override } from "../import/map.ts";
-import { fetchPackage, findTokenFiles, untar } from "../import/package.ts";
+import { checkRegistryUrl, fetchPackage, findTokenFiles, untar } from "../import/package.ts";
 import { decrypt, encrypt, newApiKey, sha256 } from "./crypto.ts";
-import { endSession, now, startSession, upsertUser, userFromRequest, workosExchange, workosStartUrl, type Ctx, type Env, type User } from "./auth.ts";
+import { endSession, now, rememberState, startSession, takeState, upsertUser, userFromRequest, workosExchange, workosStartUrl, type Ctx, type Env, type User } from "./auth.ts";
 
 type Vars = { user: User | null; apiWorkspace: string | null };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -18,7 +18,7 @@ const CONTRACT = contract as unknown as Contract;
 const ROLES = ["owner", "design-system", "designer", "product", "engineer", "viewer"] as const;
 const CAN_EDIT_TOKENS = new Set(["owner", "design-system", "engineer"]);
 const CAN_EDIT_RULES = new Set(["owner", "design-system", "designer"]);
-const dev = (env: Env) => env.DEV_AUTH === "1";
+const dev = (env: Env) => env.DEV_AUTH === "1" && !env.APP_URL.startsWith("https");
 const secretsKey = (env: Env) => env.SECRETS_KEY ?? (dev(env) ? "dev-only-not-a-secret" : "");
 
 class Fail extends Error {
@@ -28,7 +28,21 @@ class Fail extends Error {
 }
 app.onError((e, c) => c.json({ error: e.message }, (e instanceof Fail ? e.status : 500) as 500));
 
+const MAX_UPLOAD = 25 * 1024 * 1024;
+
 app.use("/api/*", async (c, next) => {
+  c.header("X-Content-Type-Options", "nosniff");
+  c.header("Cache-Control", "no-store");
+  // A browser sends Origin on every cross-site request that could change something; a request
+  // that changes something and comes from anywhere but this app is refused, whatever cookies it
+  // carries. API-key calls (curl, the push command) send no Origin and no cookie, so they pass.
+  if (c.req.method !== "GET" && c.req.method !== "HEAD") {
+    const origin = c.req.header("origin");
+    const bearer = c.req.header("authorization")?.startsWith("Bearer ");
+    if (origin && new URL(origin).origin !== new URL(c.env.APP_URL).origin && !bearer) throw new Fail(403, "Cross-site request refused");
+    const len = Number(c.req.header("content-length") ?? 0);
+    if (len > MAX_UPLOAD) throw new Fail(413, "That's over 25 MB");
+  }
   const { user, apiWorkspace } = await userFromRequest(c as Ctx);
   c.set("user", user);
   c.set("apiWorkspace", apiWorkspace);
@@ -83,14 +97,16 @@ app.post("/api/auth/dev", async (c) => {
 });
 
 app.get("/api/auth/workos/start", (c) => {
-  const url = workosStartUrl(c.env);
+  const url = workosStartUrl(c.env, rememberState(c as Ctx));
   if (!url) throw new Fail(404, "WorkOS isn't configured");
   return c.redirect(url);
 });
 
 app.get("/api/auth/workos/callback", async (c) => {
   const code = c.req.query("code");
+  const state = c.req.query("state");
   if (!code) throw new Fail(400, "No code in the callback");
+  if (!state || state !== takeState(c as Ctx)) throw new Fail(400, "This sign-in didn't start here. Try again from the sign-in page.");
   const { email, name } = await workosExchange(c.env, code);
   const user = await upsertUser(c.env.DB, email, name);
   await startSession(c as Ctx, user);
@@ -180,12 +196,18 @@ app.post("/api/w/:slug/registries", async (c) => {
   const w = await ws(c as Ctx, CAN_EDIT_TOKENS);
   const user = need(c as Ctx);
   const { url, scope, token } = (await c.req.json()) as { url?: string; scope?: string; token?: string };
-  if (!url?.startsWith("https://")) throw new Fail(400, "A registry URL, starting with https://");
+  let clean: string;
+  try {
+    clean = checkRegistryUrl(url ?? "");
+  } catch (e) {
+    throw new Fail(400, (e as Error).message);
+  }
+  if (scope && !/^@[a-z0-9][\w.-]*$/i.test(scope)) throw new Fail(400, "A scope looks like @acme");
   if (!secretsKey(c.env)) throw new Fail(500, "SECRETS_KEY isn't set, so a token can't be stored safely");
   const enc = token ? await encrypt(token, secretsKey(c.env)) : null;
   const id = crypto.randomUUID();
   await c.env.DB.prepare("INSERT INTO registries (id, workspace_id, url, scope, token_enc, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)")
-    .bind(id, w.id, url.replace(/\/$/, ""), scope ?? "", enc, user.id, now()).run();
+    .bind(id, w.id, clean, scope ?? "", enc, user.id, now()).run();
   return c.json({ id }, 201);
 });
 
@@ -267,7 +289,8 @@ async function graphFrom(c: Ctx, w: Workspace, body: Record<string, string | Fil
     return { graph: read(best.text, best.path), source: "package", fileName: `${pkg.name}@${pkg.version}/${best.path}`, pkg: { name: pkg.name, version: pkg.version }, picked: files.slice(0, 6).map((f) => f.path) };
   }
   if (!file) throw new Fail(400, "Send a file, or a package name");
-  const name = file.name;
+  if (file.size > MAX_UPLOAD) throw new Fail(413, "That file is over 25 MB");
+  const name = file.name.replace(/[^\w.@-]+/g, "_").slice(0, 120);
   if (/\.(tgz|tar\.gz)$/i.test(name)) {
     const bytes = await file.arrayBuffer();
     const files = findTokenFiles(await untar(bytes));

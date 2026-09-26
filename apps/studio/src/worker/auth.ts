@@ -74,10 +74,23 @@ export async function endSession(c: Ctx): Promise<void> {
   deleteCookie(c, "sid", { path: "/" });
 }
 
-export function workosStartUrl(env: Env): string | null {
+export function workosStartUrl(env: Env, state: string): string | null {
   if (!env.WORKOS_CLIENT_ID) return null;
-  const q = new URLSearchParams({ response_type: "code", client_id: env.WORKOS_CLIENT_ID, redirect_uri: `${env.APP_URL}/api/auth/workos/callback`, provider: "authkit" });
+  const q = new URLSearchParams({ response_type: "code", client_id: env.WORKOS_CLIENT_ID, redirect_uri: `${env.APP_URL}/api/auth/workos/callback`, provider: "authkit", state });
   return `https://api.workos.com/user_management/authorize?${q}`;
+}
+
+/** A one-time value that ties the callback to the browser that started sign-in. */
+export function rememberState(c: Ctx): string {
+  const state = crypto.randomUUID();
+  setCookie(c, "oauth_state", state, { httpOnly: true, sameSite: "Lax", secure: c.env.APP_URL.startsWith("https"), path: "/api/auth", maxAge: 600 });
+  return state;
+}
+
+export function takeState(c: Ctx): string | undefined {
+  const s = getCookie(c, "oauth_state");
+  deleteCookie(c, "oauth_state", { path: "/api/auth" });
+  return s;
 }
 
 export async function workosExchange(env: Env, code: string): Promise<{ email: string; name: string }> {
