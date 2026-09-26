@@ -69,6 +69,7 @@ ICONS.update({
     "send": '<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>',
     "flask": '<path d="M9 3h6"/><path d="M10 3v6L4 19a1.5 1.5 0 0 0 1.3 2h13.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/><path d="M7 15h10"/>',
     "layers": '<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>',
+    "contact": '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
     "repeat": '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
 })
 
@@ -222,7 +223,7 @@ def segmented(options, active, label_text):
         f'<button type="button" aria-pressed="{"true" if o == active else "false"}" style="height: 30px; padding: 0 12px; border: 0; border-radius: 6px; background: {S["paper"] if o == active else "transparent"}; color: {S["ink"] if o == active else S["ink2"]}; font-family: {BODY}; font-size: 13px; font-weight: {600 if o == active else 500}; box-shadow: {"0 1px 2px rgba(20,20,20,.12)" if o == active else "none"};">{o}</button>'
         for o in options
     )
-    return f'<div role="group" aria-label="{label_text}" style="display: inline-flex; gap: 2px; padding: 3px; border-radius: 8px; background: {S["soft"]};">{items}</div>'
+    return f'<div role="group" aria-label="{label_text}" style="display: inline-flex; align-self: flex-start; gap: 2px; padding: 3px; border-radius: 8px; background: {S["soft"]};">{items}</div>'
 
 
 def swatch(color, size=20, border=True):
@@ -269,12 +270,12 @@ def table(head, rows, aligns=None, widths=None, row_h=48, selected=(), pad_x=16,
     for i, r in enumerate(rows):
         bg = S["signal_bg"] if i in selected else "transparent"
         tds = "".join(
-            f'<td style="text-align: {a}; padding: 0 {pad_x}px; height: {row_h}px; border-bottom: 1px solid {S["soft"]}; font-size: 14px; white-space: nowrap;">{c}</td>'
+            f'<td style="text-align: {a}; padding: 0 {pad_x}px; height: {row_h}px; border-bottom: 1px solid {S["soft"]}; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{c}</td>'
             for c, a in zip(r, aligns)
         )
         body += f'<tr style="background: {bg};">{tds}</tr>'
     cap = f'<caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">{caption}</caption>' if caption else ""
-    return f'<table style="width: 100%; border-collapse: collapse;">{cap}<thead><tr>{th}</tr></thead><tbody>{body}</tbody></table>'
+    return f'<table style="width: 100%; border-collapse: collapse; table-layout: fixed;">{cap}<thead><tr>{th}</tr></thead><tbody>{body}</tbody></table>'
 
 
 def search(placeholder, w=280, value=""):
@@ -301,7 +302,7 @@ def tabs(items, active, label_text="Sections"):
 
 NAV = [
     ("Home", "home", None),
-    ("Design system", None, [("Tokens", "palette"), ("Components", "blocks"), ("Patterns", "layers")]),
+    ("Foundations", None, [("Design systems", "palette"), ("Components", "blocks"), ("Patterns", "layers")]),
     ("Direction", None, [("Profile and voice", "compass"), ("Rules", "rule"), ("Exemplars", "image")]),
     ("Reviews", "eye", None),
     ("Product", None, [("Capabilities", "bolt"), ("Journeys", "route")]),
@@ -334,7 +335,7 @@ def sidebar(active):
 <nav aria-label="Studio" style="display: flex; flex-direction: column; gap: 2px;">{groups}</nav>
 <div style="margin-top: auto; display: flex; flex-direction: column; gap: 2px;">
 {item("Settings", "gear")}
-<div style="display: flex; align-items: center; gap: 10px; padding: 10px 8px 0; border-top: 1px solid {S["line"]}; margin-top: 8px;">{avatar("MR", "info", 28)}<div style="display: flex; flex-direction: column; line-height: 16px;"><span style="font-size: 13px; font-weight: 600;">Maya Rao</span><span style="font-size: 12px; color: {S["muted"]};">Design systems</span></div></div>
+<button type="button" aria-haspopup="menu" aria-label="Account menu for Maya Rao" style="display: flex; align-items: center; gap: 10px; padding: 10px 8px 2px; border: 0; border-top: 1px solid {S["line"]}; margin-top: 8px; background: transparent; font-family: {BODY}; text-align: left; color: {S["ink"]};">{avatar("MR", "info", 28)}<span style="display: flex; flex-direction: column; line-height: 16px; flex-grow: 1;"><span style="font-size: 13px; font-weight: 600;">Maya Rao</span><span style="font-size: 12px; color: {S["muted"]};">Design system lead</span></span>{ic("dots", 16, S["muted"])}</button>
 </div>
 </aside>'''
 
@@ -370,7 +371,11 @@ def page_head(title, desc=None, actions="", meta=None, tabs_html="", pad="24px 3
 </div>'''
 
 
-def app(title, active, crumbs, body, top_actions="", w=1440, h=900, overlay=""):
+HEIGHTS = {}
+
+
+def app(title, active, crumbs, body, top_actions="", w=1440, h=None, overlay=""):
+    h = h or HEIGHTS.get(title, 900)
     return doc(title, w, h, f'''{sidebar(active)}
 <main style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; background: {S["paper"]};">
 {topbar(crumbs, top_actions)}
@@ -473,5 +478,57 @@ def mini_surface(kind="send", pack="northwind", w=300, h=420, label_text=None):
         inner = ""
     lbl = f'<div style="font-size: 12px; color: {S["muted"]}; margin-top: 8px; text-align: center;">{label_text}</div>' if label_text else ""
     return f'''<div style="display: flex; flex-direction: column; flex-shrink: 0;">
-<div style="width: {w}px; height: {h}px; box-sizing: border-box; border-radius: 14px; border: 1px solid {S["line"]}; background: {p["bg"]}; color: {p["ink"]}; font-family: {p["font"]}; padding: 18px; display: flex; flex-direction: column; gap: 12px; overflow: hidden;">{inner}</div>{lbl}
+<div style="width: {w}px; min-height: {h}px; box-sizing: border-box; border-radius: 14px; border: 1px solid {S["line"]}; background: {p["bg"]}; color: {p["ink"]}; font-family: {p["font"]}; padding: 18px; display: flex; flex-direction: column; gap: 12px;">{inner}</div>{lbl}
+</div>'''
+
+
+def mini_desktop(kind="send", pack="northwind", w=620, h=380, label_text=None):
+    """The same generated surface at desktop width, in a browser frame: what a person on a laptop sees."""
+    p = PACK[pack]
+    r = p["radius"]
+    br = min(r, 12) if r else 0
+
+    def pbtn(t, primary=True):
+        bg = p["primary"] if primary else "transparent"
+        fg = p["on_primary"] if primary else p["primary"]
+        return f'<span style="height: 30px; border-radius: {br}px; border: 1px solid {p["primary"]}; background: {bg}; color: {fg}; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; white-space: nowrap;">{t}</span>'
+
+    def row(k, v):
+        return f'<div style="display: flex; justify-content: space-between; font-size: 11px; padding: 6px 0; border-bottom: 1px solid {p["line"]};"><span style="color: {p["muted"]};">{k}</span><span style="font-weight: 500;">{v}</span></div>'
+
+    if kind == "send":
+        inner = f'''<div style="display: flex; gap: 20px; align-items: flex-start;">
+<div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 10px;"><div style="font-size: 16px; font-weight: 600;">Send money</div>
+<div style="display: flex; gap: 10px; align-items: center; padding: 10px; border: 1px solid {p["line"]}; border-radius: {br}px;"><span style="width: 28px; height: 28px; border-radius: 50%; background: {p["surface"]}; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">AK</span><div><div style="font-size: 12px; font-weight: 600;">Alex Kim</div><div style="font-size: 10px; color: {p["muted"]};">Monzo ····8812</div></div></div>
+<div style="font-size: 36px; font-weight: 600; letter-spacing: -0.02em;">£40.00</div><div style="font-size: 11px; color: {p["muted"]}; margin-top: -8px;">For concert tickets</div></div>
+<div style="flex: 0 1 46%; min-width: 0; background: {p["surface"]}; border-radius: {br}px; padding: 12px; display: flex; flex-direction: column; gap: 6px;"><div style="font-size: 12px; font-weight: 600;">Summary</div>{row("From", "Everyday ····4521")}{row("Arrives", "Instantly")}{row("Fee", "£0.00")}<div style="display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;">{pbtn("Send £40.00")}{pbtn("Cancel", False)}</div></div>
+</div>'''
+    elif kind == "plans":
+        cards = ""
+        for name, price, rec in [("Basic", "£2", False), ("Plus", "£5", True), ("Pro", "£9", False)]:
+            border = f"2px solid {p['primary']}" if rec else f"1px solid {p['line']}"
+            badge = f'<span style="font-size: 9px; font-weight: 700; color: {p["primary"]};">RECOMMENDED</span>' if rec else '<span style="font-size: 9px;">&#160;</span>'
+            cards += f'<div style="flex: 1 1 0; min-width: 0; border: {border}; border-radius: {br}px; padding: 10px; display: flex; flex-direction: column; gap: 6px;">{badge}<strong style="font-size: 13px;">{name}</strong><span style="font-size: 18px; font-weight: 600;">{price}<span style="font-size: 10px; color: {p["muted"]}; font-weight: 400;">/mo</span></span><span style="font-size: 10px; color: {p["muted"]};">{ {"Basic": "100 GB", "Plus": "2 TB", "Pro": "5 TB"}[name]}</span>{pbtn("Choose", rec)}</div>'
+        inner = f'<div style="font-size: 16px; font-weight: 600;">More storage: Plus fits</div><div style="font-size: 11px; color: {p["muted"]}; margin-top: -6px;">You use 180 GB of 200 GB.</div><div style="display: flex; gap: 12px;">{cards}</div>'
+    elif kind == "delete":
+        inner = f'''<div style="position: relative; flex-grow: 1; min-height: 240px;">
+<div style="font-size: 16px; font-weight: 600; opacity: .35;">Account settings</div>
+<div style="position: absolute; inset: 0; background: rgba(0,0,0,.25); border-radius: 6px;"></div>
+<div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 300px; background: {p["bg"]}; border-radius: {br}px; padding: 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.2);"><div style="font-size: 14px; font-weight: 600;">Delete your account?</div><div style="font-size: 11px; color: {p["muted"]};">Kept for 30 days, then deleted for good.</div>{row("Projects", "12")}{row("Files", "2,381")}<div style="font-size: 11px; font-weight: 600;">Type DELETE to confirm</div><div style="height: 26px; border: 1px solid {p["line"]}; border-radius: {min(br, 6)}px;"></div><div style="display: flex; gap: 8px; justify-content: flex-end;">{pbtn("Keep my account", False)}<span style="height: 30px; border-radius: {br}px; background: #B42318; color: #FFFFFF; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; padding: 0 14px;">Delete account</span></div></div>
+</div>'''
+    elif kind == "table":
+        head = f'<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); font-size: 10px; color: {p["muted"]}; padding: 6px 0; border-bottom: 1px solid {p["line"]};"><span>Account</span><span>Owner</span><span>Plan</span><span style="text-align: right;">Overdue</span><span style="text-align: right;">Days late</span></div>'
+        rows = "".join(f'<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); font-size: 11px; padding: 7px 0; border-bottom: 1px solid {p["line"]};"><span style="font-weight: 600;">{a}</span><span>{o}</span><span>{pl}</span><span style="text-align: right;">{m}</span><span style="text-align: right;">{d}</span></div>' for a, o, pl, m, d in [("Acme Corp", "Rhea", "Enterprise", "£4,200", "41"), ("Globex", "Tom", "Growth", "£2,950", "18"), ("Initech", "Rhea", "Growth", "£1,120", "12"), ("Umbrella", "Sam", "Starter", "£860", "6")])
+        inner = f'<div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 16px; font-weight: 600;">Past due accounts</div><div style="font-size: 11px; color: {p["muted"]};">4 accounts · £9,130 overdue</div></div>{pbtn("Send reminders")}</div><div>{head}{rows}</div>'
+    elif kind == "blank":
+        inner = f'<div style="font-size: 16px; font-weight: 600;">Order details</div><div style="font-size: 11px; color: {p["muted"]}; margin-top: -6px;">Order details</div><div style="display: flex; gap: 12px;"><div style="flex: 1 1 0; background: {p["surface"]}; border-radius: {br}px; padding: 6px 12px;">{row("Status", "—")}{row("Arrives", "—")}{row("Carrier", "—")}</div><div style="flex: 1 1 0; font-size: 11px; color: {p["muted"]};">{{label}}</div></div>'
+    else:
+        inner = ""
+    nav = "" if w < 500 else f'<div style="width: 110px; flex-shrink: 0; border-right: 1px solid {p["line"]}; padding: 12px 10px; display: flex; flex-direction: column; gap: 8px;">{"".join(f"<span style=\"height: 8px; border-radius: 4px; background: {p['line']}; width: {x}%;\"></span>" for x in (80, 60, 70, 55, 65))}</div>'
+    lbl = f'<div style="font-size: 12px; color: {S["muted"]}; margin-top: 8px; text-align: center;">{label_text}</div>' if label_text else ""
+    return f'''<div style="display: flex; flex-direction: column; flex-shrink: 0;">
+<div style="width: {w}px; min-height: {h}px; box-sizing: border-box; border-radius: 10px; border: 1px solid {S["line"]}; background: {p["bg"]}; overflow: hidden; display: flex; flex-direction: column;">
+<div aria-hidden="true" style="height: 24px; flex-shrink: 0; display: flex; align-items: center; gap: 5px; padding: 0 10px; background: {S["soft"]};"><span style="width: 7px; height: 7px; border-radius: 50%; background: {S["line"]};"></span><span style="width: 7px; height: 7px; border-radius: 50%; background: {S["line"]};"></span><span style="width: 7px; height: 7px; border-radius: 50%; background: {S["line"]};"></span></div>
+<div style="flex-grow: 1; display: flex; color: {p["ink"]}; font-family: {p["font"]};">{nav}<div style="flex-grow: 1; min-width: 0; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px;">{inner}</div></div>
+</div>{lbl}
 </div>'''

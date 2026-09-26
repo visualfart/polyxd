@@ -1,20 +1,25 @@
 # Studio designs
 
-Source for the "Polyxd Studio" Claude Design canvas: 38 artboards (desktop, 1440 × 900) covering every flow a design-system team runs in Studio, with create, read, update and delete for each thing they own.
+Source for the "Polyxd Studio" Claude Design canvas: 64 artboards (desktop, 1440 wide, as tall as their content) covering every flow a design-system team runs in Studio, from signing up to signing out, with create, read, update and delete for everything they own.
 
 | Row | Flows |
 |---|---|
-| Getting started | Create a workspace; home with a setup checklist and quality health |
-| Design system, create | Import tokens from Figma variables, Tokens Studio, CSS or a built-in pack; review every mapping guess, with contrast fixes found on the team's own ramp |
-| Design system, read, update, delete | Token tables per group and mode; edit a token in a draft with its contrast impact; preview real screens redrawn with the draft; delete a pack in use with a typed check |
-| Components | Catalog with who renders each and whether generators may use it; component page with guidance, props mapping and verification of the connected implementation; connect your own; create a custom component with a fallback; delete with undo |
-| Direction | Profile and voice; rules with pass rates; a rule tested against recent screens before it is saved; delete with undo; exemplars |
-| Reviews | The queue; one screen with its data, checks and comments; ranking three options (preference data); a comment becoming a rule |
-| Product | Capabilities and their risk levels; journeys with checkpoints and an agent test; the flow map of paths people took |
-| Releases | What changes and what it affects; a gradual rollout with guardrails; history; rollback |
+| Sign up and sign in | Sign up; verify email with a code; sign in; a failed sign-in; SSO; two-step verification |
+| Password, invites, signing out | Forgot and reset password; accept an invite; session expired over the app; signed out |
+| Getting started | Create a workspace; home with setup checklist and quality; workspace switcher; account menu; notifications; search (⌘K) |
+| Your account | Profile; sign-in and security (password, 2-step, sessions, delete account); notification settings |
+| Design systems: import | Your systems and the 13 built in; import from Figma variables, Tokens Studio, DTCG or CSS; a scan of what was found (3,142 tokens by tier and type, modes, broken and circular references); mapping Polyxd's 87 roles onto your semantic tier, with alias chains, bulk accept and contrast fixes found on your own ramp |
+| Design systems: browse, edit, delete | Polyxd roles; your tokens as a tree by tier and group with references and usage; edit a token in a draft; preview real screens at phone and desktop width, in every mode; delete one in use with a typed check |
+| Components | Catalog; a component page with guidance, props mapping, phone and desktop previews and checks on your implementation; connect your own; create a custom one with a fallback; delete with undo |
+| Patterns | The six patterns and the rules each brings |
+| Direction | Profile and voice; rules with pass rates; a rule tested before it's saved; undo on delete; no rules yet; exemplars at both widths |
+| Reviews | The queue; one screen with its data, checks and comments; ranking three options; a comment becoming a rule; all caught up |
+| Capabilities and journeys | Capabilities by risk; editing one; journeys with checkpoints and an agent test; the flow map |
+| Releases | What changes and what it affects, at both widths; a gradual rollout with guardrails; history; rollback |
 | Insights | Quality over time, what fails most, what people ask for that the product can't do |
-| Settings | Team and roles; invites; integrations; export and delete the workspace |
+| Workspace settings | Team and roles; invites; integrations, including your own generator; export and delete the workspace |
+| When something's missing | No access; page not found |
 
 The look is polyxd.com's own: a warm ground, near-black ink, one signal orange, Bricolage Grotesque for titles, Geist for text and Geist Mono for tokens. Every control is a real element, and text meets 4.5:1.
 
-`python3 build.py` (Python 3.12 or later) writes the artboards and `canvas.json` into `out/project/`. `kit.py` holds the building blocks and shares the flow designs' icons; `screens_a.py` and `screens_b.py` hold the screens.
+`python3 build.py` (Python 3.12 or later) writes the artboards and `canvas.json` into `out/project/`. `measure.mjs` renders each artboard and records in `heights.json` how tall its content is, so the next build sizes it to fit. `kit.py` holds the building blocks, including phone and desktop previews of generated screens, and shares the flow designs' icons; `screens_ds.py` holds the design-system flows, `screens_c.py` accounts, the shell and states, and `screens_a.py` and `screens_b.py` the rest.

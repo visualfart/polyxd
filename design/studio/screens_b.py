@@ -1,5 +1,5 @@
 """Studio, second half: direction, reviews, product (capabilities, journeys), releases, insights, settings."""
-from kit import (S, TONE, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
+from kit import (mini_desktop, S, TONE, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
                  checkbox, radio, segmented, swatch, meter, mono, card, h2, notice, table, search, filter_chip, tabs,
                  app, page_head, drawer, dialog, toast, mini_surface, kbd, scrim)
 from screens_a import stat, spark
@@ -102,8 +102,9 @@ def rule_edit():
 
 def exemplars():
     tiles = ""
-    for kind, pack, t, intent in [("send", "northwind", "Send money: amount first", "transfer.create"), ("plans", "northwind", "One recommendation", "plans.compare"), ("delete", "northwind", "Typed check for high risk", "account.delete"), ("table", "northwind", "Dense list with bulk action", "accounts.list")]:
-        tiles += f'<div style="display: flex; flex-direction: column; gap: 10px;">{mini_surface(kind, pack, 240, 320)}<div><div style="font-weight: 600; font-size: 14px;">{t}</div><div style="display: flex; gap: 6px; margin-top: 4px;">{tag(intent, "gray", mono=True)}</div></div></div>'
+    for kind, pack, t, intent, desk in [("send", "northwind", "Send money: amount first", "transfer.create", False), ("plans", "northwind", "One recommendation", "plans.compare", False), ("delete", "northwind", "Typed check for high risk", "account.delete", False), ("table", "northwind", "Dense list with bulk action", "accounts.list", True), ("plans", "northwind", "Plans side by side", "plans.compare", True)]:
+        preview = mini_desktop(kind, pack, 480, 280) if desk else mini_surface(kind, pack, 240, 440)
+        tiles += f'<div style="display: flex; flex-direction: column; gap: 10px;">{preview}<div><div style="font-weight: 600; font-size: 14px;">{t}</div><div style="display: flex; gap: 6px; margin-top: 4px;">{tag(intent, "gray", mono=True)}{tag("Desktop" if desk else "Phone", "gray")}</div></div></div>'
     body = page_head("Exemplars", "Screens that show what good looks like. Generators get the closest ones as examples; reviewers compare against them.", f'{btn("Upload a design", "secondary", "upload")}{btn("Add from reviews", "primary", "plus")}', tabs_html=tabs([("All", 38), ("Payments", 9), ("Settings", 7), ("Lists and records", 12)], "All")) + f'<div style="padding: 20px 32px; display: flex; gap: 24px; flex-wrap: wrap;">{tiles}</div>'
     return app("Exemplars", "Exemplars", ["Northwind", "Direction", "Exemplars"], body)
 
@@ -128,7 +129,7 @@ def reviews():
             who,
             btn("Review", "secondary", h=30),
         ])
-    body = page_head("Reviews", "Generated screens picked for a designer to look at. Your verdicts become examples, rules and preference data.", btn("Review settings", "secondary", "gear"), tabs_html=tabs([("To review", 18), ("Ranking", 4), ("Approved", 312), ("Changes asked", 27)], "To review")) + f'''<div style="padding: 16px 32px; display: flex; flex-direction: column; gap: 12px;">
+    body = page_head("Reviews", "Generated screens picked for a designer to look at. What you approve becomes exemplars; what you flag becomes rules.", btn("Review settings", "secondary", "gear"), tabs_html=tabs([("To review", 18), ("Ranking", 4), ("Approved", 312), ("Changes asked", 27)], "To review")) + f'''<div style="padding: 16px 32px; display: flex; flex-direction: column; gap: 12px;">
 <div style="display: flex; gap: 8px; align-items: center;">{search("Search requests", 260)}{filter_chip("Assigned to me", True, 6)}{filter_chip("High risk", False, 3)}{filter_chip("Low score", False, 5)}{filter_chip("New intents", False, 4)}</div>
 {table(["Request", "Score", "Why it's here", "Assigned", ""], rows, aligns=["left", "right", "left", "left", "right"], widths=[None, 80, 150, 110, 100], row_h=64, caption="Screens to review")}
 </div>'''
@@ -147,7 +148,7 @@ def review_surface():
 </aside>'''
     center = f'''<div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 8px;">
 <div style="display: flex; gap: 8px;">{segmented(["Phone", "Desktop"], "Phone", "Width")}{segmented(["Light", "Dark"], "Light", "Mode")}</div>
-<div style="position: relative;">{mini_surface("send", "northwind", 340, 560)}
+<div style="position: relative;">{mini_surface("send", "northwind", 340, 600)}
 <span aria-label="Comment 1" style="position: absolute; left: 150px; top: 76px; width: 26px; height: 26px; border-radius: 50% 50% 50% 4px; background: {S["signal_ink"]}; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">1</span></div>
 </div>'''
     right = f'''<aside aria-label="Your verdict" style="width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px;">
@@ -172,9 +173,9 @@ def review_rank():
 <div style="border-radius: 16px; padding: 6px; border: {"2px solid " + S["ink"] if on else "2px solid transparent"};">{mini_surface(kind, "northwind", 300, 440)}</div>
 <div style="display: flex; gap: 8px; align-items: center;"><strong>Option {letter}</strong>{"".join(f'<button type="button" aria-pressed="{"true" if n == rank else "false"}" aria-label="Rank option {letter} {n}" style="width: 32px; height: 32px; border-radius: 8px; border: 1px solid {S["ink"] if n == rank else S["line"]}; background: {S["ink"] if n == rank else S["paper"]}; color: {"#FFFFFF" if n == rank else S["ink"]}; font-family: {BODY}; font-weight: 600;">{n}</button>' for n in (1, 2, 3))}</div>
 </div>'''
-    body = page_head("Rank three options", "“which plan should I get? I mostly need storage” · plans.compare. Best first. Order doesn't show which is newer.", f'{btn("Skip", "ghost")}{btn("Save ranking", "primary")}', tabs_html="") + f'''<div style="padding: 8px 32px; display: flex; flex-direction: column; gap: 16px;">
+    body = page_head("Rank three options", "“which plan should I get? I mostly need storage” · plans.compare. Best first. The winner becomes an exemplar, and rankings over time show how well your generator is doing.", f'{btn("Skip", "ghost")}{btn("Save ranking", "primary")}', tabs_html="") + f'''<div style="padding: 8px 32px; display: flex; flex-direction: column; gap: 16px;">
 <div style="display: flex; gap: 28px; justify-content: center;">{opts}</div>
-<div style="display: flex; gap: 16px; justify-content: center; align-items: center;">{checkbox(False, "", "B and C are about the same")}<span style="font-size: 13px; color: {S["muted"]};">Ties aren't used as preferences.</span></div>
+<div style="display: flex; gap: 16px; justify-content: center; align-items: center;">{checkbox(False, "", "B and C are about the same")}<span style="font-size: 13px; color: {S["muted"]};">Options are shuffled, so nothing hints which came from where.</span></div>
 </div>'''
     return app("Rank options", "Reviews", ["Northwind", "Reviews", "Ranking"], body)
 
@@ -274,7 +275,7 @@ def release_new():
     checks = "".join(f'<li style="display: flex; gap: 10px; align-items: center; padding: 6px 0; font-size: 14px;">{ic(i, 18, TONE[t][1])}{txt}</li>' for i, t, txt in [("check_circle", "ok", "Contract and contrast pass in light and dark"), ("check_circle", "ok", "500 recent screens redrawn: 0 accessibility regressions"), ("check_circle", "ok", "Agent tasks: 37 of 37 journeys still complete"), ("alert", "warn", "41 payment screens change order: recipient now first")])
     body = page_head("Release 15", "Everything in draft, checked together before any customer sees it.", f'{btn("Save for later", "ghost")}{btn("Choose rollout", "primary", trail_icon="arrow_r")}', meta=tag("Draft", "signal")) + f'''<div style="padding: 20px 32px; display: flex; gap: 24px; align-items: flex-start;">
 <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 18px;">{card(h2("What changes") + f'<ul style="list-style: none; margin: 0; padding: 0;">{changes}</ul>', pad=20, gap=4)}
-{card(h2("Before and after", "The same request, redrawn.") + f'<div style="display: flex; gap: 16px;">{mini_surface("send", "northwind", 250, 340, "Live · Release 14")}{mini_surface("send", "northwind", 250, 340, "Release 15")}</div>', pad=20)}</div>
+{card(h2("Before and after", "The same request, redrawn at both widths.", segmented(["Phone", "Desktop"], "Desktop", "Width")) + f'<div style="display: flex; gap: 16px; flex-wrap: wrap;">{mini_desktop("send", "northwind", 330, 230, "Live · Release 14")}{mini_desktop("send", "northwind", 330, 230, "Release 15")}</div>', pad=20)}</div>
 <div style="width: 400px; flex-shrink: 0;">{card(h2("Checks") + f'<ul style="list-style: none; margin: 0; padding: 0;">{checks}</ul>' + f'<div style="font-size: 13px; color: {S["muted"]}; border-top: 1px solid {S["soft"]}; padding-top: 12px;">Affects about 3,100 screens a day, 6% of Northwind\'s traffic.</div>', pad=20, gap=8)}</div>
 </div>'''
     return app("New release", "Releases", ["Northwind", "Releases", "Release 15"], body)
@@ -317,11 +318,11 @@ def release_rollback():
 
 def insights():
     trend = [84, 85, 85, 87, 86, 88, 88, 89, 90, 89, 91, 91]
-    w, h = 620, 180
+    w, h = 520, 180
     step = w / (len(trend) - 1)
     pts = " ".join(f"{i * step:.1f},{h - (v - 80) / 14 * h:.1f}" for i, v in enumerate(trend))
     chart = f'<svg width="{w}" height="{h + 24}" viewBox="0 0 {w} {h + 24}" role="img" aria-label="Verifier score by week, from 84 to 91"><g stroke="{S["soft"]}">{"".join(f"<line x1=\"0\" x2=\"{w}\" y1=\"{y}\" y2=\"{y}\"/>" for y in (0, 60, 120, 180))}</g><polyline points="{pts}" fill="none" stroke="{S["signal"]}" stroke-width="2.5" stroke-linejoin="round"/>{"".join(f"<text x=\"{i * step:.0f}\" y=\"{h + 18}\" font-size=\"11\" fill=\"{S['muted']}\" font-family=\"Geist, sans-serif\" text-anchor=\"middle\">W{i + 27}</text>" for i in range(0, 12, 2))}</svg>'
-    failing = table(["Check", "Screens", "Trend"], [[mono(c, 13, S["ink"]), f"{n:,}", tag(t, tone)] for c, n, t, tone in [("data:missing-path", 412, "−38%", "ok"), ("copy:raw-identifier", 288, "−12%", "ok"), ("layout:target-size-pack", 164, "+4%", "warn"), ("rule:amount-largest", 91, "new", "gray")]], row_h=42, pad_x=0)
+    failing = table(["Check", "Screens", "Trend"], [[mono(c, 12, S["ink"]), f"{n:,}", tag(t, tone)] for c, n, t, tone in [("data:missing-path", 412, "−38%", "ok"), ("copy:raw-identifier", 288, "−12%", "ok"), ("layout:target-size-pack", 164, "+4%", "warn"), ("rule:amount-largest", 91, "new", "gray")]], aligns=["left", "right", "right"], widths=[None, 70, 70], row_h=42, pad_x=0)
     unmet = "".join(f'<li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid {S["soft"]}; font-size: 14px;"><span>“{r}”</span><span style="color: {S["muted"]};">{n} asks</span></li>' for r, n in [("split this bill with Sam", 212), ("export this as a PDF", 164), ("undo my last payment", 97), ("show my invoices by client", 81)])
     stats = f'''<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;">{stat("Screens generated", "212k", "30 days")}{stat("Verifier score", "91", "+7 since W27", "ok")}{stat("Journeys finished", "84%", "+3%", "ok")}{stat("Asked for, not possible", "1,410", "requests", "warn")}</div>'''
     body = page_head("Insights", "How generated screens are doing, what fails most, and what people ask for that the product can't do yet.", f'{btn("Last 12 weeks", "secondary", "calendar")}{btn("Export", "secondary", "download")}') + f'''<div style="padding: 20px 32px; display: flex; flex-direction: column; gap: 18px;">{stats}
@@ -344,8 +345,8 @@ def team(overlay=""):
     roles = "".join(f'<li style="display: flex; flex-direction: column; padding: 8px 0; border-bottom: 1px solid {S["soft"]};"><strong style="font-size: 13px;">{r}</strong><span style="font-size: 12px; color: {S["muted"]};">{d}</span></li>' for r, d in [("Design system", "Tokens, components, rules, releases"), ("Designer", "Direction, reviews, exemplars"), ("Product", "Capabilities, journeys, insights"), ("Engineer", "Components, capabilities, integrations"), ("Viewer", "Everything, read only")])
     body = page_head("Settings", None, "", tabs_html="") + f'''<div style="padding: 8px 32px; display: flex; gap: 28px; align-items: flex-start;">{settings_nav("Team")}
 <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px;">{h2("Team", "5 people · 2 invites pending", btn("Invite people", "primary", "user_plus"))}
-{table(["Person", "Role", "Last active", ""], rows, widths=[None, 200, 150, 50], row_h=56, caption="Team")}</div>
-<aside style="width: 300px; flex-shrink: 0;">{card(h2("What roles can do") + f'<ul style="list-style: none; margin: 0; padding: 0;">{roles}</ul>', pad=18, gap=6)}</aside>
+{table(["Person", "Role", "Last active", ""], rows, widths=[None, 180, 120, 50], row_h=56, caption="Team")}</div>
+<aside style="width: 260px; flex-shrink: 0;">{card(h2("What roles can do") + f'<ul style="list-style: none; margin: 0; padding: 0;">{roles}</ul>', pad=18, gap=6)}</aside>
 </div>'''
     return app("Team", "Settings", ["Northwind", "Settings", "Team"], body, overlay=overlay)
 
@@ -365,7 +366,7 @@ def integrations():
         row("github", "GitHub", "northwind/web · releases open a pull request with the new theme CSS", tag("Connected", "ok"), btn("Manage", "secondary", h=32)),
         row("flag", "Feature flags", "Gradual rollouts and experiments through LaunchDarkly", tag("Connected", "ok"), btn("Manage", "secondary", h=32)),
         row("chart", "Analytics", "Send journey events to Amplitude", "", btn("Connect", "secondary", h=32)),
-        row("key", "Generator", "The model that writes screens: your own key, or any model that returns JSON", tag("Key saved", "gray"), btn("Manage", "secondary", h=32)),
+        row("key", "Your generator", "The model your product already uses writes the screens: Claude, GPT, Gemini, or your own. Polyxd checks what it writes.", tag("Claude · key saved", "gray"), btn("Manage", "secondary", h=32)),
     ])
     body = page_head("Settings", None, "") + f'''<div style="padding: 8px 32px; display: flex; gap: 28px; align-items: flex-start;">{settings_nav("Integrations")}
 <div style="flex-grow: 1; max-width: 860px; display: flex; flex-direction: column; gap: 6px;">{h2("Integrations", "Where your tokens come from and where releases go.")}<ul style="list-style: none; margin: 0; padding: 0;">{items}</ul>
