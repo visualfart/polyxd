@@ -28,12 +28,14 @@ Sign in with any email (`DEV_AUTH=1` in wrangler.jsonc). Tests: `npm test -w @po
 
 ## Deploy your own
 
-1. `npx wrangler d1 create studio`, then put the id in `wrangler.jsonc` and run `npm run db:migrate:remote -w @polyxd/studio`.
+`wrangler.jsonc` has a `production` environment; copy it and change the route to your domain.
+
+1. `npx wrangler d1 create studio`, put the id in the environment's `d1_databases`, then `npm run db:migrate:remote -w @polyxd/studio`.
 2. `npx wrangler r2 bucket create polyxd-studio-files`.
-3. Secrets, with `npx wrangler secret put`: `SECRETS_KEY` (any long random string; encrypts registry tokens), and for sign-in `WORKOS_CLIENT_ID` and `WORKOS_API_KEY`. Remove `DEV_AUTH` from `vars` and set `APP_URL` to your domain.
+3. Secrets, with `npx wrangler secret put <NAME> --env production`: `SECRETS_KEY` (a long random string; it encrypts registry tokens), and for sign-in `WORKOS_CLIENT_ID` and `WORKOS_API_KEY`. Never set `DEV_AUTH` in production.
 4. `npm run deploy -w @polyxd/studio`.
 
-The WorkOS flow follows their User Management API (`/user_management/authorize` and `/user_management/authenticate`); check the paths against WorkOS's current docs before turning it on.
+The hosted one at studio.polyxd.com is this same configuration. The WorkOS flow follows their User Management API (`/user_management/authorize` and `/user_management/authenticate`); check the paths against WorkOS's current docs before turning it on.
 
 ## Layout
 

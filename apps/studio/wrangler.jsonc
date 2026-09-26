@@ -10,13 +10,20 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
   },
-  // Local dev uses a local SQLite file; `wrangler d1 create studio` gives the id for production.
-  "d1_databases": [{ "binding": "DB", "database_name": "studio", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "migrations" }],
+  "d1_databases": [{ "binding": "DB", "database_name": "studio", "database_id": "0d0c8972-4d26-4897-8115-471304e74ead", "migrations_dir": "migrations" }],
   "r2_buckets": [{ "binding": "FILES", "bucket_name": "polyxd-studio-files" }],
-  "vars": {
-    // Email-only sign-in for local development. Never set in production: sign-in there is WorkOS.
-    "DEV_AUTH": "1",
-    "APP_URL": "http://localhost:8789"
-  },
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  // The top level is local development: `wrangler dev` uses a local database and bucket, and
+  // signs anyone in by email. Production is the `production` environment below.
+  "vars": { "DEV_AUTH": "1", "APP_URL": "http://localhost:8789" },
+  "env": {
+    "production": {
+      "routes": [{ "pattern": "studio.polyxd.com", "custom_domain": true }],
+      "d1_databases": [{ "binding": "DB", "database_name": "studio", "database_id": "0d0c8972-4d26-4897-8115-471304e74ead", "migrations_dir": "migrations" }],
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "polyxd-studio-files" }],
+      // No DEV_AUTH here: production signs in through WorkOS, once its secrets are set.
+      "vars": { "APP_URL": "https://studio.polyxd.com" },
+      "observability": { "enabled": true }
+    }
+  }
 }
