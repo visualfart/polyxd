@@ -16,11 +16,10 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
-import { contrastRatio } from "@polyxd/spec";
+import { contrastRatio, loadContract } from "@polyxd/spec";
 import { cssVars, resolveVars, length, duration, bezier, shadowLayers, writePack, type Json, type Vars } from "./index.ts";
 import { inferMapping, type Mapping } from "./infer.ts";
 
-const CONTRACT = new URL("../../spec/tokens/semantic-contract.json", import.meta.url);
 
 interface Options {
   input: string;
@@ -139,7 +138,8 @@ function put(tree: Json, path: string, value: Json): void {
 
 async function main(): Promise<void> {
   const options = parse(process.argv.slice(2).filter((a) => a !== "pack"));
-  const contract = JSON.parse(await readFile(CONTRACT, "utf8"));
+  // Through the spec package, so this works installed from npm and not only in the monorepo.
+  const contract: any = await loadContract();
   const light = await read(options.input);
   const dark = options.dark ? await read(options.dark) : undefined;
   console.log(`read ${Object.keys(light).length} variables from ${basename(options.input)}${dark ? ` and ${Object.keys(dark).length} from ${basename(options.dark!)}` : ""}\n`);

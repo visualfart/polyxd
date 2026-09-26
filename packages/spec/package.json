@@ -1,7 +1,6 @@
 {
   "name": "@polyxd/spec",
   "version": "0.1.0",
-  "private": true,
   "description": "Polyxd spec: JSON Schema and TypeScript types for just-in-time interfaces",
   "license": "Apache-2.0",
   "type": "module",
@@ -20,8 +19,11 @@
     "catalog",
     "tokens",
     "components",
+    "patterns",
     "examples",
-    "docs"
+    "docs",
+    "LICENSE",
+    "NOTICE"
   ],
   "bin": {
     "polyxd-check-ds": "dist/cli/check-design-system.js",
@@ -54,5 +56,16 @@
     "./components/*": "./components/*",
     "./patterns/*": "./patterns/*",
     "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualfart/polyxd.git",
+    "directory": "packages/spec"
+  },
+  "homepage": "https://polyxd.com",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

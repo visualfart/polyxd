@@ -1,7 +1,6 @@
 {
   "name": "@polyxd/verifier",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
   "description": "Verifies Polyxd UI documents: spec rules, rendered accessibility and layout, consistency across generations, and scripted agent tasks",
   "license": "Apache-2.0",
   "type": "module",
@@ -20,10 +19,11 @@
     "gold": "npm run build:harness && node scripts/gold-agreement.ts",
     "score": "npm run build:harness && node scripts/score-run.ts",
     "leaderboard": "node scripts/leaderboard.ts",
-    "rerank": "node scripts/rerank-set.ts"
+    "rerank": "node scripts/rerank-set.ts",
+    "prepack": "npm run build && npm run build:harness"
   },
   "devDependencies": {
-    "@polyxd/react": "^0.0.0",
+    "@polyxd/react": "^0.1.0",
     "@vitejs/plugin-react": "^6.1.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
@@ -33,5 +33,23 @@
     "@polyxd/spec": "^0.1.0",
     "axe-core": "^4.13.0",
     "playwright": "^1.63.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualfart/polyxd.git",
+    "directory": "packages/verifier"
+  },
+  "homepage": "https://polyxd.com",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "files": [
+    "dist",
+    "harness-dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ]
 }

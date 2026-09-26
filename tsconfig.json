@@ -12,6 +12,9 @@
     },
     {
       "path": "packages/verifier"
+    },
+    {
+      "path": "packages/ds-kit"
     }
   ]
 }

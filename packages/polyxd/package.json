@@ -1,0 +1,14 @@
+{
+  "name": "polyxd",
+  "version": "0.1.0",
+  "description": "The polyxd command: make a Polyxd design-system pack from your own tokens, and check it against the contract",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": { "polyxd": "bin.js" },
+  "files": ["bin.js", "README.md", "LICENSE", "NOTICE"],
+  "dependencies": { "@polyxd/ds-kit": "^0.1.0" },
+  "repository": { "type": "git", "url": "git+https://github.com/visualfart/polyxd.git", "directory": "packages/polyxd" },
+  "homepage": "https://polyxd.com/docs/your-design-system/",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "publishConfig": { "access": "public", "provenance": true }
+}

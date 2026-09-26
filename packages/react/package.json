@@ -1,7 +1,6 @@
 {
   "name": "@polyxd/react",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
   "description": "React renderer for Polyxd UI documents: Radix primitives styled by design-system tokens",
   "license": "Apache-2.0",
   "type": "module",
@@ -18,7 +17,9 @@
   "files": [
     "dist",
     "src/styles.css",
-    "themes"
+    "themes",
+    "LICENSE",
+    "NOTICE"
   ],
   "scripts": {
     "build": "tsc -b",
@@ -38,5 +39,16 @@
   "dependencies": {
     "@polyxd/spec": "^0.1.0",
     "radix-ui": "^1.6.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualfart/polyxd.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://polyxd.com",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

@@ -15,9 +15,20 @@ switch (command) {
   case "pack":
     await import("./cli.ts");
     break;
-  case "check":
-    await import("../../spec/src/cli/check-design-system.ts");
-    break;
+  case "check": {
+    // Through @polyxd/spec's published API: a relative path into the monorepo exists in a
+    // checkout and nowhere else.
+    const { checkDesignSystem } = await import("@polyxd/spec");
+    const manifest = rest[0];
+    if (!manifest) {
+      console.log("usage: polyxd check <manifest.json>");
+      process.exit(2);
+    }
+    const issues = await checkDesignSystem(manifest);
+    for (const i of issues) console.log(`${i.mode ? `[${i.mode}] ` : ""}${i.token}: ${i.message}`);
+    console.log(issues.length ? `\n${issues.length} issue(s)` : "Design system satisfies the semantic token contract.");
+    process.exit(issues.length ? 1 : 0);
+  }
   default:
     console.log(`polyxd <command>
 

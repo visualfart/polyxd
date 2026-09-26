@@ -1,21 +1,53 @@
 {
   "name": "@polyxd/ds-kit",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
   "description": "Shared parts of building a Polyxd design-system pack: CSS variable reading, DTCG conversion, manifest writing",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./infer": {
+      "types": "./dist/infer.d.ts",
+      "default": "./dist/infer.js"
+    },
+    "./package.json": "./package.json",
+    "./polyxd": {
+      "types": "./dist/polyxd.d.ts",
+      "default": "./dist/polyxd.js"
+    }
   },
   "devDependencies": {
-    "@polyxd/spec": "*"
+    "@polyxd/spec": "^0.1.0"
   },
   "bin": {
-    "polyxd": "src/polyxd.ts"
+    "polyxd": "dist/polyxd.js"
   },
   "scripts": {
     "pack": "node src/cli.ts",
-    "test": "node --test \"test/*.test.ts\""
+    "test": "node --test \"test/*.test.ts\"",
+    "build": "tsc -b"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "dependencies": {
+    "@polyxd/spec": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualfart/polyxd.git",
+    "directory": "packages/ds-kit"
+  },
+  "homepage": "https://polyxd.com",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

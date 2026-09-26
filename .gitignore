@@ -11,3 +11,7 @@ model/weights/
 *.safetensors
 *.gguf
 *.tsbuildinfo
+
+# Copied from the repository root at release time (scripts/release.ts)
+packages/*/LICENSE
+packages/*/NOTICE
