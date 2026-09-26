@@ -45,3 +45,6 @@ jobs:
       - run: npm run release:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Provenance is asked for here rather than in each package.json: npm only supports it
+          # inside CI, so setting it per package would make every publish from a laptop fail.
+          NPM_CONFIG_PROVENANCE: "true"

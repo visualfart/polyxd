@@ -48,7 +48,6 @@
   "homepage": "https://polyxd.com",
   "bugs": "https://github.com/visualfart/polyxd/issues",
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   }
 }

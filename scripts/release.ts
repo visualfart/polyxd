@@ -111,8 +111,9 @@ if (publish) {
       console.log(`  skip    ${pkg.name}@${pkg.version} (already published)`);
       continue;
     }
-    // Scripts already ran above; provenance comes from publishConfig when run in CI.
-    run("npm", ["publish", "--ignore-scripts"], pkg.__dir);
+    // Scripts already ran above; provenance comes from the release workflow's environment.
+    // stdio is inherited so that, run from a terminal, npm can ask for a 2FA code.
+    execFileSync("npm", ["publish", "--ignore-scripts"], { cwd: pkg.__dir, stdio: "inherit" });
     console.log(`  publish ${pkg.name}@${pkg.version}`);
   }
 }
