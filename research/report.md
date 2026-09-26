@@ -37,6 +37,28 @@ Five charts, from the same runs as the table below. Each one opens the numbers b
 
 ## Entries
 
+### 2026-09-27 · Blank screens came from the training data; the loop that followed learned nothing more
+
+**Question.** Rated against the approved flow designs, 8 of sft-v2's 12 screens showed nothing real. Why, and can a self-improvement loop fix it?
+
+**What we found.** A binding to data that isn't there had been a warning, costing 4 points, so a screen of blanks could score in the 90s. 83 of the 262 examples sft-v2 trained on bind to data that isn't there, and 14 to 23 of every model's 50 benchmark answers do. `data:missing-path` is now an error that also checks item fields, table columns and options, and says where a misplaced path probably meant. `text:dangling-label`, `data:not-a-number`, `data:wrong-currency` and a cross-record `copy:raw-identifier` followed, the last three from what the first design review found.
+
+**sft-v4.** sft-v2's recipe with nothing changed but the checks: same candidates, same selection, same 400 iterations, 177 examples instead of 262.
+
+| | sft-v2 | sft-v4 |
+|---|---|---|
+| Verifier (check set f60919bd) | 67.5 | **75.9** |
+| Answers binding data that isn't there | 18 / 50 | **3 / 50** |
+| Template placeholders | 6 | **0** |
+| Agent tasks | 16 / 37 | **18 / 37** |
+| Blind review against the approved designs (17 requests) | 4 | **11** (2 ties) |
+
+**The loop.** Expert iteration from sft-v4, keeping a round only if it beat the best on the verifier and in a blind review against the designs (`model/loop.sh`, `bench/design-set.json`). Round 1 selected sft-v4's own candidates by the training reward: 66.7 against 70.3 on the verifier (check set 5fe929f9), and 3 wins, 13 losses, 1 tie against the designs. The reviewers found it drifting toward generic dialogs and label-and-value readouts.
+
+**What it means.** Every gain came from using the verifier as a filter: removing examples that teach blanks. Every attempt to maximize it (rl-1, rl-2, loop round 1) regressed or moved away from the designs, which is what a reward that doesn't agree with the designer (tau −0.07) should do. Taste has to come from the designer's rankings or designs, not from the verifier.
+
+**What it changed.** Model tuning is paused with sft-v4 as the best. The work goes into what raises the ceiling for any generator: the component vocabulary, and Studio, where the taste signal is collected.
+
 ### 2026-09-20 · Designing first, then building: what the designs caught that the checks didn't
 
 **Question.** The designer's ranking said the verifier knows safety, not taste. If the interfaces were *designed* first — drawn properly, reviewed, then built into the spec and renderer — would the system's first options get better?
@@ -92,7 +114,7 @@ Five charts, from the same runs as the table below. Each one opens the numbers b
 
 **What it means.** Two reliable raters, each reproducing itself, measuring different things. The models are not failing to judge — they converge strongly with each other, and on the 15 groups where they ranked identically, agreement with the designer is still 0.24. They are judging something else.
 
-Reading their reasons against his, the split is plain. The judges rank on defects in the artefact: a binding that renders `[object Object]`, an empty state where data exists, a missing call to action, copy that repeats itself. The designer ranked on which thing should be biggest, what order the page reads in, whether the visual form suits the data, and what the equivalent screen looks like in products he knows.
+Reading their reasons against the designer's, the split is plain. The judges rank on defects in the artefact: a binding that renders `[object Object]`, an empty state where data exists, a missing call to action, copy that repeats itself. The designer ranked on which thing should be biggest, what order the page reads in, whether the visual form suits the data, and what the equivalent screen looks like in products the designer knows.
 
 So: **conventional quality is recoverable from the artefact; taste is not.** That is this project's premise, measured rather than asserted — and it settles the question that prompted the experiment, which was whether a cheaper or faster judge would give us a reward for taste. Speed was never what was missing.
 
