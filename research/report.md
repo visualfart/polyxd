@@ -87,7 +87,7 @@ Five charts, from the same runs as the table below. Each one opens the numbers b
 | Judge A vs designer | +0.10 | 22% | 26% |
 | Judge B vs designer | +0.16 | 22% | 30% |
 | Judge A vs judge B | **+0.71** | 65% | 83% |
-| Designer vs himself | **+0.67** | 67% | 67% |
+| Designer vs their re-rank | **+0.67** | 67% | 67% |
 | Chance | 0 | 17% | 33% |
 
 **What it means.** Two reliable raters, each reproducing itself, measuring different things. The models are not failing to judge — they converge strongly with each other, and on the 15 groups where they ranked identically, agreement with the designer is still 0.24. They are judging something else.
@@ -96,7 +96,7 @@ Reading their reasons against his, the split is plain. The judges rank on defect
 
 So: **conventional quality is recoverable from the artefact; taste is not.** That is this project's premise, measured rather than asserted — and it settles the question that prompted the experiment, which was whether a cheaper or faster judge would give us a reward for taste. Speed was never what was missing.
 
-**Where the designer flipped, the options were equivalent.** The two groups he re-ordered are the two the judges had independently called near-identical. That is information, not error: best-versus-worst survived in 5 of 6 groups, the adjacent pairs in 10 of 12. Preference training now weights a pair by the distance between its members and drops the ones a re-rank reverses — 69 pairs, 23 at weight 2.
+**Where the designer flipped, the options were equivalent.** The two groups the designer re-ordered are the two the judges had independently called near-identical. That is information, not error: best-versus-worst survived in 5 of 6 groups, the adjacent pairs in 10 of 12. Preference training now weights a pair by the distance between its members and drops the ones a re-rank reverses — 69 pairs, 23 at weight 2.
 
 **What it changed.** A model judge is worth keeping as a second verifier even though it can't rank taste: it found three defect classes the static checks missed, and all three are checks now (`text:template-placeholder`, `data:not-text`, `copy:raw-identifier`) and rules in the generator's prompt. The reward's coverage term multiplies rather than adds, because on "find 30 minutes with Tom and Priya" the candidate that attempted nothing scored 96 and was ranked last — a document that doesn't try can't make mistakes.
 

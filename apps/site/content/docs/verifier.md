@@ -178,20 +178,20 @@ So the task is reliably judgeable, and models converge on an answer. It is simpl
 
 This is the project's premise, measured rather than asserted: **conventional quality is recoverable from the artefact; taste is not.** A model judge is worth having as a second verifier — it found three real defect classes the static checks missed, and they are checks now — but it cannot stand in for a designer, and neither a faster nor a cheaper judge would change that, because speed was never what was missing.
 
-### The designer agrees with himself as much as the models agree with each other
+### The designer agrees with their own re-rank as much as the models agree with each other
 
 The control on the other side: six already-ranked groups, shown again under freshly shuffled letters. `npm run rerank -w @polyxd/verifier` builds it, `-- --score` compares the two sittings.
 
 | | tau-b | exact order | same top pick |
 |---|---|---|---|
-| Designer vs himself | **+0.67** | 67% | 67% |
+| Designer vs their re-rank | **+0.67** | 67% | 67% |
 | Judge A vs judge B | +0.71 | 65% | 83% |
 | Judge vs designer | +0.10 / +0.16 | 22% | 26–30% |
 | Chance | 0 | 17% | 33% |
 
 Two reliable raters, each reproducing itself, measuring different things. That settles it: the rankings are not noise, and the disagreement with models is not a failure of either side — it is the gap the project exists to cross.
 
-**Where the rater flips, the options are equivalent.** The two groups he re-ordered are the two where independent judges also called the candidates near-identical ("near-identical confirm dialogs", "2 and 3 are clean"). That is information, not error: it says those pairs carry no preference. The numbers follow — the best-versus-worst pair survived in 5 of 6 groups, the adjacent pairs in 10 of 12. So preference training should weight a pair by the distance between its members and drop the ones a re-rank reverses, rather than treating all three pairs in a group as equal evidence.
+**Where the rater flips, the options are equivalent.** The two groups the designer re-ordered are the two where independent judges also called the candidates near-identical ("near-identical confirm dialogs", "2 and 3 are clean"). That is information, not error: it says those pairs carry no preference. The numbers follow — the best-versus-worst pair survived in 5 of 6 groups, the adjacent pairs in 10 of 12. So preference training should weight a pair by the distance between its members and drop the ones a re-rank reverses, rather than treating all three pairs in a group as equal evidence.
 
 ### The three checks this ranking added
 
@@ -205,9 +205,20 @@ Two reliable raters, each reproducing itself, measuring different things. That s
 
 | Check | What it catches |
 |---|---|
-| `text:template-placeholder` | `{{budget}}` reaching the screen — the model writing a template for an engine that doesn't exist |
+| `text:template-placeholder` | `{{budget}}`, `${budget}` or `{budget}` reaching the screen — the model writing a template for an engine that doesn't exist |
 | `data:not-text` | a binding that resolves to an object or a list where text belongs, which renders as `[object Object]`. An input's own `value` is exempt: a multi-select holds a list |
 | `copy:raw-identifier` | `pr_9` shown as a project name when the same record carries `name` right beside it |
+
+### The two the approved designs added
+
+Rating sft-v2's output against the approved flow designs, 8 of 12 screens showed nothing real: the layout was plausible and every value was blank. A binding to a path that isn't in the data had been a warning, costing 4 points, so a screen of blanks could still score in the 90s.
+
+| Check | What it catches |
+|---|---|
+| `data:missing-path` | an error now: a binding that reads nothing from the data the screen is shown with. That covers `/status` where the data has `/order/status`, `/airline` inside a flight card where each flight has `airline`, and a table column or item field that no row has. The message names the likely fix. Inputs are exempt for the values they write, and so is anything that reads those back |
+| `text:dangling-label` | a short text ending in a colon with nothing after it: "Departs:" where the departure time should be |
+
+The same change fixed how the verifier reads bindings inside a repeated item. It now resolves them the way the renderer does: a relative path from the item, an absolute path from the top of the data wherever it appears.
 
 ## Consistency
 

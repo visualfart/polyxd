@@ -10,6 +10,8 @@ export interface Issue {
   /** JSON Pointer into the document */
   at: string;
   message: string;
+  /** Set on issues a caller may want to weigh on their own; see ValidateOptions.missingData */
+  code?: "data:missing-path";
 }
 
 export interface ValidationResult {
@@ -34,9 +36,24 @@ const PANEL_PROPS: Record<string, string[]> = { Views: ["views"], Steps: ["steps
 
 const RENDERER_ACTIONS = new Set(["ui.dismiss", "ui.back", "ui.next"]);
 
+/** The prop each repeating component iterates over. Its item-scoped props read from each entry. */
+const LIST_BINDINGS: Record<string, string> = { Collection: "items", Table: "rows", Comparison: "items", Chart: "data", Choice: "options" };
+
+/** Components whose `value` binding is state they write, so it needn't exist in data beforehand. */
+const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput"]);
+
+/**
+ * A list relative paths resolve against. `path` is absolute, or relative to each entry of `parent`
+ * when a repeated item holds a list of its own.
+ */
+interface ListScope {
+  path: string;
+  parent?: ListScope;
+}
+
 interface Found {
   ids: { id: string; at: string; prop: string; panel?: string }[];
-  paths: { path: string; at: string; itemScoped: boolean }[];
+  paths: { path: string; at: string; itemScoped: boolean; list?: ListScope }[];
   actions: { name: string; at: string }[];
 }
 
@@ -48,16 +65,16 @@ const deref = (s: Schema): Schema => {
 const refName = (s: Schema): string | undefined => s?.$ref?.replace("#/$defs/", "");
 
 /** Walks an instance alongside its schema, collecting component references, data paths and action names. */
-function walk(schema: Schema, value: Json, at: string, ctx: { prop: string; itemScoped: boolean; panel?: string }, found: Found) {
+function walk(schema: Schema, value: Json, at: string, ctx: { prop: string; itemScoped: boolean; panel?: string; list?: ListScope }, found: Found) {
   const name = refName(schema);
   if (name === "Id" && typeof value === "string") return void found.ids.push({ id: value, at, prop: ctx.prop, panel: ctx.panel });
-  if (name === "Path" && typeof value === "string") return void found.paths.push({ path: value, at, itemScoped: ctx.itemScoped });
+  if (name === "Path" && typeof value === "string") return void found.paths.push({ path: value, at, itemScoped: ctx.itemScoped, list: ctx.itemScoped ? ctx.list : undefined });
   if (name === "Capability" && typeof value === "string") return void found.actions.push({ name: value, at });
   if (name === "Options" && value && !Array.isArray(value) && typeof value === "object") {
     const opts = value as Record<string, string>;
     found.paths.push({ path: opts.path, at: `${at}/path`, itemScoped: ctx.itemScoped });
     for (const k of ["valuePath", "labelPath", "descriptionPath", "avatarPath", "imagePath", "recentPath"]) {
-      if (opts[k]) found.paths.push({ path: opts[k], at: `${at}/${k}`, itemScoped: true });
+      if (opts[k]) found.paths.push({ path: opts[k], at: `${at}/${k}`, itemScoped: true, list: { path: opts.path } });
     }
     return;
   }
@@ -93,6 +110,22 @@ function resolvePointer(data: Json, path: string): Json | undefined {
   return cur;
 }
 
+/** The entries a list scope repeats over: the array at its path, or at that field of each parent entry. */
+function itemsOf(data: Json, list: ListScope): Json[] {
+  const within = list.path.startsWith("/") ? [data] : list.parent ? itemsOf(data, list.parent) : [];
+  const pointer = list.path.startsWith("/") ? list.path : `/${list.path}`;
+  return within.flatMap((w) => {
+    const v = resolvePointer(w, pointer);
+    return Array.isArray(v) ? v : [];
+  });
+}
+
+/** Pointers in `data`, outside arrays, whose last segment is `field`: where a misplaced path probably meant. */
+function pointersEndingIn(data: Json, field: string, at = "", depth = 0): string[] {
+  if (depth > 4 || !data || typeof data !== "object" || Array.isArray(data)) return [];
+  return Object.entries(data).flatMap(([k, v]) => [...(k === field ? [`${at}/${k}`] : []), ...pointersEndingIn(v as Json, field, `${at}/${k}`, depth + 1)]);
+}
+
 const schemaMessage = (e: ErrorObject) => {
   if (e.keyword === "additionalProperties") return `unknown property "${e.params.additionalProperty}"`;
   if (e.keyword === "const" && e.instancePath.endsWith("/component")) return `unknown component "${e.data}"`;
@@ -104,6 +137,13 @@ const schemaMessage = (e: ErrorObject) => {
 export interface ValidateOptions {
   /** Primary actions allowed in one view (Design Direction's profile.emphasisBudget). Default 1. */
   emphasisBudget?: number;
+  /**
+   * How to report a binding that reads nothing from the document's data: an absolute path that
+   * isn't there, or an item's field that no item has. Default "warning", since data given with a
+   * document may be a sample. The verifier uses "error": against the data a screen will be shown
+   * with, such a binding renders as a blank.
+   */
+  missingData?: "warning" | "error";
 }
 
 export function validateDocument(doc: Json, opts: ValidateOptions = {}): ValidationResult {
@@ -139,13 +179,15 @@ export function validateDocument(doc: Json, opts: ValidateOptions = {}): Validat
     for (const [prop, value] of Object.entries(c)) {
       if (prop === "id" || prop === "component") continue;
       const itemScoped = ITEM_SCOPED[c.component]?.includes(prop) ?? false;
+      const listPath = c[LIST_BINDINGS[c.component]]?.path;
+      const list = itemScoped && typeof listPath === "string" ? { path: listPath } : undefined;
       const panelled = PANEL_PROPS[c.component]?.includes(prop);
       if (panelled && Array.isArray(value)) {
         value.forEach((panel, i) =>
-          walk(compSchema.properties[prop].items, panel, `/components/${index}/${prop}/${i}`, { prop, itemScoped, panel: `${id}#${i}` }, found),
+          walk(compSchema.properties[prop].items, panel, `/components/${index}/${prop}/${i}`, { prop, itemScoped, panel: `${id}#${i}`, list }, found),
         );
       } else {
-        walk(compSchema.properties[prop], value, `/components/${index}/${prop}`, { prop, itemScoped }, found);
+        walk(compSchema.properties[prop], value, `/components/${index}/${prop}`, { prop, itemScoped, list }, found);
       }
     }
     // A Template's componentId is a reference too; its subtree is item-scoped.
@@ -182,14 +224,17 @@ export function validateDocument(doc: Json, opts: ValidateOptions = {}): Validat
   const parent = new Map<string, string>();
   const reached = new Set<string>();
   const itemScopedIds = new Set<string>();
+  /** For each component inside a repeated item, the list it repeats over. */
+  const templateList = new Map<string, ListScope>();
   const primaries: { at: string; stack: string[] }[] = [];
 
-  const visit = (id: string, stack: string[], inTemplate: boolean, trail: string[]) => {
+  const visit = (id: string, stack: string[], inTemplate: boolean, trail: string[], list?: ListScope) => {
     const entry = byId.get(id);
     if (!entry) return;
     if (trail.includes(id)) return error(`/components/${entry.index}`, `cycle: ${[...trail, id].join(" → ")}`);
     reached.add(id);
     if (inTemplate) itemScopedIds.add(id);
+    if (list) templateList.set(id, list);
     const { c, index } = entry;
 
     let ctx = stack;
@@ -208,7 +253,9 @@ export function validateDocument(doc: Json, opts: ValidateOptions = {}): Validat
         continue;
       }
       parent.set(r.id, id);
-      visit(r.id, r.panel ? [...ctx, r.panel] : ctx, inTemplate || isTemplate, [...trail, id]);
+      const repeats = isTemplate ? c[c.component === "Table" ? "rows" : "items"]?.path : undefined;
+      const childList = typeof repeats === "string" ? { path: repeats, parent: repeats.startsWith("/") ? undefined : list } : list;
+      visit(r.id, r.panel ? [...ctx, r.panel] : ctx, inTemplate || isTemplate, [...trail, id], childList);
     }
   };
   if (byId.has(d.root)) visit(d.root, [], false, []);
@@ -236,7 +283,6 @@ export function validateDocument(doc: Json, opts: ValidateOptions = {}): Validat
 
   // A binding that a component repeats over has to point at a list. A model that points one at an
   // object gives the renderer something it can't iterate: schema-valid, and impossible to display.
-  const LIST_BINDINGS: Record<string, string> = { Collection: "items", Table: "rows", Comparison: "items", Chart: "data", Choice: "options" };
   if (d.data !== undefined) {
     for (const [, { c, index }] of byId) {
       const prop = LIST_BINDINGS[c.component];
@@ -249,14 +295,38 @@ export function validateDocument(doc: Json, opts: ValidateOptions = {}): Validat
     }
   }
 
-  // Relative paths only where an item is in scope; absolute paths should resolve when data is given.
+  // Relative paths only where an item is in scope. With data given, every binding should read
+  // something: an absolute path that isn't there, or an item field no item has, renders a blank.
+  const missing = (at: string, message: string) => issues.push({ severity: opts.missingData ?? "warning", at, message, code: "data:missing-path" });
+  // What an input writes needn't exist yet; neither does anything that reads it back.
+  const written: string[] = [];
+  for (const [, { c }] of byId) if (INPUTS.has(c.component) && typeof c.value?.path === "string" && c.value.path.startsWith("/")) written.push(c.value.path);
+  const isWritten = (path: string) => written.some((w) => w === path || w.startsWith(`${path}/`) || path.startsWith(`${w}/`));
   for (const [id, found] of refs) {
     const scoped = itemScopedIds.has(id);
     for (const p of found.paths) {
       if (!p.path.startsWith("/")) {
-        if (!p.itemScoped && !scoped) error(p.at, `relative path "${p.path}" used outside a repeated item`);
-      } else if (d.data !== undefined && resolvePointer(d.data, p.path) === undefined) {
-        warn(p.at, `path "${p.path}" does not exist in data`);
+        if (!p.itemScoped && !scoped) {
+          error(p.at, `relative path "${p.path}" used outside a repeated item`);
+          continue;
+        }
+        const list = p.list ?? templateList.get(id);
+        if (d.data === undefined || !list) continue;
+        const items = itemsOf(d.data, list);
+        if (items.length && items.every((item) => resolvePointer(item, `/${p.path}`) === undefined)) {
+          const fields = Object.keys(items.find((i) => i && typeof i === "object") ?? {});
+          missing(p.at, `"${p.path}" is not a field of the items in ${list.path}${fields.length ? ` (they have ${fields.join(", ")})` : ""}`);
+        }
+      } else if (d.data !== undefined && resolvePointer(d.data, p.path) === undefined && !isWritten(p.path)) {
+        const list = scoped ? templateList.get(id) : undefined;
+        const field = p.path.slice(p.path.lastIndexOf("/") + 1);
+        const inItem = list && itemsOf(d.data, list).some((item) => resolvePointer(item, `/${field}`) !== undefined);
+        const elsewhere = inItem ? undefined : pointersEndingIn(d.data, field).slice(0, 1)[0];
+        missing(
+          p.at,
+          `path "${p.path}" does not exist in data` +
+            (inItem ? `: inside a repeated item, the item's own field is "${field}", without the slash` : elsewhere ? ` (did you mean "${elsewhere}"?)` : ""),
+        );
       }
     }
   }

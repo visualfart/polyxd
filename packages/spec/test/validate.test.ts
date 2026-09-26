@@ -67,10 +67,61 @@ for (const [name, file, fn, expected] of cases) {
   });
 }
 
+/** A flight list whose card template binds its fields in the ways a model gets wrong. */
+const flights = (card: Record<string, unknown>, text?: Record<string, unknown>) => ({
+  specVersion: "0.1.0",
+  surface: { id: "flights", title: "Flights", intent: "travel.search" },
+  root: "list",
+  data: { route: "LHR → LIS", order: { status: "Shipped" }, flights: [{ airline: "TAP", depart: "07:10" }, { airline: "BA", depart: "08:40" }] },
+  components: [
+    { id: "list", component: "Collection", label: "Flights", items: { path: "/flights", componentId: "card" } },
+    { id: "card", component: "Card", ...card, children: ["line"] },
+    { id: "line", component: "Text", text: "Morning", ...text },
+  ],
+});
+const issues = (d: unknown, opts = {}) => validateDocument(d as any, opts).issues.map((i) => `${i.severity} ${i.code ?? ""} ${i.message}`).join("\n");
+
 test("warns: path missing from data", () => {
-  const r = mutate("tasks-add.json", (d) => (byId(d, "title").value = { path: "/draft/nope" }));
+  const r = mutate("tasks-add.json", (d) => byId(d, "form").children.unshift(d.components.push({ id: "note", component: "Text", text: { path: "/draft/nope" } }) && "note"));
   assert.equal(r.valid, true);
   assert.match(r.text, /warning .*path "\/draft\/nope" does not exist in data/);
+});
+
+test("an input's own value needn't exist in data yet, nor what reads it back", () => {
+  const r = mutate("tasks-add.json", (d) => (byId(d, "title").value = { path: "/draft/nope" }));
+  assert.doesNotMatch(r.text, /nope/);
+});
+
+test("missingData: error makes a binding that reads nothing an error, with a code", () => {
+  const r = validateDocument(flights({ title: { path: "airline" } }, { text: { path: "/nowhere" } }) as any, { missingData: "error" });
+  assert.equal(r.valid, false);
+  assert.match(issues(flights({ title: { path: "airline" } }, { text: { path: "/nowhere" } }), { missingData: "error" }), /error data:missing-path path "\/nowhere"/);
+});
+
+test("an item field no item has is missing, even deep inside the item template", () => {
+  assert.match(issues(flights({ title: { path: "airline" } }, { text: { path: "departs" } })), /"departs" is not a field of the items in \/flights \(they have airline, depart\)/);
+  assert.doesNotMatch(issues(flights({ title: { path: "airline" } }, { text: { path: "depart" } })), /missing|not a field/);
+});
+
+test("an absolute path inside an item that meant the item's field says so", () => {
+  assert.match(issues(flights({ title: { path: "/airline" } })), /the item's own field is "airline", without the slash/);
+});
+
+test("a misplaced absolute path points at where the field is", () => {
+  assert.match(issues(flights({ title: { path: "airline" } }, { text: { path: "/status" } })), /did you mean "\/order\/status"/);
+});
+
+test("a table's columns read from its rows", () => {
+  const doc = {
+    specVersion: "0.1.0",
+    surface: { id: "accounts", title: "Accounts", intent: "accounts.list" },
+    root: "t",
+    data: { rows: [{ name: "Acme", mrr: 1200 }] },
+    components: [{ id: "t", component: "Table", caption: "Accounts", rows: { path: "/rows" }, columns: [{ key: "name", label: "Name", path: "name" }, { key: "plan", label: "Plan", path: "plan" }] }],
+  };
+  const text = issues(doc);
+  assert.match(text, /"plan" is not a field of the items in \/rows/);
+  assert.doesNotMatch(text, /"name" is not a field/);
 });
 
 test("warns: unreachable component", () => {

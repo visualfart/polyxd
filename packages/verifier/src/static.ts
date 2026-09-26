@@ -1,7 +1,7 @@
 import { validateDocument } from "@polyxd/spec";
 import { checkPattern, evaluateRules, type Rule } from "@polyxd/spec/patterns";
 import { checkCapabilities, type CapabilityRegistry } from "@polyxd/spec/capabilities";
-import { readingOrder, runCheck } from "@polyxd/spec/checks";
+import { childIds, readingOrder, runCheck } from "@polyxd/spec/checks";
 import type { Finding } from "./rendered.ts";
 
 export interface StaticOptions {
@@ -28,18 +28,37 @@ function valueAt(data: unknown, pointer?: string): unknown {
 }
 
 /**
- * The first item a component renders, when it is a collection's template rather than a component
- * in its own right: a Card inside a Collection reads its bindings from each item, so a path like
- * `progress` means the item's progress, not the document's.
+ * The first item each component inside a repeated item renders from, by id: a collection's
+ * template and everything in it. A Card inside a Collection reads `progress` from each item.
  */
-function itemScope(doc: any, node: any): unknown {
-  const owner = (doc.components ?? []).find((c: any) => c.items?.componentId === node.id);
-  const items = owner ? valueAt(doc.data, owner.items.path) : undefined;
-  return Array.isArray(items) ? items[0] : undefined;
+function itemScopes(doc: any): Map<string, unknown> {
+  const byId = new Map<string, any>((doc.components ?? []).map((c: any) => [c.id, c]));
+  const scopes = new Map<string, unknown>();
+  const enter = (id: string, item: unknown, seen: Set<string>) => {
+    const c = byId.get(id);
+    if (!c || seen.has(id)) return;
+    seen.add(id);
+    scopes.set(id, item);
+    for (const child of childIds(c)) enter(child, item, seen);
+  };
+  for (const owner of doc.components ?? []) {
+    const repeats = owner.component === "Collection" ? owner.items : owner.component === "Table" ? owner.rows : undefined;
+    const template = owner.component === "Collection" ? owner.items?.componentId : undefined;
+    if (!template || typeof repeats?.path !== "string") continue;
+    const from = repeats.path.startsWith("/") ? doc.data : scopes.get(owner.id);
+    const items = valueAt(from, repeats.path.startsWith("/") ? repeats.path : `/${repeats.path}`);
+    enter(template, Array.isArray(items) ? items[0] : undefined, new Set());
+  }
+  return scopes;
 }
 
-/** An item-scoped path has no leading slash; make it a pointer either way. */
-const pointerIn = (path?: string) => (path === undefined ? undefined : path.startsWith("/") ? path : `/${path}`);
+/**
+ * What a binding shows, resolved the way the renderer does: a relative path reads from the
+ * component's item, an absolute one from the top of the data wherever it appears.
+ */
+function reader(doc: any, scopes: Map<string, unknown>): (c: any, path?: string) => unknown {
+  return (c, path) => (path === undefined ? undefined : path.startsWith("/") ? valueAt(doc.data, path) : valueAt(scopes.get(c.id), `/${path}`));
+}
 
 /**
  * Document-level checks that need no rendering: the spec validator, the declared pattern,
@@ -47,9 +66,14 @@ const pointerIn = (path?: string) => (path === undefined ? undefined : path.star
  */
 export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
   const out: Finding[] = [];
-  const v = validateDocument(doc, { emphasisBudget: opts.emphasisBudget });
-  for (const i of v.issues) out.push({ severity: i.severity, check: "spec", message: `${i.at}: ${i.message}` });
-  if (!v.valid) return out;
+  // A binding that reads nothing renders a blank where the answer should be: against the data the
+  // screen is shown with, that's an error, and one worth its own check id.
+  const v = validateDocument(doc, { emphasisBudget: opts.emphasisBudget, missingData: "error" });
+  for (const i of v.issues) out.push({ severity: i.severity, check: i.code ?? "spec", message: `${i.at}: ${i.message}` });
+  // Everything below needs a structurally sound document; a blank binding doesn't stop it.
+  if (v.issues.some((i) => i.severity === "error" && !i.code)) return out;
+  const scopes = itemScopes(doc);
+  const read = reader(doc, scopes);
 
   for (const r of checkPattern(doc)) if (!r.pass) out.push({ severity: r.severity, check: `pattern:${r.id}`, message: `${r.description}: ${r.message}` });
   if (opts.registry) for (const i of checkCapabilities(doc, opts.registry)) out.push({ severity: i.severity, check: "capability", message: `${i.at}: ${i.message}` });
@@ -136,7 +160,7 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
   // field that isn't there, it draws a bar whose length means nothing.
   for (const c of order) {
     if (!c.progress) continue;
-    const value = typeof c.progress.value === "number" ? c.progress.value : valueAt(itemScope(doc, c) ?? doc.data, pointerIn(c.progress.value?.path));
+    const value = typeof c.progress.value === "number" ? c.progress.value : read(c, c.progress.value?.path);
     if (typeof value !== "number" || Number.isNaN(value)) {
       out.push({ severity: "error", check: "data:progress-not-a-fraction", message: `${c.id}.progress reads ${c.progress.value?.path ?? "a value"}, which isn't a number` });
     } else if (value < 0 || value > 1) {
@@ -159,12 +183,23 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
     }
   }
 
-  // A template the model has no engine for. "{{budget}}" reaches the screen verbatim.
+  // A template the model has no engine for. "{{budget}}", "${budget}" and "{budget}" all reach the
+  // screen verbatim.
   for (const c of order) {
     for (const [prop, value] of Object.entries(c)) {
       if (typeof value !== "string") continue;
-      const found = value.match(/\{\{[^}]*\}\}|\$\{[^}]*\}/)?.[0];
+      const found = value.match(/\{\{[^}]*\}\}|\$\{[^}]*\}|\{[A-Za-z_$][\w.$]*\}/)?.[0];
       if (found) out.push({ severity: "error", check: "text:template-placeholder", message: `${c.id}.${prop}: "${found}" is a template placeholder, not text — bind the value instead` });
+    }
+  }
+
+  // A label with nothing after it. "Departs:" and no time is a value that never arrived: the model
+  // wrote the caption as text and forgot the binding, and the screen shows a form with no answers.
+  for (const c of order) {
+    if (c.component !== "Text" || typeof c.text !== "string") continue;
+    const words = c.text.trim().split(/\s+/);
+    if (/:\s*$/.test(c.text) && words.length <= 3) {
+      out.push({ severity: "error", check: "text:dangling-label", message: `${c.id} reads "${c.text.trim()}" with nothing after it — bind the value, or use a component with a label and a value` });
     }
   }
 
@@ -179,10 +214,10 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
   for (const c of order) {
     // An input's `value` is its state, not text: a multi-select holds a list, a range holds a pair.
     if (INPUTS.has(c.component)) continue;
-    for (const [, read] of TEXT_BINDINGS) {
-      for (const { where, path } of read(c)) {
+    for (const [, bindings] of TEXT_BINDINGS) {
+      for (const { where, path } of bindings(c)) {
         if (!path) continue;
-        const value = valueAt(itemScope(doc, c) ?? doc.data, pointerIn(path));
+        const value = read(c, path);
         if (value !== null && typeof value === "object") {
           out.push({ severity: "error", check: "data:not-text", message: `${c.id}.${where} reads ${path}, which is ${Array.isArray(value) ? "a list" : "an object"}: it would print as [object Object]` });
         }
@@ -196,7 +231,6 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
   for (const c of order) {
     // Same reason: the value an input holds is a key, and a key is allowed to look like one.
     if (INPUTS.has(c.component)) continue;
-    const scope = itemScope(doc, c) ?? doc.data;
     const shown: { where: string; path?: string }[] = [
       ...(Array.isArray(c.items) ? c.items.map((i: any, n: number) => ({ where: `items[${n}]`, path: i.value?.path })) : []),
       { where: "value", path: c.value?.path },
@@ -204,12 +238,13 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
     ];
     for (const { where, path } of shown) {
       if (!path) continue;
-      const value = valueAt(scope, pointerIn(path));
+      const value = read(c, path);
       if (typeof value !== "string" || !ID.test(value)) continue;
       // Only a problem when the same record offers something readable instead.
-      const record = valueAt(scope, pointerIn(path.replace(/\/[^/]+$/, ""))) as any;
+      const parent = path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : "";
+      const record = (parent ? read(c, parent) : path.startsWith("/") ? doc.data : scopes.get(c.id)) as any;
       const better = record && typeof record === "object" ? ["name", "title", "label"].find((k) => typeof record[k] === "string") : undefined;
-      if (better) out.push({ severity: "warning", check: "copy:raw-identifier", message: `${c.id}.${where} shows "${value}", an internal id, where ${path.replace(/\/[^/]+$/, "")}/${better} is a name` });
+      if (better) out.push({ severity: "warning", check: "copy:raw-identifier", message: `${c.id}.${where} shows "${value}", an internal id, where ${parent ? `${parent}/` : path.startsWith("/") ? "/" : ""}${better} is a name` });
     }
   }
 
