@@ -111,7 +111,8 @@ if (publish) {
       console.log(`  skip    ${pkg.name}@${pkg.version} (already published)`);
       continue;
     }
-    // Scripts already ran above; provenance comes from the release workflow's environment.
+    // Scripts already ran above. In the release workflow npm authenticates by trusted publishing
+    // and adds provenance itself; from a laptop it uses your npm login.
     // stdio is inherited so that, run from a terminal, npm can ask for a 2FA code.
     execFileSync("npm", ["publish", "--ignore-scripts"], { cwd: pkg.__dir, stdio: "inherit" });
     console.log(`  publish ${pkg.name}@${pkg.version}`);

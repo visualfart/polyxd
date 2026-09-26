@@ -3,10 +3,13 @@
 #   git tag v0.1.0 && git push origin v0.1.0
 #
 # Every package already on npm at its current version is skipped, so a release publishes only
-# what changed. Provenance links each published package to the commit and workflow that built it.
+# what changed.
 #
-# Needs one repository secret, NPM_TOKEN: an npm automation token from an account that owns the
-# @polyxd scope and the unscoped `polyxd` package.
+# No npm token: this uses npm trusted publishing. Each package on npmjs.com names this repository
+# and this workflow file (release.yml) as its trusted publisher, and npm accepts the job's GitHub
+# OIDC identity in place of a token. Provenance, linking each version to the commit and workflow
+# that built it, comes with that automatically. A package has to exist on npm before it can name a
+# trusted publisher, so the first publish of a new package is done by hand (npm run release:publish).
 name: Release
 
 on:
@@ -16,7 +19,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write # npm provenance
+  id-token: write # npm trusted publishing and provenance
 
 jobs:
   publish:
@@ -28,6 +31,8 @@ jobs:
           node-version: 26
           cache: npm
           registry-url: https://registry.npmjs.org
+      # Trusted publishing needs npm 11.5.1 or later.
+      - run: npm install -g npm@^11.5.1
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       # Spec first, in its own run: on a clean checkout, one tsc -b (TypeScript 7) resolves
@@ -43,8 +48,3 @@ jobs:
           have="$(node -p "require('./packages/spec/package.json').version")"
           test "$want" = "$have" || { echo "tag v$want but packages are at $have"; exit 1; }
       - run: npm run release:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # Provenance is asked for here rather than in each package.json: npm only supports it
-          # inside CI, so setting it per package would make every publish from a laptop fail.
-          NPM_CONFIG_PROVENANCE: "true"
