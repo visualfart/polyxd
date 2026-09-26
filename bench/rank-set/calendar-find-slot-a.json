@@ -1,71 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "calendar_schedule",
-    "title": "Find availability",
-    "intent": "calendar.schedule"
-  },
-  "root": {
-    "component": "Section",
-    "title": "Find availability",
-    "description": "Please confirm the details for the meeting.",
-    "children": [
-      {
-        "component": "Collection",
-        "key": "available_slots",
-        "items": {
-          "path": "/slots",
-          "item": {
-            "component": "Card",
-            "title": {
-              "path": "/slots[*]/label"
-            },
-            "subtitle": {
-              "path": "/slots[*]/start"
-            },
-            "children": [
-              {
-                "component": "Text",
-                "text": "Available slots found."
-              }
-            ]
-          }
-        },
-        "label": "Available timeslots",
-        "empty": {
-          "component": "Status",
-          "kind": "empty",
-          "title": "No slots found",
-          "message": "Please check back later."
-        }
-      },
-      {
-        "component": "Group",
-        "children": [
-          {
-            "component": "TextInput",
-            "key": "date_str",
-            "label": "Date",
-            "value": {
-              "path": "/draft/date"
-            },
-            "kind": "text",
-            "required": true
-          },
-          {
-            "component": "TextInput",
-            "key": "attendee_str",
-            "label": "Invitees",
-            "value": {
-              "path": "/draft/people"
-            },
-            "kind": "text",
-            "required": true
-          }
-        ]
-      }
-    ]
-  },
   "data": {
     "draft": {
       "date": "2026-09-22",
@@ -99,5 +33,89 @@
         "name": "Tom"
       }
     ]
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Find availability",
+      "description": "Please confirm the details for the meeting.",
+      "children": [
+        "available-slots",
+        "group"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Collection",
+      "key": "available_slots",
+      "items": {
+        "path": "/slots",
+        "componentId": "card"
+      },
+      "label": "Available timeslots",
+      "empty": "status",
+      "id": "available-slots"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No slots found",
+      "message": "Please check back later.",
+      "id": "status"
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/slots[*]/label"
+      },
+      "subtitle": {
+        "path": "/slots[*]/start"
+      },
+      "children": [
+        "text"
+      ],
+      "id": "card"
+    },
+    {
+      "component": "Text",
+      "text": "Available slots found.",
+      "id": "text"
+    },
+    {
+      "component": "Group",
+      "children": [
+        "date-str",
+        "attendee-str"
+      ],
+      "id": "group"
+    },
+    {
+      "component": "TextInput",
+      "key": "date_str",
+      "label": "Date",
+      "value": {
+        "path": "/draft/date"
+      },
+      "kind": "text",
+      "required": true,
+      "id": "date-str"
+    },
+    {
+      "component": "TextInput",
+      "key": "attendee_str",
+      "label": "Invitees",
+      "value": {
+        "path": "/draft/people"
+      },
+      "kind": "text",
+      "required": true,
+      "id": "attendee-str"
+    }
+  ],
+  "surface": {
+    "id": "calendar_schedule",
+    "title": "Find availability",
+    "intent": "calendar.schedule"
   }
 }

@@ -1,0 +1,117 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "counts": {
+      "all": 1284,
+      "mine": 212,
+      "pastdue": 31,
+      "trials": 58
+    },
+    "view": "pastdue",
+    "sort": {
+      "column": "mrr",
+      "direction": "descending"
+    },
+    "page": 1,
+    "pageSize": 50,
+    "selected": [],
+    "accounts": [
+      {
+        "id": "a1",
+        "name": "Acme Corp",
+        "owner": "Rhea Mills",
+        "plan": "Enterprise",
+        "mrr": 4200,
+        "seats": "48 / 50",
+        "status": "Past due",
+        "renews": "12 Oct 2026",
+        "initials": "AC"
+      },
+      {
+        "id": "a5",
+        "name": "Hooli",
+        "owner": "Jo Rivera",
+        "plan": "Starter",
+        "mrr": 120,
+        "seats": "3 / 5",
+        "status": "Trial",
+        "renews": "27 Sep 2026",
+        "initials": "HO"
+      },
+      {
+        "id": "a2",
+        "name": "Globex",
+        "owner": "Tom Walsh",
+        "plan": "Pro",
+        "mrr": 1180,
+        "seats": "22 / 25",
+        "status": "Active",
+        "renews": "3 Nov 2026",
+        "initials": "GL"
+      },
+      {
+        "id": "a3",
+        "name": "Initech",
+        "owner": "Rhea Mills",
+        "plan": "Pro",
+        "mrr": 940,
+        "seats": "18 / 20",
+        "status": "Active",
+        "renews": "21 Oct 2026",
+        "initials": "IN"
+      }
+    ]
+  },
+  "root": "collection",
+  "components": [
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/accounts",
+        "componentId": "card"
+      },
+      "label": "Past due accounts",
+      "empty": "status_empty",
+      "layout": "list",
+      "id": "collection"
+    },
+    {
+      "id": "status_empty",
+      "component": "Status",
+      "kind": "empty",
+      "title": "No past due accounts found",
+      "message": "Please adjust your filters to find past due accounts."
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/name"
+      },
+      "subtitle": {
+        "path": "/owner"
+      },
+      "children": [
+        "text",
+        "text-2"
+      ],
+      "id": "card"
+    },
+    {
+      "component": "Text",
+      "text": "Plan: {{$status}}",
+      "variant": "body",
+      "id": "text"
+    },
+    {
+      "component": "Text",
+      "text": "MRR: {{$mrr}}",
+      "variant": "body",
+      "id": "text-2"
+    }
+  ],
+  "surface": {
+    "id": "accounts_browse",
+    "title": "Past due accounts",
+    "intent": "accounts.browse"
+  }
+}

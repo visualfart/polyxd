@@ -1,0 +1,118 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "route": "LHR → LIS",
+    "date": "2026-10-03",
+    "flights": [
+      {
+        "id": "f1",
+        "depart": "07:10",
+        "arrive": "09:55",
+        "airline": "TAP",
+        "stops": 0,
+        "price": 118
+      },
+      {
+        "id": "f2",
+        "depart": "09:40",
+        "arrive": "12:20",
+        "airline": "British Airways",
+        "stops": 0,
+        "price": 142
+      },
+      {
+        "id": "f3",
+        "depart": "11:05",
+        "arrive": "15:50",
+        "airline": "Iberia",
+        "stops": 1,
+        "price": 96
+      }
+    ],
+    "currency": "GBP"
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Flights to Lisbon",
+      "description": "Flights from LHR to LIS on 2026-10-03.",
+      "children": [
+        "flights"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Collection",
+      "key": "flights",
+      "items": {
+        "path": "/flights",
+        "componentId": "id"
+      },
+      "label": "Available flights",
+      "layout": "list",
+      "id": "flights"
+    },
+    {
+      "id": "id",
+      "component": "Card",
+      "title": {
+        "path": "/flight_id"
+      },
+      "subtitle": {
+        "path": "/flight_airline"
+      },
+      "children": [
+        "text",
+        "text-2",
+        "text-3",
+        "text-4"
+      ],
+      "action": {
+        "event": {
+          "name": "flight.select",
+          "context": {
+            "id": {
+              "path": "/id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/price"
+        },
+        "label": "Price"
+      }
+    },
+    {
+      "component": "Text",
+      "text": "Depart: {depart}",
+      "variant": "body",
+      "id": "text"
+    },
+    {
+      "component": "Text",
+      "text": "Arrive: {arrive}",
+      "variant": "body",
+      "id": "text-2"
+    },
+    {
+      "component": "Text",
+      "text": "Stops: {stops}",
+      "variant": "body",
+      "id": "text-3"
+    },
+    {
+      "component": "Text",
+      "text": "Price: {price} GBP",
+      "variant": "body",
+      "id": "text-4"
+    }
+  ],
+  "surface": {
+    "id": "travel_flights_search",
+    "title": "Flights to Lisbon",
+    "intent": "travel.flights.search"
+  }
+}

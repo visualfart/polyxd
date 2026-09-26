@@ -1,48 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "calendar_schedule",
-    "title": "Find availability",
-    "intent": "calendar.schedule"
-  },
-  "root": {
-    "component": "Section",
-    "title": "Find availability",
-    "description": "Select a time for the meeting with Tom and Priya.",
-    "children": [
-      {
-        "component": "Collection",
-        "key": "available_slots",
-        "items": {
-          "path": "/slots",
-          "item": {
-            "component": "Card",
-            "title": "{label}",
-            "subtitle": "Available slot",
-            "children": [
-              {
-                "component": "Group",
-                "children": [
-                  {
-                    "component": "Text",
-                    "text": "Start time: {start}"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        "label": "Available timeslots",
-        "empty": {
-          "id": "Status",
-          "component": "Status",
-          "kind": "info",
-          "title": "No slots found",
-          "message": "There are no available timeslots yet."
-        }
-      }
-    ]
-  },
   "data": {
     "slots": {
       "start": {
@@ -52,5 +9,61 @@
         "path": "/slots[*]/label"
       }
     }
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Find availability",
+      "description": "Select a time for the meeting with Tom and Priya.",
+      "children": [
+        "available-slots"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Collection",
+      "key": "available_slots",
+      "items": {
+        "path": "/slots",
+        "componentId": "card"
+      },
+      "label": "Available timeslots",
+      "empty": "Status",
+      "id": "available-slots"
+    },
+    {
+      "id": "Status",
+      "component": "Status",
+      "kind": "info",
+      "title": "No slots found",
+      "message": "There are no available timeslots yet."
+    },
+    {
+      "component": "Card",
+      "title": "{label}",
+      "subtitle": "Available slot",
+      "children": [
+        "group"
+      ],
+      "id": "card"
+    },
+    {
+      "component": "Group",
+      "children": [
+        "text"
+      ],
+      "id": "group"
+    },
+    {
+      "component": "Text",
+      "text": "Start time: {start}",
+      "id": "text"
+    }
+  ],
+  "surface": {
+    "id": "calendar_schedule",
+    "title": "Find availability",
+    "intent": "calendar.schedule"
   }
 }

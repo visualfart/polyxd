@@ -1,106 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "personal_running_stats",
-    "title": "Running Stats",
-    "intent": "personal.running.stats"
-  },
-  "root": {
-    "component": "Section",
-    "title": "This Month vs Last Month",
-    "description": "Here is a comparison of your running activity for this month versus last month.",
-    "children": [
-      {
-        "component": "Metric",
-        "label": "Total Distance",
-        "value": {
-          "path": "/thisMonth/km"
-        },
-        "format": {
-          "type": "number"
-        },
-        "change": {
-          "value": {
-            "path": "/thisMonth/km"
-          },
-          "format": {
-            "type": "number"
-          },
-          "favorable": "increase"
-        },
-        "caption": "This month's total distance"
-      },
-      {
-        "component": "Metric",
-        "label": "Number of Runs",
-        "value": {
-          "path": "/thisMonth/runs"
-        },
-        "format": {
-          "type": "number"
-        },
-        "change": {
-          "value": {
-            "path": "thisMonth/runs"
-          },
-          "format": {
-            "type": "number"
-          },
-          "favorable": "increase"
-        },
-        "caption": "This month's count"
-      },
-      {
-        "component": "Metric",
-        "label": "Average Pace",
-        "value": {
-          "path": "/thisMonth/avgPace"
-        },
-        "format": {
-          "type": "text"
-        },
-        "caption": "Your average pace for this month"
-      },
-      {
-        "component": "Group",
-        "children": [
-          {
-            "component": "Collection",
-            "key": "weekly_runs",
-            "items": {
-              "path": "/weekly",
-              "item": {
-                "component": "Card",
-                "title": {
-                  "path": "/week"
-                },
-                "subtitle": {
-                  "path": "/km"
-                },
-                "action": {
-                  "event": {
-                    "name": "run.open",
-                    "context": {
-                      "id": {
-                        "path": "/week"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "label": "Recent Runs",
-            "empty": {
-              "component": "Status",
-              "kind": "empty",
-              "title": "No runs logged yet.",
-              "message": "Please log a run to see your activity."
-            }
-          }
-        ]
-      }
-    ]
-  },
   "data": {
     "thisMonth": {
       "km": 64.2,
@@ -126,5 +25,124 @@
         "km": 21.5
       }
     ]
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "This Month vs Last Month",
+      "description": "Here is a comparison of your running activity for this month versus last month.",
+      "children": [
+        "metric",
+        "metric-2",
+        "metric-3",
+        "group"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Metric",
+      "label": "Total Distance",
+      "value": {
+        "path": "/thisMonth/km"
+      },
+      "format": {
+        "type": "number"
+      },
+      "change": {
+        "value": {
+          "path": "/thisMonth/km"
+        },
+        "format": {
+          "type": "number"
+        },
+        "favorable": "increase"
+      },
+      "caption": "This month's total distance",
+      "id": "metric"
+    },
+    {
+      "component": "Metric",
+      "label": "Number of Runs",
+      "value": {
+        "path": "/thisMonth/runs"
+      },
+      "format": {
+        "type": "number"
+      },
+      "change": {
+        "value": {
+          "path": "thisMonth/runs"
+        },
+        "format": {
+          "type": "number"
+        },
+        "favorable": "increase"
+      },
+      "caption": "This month's count",
+      "id": "metric-2"
+    },
+    {
+      "component": "Metric",
+      "label": "Average Pace",
+      "value": {
+        "path": "/thisMonth/avgPace"
+      },
+      "format": {
+        "type": "text"
+      },
+      "caption": "Your average pace for this month",
+      "id": "metric-3"
+    },
+    {
+      "component": "Group",
+      "children": [
+        "weekly-runs"
+      ],
+      "id": "group"
+    },
+    {
+      "component": "Collection",
+      "key": "weekly_runs",
+      "items": {
+        "path": "/weekly",
+        "componentId": "card"
+      },
+      "label": "Recent Runs",
+      "empty": "status",
+      "id": "weekly-runs"
+    },
+    {
+      "component": "Status",
+      "kind": "empty",
+      "title": "No runs logged yet.",
+      "message": "Please log a run to see your activity.",
+      "id": "status"
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/week"
+      },
+      "subtitle": {
+        "path": "/km"
+      },
+      "action": {
+        "event": {
+          "name": "run.open",
+          "context": {
+            "id": {
+              "path": "/week"
+            }
+          }
+        }
+      },
+      "id": "card"
+    }
+  ],
+  "surface": {
+    "id": "personal_running_stats",
+    "title": "Running Stats",
+    "intent": "personal.running.stats"
   }
 }

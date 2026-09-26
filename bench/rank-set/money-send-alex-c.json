@@ -1,16 +1,49 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "money_send",
-    "title": "Send money",
-    "intent": "money.send"
+  "data": {
+    "draft": {
+      "recipient": "p1",
+      "amount": 40,
+      "reference": "Concert tickets"
+    }
   },
-  "root": {
-    "component": "Confirm",
-    "title": "Send £40 to Alex Kim?",
-    "message": "You are about to send £40 to Alex Kim for the concert tickets. This payment cannot be undone.",
-    "consequence": "The payment of £40 will be sent to Alex Kim.",
-    "summary": {
+  "root": "confirm",
+  "components": [
+    {
+      "component": "Confirm",
+      "title": "Send £40 to Alex Kim?",
+      "message": "You are about to send £40 to Alex Kim for the concert tickets. This payment cannot be undone.",
+      "consequence": "The payment of £40 will be sent to Alex Kim.",
+      "summary": "draft_summary",
+      "severity": "consequential",
+      "confirm": {
+        "label": "Review payment",
+        "action": {
+          "event": {
+            "name": "transfer.review",
+            "context": {
+              "recipient": {
+                "path": "/draft/recipient"
+              },
+              "amount": {
+                "path": "/draft/amount"
+              },
+              "reference": "Concert tickets"
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "confirm"
+    },
+    {
       "id": "draft_summary",
       "component": "DetailList",
       "items": [
@@ -30,39 +63,11 @@
         }
       ],
       "title": "Payment Details"
-    },
-    "severity": "consequential",
-    "confirm": {
-      "label": "Review payment",
-      "action": {
-        "event": {
-          "name": "transfer.review",
-          "context": {
-            "recipient": {
-              "path": "/draft/recipient"
-            },
-            "amount": {
-              "path": "/draft/amount"
-            },
-            "reference": "Concert tickets"
-          }
-        }
-      }
-    },
-    "cancel": {
-      "label": "Cancel",
-      "action": {
-        "event": {
-          "name": "ui.dismiss"
-        }
-      }
     }
-  },
-  "data": {
-    "draft": {
-      "recipient": "p1",
-      "amount": 40,
-      "reference": "Concert tickets"
-    }
+  ],
+  "surface": {
+    "id": "money_send",
+    "title": "Send money",
+    "intent": "money.send"
   }
 }

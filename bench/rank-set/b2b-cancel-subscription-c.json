@@ -1,0 +1,67 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "account": {
+      "id": "a1",
+      "name": "Acme Corp",
+      "plan": "Enterprise, annual",
+      "mrr": 4200,
+      "seats": "48 of 50",
+      "until": "12 October 2026",
+      "refund": 0,
+      "initials": "AC"
+    }
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "component": "Confirm",
+      "title": "Cancel Acme's subscription?",
+      "message": "This will cancel your subscription at the end of the current billing period.",
+      "consequence": "You will not be billed again, and your account will remain active until 12 October 2026.",
+      "summary": "detaillist",
+      "severity": "consequential",
+      "confirm": {
+        "label": "Cancel subscription",
+        "action": {
+          "event": {
+            "name": "subscription.cancel",
+            "context": {
+              "id": "a1"
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Keep subscription",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "confirm"
+    },
+    {
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "plan",
+          "label": "Plan",
+          "value": "Enterprise, annual"
+        },
+        {
+          "key": "current_billing_period",
+          "label": "Billing period ends",
+          "value": "12 October 2026"
+        }
+      ],
+      "id": "detaillist"
+    }
+  ],
+  "surface": {
+    "id": "subscription_cancel_screen",
+    "title": "Cancel Acme's subscription",
+    "intent": "subscription.cancel"
+  }
+}

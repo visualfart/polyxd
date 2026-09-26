@@ -1,0 +1,73 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "draft": {
+      "email": "priya@acme.com",
+      "role": "billing"
+    }
+  },
+  "root": "form",
+  "components": [
+    {
+      "component": "Form",
+      "children": [
+        "email",
+        "role"
+      ],
+      "submit": {
+        "label": "Send invite",
+        "action": {
+          "event": {
+            "name": "team.invite",
+            "context": {
+              "email": "priya@acme.com",
+              "role": "billing"
+            }
+          }
+        }
+      },
+      "id": "form"
+    },
+    {
+      "component": "TextInput",
+      "key": "email",
+      "label": "Email address",
+      "value": {
+        "path": "/draft/email"
+      },
+      "kind": "email",
+      "required": true,
+      "id": "email"
+    },
+    {
+      "component": "Choice",
+      "key": "role",
+      "label": "Role to assign",
+      "options": [
+        {
+          "value": "admin",
+          "label": "Admin"
+        },
+        {
+          "value": "billing",
+          "label": "Billing manager"
+        },
+        {
+          "value": "viewer",
+          "label": "Viewer"
+        }
+      ],
+      "value": {
+        "path": "/draft/role"
+      },
+      "mode": "single",
+      "required": true,
+      "id": "role"
+    }
+  ],
+  "surface": {
+    "id": "team_invite",
+    "title": "Invite member",
+    "intent": "team.invite"
+  }
+}

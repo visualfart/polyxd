@@ -1,0 +1,88 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "order": {
+      "id": "o_5521",
+      "status": "Out for delivery",
+      "eta": "Today, 14:00–16:00",
+      "carrier": "DPD",
+      "items": [
+        {
+          "id": "i1",
+          "name": "Blue enamel mug",
+          "qty": 2
+        },
+        {
+          "id": "i2",
+          "name": "Pour-over kettle",
+          "qty": 1
+        }
+      ]
+    }
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Order details",
+      "description": "Here is the current status of your order.",
+      "children": [
+        "card"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Card",
+      "title": "Order details",
+      "subtitle": "Status: Out for delivery",
+      "children": [
+        "metric",
+        "metric-2",
+        "metric-3"
+      ],
+      "action": {
+        "event": {
+          "name": "order.open",
+          "context": {
+            "id": {
+              "path": "/id"
+            }
+          }
+        }
+      },
+      "id": "card"
+    },
+    {
+      "component": "Metric",
+      "label": "Status",
+      "value": {
+        "path": "/status"
+      },
+      "caption": "Current status",
+      "id": "metric"
+    },
+    {
+      "component": "Metric",
+      "label": "Estimated arrival",
+      "value": {
+        "path": "/eta"
+      },
+      "caption": "ETA",
+      "id": "metric-2"
+    },
+    {
+      "component": "Metric",
+      "label": "Carrier",
+      "value": {
+        "path": "/carrier"
+      },
+      "caption": "Shipping carrier",
+      "id": "metric-3"
+    }
+  ],
+  "surface": {
+    "id": "commerce_order_tracking",
+    "title": "Order details",
+    "intent": "commerce.order.track"
+  }
+}

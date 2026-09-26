@@ -1,55 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "money_send",
-    "title": "Send money",
-    "intent": "money.send"
-  },
-  "root": {
-    "component": "Confirm",
-    "title": "Send payment to Alex Kim?",
-    "message": "Are you sure you want to send £40 to Alex Kim for the concert tickets?",
-    "consequence": "This payment will be sent and cannot be undone.",
-    "summary": {
-      "id": "draft",
-      "component": "DetailList",
-      "items": [
-        {
-          "key": "recipient",
-          "label": "Recipient",
-          "value": {
-            "path": "/payees/id"
-          }
-        }
-      ]
-    },
-    "severity": "consequential",
-    "confirm": {
-      "label": "Review payment",
-      "action": {
-        "event": {
-          "name": "transfer.review",
-          "context": {
-            "recipient": {
-              "path": "/draft/recipient"
-            },
-            "amount": {
-              "path": "/draft/amount"
-            },
-            "reference": "Concert tickets"
-          }
-        }
-      }
-    },
-    "cancel": {
-      "label": "Cancel",
-      "action": {
-        "event": {
-          "name": "ui.dismiss"
-        }
-      }
-    }
-  },
   "data": {
     "payees": [
       {
@@ -74,5 +24,60 @@
       "max": 5000,
       "currency": "GBP"
     }
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "component": "Confirm",
+      "title": "Send payment to Alex Kim?",
+      "message": "Are you sure you want to send £40 to Alex Kim for the concert tickets?",
+      "consequence": "This payment will be sent and cannot be undone.",
+      "summary": "draft",
+      "severity": "consequential",
+      "confirm": {
+        "label": "Review payment",
+        "action": {
+          "event": {
+            "name": "transfer.review",
+            "context": {
+              "recipient": {
+                "path": "/draft/recipient"
+              },
+              "amount": {
+                "path": "/draft/amount"
+              },
+              "reference": "Concert tickets"
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Cancel",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      },
+      "id": "confirm"
+    },
+    {
+      "id": "draft",
+      "component": "DetailList",
+      "items": [
+        {
+          "key": "recipient",
+          "label": "Recipient",
+          "value": {
+            "path": "/payees/id"
+          }
+        }
+      ]
+    }
+  ],
+  "surface": {
+    "id": "money_send",
+    "title": "Send money",
+    "intent": "money.send"
   }
 }

@@ -1,38 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "money_spending_summary",
-    "title": "Spending summary",
-    "intent": "money.spending.summary"
-  },
-  "root": {
-    "component": "Section",
-    "title": "This month's spending",
-    "description": "Here is a summary of your payments for September 2026.",
-    "children": [
-      {
-        "component": "Metric",
-        "label": "Total spent",
-        "value": {
-          "path": "/spent"
-        },
-        "format": {
-          "type": "currency",
-          "currency": "GBP"
-        },
-        "change": {
-          "value": {
-            "path": "/lastMonth"
-          },
-          "format": {
-            "type": "currency",
-            "currency": "GBP"
-          },
-          "favorable": "none"
-        }
-      }
-    ]
-  },
   "data": {
     "period": "September 2026",
     "currency": "GBP",
@@ -81,5 +48,44 @@
         "date": "2026-09-17"
       }
     ]
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "This month's spending",
+      "description": "Here is a summary of your payments for September 2026.",
+      "children": [
+        "metric"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Metric",
+      "label": "Total spent",
+      "value": {
+        "path": "/spent"
+      },
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      },
+      "change": {
+        "value": {
+          "path": "/lastMonth"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "favorable": "none"
+      },
+      "id": "metric"
+    }
+  ],
+  "surface": {
+    "id": "money_spending_summary",
+    "title": "Spending summary",
+    "intent": "money.spending.summary"
   }
 }

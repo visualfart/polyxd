@@ -1,53 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "personal_running_stats",
-    "title": "Running stats comparison",
-    "intent": "personal.running.stats"
-  },
-  "root": {
-    "component": "Section",
-    "title": "This month's running summary",
-    "description": "How your running compares month-over-month.",
-    "children": [
-      {
-        "component": "Metric",
-        "label": "Total distance this month",
-        "value": {
-          "path": "/thisMonth/km"
-        },
-        "format": {
-          "type": "number",
-          "currency": {
-            "path": "/thisMonth/km"
-          }
-        },
-        "caption": "Total kilometers run"
-      },
-      {
-        "component": "Metric",
-        "label": "Runs this month",
-        "value": {
-          "path": "/thisMonth/runs"
-        },
-        "format": {
-          "type": "number"
-        },
-        "caption": "Number of runs completed"
-      },
-      {
-        "component": "Metric",
-        "label": "Average pace this month",
-        "value": {
-          "path": "/thisMonth/avgPace"
-        },
-        "format": {
-          "type": "text"
-        },
-        "caption": "Average pace achieved"
-      }
-    ]
-  },
   "data": {
     "thisMonth": {
       "km": 64.2,
@@ -73,5 +25,63 @@
         "km": 21.5
       }
     ]
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "This month's running summary",
+      "description": "How your running compares month-over-month.",
+      "children": [
+        "metric",
+        "metric-2",
+        "metric-3"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Metric",
+      "label": "Total distance this month",
+      "value": {
+        "path": "/thisMonth/km"
+      },
+      "format": {
+        "type": "number",
+        "currency": {
+          "path": "/thisMonth/km"
+        }
+      },
+      "caption": "Total kilometers run",
+      "id": "metric"
+    },
+    {
+      "component": "Metric",
+      "label": "Runs this month",
+      "value": {
+        "path": "/thisMonth/runs"
+      },
+      "format": {
+        "type": "number"
+      },
+      "caption": "Number of runs completed",
+      "id": "metric-2"
+    },
+    {
+      "component": "Metric",
+      "label": "Average pace this month",
+      "value": {
+        "path": "/thisMonth/avgPace"
+      },
+      "format": {
+        "type": "text"
+      },
+      "caption": "Average pace achieved",
+      "id": "metric-3"
+    }
+  ],
+  "surface": {
+    "id": "personal_running_stats",
+    "title": "Running stats comparison",
+    "intent": "personal.running.stats"
   }
 }

@@ -1,80 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "calendar_schedule",
-    "title": "Find availability",
-    "intent": "calendar.schedule"
-  },
-  "root": {
-    "component": "Section",
-    "title": "Find availability",
-    "description": "Please confirm the details for the meeting.",
-    "children": [
-      {
-        "component": "TextInput",
-        "key": "date_str",
-        "label": "Date",
-        "value": {
-          "path": "/draft/date"
-        },
-        "kind": "text",
-        "required": true
-      },
-      {
-        "component": "TextInput",
-        "key": "duration_str",
-        "label": "Duration",
-        "value": {
-          "path": "/draft/duration"
-        },
-        "kind": "text",
-        "required": true
-      },
-      {
-        "component": "Collection",
-        "items": {
-          "path": "/slots",
-          "item": {
-            "component": "Card",
-            "title": {
-              "path": "/slots[*]/label"
-            },
-            "subtitle": {
-              "path": "/slots[*]/start"
-            },
-            "action": {
-              "event": {
-                "name": "meeting.invite",
-                "context": {
-                  "date": {
-                    "path": "/draft/date"
-                  },
-                  "slot": {
-                    "path": "/slots[*]/start"
-                  },
-                  "people": {
-                    "path": "/draft/people"
-                  }
-                }
-              }
-            },
-            "progress": {
-              "value": {
-                "path": "/slots[*]/value"
-              }
-            }
-          }
-        },
-        "label": "Available slots",
-        "empty": {
-          "component": "Status",
-          "kind": "info",
-          "title": "No slots found",
-          "message": "No available slots found for this date."
-        }
-      }
-    ]
-  },
   "data": {
     "draft": {
       "date": "2026-09-22",
@@ -108,5 +33,94 @@
         "name": "Tom"
       }
     ]
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "Find availability",
+      "description": "Please confirm the details for the meeting.",
+      "children": [
+        "date-str",
+        "duration-str",
+        "collection"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "TextInput",
+      "key": "date_str",
+      "label": "Date",
+      "value": {
+        "path": "/draft/date"
+      },
+      "kind": "text",
+      "required": true,
+      "id": "date-str"
+    },
+    {
+      "component": "TextInput",
+      "key": "duration_str",
+      "label": "Duration",
+      "value": {
+        "path": "/draft/duration"
+      },
+      "kind": "text",
+      "required": true,
+      "id": "duration-str"
+    },
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/slots",
+        "componentId": "card"
+      },
+      "label": "Available slots",
+      "empty": "status",
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "info",
+      "title": "No slots found",
+      "message": "No available slots found for this date.",
+      "id": "status"
+    },
+    {
+      "component": "Card",
+      "title": {
+        "path": "/slots[*]/label"
+      },
+      "subtitle": {
+        "path": "/slots[*]/start"
+      },
+      "action": {
+        "event": {
+          "name": "meeting.invite",
+          "context": {
+            "date": {
+              "path": "/draft/date"
+            },
+            "slot": {
+              "path": "/slots[*]/start"
+            },
+            "people": {
+              "path": "/draft/people"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/slots[*]/value"
+        }
+      },
+      "id": "card"
+    }
+  ],
+  "surface": {
+    "id": "calendar_schedule",
+    "title": "Find availability",
+    "intent": "calendar.schedule"
   }
 }

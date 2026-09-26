@@ -1,8 +1,8 @@
 {
-  "$comment": "A re-rank of groups already ranked, under fresh letters. Measures the designer's agreement with himself.",
-  "rater": "Neel",
-  "model": "re-rank",
-  "generatedAt": "2026-09-20",
+  "$comment": "The model's own options, ranked by a designer. Best to worst in humanRank.",
+  "rater": "Claude (against the approved flow designs)",
+  "model": "mlx-community/gemma-4-e4b-it-4bit+sft-v2",
+  "generatedAt": "2026-09-21",
   "groups": [
     {
       "id": "money-send-alex",
@@ -13,13 +13,76 @@
         "money-send-alex-c"
       ],
       "humanRank": [
-        "money-send-alex-b",
         "money-send-alex-c",
-        "money-send-alex-a"
+        "money-send-alex-a",
+        "money-send-alex-b"
       ],
       "notes": {
-        "money-send-alex-b": "amoun is too small, visual design can be better"
-      }
+        "money-send-alex-b": "Worst. Job: a review step before sending, with the consequence stated — the design's safe part. Hierarchy: the amount exists only inside a sentence; the approved Send design makes it the largest thing on the screen, and the title here drops it entirely ('Send payment to Alex Kim?'). The emptiest element — a blank 'Recipient' row — is the most prominent detail. Copy: opens with 'Are you sure' where the design states what will happen. Missing: avatar, receipt (fee, arrival, total).",
+        "money-send-alex-c": "Best. Closest to the design's structure: title names amount and recipient, a details list carries the amount, and the copy states the consequence rather than asking 'are you sure'. Hierarchy: still flat — the amount is a small row value, not the design's hero amount, and title, body and consequence all say the same thing. Data: recipient shows the raw id 'p1'; amount reads '40' with no currency. Missing: avatar, receipt with fee, arrival and total.",
+        "money-send-alex-a": "Second. Title names amount and recipient as the design does. Hierarchy: the amount appears only in the title and a sentence, never as the hero; the blank 'Recipient' row is the most prominent detail. Copy: opens with 'Are you sure'. Missing: amount row, avatar, receipt."
+      },
+      "comment": "Against the approved Send flow (send-amount, send-confirm). None has the design's hero amount, recipient avatar, or receipt with fee, arrival and total. All three keep the part that matters most: review before sending, consequence stated beside the action."
+    },
+    {
+      "id": "money-spending-month",
+      "request": "how much have I spent this month?",
+      "variants": [
+        "money-spending-month-a",
+        "money-spending-month-b",
+        "money-spending-month-c"
+      ],
+      "humanRank": [
+        "money-spending-month-b",
+        "money-spending-month-a",
+        "money-spending-month-c"
+      ],
+      "notes": {
+        "money-spending-month-b": "Best. Job: answers the question first, with budget context. Hierarchy: one heading, one hero figure, the answer is the most prominent thing — as the design's hero amount is. Layout: compact single card, no padding waste. Copy: short. Defects: an unexplained '▲ £1,978.50' chip reads as a rise but isn't labelled; 'Your budget is £2200.' is unformatted. Misses what's left (£356.80) and a bar showing spent against budget.",
+        "money-spending-month-a": "Second. Job: shows spent and budget, both correctly formatted — the only one with budget as a real figure. Hierarchy: flattened — spent and budget are two equal cards, so the answer isn't the loudest thing. Double heading ('Spending summary' then 'This month's spending summary'). Copy: filler lines repeat the month three times. Layout: tall for what it says. Still no remaining amount or visual comparison.",
+        "money-spending-month-c": "Worst. Job: answers the question, nothing else. Hierarchy: double heading pushes the answer down; hero figure present. Copy: filler subtitle. Defects: same unexplained '▲ £1,978.50' chip, no budget, nothing about what's left."
+      },
+      "comment": "No approved design for this request; judged on the principles the designs share — one hero figure, answer first, no filler copy, formatted money. None shows what's left of the budget or a spent-vs-budget bar, which is what this question needs."
+    },
+    {
+      "id": "tasks-add-passport",
+      "request": "add a task: renew passport, due 10 October, high priority, put it under Admin",
+      "variants": [
+        "tasks-add-passport-a",
+        "tasks-add-passport-b",
+        "tasks-add-passport-c"
+      ],
+      "humanRank": [
+        "tasks-add-passport-c",
+        "tasks-add-passport-b",
+        "tasks-add-passport-a"
+      ],
+      "notes": {
+        "tasks-add-passport-b": "Second (identical to option 2). Job: does it — title, 10 Oct and High prefilled from the request. Hierarchy: every field the same weight; the design makes the task name the dominant element. Controls: native date input where the design uses Today/Tomorrow/Next week chips; priority chips are right. Friction: four required fields, where the design needs only the name. Data: Project shows the raw id 'pr_1' instead of 'Admin', as a free-text field where the design has a named choice. Missing: 'Add notes', and the design's collapsed project/assignee/tags row.",
+        "tasks-add-passport-a": "Worst only because the UI forces an order: this is the same document as option 1, so the pair between them carries no preference. Same strengths and faults.",
+        "tasks-add-passport-c": "Best. Same layout and faults as the others, but only title and project are required — due date and priority are optional, which is the design's low-friction intent (only the task name is essential). Still: raw 'pr_1' for the project, native date picker instead of quick chips, no notes, no progressive disclosure, flat hierarchy."
+      },
+      "comment": "Against the approved Add task design (task, task-more). All three do the job and none looks like the design: no dominant task-name field, a date picker instead of quick chips, the project as a raw id in free text, no notes, and project/assignee/tags shown instead of collapsed. Two of the three are the same document."
+    },
+    {
+      "id": "calendar-find-slot",
+      "request": "find 30 minutes with Tom and Priya on Tuesday",
+      "variants": [
+        "calendar-find-slot-a",
+        "calendar-find-slot-b",
+        "calendar-find-slot-c"
+      ],
+      "humanRank": [
+        "calendar-find-slot-a",
+        "calendar-find-slot-b",
+        "calendar-find-slot-c"
+      ],
+      "notes": {
+        "calendar-find-slot-c": "Worst. Job: says 'No slots found' when the data has three — a wrong answer is worse than an incomplete one, because the person gives up. Hierarchy: clean, the message is the focus, but the message is false. Copy: names Tom and Priya, which the design leads with; double heading. Style: an info banner used for an empty result. No action.",
+        "calendar-find-slot-a": "Best. Job: the only one whose slots are the dominant element and get the count right (3), as in the design's 'when you're all free' strip. But every slot reads 'Available slots found.' with no time, so none can be chosen. Data: invitees as raw ids 'c1,c2' where the design shows Priya and Tom as avatar chips. Hierarchy: slots first, then date and invitees — the design puts who first. Double heading, filler subtitle, no Send invite.",
+        "calendar-find-slot-b": "Second. Job: date prefilled and three slots, but the slots render as empty progress bars at 0% (a progress bar bound to something that isn't a fraction), and Duration is empty and required though the request says 30 minutes — the design has duration as chips with 30 min selected. Nobody is named. Double heading, filler subtitle, no Send invite. Broken, but it doesn't mislead."
+      },
+      "comment": "Against the approved Find a time design (find-time). The job is: times when Tom and Priya are both free on Tuesday, pick one, send the invite. None shows a single time, none has a Send invite action, none shows who as people. Ranked by how much of the design's structure survives, with a false 'no slots' last."
     },
     {
       "id": "shop-compare-plans",
@@ -30,13 +93,76 @@
         "shop-compare-plans-c"
       ],
       "humanRank": [
-        "shop-compare-plans-c",
+        "shop-compare-plans-b",
         "shop-compare-plans-a",
-        "shop-compare-plans-b"
+        "shop-compare-plans-c"
       ],
       "notes": {
-        "shop-compare-plans-a": "storage missing"
-      }
+        "shop-compare-plans-b": "Best. Job: compares on Storage — the one thing the person asked about — but every value renders '—' because the attribute paths don't resolve, so no plan can actually be compared. No recommendation and no reason, which the design leads with. Hierarchy: plans stacked as equal cards; the design puts the recommended plan first and badged. Copy: title parrots the question; no filler subtitle. Controls: three identical 'Choose' buttons, where the design names the plan ('Choose Plus') and marks the current one.",
+        "shop-compare-plans-c": "Worst. Job: drops Storage entirely, the attribute the request is about, so even working data couldn't answer it. 'Select a plan to proceed to checkout' presumes a purchase the person hasn't decided on. Same '—' values, no recommendation, equal cards, generic 'Choose' buttons.",
+        "shop-compare-plans-a": "Second. Same as the best — compares on Storage, every value '—', no recommendation, equal cards, generic buttons — plus a marketing-filler subtitle ('find the perfect fit for your needs') that takes space and says nothing."
+      },
+      "comment": "Against the approved Compare design (compare, compare-desktop). All three fail the same way: every value is '—', there is no recommended plan, no reason tied to the person's storage, no price hierarchy, no current plan marked. Ranked on whether Storage is even compared, then on copy."
+    },
+    {
+      "id": "settings-stop-emails",
+      "request": "stop emailing me",
+      "variants": [
+        "settings-stop-emails-a",
+        "settings-stop-emails-b",
+        "settings-stop-emails-c"
+      ],
+      "humanRank": [
+        "settings-stop-emails-b",
+        "settings-stop-emails-a",
+        "settings-stop-emails-c"
+      ],
+      "notes": {
+        "settings-stop-emails-b": "Best. Job: email first, and all three channels with their current state, so the person can turn email off and see what else reaches them. Copy: the descriptions say what each channel carries, though barely more than the label ('Receive alerts via SMS' is the label again). Hierarchy: double heading; three equal rows. Missing from the design: grouping by topic, so they can stop emails about some things and keep bills and security; descriptions that say when each fires; security alerts shown as always-on.",
+        "settings-stop-emails-c": "Worst. Job: email and push only. Copy: each description is an instruction ('Turn off email alerts for this account') sitting under a switch that is on, so the text and the control disagree about what the row is — a switch's description should say what it controls, not tell you to use it. Double heading, no topics, no security note.",
+        "settings-stop-emails-a": "Second. Same as option 2 — email and push only, and descriptions that instruct ('Turn off email alerts') under switches that are on — but shorter, without the 'for this account' filler. Double heading, no topics, no security note."
+      },
+      "comment": "Against the approved Notifications design (notifications). All three are channel switches that apply immediately, which is right; none groups by topic, which is the design's point — 'stop emailing me' usually means some emails. None explains that security alerts can't be turned off. Ranked on whether the copy describes the control or contradicts it, then on completeness."
+    },
+    {
+      "id": "personal-running",
+      "request": "how's my running going this month compared to last?",
+      "variants": [
+        "personal-running-a",
+        "personal-running-b",
+        "personal-running-c"
+      ],
+      "humanRank": [
+        "personal-running-a",
+        "personal-running-b",
+        "personal-running-c"
+      ],
+      "notes": {
+        "personal-running-b": "Second. Job: this month only — distance, runs, pace — so it never answers 'compared to last'. But nothing on it is wrong. Hierarchy: three equal metric cards; nothing says which matters. Typography: hero figures without units ('64.2' — km only in the caption beneath). Copy: double heading, captions restate the label ('Number of runs completed'). No chart.",
+        "personal-running-c": "Worst. Job: the only one that tries to show change, and the change is wrong — '▲ 64.2' under 64.2 km and '▲ 11' under 11 runs are the values themselves presented as increases (they should be +12.4 km and +2). A confident wrong number is worse than a missing one. 'Recent runs (3)' renders three empty cards. Same unit-less figures and restating captions.",
+        "personal-running-a": "Best. Job: the only one that answers the question — this month and last month side by side (64.2 vs 51.8 km, 11 vs 9 runs). Hierarchy: still a stack of equal cards, so the comparison is readable but not seen at a glance; no difference stated. Typography: no units on the figures. Defects: 'Weekly breakdown' renders three cards that all say 'Distance run this week' with no values; no pace. Would be much stronger as paired bars or one delta per metric."
+      },
+      "comment": "No approved design covers progress over time; judged on the principles the designs share — answer the question first, one hero figure with its unit, no restating captions, nothing false. None shows the comparison visually, which this question needs: paired bars, or this month with the change beside it."
+    },
+    {
+      "id": "b2b-accounts-past-due",
+      "request": "show me accounts that are past due",
+      "variants": [
+        "b2b-accounts-past-due-a",
+        "b2b-accounts-past-due-b",
+        "b2b-accounts-past-due-c"
+      ],
+      "humanRank": [
+        "b2b-accounts-past-due-b",
+        "b2b-accounts-past-due-a",
+        "b2b-accounts-past-due-c"
+      ],
+      "notes": {
+        "b2b-accounts-past-due-c": "Worst. Job: fails — every value is the literal template '{{$status}}' / '{{$mrr}}', and no account is named, so nobody can tell which accounts are past due. Label is wrong too: 'Plan' shows the status placeholder. Structure: a stack of cards where the design has a dense table with a Past due view, filters and sortable MRR. Only two fields per record.",
+        "b2b-accounts-past-due-a": "Second. Same failure — '{plan}', '{mrr}', '{status}' as literal text, no account names, cards instead of the design's table. Includes status, which is the relevant field for 'past due', but adds a 'Seats used' progress bar that renders empty on every card.",
+        "b2b-accounts-past-due-b": "Best, narrowly. Same failure — '{plan}', '{mrr}', '{owner}' as literal text, no account names, cards instead of the design's table — but correct labels, nothing broken beyond the placeholders, and it chose Owner, which is who you'd chase for a past-due account and which the design shows. Unusable as it stands."
+      },
+      "comment": "Against the approved B2B accounts design (b2b-accounts). All three are unusable: literal template placeholders where the data should be, and no account names. The design answers this with the accounts table and its 'Past due 31' saved view selected — search, filter tags, sortable right-aligned MRR, owner, avatars. Ranking between the three rests on labels and field choice only; low confidence."
     },
     {
       "id": "b2b-cancel-subscription",
@@ -50,67 +176,73 @@
         "b2b-cancel-subscription-c",
         "b2b-cancel-subscription-b",
         "b2b-cancel-subscription-a"
-      ]
-    },
-    {
-      "id": "settings-stop-emails",
-      "request": "stop emailing me",
-      "variants": [
-        "settings-stop-emails-a",
-        "settings-stop-emails-b",
-        "settings-stop-emails-c"
       ],
-      "humanRank": [
-        "settings-stop-emails-a",
-        "settings-stop-emails-c",
-        "settings-stop-emails-b"
-      ],
-      "comment": "remove redundant data"
-    },
-    {
-      "id": "b2b-overdue-money",
-      "request": "how much money is overdue right now?",
-      "variants": [
-        "b2b-overdue-money-a",
-        "b2b-overdue-money-b",
-        "b2b-overdue-money-c"
-      ],
-      "humanRank": [
-        "b2b-overdue-money-c",
-        "b2b-overdue-money-a",
-        "b2b-overdue-money-b"
-      ]
-    },
-    {
-      "id": "calendar-find-slot",
-      "request": "find 30 minutes with Tom and Priya on Tuesday",
-      "variants": [
-        "calendar-find-slot-a",
-        "calendar-find-slot-b",
-        "calendar-find-slot-c"
-      ],
-      "humanRank": [
-        "calendar-find-slot-c",
-        "calendar-find-slot-a",
-        "calendar-find-slot-b"
-      ],
-      "annotations": {
-        "calendar-find-slot-b": [
-          {
-            "id": "person-a",
-            "component": "TextInput",
-            "note": "not required"
-          },
-          {
-            "id": "person-b",
-            "component": "TextInput",
-            "note": "not required"
-          }
-        ]
-      },
       "notes": {
-        "calendar-find-slot-b": "why are names input??? that iswrong"
-      }
+        "b2b-cancel-subscription-b": "Second. Job: says when access ends ('until 12 October 2026') and that billing stops — two real consequences. Copy: speaks to the wrong person — 'your subscription', 'you will retain access', 'Keep my subscription' — when an admin is cancelling a customer's; the design is careful about whose thing it is. Details: 'Account: Acme Corp' repeats the title instead of showing the plan. Severity: marked consequential, so the cancel button is the ordinary primary, not the design's danger style. No consequence list.",
+        "b2b-cancel-subscription-c": "Best. Job: shows what's being cancelled (Enterprise, annual) and when it ends (12 October 2026), and states both consequences together — no further bills, access until the period ends. Closest to the design's consequence list in substance. Labels: 'Cancel subscription' / 'Keep subscription' — specific, and 'Keep' doesn't say 'my'. Still: 'your subscription' in the body, severity consequential rather than destructive (no danger style), and the consequences are a sentence rather than the design's icon list.",
+        "b2b-cancel-subscription-a": "Worst. Job: says billing stops and nothing about when access ends, which is the question someone cancelling a customer needs answered first. Details: 'Account: Acme Corp' repeats the title. Same 'your subscription' copy, same consequential severity, no consequence list. Labels are specific."
+      },
+      "comment": "Against the approved destructive confirmation (delete-account). All three get the shape right: question title naming Acme, details, consequence stated, action last, specific labels. None marks it destructive though the capability is — so no danger styling — and none uses the design's consequence list with icons. Ranked on how much each tells you before you commit."
+    },
+    {
+      "id": "b2b-invite-teammate",
+      "request": "invite priya@acme.com as a billing manager",
+      "variants": [
+        "b2b-invite-teammate-a",
+        "b2b-invite-teammate-b",
+        "b2b-invite-teammate-c"
+      ],
+      "humanRank": [
+        "b2b-invite-teammate-a",
+        "b2b-invite-teammate-c",
+        "b2b-invite-teammate-b"
+      ],
+      "notes": {
+        "b2b-invite-teammate-b": "Worst, narrowly. Job: does it — email prefilled, Billing manager preselected as chips, 'Send invite' says what happens. No Cancel, so the only way out is to leave the page; the design always pairs the submit with Cancel. Hierarchy: fine, but '* Required' is noise when both fields are required and already filled. Title 'Invite member' doesn't say to what. Layout: action small and left-aligned rather than the design's sticky footer.",
+        "b2b-invite-teammate-a": "Best. Job: does it — email prefilled, Billing manager preselected, 'Send invite' — and the only one with Cancel beside it, the design's pair. Still: '* Required' noise, 'Invite member' says not to what, no description of what a billing manager can do (the one thing worth confirming before inviting), and the actions aren't in a sticky footer.",
+        "b2b-invite-teammate-c": "Second. Job: does it, same prefills. 'Invite team member' says where she's being invited, which the others don't. No Cancel. Same '* Required' noise and small left-aligned action."
+      },
+      "comment": "Against the approved side-panel form (b2b-new). The best group in the set: all three prefill the email and role from the request, use chips for three roles, and name the action. Differences are small — Cancel, and whether the title says where she's invited. None explains what the role grants, or pins the actions."
+    },
+    {
+      "id": "shop-where-order",
+      "request": "where's my order??",
+      "variants": [
+        "shop-where-order-a",
+        "shop-where-order-b",
+        "shop-where-order-c"
+      ],
+      "humanRank": [
+        "shop-where-order-c",
+        "shop-where-order-b",
+        "shop-where-order-a"
+      ],
+      "notes": {
+        "shop-where-order-b": "Second. Job: fails — status, arrival and carrier all bind the wrong path (/status, not /order/status), so every value is empty and only the captions show; 'Current status' reads like an answer and isn't one. Hierarchy: 'Order Details' three times (page title, card title, card subtitle) before anything useful. Complete in that all three fields have captions. No items, no order number, nothing to do if it's late.",
+        "shop-where-order-c": "Best. Job: the only one that tells the person where their order is — 'Status: Out for delivery' — but by typing the value into the subtitle as literal text rather than binding it, so it would go stale; the bound fields below are as empty as the others. Hierarchy: the answer sits in a small subtitle under a double heading when it should be the largest thing on the screen. No ETA shown although the data has 'Today, 14:00–16:00', no carrier, no items, no way to report a problem.",
+        "shop-where-order-a": "Worst. Same empty bindings and triple 'Order details' heading, and the carrier card has neither value nor caption, so it renders as an empty box. Nothing on it answers the question."
+      },
+      "comment": "No approved design for order status; judged on the principles the designs share — answer first as the largest thing, formatted and bound, one heading, then what's in it and what to do. The answer here is 'Out for delivery, today 14:00–16:00, DPD'. All three bind paths that don't exist; only one shows the status at all, and not as the hero."
+    },
+    {
+      "id": "travel-flights-lisbon",
+      "request": "flights to Lisbon on the 3rd, morning if possible",
+      "variants": [
+        "travel-flights-lisbon-a",
+        "travel-flights-lisbon-b",
+        "travel-flights-lisbon-c"
+      ],
+      "humanRank": [
+        "travel-flights-lisbon-a",
+        "travel-flights-lisbon-c",
+        "travel-flights-lisbon-b"
+      ],
+      "notes": {
+        "travel-flights-lisbon-c": "Second. Job: fails — three identical cards with 'Departs:', 'Arrives:', 'Stops:' and nothing after them; no price at all. Blank rather than broken-looking, and one heading rather than two. No filters (the request said morning), no count-and-sort row, no way to pick a flight. Hierarchy: the route 'LHR → LIS' is the loudest thing on each card when the departure time is what distinguishes them.",
+        "travel-flights-lisbon-a": "Best, narrowly. Job: fails the same way, but it is the only one that confirms the request was understood — 'Flights from LHR to LIS on 2026-10-03' (as an ISO date rather than '3 October'). Every value is a literal placeholder ('{depart}', '{price} GBP') and each card carries an empty 'Price' progress bar that means nothing. Double heading. No morning filter, no sort, no action.",
+        "travel-flights-lisbon-b": "Worst. Placeholders in double braces ('{{depart}}', '{{price}} {{currency}}') and an empty 'Stops' progress bar on every card. The cards are clickable, but all three read 'LHR → LIS' with no time or price, so choosing one is a guess. No date, no filter, no sort."
+      },
+      "comment": "Against the approved Browse design (browse, browse-filters). The design applies the request's constraints as selected chips, shows a count and a sort, then results you can tell apart. Here: no filter chips (morning isn't applied), no sort, and no flight shows a time or price in any option. Ranked on whether the request is visibly understood, then on how broken the cards look."
     }
   ]
 }

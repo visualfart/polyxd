@@ -1,41 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "money_spending_summary",
-    "title": "Spending summary",
-    "intent": "money.spending.summary"
-  },
-  "root": {
-    "component": "Section",
-    "title": "This month's spending summary",
-    "description": "Here is a summary of your payments for September 2026.",
-    "children": [
-      {
-        "component": "Metric",
-        "label": "Total spent",
-        "value": {
-          "path": "/spent"
-        },
-        "format": {
-          "type": "currency",
-          "currency": "GBP"
-        },
-        "caption": "Payment summary for September 2026"
-      },
-      {
-        "component": "Metric",
-        "label": "Budget",
-        "value": {
-          "path": "/budget"
-        },
-        "format": {
-          "type": "currency",
-          "currency": "GBP"
-        },
-        "caption": "Your allocated budget for this month"
-      }
-    ]
-  },
   "data": {
     "period": "September 2026",
     "currency": "GBP",
@@ -64,5 +28,49 @@
         "amount": 211
       }
     ]
+  },
+  "root": "section",
+  "components": [
+    {
+      "component": "Section",
+      "title": "This month's spending summary",
+      "description": "Here is a summary of your payments for September 2026.",
+      "children": [
+        "metric",
+        "metric-2"
+      ],
+      "id": "section"
+    },
+    {
+      "component": "Metric",
+      "label": "Total spent",
+      "value": {
+        "path": "/spent"
+      },
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      },
+      "caption": "Payment summary for September 2026",
+      "id": "metric"
+    },
+    {
+      "component": "Metric",
+      "label": "Budget",
+      "value": {
+        "path": "/budget"
+      },
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      },
+      "caption": "Your allocated budget for this month",
+      "id": "metric-2"
+    }
+  ],
+  "surface": {
+    "id": "money_spending_summary",
+    "title": "Spending summary",
+    "intent": "money.spending.summary"
   }
 }

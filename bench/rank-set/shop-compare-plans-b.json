@@ -1,54 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "commerce_plan_choose",
-    "title": "Which plan should I get?",
-    "intent": "commerce.plan.choose"
-  },
-  "root": {
-    "component": "Comparison",
-    "items": {
-      "path": "/plans"
-    },
-    "itemTitle": "Plan Details",
-    "attributes": [
-      {
-        "key": "name",
-        "label": "Plan Name",
-        "path": "/name"
-      },
-      {
-        "key": "price",
-        "label": "Price",
-        "path": "/price",
-        "format": {
-          "type": "currency",
-          "currency": "USD"
-        }
-      },
-      {
-        "key": "storage",
-        "label": "Storage",
-        "path": "/storage",
-        "format": {
-          "type": "number"
-        }
-      }
-    ],
-    "choose": {
-      "label": "Choose",
-      "action": {
-        "event": {
-          "name": "plan.select",
-          "context": {
-            "plan": {
-              "path": "/id"
-            }
-          }
-        }
-      }
-    }
-  },
   "data": {
     "plans": [
       {
@@ -73,5 +24,58 @@
         "support": "Priority"
       }
     ]
+  },
+  "root": "comparison",
+  "components": [
+    {
+      "component": "Comparison",
+      "items": {
+        "path": "/plans"
+      },
+      "itemTitle": "Plan Details",
+      "attributes": [
+        {
+          "key": "name",
+          "label": "Plan Name",
+          "path": "/name"
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "path": "/price",
+          "format": {
+            "type": "currency",
+            "currency": "USD"
+          }
+        },
+        {
+          "key": "storage",
+          "label": "Storage",
+          "path": "/storage",
+          "format": {
+            "type": "number"
+          }
+        }
+      ],
+      "choose": {
+        "label": "Choose",
+        "action": {
+          "event": {
+            "name": "plan.select",
+            "context": {
+              "plan": {
+                "path": "/id"
+              }
+            }
+          }
+        }
+      },
+      "id": "comparison"
+    }
+  ],
+  "surface": {
+    "id": "commerce_plan_choose",
+    "title": "Which plan should I get?",
+    "intent": "commerce.plan.choose"
   }
 }

@@ -1,32 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "money_summary",
-    "title": "Spending summary",
-    "intent": "money.spending.summary"
-  },
-  "root": {
-    "component": "Metric",
-    "label": "Spent this month",
-    "value": {
-      "path": "/spent"
-    },
-    "format": {
-      "type": "currency",
-      "currency": "GBP"
-    },
-    "change": {
-      "value": {
-        "path": "/lastMonth"
-      },
-      "format": {
-        "type": "currency",
-        "currency": "GBP"
-      },
-      "favorable": "none"
-    },
-    "caption": "Your budget is £2200."
-  },
   "data": {
     "period": "September 2026",
     "currency": "GBP",
@@ -75,5 +48,36 @@
         "date": "2026-09-17"
       }
     ]
+  },
+  "root": "metric",
+  "components": [
+    {
+      "component": "Metric",
+      "label": "Spent this month",
+      "value": {
+        "path": "/spent"
+      },
+      "format": {
+        "type": "currency",
+        "currency": "GBP"
+      },
+      "change": {
+        "value": {
+          "path": "/lastMonth"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "favorable": "none"
+      },
+      "caption": "Your budget is £2200.",
+      "id": "metric"
+    }
+  ],
+  "surface": {
+    "id": "money_summary",
+    "title": "Spending summary",
+    "intent": "money.spending.summary"
   }
 }

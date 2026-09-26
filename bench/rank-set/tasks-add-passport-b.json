@@ -1,88 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "tasks_create",
-    "title": "New task",
-    "intent": "tasks.create"
-  },
-  "root": {
-    "component": "Form",
-    "children": [
-      {
-        "component": "TextInput",
-        "key": "title",
-        "label": "Title",
-        "value": {
-          "path": "/draft/title"
-        },
-        "required": true
-      },
-      {
-        "component": "DateInput",
-        "key": "due",
-        "label": "Due date",
-        "value": {
-          "path": "/draft/due"
-        },
-        "kind": "date",
-        "required": true
-      },
-      {
-        "component": "Choice",
-        "key": "priority",
-        "label": "Priority",
-        "options": [
-          {
-            "value": "high",
-            "label": "High"
-          },
-          {
-            "value": "medium",
-            "label": "Medium"
-          },
-          {
-            "value": "low",
-            "label": "Low"
-          }
-        ],
-        "value": {
-          "path": "/draft/priority"
-        },
-        "required": true
-      },
-      {
-        "component": "TextInput",
-        "key": "project",
-        "label": "Project",
-        "value": {
-          "path": "/draft/project"
-        },
-        "required": true
-      }
-    ],
-    "submit": {
-      "label": "Add task",
-      "action": {
-        "event": {
-          "name": "task.save",
-          "context": {
-            "title": {
-              "path": "/draft/title"
-            },
-            "due": {
-              "path": "/draft/due"
-            },
-            "priority": {
-              "path": "/draft/priority"
-            },
-            "project": {
-              "path": "/draft/project"
-            }
-          }
-        }
-      }
-    }
-  },
   "data": {
     "projects": [
       {
@@ -105,5 +22,100 @@
       "project": "pr_1",
       "notes": ""
     }
+  },
+  "root": "form",
+  "components": [
+    {
+      "component": "Form",
+      "children": [
+        "title",
+        "due",
+        "priority",
+        "project"
+      ],
+      "submit": {
+        "label": "Add task",
+        "action": {
+          "event": {
+            "name": "task.save",
+            "context": {
+              "title": {
+                "path": "/draft/title"
+              },
+              "due": {
+                "path": "/draft/due"
+              },
+              "priority": {
+                "path": "/draft/priority"
+              },
+              "project": {
+                "path": "/draft/project"
+              }
+            }
+          }
+        }
+      },
+      "id": "form"
+    },
+    {
+      "component": "TextInput",
+      "key": "title",
+      "label": "Title",
+      "value": {
+        "path": "/draft/title"
+      },
+      "required": true,
+      "id": "title"
+    },
+    {
+      "component": "DateInput",
+      "key": "due",
+      "label": "Due date",
+      "value": {
+        "path": "/draft/due"
+      },
+      "kind": "date",
+      "required": true,
+      "id": "due"
+    },
+    {
+      "component": "Choice",
+      "key": "priority",
+      "label": "Priority",
+      "options": [
+        {
+          "value": "high",
+          "label": "High"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "low",
+          "label": "Low"
+        }
+      ],
+      "value": {
+        "path": "/draft/priority"
+      },
+      "required": true,
+      "id": "priority"
+    },
+    {
+      "component": "TextInput",
+      "key": "project",
+      "label": "Project",
+      "value": {
+        "path": "/draft/project"
+      },
+      "required": true,
+      "id": "project"
+    }
+  ],
+  "surface": {
+    "id": "tasks_create",
+    "title": "New task",
+    "intent": "tasks.create"
   }
 }

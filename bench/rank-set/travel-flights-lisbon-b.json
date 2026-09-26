@@ -1,0 +1,100 @@
+{
+  "specVersion": "0.1.0",
+  "data": {
+    "route": "LHR → LIS",
+    "date": "2026-10-03",
+    "flights": [
+      {
+        "id": "f1",
+        "depart": "07:10",
+        "arrive": "09:55",
+        "airline": "TAP",
+        "stops": 0,
+        "price": 118
+      },
+      {
+        "id": "f2",
+        "depart": "09:40",
+        "arrive": "12:20",
+        "airline": "British Airways",
+        "stops": 0,
+        "price": 142
+      },
+      {
+        "id": "f3",
+        "depart": "11:05",
+        "arrive": "15:50",
+        "airline": "Iberia",
+        "stops": 1,
+        "price": 96
+      }
+    ],
+    "currency": "GBP"
+  },
+  "root": "collection",
+  "components": [
+    {
+      "component": "Collection",
+      "items": {
+        "path": "/flights",
+        "componentId": "id"
+      },
+      "label": "Available flights",
+      "empty": "status",
+      "layout": "list",
+      "id": "collection"
+    },
+    {
+      "component": "Status",
+      "kind": "info",
+      "title": "No flights found",
+      "message": "No flights found for this criteria.",
+      "id": "status"
+    },
+    {
+      "id": "id",
+      "component": "Card",
+      "title": {
+        "path": "/route"
+      },
+      "subtitle": {
+        "path": "/airline"
+      },
+      "children": [
+        "text",
+        "text-2"
+      ],
+      "action": {
+        "event": {
+          "name": "flight.select",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "/stops"
+        },
+        "label": "Stops"
+      }
+    },
+    {
+      "component": "Text",
+      "text": "Departs {{depart}} - Arrives {{arrive}}",
+      "id": "text"
+    },
+    {
+      "component": "Text",
+      "text": "Price: {{price}} {{currency}}",
+      "id": "text-2"
+    }
+  ],
+  "surface": {
+    "id": "flight_search",
+    "title": "Flights to Lisbon",
+    "intent": "travel.flights.search"
+  }
+}

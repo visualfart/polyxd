@@ -121,12 +121,19 @@ def build(min_weight: int = 1, include_claude: bool = False) -> None:
             if not group or not group.get("humanRank"):
                 continue
             order = [k["letters"].get(name, name) for name in group["humanRank"]]
+            # Variant names repeat across rounds (money-send-alex-c is a different document in
+            # every round that ranked that request), so a reversal belongs to the one round whose
+            # ranking this was a second sitting of.
+            source = next(
+                (str(r["dir"]) for r in rounds for g in r["groups"] if g["id"] == k["id"] and g.get("humanRank") == k["earlier"]),
+                None,
+            )
             for i, better in enumerate(k["earlier"]):
                 for worse in k["earlier"][i + 1 :]:
                     if order.index(better) > order.index(worse):
-                        reversed_pairs.add((better, worse))
+                        reversed_pairs.add((source, better, worse))
 
-    rows, dropped = [], 0
+    rows, dropped, identical = [], 0, 0
     system = system_prompt("tree")
     for round_ in rounds:
         for group in round_["groups"]:
@@ -146,8 +153,13 @@ def build(min_weight: int = 1, include_claude: bool = False) -> None:
                     worse = rank[j]
                     if better not in docs or worse not in docs:
                         continue
-                    if (better, worse) in reversed_pairs:
+                    if (str(round_["dir"]), better, worse) in reversed_pairs:
                         dropped += 1
+                        continue
+                    # Two options that are the same document can't carry a preference, however
+                    # they were ordered: the ranking page makes the rater pick one anyway.
+                    if json.dumps(docs[better].get("components"), sort_keys=True) == json.dumps(docs[worse].get("components"), sort_keys=True):
+                        identical += 1
                         continue
                     # Distance in the ranking: first-versus-last is the preference the rater
                     # reproduces, first-versus-second is the one he sometimes reverses.
@@ -172,7 +184,7 @@ def build(min_weight: int = 1, include_claude: bool = False) -> None:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     by_weight = {w: sum(1 for r in rows if r["weight"] == w) for w in sorted({r["weight"] for r in rows})}
     print(f"{len(rows)} pairs from {len(rounds)} rounds → {out / 'pairs.jsonl'}")
-    print(f"  by weight: {by_weight}" + (f"; {dropped} dropped as reversed on a re-rank" if dropped else ""))
+    print(f"  by weight: {by_weight}" + (f"; {dropped} dropped as reversed on a re-rank" if dropped else "") + (f"; {identical} dropped as the same document twice" if identical else ""))
 
 
 # ---------- Training ----------

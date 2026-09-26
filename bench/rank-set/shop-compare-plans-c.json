@@ -1,47 +1,5 @@
 {
   "specVersion": "0.1.0",
-  "surface": {
-    "id": "commerce_plan_choose",
-    "title": "Which plan should I get?",
-    "intent": "commerce.plan.choose"
-  },
-  "root": {
-    "component": "Comparison",
-    "items": {
-      "path": "/plans"
-    },
-    "itemTitle": "Plan Details",
-    "attributes": [
-      {
-        "key": "name",
-        "label": "Plan Name",
-        "path": "/name"
-      },
-      {
-        "key": "price",
-        "label": "Price",
-        "path": "/price",
-        "format": {
-          "type": "currency",
-          "currency": "USD"
-        }
-      }
-    ],
-    "choose": {
-      "label": "Choose",
-      "action": {
-        "event": {
-          "name": "plan.select",
-          "context": {
-            "plan": {
-              "path": "/id"
-            }
-          }
-        }
-      }
-    },
-    "summary": "Select a plan to proceed to checkout."
-  },
   "data": {
     "current": "basic",
     "plans": [
@@ -67,5 +25,51 @@
         "support": "Priority"
       }
     ]
+  },
+  "root": "comparison",
+  "components": [
+    {
+      "component": "Comparison",
+      "items": {
+        "path": "/plans"
+      },
+      "itemTitle": "Plan Details",
+      "attributes": [
+        {
+          "key": "name",
+          "label": "Plan Name",
+          "path": "/name"
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "path": "/price",
+          "format": {
+            "type": "currency",
+            "currency": "USD"
+          }
+        }
+      ],
+      "choose": {
+        "label": "Choose",
+        "action": {
+          "event": {
+            "name": "plan.select",
+            "context": {
+              "plan": {
+                "path": "/id"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Select a plan to proceed to checkout.",
+      "id": "comparison"
+    }
+  ],
+  "surface": {
+    "id": "commerce_plan_choose",
+    "title": "Which plan should I get?",
+    "intent": "commerce.plan.choose"
   }
 }
