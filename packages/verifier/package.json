@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/verifier",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Verifies Polyxd UI documents: spec rules, rendered accessibility and layout, consistency across generations, and scripted agent tasks",
   "license": "Apache-2.0",
   "type": "module",
