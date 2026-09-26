@@ -1,0 +1,335 @@
+"""Studio, first half: getting started, the design system (tokens) and components."""
+from kit import (S, TONE, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
+                 checkbox, radio, segmented, swatch, meter, mono, card, h2, notice, table, search, filter_chip, tabs,
+                 app, page_head, drawer, dialog, toast, mini_surface, kbd, scrim)
+
+
+def stat(label_text, value, sub=None, tone=None, spark=None):
+    s = f'<span style="font-size: 12px; color: {TONE[tone][1] if tone else S["muted"]};">{sub}</span>' if sub else ""
+    return card(f'<span style="font-size: 13px; color: {S["muted"]};">{label_text}</span><div style="display: flex; align-items: baseline; gap: 10px;"><span style="font-family: {DISPLAY}; font-size: 30px; line-height: 36px; font-weight: 700;">{value}</span>{s}</div>{spark or ""}', pad=18, gap=6)
+
+
+def spark(points, w=240, h=40, color=None):
+    color = color or S["signal"]
+    mx, mn = max(points), min(points)
+    step = w / (len(points) - 1)
+    pts = " ".join(f"{i * step:.1f},{h - 4 - (p - mn) / (mx - mn or 1) * (h - 8):.1f}" for i, p in enumerate(points))
+    return f'<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" aria-hidden="true"><polyline points="{pts}" fill="none" stroke="{color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>'
+
+
+# ---------------------------------------------------------------- getting started
+
+def home():
+    steps = [
+        (True, "Connect your design system", "Northwind tokens · 87 of 87 roles mapped", "Tokens"),
+        (True, "Map your components", "18 of 26 connected to @northwind/ui", "Components"),
+        (False, "Set your direction", "Density, voice and the rules your screens follow", "Set direction"),
+        (False, "Register what the product can do", "12 capabilities, 3 still need a risk level", "Capabilities"),
+        (False, "Review your first 20 screens", "Your reviews teach Studio what good looks like", "Start reviewing"),
+    ]
+    rows = ""
+    for done, t, sub, cta in steps:
+        mark = f'<span style="width: 24px; height: 24px; border-radius: 50%; background: {S["ok"]}; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">{ic("check", 14, sw=2.5)}</span>' if done else f'<span aria-hidden="true" style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 2px solid {S["line"]}; flex-shrink: 0;"></span>'
+        state = '<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Done: </span>' if done else ""
+        action = f'<a href="#" style="font-size: 13px; font-weight: 500;">Review</a>' if done else btn(cta, "secondary", h=32)
+        rows += f'<li style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid {S["soft"]};">{mark}<div style="flex-grow: 1;">{state}<div style="font-weight: 600; color: {S["muted"] if done else S["ink"]};">{t}</div><div style="font-size: 13px; color: {S["muted"]};">{sub}</div></div>{action}</li>'
+    checklist = card(f'{h2("Get Northwind ready", "2 of 5 done. Screens generate as soon as a design system is connected; the rest makes them yours.", meter(40, "ok", 120))}<ol style="list-style: none; margin: 0; padding: 0;">{rows}</ol>', pad=24, gap=4)
+    activity = "".join(
+        f'<li style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid {S["soft"]};">{avatar(a, t, 26)}<div style="font-size: 13px; line-height: 18px;"><span style="font-weight: 600;">{who}</span> {what}<div style="color: {S["muted"]}; font-size: 12px;">{when}</div></div></li>'
+        for a, t, who, what, when in [
+            ("MR", "info", "Maya", "changed <strong>color.action.primary</strong> in Northwind", "12 min ago"),
+            ("JL", "ok", "Jonas", "approved 6 screens for <em>transfer.confirm</em>", "1 hour ago"),
+            ("PK", "signal", "Priya", "added the rule <em>Destructive actions name what is lost</em>", "Yesterday"),
+            ("TA", "gray", "Tom", "connected <strong>Choice</strong> to @northwind/ui Select", "Yesterday"),
+        ]
+    )
+    right = f'''<div style="display: flex; flex-direction: column; gap: 16px; width: 380px; flex-shrink: 0;">
+{card(h2("Needs you") + f'<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;"><li style="display: flex; gap: 10px; align-items: center;">{dot("signal")}<a href="#" style="color: {S["ink"]}; font-size: 14px;">18 screens waiting for review</a></li><li style="display: flex; gap: 10px; align-items: center;">{dot("warn")}<a href="#" style="color: {S["ink"]}; font-size: 14px;">2 contrast pairs fail in dark mode</a></li><li style="display: flex; gap: 10px; align-items: center;">{dot("bad")}<a href="#" style="color: {S["ink"]}; font-size: 14px;">Release 14 paused: agent task success fell 6%</a></li></ul>', pad=20)}
+{card(h2("Recent activity") + f'<ul style="list-style: none; margin: 0; padding: 0;">{activity}</ul>', pad=20, gap=4)}
+</div>'''
+    stats = f'''<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;">
+{stat("Screens generated, 7 days", "48,210", "+12%", "ok", spark([30, 34, 31, 38, 41, 40, 46]))}
+{stat("Verifier score", "91", "+3", "ok", spark([84, 85, 87, 86, 88, 90, 91]))}
+{stat("Accessibility checks passed", "99.2%", "−0.3%", "warn", spark([99.6, 99.5, 99.5, 99.4, 99.3, 99.4, 99.2], color=S["warn"]))}
+{stat("Agent tasks completed", "87%", "+5%", "ok", spark([79, 80, 82, 83, 84, 86, 87]))}
+</div>'''
+    body = page_head("Good morning, Maya", "Here is how Northwind's generated screens are doing, and what's left to set up.", btn("Open a preview", "secondary", "eye")) + f'''<div style="padding: 20px 32px 32px; display: flex; flex-direction: column; gap: 20px;">{stats}<div style="display: flex; gap: 20px; align-items: flex-start;"><div style="flex-grow: 1;">{checklist}</div>{right}</div></div>'''
+    return app("Studio home", "Home", ["Northwind", "Home"], body)
+
+
+def workspace_new():
+    platforms = "".join(
+        f'<label style="flex: 1 1 0; box-sizing: border-box; border: {"2px solid " + S["ink"] if on else "1px solid " + S["line"]}; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; background: {S["paper"]};"><span style="display: flex; justify-content: space-between; align-items: center;"><span style="display: flex; color: {S["ink2"]};">{ic(icon_name, 22)}</span><input type="checkbox"{" checked" if on else ""} style="width: 16px; height: 16px; margin: 0; accent-color: {S["ink"]};"></span><span style="font-weight: 600;">{name}</span><span style="font-size: 12px; color: {S["muted"]};">{sub}</span></label>'
+        for name, sub, icon_name, on in [("Web", "React renderer", "monitor", True), ("iOS", "SwiftUI, coming", "phone", False), ("Android", "Compose, coming", "phone", False)]
+    )
+    steps = "".join(
+        f'<li style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: {S["ink"] if i == 0 else S["muted"]}; font-weight: {600 if i == 0 else 500};"><span style="width: 22px; height: 22px; border-radius: 50%; background: {S["ink"] if i == 0 else S["soft"]}; color: {"#FFFFFF" if i == 0 else S["muted"]}; display: inline-flex; align-items: center; justify-content: center; font-size: 12px;">{i + 1}</span>{t}</li>'
+        for i, t in enumerate(["Your product", "Design system", "Invite your team"])
+    )
+    form = f'''<div style="width: 560px; display: flex; flex-direction: column; gap: 22px;">
+<ol aria-label="Setup steps" style="list-style: none; margin: 0; padding: 0; display: flex; gap: 24px;">{steps}</ol>
+<div><h1 style="margin: 0; font-family: {DISPLAY}; font-size: 36px; line-height: 42px; font-weight: 700; letter-spacing: -0.02em;">Tell us about your product</h1>
+<p style="margin: 8px 0 0; color: {S["muted"]}; font-size: 15px;">Studio sets up a workspace for one product. Everything here can be changed later.</p></div>
+{field("Product name", "Northwind", "product")}
+{field("Workspace address", "northwind", "address", prefix="studio.polyxd.com/", help_text="Your team signs in here.")}
+<div style="display: flex; flex-direction: column; gap: 8px;">{label("Where do your screens appear?")}<div style="display: flex; gap: 12px;">{platforms}</div></div>
+{select("What kind of product is it?", "Business software: dense tables, records, settings", "kind", help_text="Sets sensible starting defaults for density and patterns.")}
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 6px;">{btn("Back", "ghost", "chev_l")}{btn("Continue", "primary", trail_icon="arrow_r", h=40)}</div>
+</div>'''
+    aside = f'''<div style="flex: 1 1 0; background: {S["night"]}; color: {S["night_text"]}; display: flex; flex-direction: column; justify-content: center; padding: 64px; gap: 20px;">
+<span style="font-family: {DISPLAY}; font-size: 22px; font-weight: 700; color: {S["signal"]};">p</span>
+<p style="margin: 0; font-family: {DISPLAY}; font-size: 30px; line-height: 38px; font-weight: 500; max-width: 440px;">Screens written on demand, in your design system, checked before anyone sees them.</p>
+<p style="margin: 0; font-size: 14px; color: #CFCBC0; max-width: 420px;">Studio is where your design system team decides what those screens are allowed to look like, and reviews what they actually look like.</p>
+</div>'''
+    return doc("Create a workspace", 1440, 900, f'<main style="flex: 1 1 0; display: flex; align-items: center; justify-content: center; background: {S["paper"]};">{form}</main>{aside}')
+
+
+# ---------------------------------------------------------------- design system: list, import, map
+
+def ds_list():
+    def pack_card(name, sub, modes, contract, contrast, used, colors, yours=False, status=None):
+        sw = "".join(swatch(c, 22) for c in colors)
+        st = status or (tag("In use", "ok") if used else tag("Available", "gray"))
+        return card(f'''<div style="display: flex; justify-content: space-between; align-items: flex-start;"><div style="display: flex; gap: 4px;">{sw}</div>{st}</div>
+<div><h3 style="margin: 0; font-size: 15px; font-weight: 600;">{name}</h3><p style="margin: 2px 0 0; font-size: 13px; color: {S["muted"]};">{sub}</p></div>
+<div style="display: flex; gap: 16px; font-size: 12px; color: {S["muted"]};"><span>{modes}</span><span>Contract {contract}</span><span>Contrast {contrast}</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid {S["soft"]}; padding-top: 12px;"><span style="font-size: 13px; color: {S["muted"]};">{used}</span>{btn("Open " + name, "ghost", "dots_h", h=28, only_icon=True) if yours else btn("Preview", "ghost", h=28)}</div>''', pad=18)
+    yours = f'''<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+{pack_card("Northwind", "Imported from Figma variables · v7", "Light, dark", "87/87", "34/34", "Default for web · 3 surfaces", ["#1849A9", "#101828", "#F5F7FA", "#079455", "#D92D20"], True, tag("Default", "ink"))}
+{pack_card("Northwind Marketing", "Imported from Tokens Studio · v2", "Light", "85/87", "32/34", "Used by 1 experiment", ["#E04F16", "#101828", "#FFF6ED", "#079455", "#D92D20"], True, tag("2 to fix", "warn"))}
+<button type="button" style="border: 1.5px dashed {S["line"]}; border-radius: 12px; background: {S["sunk"]}; color: {S["ink2"]}; font-family: {BODY}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 200px;">{ic("plus", 22)}<span style="font-weight: 600; font-size: 14px;">Import a design system</span><span style="font-size: 12px; color: {S["muted"]};">Figma variables, Tokens Studio or CSS</span></button>
+</div>'''
+    lib = ""
+    for n, c in [("Material 3", ["#65558F", "#1D1B20", "#FDF7FF"]), ("IBM Carbon", ["#0F62FE", "#161616", "#F4F4F4"]), ("Ant Design", ["#1677FF", "#000000", "#F5F5F5"]),
+                 ("Fluent 2", ["#0F6CBD", "#242424", "#F5F5F5"]), ("shadcn/ui", ["#18181B", "#09090B", "#F4F4F5"]), ("Shopify Polaris", ["#303030", "#1A1A1A", "#F1F1F1"]),
+                 ("GitHub Primer", ["#1F883D", "#1F2328", "#F6F8FA"]), ("GOV.UK Frontend", ["#00703C", "#0B0C0C", "#F3F2F1"])]:
+        lib += f'<li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid {S["soft"]};"><span style="display: flex; gap: 3px;">{"".join(swatch(x, 16) for x in c)}</span><span style="flex-grow: 1; font-weight: 500;">{n}</span><span style="font-size: 12px; color: {S["muted"]};">Light, dark</span>{btn("Use as a starting point", "ghost", h=28)}</li>'
+    body = page_head("Design systems", "The token packs your screens are drawn in. Each one maps your tokens onto Polyxd's 87 roles, and is checked for contrast in every mode.", btn("Import", "primary", "upload"), tabs_html=tabs([("Yours", 2), ("Built in", 13)], "Yours")) + f'''<div style="padding: 20px 32px; display: flex; gap: 24px;">
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 24px;">{yours}
+{notice("Northwind Marketing has 2 contrast pairs that fail", "Text on the orange action is 3.1:1 in light mode. Studio suggests a darker step from your own ramp.", "warn", btn("Fix", "secondary", h=32))}</div>
+<div style="width: 360px; flex-shrink: 0;">{card(h2("Built-in design systems", "Start from one, or preview your screens in it.") + f'<ul style="list-style: none; margin: 0; padding: 0;">{lib}</ul><a href="#" style="font-size: 13px; font-weight: 500;">See all 13</a>', pad=20, gap=6)}</div>
+</div>'''
+    return app("Design systems", "Tokens", ["Northwind", "Design system", "Tokens"], body)
+
+
+def ds_import():
+    sources = ""
+    for name, sub, icon_name, on in [("Figma variables", "Connect a Figma file; variables and modes come across", "figma", False),
+                                     ("Tokens Studio", "Upload the JSON export, or point at the repo", "code", True),
+                                     ("CSS variables", "Paste or upload your tokens.css", "code", False),
+                                     ("Start from a built-in", "Pick one of the 13 and change what's yours", "layers", False)]:
+        border = f"2px solid {S['ink']}" if on else f"1px solid {S['line']}"
+        sources += f'<label style="box-sizing: border-box; border: {border}; border-radius: 12px; padding: 16px; display: flex; gap: 14px; align-items: flex-start; background: {S["paper"]};"><input type="radio" name="source"{" checked" if on else ""} style="width: 16px; height: 16px; margin: 3px 0 0; accent-color: {S["ink"]};"><span style="display: flex; color: {S["ink2"]};">{ic(icon_name, 22)}</span><span><span style="display: block; font-weight: 600;">{name}</span><span style="font-size: 13px; color: {S["muted"]};">{sub}</span></span></label>'
+    upload = f'''<div style="border: 1.5px dashed {S["line"]}; border-radius: 12px; background: {S["sunk"]}; padding: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+<span style="display: flex; color: {S["muted"]};">{ic("upload", 28)}</span>
+<span style="font-weight: 600;">Drop your Tokens Studio export here</span>
+<span style="font-size: 13px; color: {S["muted"]};">A .json file or a .zip of token sets. Nothing leaves your workspace.</span>
+{btn("Choose a file", "secondary")}
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid {S["line"]}; border-radius: 10px;">
+<span style="display: flex; color: {S["ok"]};">{ic("check_circle", 20)}</span><div style="flex-grow: 1;"><div style="font-weight: 500;">northwind-tokens.json</div><div style="font-size: 12px; color: {S["muted"]};">412 tokens in 6 sets · light and dark themes found</div></div>{btn("Remove file", "ghost", "close", h=28, only_icon=True)}
+</div>'''
+    body = page_head("Import a design system", "Studio reads your tokens, maps what it can onto Polyxd's roles and shows you every guess before anything is used.", tabs_html="") + f'''<div style="padding: 8px 32px 32px; display: flex; gap: 32px;">
+<div style="width: 440px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px;"><h2 style="margin: 0 0 4px; font-size: 15px;">1. Where are your tokens?</h2>{sources}</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px;"><h2 style="margin: 0 0 4px; font-size: 15px;">2. Your file</h2>{upload}
+{field("Name this design system", "Northwind", "pack-name")}
+<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">{btn("Cancel", "ghost")}{btn("Map tokens", "primary", trail_icon="arrow_r")}</div></div>
+</div>'''
+    return app("Import a design system", "Tokens", ["Northwind", "Tokens", "Import"], body)
+
+
+def ds_mapping():
+    rows = [
+        ("color.action.primary", "brand/600", "#1849A9", tag("Exact", "ok"), "5.9:1"),
+        ("color.action.primaryHover", "brand/700", "#1D3A8A", tag("Guessed", "info"), "7.6:1"),
+        ("color.text.default", "gray/900", "#101828", tag("Exact", "ok"), "17.4:1"),
+        ("color.text.subtle", "gray/400", "#98A2B3", tag("Fails contrast", "bad"), "2.6:1"),
+        ("color.border.default", "gray/300", "#D0D5DD", tag("Exact", "ok"), "—"),
+        ("color.status.danger", "error/600", "#D92D20", tag("Guessed", "info"), "4.5:1"),
+        ("color.selection.fill", "—", "", tag("Missing", "warn"), "—"),
+        ("radius.control", "radius/md", "8px", tag("Exact", "ok"), "—"),
+        ("elevation.overlay", "shadow/lg", "0 12 16 −4", tag("Guessed", "info"), "—"),
+        ("type.body.size", "text/md", "16px", tag("Exact", "ok"), "—"),
+    ]
+    table_rows = [[mono(a, 13, S["ink"]), mono(b), f'<span style="display: inline-flex; align-items: center; gap: 8px;">{swatch(c, 18) if c.startswith("#") else ""}{mono(c)}</span>', t, mono(r)] for a, b, c, t, r in rows]
+    left = f'''<div style="width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; padding-top: 4px;">
+{"".join(f'<a href="#" aria-current="{"true" if on else "false"}" style="display: flex; justify-content: space-between; padding: 8px 10px; border-radius: 8px; font-size: 14px; color: {S["ink"]}; background: {S["soft"] if on else "transparent"}; font-weight: {600 if on else 500};"><span style="display: flex; gap: 8px; align-items: center;">{dot(t) if t else ""}{n}</span><span style="color: {S["muted"]};">{c}</span></a>' for n, c, t, on in [("All roles", 87, None, True), ("Exact", 71, "ok", False), ("Guessed", 12, "info", False), ("Missing", 3, "warn", False), ("Fails contrast", 1, "bad", False)])}
+</div>'''
+    panel = f'''<aside aria-label="Selected role" style="width: 380px; flex-shrink: 0; border-left: 1px solid {S["line"]}; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; background: {S["sunk"]};">
+<div>{mono("color.text.subtle", 14, S["ink"])}<p style="margin: 6px 0 0; font-size: 13px; color: {S["muted"]};">Secondary text: captions, help text, timestamps. Must be 4.5:1 on every surface.</p></div>
+<div style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 10px; background: {S["paper"]}; border: 1px solid {S["line"]};">{swatch("#98A2B3", 36)}<div style="flex-grow: 1;"><div style="font-weight: 600;">gray/400 · 2.6:1</div><div style="font-size: 12px; color: {S["bad"]};">Fails on white and on gray/50</div></div></div>
+<div style="display: flex; flex-direction: column; gap: 8px;"><strong style="font-size: 13px;">Suggested: the nearest step on your own ramp that passes</strong>
+{"".join(f'<label style="display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px; border: {"2px solid " + S["ink"] if on else "1px solid " + S["line"]}; background: {S["paper"]};"><input type="radio" name="fix"{" checked" if on else ""} style="margin: 0; width: 16px; height: 16px; accent-color: {S["ink"]};">{swatch(c, 22)}<span style="flex-grow: 1;">{mono(n, 13, S["ink"])}</span><span style="font-size: 13px; font-weight: 600; color: {S["ok"]};">{r}</span></label>' for n, c, r, on in [("gray/500", "#667085", "4.8:1", True), ("gray/600", "#475467", "7.4:1", False)])}
+</div>
+{notice("Why not just darken it?", "A colour outside your ramp would be a colour nobody on your team chose. Studio only moves along the scale you already have, and writes down why.", "gray")}
+<div style="display: flex; gap: 8px; margin-top: auto;">{btn("Use gray/500", "primary")}{btn("Pick another token", "secondary")}</div>
+</aside>'''
+    body = page_head("Map Northwind's tokens", "71 of 87 roles matched exactly. Check the 12 guesses, fill the 3 gaps, and fix the one that fails contrast.", f'{btn("Save draft", "secondary")}{btn("Create design system", "primary")}', meta=f'{tag("Light", "gray")}{tag("Dark", "gray")}<span style="font-size: 13px; color: {S["muted"]};">Showing light mode</span>') + f'''<div style="flex-grow: 1; min-height: 0; display: flex; margin-top: 16px; border-top: 1px solid {S["line"]};">
+<div style="flex-grow: 1; min-width: 0; display: flex; gap: 20px; padding: 16px 0 0 32px;">{left}<div style="flex-grow: 1; min-width: 0; padding-right: 20px;">{table(["Polyxd role", "Your token", "Value", "Match", "Contrast"], table_rows, widths=[240, 140, 170, 130, 90], selected=(3,), caption="Token mapping")}</div></div>
+{panel}
+</div>'''
+    return app("Map tokens", "Tokens", ["Northwind", "Tokens", "Import", "Map"], body)
+
+
+# ---------------------------------------------------------------- design system: read, update, delete
+
+def ds_detail(overlay=""):
+    groups = [
+        ("Action", [("color.action.primary", "#1849A9", "#84ADFF", "5.9:1 · 6.1:1"), ("color.action.primaryHover", "#1D3A8A", "#B2CCFF", "7.6:1 · 8.9:1"), ("color.action.secondary", "#FFFFFF", "#161B26", "—"), ("color.action.danger", "#D92D20", "#F97066", "4.5:1 · 5.2:1")]),
+        ("Text", [("color.text.default", "#101828", "#F5F5F6", "17.4:1 · 16.1:1"), ("color.text.subtle", "#667085", "#94969C", "4.8:1 · 6.3:1"), ("color.text.onAction", "#FFFFFF", "#0C111D", "5.9:1 · 6.1:1")]),
+        ("Surface", [("color.surface.default", "#FFFFFF", "#0C111D", "—"), ("color.surface.raised", "#FFFFFF", "#161B26", "—"), ("color.surface.sunken", "#F5F7FA", "#070A12", "—")]),
+    ]
+    rows = ""
+    for g, items in groups:
+        rows += f'<tr><th colspan="5" scope="colgroup" style="text-align: left; font-size: 12px; font-weight: 600; color: {S["muted"]}; padding: 18px 16px 6px; letter-spacing: 0.04em; text-transform: uppercase;">{g}</th></tr>'
+        for n, l, d, c in items:
+            sel = n == "color.action.primary" and overlay
+            rows += f'<tr style="background: {S["signal_bg"] if sel else "transparent"};"><td style="padding: 0 16px; height: 44px; border-bottom: 1px solid {S["soft"]};">{mono(n, 13, S["ink"])}</td><td style="padding: 0 16px; border-bottom: 1px solid {S["soft"]};"><span style="display: inline-flex; gap: 8px; align-items: center;">{swatch(l, 18)}{mono(l)}</span></td><td style="padding: 0 16px; border-bottom: 1px solid {S["soft"]};"><span style="display: inline-flex; gap: 8px; align-items: center;">{swatch(d, 18)}{mono(d)}</span></td><td style="padding: 0 16px; border-bottom: 1px solid {S["soft"]}; font-size: 13px; color: {S["muted"]};">{c}</td><td style="padding: 0 16px; border-bottom: 1px solid {S["soft"]}; text-align: right;">{btn("Edit " + n, "ghost", "edit", h=28, only_icon=True)}</td></tr>'
+    tokens = f'<table style="width: 100%; border-collapse: collapse;"><thead><tr>{"".join(f"<th scope=\"col\" style=\"text-align: left; font-size: 12px; font-weight: 500; color: {S['muted']}; padding: 0 16px; height: 36px; border-bottom: 1px solid {S['line']};\">{h}</th>" for h in ["Role", "Light", "Dark", "Contrast (light · dark)", ""])}</tr></thead><tbody>{rows}</tbody></table>'
+    groupnav = "".join(f'<a href="#" style="display: flex; justify-content: space-between; padding: 7px 10px; border-radius: 8px; font-size: 14px; color: {S["ink"]}; background: {S["soft"] if on else "transparent"}; font-weight: {600 if on else 500};"><span>{n}</span><span style="color: {S["muted"]};">{c}</span></a>' for n, c, on in [("Colour", 43, True), ("Type", 8, False), ("Space", 10, False), ("Radius", 5, False), ("Elevation", 2, False), ("Motion", 7, False), ("Size", 3, False), ("Border and focus", 4, False), ("Opacity", 4, False), ("Layout", 3, False)])
+    body = page_head("Northwind", "Imported from Figma variables. Default for web. Changes here reach production only through a release.", f'{btn("Compare versions", "secondary", "history")}{btn("Sync from Figma", "secondary", "repeat")}{btn("More actions", "secondary", "dots_h", only_icon=True)}', meta=f'{tag("Default", "ink")}{tag("v7 · draft has 2 changes", "signal")}<span style="font-size: 13px; color: {S["muted"]};">Contract 87/87 · Contrast 34/34 in both modes</span>', tabs_html=tabs(["Tokens", ("Contrast", 34), "Preview", ("Versions", 7), "Settings"], "Tokens")) + f'''<div style="flex-grow: 1; min-height: 0; display: flex; gap: 24px; padding: 16px 32px;">
+<nav aria-label="Token groups" style="width: 200px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px;">{groupnav}</nav>
+<div style="flex-grow: 1; min-width: 0;">{tokens}</div>
+</div>'''
+    return app("Northwind design system", "Tokens", ["Northwind", "Tokens", "Northwind"], body, overlay=overlay)
+
+
+def ds_token_edit():
+    ramp = "".join(f'<button type="button" aria-label="{n} {c}" aria-pressed="{"true" if n == "brand/700" else "false"}" style="width: 36px; height: 36px; border-radius: 8px; background: {c}; border: {"3px solid " + S["signal"] if n == "brand/700" else "1px solid rgba(20,20,20,.12)"}; box-sizing: border-box;"></button>' for n, c in [("brand/300", "#84ADFF"), ("brand/400", "#528BFF"), ("brand/500", "#2970FF"), ("brand/600", "#1849A9"), ("brand/700", "#1D3A8A"), ("brand/800", "#1D2F6F"), ("brand/900", "#172554")])
+    impact = table(["Pair", "Now", "After"], [
+        ["Text on action", mono("5.9:1"), f'<span style="color: {S["ok"]}; font-weight: 600;">{mono("7.6:1", 13, S["ok"])}</span>'],
+        ["Action on surface", mono("5.9:1"), mono("7.6:1", 13, S["ok"])],
+        ["Focus ring on action", mono("3.4:1"), mono("2.4:1", 13, S["bad"])],
+    ], row_h=40, pad_x=0)
+    body = f'''<div style="display: flex; flex-direction: column; gap: 8px;">{mono("color.action.primary", 15, S["ink"])}<span style="font-size: 13px; color: {S["muted"]};">The main action on a screen: one per view. Used by Action (primary), Form submit, Confirm, Steps.</span></div>
+{segmented(["Light", "Dark"], "Light", "Mode")}
+<div style="display: flex; flex-direction: column; gap: 8px;">{label("Value: a step on your brand ramp")}<div style="display: flex; gap: 8px;">{ramp}</div><span style="font-size: 12px; color: {S["muted"]};">Selected {mono("brand/700")} · {mono("#1D3A8A")}</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><strong style="font-size: 13px;">Contrast after this change</strong>{impact}</div>
+{notice("The focus ring would fail on this action", "Focus on brand/700 is 2.4:1. Change color.focus.ring too, or keep brand/600.", "bad", btn("Fix focus too", "secondary", h=30))}
+<div style="display: flex; gap: 12px; align-items: center; font-size: 13px; color: {S["muted"]};">{ic("layers", 16)}Used by 14 components across 3 surfaces. Nothing changes in production until a release.</div>'''
+    return ds_detail(drawer("Edit colour", body, f'{btn("Cancel", "ghost")}{btn("Save to draft", "primary")}', w=520))
+
+
+def ds_preview():
+    grid = "".join(mini_surface(k, p, 260, 380, f"{n}") for k, p, n in [("send", "northwind", "Send money · light"), ("send", "northwind-dark", "Send money · dark"), ("plans", "northwind", "Compare plans · light"), ("delete", "northwind", "Delete account · light")])
+    body = page_head("Northwind", None, f'{btn("Compare versions", "secondary", "history")}{btn("More actions", "secondary", "dots_h", only_icon=True)}', meta=f'{tag("Default", "ink")}{tag("v7 · draft has 2 changes", "signal")}', tabs_html=tabs(["Tokens", ("Contrast", 34), "Preview", ("Versions", 7), "Settings"], "Preview")) + f'''<div style="padding: 16px 32px; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; gap: 12px; align-items: center;">{segmented(["Draft", "Live v7"], "Draft", "Version")}{segmented(["Phone", "Desktop"], "Phone", "Width")}{segmented(["Both modes", "Light", "Dark"], "Both modes", "Mode")}<span style="margin-left: auto; font-size: 13px; color: {S["muted"]};">Real screens from the last 7 days, redrawn with the draft</span></div>
+<div style="display: flex; gap: 20px;">{grid}</div>
+</div>'''
+    return app("Preview a design system", "Tokens", ["Northwind", "Tokens", "Northwind"], body)
+
+
+def ds_delete():
+    body = f'''<p style="margin: 0; font-size: 14px; color: {S["ink2"]};">Northwind Marketing is in use. Deleting it:</p>
+<ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 22px; color: {S["ink2"]};"><li>stops the <strong>Spring promo</strong> experiment, which draws 10% of screens in it</li><li>moves those screens to <strong>Northwind</strong>, your default</li><li>keeps its 2 versions for 30 days, then deletes them</li></ul>
+{field("Type Northwind Marketing to confirm", "", "confirm-delete", placeholder="Northwind Marketing")}'''
+    return ds_list_with(dialog("Delete Northwind Marketing?", body, f'{btn("Cancel", "secondary")}{btn("Delete design system", "danger")}', w=500))
+
+
+def ds_list_with(overlay):
+    return ds_list().replace("</main>", "</main>" + overlay, 1)
+
+
+# ---------------------------------------------------------------- components
+
+COMPONENTS = [
+    ("Actions", [("Action", "@northwind/ui Button", 3120, True), ("ActionBar", "Default renderer", 1840, True), ("Confirm", "@northwind/ui Dialog", 612, True)]),
+    ("Inputs", [("TextInput", "@northwind/ui Input", 2210, True), ("Choice", "@northwind/ui Select", 1904, True), ("Toggle", "@northwind/ui Switch", 380, True), ("DateInput", "Default renderer", 402, True), ("RangeInput", "Default renderer", 96, False)]),
+    ("Content", [("Metric", "Default renderer", 1210, True), ("DetailList", "@northwind/ui DescriptionList", 2890, True), ("Table", "@northwind/ui DataTable", 1480, True), ("Chart", "Default renderer", 344, True), ("Status", "@northwind/ui Alert", 902, True)]),
+    ("Custom", [("northwind:OrderTimeline", "@northwind/ui Timeline", 210, True)]),
+]
+
+
+def components_list(overlay=""):
+    rows = []
+    for g, items in COMPONENTS:
+        rows.append(("group", g))
+        rows.extend(items)
+    body_rows = ""
+    for r in rows:
+        if r[0] == "group":
+            body_rows += f'<tr><th colspan="6" scope="colgroup" style="text-align: left; font-size: 12px; font-weight: 600; color: {S["muted"]}; padding: 16px 16px 6px; letter-spacing: 0.04em; text-transform: uppercase;">{r[1]}</th></tr>'
+            continue
+        name, impl, uses, on = r
+        custom = ":" in name
+        impl_html = f'<span style="display: inline-flex; gap: 6px; align-items: center;">{dot("ok" if impl != "Default renderer" else "gray")}{mono(impl) if impl != "Default renderer" else f"<span style=\"color: {S["muted"]};\">Default renderer</span>"}</span>'
+        kind = tag("Custom", "signal") if custom else tag("Built in", "gray")
+        body_rows += f'<tr><td style="padding: 0 16px; height: 48px; border-bottom: 1px solid {S["soft"]};"><a href="#" style="font-weight: 600; color: {S["ink"]};">{mono(name, 14, S["ink"]) if custom else name}</a></td><td style="padding: 0 16px; border-bottom: 1px solid {S["soft"]};">{kind}</td><td style="padding: 0 16px; border-bottom: 1px solid {S["soft"]};">{impl_html}</td><td style="padding: 0 16px; border-bottom: 1px solid {S["soft"]}; text-align: right; font-variant-numeric: tabular-nums;">{uses:,}</td><td style="padding: 0 16px; border-bottom: 1px solid {S["soft"]};"><span style="display: inline-flex; gap: 8px; align-items: center;">{switch(on, "Allow generators to use " + name)}<span style="font-size: 13px; color: {S["muted"]};">{"On" if on else "Off"}</span></span></td><td style="padding: 0 16px; border-bottom: 1px solid {S["soft"]}; text-align: right;">{btn("Actions for " + name, "ghost", "dots_h", h=28, only_icon=True)}</td></tr>'
+    head = "".join(f'<th scope="col" style="text-align: {a}; font-size: 12px; font-weight: 500; color: {S["muted"]}; padding: 0 16px; height: 36px; border-bottom: 1px solid {S["line"]};">{h}</th>' for h, a in [("Component", "left"), ("Kind", "left"), ("Rendered with", "left"), ("Used, 7 days", "right"), ("Generators may use it", "left"), ("", "right")])
+    body = page_head("Components", "What generated screens are built from. Use Polyxd's renderer for any of them, connect your own, or add components only your product has.", f'{btn("Connect your library", "secondary", "plug")}{btn("New component", "primary", "plus")}', tabs_html=tabs([("All", 27), ("Connected", 18), ("Default renderer", 8), ("Custom", 1)], "All")) + f'''<div style="padding: 16px 32px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; gap: 8px; align-items: center;">{search("Search components", 260)}{filter_chip("Needs attention", False, 2)}{filter_chip("Turned off", False, 1)}<span style="margin-left: auto; font-size: 13px; color: {S["muted"]};">Showing 14 of 27</span></div>
+<table style="width: 100%; border-collapse: collapse;"><caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Components</caption><thead><tr>{head}</tr></thead><tbody>{body_rows}</tbody></table>
+</div>'''
+    return app("Components", "Components", ["Northwind", "Design system", "Components"], body, overlay=overlay)
+
+
+def components_undo():
+    return components_list(toast("Deleted northwind:ReturnLabel. Screens that used it fall back to DetailList."))
+
+
+def component_detail():
+    previews = f'<div style="display: flex; gap: 16px;">{mini_surface("plans", "northwind", 250, 330, "Phone · light")}{mini_surface("plans", "northwind-dark", 250, 330, "Phone · dark")}</div>'
+    guidance = f'''{h2("When to use it", None, btn("Edit guidance", "ghost", "edit", h=28))}
+<ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 22px;"><li>Picking one or several of a known set of options</li><li>Up to 5 options: show them all as chips or radios</li></ul>
+<h3 style="margin: 6px 0 0; font-size: 14px;">Not for</h3>
+<ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 22px; color: {S["ink2"]};"><li>Turning one thing on or off: use Toggle</li><li>Choosing a date: use DateInput</li></ul>
+<div style="display: flex; gap: 8px; align-items: center; font-size: 12px; color: {S["muted"]};">{ic("sparkle", 14)}Generators read this guidance. Changes go out with the next release.</div>'''
+    impl = f'''{h2("Rendered with", None, btn("Change", "ghost", h=28))}
+<div style="display: flex; gap: 12px; align-items: center;"><span style="display: flex; width: 36px; height: 36px; border-radius: 8px; background: {S["soft"]}; align-items: center; justify-content: center;">{ic("code", 18)}</span><div>{mono("@northwind/ui · Select", 14, S["ink"])}<div style="font-size: 12px; color: {S["muted"]};">v4.2.0 · connected by Tom, yesterday</div></div></div>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+<li style="display: flex; gap: 8px; align-items: center;">{ic("check_circle", 16, S["ok"])}Accessibility: 0 issues in 12 renders</li>
+<li style="display: flex; gap: 8px; align-items: center;">{ic("check_circle", 16, S["ok"])}Agents chose an option by its name in 36 of 36 tasks</li>
+<li style="display: flex; gap: 8px; align-items: center;">{ic("alert", 16, S["warn"])}Touch target 40px on phones; your minimum is 44px</li>
+</ul>'''
+    props = table(["Prop", "Type", "Maps to"], [[mono("label", 13, S["ink"]), "Text", mono("label")], [mono("options", 13, S["ink"]), "List or binding", mono("items")], [mono("value", 13, S["ink"]), "Binding", mono("value · onValueChange")], [mono("multiple", 13, S["ink"]), "Yes or no", mono("mode=\"multi\"")], [mono("presentation", 13, S["ink"]), "chips · list · menu", mono("variant")]], row_h=40, pad_x=0)
+    body = page_head("Choice", "Pick one or several from a set.", f'{btn("Try it in a preview", "secondary", "eye")}{btn("More actions", "secondary", "dots_h", only_icon=True)}', meta=f'{tag("Built in", "gray")}{tag("Connected", "ok")}<span style="font-size: 13px; color: {S["muted"]};">Used 1,904 times in 7 days · 11 intents</span>', tabs_html=tabs(["Overview", "Props", ("Screens", "1,904"), "Accessibility", "History"], "Overview")) + f'''<div style="padding: 20px 32px; display: flex; gap: 24px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">{card(previews, pad=20)}{card(h2("Props and mapping") + props, pad=20, gap=8)}</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 16px;">{card(guidance, pad=20)}{card(impl, pad=20)}</div>
+</div>'''
+    return app("Choice component", "Components", ["Northwind", "Components", "Choice"], body)
+
+
+def component_connect():
+    rows = [
+        [mono("label", 13, S["ink"]), mono("label"), tag("Matched", "ok")],
+        [mono("options", 13, S["ink"]), mono("items"), tag("Matched", "ok")],
+        [mono("value", 13, S["ink"]), mono("value · onValueChange"), tag("Matched", "ok")],
+        [mono("multiple", 13, S["ink"]), f'<select aria-label="Maps to" style="height: 30px; border: 1px solid {S["line"]}; border-radius: 6px; font-family: {MONO}; font-size: 13px; padding: 0 6px;"><option>mode="multi"</option></select>', tag("Check", "info")],
+        [mono("disabled", 13, S["ink"]), mono("isDisabled"), tag("Matched", "ok")],
+    ]
+    body = f'''{field("Package", "@northwind/ui", "pkg", mono=True, help_text="Studio reads its types; nothing is uploaded.")}
+{field("Component", "Select", "export", mono=True)}
+<div style="display: flex; flex-direction: column; gap: 6px;"><strong style="font-size: 13px;">Props</strong>{table(["Polyxd", "Yours", ""], rows, row_h=42, pad_x=0)}</div>
+{card(f'<div style="display: flex; gap: 10px; align-items: center;"><span style="display: flex; color: {S["ok"]};">{ic("check_circle", 18)}</span><strong style="font-size: 14px;">Test render passed in 11 of 12 targets</strong></div><div style="font-size: 13px; color: {S["ink2"]};">Northwind light and dark, 390 and 1100 px, 3 sample screens. On phones the options are 40px tall; your minimum is 44px.</div><a href="#" style="font-size: 13px; font-weight: 500;">See all 12 renders</a>', pad=14, gap=6, bg=S["sunk"])}'''
+    return component_detail_with(drawer("Connect Choice to your library", body, f'{btn("Cancel", "ghost")}{btn("Run test again", "secondary", "repeat")}{btn("Connect", "primary")}', w=560, sub="Screens use your component; the verifier checks what you ship."))
+
+
+def component_detail_with(overlay):
+    html = component_detail()
+    return html.replace("</main>", "</main>" + overlay, 1)
+
+
+def component_new():
+    prop_rows = "".join(
+        f'<tr><td style="padding: 6px 8px 6px 0;"><input aria-label="Prop name" value="{n}" style="width: 150px; height: 32px; box-sizing: border-box; border: 1px solid {S["line"]}; border-radius: 6px; padding: 0 8px; font-family: {MONO}; font-size: 13px;"></td><td style="padding: 6px 8px;"><select aria-label="Type" style="height: 32px; border: 1px solid {S["line"]}; border-radius: 6px; padding: 0 8px; font-family: {BODY}; font-size: 13px;"><option>{t}</option></select></td><td style="padding: 6px 8px;">{checkbox(req, "Required")}</td><td style="padding: 6px 0 6px 8px;">{btn("Remove " + n, "ghost", "trash", h=28, only_icon=True)}</td></tr>'
+        for n, t, req in [("events", "List bound to data", True), ("title", "Text", True), ("current", "Binding", False)]
+    )
+    left = f'''<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 18px; max-width: 640px;">
+{field("Name", "northwind:OrderTimeline", "cname", mono=True, help_text="Namespaced, so it never collides with Polyxd's own components.")}
+{textarea("What it's for", "The steps an order goes through, with where it is now.", "purpose", 64)}
+{textarea("When generators should use it", "Where is my order; delivery status; return progress.\\nNot for: a list of orders (use Collection).", "when", 72)}
+<div style="display: flex; flex-direction: column; gap: 8px;">{label("Props")}<table style="border-collapse: collapse;"><thead><tr>{"".join(f'<th scope="col" style="text-align: left; font-size: 12px; font-weight: 500; color: {S["muted"]}; padding: 0 8px 4px 0;">{h}</th>' for h in ["Name", "Type", "Required", ""])}</tr></thead><tbody>{prop_rows}</tbody></table>{btn("Add a prop", "ghost", "plus", h=30)}</div>
+<div style="display: flex; gap: 16px;">{select("Accessibility role", "list, with the current step marked", "role", w=300)}{select("What an agent can do", "Read the steps and the current one", "agent", w=300)}</div>
+{select("If a renderer doesn't have it, show", "DetailList: one row per step", "fallback", help_text="Documents stay readable everywhere, including in A2UI and on platforms you haven't built it for.")}
+</div>'''
+    right = f'''<aside aria-label="Preview" style="width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px;">
+<strong style="font-size: 13px;">Preview</strong>
+<div style="border: 1px solid {S["line"]}; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 14px; background: #FFFFFF;">
+<div style="font-size: 16px; font-weight: 600; color: #101828;">Your order is out for delivery</div>
+{"".join(f'<div style="display: flex; gap: 12px; align-items: flex-start;"><span style="width: 14px; height: 14px; margin-top: 3px; border-radius: 50%; flex-shrink: 0; background: {"#1849A9" if s != "todo" else "#FFFFFF"}; border: 2px solid {"#1849A9" if s != "todo" else "#D0D5DD"}; box-sizing: border-box;"></span><div><div style="font-size: 13px; font-weight: {600 if s == "now" else 500}; color: #101828;">{t}</div><div style="font-size: 12px; color: #475467;">{d}</div></div></div>' for t, d, s in [("Ordered", "Mon 22 Sep", "done"), ("Shipped", "Tue 23 Sep", "done"), ("Out for delivery", "Today, 14:00–16:00", "now"), ("Delivered", "", "todo")])}
+</div>
+<div style="font-size: 12px; color: {S["muted"]};">Drawn by your connected {mono("Timeline")} in Northwind light.</div>
+{notice("Checked like everything else", "The verifier audits it by its role, and agents are tested against it.", "gray")}
+</aside>'''
+    body = page_head("New component", "For something only your product has. Generators see it once it's saved and released.", f'{btn("Cancel", "ghost")}{btn("Save component", "primary")}') + f'<div style="padding: 20px 32px; display: flex; gap: 40px;">{left}{right}</div>'
+    return app("New custom component", "Components", ["Northwind", "Components", "New"], body)
