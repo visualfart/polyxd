@@ -11,7 +11,9 @@
  * guessing but the report: `radius.control: no variable matched` is a question someone can answer
  * in a second, where "write a design-system pack" is a week nobody starts.
  */
-import { contrastRatio, luminance, toRgb } from "@polyxd/spec";
+// The colour maths alone: the package entry loads the JSON Schema from disk, which a browser or
+// a Worker can't do, and a mapper needs neither.
+import { contrastRatio, luminance, toRgb } from "@polyxd/spec/color";
 import type { Vars } from "./index.ts";
 
 export interface Guess {

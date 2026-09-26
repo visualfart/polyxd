@@ -19,6 +19,18 @@
       "tps": 51.8
     },
     {
+      "run": "gemma-4-e4b-it-4bit+loop-1-tree-constrained",
+      "valid": 90,
+      "score": 67,
+      "tasks": 14,
+      "taskTotal": 37,
+      "expectations": 56,
+      "direction": 92,
+      "latency": 4.55,
+      "ttft": 1.007,
+      "tps": 56
+    },
+    {
       "run": "gemma-4-e4b-it-4bit+sft-v2-tree-constrained",
       "valid": 100,
       "score": 66,

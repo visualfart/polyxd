@@ -32,7 +32,7 @@ These hold for every document rendered by `@polyxd/react`, in every design syste
 
 ### Headings
 
-The surface title is the `h1`. Each `Section` title is a real heading, one level deeper per nesting level. The model never picks a heading level.
+The surface title is the `h1`. Each `Section` title is a real heading, one level deeper per nesting level. The generator never picks a heading level.
 
 ### Live regions
 

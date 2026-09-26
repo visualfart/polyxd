@@ -111,7 +111,7 @@ const report = await verifyDocument(doc, { registry, rules: directionRules(direc
 - **Guided:** new layouts are allowed, built from approved components.
 - **Open:** anything that passes the verifier.
 
-When the model has no fitting pattern, the plan is for it to flag the gap for review. This behaviour is planned along with the model.
+When the generator has no fitting pattern, the plan is for it to flag the gap for review. This behaviour is planned along with the runtime that applies a Direction during generation.
 
 ## Precedence
 
@@ -122,7 +122,7 @@ When layers disagree, higher ones win:
 3. Company rules.
 4. Company profile, voice and patterns.
 5. End-user preferences (for example density), within the company's bounds.
-6. Model defaults.
+6. Generator defaults.
 
 The precedence engine that applies this order at generation time is planned.
 

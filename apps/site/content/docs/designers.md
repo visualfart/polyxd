@@ -50,15 +50,15 @@ The system proposes several versions of the same interface. A designer ranks the
 
 That ranking is the taste signal. It does three things:
 
-- It measures the gap between what the verifier can check and what a designer actually wants. When we last did this, the verifier's order matched the designer's exactly in 5 of 10 cases: it knows safety, not taste ([research log](/docs/research)).
-- It becomes training data: preference pairs the model learns from.
+- It measures the gap between what the verifier can check and what a designer actually wants. When we last did this, the verifier's order matched the designer's exactly in 5 of 10 cases: it knows safety, not taste ([what the score is not](/docs/verifier#what-the-score-is-not)).
+- It becomes preference data: ranked pairs you can hand to whichever generator you use, as exemplars, as prompt guidance, or as tuning data if your generator takes it.
 - It tells us which rules are missing. Anything a designer downranks that the verifier scored full marks for is a rule waiting to be written.
 
-**How often:** a sample every release, and after any change to the model or the direction.
+**How often:** a sample every release, and after any change to the generator or the direction.
 
 ## 4. Exemplars — whenever something is exactly right
 
-A designer marks a finished surface as "this is what good looks like for this kind of task". The model draws on exemplars for similar requests, and the verifier can hold new surfaces to their shape.
+A designer marks a finished surface as "this is what good looks like for this kind of task". The generator draws on exemplars for similar requests, and the verifier can hold new surfaces to their shape.
 
 **How often:** rarely, and deliberately. Ten exemplars a designer stands behind beat a hundred nobody checked.
 
@@ -72,7 +72,7 @@ A designer marks a finished surface as "this is what good looks like for this ki
 | Which journeys matter, and what "done" means for each | Product manager |
 | Component semantics and the token contract | The spec (shared, versioned) |
 | How a component looks on each platform | The design system pack |
-| What appears on a given screen, right now | The model, within all of the above |
+| What appears on a given screen, right now | The generator, within all of the above |
 
 The accessibility floor is not anyone's to trade away: it holds above direction, above rules, above preference.
 

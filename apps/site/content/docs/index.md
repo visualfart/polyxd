@@ -7,7 +7,7 @@ section: Start
 
 # Introduction
 
-Polyxd is an open spec and runtime for **just-in-time interfaces**: UI that is generated when someone needs it, used, and then thrown away. A small on-device model to generate those interfaces is planned.
+Polyxd is an open spec and runtime for **just-in-time interfaces**: UI that is generated when someone needs it, used, and then thrown away. Any generator that emits spec-valid JSON can write those interfaces: Claude, GPT, Gemini, or a model or program of your own. Polyxd ships no model.
 
 A just-in-time interface is not code. It is a **UI document**, a small JSON file that lists semantic components ("a choice", "a confirmation", "a table") bound to data your app provides. A renderer turns that document into native components in your design system, and a verifier checks it before anyone sees it.
 
@@ -23,9 +23,9 @@ request ──► generator (any model that emits spec-valid JSON)
 
 ## Four ideas
 
-### The model picks meaning
+### The generator picks meaning
 
-The generator chooses *what* to show: which components, which pattern, which action is primary, what the labels say. It never chooses pixels, colours, fonts or control types. A `Choice` with three short options becomes a segmented control and one with twelve becomes a filterable list, but the renderer makes that call, not the model. See [Components](/docs/components).
+The generator chooses *what* to show: which components, which pattern, which action is primary, what the labels say. It never chooses pixels, colours, fonts or control types. A `Choice` with three short options becomes a segmented control and one with twelve becomes a filterable list, but the renderer makes that call, not the generator. See [Components](/docs/components).
 
 ### Your design system picks the look
 
@@ -45,7 +45,7 @@ These rules make a Polyxd surface safe to embed in other software:
 
 - **UI is data, never code.** A document contains no scripts, no URLs to load and no styles.
 - **Actions are declared intents.** A button emits `{"event": {"name": "transfer.confirm", ...}}`. Your app decides what that does.
-- **Data comes from the host.** The model lays out and labels data it is given. Key figures and images must be bound to host data, so a model cannot invent a balance or load an image.
+- **Data comes from the host.** The generator lays out and labels data it is given. Key figures and images must be bound to host data, so a generator cannot invent a balance or load an image.
 - **The generator is swappable.** Anything that can emit spec-valid JSON can drive the renderer: a hosted LLM, a local model, a template, or code.
 
 ## What's in the box today
@@ -73,9 +73,10 @@ Polyxd is an **early preview**. The spec is at `specVersion` 0.1 and may still c
 | 1: Spec v0 | Done |
 | 2: Web renderer and theming | Done |
 | 3: Verifier and benchmark | In progress. The verifier is done; the benchmark is in progress |
-| 4–7: Model baselines, fine-tuning, RL, demo and release | Planned |
+| 4–6: Generator experiments | Paused |
+| 7: Demo and release | Planned |
 
-**The small model does not exist yet.** Today you can write or generate UI documents with any tool, validate them, render them in thirteen design systems, and verify them. Training and releasing the model are Phases 4 to 7. See the [roadmap](/docs/roadmap).
+**There is no bundled model.** Today you write or generate UI documents with any generator, validate them, render them in thirteen design systems, and verify them. See the [roadmap](/docs/roadmap).
 
 ## Next steps
 

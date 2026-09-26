@@ -14,7 +14,7 @@ request ──► generator (any model or program that emits spec-valid JSON)
               verifier → score, findings, agent task results
 ```
 
-**Site and docs:** [polyxd.com](https://polyxd.com) · **Live gallery:** [polyxd.com/gallery](https://polyxd.com/gallery/) · **Research log:** [polyxd.com/docs/research](https://polyxd.com/docs/research/)
+**Site and docs:** [polyxd.com](https://polyxd.com) · **Live gallery:** [polyxd.com/gallery](https://polyxd.com/gallery/)
 
 ## What works today
 
@@ -22,12 +22,12 @@ request ──► generator (any model or program that emits spec-valid JSON)
 |---|---|
 | **Spec** | 26 semantic components, 6 patterns with self-checking rules, capability registry with risk levels, Design Direction for a designer's taste, JSON Schema, A2UI export |
 | **Renderer** | `@polyxd/react` on Radix primitives: token-only CSS, container queries, dense B2B tables and navigation, density scale with a touch floor |
-| **Design systems** | 13 packs on one token contract — Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend, Chakra UI — plus a command to make one from your own tokens |
+| **Design systems** | 13 packs on one token contract: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend, Chakra UI. Bring your own tokens with `npx polyxd pack` and it builds a pack from them |
 | **Verifier** | Schema, structure, pattern, capability and copy checks; axe-core, contrast and target-size audits in every pack, mode and width; scripted agents completing tasks through the accessibility tree alone |
 
 All 24 examples score 100 across **1,248 renders** (13 packs × 2 widths × light and dark), **936 of 936** agent tasks complete by name alone, and the verifier catches **20 of 20** deliberately injected defects.
 
-**What doesn't work yet: the model.** A small on-device model to generate these documents is in development, and it isn't good enough to release. Any model that can emit JSON can drive Polyxd today. See [The model](#the-model).
+**There is no bundled model.** Any generator that emits spec-valid JSON drives Polyxd. See [Bring your generator](#bring-your-generator).
 
 ## Try it
 
@@ -100,19 +100,9 @@ npm run verify:packs -w @polyxd/verifier   # the 1,248 renders
 
 Not for: a handful of intents in one design system (hand-build them), or the flagship flow that *is* your product.
 
-## The model
+## Bring your generator
 
-A LoRA fine-tune of Gemma 4 E4B (4-bit), trained with MLX on verifier-selected examples. Best so far is `sft-v2`, scoring **78** on a 50-request held-out benchmark; the base model scores 68. Two rounds of expert iteration haven't beaten it. Adapters are not published.
-
-The more useful result so far is about measurement. A designer ranked the model's own output; two independent blind runs of a frontier model ranked the same screenshots.
-
-| | agreement (Kendall tau-b) |
-|---|---|
-| model judge vs model judge | 0.71 |
-| designer vs designer, on a re-rank | 0.67 |
-| model judge vs designer | 0.10 |
-
-Both raters are reliable; they measure different things. Correctness is recoverable from a screen and taste isn't — so taste has to come from a designer's preferences, which is what [Design Direction](https://polyxd.com/docs/design-direction/) and preference training are for. One designer and small samples; the [research log](https://polyxd.com/docs/research/) has the caveats and every negative result.
+Polyxd ships no model. Any model or program that emits spec-valid JSON drives it: Claude, GPT, Gemini, a model you run yourself, a template, or plain code. Give the generator the spec and the data, take the UI document it writes, and pass it to the renderer. The verifier checks what it wrote, in every pack, mode and width, before anyone sees it. Taste comes from [Design Direction](https://polyxd.com/docs/design-direction/), which a designer sets once and the verifier holds every surface to.
 
 ## Repository
 
@@ -120,13 +110,13 @@ Both raters are reliable; they measure different things. Correctness is recovera
 |---|---|
 | `packages/spec` | The spec: components, patterns, token contract, validator, JSON Schema |
 | `packages/react` | The React renderer and the compiled theme CSS for every pack |
-| `packages/verifier` | Static, rendered and agent checks; the benchmark scorer and leaderboard |
+| `packages/verifier` | Static, rendered and agent checks; the benchmark scorer |
 | `packages/ds-*` | Thirteen design-system packs, each generated from vendored, version-pinned sources |
 | `packages/ds-kit` | Builds packs — including the `polyxd pack` command for yours |
 | `packages/a2ui` | Export to A2UI v1.0 |
 | `apps/gallery`, `apps/site` | The gallery and polyxd.com |
 | `bench/` | Benchmark requests, agent tasks, the gold set and the designer's rankings |
-| `model/` | Training, generation and evaluation (Python, MLX) |
+| `model/` | Training and evaluation experiments (paused; see research/report.md) |
 | `design/flows` | Source of the approved flow designs the spec and renderer are built against |
 | `research/` | The research log |
 

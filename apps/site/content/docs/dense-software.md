@@ -9,7 +9,7 @@ section: Concepts
 
 Consumer apps and internal tools need different amounts of information on screen. A payment screen shows one amount; an accounts list shows 1,284 rows, each with seven fields, that people scan, sort, select and act on in bulk.
 
-Polyxd handles both with the same principle: **the model states meaning, the renderer decides density**. The generator never sets a row height. It says "this is a list of records with these columns, people can select several and act on them", and Design Direction plus the renderer decide how tightly that is packed on each screen.
+Polyxd handles both with the same principle: **the generator states meaning, the renderer decides density**. The generator never sets a row height. It says "this is a list of records with these columns, people can select several and act on them", and Design Direction plus the renderer decide how tightly that is packed on each screen.
 
 ## Density
 

@@ -7,7 +7,7 @@ section: Guides
 
 # Verifier
 
-`@polyxd/verifier` scores a UI document the way it will actually be used: rendered, in every design system, by people and by agents. It is the check that runs before a generated interface ships, and it will be the reward signal when the model is trained.
+`@polyxd/verifier` scores a UI document the way it will actually be used: rendered, in every design system, by people and by agents. It is the check that runs before a generated interface ships, whichever generator wrote it, and it is how you compare generators on equal terms.
 
 ## What it checks
 
@@ -121,7 +121,7 @@ These weights are a starting point. `npm run gold -w @polyxd/verifier` measures 
 
 ## What the score is not
 
-A designer has now ranked the model's own output: twelve requests, three options each, best to worst, with notes (`bench/rank-set/ranking.json`, `npm run gold -w @polyxd/verifier -- --model`). The verifier agrees with none of it — **0% exact order, mean Kendall tau-b −0.29**.
+A designer has ranked generated output: twelve requests, three generated options each, best to worst, with notes (`bench/rank-set/ranking.json`, `npm run gold -w @polyxd/verifier -- --model`). The verifier agrees with none of it — **0% exact order, mean Kendall tau-b −0.29**.
 
 That number is the most useful result the verifier has produced, because of *how* it disagrees:
 
@@ -136,11 +136,11 @@ None of this means the checks are wrong — the three added from this ranking ea
 
 The same designer also ranked the hand-made gold set — thirty documents in ten groups of *original*, *mild drift* and *clearly worse*. There the verifier agrees: **50% exact order, mean tau-b +0.63**.
 
-So the verifier is reliable at "is this a degraded version of a good interface" and has nothing to say about "which of these three honest attempts is best". That second case is the one that matters for training, because expert iteration is exactly a choice between honest attempts.
+So the verifier is reliable at "is this a degraded version of a good interface" and has nothing to say about "which of these three honest attempts is best". That second case is the one that matters when a generator produces several candidates and something has to pick one.
 
 ### What the reward does about it
 
-The reward, not the score, is what picks which candidates the model trains on (`--reward` measures that instead). It now reads what the bench already declares per request — the capability an answer has to wire, and the control the task presses by name — as a **coverage** term, and coverage multiplies rather than adds:
+The reward, not the score, is what picks between candidates when a generator produces several (`--reward` measures that instead). It reads what the bench already declares per request — the capability an answer has to wire, and the control the task presses by name — as a **coverage** term, and coverage multiplies rather than adds:
 
 ```
 reward = score × (0.2 + 0.8 × coverage) + 20 if an agent could act
@@ -150,13 +150,13 @@ Multiplying matters. On "find 30 minutes with Tom and Priya", the candidate that
 
 Three honest numbers about this, measured rather than hoped for:
 
-| Reward shape | tau-b on the model's own options |
+| Reward shape | tau-b on the generated options |
 |---|---|
 | score alone | −0.29 |
 | score + coverage bonus (any additive weight tried) | −0.16 |
 | score × coverage (shipped) | −0.07 |
 
-**Coverage separates the candidates in 1 of 12 groups.** In ten of the twelve, all three candidates cover 100% of what the request asked for and the term is silent. So coverage is a gate, not a ranker: it catches the surface that attempted nothing — a real failure mode that expert iteration would otherwise reward — and adds no ordering signal beyond that. Nothing computable that we have separates honest attempts, which is why taste has to be learned from preferences rather than checked.
+**Coverage separates the candidates in 1 of 12 groups.** In ten of the twelve, all three candidates cover 100% of what the request asked for and the term is silent. So coverage is a gate, not a ranker: it catches the surface that attempted nothing, a real failure mode that picking by score alone would reward, and adds no ordering signal beyond that. Nothing computable that we have separates honest attempts, which is why taste has to come from a designer's preferences rather than from a check.
 
 The length penalty is gone. It existed so that padding a document to satisfy checks wouldn't pay, but it pushed the same way as everything else: on "stop emailing me" the designer ranked the four-toggle version first and the one-toggle version last, and the reward was already biased towards the small one.
 
@@ -174,7 +174,7 @@ If the verifier can't rank honest attempts, can a frontier model? The experiment
 
 The control is the result. Two judges who never met agree strongly with each other and with the designer at chance — on the 15 groups where they ranked *identically*, agreement with the designer is still only 0.24.
 
-So the task is reliably judgeable, and models converge on an answer. It is simply a different answer. Read the judges' reasons and the split is plain: they rank on defects in the artefact — a binding that renders `[object Object]`, an empty state where data exists, a missing call to action, copy that repeats itself. The designer ranked on which thing should be biggest, what order the page reads in, whether the visual form suits the data, and what the equivalent screen looks like in products he knows.
+So the task is reliably judgeable, and models converge on an answer. It is simply a different answer. Read the judges' reasons and the split is plain: they rank on defects in the artefact — a binding that renders `[object Object]`, an empty state where data exists, a missing call to action, copy that repeats itself. The designer ranked on which thing should be biggest, what order the page reads in, whether the visual form suits the data, and what the equivalent screen looks like in products they know.
 
 This is the project's premise, measured rather than asserted: **conventional quality is recoverable from the artefact; taste is not.** A model judge is worth having as a second verifier — it found three real defect classes the static checks missed, and they are checks now — but it cannot stand in for a designer, and neither a faster nor a cheaper judge would change that, because speed was never what was missing.
 
@@ -191,7 +191,7 @@ The control on the other side: six already-ranked groups, shown again under fres
 
 Two reliable raters, each reproducing itself, measuring different things. That settles it: the rankings are not noise, and the disagreement with models is not a failure of either side — it is the gap the project exists to cross.
 
-**Where the rater flips, the options are equivalent.** The two groups the designer re-ordered are the two where independent judges also called the candidates near-identical ("near-identical confirm dialogs", "2 and 3 are clean"). That is information, not error: it says those pairs carry no preference. The numbers follow — the best-versus-worst pair survived in 5 of 6 groups, the adjacent pairs in 10 of 12. So preference training should weight a pair by the distance between its members and drop the ones a re-rank reverses, rather than treating all three pairs in a group as equal evidence.
+**Where the rater flips, the options are equivalent.** The two groups the designer re-ordered are the two where independent judges also called the candidates near-identical ("near-identical confirm dialogs", "2 and 3 are clean"). That is information, not error: it says those pairs carry no preference. The numbers follow — the best-versus-worst pair survived in 5 of 6 groups, the adjacent pairs in 10 of 12. So anyone using these rankings as preference data should weight a pair by the distance between its members and drop the ones a re-rank reverses, rather than treating all three pairs in a group as equal evidence.
 
 ### The three checks this ranking added
 
@@ -205,13 +205,13 @@ Two reliable raters, each reproducing itself, measuring different things. That s
 
 | Check | What it catches |
 |---|---|
-| `text:template-placeholder` | `{{budget}}`, `${budget}` or `{budget}` reaching the screen — the model writing a template for an engine that doesn't exist |
+| `text:template-placeholder` | `{{budget}}`, `${budget}` or `{budget}` reaching the screen — the generator writing a template for an engine that doesn't exist |
 | `data:not-text` | a binding that resolves to an object or a list where text belongs, which renders as `[object Object]`. An input's own `value` is exempt: a multi-select holds a list |
 | `copy:raw-identifier` | `pr_9` shown as a project name when the same record carries `name` right beside it |
 
 ### The two the approved designs added
 
-Rating sft-v2's output against the approved flow designs, 8 of 12 screens showed nothing real: the layout was plausible and every value was blank. A binding to a path that isn't in the data had been a warning, costing 4 points, so a screen of blanks could still score in the 90s.
+Rating one generator's output against the approved flow designs, 8 of 12 screens showed nothing real: the layout was plausible and every value was blank. A binding to a path that isn't in the data had been a warning, costing 4 points, so a screen of blanks could still score in the 90s.
 
 | Check | What it catches |
 |---|---|

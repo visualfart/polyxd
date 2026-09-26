@@ -113,13 +113,13 @@ A journey is a goal, required checkpoints and a done-condition (`schema/journey.
 |---|---|---|
 | `fixed` | The exact surfaces | Regulated or legal flows such as KYC and consent. The example `account.delete` journey is fixed |
 | `guided` | The checkpoints; the layout between them is generated | Most flows |
-| `open` | Only the goal and done-condition | Exploratory tasks |
+| `open` | Only the goal and done-condition | Open-ended tasks |
 
 ### Parts
 
 - **Checkpoints** have a `key` and description, and either a `rule` (a [check](/docs/patterns#the-check-vocabulary) that must hold on the surface where the checkpoint happens) or an `event` (the capability event that marks it reached).
 - **Done** is the capability event that completes the journey.
-- **Acceptance criteria** are rules that should hold on every direction, pattern or model change. Run them with `evaluateRules(journey.acceptance, doc)` or pass them to the verifier as `rules`.
+- **Acceptance criteria** are rules that should hold on every direction, pattern or generator change. Run them with `evaluateRules(journey.acceptance, doc)` or pass them to the verifier as `rules`.
 - **Task** is what a simulated user is asked to do, with what inputs and a step budget.
 
 The verifier's scripted agent tasks (`bench/tasks.json`) use this goal and done-event shape. See [People and agents](/docs/people-and-agents#agent-tasks).
@@ -160,7 +160,7 @@ Each event carries the surface (id, intent, pattern, journey, spec version, gene
 }
 ```
 
-This example is from `packages/spec/examples/events/`. The generator name in it is illustrative; no Polyxd model exists yet.
+This example is from `packages/spec/examples/events/`. The generator name in it is illustrative: record whichever generator wrote the surface, so metrics can be split by generator as well.
 
 ### Privacy
 

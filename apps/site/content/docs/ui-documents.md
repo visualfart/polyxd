@@ -113,7 +113,7 @@ Any value that comes from the host is a **binding**: `{ "path": "<JSON Pointer>"
 
 Many text props accept either a literal string or a binding. Input components (`TextInput`, `Choice`, `Toggle`, `DateInput`, `RangeInput`) bind their `value` two ways: the renderer writes the user's input back to that path.
 
-Values are never pre-formatted by the model. A `format` (`text`, `number`, `currency`, `percent`, `date`, `time`, `datetime`, `relativeTime`, `duration`) tells the renderer how to present a raw value, and the renderer localises it.
+Values are never pre-formatted by the generator. A `format` (`text`, `number`, `currency`, `percent`, `date`, `time`, `datetime`, `relativeTime`, `duration`) tells the renderer how to present a raw value, and the renderer localises it.
 
 ### Relative paths inside repeated items
 
@@ -160,7 +160,7 @@ Any other `ui.*` name is a validation error. With a capability registry, the ver
 
 ## Data comes from the host
 
-The model lays out and labels data; it never supplies it. The schema enforces this where it matters most: `Metric.value`, `Media.src`, `Table.rows` and `Chart.data` must be bindings, and a `Collection` can only repeat over an array path in host data, so a document can't hard-code a balance or embed an image URL. The `data` field in a document is only a snapshot for tests and examples.
+The generator lays out and labels data; it never supplies it. The schema enforces this where it matters most: `Metric.value`, `Media.src`, `Table.rows` and `Chart.data` must be bindings, and a `Collection` can only repeat over an array path in host data, so a document can't hard-code a balance or embed an image URL. The `data` field in a document is only a snapshot for tests and examples.
 
 ## UI is data, never code
 

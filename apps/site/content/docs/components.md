@@ -26,7 +26,7 @@ The source of truth is `packages/spec/components/*.json`. The UI schema, the A2U
 
 ## What "semantic" means
 
-A concrete component library has `RadioGroup`, `Select`, `SegmentedControl` and `Combobox`. Polyxd has one `Choice`: "pick one or several options from a known set." Which control that becomes depends on the number of options, their length, the screen width and the platform. That is a rendering decision, so the model doesn't make it.
+A concrete component library has `RadioGroup`, `Select`, `SegmentedControl` and `Combobox`. Polyxd has one `Choice`: "pick one or several options from a known set." Which control that becomes depends on the number of options, their length, the screen width and the platform. That is a rendering decision, so the generator doesn't make it.
 
 Each component definition carries:
 
@@ -37,7 +37,7 @@ Each component definition carries:
 - **Rendering rules** the renderer must follow.
 - **Platform mappings** to shadcn/Radix on the web, SwiftUI, Jetpack Compose (Material 3) and A2UI. Only the web renderer exists today.
 
-Some decisions are deliberately taken away from the model. Heading levels follow nesting depth. Table column alignment follows the column's format. Chart type follows the chart's intent. The primary action is limited to one per view.
+Some decisions are deliberately taken away from the generator. Heading levels follow nesting depth. Table column alignment follows the column's format. Chart type follows the chart's intent. The primary action is limited to one per view.
 
 ## How the renderer chooses controls
 

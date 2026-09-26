@@ -10,7 +10,6 @@ import { existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { allCharts, type Leaderboard } from "./charts.ts";
 import { Marked } from "marked";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -80,7 +79,7 @@ function header(current: "home" | "docs") {
 
 const footer = `<footer class="site-footer"><div class="wrap">
 <a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">polyxd</span></a>
-<nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/docs/research/">Research log</a><a href="/docs/reference/components/">Components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
+<nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/docs/reference/components/">Components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
 <span>© 2026 Polyxd · Apache-2.0 code, CC-BY-4.0 spec</span>
 </div></footer>`;
 
@@ -121,30 +120,13 @@ function frontMatter(src: string): { meta: Record<string, string>; body: string 
   return { meta, body: src.slice(m[0].length) };
 }
 
-/** The research log lives with the experiments (research/report.md); the leaderboard is inserted from bench/results. */
-async function researchSource(): Promise<string> {
-  const report = await readFile(join(REPO, "research/report.md"), "utf8");
-  const lb = join(REPO, "bench/results/leaderboard.md");
-  const table = existsSync(lb) ? (await readFile(lb, "utf8")).replace(/^# .*\n+/, "") : "No runs scored yet.";
-  let out = report.replace("<!--LEADERBOARD-->", table);
-  // Charts are drawn from the committed results, so the page can be rebuilt anywhere.
-  const data = join(REPO, "bench/results/leaderboard.json");
-  if (existsSync(data)) {
-    const charts = allCharts(JSON.parse(await readFile(data, "utf8")) as Leaderboard);
-    for (const [marker, html] of Object.entries(charts)) out = out.replace(marker, html);
-  }
-  return out.replace(/<!--CHART:[A-Z-]+-->/g, "");
-}
-
 async function markdownPages(): Promise<Page[]> {
   const dir = join(SITE, "content/docs");
   if (!existsSync(dir)) return [];
   const files = (await readdir(dir)).filter((f) => f.endsWith(".md"));
-  const sources: [string, () => Promise<string>][] = files.map((f) => [f, () => readFile(join(dir, f), "utf8")]);
-  if (existsSync(join(REPO, "research/report.md"))) sources.push(["research.md", researchSource]);
   return Promise.all(
-    sources.map(async ([f, load]) => {
-      const { meta, body } = frontMatter(await load());
+    files.map(async (f) => {
+      const { meta, body } = frontMatter(await readFile(join(dir, f), "utf8"));
       const { html, toc } = renderMarkdown(body.replace(/^\s*# .*\n/, ""));
       const slug = f === "index.md" ? "" : f.replace(/\.md$/, "");
       return { slug, title: meta.title ?? slug, description: meta.description ?? "", section: meta.section ?? "Concepts", order: Number(meta.order ?? 50), html, toc };
@@ -299,7 +281,6 @@ ${footer}
   });
 })();
 </script>
-${page.html.includes("figure class=\"chart\"") ? '<script src="/assets/charts.js" defer></script>' : ""}
 </body>
 </html>
 `;
