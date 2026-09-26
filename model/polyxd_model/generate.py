@@ -121,16 +121,17 @@ def main() -> None:
     ap.add_argument("--constrained", action="store_true", help="JSON-schema-constrained decoding (llguidance)")
     ap.add_argument("--format", choices=["flat", "tree"], default="flat", help="authoring format: flat id list, or nested tree compiled to flat")
     ap.add_argument("--adapter", help="path to a LoRA adapter (from polyxd_model.sft train)")
+    ap.add_argument("--b2b", action="store_true", help="the dense B2B requests (bench/requests-b2b.json), written to requests-b2b/ so the 50-request benchmark is unaffected")
     args = ap.parse_args()
 
     name = (args.name or args.model.split("/")[-1] + (f"+{Path(args.adapter).name}" if args.adapter else "")) + ("-tree" if args.format == "tree" else "") + ("-constrained" if args.constrained else "")
-    out_dir = RUNS / name / ("sequences" + ("-nomem" if args.no_memory else "") if args.sequences else "requests")
+    out_dir = RUNS / name / ("sequences" + ("-nomem" if args.no_memory else "") if args.sequences else "requests-b2b" if args.b2b else "requests")
     out_dir.mkdir(parents=True, exist_ok=True)
     model, tokenizer = load(args.model, adapter_path=args.adapter) if args.adapter else load(args.model)
     print(f"loaded {args.model}{' + ' + args.adapter if args.adapter else ''} → {out_dir}")
 
     if not args.sequences:
-        requests = json.loads((BENCH / "requests.json").read_text())["requests"]
+        requests = json.loads((BENCH / ("requests-b2b.json" if args.b2b else "requests.json")).read_text())["requests"]
         if args.only:
             keep = set(args.only.split(","))
             requests = [r for r in requests if r["id"] in keep]

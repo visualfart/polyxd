@@ -1,0 +1,22 @@
+{
+  "$comment": "Benchmark requests that have an approved design in design/flows, and the artboards to judge them against. 'same' means the design is this request's screen; 'analog' means it is the same kind of screen for different content (browsing lamps, for a request about headphones), so structure, hierarchy and controls carry over and the content doesn't. Used to review a model's output, never to train on (design/flows/README.md).",
+  "requests": [
+    { "id": "money-send-alex", "fit": "same", "artboards": ["Main", "send-amount", "send-desktop"] },
+    { "id": "money-send-confirm", "fit": "same", "artboards": ["send-confirm", "send-confirm-desktop", "send-done"] },
+    { "id": "tasks-add-passport", "fit": "same", "artboards": ["task", "task-more", "task-desktop"] },
+    { "id": "tasks-delete-project", "fit": "same", "artboards": ["delete-low-risk"] },
+    { "id": "calendar-find-slot", "fit": "same", "artboards": ["find-time", "find-time-desktop"] },
+    { "id": "shop-headphones", "fit": "analog", "artboards": ["browse", "browse-filters", "browse-desktop"] },
+    { "id": "shop-compare-plans", "fit": "same", "artboards": ["compare", "compare-desktop"] },
+    { "id": "travel-book-alfama", "fit": "same", "artboards": ["hotel", "hotel-desktop"] },
+    { "id": "settings-stop-emails", "fit": "same", "artboards": ["notifications", "notifications-desktop"] },
+    { "id": "settings-delete-account", "fit": "same", "artboards": ["delete-account", "delete-account-desktop"] },
+    { "id": "personal-reading-list", "fit": "same", "artboards": ["reading-list", "reading-empty", "reading-desktop"] },
+    { "id": "b2b-accounts-past-due", "fit": "same", "artboards": ["b2b-accounts", "b2b-phone"] },
+    { "id": "b2b-account-open", "fit": "same", "artboards": ["b2b-account"] },
+    { "id": "b2b-bulk-reminder", "fit": "same", "artboards": ["b2b-selected"] },
+    { "id": "b2b-overdue-money", "fit": "same", "artboards": ["b2b-overview"] },
+    { "id": "b2b-team-access", "fit": "same", "artboards": ["b2b-settings"] },
+    { "id": "b2b-invite-teammate", "fit": "analog", "artboards": ["b2b-settings", "b2b-new"] }
+  ]
+}
