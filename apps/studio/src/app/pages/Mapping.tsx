@@ -8,7 +8,7 @@ interface MappingData { modes: string[]; rows: RoleRow[]; summary: { total: numb
 const STATUS: Record<RoleRow["status"], [string, string]> = {
   exact: ["ok", "Exact"], guessed: ["info", "Guessed"], missing: ["warn", "Missing"], fails: ["bad", "Fails contrast"], primitive: ["warn", "Primitive"], off: ["", "Unmapped on purpose"],
 };
-const isColor = (v: string | null) => !!v && /^(#|rgb|hsl|oklch)/i.test(v);
+const isColor = (v: string | null) => !!v && /^(#[0-9a-f]{3,8}|(rgba?|hsla?|oklch|oklab|color)\([^()]*\))$/i.test(v.trim());
 
 export function Swatch({ value }: { value: string | null }) {
   return isColor(value) ? <span className="swatch" style={{ background: value! }} aria-hidden="true" /> : null;

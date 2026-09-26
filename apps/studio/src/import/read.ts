@@ -183,7 +183,7 @@ export function readCss(text: string): Graph {
 
 /** Picks the reader from the file's name and first bytes. */
 export function read(text: string, fileName = ""): Graph {
-  if (/\.css$/i.test(fileName) || (!/\.json$/i.test(fileName) && /--[a-z0-9-]+\s*:/i.test(text) && !text.trimStart().startsWith("{"))) return readCss(text);
+  if (/\.css$/i.test(fileName) || (!/\.json$/i.test(fileName) && /(^|[^a-z0-9-])--[a-z0-9-]+\s*:/i.test(text) && !text.trimStart().startsWith("{"))) return readCss(text);
   return readJson(text);
 }
 

@@ -26,7 +26,24 @@ class Fail extends Error {
     super(message);
   }
 }
-app.onError((e, c) => c.json({ error: e.message }, (e instanceof Fail ? e.status : 500) as 500));
+app.onError((e, c) => {
+  if (e instanceof Fail) return c.json({ error: e.message }, e.status as 500);
+  console.error(e);
+  return c.json({ error: "Something went wrong on our side" }, 500);
+});
+
+/** The request's JSON body, or a 400 that says so. */
+const body = async <T,>(c: Ctx): Promise<T> => {
+  try {
+    return (await c.req.json()) as T;
+  } catch {
+    throw new Fail(400, "Send a JSON body");
+  }
+};
+const text = (v: unknown, max: number, what: string): string => {
+  if (typeof v !== "string" || v.length > max) throw new Fail(400, `${what}: text of up to ${max} characters`);
+  return v;
+};
 
 const MAX_UPLOAD = 25 * 1024 * 1024;
 
@@ -70,9 +87,16 @@ async function ws(c: Ctx, allowed?: ReadonlySet<string>): Promise<Workspace> {
     "SELECT w.id, w.slug, w.name, m.role FROM workspaces w JOIN memberships m ON m.workspace_id = w.id WHERE w.slug = ? AND m.user_id = ?",
   ).bind(slug, user.id).first<Workspace>();
   if (!row) throw new Fail(404, "No such workspace, or you're not in it");
-  // An API key is scoped to one workspace, whatever its creator can otherwise see.
+  // An API key is scoped to one workspace, and to importing: whatever its creator can do in the
+  // app, a key kept in CI can push token packages and read design systems, nothing else.
   const api = c.get("apiWorkspace");
-  if (api && api !== row.id) throw new Fail(403, "This key belongs to another workspace");
+  if (api) {
+    if (api !== row.id) throw new Fail(403, "This key belongs to another workspace");
+    const path = new URL(c.req.url).pathname;
+    const importing = c.req.method === "POST" && path.endsWith("/design-systems/import");
+    const reading = c.req.method === "GET" && path.includes("/design-systems");
+    if (!importing && !reading) throw new Fail(403, "An API key can import and read design systems only");
+  }
   if (allowed && !allowed.has(row.role)) throw new Fail(403, `Your role (${row.role}) can't do that`);
   return row;
 }
@@ -89,8 +113,9 @@ app.get("/api/me", async (c) => {
 
 app.post("/api/auth/dev", async (c) => {
   if (!dev(c.env)) throw new Fail(404, "Not here");
-  const { email, name } = (await c.req.json()) as { email?: string; name?: string };
-  if (!email?.includes("@")) throw new Fail(400, "Enter an email address");
+  const { email, name } = await body<{ email?: string; name?: string }>(c as Ctx);
+  if (!email?.includes("@") || email.length > 254) throw new Fail(400, "Enter an email address");
+  if (name !== undefined) text(name, 120, "Name");
   const user = await upsertUser(c.env.DB, email, name ?? "");
   await startSession(c as Ctx, user);
   return c.json({ user });
@@ -105,6 +130,7 @@ app.get("/api/auth/workos/start", (c) => {
 app.get("/api/auth/workos/callback", async (c) => {
   const code = c.req.query("code");
   const state = c.req.query("state");
+  if (c.req.query("error")) throw new Fail(400, `Sign-in didn't complete: ${c.req.query("error_description") ?? c.req.query("error")}`);
   if (!code) throw new Fail(400, "No code in the callback");
   if (!state || state !== takeState(c as Ctx)) throw new Fail(400, "This sign-in didn't start here. Try again from the sign-in page.");
   const { email, name } = await workosExchange(c.env, code);
@@ -122,7 +148,8 @@ app.post("/api/auth/signout", async (c) => {
 
 app.post("/api/workspaces", async (c) => {
   const user = need(c as Ctx);
-  const { name, slug } = (await c.req.json()) as { name?: string; slug?: string };
+  const { name, slug } = await body<{ name?: string; slug?: string }>(c as Ctx);
+  if (name !== undefined) text(name, 80, "Name");
   const s = (slug ?? name ?? "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   if (!name?.trim() || !/^[a-z0-9][a-z0-9-]{1,39}$/.test(s)) throw new Fail(400, "A name, and an address of letters, digits and dashes");
   const taken = await c.env.DB.prepare("SELECT 1 FROM workspaces WHERE slug = ?").bind(s).first();
@@ -146,10 +173,15 @@ app.get("/api/w/:slug", async (c) => {
 app.post("/api/w/:slug/invites", async (c) => {
   const w = await ws(c as Ctx, new Set(["owner", "design-system"]));
   const user = need(c as Ctx);
-  const { emails, role, message } = (await c.req.json()) as { emails?: string[]; role?: string; message?: string };
+  const { emails, role, message } = await body<{ emails?: string[]; role?: string; message?: string }>(c as Ctx);
   if (!role || !ROLES.includes(role as (typeof ROLES)[number]) || role === "owner") throw new Fail(400, "Pick a role other than owner");
-  const list = (emails ?? []).map((e) => e.trim().toLowerCase()).filter((e) => e.includes("@"));
+  if (message !== undefined) text(message, 500, "Message");
+  const list = [...new Set((Array.isArray(emails) ? emails : []).map((e) => String(e).trim().toLowerCase()).filter((e) => /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/.test(e)))];
   if (!list.length) throw new Fail(400, "Enter at least one email address");
+  if (list.length > 50) throw new Fail(400, "Up to 50 invites at a time");
+  const members = await c.env.DB.prepare("SELECT u.email FROM memberships m JOIN users u ON u.id = m.user_id WHERE m.workspace_id = ?").bind(w.id).all<{ email: string }>();
+  const already = list.filter((e) => members.results.some((m) => m.email === e));
+  if (already.length) throw new Fail(409, `${already.join(", ")} ${already.length === 1 ? "is" : "are"} already in this workspace`);
   const made = [];
   for (const email of list) {
     const id = crypto.randomUUID();
@@ -167,7 +199,9 @@ app.get("/api/invites/:id", async (c) => {
     "SELECT i.id, i.email, i.role, i.message, i.expires_at, i.accepted_at, w.name AS workspace, u.name AS inviter FROM invites i JOIN workspaces w ON w.id = i.workspace_id JOIN users u ON u.id = i.invited_by WHERE i.id = ?",
   ).bind(c.req.param("id")).first();
   if (!inv) throw new Fail(404, "That invite doesn't exist");
-  return c.json(inv);
+  // The link is the credential; the page still needn't spell the whole address out.
+  const [local, domain] = String((inv as { email: string }).email).split("@");
+  return c.json({ ...inv, email: `${local[0]}***@${domain}` });
 });
 
 app.post("/api/invites/:id/accept", async (c) => {
@@ -175,9 +209,11 @@ app.post("/api/invites/:id/accept", async (c) => {
   const inv = await c.env.DB.prepare("SELECT id, workspace_id, email, role, expires_at, accepted_at FROM invites WHERE id = ?").bind(c.req.param("id"))
     .first<{ id: string; workspace_id: string; email: string; role: string; expires_at: string; accepted_at: string | null }>();
   if (!inv || inv.accepted_at || inv.expires_at < now()) throw new Fail(410, "That invite has expired or was already used");
-  if (inv.email !== user.email) throw new Fail(403, `This invite is for ${inv.email}`);
+  if (inv.email !== user.email) throw new Fail(403, "This invite is for a different email address");
+  const member = await c.env.DB.prepare("SELECT role FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(inv.workspace_id, user.id).first();
+  if (member) throw new Fail(409, "You're already in this workspace; an invite can't change your role");
   await c.env.DB.batch([
-    c.env.DB.prepare("INSERT OR REPLACE INTO memberships (workspace_id, user_id, role, created_at) VALUES (?, ?, ?, ?)").bind(inv.workspace_id, user.id, inv.role, now()),
+    c.env.DB.prepare("INSERT INTO memberships (workspace_id, user_id, role, created_at) VALUES (?, ?, ?, ?)").bind(inv.workspace_id, user.id, inv.role, now()),
     c.env.DB.prepare("UPDATE invites SET accepted_at = ? WHERE id = ?").bind(now(), inv.id),
   ]);
   const w = await c.env.DB.prepare("SELECT slug FROM workspaces WHERE id = ?").bind(inv.workspace_id).first<{ slug: string }>();
@@ -195,7 +231,8 @@ app.get("/api/w/:slug/registries", async (c) => {
 app.post("/api/w/:slug/registries", async (c) => {
   const w = await ws(c as Ctx, CAN_EDIT_TOKENS);
   const user = need(c as Ctx);
-  const { url, scope, token } = (await c.req.json()) as { url?: string; scope?: string; token?: string };
+  const { url, scope, token } = await body<{ url?: string; scope?: string; token?: string }>(c as Ctx);
+  if (token !== undefined) text(token, 500, "Token");
   let clean: string;
   try {
     clean = checkRegistryUrl(url ?? "");
@@ -226,7 +263,8 @@ app.get("/api/w/:slug/api-keys", async (c) => {
 app.post("/api/w/:slug/api-keys", async (c) => {
   const w = await ws(c as Ctx, new Set(["owner", "engineer", "design-system"]));
   const user = need(c as Ctx);
-  const { name } = (await c.req.json()) as { name?: string };
+  const { name } = await body<{ name?: string }>(c as Ctx);
+  if (name !== undefined) text(name, 80, "Name");
   const key = newApiKey();
   const id = crypto.randomUUID();
   await c.env.DB.prepare("INSERT INTO api_keys (id, workspace_id, name, key_hash, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)")
@@ -312,7 +350,13 @@ app.post("/api/w/:slug/design-systems/import", async (c) => {
   try {
     got = await graphFrom(c as Ctx, w, body);
   } catch (e) {
-    throw e instanceof Fail ? e : new Fail(422, (e as Error).message);
+    if (e instanceof Fail) throw e;
+    // Reader and registry errors are written for people; anything else is ours to look at.
+    if (e instanceof TypeError || e instanceof RangeError) {
+      console.error(e);
+      throw new Fail(422, "Studio couldn't read that. If it's a file you'd expect to work, tell us which.");
+    }
+    throw new Fail(422, (e as Error).message);
   }
   const { graph, source, fileName, pkg, picked, original } = got;
   const summary = scan(graph);
@@ -337,7 +381,7 @@ app.post("/api/w/:slug/design-systems/import", async (c) => {
       .bind(versionId, dsId, number, fileName, JSON.stringify({ ...summary, picked }), pkg?.name ?? null, pkg?.version ?? null, user.id, now()),
   );
   await c.env.FILES.put(graphKey(versionId), JSON.stringify(graph), { httpMetadata: { contentType: "application/json" } });
-  if (original) await c.env.FILES.put(`versions/${versionId}/${original.name}`, original.bytes);
+  if (original) await c.env.FILES.put(`versions/${versionId}/original`, original.bytes, { customMetadata: { name: original.name } });
   await c.env.DB.batch(statements);
   return c.json({ designSystemId: dsId, versionId, number, scan: { ...summary, picked } }, 201);
 });
@@ -408,7 +452,7 @@ app.put("/api/w/:slug/design-systems/:id/versions/:v/mapping", async (c) => {
   const user = need(c as Ctx);
   const { v } = await version(c as Ctx, w);
   if (v.status !== "draft") throw new Fail(409, "This version is live. Import or duplicate it to make a new draft.");
-  const { role, token, reset } = (await c.req.json()) as { role?: string; token?: string | null; reset?: boolean };
+  const { role, token, reset } = await body<{ role?: string; token?: string | null; reset?: boolean }>(c as Ctx);
   if (!role || !CONTRACT.tokens[role]) throw new Fail(400, "Which role?");
   if (reset) {
     await c.env.DB.prepare("DELETE FROM role_overrides WHERE version_id = ? AND role = ?").bind(v.id, role).run();
@@ -493,7 +537,7 @@ app.post("/api/w/:slug/design-systems/:id/default", async (c) => {
 app.delete("/api/w/:slug/design-systems/:id", async (c) => {
   const w = await ws(c as Ctx, new Set(["owner", "design-system"]));
   const { ds } = await version(c as Ctx, w);
-  const { confirm } = (await c.req.json().catch(() => ({}))) as { confirm?: string };
+  const { confirm } = await body<{ confirm?: string }>(c as Ctx).catch(() => ({ confirm: undefined }));
   if (confirm !== ds.name) throw new Fail(400, `Type the design system's name, ${ds.name}, to confirm`);
   const versions = await c.env.DB.prepare("SELECT id FROM ds_versions WHERE design_system_id = ?").bind(ds.id).all<{ id: string }>();
   await c.env.DB.prepare("DELETE FROM design_systems WHERE id = ?").bind(ds.id).run();
@@ -537,15 +581,21 @@ app.put("/api/w/:slug/components/:name", async (c) => {
   const w = await ws(c as Ctx, new Set(["owner", "design-system", "engineer", "designer"]));
   const user = need(c as Ctx);
   const name = c.req.param("name");
-  const body = (await c.req.json()) as { enabled?: boolean; renderer?: unknown; guidance?: unknown; definition?: unknown };
+  const b = await body<{ enabled?: boolean; renderer?: unknown; guidance?: unknown; definition?: unknown }>(c as Ctx);
   const custom = name.includes(":");
+  if (JSON.stringify(b).length > 20_000) throw new Fail(400, "That's more than a component definition should be");
+  const r = b.renderer as { package?: unknown; export?: unknown } | null | undefined;
+  if (r) {
+    if (typeof r.package !== "string" || !/^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(r.package)) throw new Fail(400, "renderer.package has to be an npm package name");
+    if (typeof r.export !== "string" || !/^[A-Za-z_$][\w$.]{0,120}$/.test(r.export)) throw new Fail(400, "renderer.export has to be an export name");
+  }
   if (!custom && !BUILTIN[name]) throw new Fail(404, `${name} isn't a Polyxd component`);
   if (custom && !/^[a-z][a-z0-9-]*:[A-Z][A-Za-z0-9]*$/.test(name)) throw new Fail(400, "A custom component is named like acme:OrderTimeline");
   const cur = await c.env.DB.prepare("SELECT * FROM components WHERE workspace_id = ? AND name = ?").bind(w.id, name).first<{ enabled: number; renderer_json: string | null; guidance_json: string | null; definition_json: string | null }>();
-  const enabled = body.enabled ?? (cur ? !!cur.enabled : true);
-  const renderer = "renderer" in body ? body.renderer : cur?.renderer_json ? JSON.parse(cur.renderer_json) : null;
-  const guidance = "guidance" in body ? body.guidance : cur?.guidance_json ? JSON.parse(cur.guidance_json) : null;
-  const definition = "definition" in body ? body.definition : cur?.definition_json ? JSON.parse(cur.definition_json) : null;
+  const enabled = b.enabled ?? (cur ? !!cur.enabled : true);
+  const renderer = "renderer" in b ? b.renderer : cur?.renderer_json ? JSON.parse(cur.renderer_json) : null;
+  const guidance = "guidance" in b ? b.guidance : cur?.guidance_json ? JSON.parse(cur.guidance_json) : null;
+  const definition = "definition" in b ? b.definition : cur?.definition_json ? JSON.parse(cur.definition_json) : null;
   if (custom && !definition) throw new Fail(400, "A custom component needs a definition: props, role, agent, fallback");
   await c.env.DB.prepare(
     "INSERT OR REPLACE INTO components (workspace_id, name, kind, enabled, renderer_json, guidance_json, definition_json, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -572,8 +622,11 @@ app.get("/api/w/:slug/rules", async (c) => {
 app.post("/api/w/:slug/rules", async (c) => {
   const w = await ws(c as Ctx, CAN_EDIT_RULES);
   const user = need(c as Ctx);
-  const { name, why, severity, check } = (await c.req.json()) as { name?: string; why?: string; severity?: string; check?: unknown };
+  const { name, why, severity, check } = await body<{ name?: string; why?: string; severity?: string; check?: unknown }>(c as Ctx);
   if (!name?.trim()) throw new Fail(400, "A rule needs a name");
+  text(name, 160, "Name");
+  if (why !== undefined) text(why, 2000, "Why");
+  if (JSON.stringify(check ?? {}).length > 10_000) throw new Fail(400, "That check is too large");
   if (severity !== "error" && severity !== "warning") throw new Fail(400, "Severity is error or warning");
   if (!check || typeof check !== "object") throw new Fail(400, "A rule needs a check");
   const id = crypto.randomUUID();
@@ -584,11 +637,15 @@ app.post("/api/w/:slug/rules", async (c) => {
 
 app.put("/api/w/:slug/rules/:id", async (c) => {
   const w = await ws(c as Ctx, CAN_EDIT_RULES);
-  const body = (await c.req.json()) as { name?: string; why?: string; severity?: string; check?: unknown; enabled?: boolean };
+  const b = await body<{ name?: string; why?: string; severity?: string; check?: unknown; enabled?: boolean }>(c as Ctx);
   const cur = await c.env.DB.prepare("SELECT * FROM rules WHERE id = ? AND workspace_id = ?").bind(c.req.param("id"), w.id).first<{ name: string; why: string; severity: string; check_json: string; enabled: number }>();
   if (!cur) throw new Fail(404, "No such rule");
+  if (b.severity !== undefined && b.severity !== "error" && b.severity !== "warning") throw new Fail(400, "Severity is error or warning");
+  if (b.name !== undefined) text(b.name, 160, "Name");
+  if (b.why !== undefined) text(b.why, 2000, "Why");
+  if (b.check !== undefined && JSON.stringify(b.check).length > 10_000) throw new Fail(400, "That check is too large");
   await c.env.DB.prepare("UPDATE rules SET name = ?, why = ?, severity = ?, check_json = ?, enabled = ?, updated_at = ? WHERE id = ?")
-    .bind(body.name?.trim() || cur.name, body.why ?? cur.why, body.severity ?? cur.severity, body.check ? JSON.stringify(body.check) : cur.check_json, (body.enabled ?? !!cur.enabled) ? 1 : 0, now(), c.req.param("id")).run();
+    .bind(b.name?.trim() || cur.name, b.why ?? cur.why, b.severity ?? cur.severity, b.check ? JSON.stringify(b.check) : cur.check_json, (b.enabled ?? !!cur.enabled) ? 1 : 0, now(), c.req.param("id")).run();
   return c.json({ ok: true });
 });
 

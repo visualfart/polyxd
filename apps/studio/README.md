@@ -21,7 +21,7 @@ Reviews, releases, insights and the flow map come once screens flow in through t
 ```sh
 npm install                       # at the repository root
 npm run db:migrate -w @polyxd/studio
-npm run dev -w @polyxd/studio     # builds the app, then wrangler dev on http://localhost:8787
+npm run dev -w @polyxd/studio     # builds the app, then wrangler dev on http://localhost:8789
 ```
 
 Sign in with any email (`DEV_AUTH=1` in wrangler.jsonc). Tests: `npm test -w @polyxd/studio`.

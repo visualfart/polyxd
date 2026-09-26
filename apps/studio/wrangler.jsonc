@@ -10,8 +10,12 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
   },
-  "d1_databases": [{ "binding": "DB", "database_name": "studio", "database_id": "0d0c8972-4d26-4897-8115-471304e74ead", "migrations_dir": "migrations" }],
-  "r2_buckets": [{ "binding": "FILES", "bucket_name": "polyxd-studio-files" }],
+  // Development gets its own database and bucket, so nothing run without --env can touch
+  // production data, and no workers.dev host serves either environment.
+  "d1_databases": [{ "binding": "DB", "database_name": "studio-dev", "database_id": "0991dd53-ca7d-4d3c-bae5-07c0cac7983d", "migrations_dir": "migrations" }],
+  "r2_buckets": [{ "binding": "FILES", "bucket_name": "polyxd-studio-files-dev" }],
+  "workers_dev": false,
+  "preview_urls": false,
   "observability": { "enabled": true },
   // The top level is local development: `wrangler dev` uses a local database and bucket, and
   // signs anyone in by email. Production is the `production` environment below.
@@ -23,6 +27,8 @@
       "r2_buckets": [{ "binding": "FILES", "bucket_name": "polyxd-studio-files" }],
       // No DEV_AUTH here: production signs in through WorkOS, once its secrets are set.
       "vars": { "APP_URL": "https://studio.polyxd.com" },
+      "workers_dev": false,
+      "preview_urls": false,
       "observability": { "enabled": true }
     }
   }

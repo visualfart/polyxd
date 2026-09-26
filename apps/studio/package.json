@@ -10,7 +10,7 @@
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "test": "node --test \"test/**/*.test.ts\"",
-    "db:migrate": "wrangler d1 migrations apply studio --local",
+    "db:migrate": "wrangler d1 migrations apply studio-dev --local",
     "db:migrate:remote": "wrangler d1 migrations apply studio --remote --env production",
     "deploy": "npm run build && wrangler deploy --env production"
   },

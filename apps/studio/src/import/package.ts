@@ -92,7 +92,7 @@ export function findTokenFiles(entries: Entry[]): TokenFile[] {
       out.push({ path: e.path, text: t, kind: "json", score });
     } else if (/\.css$/.test(p)) {
       const t = text.decode(e.bytes);
-      const vars = (t.match(/--[a-z0-9-]+\s*:/gi) ?? []).length;
+      const vars = (t.match(/(^|[^a-z0-9-])--[a-z0-9-]+\s*:/gi) ?? []).length;
       if (vars < 10) continue;
       let score = 0.5 + Math.min(3, vars / 100);
       if (/tokens?|variables?|theme|vars/.test(p)) score += 2;

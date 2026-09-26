@@ -42,7 +42,7 @@ export async function userFromRequest(c: Ctx): Promise<{ user: User | null; apiW
     const user = await c.env.DB.prepare("SELECT id, email, name FROM users WHERE id = ?").bind(key.created_by).first<User>();
     return { user, apiWorkspace: key.workspace_id };
   }
-  const sid = getCookie(c, "sid");
+  const sid = getCookie(c, SID(c.env));
   if (!sid) return { user: null, apiWorkspace: null };
   const user = await c.env.DB.prepare(
     "SELECT u.id, u.email, u.name FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.id = ? AND s.expires_at > ?",
@@ -62,16 +62,21 @@ export async function upsertUser(db: D1Database, email: string, name: string): P
   return user;
 }
 
+const secure = (env: Env) => env.APP_URL.startsWith("https");
+const SID = (env: Env) => (secure(env) ? "__Host-sid" : "sid");
+
 export async function startSession(c: Ctx, user: User): Promise<void> {
+  // Whatever session the browser had ends first, so a sign-in can't be planted on top of one.
+  await endSession(c);
   const id = crypto.randomUUID();
   await c.env.DB.prepare("INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)").bind(id, user.id, days(30)).run();
-  setCookie(c, "sid", id, { httpOnly: true, sameSite: "Lax", secure: c.env.APP_URL.startsWith("https"), path: "/", maxAge: 30 * 86400 });
+  setCookie(c, SID(c.env), id, { httpOnly: true, sameSite: "Lax", secure: secure(c.env), path: "/", maxAge: 30 * 86400 });
 }
 
 export async function endSession(c: Ctx): Promise<void> {
-  const sid = getCookie(c, "sid");
+  const sid = getCookie(c, SID(c.env));
   if (sid) await c.env.DB.prepare("DELETE FROM sessions WHERE id = ?").bind(sid).run();
-  deleteCookie(c, "sid", { path: "/" });
+  deleteCookie(c, SID(c.env), { path: "/" });
 }
 
 export function workosStartUrl(env: Env, state: string): string | null {
@@ -100,6 +105,7 @@ export async function workosExchange(env: Env, code: string): Promise<{ email: s
     body: JSON.stringify({ client_id: env.WORKOS_CLIENT_ID, client_secret: env.WORKOS_API_KEY, grant_type: "authorization_code", code }),
   });
   if (!r.ok) throw new Error(`WorkOS refused the code (${r.status})`);
-  const j = (await r.json()) as { user: { email: string; first_name?: string; last_name?: string } };
+  const j = (await r.json()) as { user: { email: string; email_verified?: boolean; first_name?: string; last_name?: string } };
+  if (j.user.email_verified === false) throw new Error("Verify your email with your sign-in provider first");
   return { email: j.user.email, name: [j.user.first_name, j.user.last_name].filter(Boolean).join(" ") };
 }
