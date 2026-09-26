@@ -46,5 +46,7 @@ export async function renderPage(browser: Browser, document: unknown, target: Re
 
 /** Actions the rendered UI has sent to the host so far. */
 export function sentActions(page: Page): Promise<{ name: string; context: Record<string, unknown>; source: string }[]> {
-  return page.evaluate(() => (window as any).__pxdActions);
+  // A step that follows a link navigates away from the harness, taking the record with it: the
+  // host received nothing, which is a failed task, not a crash.
+  return page.evaluate(() => (window as any).__pxdActions ?? []);
 }
