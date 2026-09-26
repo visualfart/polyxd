@@ -20,7 +20,7 @@ request ──► generator (any model or program that emits spec-valid JSON)
 
 | | |
 |---|---|
-| **Spec** | 26 semantic components, 6 patterns with self-checking rules, capability registry with risk levels, Design Direction for a designer's taste, JSON Schema, A2UI export |
+| **Spec** | 37 semantic components, 6 patterns with self-checking rules, capability registry with risk levels, Design Direction for a designer's taste, JSON Schema, A2UI export |
 | **Renderer** | `@polyxd/react` on Radix primitives: token-only CSS, container queries, dense B2B tables and navigation, density scale with a touch floor |
 | **Design systems** | 13 packs on one token contract: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend, Chakra UI. Bring your own tokens with `npx polyxd pack` and it builds a pack from them |
 | **Verifier** | Schema, structure, pattern, capability and copy checks; axe-core, contrast and target-size audits in every pack, mode and width; scripted agents completing tasks through the accessibility tree alone |

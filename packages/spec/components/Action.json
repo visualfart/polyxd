@@ -27,6 +27,14 @@
     },
     "disabled": {
       "$ref": "#/$defs/DynamicBoolean"
+    },
+    "description": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "A second line under the label saying what the action does, for menu-like actions"
+    },
+    "copy": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "For the renderer action ui.copy: the text put on the clipboard; otherwise the action context's 'text' is copied"
     }
   },
   "required": [
@@ -51,7 +59,9 @@
   "agent": "Activate by label.",
   "rendering": [
     "At most one primary action visible at a time",
-    "danger tone uses color.action.danger.*"
+    "danger tone uses color.action.danger.*",
+    "'description' sits under the label in type.body.small, muted; the button's accessible description",
+    "ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely"
   ],
   "mappings": {
     "web": "shadcn Button (default / secondary / ghost / destructive)",

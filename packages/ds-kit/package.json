@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/ds-kit",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Shared parts of building a Polyxd design-system pack: CSS variable reading, DTCG conversion, manifest writing",
   "license": "Apache-2.0",
   "type": "module",
@@ -24,7 +24,7 @@
     }
   },
   "devDependencies": {
-    "@polyxd/spec": "^0.1.0"
+    "@polyxd/spec": "^0.2.0"
   },
   "bin": {
     "polyxd": "dist/polyxd.js"
@@ -41,7 +41,7 @@
     "NOTICE"
   ],
   "dependencies": {
-    "@polyxd/spec": "^0.1.0"
+    "@polyxd/spec": "^0.2.0"
   },
   "repository": {
     "type": "git",

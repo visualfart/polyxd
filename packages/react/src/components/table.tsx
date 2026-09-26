@@ -1,8 +1,8 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import { Checkbox, DropdownMenu } from "radix-ui";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { asList, absolute, childPointer, get, type Scope } from "../data.ts";
-import { formatValue } from "../format.ts";
+import { formatValue, safeColor } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Avatar, Icon } from "./avatar.tsx";
 
@@ -26,6 +26,16 @@ export function Table({ node }: { node: Node }) {
   const pointer = absolute(node.rows.path, b.scope);
   const rows = asList(get(s.data, pointer));
   const caption = b.text(node.caption);
+  // Expandable rows: which are open, by row value. The detail renders in the row's scope.
+  const expandable = !!node.detail && node.expandable !== false;
+  const [expanded, setExpanded] = useState<unknown[]>([]);
+  const isOpen = (v: unknown) => expanded.includes(v);
+  const toggleOpen = (v: unknown) => setExpanded((cur) => (cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]));
+  const expander = (v: unknown, name: string) => (
+    <button type="button" className="pxd-icon-button pxd-table-expander" aria-expanded={isOpen(v)} aria-label={`${isOpen(v) ? "Hide" : "Show"} details for ${name}`} onClick={() => toggleOpen(v)}>
+      <Icon name={isOpen(v) ? "sortUp" : "sortDown"} size={16} />
+    </button>
+  );
 
   useLayoutEffect(() => {
     const el = ref.current;
@@ -60,6 +70,13 @@ export function Table({ node }: { node: Node }) {
     const raw = get(s.data, absolute(c.path, scope));
     const text = formatValue(raw, resolveFormat(c.format, s.data, b.scope), s.locale);
     if (c.kind === "status") return <span className={`pxd-badge pxd-tone-${c.tones?.[String(raw)] ?? "neutral"}`}>{text}</span>;
+    if (c.format?.type === "color")
+      return (
+        <span className="pxd-color-value">
+          <span className={`pxd-swatch${safeColor(text) ? "" : " pxd-swatch-unknown"}`} style={safeColor(text) ? { background: safeColor(text) } : undefined} aria-hidden="true" />
+          {text}
+        </span>
+      );
     if (c.kind === "entity") {
       const second = c.secondaryPath ? String(get(s.data, absolute(c.secondaryPath, scope)) ?? "") : "";
       return (
@@ -156,6 +173,7 @@ export function Table({ node }: { node: Node }) {
                   </Checkbox.Indicator>
                 </Checkbox.Root>
               )}
+              {expandable && expander(valueOf(scope, i), name)}
               <div className="pxd-row-main">
                 <div className="pxd-row-title">{cell(first, scope)}</div>
                 <p className="pxd-row-details">
@@ -177,6 +195,11 @@ export function Table({ node }: { node: Node }) {
                   Select<span className="pxd-sr-only"> {name}</span>
                 </button>
               ) : null}
+              {expandable && isOpen(valueOf(scope, i)) && (
+                <div className="pxd-row-detail">
+                  <Render id={node.detail} scope={scope} />
+                </div>
+              )}
             </li>
           );
         })}
@@ -191,6 +214,11 @@ export function Table({ node }: { node: Node }) {
           <caption className={node.views || node.search ? "pxd-sr-only" : undefined}>{caption}</caption>
           <thead>
             <tr>
+              {expandable && (
+                <th scope="col" className="pxd-table-expand">
+                  <span className="pxd-sr-only">Details</span>
+                </th>
+              )}
               {selection && node.selected && (
                 <th scope="col" className="pxd-table-select">
                   <Checkbox.Root className="pxd-checkbox" checked={allSelected ? true : selected.length > 0 ? "indeterminate" : false} onCheckedChange={toggleAll} aria-label="Select all rows">
@@ -227,8 +255,11 @@ export function Table({ node }: { node: Node }) {
               const scope = { pointer: childPointer(pointer, i) };
               const v = valueOf(scope, i);
               const name = formatValue(get(s.data, absolute(node.columns[0].path, scope)), resolveFormat(node.columns[0].format, s.data, b.scope), s.locale);
+              const columnCount = node.columns.length + (expandable ? 1 : 0) + (selection && node.selected ? 1 : 0) + (node.rowActions || node.rowAction ? 1 : 0);
               return (
-                <tr key={String(v)} className={selected.includes(v) ? "pxd-row-selected" : undefined} aria-selected={selection ? selected.includes(v) : undefined}>
+                <Fragment key={String(v)}>
+                <tr className={selected.includes(v) ? "pxd-row-selected" : undefined} aria-selected={selection ? selected.includes(v) : undefined}>
+                  {expandable && <td className="pxd-table-expand">{expander(v, name)}</td>}
                   {selection && node.selected && (
                     <td className="pxd-table-select">
                       <Checkbox.Root className="pxd-checkbox" checked={selected.includes(v)} onCheckedChange={() => toggle(v)} aria-label={`Select ${name}`}>
@@ -258,6 +289,14 @@ export function Table({ node }: { node: Node }) {
                     </td>
                   )}
                 </tr>
+                {expandable && isOpen(v) && (
+                  <tr className="pxd-table-detail">
+                    <td colSpan={columnCount}>
+                      <Render id={node.detail} scope={scope} />
+                    </td>
+                  </tr>
+                )}
+                </Fragment>
               );
             })}
           </tbody>
@@ -306,8 +345,8 @@ function Views({ node }: { node: Node }) {
   );
 }
 
-/** Rows per page, the range shown, and the way to the next page. */
-function Paging({ node, rows }: { node: Node; rows: number }) {
+/** Rows per page, the range shown, and the way to the next page. A Collection with 'page' uses it too. */
+export function Paging({ node, rows }: { node: Node; rows: number }) {
   const b = useBindings();
   const s = useSurface();
   const p = node.page;

@@ -1,4 +1,4 @@
-import { useId, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type MouseEvent } from "react";
 import { Checkbox, RadioGroup, Slider, Switch } from "radix-ui";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { asList, absolute, childPointer, get, type Scope } from "../data.ts";
@@ -70,6 +70,39 @@ export function TextInput({ node }: { node: Node }) {
     if (v.message) (e.currentTarget as HTMLInputElement).setCustomValidity(b.text(v.message));
   };
   const clear = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => (e.currentTarget as HTMLInputElement).setCustomValidity("");
+  const label = b.text(node.label);
+  const field = { label, help, required: node.required, id, helpId };
+
+  if (kind === "suggestions" || kind === "mentions") return <CompletingInput node={node} field={field} common={common} mentions={kind === "mentions"} />;
+  if (kind === "tags") return <TagsInput node={node} field={field} common={common} />;
+  if (kind === "richtext") return <RichTextInput node={node} field={field} common={common} />;
+  if (kind === "inline") return <InlineInput node={node} field={field} common={common} />;
+  if (kind === "masked") {
+    const mask = typeof node.mask === "string" ? node.mask : "";
+    return (
+      <Field {...field}>
+        <input
+          {...common}
+          className="pxd-input pxd-input-masked"
+          type="text"
+          inputMode={/[A*]/.test(mask) ? undefined : "numeric"}
+          placeholder={mask || undefined}
+          value={stored}
+          maxLength={mask.length || undefined}
+          onChange={(e) => b.write(node.value, applyMask(mask, e.target.value, e.target.value.length < stored.length))}
+          onInvalid={invalid}
+          onInput={clear}
+        />
+      </Field>
+    );
+  }
+  if (kind === "code") {
+    return (
+      <Field {...field}>
+        <textarea {...common} className="pxd-input pxd-input-code" rows={4} spellCheck={false} autoCorrect="off" autoCapitalize="off" value={shown} maxLength={v.maxLength} minLength={v.minLength} onChange={(e) => onChange(e.target.value)} onInvalid={invalid} onInput={clear} />
+      </Field>
+    );
+  }
 
   if (kind === "search") {
     // A search field: icon and placeholder inside a pill; the label remains its accessible name.
@@ -148,8 +181,290 @@ export function TextInput({ node }: { node: Node }) {
       </div>
     );
   return (
-    <Field label={b.text(node.label)} help={help} required={node.required} id={id} helpId={helpId}>
+    <Field label={label} help={help} required={node.required} id={id} helpId={helpId}>
       {control}
+    </Field>
+  );
+}
+
+type FieldProps = { label: string; help?: string; required?: boolean; id: string; helpId: string };
+type CommonProps = Record<string, unknown> & { id: string; className: string };
+
+/** Fills a mask as you type: # takes a digit, A a letter, * either; other characters are typed for you. */
+export function applyMask(mask: string, text: string, deleting = false): string {
+  const chars = text.replace(/[^A-Za-z0-9]/g, "").split("");
+  let out = "";
+  let ci = 0;
+  for (const m of mask) {
+    if (ci >= chars.length) break;
+    if (m === "#" || m === "A" || m === "*") {
+      const ok = m === "#" ? /\d/ : m === "A" ? /[A-Za-z]/ : /./;
+      while (ci < chars.length && !ok.test(chars[ci])) ci++;
+      if (ci >= chars.length) break;
+      out += chars[ci++];
+    } else out += m;
+  }
+  // Deleting past a literal would put it straight back; drop trailing literals so Backspace moves on.
+  if (deleting) while (out.length && !/[#A*]/.test(mask[out.length - 1])) out = out.slice(0, -1);
+  return out;
+}
+
+/** A listbox under a text field, driven by the arrow keys; the option under the cursor is announced through aria-activedescendant. */
+function useCombobox(options: Option[], pick: (o: Option) => void) {
+  const listId = useId();
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const shown = open && options.length > 0;
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (!shown) {
+      if (e.key === "ArrowDown" && options.length) (setOpen(true), setActive(0), e.preventDefault());
+      return;
+    }
+    if (e.key === "ArrowDown") (setActive((a) => (a + 1) % options.length), e.preventDefault());
+    else if (e.key === "ArrowUp") (setActive((a) => (a - 1 + options.length) % options.length), e.preventDefault());
+    else if (e.key === "Enter" && active >= 0) (pick(options[active]), setOpen(false), e.preventDefault());
+    else if (e.key === "Escape") setOpen(false);
+  };
+  const inputProps = {
+    role: "combobox",
+    "aria-expanded": shown,
+    "aria-controls": listId,
+    "aria-autocomplete": "list" as const,
+    "aria-activedescendant": shown && active >= 0 ? `${listId}-${active}` : undefined,
+    autoComplete: "off",
+    onKeyDown,
+    onBlur: () => setOpen(false),
+  };
+  const list = shown ? (
+    <ul id={listId} role="listbox" className="pxd-combobox-list">
+      {options.map((o, i) => (
+        <li
+          key={String(o.value)}
+          id={`${listId}-${i}`}
+          role="option"
+          aria-selected={i === active}
+          className={`pxd-combobox-option${i === active ? " pxd-combobox-active" : ""}`}
+          onMouseDown={(e) => (e.preventDefault(), pick(o), setOpen(false))}
+        >
+          {o.label}
+          {o.description && <span className="pxd-option-description">{o.description}</span>}
+        </li>
+      ))}
+    </ul>
+  ) : null;
+  return { list, inputProps, show: (on: boolean) => (setOpen(on), setActive(-1)) };
+}
+
+/** Free text with completions ('suggestions'), or an @ that offers people ('mentions'). */
+function CompletingInput({ node, field, common, mentions }: { node: Node; field: FieldProps; common: CommonProps; mentions: boolean }) {
+  const b = useBindings();
+  const all = useOptions(node);
+  const text = String(b.value(node.value) ?? "");
+  // What is being completed: the whole value, or the word after the last @.
+  const at = mentions ? /@([^\s@]*)$/.exec(text) : null;
+  const query = mentions ? (at ? at[1] : null) : text;
+  const options = query === null ? [] : all.filter((o) => o.label.toLowerCase().includes(query.toLowerCase())).slice(0, 8);
+  const combo = useCombobox(options, (o) => b.write(node.value, mentions && at ? `${text.slice(0, at.index)}@${o.label} ` : o.label));
+  return (
+    <Field {...field}>
+      <div className="pxd-combobox">
+        <input
+          {...common}
+          {...combo.inputProps}
+          type="text"
+          value={text}
+          onChange={(e) => {
+            b.write(node.value, e.target.value);
+            combo.show(mentions ? /@[^\s@]*$/.test(e.target.value) : e.target.value.length > 0);
+          }}
+          onFocus={() => combo.show(!mentions && text.length > 0)}
+        />
+        {combo.list}
+      </div>
+    </Field>
+  );
+}
+
+/** Several short values: Enter or a comma makes a chip of what was typed; Backspace in an empty field removes the last one. */
+function TagsInput({ node, field, common }: { node: Node; field: FieldProps; common: CommonProps }) {
+  const b = useBindings();
+  const raw = b.value<unknown>(node.value);
+  const tags = Array.isArray(raw) ? raw.map(String) : [];
+  const [draft, setDraft] = useState("");
+  const add = () => {
+    const t = draft.trim().replace(/,$/, "").trim();
+    if (t && !tags.includes(t)) b.write(node.value, [...tags, t]);
+    setDraft("");
+  };
+  const remove = (i: number) => b.write(node.value, tags.filter((_, j) => j !== i));
+  return (
+    <Field {...field}>
+      <div className="pxd-tags" role="group" aria-label={field.label}>
+        <ul className="pxd-tags-list">
+          {tags.map((t, i) => (
+            <li key={`${t}-${i}`} className="pxd-tag-chip">
+              {t}
+              <button type="button" className="pxd-tag-remove" aria-label={`Remove ${t}`} onClick={() => remove(i)}>
+                <Icon name="close" size={14} />
+              </button>
+            </li>
+          ))}
+        </ul>
+        <input
+          {...common}
+          className="pxd-tags-input"
+          type="text"
+          value={draft}
+          onChange={(e) => (e.target.value.endsWith(",") ? (setDraft(e.target.value), add()) : setDraft(e.target.value))}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") (e.preventDefault(), add());
+            else if (e.key === "Backspace" && draft === "" && tags.length) remove(tags.length - 1);
+          }}
+          onBlur={add}
+        />
+      </div>
+    </Field>
+  );
+}
+
+/** Inline emphasis and lists to and from the markdown-ish text a 'richtext' value holds. */
+function toMarkup(n: globalThis.Node): string {
+  if (n.nodeType === 3) return n.textContent ?? "";
+  if (n.nodeType !== 1) return "";
+  const el = n as HTMLElement;
+  const inner = (x: globalThis.Node = el) => Array.from(x.childNodes).map(toMarkup).join("");
+  switch (el.tagName.toLowerCase()) {
+    case "b":
+    case "strong":
+      return `**${inner()}**`;
+    case "i":
+    case "em":
+      return `*${inner()}*`;
+    case "br":
+      return "\n";
+    case "ul":
+      return Array.from(el.children).map((li) => `- ${inner(li)}`).join("\n") + "\n";
+    case "ol":
+      return Array.from(el.children).map((li, i) => `${i + 1}. ${inner(li)}`).join("\n") + "\n";
+    case "div":
+    case "p":
+    case "li":
+      return inner() + "\n";
+    default:
+      return inner();
+  }
+}
+function inlineNodes(text: string): globalThis.Node[] {
+  const out: globalThis.Node[] = [];
+  const re = /\*\*([^*]+)\*\*|\*([^*]+)\*/g;
+  let last = 0;
+  for (let m = re.exec(text); m; m = re.exec(text)) {
+    if (m.index > last) out.push(document.createTextNode(text.slice(last, m.index)));
+    const el = document.createElement(m[1] ? "strong" : "em");
+    el.textContent = m[1] ?? m[2];
+    out.push(el);
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) out.push(document.createTextNode(text.slice(last)));
+  return out;
+}
+function fromMarkup(text: string): globalThis.Node[] {
+  const out: globalThis.Node[] = [];
+  let list: HTMLElement | null = null;
+  for (const line of text.split("\n")) {
+    const item = /^(-|\d+\.)\s+(.*)$/.exec(line);
+    if (item) {
+      const tag = item[1] === "-" ? "ul" : "ol";
+      if (!list || list.tagName.toLowerCase() !== tag) (list = document.createElement(tag), out.push(list));
+      const li = document.createElement("li");
+      li.append(...inlineNodes(item[2]));
+      list.append(li);
+      continue;
+    }
+    list = null;
+    const div = document.createElement("div");
+    if (line) div.append(...inlineNodes(line));
+    else div.append(document.createElement("br"));
+    out.push(div);
+  }
+  return out;
+}
+
+/** A small editable area with Bold, Italic and List; the value is text with **bold**, *italic* and '- ' items. */
+function RichTextInput({ node, field, common }: { node: Node; field: FieldProps; common: CommonProps }) {
+  const b = useBindings();
+  const ref = useRef<HTMLDivElement>(null);
+  const stored = String(b.value(node.value) ?? "");
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || el.dataset.ready) return;
+    el.dataset.ready = "1";
+    el.replaceChildren(...fromMarkup(stored));
+  }, [stored]);
+  const commit = () => ref.current && b.write(node.value, toMarkup(ref.current).replace(/\n+$/, ""));
+  const exec = (command: string) => (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    ref.current?.focus();
+    document.execCommand(command);
+    commit();
+  };
+  const { id, className: _c, required: _r, autoComplete: _a, ...rest } = common;
+  return (
+    <Field {...field}>
+      <div className="pxd-richtext">
+        <div className="pxd-richtext-toolbar" role="toolbar" aria-label="Formatting">
+          <button type="button" className="pxd-richtext-control" aria-label="Bold" onMouseDown={exec("bold")}>
+            <strong>B</strong>
+          </button>
+          <button type="button" className="pxd-richtext-control" aria-label="Italic" onMouseDown={exec("italic")}>
+            <em>I</em>
+          </button>
+          <button type="button" className="pxd-richtext-control" aria-label="Bulleted list" onMouseDown={exec("insertUnorderedList")}>
+            <Icon name="menu" size={16} />
+          </button>
+        </div>
+        <div {...rest} id={id} ref={ref} className="pxd-input pxd-richtext-area" contentEditable role="textbox" aria-multiline="true" aria-label={field.label} onInput={commit} onBlur={commit} />
+      </div>
+    </Field>
+  );
+}
+
+/** Reads as text until Edit is chosen; Enter saves, Escape restores what was there. */
+function InlineInput({ node, field, common }: { node: Node; field: FieldProps; common: CommonProps }) {
+  const b = useBindings();
+  const stored = String(b.value(node.value) ?? "");
+  const [draft, setDraft] = useState<string | null>(null);
+  const save = () => {
+    if (draft !== null) b.write(node.value, draft);
+    setDraft(null);
+  };
+  if (draft === null) {
+    return (
+      <div className="pxd-inline-edit">
+        <span className="pxd-field-label">{field.label}</span>
+        <button type="button" className="pxd-inline-value" aria-label={`Edit ${field.label}`} onClick={() => setDraft(stored)}>
+          <span className={stored ? undefined : "pxd-inline-empty"}>{stored || "Not set"}</span>
+          <span className="pxd-inline-hint" aria-hidden="true">
+            Edit
+          </span>
+        </button>
+      </div>
+    );
+  }
+  return (
+    <Field {...field}>
+      <input
+        {...common}
+        type="text"
+        autoFocus
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={save}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") (e.preventDefault(), save());
+          else if (e.key === "Escape") setDraft(null);
+        }}
+      />
     </Field>
   );
 }
@@ -496,11 +811,12 @@ export function Toggle({ node }: { node: Node }) {
   );
 }
 
-const DATE_TYPE: Record<string, string> = { date: "date", time: "time", datetime: "datetime-local" };
+const DATE_TYPE: Record<string, string> = { date: "date", time: "time", datetime: "datetime-local", month: "month" };
 
 /** Native date/time inputs: typing is always possible, and pickers are platform-native. */
 export function DateInput({ node }: { node: Node }) {
   const b = useBindings();
+  const s = useSurface();
   const id = useId();
   const helpId = useId();
   const kind = node.kind ?? "date";
@@ -509,6 +825,62 @@ export function DateInput({ node }: { node: Node }) {
   const min = node.min !== undefined ? b.text(node.min) : undefined;
   const max = node.max !== undefined ? b.text(node.max) : undefined;
   const a11y = useA11y(node);
+  if (node.multiple && kind !== "dateRange") {
+    // Each chosen date is a chip; the field adds another.
+    const dates = Array.isArray(value) ? value.map(String) : [];
+    const spoken = (d: string) => formatValue(d, { type: kind === "month" ? "date" : kind === "time" ? "time" : kind === "datetime" ? "datetime" : "date" }, s.locale);
+    const add = (d: string) => d && !dates.includes(d) && b.write(node.value, [...dates, d].sort());
+    return (
+      <fieldset className="pxd-field pxd-date-multiple" {...a11y}>
+        <legend className="pxd-field-label">
+          {b.text(node.label)}
+          {node.required && <RequiredMark />}
+        </legend>
+        {help && <p className="pxd-field-help" id={helpId}>{help}</p>}
+        {dates.length > 0 && (
+          <ul className="pxd-tags-list" aria-label={`Chosen ${b.text(node.label)}`}>
+            {dates.map((d) => (
+              <li key={d} className="pxd-tag-chip">
+                {kind === "year" || kind === "month" ? d : spoken(d)}
+                <button type="button" className="pxd-tag-remove" aria-label={`Remove ${d}`} onClick={() => b.write(node.value, dates.filter((x) => x !== d))}>
+                  <Icon name="close" size={14} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <label className="pxd-date-add" htmlFor={id}>
+          <span className="pxd-sr-only">Add a date</span>
+          {kind === "year" ? (
+            <input id={id} className="pxd-input pxd-input-year" inputMode="numeric" pattern="[0-9]{4}" maxLength={4} placeholder="YYYY" aria-describedby={help ? helpId : undefined} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add(e.currentTarget.value), (e.currentTarget.value = ""))} onBlur={(e) => (add(e.currentTarget.value), (e.currentTarget.value = ""))} />
+          ) : (
+            <input id={id} className="pxd-input pxd-input-date" type={DATE_TYPE[kind]} min={min} max={max} aria-describedby={help ? helpId : undefined} onChange={(e) => (add(e.target.value), (e.target.value = ""))} />
+          )}
+        </label>
+      </fieldset>
+    );
+  }
+  if (kind === "year") {
+    return (
+      <Field label={b.text(node.label)} help={help} required={node.required} id={id} helpId={helpId}>
+        <input
+          id={id}
+          className="pxd-input pxd-input-year"
+          inputMode="numeric"
+          pattern="[0-9]{4}"
+          maxLength={4}
+          placeholder="YYYY"
+          value={(value as string) ?? ""}
+          min={min}
+          max={max}
+          required={node.required}
+          aria-describedby={help ? helpId : undefined}
+          onChange={(e) => b.write(node.value, e.target.value.replace(/\D/g, "").slice(0, 4) || null)}
+          {...a11y}
+        />
+      </Field>
+    );
+  }
   if (kind === "dateRange") {
     const [start, end] = Array.isArray(value) ? value : [];
     const setAt = (i: number, v: string) => {
@@ -537,7 +909,7 @@ export function DateInput({ node }: { node: Node }) {
     <Field label={b.text(node.label)} help={help} required={node.required} id={id} helpId={helpId}>
       <input
         id={id}
-        className="pxd-input pxd-input-date"
+        className={`pxd-input pxd-input-date${kind === "month" ? " pxd-input-month" : ""}`}
         type={DATE_TYPE[kind]}
         value={(value as string) ?? ""}
         min={min}

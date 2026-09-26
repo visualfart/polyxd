@@ -1,6 +1,6 @@
 # Polyxd components
 
-Generated from `components/*.json` (spec 0.1.0). The model chooses these semantic components; each platform renders them with its own native parts.
+Generated from `components/*.json` (spec 0.2.0). The model chooses these semantic components; each platform renders them with its own native parts.
 
 ## Platform mapping
 
@@ -11,24 +11,35 @@ Generated from `components/*.json` (spec 0.1.0). The model chooses these semanti
 | [Card](#card) | structure | shadcn Card (CardHeader/CardTitle/CardContent/CardFooter) | GroupBox, or a Button/NavigationLink with card styling in lists | Card / ElevatedCard / OutlinedCard (onClick variant when actionable) | Card |
 | [Disclosure](#disclosure) | structure | shadcn Collapsible (or Accordion for several) | DisclosureGroup | Expandable ListItem / AnimatedVisibility with a toggle row | No direct equivalent; exports as Column (content always shown) |
 | [Group](#group) | structure | &lt;div role=group&gt; with flex/grid and semantic spacing tokens | VStack / HStack / Grid (ViewThatFits for inline) | Column / Row / FlowRow | Column or Row |
+| [Panel](#panel) | structure | shadcn Dialog, Sheet, Drawer, Popover | .sheet, .popover, NavigationStack push | ModalBottomSheet, AlertDialog, DropdownMenu | Modal |
 | [Section](#section) | structure | &lt;section&gt; + heading; shadcn has no Section primitive (plain markup with semantic tokens) | Section(header:) inside List/Form, or VStack with .accessibilityAddTraits(.isHeader) on the title | Column with a Text heading marked Modifier.semantics { heading() } | No direct equivalent; exports as Column with a Text(variant: h2) first child |
 | [Views](#views) | structure | shadcn Tabs | Picker(.segmented) switching content, or TabView for top-level | PrimaryTabRow + content | Tabs |
 | [Chart](#chart) | content | shadcn Chart (Recharts) | Swift Charts (Chart) | Third-party (e.g. Vico) or Canvas; no built-in M3 chart | No equivalent in the Basic catalog; exports as Text(summary) + List |
+| [Code](#code) | content | pre &gt; code with a Copy button | Text with monospaced design in a rounded rectangle | Text with FontFamily.Monospace in a Surface | Text |
 | [Collection](#collection) | content | List markup with Card or row template; ScrollArea for long lists | List + ForEach | LazyColumn + items | List (templated children) |
 | [DetailList](#detaillist) | content | &lt;dl&gt; with semantic tokens | LabeledContent rows in a Form/List section | ListItem(headlineContent, trailingContent) rows | Column of Row(Text, Text) |
-| [Media](#media) | content | &lt;img&gt; / shadcn AspectRatio | AsyncImage | AsyncImage (Coil) / Image | Image |
+| [Identity](#identity) | content | shadcn Avatar | AsyncImage in a Circle + Text | AsyncImage with CircleShape + Text | Row of Image + Text |
+| [Media](#media) | content | &lt;img&gt; / &lt;video&gt; / &lt;audio&gt; / shadcn AspectRatio; QR on &lt;canvas&gt; | AsyncImage / VideoPlayer / CoreImage CIQRCodeGenerator | AsyncImage (Coil) / Media3 PlayerView / ZXing | Image (video, audio and gallery export as Image + Text; a QR code as Text of its value) |
 | [Metric](#metric) | content | Card-like block with semantic tokens (no dedicated shadcn primitive) | LabeledContent or a VStack; Gauge for bounded values | Column with Text styles | Column of Text |
+| [Progress](#progress) | content | shadcn Progress; meter as a native &lt;meter&gt; | ProgressView, Gauge | LinearProgressIndicator, CircularProgressIndicator | Text |
 | [Table](#table) | content | shadcn Table (optionally Data Table with TanStack) | Table on regular width; List of rows on compact width | LazyColumn of rows with a header row (no built-in M3 table) | No direct equivalent; exports as List of Row |
+| [Tag](#tag) | content | shadcn Badge | Text with capsule background | AssistChip / Badge | Text |
 | [Text](#text) | content | &lt;p&gt; with type tokens | Text | Text | Text |
+| [Tree](#tree) | content | Radix Accordion primitives (no shadcn tree) | OutlineGroup / List with children | LazyColumn with expandable rows | Nested Column of Text |
 | [Status](#status) | feedback | shadcn Alert / Skeleton / Sonner toast | ContentUnavailableView / ProgressView / inline Label | Snackbar / Card with status color / CircularProgressIndicator | Text + Icon |
 | [Choice](#choice) | input | shadcn ToggleGroup / RadioGroup / Select / Combobox (Command + Popover) / Checkbox | Picker (.segmented / .inline / .menu) or multi-select List | SegmentedButton / RadioButton rows / ExposedDropdownMenuBox / Checkbox rows | ChoicePicker |
+| [CodeInput](#codeinput) | input | shadcn InputOTP | TextField with .oneTimeCode content type | BasicTextField with KeyboardType.NumberPassword | Custom (no Basic equivalent) |
+| [ColorInput](#colorinput) | input | input type=color + Radix RadioGroup for swatches | ColorPicker | Custom (no Material picker) | Custom (no Basic equivalent) |
 | [DateInput](#dateinput) | input | shadcn Calendar + Popover (Date Picker) | DatePicker | DatePicker / DateRangePicker | DateTimeInput |
+| [FileInput](#fileinput) | input | shadcn Input type=file with a drop zone | fileImporter / PhotosPicker | ActivityResultContracts.GetContent | Custom (no Basic equivalent) |
 | [Form](#form) | input | shadcn Form (react-hook-form + zod) | Form | Column of fields + Button (no Form primitive) | Column + Button |
 | [RangeInput](#rangeinput) | input | shadcn Slider | Slider | Slider | Slider |
+| [Rating](#rating) | input | Radix RadioGroup (no shadcn rating) | HStack of Image(systemName: star) buttons | Row of IconButton | Row of Icon |
 | [TextInput](#textinput) | input | shadcn Input / Textarea with Label and FormMessage | TextField / TextEditor with .keyboardType and .textContentType | OutlinedTextField with KeyboardOptions | TextField |
 | [Toggle](#toggle) | input | shadcn Switch / Checkbox | Toggle | Switch / Checkbox | CheckBox |
 | [Action](#action) | action | shadcn Button (default / secondary / ghost / destructive) | Button with .borderedProminent / .bordered / .borderless; role: .destructive | Button / FilledTonalButton / OutlinedButton / TextButton | Button |
 | [ActionBar](#actionbar) | action | Flex row of shadcn Buttons (DialogFooter-style) | .toolbar or .safeAreaInset(edge: .bottom) | BottomAppBar or Row of Buttons | Row of Button |
+| [ActionMenu](#actionmenu) | action | shadcn DropdownMenu, ContextMenu; split as a ButtonGroup | Menu, contextMenu | DropdownMenu, combinedClickable for context | Custom (no Basic equivalent) |
 | [Comparison](#comparison) | flow | shadcn Table or Cards grid | Grid / Table on regular width; List of GroupBox on compact | LazyRow of Cards or Column of Cards | No direct equivalent; exports as List of Card |
 | [Confirm](#confirm) | flow | shadcn AlertDialog | .confirmationDialog / .alert with role: .destructive | AlertDialog | Modal with Text and Buttons |
 | [Steps](#steps) | flow | Progress + step content (no shadcn stepper primitive) | NavigationStack pushes or a paged view with a ProgressView | Custom stepper Row + content; LinearProgressIndicator | No direct equivalent; exports as Column of the current step |
@@ -63,7 +74,7 @@ Filters for a list of results, with the result count.
 
 The product's main navigation.
 
-**Required props:** `items`, `current`. **Optional:** `label`.
+**Required props:** `items`, `current`. **Optional:** `label`, `kind`.
 
 **Use when**
 - Software with sections people move between (B2B apps, dashboards)
@@ -84,6 +95,10 @@ The product's main navigation.
 - Wide: a side navigation with grouped items
 - Compact: a menu button that opens the navigation
 - Badges sit at the end of their item
+- 'breadcrumb' is an ordered trail ending with the current item (aria-current="page"), never behind a menu button
+- 'nested' shows each group as an expandable section; the group holding the current item starts open
+- 'toc' lists the page's sections as anchors, the section in view highlighted
+- 'local' lays the items out as tabs, the current one marked
 
 ## Card
 
@@ -154,6 +169,37 @@ Visually groups closely related items without a heading (proximity).
 - 'inline' collapses to a stack below the compact breakpoint
 - Gap uses space.stack.default or space.inline.default
 
+## Panel
+
+Content over the current view: a dialog, a drawer, a bottom sheet or a popover, opened from an action and dismissed to return.
+
+**Required props:** `title`, `children`. **Optional:** `kind`, `actions`, `open`, `dismissible`, `size`.
+
+**Use when**
+- A short task on top of the page: edit one thing, pick one thing, see one record
+- Detail the person asked for that shouldn't replace where they are
+- A small set of options next to the control that opened them (popover)
+
+**Don't use when**
+- Confirming a consequential action: use Confirm, which is a dialog with the right words and order
+- A whole flow of several steps: use Steps on its own surface
+- Passing feedback: use Status
+
+**Accessibility** (role: dialog (aria-modal for dialog, drawer and sheet) named by the title; popover is a non-modal dialog)
+- Focus moves into the panel on open and back to the opener on close
+- Tab stays inside a modal panel; Escape dismisses a dismissible one
+- The page behind a modal panel is inert
+- A sheet can be dismissed by dragging down as well as by the close control
+
+**Agents:** Opens, reads the content and closes it by name; the footer actions are exposed like any ActionBar.
+
+**Rendering rules**
+- A backdrop of color.surface.inverse at opacity.overlay for modal kinds
+- dialog: max 560px on desktop, full width with space.inset.default on phones; drawer: 420px from the end edge; sheet: from the bottom with radius.large on the top corners; popover: color.surface.overlay with elevation.overlay and an arrow
+- The title is type.heading.medium with the close control at the end of the header
+- The action bar sits in a footer; on phones it is fixed to the bottom, full width
+- Motion uses motion.duration.default and motion.easing.standard; reduced motion fades instead
+
 ## Section
 
 A titled region of the surface that groups related content under a heading.
@@ -223,13 +269,40 @@ A visual summary of data, always paired with a text summary.
 
 **Rendering rules**
 - trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram
-- Series colors use color.data.categorical.N in order
+- relationship → scatter (x is a measure too), flow → stacked flows from each x value to each series, hierarchy → treemap of the first series, matrix → heatmap of x values by series, range → bars from the first series to the second
+- Series colors use color.data.categorical.N in order; a matrix shades one color by value and prints the value in each cell
+
+## Code
+
+Code, a command or preformatted text, shown as written and copyable.
+
+**Required props:** `text`. **Optional:** `label`, `language`, `copyable`, `wrap`, `secret`.
+
+**Use when**
+- A command to run, a snippet to paste, an identifier to copy
+- Structured text whose spacing matters
+
+**Don't use when**
+- Prose: use Text
+- Something the person types: use TextInput
+
+**Accessibility** (role: region named by the label, holding a code element; the copy control is a button named 'Copy <label>')
+- Text is real text: selectable and read by screen readers line by line
+- Copying is announced ('Copied')
+- A secret is masked with the same length, with a 'Show' control
+
+**Agents:** Reads the text verbatim; can activate Copy.
+
+**Rendering rules**
+- type.mono at type.body.small on color.surface.subtle, with radius.control
+- Overflow scrolls sideways unless wrap is set; never clipped
+- The copy control sits in the top-right corner and says 'Copied' for two seconds after use
 
 ## Collection
 
 A list of items from host data, each rendered with the same template.
 
-**Required props:** `items`, `label`. **Optional:** `empty`, `selection`, `selected`, `layout`.
+**Required props:** `items`, `label`. **Optional:** `empty`, `selection`, `selected`, `layout`, `datePath`, `page`, `bulkActions`, `reorderable`, `order`.
 
 **Use when**
 - Browsing a set of similar entities
@@ -251,12 +324,17 @@ A list of items from host data, each rendered with the same template.
 - grid: 2 columns on phones, more as width allows; list: one item per row
 - auto: grid when the item template is a Card with media, otherwise list
 - 'timeline' marks each item on a line, newest first, for activity feeds
+- 'carousel' scrolls horizontally with snap points, Previous and Next buttons and an 'N of M' readout; every item stays reachable by keyboard
+- 'calendar' is a month grid with the items on their days; Previous and Next move a month at a time
+- Paging shows items per page, the range and the total, as a Table does
+- Selection shows the bulk-action bar, naming how many items are selected, while any are
+- reorderable: a drag handle per item, plus Move up / Move down buttons; the new order is written to 'order'
 
 ## DetailList
 
 Label/value pairs describing one thing (a summary, a receipt, a review step).
 
-**Required props:** `items`. **Optional:** `title`, `variant`, `layout`.
+**Required props:** `items`. **Optional:** `title`, `variant`, `layout`, `rowAction`.
 
 **Use when**
 - Reviewing before submitting
@@ -277,27 +355,62 @@ Label/value pairs describing one thing (a summary, a receipt, a review step).
 - Keeps the item order stable across generations (keys are remembered)
 - receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right
 - 'grid' lays fields out in columns by width, label above value
+- rowAction: each row ends with a 'Change' link whose accessible name includes the row's label; the total row has none
+
+## Identity
+
+A person, team or organisation: picture, name and details, or several of them together.
+
+**Required props:** `name`. **Optional:** `detail`, `image`, `kind`, `size`, `action`, `group`.
+
+**Use when**
+- Who something belongs to, was sent by or is assigned to
+- The recipient on a payment, the owner on a record, the members on a team
+- A list of people where the face helps recognition
+
+**Don't use when**
+- Choosing a person from a list: use Choice with avatarPath
+- A person's full record: use Card or DetailList
+
+**Accessibility** (role: group named by the name; the picture is decorative and the name is text)
+- The name is real text, never only an image or initials
+- A group's accessible name lists the first names and how many more
+- With an action, the whole element is one button or link named by the name
+
+**Agents:** Reads the name and detail; a group exposes every member's name.
+
+**Rendering rules**
+- Initials come from the name's first letters, on a neutral surface with color.text.default; a pack may derive a stable colour from the name
+- Sizes: small 24px, default 40px, large 64px; the name uses type.body.default or type.heading.small for large
+- A group overlaps pictures by a quarter, with a '+N' tag for the rest
+- Images are never stretched; missing images fall back to initials, never to a broken image
 
 ## Media
 
-An image supplied by the host.
+An image, video, audio clip, gallery or QR code supplied by the host.
 
-**Required props:** `src`. **Optional:** `alt`, `decorative`, `aspect`.
+**Required props:** . **Optional:** `src`, `alt`, `decorative`, `aspect`, `kind`, `poster`, `transcript`, `items`, `imagePath`, `altPath`, `value`.
 
 **Use when**
 - Photos or illustrations that help identify something (a product, a place, a person)
+- A recording people play, or a code they scan
 
 **Don't use when**
 - Decoration with no information
 - Icons for actions (renderer supplies those)
 
-**Accessibility** (role: img)
+**Accessibility** (role: img (video / audio players, list for a gallery))
 - Has alt text unless decorative (then hidden from assistive technology)
+- Video and audio have native controls and offer a transcript
+- A QR code's alt says what scanning it does
 
-**Agents:** Reads the alt text.
+**Agents:** Reads the alt text; a gallery's images by their own alt text; a QR code's value.
 
 **Rendering rules**
 - Images never convey information that is not also in text
+- 'video' shows 'poster' until played; 'audio' is a compact player; both put 'transcript' under a disclosure
+- 'gallery' is a grid of the items' images, each with its own alt text
+- 'qr' is drawn on a canvas at a size that scans from a phone, with the alt as its accessible name
 
 ## Metric
 
@@ -322,11 +435,40 @@ A key figure with a label, and optionally its change.
 - Value uses type.numeric.display
 - Change uses color.data.positive / negative according to 'favorable'
 
+## Progress
+
+How far along something is, or how much of a bounded amount is used: a bar, a ring or a meter.
+
+**Required props:** `label`, `value`. **Optional:** `max`, `kind`, `caption`, `format`, `tone`, `thresholds`, `indeterminate`.
+
+**Use when**
+- A task that takes time, with a known share done
+- How much of a quota, budget or capacity is used
+- Progress towards a goal (pages read, steps walked)
+
+**Don't use when**
+- A number the person came to see: use Metric
+- Steps of a task the person moves through: use Steps
+- A short wait with nothing to measure: Status 'loading'
+
+**Accessibility** (role: progressbar (bar, ring) or meter, named by the label, with aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext)
+- The readout is real text next to the graphic, never only the fill
+- A meter's tone is also said in text ('nearly full'), not only shown by colour
+- Indeterminate progress has no value attributes and is announced as busy
+
+**Agents:** Reads label, value and max as text.
+
+**Rendering rules**
+- The track uses color.surface.subtle; the fill uses color.action.primary.background, or color.status.<tone>.emphasis for a toned meter
+- Height is size.control.small / 3 for a bar; a ring is size.control.default across
+- Readout in tabular figures, type.body.small, after the label
+- The bar's length means the fraction: never used for an amount with no bound
+
 ## Table
 
 Tabular data: many items sharing the same attributes.
 
-**Required props:** `rows`, `caption`, `columns`. **Optional:** `rowAction`, `empty`, `sort`, `selection`, `selected`, `rowValuePath`, `bulkActions`, `rowActions`, `toolbar`, `search`, `views`, `view`, `page`.
+**Required props:** `rows`, `caption`, `columns`. **Optional:** `rowAction`, `empty`, `sort`, `selection`, `selected`, `rowValuePath`, `bulkActions`, `rowActions`, `expandable`, `detail`, `toolbar`, `search`, `views`, `view`, `page`.
 
 **Use when**
 - Scanning or comparing many rows by several attributes
@@ -354,12 +496,43 @@ Tabular data: many items sharing the same attributes.
 - On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status
 - Selection replaces the toolbar with the bulk-action bar while rows are selected
 - Paging shows rows per page, the range and the total
+- expandable: each row starts with a toggle (aria-expanded) named after the row; the open row's 'detail' spans the table beneath it
+
+## Tag
+
+A short label, status or count attached to something else.
+
+**Required props:** `label`. **Optional:** `kind`, `tone`, `count`, `remove`.
+
+**Use when**
+- The state of a record, next to its name: 'Past due', 'Draft', 'Live'
+- A category or label a thing carries
+- How many of something, on a navigation item or a section heading
+- Chosen items a person can take off again
+
+**Don't use when**
+- A whole sentence of feedback: use Status
+- Something the person switches on or off: use Toggle
+- A metric the person came for: use Metric
+
+**Accessibility** (role: text; for 'count', the label is the accessible name of the number; for a removable tag, a button named 'Remove <label>')
+- Tone is conveyed by the label, never only by colour
+- A count reads as '<label>: <count>' to a screen reader
+- The remove control is at least size.target.min and named for what it removes
+
+**Agents:** Reads label, tone and count; can activate the remove control by its name.
+
+**Rendering rules**
+- status uses color.status.<tone>.background and .foreground; label and count use neutral tokens
+- count is set in tabular figures
+- A tag never wraps: long labels are truncated with the full text on hover and in the accessible name
+- Fits inline with text and in a Card header; radius.small unless the pack sets a pill
 
 ## Text
 
 A run of text.
 
-**Required props:** `text`. **Optional:** `variant`, `format`.
+**Required props:** `text`. **Optional:** `variant`, `format`, `items`, `itemPath`, `ordered`, `cite`.
 
 **Use when**
 - Explanations, instructions, messages
@@ -378,6 +551,38 @@ A run of text.
 **Rendering rules**
 - 'supporting' uses color.text.muted
 - No inline styling; emphasis comes from structure
+- 'rich' renders only the four markup forms, as real elements; anything else, including HTML, is shown as typed, and only http, https, mailto and tel links are live
+- 'list' renders a ul or ol; entries are shown as text, or by 'itemPath' when they are objects
+- 'quote' is a blockquote, the cite on its own line after it
+- format 'color' shows a swatch of the value beside it; 'bytes' shows a size like 1.2 MB
+
+## Tree
+
+A hierarchy people expand, browse and pick from: folders, an org chart, nested categories.
+
+**Required props:** `label`, `items`, `labelPath`, `childrenPath`. **Optional:** `valuePath`, `detailPath`, `selection`, `selected`, `expanded`, `action`.
+
+**Use when**
+- Things that contain things: folders and files, an organisation, nested categories
+- Picking a place in a hierarchy (move to folder, choose a category)
+
+**Don't use when**
+- A flat list, however long: use Collection or Table
+- Nested navigation of the product itself: use Navigation
+- Progressive disclosure of one section: use Disclosure
+
+**Accessibility** (role: tree with treeitem nodes; aria-expanded on nodes with children, aria-selected when selectable)
+- Arrow keys move and expand; Home and End jump; typing jumps to a label
+- Level and position are exposed (aria-level, aria-setsize, aria-posinset)
+- Expanded state is announced; selection is announced
+
+**Agents:** Reads every node by label and level; expands a node by name and selects or activates one by name.
+
+**Rendering rules**
+- Indent per level uses space.inline.default; the expander is a chevron at size.target.min
+- Leaves have no expander and align with siblings' labels
+- Selection uses color.selection.background; the focused node shows color.border.focus
+- Beyond 200 nodes the renderer virtualises rows
 
 ## Status
 
@@ -436,11 +641,61 @@ Pick one or several options from a known set. The renderer chooses the control.
 - multiple, ≤ 10 → checkboxes; > 10 → searchable multi-select
 - Option order comes from host data or remembers the last order used
 
+## CodeInput
+
+A one-time code or PIN, typed into one box per character.
+
+**Required props:** `label`, `value`. **Optional:** `length`, `kind`, `help`, `required`, `action`.
+
+**Use when**
+- A verification code from email or SMS
+- A PIN or a short recovery code
+
+**Don't use when**
+- A password: the host's own sign-in flow, never a generated screen
+- Any text longer than twelve characters: use TextInput
+
+**Accessibility** (role: a group named by the label; one text input per character, each named 'Digit N of M')
+- Typing moves focus forward; Backspace moves it back; pasting the whole code fills every box
+- The numeric kind opens the numeric keyboard and accepts autofill of one-time codes
+- Errors are said against the group, not one box
+
+**Agents:** Reads the label and length; enters the code.
+
+**Rendering rules**
+- Boxes are size.control.large squares with radius.control, type.heading.small, centred, in type.mono
+- The active box shows color.border.focus; a filled box shows color.border.strong
+- Boxes are grouped in threes or fours by a wider gap past six characters
+
+## ColorInput
+
+Pick a colour: from swatches the host offers, or any colour.
+
+**Required props:** `label`, `value`. **Optional:** `swatches`, `format`, `alpha`, `help`, `required`.
+
+**Use when**
+- A colour for a label, a tag, a calendar, a theme
+- Choosing from a set of brand colours
+
+**Don't use when**
+- A choice that happens to be shown as colours (a plan, a size): use Choice
+
+**Accessibility** (role: swatches are a radiogroup of radios named by their labels; the free picker is a native color input plus a text field for the value)
+- Every swatch has a name; colour alone is never the only identification
+- The value is editable as text, so it can be typed and read
+- The chosen colour is shown beside its text value
+
+**Agents:** Reads the swatch names; picks one by name or types a value.
+
+**Rendering rules**
+- Swatches are size.control.default squares with radius.control and a 1px color.border.default ring; the chosen one shows color.border.focus
+- The free picker is the platform's, with the text value beside it in type.mono
+
 ## DateInput
 
 A date, time, date-time or date range.
 
-**Required props:** `label`, `value`. **Optional:** `kind`, `min`, `max`, `help`, `required`.
+**Required props:** `label`, `value`. **Optional:** `kind`, `multiple`, `min`, `max`, `help`, `required`.
 
 **Use when**
 - Any date or time entry
@@ -455,6 +710,34 @@ A date, time, date-time or date range.
 
 **Rendering rules**
 - Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar
+- 'month' and 'year' take only that part; the year field is typed, four digits
+- multiple: each chosen date becomes a chip with a remove control; the field adds another
+
+## FileInput
+
+Choose or drop files to attach or upload.
+
+**Required props:** `label`, `value`. **Optional:** `accept`, `multiple`, `maxSize`, `help`, `required`.
+
+**Use when**
+- Attaching a document, a receipt, a photo
+- Importing a file the product reads
+
+**Don't use when**
+- Taking a photo with the camera: the host's own flow
+- Pasting text: use TextInput
+
+**Accessibility** (role: a native file input, labelled; the drop zone is a large target for the same input)
+- Keyboard opens the chooser; drag-and-drop is an addition, never the only way
+- Chosen files are listed as text with a 'Remove <name>' button each
+- Type and size limits are said before choosing and in any refusal
+
+**Agents:** Reads the label and limits; attaches files through the host.
+
+**Rendering rules**
+- A dashed drop zone on color.surface.subtle with radius.control, the chooser control inside it
+- Each chosen file shows name, size and a remove control; a progress bar while the host uploads
+- Refusals use color.status.danger text under the zone
 
 ## Form
 
@@ -505,11 +788,37 @@ A number, or a range between two numbers, within known bounds.
 - Shows min, max and the current formatted value
 - mode 'range' shows two thumbs and min/max fields that stay in sync
 
+## Rating
+
+A score out of N: given by the person, or shown as others gave it.
+
+**Required props:** `label`, `value`. **Optional:** `max`, `readOnly`, `count`, `help`, `required`, `action`.
+
+**Use when**
+- Asking how something went, out of five
+- Showing a product's or place's rating with the count behind it
+
+**Don't use when**
+- A number within bounds that isn't a score: use RangeInput
+- Yes or no: use Toggle or Choice
+
+**Accessibility** (role: radiogroup of radios named '1 star' to 'N stars' when it can be given; an image named '4.6 out of 5' when read-only)
+- Every star is a real control at size.target.min when the person can rate
+- The current value is announced; half values are said as such
+- Read-only ratings carry the score as text, not only as filled shapes
+
+**Agents:** Reads the score and the count; sets a score by choosing '<n> stars'.
+
+**Rendering rules**
+- Filled shapes use color.status.warning.emphasis; empty ones use color.border.default
+- The readout ('4.6') is shown after the shapes in tabular figures, with the count in color.text.muted
+- A rating that can be given shows the label above, like every input
+
 ## TextInput
 
 A single text-like value: text, number, email, phone, currency, search or long text.
 
-**Required props:** `label`, `value`. **Optional:** `kind`, `currency`, `help`, `required`, `validation`, `autocomplete`, `placeholder`, `size`.
+**Required props:** `label`, `value`. **Optional:** `kind`, `options`, `mask`, `currency`, `help`, `required`, `validation`, `autocomplete`, `placeholder`, `size`.
 
 **Use when**
 - Free-form values the user types
@@ -531,6 +840,12 @@ A single text-like value: text, number, email, phone, currency, search or long t
 - Errors appear after the user leaves the field or submits, not while typing
 - kind 'search' renders as a pill search field with an icon; the label stays as its accessible name
 - size 'hero' renders a large centred amount with the currency symbol dimmed
+- 'suggestions' and 'mentions' are comboboxes: the list opens as you type, arrow keys move through it, Enter takes an option, Escape closes it
+- 'richtext' is an editable area with Bold, Italic and List controls; the value is text with **bold**, *italic* and '- ' items
+- 'tags' shows each value as a chip with a remove control; Enter or a comma adds what was typed, Backspace in an empty field removes the last chip; the value is a list of strings
+- 'code' uses type.numeric (monospace) and turns off autocorrect, autocapitalize and spellcheck
+- 'masked' fills the mask's literal characters as you type and stores the text as shown
+- 'inline' renders the value as text with an Edit control; Enter saves, Escape restores the previous value
 
 ## Toggle
 
@@ -557,7 +872,7 @@ An on/off setting.
 
 A button that triggers a host capability.
 
-**Required props:** `label`, `action`. **Optional:** `emphasis`, `tone`, `disabled`.
+**Required props:** `label`, `action`. **Optional:** `emphasis`, `tone`, `disabled`, `description`, `copy`.
 
 **Use when**
 - Anything the user can do that isn't typing or choosing
@@ -576,6 +891,8 @@ A button that triggers a host capability.
 **Rendering rules**
 - At most one primary action visible at a time
 - danger tone uses color.action.danger.*
+- 'description' sits under the label in type.body.small, muted; the button's accessible description
+- ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely
 
 ## ActionBar
 
@@ -597,6 +914,35 @@ The set of actions for a surface or section; the renderer places it where that p
 **Rendering rules**
 - Web: bottom of the section, primary last on desktop and first on mobile stacks
 - iOS/Android: toolbar or bottom bar on compact screens
+
+## ActionMenu
+
+Secondary actions behind one control: an overflow menu, a dropdown, a split button or a context menu.
+
+**Required props:** `label`, `children`. **Optional:** `kind`, `primary`.
+
+**Use when**
+- Three or more secondary actions on a row, a card or a page header
+- One usual action with rarer alternatives (split: 'Save' with 'Save as draft')
+- Actions that belong to the thing under the pointer (context)
+
+**Don't use when**
+- One or two actions: use Action or ActionBar, where they are visible
+- The main thing to do on the surface: never hidden in a menu
+- Navigation between views: use Views or Navigation
+
+**Accessibility** (role: a menu button (aria-haspopup, aria-expanded) opening a menu of menuitems; a split's main part is a plain button)
+- Every action is reachable by keyboard: arrows move, Enter activates, Escape closes and returns focus
+- An overflow control is named for what it holds ('More actions for Acme Corp'), never just '…'
+- A context menu's actions are also reachable another way (an overflow control), since right-click and long-press aren't discoverable
+
+**Agents:** Opens the menu by its name and activates an action by its label.
+
+**Rendering rules**
+- The menu uses color.surface.overlay with elevation.overlay and radius.default; items are size.control.default tall with space.inset.default
+- A danger-toned Action shows in color.status.danger.emphasis after a divider
+- The overflow control is an icon-only button at size.target.min with the label as its accessible name; a dropdown shows the label with a chevron
+- A split's two parts share one outline; the menu part is at least size.target.min wide
 
 ## Comparison
 
@@ -656,7 +1002,7 @@ Asks the user to confirm a consequential or destructive action, showing what wil
 
 A task split into ordered steps with visible progress.
 
-**Required props:** `steps`, `finish`. **Optional:** `current`.
+**Required props:** `steps`, `finish`. **Optional:** `kind`, `current`.
 
 **Use when**
 - Tasks with dependent stages or too many inputs for one view (checkout, onboarding)
@@ -674,3 +1020,5 @@ A task split into ordered steps with visible progress.
 **Rendering rules**
 - Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'
 - Each step validates before moving on
+- 'tasklist' is a list of tasks with a status tag each (GOV.UK task list); a task opens its content in place, and 'finish' follows the list, saying how many are done
+- 'guide' shows every step's title and content in a numbered list, with 'finish' after the last

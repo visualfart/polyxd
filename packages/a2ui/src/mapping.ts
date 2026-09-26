@@ -5,7 +5,7 @@
  * equivalent with the same meaning. Otherwise it is exported as a custom component with the same name and
  * props, so the export stays a lossless projection rather than a lossy flattening
  * (docs/decisions/0001 §6: "a faithful export", custom catalogs being the endorsed A2UI path).
- * None of the 26 components currently meets the rule. `basicAnalog` records the nearest Basic
+ * None of the 37 components currently meets the rule. `basicAnalog` records the nearest Basic
  * construct and `why` records what flattening into it would lose.
  */
 export interface MappingDecision {
@@ -17,6 +17,17 @@ export interface MappingDecision {
 }
 
 export const MAPPING: Record<string, MappingDecision> = {
+  Tag: { target: "custom", basicAnalog: "Text", why: "Text has no tone, no count and no remove control; a status tag's meaning is its tone." },
+  Identity: { target: "custom", basicAnalog: "Row of Image + Text", why: "Row is layout; it loses the person/team kind, the initials fallback, the group's '+N' and the activation." },
+  Tree: { target: "custom", basicAnalog: "Nested Column of Text", why: "Column can't express expand/collapse, levels, selection or the per-node action." },
+  Progress: { target: "custom", basicAnalog: "Text", why: "Basic has no progress or meter; the fraction, bound and tone thresholds would be lost." },
+  Rating: { target: "custom", basicAnalog: "Row of Icon", why: "Icons can't be a radiogroup that writes a value, and lose the count and read-only distinction." },
+  Code: { target: "custom", basicAnalog: "Text", why: "Text loses preformatting, the language, the copy control and the secret mask." },
+  FileInput: { target: "custom", basicAnalog: "none", why: "Basic has no file input; the accepted types, size limit and multiple flag have no home." },
+  ColorInput: { target: "custom", basicAnalog: "none", why: "Basic has no colour input; swatches with names and the format would be lost." },
+  CodeInput: { target: "custom", basicAnalog: "TextField", why: "TextField loses the one-box-per-character entry, the length, the numeric kind and the complete action." },
+  Panel: { target: "custom", basicAnalog: "Modal", why: "Modal has no kind (drawer, sheet, popover), no bound open state, no footer action bar and no dismissible flag." },
+  ActionMenu: { target: "custom", basicAnalog: "Column of Button", why: "A column of buttons is not a menu: it loses the single trigger, its accessible name, the split primary and the context kind." },
   Action: {
     target: "custom",
     basicAnalog: "Button + Text child",

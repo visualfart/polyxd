@@ -23,10 +23,23 @@
           },
           "content": {
             "$ref": "#/$defs/Id"
+          },
+          "status": {
+            "$ref": "#/$defs/DynamicString",
+            "description": "For 'tasklist': 'todo', 'inProgress', 'done' or 'blocked', usually bound to host data"
           }
         },
         "additionalProperties": false
       }
+    },
+    "kind": {
+      "enum": [
+        "wizard",
+        "tasklist",
+        "guide"
+      ],
+      "default": "wizard",
+      "description": "'wizard' shows one step at a time in order; 'tasklist' lists tasks people do in any order, each with its status; 'guide' is numbered instructions with no state"
     },
     "current": {
       "$ref": "#/$defs/DynamicNumber",
@@ -57,7 +70,9 @@
   "agent": "Reads 'step N of M'; next/back are exposed as buttons.",
   "rendering": [
     "Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'",
-    "Each step validates before moving on"
+    "Each step validates before moving on",
+    "'tasklist' is a list of tasks with a status tag each (GOV.UK task list); a task opens its content in place, and 'finish' follows the list, saying how many are done",
+    "'guide' shows every step's title and content in a numbered list, with 'finish' after the last"
   ],
   "mappings": {
     "web": "Progress + step content (no shadcn stepper primitive)",

@@ -8,9 +8,14 @@
         "trend",
         "comparison",
         "composition",
-        "distribution"
+        "distribution",
+        "relationship",
+        "flow",
+        "hierarchy",
+        "matrix",
+        "range"
       ],
-      "description": "What the chart should communicate; the renderer picks the chart type"
+      "description": "What the chart should communicate; the renderer picks the chart type. 'relationship' between two measures; 'flow' of amounts from each x value into the series; 'hierarchy' of parts by size; 'matrix' of x values against series; 'range' from the first series to the second"
     },
     "data": {
       "$ref": "#/$defs/Binding",
@@ -96,7 +101,8 @@
   "agent": "Reads the summary, and the data through the table alternative.",
   "rendering": [
     "trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram",
-    "Series colors use color.data.categorical.N in order"
+    "relationship → scatter (x is a measure too), flow → stacked flows from each x value to each series, hierarchy → treemap of the first series, matrix → heatmap of x values by series, range → bars from the first series to the second",
+    "Series colors use color.data.categorical.N in order; a matrix shades one color by value and prints the value in each cell"
   ],
   "mappings": {
     "web": "shadcn Chart (Recharts)",

@@ -7,7 +7,7 @@ section: Guides
 
 # Custom renderers
 
-`@polyxd/react` ships one **adapter**: Radix primitives (the same ones shadcn/ui uses) styled only by design-system token variables. You can replace the renderer for any of the 26 components with your own, one component at a time.
+`@polyxd/react` ships one **adapter**: Radix primitives (the same ones shadcn/ui uses) styled only by design-system token variables. You can replace the renderer for any of the 37 components with your own, one component at a time.
 
 ## The `components` prop
 

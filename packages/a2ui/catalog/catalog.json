@@ -5,7 +5,7 @@
   "title": "Polyxd catalog",
   "description": "Polyxd semantic components as an A2UI v1.0 catalog. Every component is a faithful projection of the Polyxd component with the same name and props. Generated from @polyxd/spec components/*.json by @polyxd/a2ui (npm run build:catalog).",
   "catalogId": "https://polyxd.com/catalog/0.1/a2ui",
-  "instructions": "# Polyxd catalog for A2UI\n\nSemantic components for just-in-time interfaces. The renderer maps each one onto its own native, design-system components and tokens. Pick components by meaning, not by look. Never send colours, sizes or fonts.\n\n## Rules for every surface\n\n1. The top-level component has `\"id\": \"root\"`. Children are referenced by id (flat adjacency list), never nested inline.\n2. Data always comes from the host through JSON Pointer bindings `{\"path\": \"/...\"}`. Never invent data or pre-format numbers and dates into strings. Set `format` instead.\n3. Inside a templated list (`Collection.items`), relative paths such as `{\"path\": \"title\"}` resolve against the current item. Absolute paths start with `/`.\n4. Actions are declared capability intents: `{\"event\": {\"name\": \"transfer.confirm\", \"context\": {...}}}`. Use `{\"functionCall\": {\"call\": \"dismiss\" | \"back\" | \"next\"}}` for navigation the renderer handles itself.\n5. At most one primary action is visible at a time. A Form's submit and a Steps finish count as primary.\n6. Destructive or consequential actions go through `Confirm`.\n7. Components carry their own roles and names. Use `accessibility` only to add to them.\n\n## Components\n\n### Action\n\nA button that triggers a host capability.\n\n- **Use when:**\n  - Anything the user can do that isn't typing or choosing\n- **Don't use when:**\n  - Navigating between views: use Views\n  - Confirming something destructive: wrap in Confirm\n- **Rendering:**\n  - At most one primary action visible at a time\n  - danger tone uses color.action.danger.*\n- **Accessibility** (role: button):\n  - Label describes the outcome\n  - Target at least size.target.min\n  - Disabled actions explain why nearby\n- **Agents:** Activate by label.\n\n### ActionBar\n\nThe set of actions for a surface or section; the renderer places it where that platform expects.\n\n- **Use when:**\n  - Two or more actions that apply to the whole surface or section\n- **Don't use when:**\n  - A single action inline with content: use Action directly\n- **Rendering:**\n  - Web: bottom of the section, primary last on desktop and first on mobile stacks\n  - iOS/Android: toolbar or bottom bar on compact screens\n- **Accessibility** (role: toolbar / group):\n  - Order in the accessibility tree is order of importance\n- **Agents:** Actions are listed together.\n\n### Card\n\nOne self-contained entity (an account, an order, a place), optionally actionable as a whole.\n\n- **Use when:**\n  - Items in a Collection that each represent an entity\n  - A single entity summary in a larger surface\n- **Don't use when:**\n  - Plain grouping: use Group\n  - Tabular data with many attributes: use Table\n- **Rendering:**\n  - If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own\n  - Uses surface.raised and radius.default\n  - 'progress' renders a progress bar with its label or percentage\n- **Accessibility** (role: article (or link/button when it has an action)):\n  - Title is the accessible name\n  - When actionable, the title is the card's one link; controls inside it (a Toggle, an Action) stay separate targets with their own names\n- **Agents:** Activate the card by its title; use controls inside it by their own labels.\n\n### Chart\n\nA visual summary of data, always paired with a text summary.\n\n- **Use when:**\n  - A trend, comparison, share or spread matters more than exact values\n- **Don't use when:**\n  - Exact values matter most: use Table or Metric\n  - A single number: use Metric\n- **Rendering:**\n  - trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram\n  - Series colors use color.data.categorical.N in order\n- **Accessibility** (role: img (figure) with the summary as description, plus a data-table alternative):\n  - 'summary' states the takeaway in words\n  - Series are distinguishable without color (labels, markers)\n  - The underlying data is available as a table\n- **Agents:** Reads the summary, and the data through the table alternative.\n\n### Choice\n\nPick one or several options from a known set. The renderer chooses the control.\n\n- **Use when:**\n  - Any choice from a known set of options\n- **Don't use when:**\n  - On/off setting: use Toggle\n  - Picking between rich entities by comparing attributes: use Comparison\n- **Rendering:**\n  - single, 2–4 short options → segmented control or radios\n  - single, 5–10 → radios (or select on compact screens)\n  - single, > 10 → searchable select\n  - multiple, ≤ 10 → checkboxes; > 10 → searchable multi-select\n  - Option order comes from host data or remembers the last order used\n- **Accessibility** (role: radiogroup / group of checkboxes / listbox / combobox (depends on rendering)):\n  - Visible group label\n  - Every option has a text label\n- **Agents:** Select options by label.\n\n### Collection\n\nA list of items from host data, each rendered with the same template.\n\n- **Use when:**\n  - Browsing a set of similar entities\n  - Search results\n- **Don't use when:**\n  - Attributes compared across items: use Table or Comparison\n  - Choosing an option in a form: use Choice\n- **Rendering:**\n  - Long lists are virtualized by the renderer\n  - Items keep their order from host data\n  - grid: 2 columns on phones, more as width allows; list: one item per row\n  - auto: grid when the item template is a Card with media, otherwise list\n  - 'timeline' marks each item on a line, newest first, for activity feeds\n- **Accessibility** (role: list / listitem (listbox when selectable)):\n  - Announces the item count\n  - An empty state is provided\n- **Agents:** Items are enumerated with their titles; each item exposes its own actions.\n\n### Comparison\n\nCompare a few options across the same attributes, and choose one.\n\n- **Use when:**\n  - Choosing between 2–4 plans, products, routes or offers\n- **Don't use when:**\n  - More than ~5 items: use Table with sorting\n  - No decision needed: use Table\n- **Rendering:**\n  - Wide: items as columns; compact: one card per item with the same attribute order\n  - Best values per attribute are marked when 'better' is set\n  - Exactly one item may be recommended; its badge carries recommendedReason\n  - Attributes with the same group sit under one heading\n  - Boolean values render as a check or a dash with text alternatives ('Included' / 'Not included')\n  - On compact surfaces the recommended item comes first\n- **Accessibility** (role: table (items as columns on wide screens) or list of cards):\n  - Attribute names are headers\n  - 'better' is conveyed in text, not only color\n- **Agents:** Reads attributes per item; choose actions are named with the item title.\n\n### Confirm\n\nAsks the user to confirm a consequential or destructive action, showing what will happen.\n\n- **Use when:**\n  - Moving money, deleting data, sending on someone's behalf, anything irreversible\n- **Don't use when:**\n  - Routine reversible actions (prefer undo)\n  - Information only: use Status\n- **Rendering:**\n  - destructive uses color.action.danger.*\n  - Capabilities with high risk level must use Confirm (enforced by the verifier)\n  - the consequence sits directly above the confirm button\n  - amount and subject lead the dialog when set\n  - consequences render as an icon list, two columns on wide surfaces\n- **Accessibility** (role: alertdialog):\n  - Focus starts on the least destructive option\n  - Confirm label repeats the action verb\n  - Escape cancels\n- **Agents:** Reads title and consequence; confirm and cancel are named buttons.\n\n### DateInput\n\nA date, time, date-time or date range.\n\n- **Use when:**\n  - Any date or time entry\n- **Don't use when:**\n  - Relative choices like 'This month / Last month': use Choice\n- **Rendering:**\n  - Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar\n- **Accessibility** (role: group of spinbuttons or a date picker dialog):\n  - Typing the date is always possible, not only picking from a calendar\n- **Agents:** Fill by label with an ISO date.\n\n### DetailList\n\nLabel/value pairs describing one thing (a summary, a receipt, a review step).\n\n- **Use when:**\n  - Reviewing before submitting\n  - Showing the attributes of one entity\n  - Receipts\n  - Fees, prices and totals before someone commits (variant 'receipt')\n- **Don't use when:**\n  - Many entities with the same attributes: use Table\n  - Comparing entities: use Comparison\n- **Rendering:**\n  - Keeps the item order stable across generations (keys are remembered)\n  - receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right\n  - 'grid' lays fields out in columns by width, label above value\n- **Accessibility** (role: list of term/definition pairs (dl)):\n  - Label and value are programmatically associated\n- **Agents:** Read each label with its value.\n\n### Disclosure\n\nProgressive disclosure: secondary content hidden behind a toggle.\n\n- **Use when:**\n  - Details most people don't need (fees breakdown, advanced options, help text)\n- **Don't use when:**\n  - Content everyone needs to complete the task\n  - Primary navigation\n- **Rendering:**\n  - Never hide required inputs or the primary action inside a closed Disclosure\n- **Accessibility** (role: button (aria-expanded) + region):\n  - Summary is a button with expanded state\n  - Hidden content is not in the tab order while closed\n- **Agents:** Expand by the summary text; state is exposed as expanded/collapsed.\n\n### FilterPanel\n\nFilters for a list of results, with the result count.\n\n- **Use when:**\n  - Browsing results people narrow by several attributes\n  - More than two filters, or filters that take space (ranges, long lists)\n- **Don't use when:**\n  - One or two quick filters: put a Choice (chips) above the results\n  - Filling in information: use Form\n- **Rendering:**\n  - Wide: filters in a sidebar beside the results\n  - Compact: a 'Filters · n' button opens a bottom sheet whose action says 'Show n results'\n  - Active filters show as removable chips above the results\n  - Filters apply as they change (no separate Apply on wide)\n- **Accessibility** (role: region (filters) plus the results):\n  - The result count is announced politely when it changes\n  - Each active filter can be removed with a named button ('Remove filter: Desk')\n- **Agents:** Set filter inputs by label; read the result count; remove filters by their Remove buttons.\n\n### Form\n\nCollects inputs and submits them together.\n\n- **Use when:**\n  - Any set of inputs that are submitted together\n- **Don't use when:**\n  - Settings that apply immediately: use Toggles with actions\n  - Several distinct stages: use Steps\n- **Rendering:**\n  - One column; labels above fields\n  - Submit is the primary action; cancel is secondary\n  - Submit context is built from the form's input bindings\n  - 'horizontal' becomes stacked on compact surfaces\n  - 'aside' sits beside the form on wide surfaces; on compact ones it comes first, before the fields, so people read what they are agreeing to\n- **Accessibility** (role: form):\n  - Submit is a real submit button\n  - On submit errors, focus moves to an error summary that links to each field\n- **Agents:** Fill fields by label, then activate the submit button by its label.\n\n### Group\n\nVisually groups closely related items without a heading (proximity).\n\n- **Use when:**\n  - A few items that belong together (a key figure and its caption, several metrics)\n- **Don't use when:**\n  - The group needs a heading: use Section\n  - Choosing between items: use Choice or Comparison\n- **Rendering:**\n  - 'inline' collapses to a stack below the compact breakpoint\n  - Gap uses space.stack.default or space.inline.default\n- **Accessibility** (role: group):\n  - Has an accessible name when it contains interactive items\n- **Agents:** Treated as one unit when its label is present.\n\n### Media\n\nAn image supplied by the host.\n\n- **Use when:**\n  - Photos or illustrations that help identify something (a product, a place, a person)\n- **Don't use when:**\n  - Decoration with no information\n  - Icons for actions (renderer supplies those)\n- **Rendering:**\n  - Images never convey information that is not also in text\n- **Accessibility** (role: img):\n  - Has alt text unless decorative (then hidden from assistive technology)\n- **Agents:** Reads the alt text.\n\n### Metric\n\nA key figure with a label, and optionally its change.\n\n- **Use when:**\n  - One to four headline numbers the user asked about\n- **Don't use when:**\n  - Many numbers: use Table or DetailList\n  - Trends over time: use Chart\n- **Rendering:**\n  - Value uses type.numeric.display\n  - Change uses color.data.positive / negative according to 'favorable'\n- **Accessibility** (role: group (label + value)):\n  - Change direction is conveyed in text as well as color\n  - Screen readers read label, value and change as one sentence\n- **Agents:** Read label and value.\n\n### Navigation\n\nThe product's main navigation.\n\n- **Use when:**\n  - Software with sections people move between (B2B apps, dashboards)\n  - Only when the host doesn't already provide navigation\n- **Don't use when:**\n  - Steps of one task: use Steps\n  - Sections of one record: use Views\n  - A surface embedded in a host that has its own navigation\n- **Rendering:**\n  - Wide: a side navigation with grouped items\n  - Compact: a menu button that opens the navigation\n  - Badges sit at the end of their item\n- **Accessibility** (role: navigation):\n  - The current item carries aria-current=\"page\"\n  - Badges say what they count ('12 overdue')\n- **Agents:** Move between sections by activating items by their labels.\n\n### RangeInput\n\nA number, or a range between two numbers, within known bounds.\n\n- **Use when:**\n  - Approximate values within a range (budget cap, volume)\n  - A price or date range for filtering (mode 'range')\n- **Don't use when:**\n  - Exact values: use TextInput with kind 'number' or 'currency'\n- **Rendering:**\n  - Shows min, max and the current formatted value\n  - mode 'range' shows two thumbs and min/max fields that stay in sync\n- **Accessibility** (role: slider):\n  - Current value is shown as text\n  - Keyboard arrows change the value by step\n- **Agents:** Set the value directly by label.\n\n### Section\n\nA titled region of the surface that groups related content under a heading.\n\n- **Use when:**\n  - The surface has two or more distinct topics (e.g. 'Recipient' and 'Amount')\n  - Content would otherwise exceed one screen and needs signposting\n- **Don't use when:**\n  - Only one topic: put content directly under the root\n  - Visual grouping without a heading: use Group\n- **Rendering:**\n  - Heading level follows nesting depth, never chosen by the model\n  - Spacing between sections uses space.stack.section\n- **Accessibility** (role: region (with heading)):\n  - Title is rendered as a real heading; nesting depth sets the heading level\n  - Title is the region's accessible name\n- **Agents:** Navigate by heading; the title names the region.\n\n### Status\n\nFeedback about state: info, success, warning, error, empty or loading.\n\n- **Use when:**\n  - Results of an action\n  - Empty collections\n  - Errors with a way to recover\n  - Loading states\n  - 'undo': after a reversible action ran, say what happened and offer Undo instead of asking first\n- **Don't use when:**\n  - Validation errors on a field: inputs show their own errors\n  - Confirmation before acting: use Confirm\n- **Rendering:**\n  - error and warning use color.status.* tokens and an icon\n  - empty states explain why and what to do next\n  - loading shows a skeleton when layout is known, otherwise a progress indicator\n  - 'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action\n  - Empty states may carry an ActionBar: one primary and one secondary action\n  - 'inline' renders a bordered notice with its action on the right\n- **Accessibility** (role: status or alert (live region)):\n  - success/info/loading are polite live regions; error is assertive\n  - Meaning is in text, not only color or icon\n- **Agents:** Reads the title and message; the recovery action is exposed.\n\n### Steps\n\nA task split into ordered steps with visible progress.\n\n- **Use when:**\n  - Tasks with dependent stages or too many inputs for one view (checkout, onboarding)\n- **Don't use when:**\n  - Independent views: use Views\n  - Under ~6 inputs: a single Form\n- **Rendering:**\n  - Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'\n  - Each step validates before moving on\n- **Accessibility** (role: group with step progress (aria-current on the current step)):\n  - Current step and total are announced\n  - Back never loses entered data\n- **Agents:** Reads 'step N of M'; next/back are exposed as buttons.\n\n### Table\n\nTabular data: many items sharing the same attributes.\n\n- **Use when:**\n  - Scanning or comparing many rows by several attributes\n  - Records people scan, sort, select and act on in bulk (B2B lists)\n- **Don't use when:**\n  - One entity: use DetailList\n  - A few entities where the user must choose: use Comparison\n- **Rendering:**\n  - On compact screens, rows become stacked cards with label/value pairs\n  - Alignment follows the column format, never chosen by the model\n  - Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'\n  - On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status\n  - Selection replaces the toolbar with the bulk-action bar while rows are selected\n  - Paging shows rows per page, the range and the total\n- **Accessibility** (role: table with caption and column headers):\n  - Has a caption\n  - Column headers are real header cells\n  - Numeric columns are right-aligned by format\n  - Sortable headers carry aria-sort and say what sorting does\n  - The select-all checkbox is mixed when some rows are selected\n  - The bulk-action bar names how many rows are selected, announced politely\n  - Each row's action menu is named after its row\n- **Agents:** Read by row and column headers; rows with rowAction are activatable. Sort by activating a column header; select rows by their checkboxes; act in bulk from the bar that appears.\n\n### Text\n\nA run of text.\n\n- **Use when:**\n  - Explanations, instructions, messages\n- **Don't use when:**\n  - Headings: use Section title\n  - Label/value pairs: use DetailList\n  - Key figures: use Metric\n- **Rendering:**\n  - 'supporting' uses color.text.muted\n  - No inline styling; emphasis comes from structure\n- **Accessibility** (role: text):\n  - Body text is at least 16px (type.body.default)\n  - Line length is capped by measure.max\n- **Agents:** Read as text.\n\n### TextInput\n\nA single text-like value: text, number, email, phone, currency, search or long text.\n\n- **Use when:**\n  - Free-form values the user types\n- **Don't use when:**\n  - A value from a known set: use Choice\n  - Dates: use DateInput\n  - Secrets (passwords, card numbers): not generated; hosts provide their own secure flows\n- **Rendering:**\n  - Width suggests expected length\n  - Errors appear after the user leaves the field or submits, not while typing\n  - kind 'search' renders as a pill search field with an icon; the label stays as its accessible name\n  - size 'hero' renders a large centred amount with the currency symbol dimmed\n- **Accessibility** (role: textbox / searchbox / spinbutton):\n  - Visible label, never placeholder-only\n  - Help and errors are associated with the field\n  - Kind sets the right keyboard and autocomplete\n- **Agents:** Fill by label.\n\n### Toggle\n\nAn on/off setting.\n\n- **Use when:**\n  - Settings that take effect immediately\n  - A single yes/no inside a form\n- **Don't use when:**\n  - Choosing between named options: use Choice\n- **Rendering:**\n  - With 'action' it renders as a switch; inside a Form without action, as a checkbox\n- **Accessibility** (role: switch (immediate) / checkbox (in a form)):\n  - Label says what 'on' means\n- **Agents:** Toggle by label; state is exposed as on/off.\n\n### Views\n\nSwitch between alternative views of the same subject (tabs).\n\n- **Use when:**\n  - 2–6 peer views of the same data (Overview / Transactions / Settings)\n- **Don't use when:**\n  - Sequential steps: use Steps\n  - Filtering one list: use Choice\n- **Rendering:**\n  - More than 4 views on compact screens become a menu or scrollable tabs\n  - Counts sit beside their labels and are part of the tab's accessible name\n- **Accessibility** (role: tablist / tab / tabpanel):\n  - Each tab has a visible label\n  - Arrow keys move between tabs\n- **Agents:** Select a view by its label.\n",
+  "instructions": "# Polyxd catalog for A2UI\n\nSemantic components for just-in-time interfaces. The renderer maps each one onto its own native, design-system components and tokens. Pick components by meaning, not by look. Never send colours, sizes or fonts.\n\n## Rules for every surface\n\n1. The top-level component has `\"id\": \"root\"`. Children are referenced by id (flat adjacency list), never nested inline.\n2. Data always comes from the host through JSON Pointer bindings `{\"path\": \"/...\"}`. Never invent data or pre-format numbers and dates into strings. Set `format` instead.\n3. Inside a templated list (`Collection.items`), relative paths such as `{\"path\": \"title\"}` resolve against the current item. Absolute paths start with `/`.\n4. Actions are declared capability intents: `{\"event\": {\"name\": \"transfer.confirm\", \"context\": {...}}}`. Use `{\"functionCall\": {\"call\": \"dismiss\" | \"back\" | \"next\"}}` for navigation the renderer handles itself.\n5. At most one primary action is visible at a time. A Form's submit and a Steps finish count as primary.\n6. Destructive or consequential actions go through `Confirm`.\n7. Components carry their own roles and names. Use `accessibility` only to add to them.\n\n## Components\n\n### Action\n\nA button that triggers a host capability.\n\n- **Use when:**\n  - Anything the user can do that isn't typing or choosing\n- **Don't use when:**\n  - Navigating between views: use Views\n  - Confirming something destructive: wrap in Confirm\n- **Rendering:**\n  - At most one primary action visible at a time\n  - danger tone uses color.action.danger.*\n  - 'description' sits under the label in type.body.small, muted; the button's accessible description\n  - ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely\n- **Accessibility** (role: button):\n  - Label describes the outcome\n  - Target at least size.target.min\n  - Disabled actions explain why nearby\n- **Agents:** Activate by label.\n\n### ActionBar\n\nThe set of actions for a surface or section; the renderer places it where that platform expects.\n\n- **Use when:**\n  - Two or more actions that apply to the whole surface or section\n- **Don't use when:**\n  - A single action inline with content: use Action directly\n- **Rendering:**\n  - Web: bottom of the section, primary last on desktop and first on mobile stacks\n  - iOS/Android: toolbar or bottom bar on compact screens\n- **Accessibility** (role: toolbar / group):\n  - Order in the accessibility tree is order of importance\n- **Agents:** Actions are listed together.\n\n### ActionMenu\n\nSecondary actions behind one control: an overflow menu, a dropdown, a split button or a context menu.\n\n- **Use when:**\n  - Three or more secondary actions on a row, a card or a page header\n  - One usual action with rarer alternatives (split: 'Save' with 'Save as draft')\n  - Actions that belong to the thing under the pointer (context)\n- **Don't use when:**\n  - One or two actions: use Action or ActionBar, where they are visible\n  - The main thing to do on the surface: never hidden in a menu\n  - Navigation between views: use Views or Navigation\n- **Rendering:**\n  - The menu uses color.surface.overlay with elevation.overlay and radius.default; items are size.control.default tall with space.inset.default\n  - A danger-toned Action shows in color.status.danger.emphasis after a divider\n  - The overflow control is an icon-only button at size.target.min with the label as its accessible name; a dropdown shows the label with a chevron\n  - A split's two parts share one outline; the menu part is at least size.target.min wide\n- **Accessibility** (role: a menu button (aria-haspopup, aria-expanded) opening a menu of menuitems; a split's main part is a plain button):\n  - Every action is reachable by keyboard: arrows move, Enter activates, Escape closes and returns focus\n  - An overflow control is named for what it holds ('More actions for Acme Corp'), never just '…'\n  - A context menu's actions are also reachable another way (an overflow control), since right-click and long-press aren't discoverable\n- **Agents:** Opens the menu by its name and activates an action by its label.\n\n### Card\n\nOne self-contained entity (an account, an order, a place), optionally actionable as a whole.\n\n- **Use when:**\n  - Items in a Collection that each represent an entity\n  - A single entity summary in a larger surface\n- **Don't use when:**\n  - Plain grouping: use Group\n  - Tabular data with many attributes: use Table\n- **Rendering:**\n  - If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own\n  - Uses surface.raised and radius.default\n  - 'progress' renders a progress bar with its label or percentage\n- **Accessibility** (role: article (or link/button when it has an action)):\n  - Title is the accessible name\n  - When actionable, the title is the card's one link; controls inside it (a Toggle, an Action) stay separate targets with their own names\n- **Agents:** Activate the card by its title; use controls inside it by their own labels.\n\n### Chart\n\nA visual summary of data, always paired with a text summary.\n\n- **Use when:**\n  - A trend, comparison, share or spread matters more than exact values\n- **Don't use when:**\n  - Exact values matter most: use Table or Metric\n  - A single number: use Metric\n- **Rendering:**\n  - trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram\n  - relationship → scatter (x is a measure too), flow → stacked flows from each x value to each series, hierarchy → treemap of the first series, matrix → heatmap of x values by series, range → bars from the first series to the second\n  - Series colors use color.data.categorical.N in order; a matrix shades one color by value and prints the value in each cell\n- **Accessibility** (role: img (figure) with the summary as description, plus a data-table alternative):\n  - 'summary' states the takeaway in words\n  - Series are distinguishable without color (labels, markers)\n  - The underlying data is available as a table\n- **Agents:** Reads the summary, and the data through the table alternative.\n\n### Choice\n\nPick one or several options from a known set. The renderer chooses the control.\n\n- **Use when:**\n  - Any choice from a known set of options\n- **Don't use when:**\n  - On/off setting: use Toggle\n  - Picking between rich entities by comparing attributes: use Comparison\n- **Rendering:**\n  - single, 2–4 short options → segmented control or radios\n  - single, 5–10 → radios (or select on compact screens)\n  - single, > 10 → searchable select\n  - multiple, ≤ 10 → checkboxes; > 10 → searchable multi-select\n  - Option order comes from host data or remembers the last order used\n- **Accessibility** (role: radiogroup / group of checkboxes / listbox / combobox (depends on rendering)):\n  - Visible group label\n  - Every option has a text label\n- **Agents:** Select options by label.\n\n### Code\n\nCode, a command or preformatted text, shown as written and copyable.\n\n- **Use when:**\n  - A command to run, a snippet to paste, an identifier to copy\n  - Structured text whose spacing matters\n- **Don't use when:**\n  - Prose: use Text\n  - Something the person types: use TextInput\n- **Rendering:**\n  - type.mono at type.body.small on color.surface.subtle, with radius.control\n  - Overflow scrolls sideways unless wrap is set; never clipped\n  - The copy control sits in the top-right corner and says 'Copied' for two seconds after use\n- **Accessibility** (role: region named by the label, holding a code element; the copy control is a button named 'Copy <label>'):\n  - Text is real text: selectable and read by screen readers line by line\n  - Copying is announced ('Copied')\n  - A secret is masked with the same length, with a 'Show' control\n- **Agents:** Reads the text verbatim; can activate Copy.\n\n### CodeInput\n\nA one-time code or PIN, typed into one box per character.\n\n- **Use when:**\n  - A verification code from email or SMS\n  - A PIN or a short recovery code\n- **Don't use when:**\n  - A password: the host's own sign-in flow, never a generated screen\n  - Any text longer than twelve characters: use TextInput\n- **Rendering:**\n  - Boxes are size.control.large squares with radius.control, type.heading.small, centred, in type.mono\n  - The active box shows color.border.focus; a filled box shows color.border.strong\n  - Boxes are grouped in threes or fours by a wider gap past six characters\n- **Accessibility** (role: a group named by the label; one text input per character, each named 'Digit N of M'):\n  - Typing moves focus forward; Backspace moves it back; pasting the whole code fills every box\n  - The numeric kind opens the numeric keyboard and accepts autofill of one-time codes\n  - Errors are said against the group, not one box\n- **Agents:** Reads the label and length; enters the code.\n\n### Collection\n\nA list of items from host data, each rendered with the same template.\n\n- **Use when:**\n  - Browsing a set of similar entities\n  - Search results\n- **Don't use when:**\n  - Attributes compared across items: use Table or Comparison\n  - Choosing an option in a form: use Choice\n- **Rendering:**\n  - Long lists are virtualized by the renderer\n  - Items keep their order from host data\n  - grid: 2 columns on phones, more as width allows; list: one item per row\n  - auto: grid when the item template is a Card with media, otherwise list\n  - 'timeline' marks each item on a line, newest first, for activity feeds\n  - 'carousel' scrolls horizontally with snap points, Previous and Next buttons and an 'N of M' readout; every item stays reachable by keyboard\n  - 'calendar' is a month grid with the items on their days; Previous and Next move a month at a time\n  - Paging shows items per page, the range and the total, as a Table does\n  - Selection shows the bulk-action bar, naming how many items are selected, while any are\n  - reorderable: a drag handle per item, plus Move up / Move down buttons; the new order is written to 'order'\n- **Accessibility** (role: list / listitem (listbox when selectable)):\n  - Announces the item count\n  - An empty state is provided\n- **Agents:** Items are enumerated with their titles; each item exposes its own actions.\n\n### ColorInput\n\nPick a colour: from swatches the host offers, or any colour.\n\n- **Use when:**\n  - A colour for a label, a tag, a calendar, a theme\n  - Choosing from a set of brand colours\n- **Don't use when:**\n  - A choice that happens to be shown as colours (a plan, a size): use Choice\n- **Rendering:**\n  - Swatches are size.control.default squares with radius.control and a 1px color.border.default ring; the chosen one shows color.border.focus\n  - The free picker is the platform's, with the text value beside it in type.mono\n- **Accessibility** (role: swatches are a radiogroup of radios named by their labels; the free picker is a native color input plus a text field for the value):\n  - Every swatch has a name; colour alone is never the only identification\n  - The value is editable as text, so it can be typed and read\n  - The chosen colour is shown beside its text value\n- **Agents:** Reads the swatch names; picks one by name or types a value.\n\n### Comparison\n\nCompare a few options across the same attributes, and choose one.\n\n- **Use when:**\n  - Choosing between 2–4 plans, products, routes or offers\n- **Don't use when:**\n  - More than ~5 items: use Table with sorting\n  - No decision needed: use Table\n- **Rendering:**\n  - Wide: items as columns; compact: one card per item with the same attribute order\n  - Best values per attribute are marked when 'better' is set\n  - Exactly one item may be recommended; its badge carries recommendedReason\n  - Attributes with the same group sit under one heading\n  - Boolean values render as a check or a dash with text alternatives ('Included' / 'Not included')\n  - On compact surfaces the recommended item comes first\n- **Accessibility** (role: table (items as columns on wide screens) or list of cards):\n  - Attribute names are headers\n  - 'better' is conveyed in text, not only color\n- **Agents:** Reads attributes per item; choose actions are named with the item title.\n\n### Confirm\n\nAsks the user to confirm a consequential or destructive action, showing what will happen.\n\n- **Use when:**\n  - Moving money, deleting data, sending on someone's behalf, anything irreversible\n- **Don't use when:**\n  - Routine reversible actions (prefer undo)\n  - Information only: use Status\n- **Rendering:**\n  - destructive uses color.action.danger.*\n  - Capabilities with high risk level must use Confirm (enforced by the verifier)\n  - the consequence sits directly above the confirm button\n  - amount and subject lead the dialog when set\n  - consequences render as an icon list, two columns on wide surfaces\n- **Accessibility** (role: alertdialog):\n  - Focus starts on the least destructive option\n  - Confirm label repeats the action verb\n  - Escape cancels\n- **Agents:** Reads title and consequence; confirm and cancel are named buttons.\n\n### DateInput\n\nA date, time, date-time or date range.\n\n- **Use when:**\n  - Any date or time entry\n- **Don't use when:**\n  - Relative choices like 'This month / Last month': use Choice\n- **Rendering:**\n  - Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar\n  - 'month' and 'year' take only that part; the year field is typed, four digits\n  - multiple: each chosen date becomes a chip with a remove control; the field adds another\n- **Accessibility** (role: group of spinbuttons or a date picker dialog):\n  - Typing the date is always possible, not only picking from a calendar\n- **Agents:** Fill by label with an ISO date.\n\n### DetailList\n\nLabel/value pairs describing one thing (a summary, a receipt, a review step).\n\n- **Use when:**\n  - Reviewing before submitting\n  - Showing the attributes of one entity\n  - Receipts\n  - Fees, prices and totals before someone commits (variant 'receipt')\n- **Don't use when:**\n  - Many entities with the same attributes: use Table\n  - Comparing entities: use Comparison\n- **Rendering:**\n  - Keeps the item order stable across generations (keys are remembered)\n  - receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right\n  - 'grid' lays fields out in columns by width, label above value\n  - rowAction: each row ends with a 'Change' link whose accessible name includes the row's label; the total row has none\n- **Accessibility** (role: list of term/definition pairs (dl)):\n  - Label and value are programmatically associated\n- **Agents:** Read each label with its value.\n\n### Disclosure\n\nProgressive disclosure: secondary content hidden behind a toggle.\n\n- **Use when:**\n  - Details most people don't need (fees breakdown, advanced options, help text)\n- **Don't use when:**\n  - Content everyone needs to complete the task\n  - Primary navigation\n- **Rendering:**\n  - Never hide required inputs or the primary action inside a closed Disclosure\n- **Accessibility** (role: button (aria-expanded) + region):\n  - Summary is a button with expanded state\n  - Hidden content is not in the tab order while closed\n- **Agents:** Expand by the summary text; state is exposed as expanded/collapsed.\n\n### FileInput\n\nChoose or drop files to attach or upload.\n\n- **Use when:**\n  - Attaching a document, a receipt, a photo\n  - Importing a file the product reads\n- **Don't use when:**\n  - Taking a photo with the camera: the host's own flow\n  - Pasting text: use TextInput\n- **Rendering:**\n  - A dashed drop zone on color.surface.subtle with radius.control, the chooser control inside it\n  - Each chosen file shows name, size and a remove control; a progress bar while the host uploads\n  - Refusals use color.status.danger text under the zone\n- **Accessibility** (role: a native file input, labelled; the drop zone is a large target for the same input):\n  - Keyboard opens the chooser; drag-and-drop is an addition, never the only way\n  - Chosen files are listed as text with a 'Remove <name>' button each\n  - Type and size limits are said before choosing and in any refusal\n- **Agents:** Reads the label and limits; attaches files through the host.\n\n### FilterPanel\n\nFilters for a list of results, with the result count.\n\n- **Use when:**\n  - Browsing results people narrow by several attributes\n  - More than two filters, or filters that take space (ranges, long lists)\n- **Don't use when:**\n  - One or two quick filters: put a Choice (chips) above the results\n  - Filling in information: use Form\n- **Rendering:**\n  - Wide: filters in a sidebar beside the results\n  - Compact: a 'Filters · n' button opens a bottom sheet whose action says 'Show n results'\n  - Active filters show as removable chips above the results\n  - Filters apply as they change (no separate Apply on wide)\n- **Accessibility** (role: region (filters) plus the results):\n  - The result count is announced politely when it changes\n  - Each active filter can be removed with a named button ('Remove filter: Desk')\n- **Agents:** Set filter inputs by label; read the result count; remove filters by their Remove buttons.\n\n### Form\n\nCollects inputs and submits them together.\n\n- **Use when:**\n  - Any set of inputs that are submitted together\n- **Don't use when:**\n  - Settings that apply immediately: use Toggles with actions\n  - Several distinct stages: use Steps\n- **Rendering:**\n  - One column; labels above fields\n  - Submit is the primary action; cancel is secondary\n  - Submit context is built from the form's input bindings\n  - 'horizontal' becomes stacked on compact surfaces\n  - 'aside' sits beside the form on wide surfaces; on compact ones it comes first, before the fields, so people read what they are agreeing to\n- **Accessibility** (role: form):\n  - Submit is a real submit button\n  - On submit errors, focus moves to an error summary that links to each field\n- **Agents:** Fill fields by label, then activate the submit button by its label.\n\n### Group\n\nVisually groups closely related items without a heading (proximity).\n\n- **Use when:**\n  - A few items that belong together (a key figure and its caption, several metrics)\n- **Don't use when:**\n  - The group needs a heading: use Section\n  - Choosing between items: use Choice or Comparison\n- **Rendering:**\n  - 'inline' collapses to a stack below the compact breakpoint\n  - Gap uses space.stack.default or space.inline.default\n- **Accessibility** (role: group):\n  - Has an accessible name when it contains interactive items\n- **Agents:** Treated as one unit when its label is present.\n\n### Identity\n\nA person, team or organisation: picture, name and details, or several of them together.\n\n- **Use when:**\n  - Who something belongs to, was sent by or is assigned to\n  - The recipient on a payment, the owner on a record, the members on a team\n  - A list of people where the face helps recognition\n- **Don't use when:**\n  - Choosing a person from a list: use Choice with avatarPath\n  - A person's full record: use Card or DetailList\n- **Rendering:**\n  - Initials come from the name's first letters, on a neutral surface with color.text.default; a pack may derive a stable colour from the name\n  - Sizes: small 24px, default 40px, large 64px; the name uses type.body.default or type.heading.small for large\n  - A group overlaps pictures by a quarter, with a '+N' tag for the rest\n  - Images are never stretched; missing images fall back to initials, never to a broken image\n- **Accessibility** (role: group named by the name; the picture is decorative and the name is text):\n  - The name is real text, never only an image or initials\n  - A group's accessible name lists the first names and how many more\n  - With an action, the whole element is one button or link named by the name\n- **Agents:** Reads the name and detail; a group exposes every member's name.\n\n### Media\n\nAn image, video, audio clip, gallery or QR code supplied by the host.\n\n- **Use when:**\n  - Photos or illustrations that help identify something (a product, a place, a person)\n  - A recording people play, or a code they scan\n- **Don't use when:**\n  - Decoration with no information\n  - Icons for actions (renderer supplies those)\n- **Rendering:**\n  - Images never convey information that is not also in text\n  - 'video' shows 'poster' until played; 'audio' is a compact player; both put 'transcript' under a disclosure\n  - 'gallery' is a grid of the items' images, each with its own alt text\n  - 'qr' is drawn on a canvas at a size that scans from a phone, with the alt as its accessible name\n- **Accessibility** (role: img (video / audio players, list for a gallery)):\n  - Has alt text unless decorative (then hidden from assistive technology)\n  - Video and audio have native controls and offer a transcript\n  - A QR code's alt says what scanning it does\n- **Agents:** Reads the alt text; a gallery's images by their own alt text; a QR code's value.\n\n### Metric\n\nA key figure with a label, and optionally its change.\n\n- **Use when:**\n  - One to four headline numbers the user asked about\n- **Don't use when:**\n  - Many numbers: use Table or DetailList\n  - Trends over time: use Chart\n- **Rendering:**\n  - Value uses type.numeric.display\n  - Change uses color.data.positive / negative according to 'favorable'\n- **Accessibility** (role: group (label + value)):\n  - Change direction is conveyed in text as well as color\n  - Screen readers read label, value and change as one sentence\n- **Agents:** Read label and value.\n\n### Navigation\n\nThe product's main navigation.\n\n- **Use when:**\n  - Software with sections people move between (B2B apps, dashboards)\n  - Only when the host doesn't already provide navigation\n- **Don't use when:**\n  - Steps of one task: use Steps\n  - Sections of one record: use Views\n  - A surface embedded in a host that has its own navigation\n- **Rendering:**\n  - Wide: a side navigation with grouped items\n  - Compact: a menu button that opens the navigation\n  - Badges sit at the end of their item\n  - 'breadcrumb' is an ordered trail ending with the current item (aria-current=\"page\"), never behind a menu button\n  - 'nested' shows each group as an expandable section; the group holding the current item starts open\n  - 'toc' lists the page's sections as anchors, the section in view highlighted\n  - 'local' lays the items out as tabs, the current one marked\n- **Accessibility** (role: navigation):\n  - The current item carries aria-current=\"page\"\n  - Badges say what they count ('12 overdue')\n- **Agents:** Move between sections by activating items by their labels.\n\n### Panel\n\nContent over the current view: a dialog, a drawer, a bottom sheet or a popover, opened from an action and dismissed to return.\n\n- **Use when:**\n  - A short task on top of the page: edit one thing, pick one thing, see one record\n  - Detail the person asked for that shouldn't replace where they are\n  - A small set of options next to the control that opened them (popover)\n- **Don't use when:**\n  - Confirming a consequential action: use Confirm, which is a dialog with the right words and order\n  - A whole flow of several steps: use Steps on its own surface\n  - Passing feedback: use Status\n- **Rendering:**\n  - A backdrop of color.surface.inverse at opacity.overlay for modal kinds\n  - dialog: max 560px on desktop, full width with space.inset.default on phones; drawer: 420px from the end edge; sheet: from the bottom with radius.large on the top corners; popover: color.surface.overlay with elevation.overlay and an arrow\n  - The title is type.heading.medium with the close control at the end of the header\n  - The action bar sits in a footer; on phones it is fixed to the bottom, full width\n  - Motion uses motion.duration.default and motion.easing.standard; reduced motion fades instead\n- **Accessibility** (role: dialog (aria-modal for dialog, drawer and sheet) named by the title; popover is a non-modal dialog):\n  - Focus moves into the panel on open and back to the opener on close\n  - Tab stays inside a modal panel; Escape dismisses a dismissible one\n  - The page behind a modal panel is inert\n  - A sheet can be dismissed by dragging down as well as by the close control\n- **Agents:** Opens, reads the content and closes it by name; the footer actions are exposed like any ActionBar.\n\n### Progress\n\nHow far along something is, or how much of a bounded amount is used: a bar, a ring or a meter.\n\n- **Use when:**\n  - A task that takes time, with a known share done\n  - How much of a quota, budget or capacity is used\n  - Progress towards a goal (pages read, steps walked)\n- **Don't use when:**\n  - A number the person came to see: use Metric\n  - Steps of a task the person moves through: use Steps\n  - A short wait with nothing to measure: Status 'loading'\n- **Rendering:**\n  - The track uses color.surface.subtle; the fill uses color.action.primary.background, or color.status.<tone>.emphasis for a toned meter\n  - Height is size.control.small / 3 for a bar; a ring is size.control.default across\n  - Readout in tabular figures, type.body.small, after the label\n  - The bar's length means the fraction: never used for an amount with no bound\n- **Accessibility** (role: progressbar (bar, ring) or meter, named by the label, with aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext):\n  - The readout is real text next to the graphic, never only the fill\n  - A meter's tone is also said in text ('nearly full'), not only shown by colour\n  - Indeterminate progress has no value attributes and is announced as busy\n- **Agents:** Reads label, value and max as text.\n\n### RangeInput\n\nA number, or a range between two numbers, within known bounds.\n\n- **Use when:**\n  - Approximate values within a range (budget cap, volume)\n  - A price or date range for filtering (mode 'range')\n- **Don't use when:**\n  - Exact values: use TextInput with kind 'number' or 'currency'\n- **Rendering:**\n  - Shows min, max and the current formatted value\n  - mode 'range' shows two thumbs and min/max fields that stay in sync\n- **Accessibility** (role: slider):\n  - Current value is shown as text\n  - Keyboard arrows change the value by step\n- **Agents:** Set the value directly by label.\n\n### Rating\n\nA score out of N: given by the person, or shown as others gave it.\n\n- **Use when:**\n  - Asking how something went, out of five\n  - Showing a product's or place's rating with the count behind it\n- **Don't use when:**\n  - A number within bounds that isn't a score: use RangeInput\n  - Yes or no: use Toggle or Choice\n- **Rendering:**\n  - Filled shapes use color.status.warning.emphasis; empty ones use color.border.default\n  - The readout ('4.6') is shown after the shapes in tabular figures, with the count in color.text.muted\n  - A rating that can be given shows the label above, like every input\n- **Accessibility** (role: radiogroup of radios named '1 star' to 'N stars' when it can be given; an image named '4.6 out of 5' when read-only):\n  - Every star is a real control at size.target.min when the person can rate\n  - The current value is announced; half values are said as such\n  - Read-only ratings carry the score as text, not only as filled shapes\n- **Agents:** Reads the score and the count; sets a score by choosing '<n> stars'.\n\n### Section\n\nA titled region of the surface that groups related content under a heading.\n\n- **Use when:**\n  - The surface has two or more distinct topics (e.g. 'Recipient' and 'Amount')\n  - Content would otherwise exceed one screen and needs signposting\n- **Don't use when:**\n  - Only one topic: put content directly under the root\n  - Visual grouping without a heading: use Group\n- **Rendering:**\n  - Heading level follows nesting depth, never chosen by the model\n  - Spacing between sections uses space.stack.section\n- **Accessibility** (role: region (with heading)):\n  - Title is rendered as a real heading; nesting depth sets the heading level\n  - Title is the region's accessible name\n- **Agents:** Navigate by heading; the title names the region.\n\n### Status\n\nFeedback about state: info, success, warning, error, empty or loading.\n\n- **Use when:**\n  - Results of an action\n  - Empty collections\n  - Errors with a way to recover\n  - Loading states\n  - 'undo': after a reversible action ran, say what happened and offer Undo instead of asking first\n- **Don't use when:**\n  - Validation errors on a field: inputs show their own errors\n  - Confirmation before acting: use Confirm\n- **Rendering:**\n  - error and warning use color.status.* tokens and an icon\n  - empty states explain why and what to do next\n  - loading shows a skeleton when layout is known, otherwise a progress indicator\n  - 'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action\n  - Empty states may carry an ActionBar: one primary and one secondary action\n  - 'inline' renders a bordered notice with its action on the right\n- **Accessibility** (role: status or alert (live region)):\n  - success/info/loading are polite live regions; error is assertive\n  - Meaning is in text, not only color or icon\n- **Agents:** Reads the title and message; the recovery action is exposed.\n\n### Steps\n\nA task split into ordered steps with visible progress.\n\n- **Use when:**\n  - Tasks with dependent stages or too many inputs for one view (checkout, onboarding)\n- **Don't use when:**\n  - Independent views: use Views\n  - Under ~6 inputs: a single Form\n- **Rendering:**\n  - Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'\n  - Each step validates before moving on\n  - 'tasklist' is a list of tasks with a status tag each (GOV.UK task list); a task opens its content in place, and 'finish' follows the list, saying how many are done\n  - 'guide' shows every step's title and content in a numbered list, with 'finish' after the last\n- **Accessibility** (role: group with step progress (aria-current on the current step)):\n  - Current step and total are announced\n  - Back never loses entered data\n- **Agents:** Reads 'step N of M'; next/back are exposed as buttons.\n\n### Table\n\nTabular data: many items sharing the same attributes.\n\n- **Use when:**\n  - Scanning or comparing many rows by several attributes\n  - Records people scan, sort, select and act on in bulk (B2B lists)\n- **Don't use when:**\n  - One entity: use DetailList\n  - A few entities where the user must choose: use Comparison\n- **Rendering:**\n  - On compact screens, rows become stacked cards with label/value pairs\n  - Alignment follows the column format, never chosen by the model\n  - Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'\n  - On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status\n  - Selection replaces the toolbar with the bulk-action bar while rows are selected\n  - Paging shows rows per page, the range and the total\n  - expandable: each row starts with a toggle (aria-expanded) named after the row; the open row's 'detail' spans the table beneath it\n- **Accessibility** (role: table with caption and column headers):\n  - Has a caption\n  - Column headers are real header cells\n  - Numeric columns are right-aligned by format\n  - Sortable headers carry aria-sort and say what sorting does\n  - The select-all checkbox is mixed when some rows are selected\n  - The bulk-action bar names how many rows are selected, announced politely\n  - Each row's action menu is named after its row\n- **Agents:** Read by row and column headers; rows with rowAction are activatable. Sort by activating a column header; select rows by their checkboxes; act in bulk from the bar that appears.\n\n### Tag\n\nA short label, status or count attached to something else.\n\n- **Use when:**\n  - The state of a record, next to its name: 'Past due', 'Draft', 'Live'\n  - A category or label a thing carries\n  - How many of something, on a navigation item or a section heading\n  - Chosen items a person can take off again\n- **Don't use when:**\n  - A whole sentence of feedback: use Status\n  - Something the person switches on or off: use Toggle\n  - A metric the person came for: use Metric\n- **Rendering:**\n  - status uses color.status.<tone>.background and .foreground; label and count use neutral tokens\n  - count is set in tabular figures\n  - A tag never wraps: long labels are truncated with the full text on hover and in the accessible name\n  - Fits inline with text and in a Card header; radius.small unless the pack sets a pill\n- **Accessibility** (role: text; for 'count', the label is the accessible name of the number; for a removable tag, a button named 'Remove <label>'):\n  - Tone is conveyed by the label, never only by colour\n  - A count reads as '<label>: <count>' to a screen reader\n  - The remove control is at least size.target.min and named for what it removes\n- **Agents:** Reads label, tone and count; can activate the remove control by its name.\n\n### Text\n\nA run of text.\n\n- **Use when:**\n  - Explanations, instructions, messages\n- **Don't use when:**\n  - Headings: use Section title\n  - Label/value pairs: use DetailList\n  - Key figures: use Metric\n- **Rendering:**\n  - 'supporting' uses color.text.muted\n  - No inline styling; emphasis comes from structure\n  - 'rich' renders only the four markup forms, as real elements; anything else, including HTML, is shown as typed, and only http, https, mailto and tel links are live\n  - 'list' renders a ul or ol; entries are shown as text, or by 'itemPath' when they are objects\n  - 'quote' is a blockquote, the cite on its own line after it\n  - format 'color' shows a swatch of the value beside it; 'bytes' shows a size like 1.2 MB\n- **Accessibility** (role: text):\n  - Body text is at least 16px (type.body.default)\n  - Line length is capped by measure.max\n- **Agents:** Read as text.\n\n### TextInput\n\nA single text-like value: text, number, email, phone, currency, search or long text.\n\n- **Use when:**\n  - Free-form values the user types\n- **Don't use when:**\n  - A value from a known set: use Choice\n  - Dates: use DateInput\n  - Secrets (passwords, card numbers): not generated; hosts provide their own secure flows\n- **Rendering:**\n  - Width suggests expected length\n  - Errors appear after the user leaves the field or submits, not while typing\n  - kind 'search' renders as a pill search field with an icon; the label stays as its accessible name\n  - size 'hero' renders a large centred amount with the currency symbol dimmed\n  - 'suggestions' and 'mentions' are comboboxes: the list opens as you type, arrow keys move through it, Enter takes an option, Escape closes it\n  - 'richtext' is an editable area with Bold, Italic and List controls; the value is text with **bold**, *italic* and '- ' items\n  - 'tags' shows each value as a chip with a remove control; Enter or a comma adds what was typed, Backspace in an empty field removes the last chip; the value is a list of strings\n  - 'code' uses type.numeric (monospace) and turns off autocorrect, autocapitalize and spellcheck\n  - 'masked' fills the mask's literal characters as you type and stores the text as shown\n  - 'inline' renders the value as text with an Edit control; Enter saves, Escape restores the previous value\n- **Accessibility** (role: textbox / searchbox / spinbutton):\n  - Visible label, never placeholder-only\n  - Help and errors are associated with the field\n  - Kind sets the right keyboard and autocomplete\n- **Agents:** Fill by label.\n\n### Toggle\n\nAn on/off setting.\n\n- **Use when:**\n  - Settings that take effect immediately\n  - A single yes/no inside a form\n- **Don't use when:**\n  - Choosing between named options: use Choice\n- **Rendering:**\n  - With 'action' it renders as a switch; inside a Form without action, as a checkbox\n- **Accessibility** (role: switch (immediate) / checkbox (in a form)):\n  - Label says what 'on' means\n- **Agents:** Toggle by label; state is exposed as on/off.\n\n### Tree\n\nA hierarchy people expand, browse and pick from: folders, an org chart, nested categories.\n\n- **Use when:**\n  - Things that contain things: folders and files, an organisation, nested categories\n  - Picking a place in a hierarchy (move to folder, choose a category)\n- **Don't use when:**\n  - A flat list, however long: use Collection or Table\n  - Nested navigation of the product itself: use Navigation\n  - Progressive disclosure of one section: use Disclosure\n- **Rendering:**\n  - Indent per level uses space.inline.default; the expander is a chevron at size.target.min\n  - Leaves have no expander and align with siblings' labels\n  - Selection uses color.selection.background; the focused node shows color.border.focus\n  - Beyond 200 nodes the renderer virtualises rows\n- **Accessibility** (role: tree with treeitem nodes; aria-expanded on nodes with children, aria-selected when selectable):\n  - Arrow keys move and expand; Home and End jump; typing jumps to a label\n  - Level and position are exposed (aria-level, aria-setsize, aria-posinset)\n  - Expanded state is announced; selection is announced\n- **Agents:** Reads every node by label and level; expands a node by name and selects or activates one by name.\n\n### Views\n\nSwitch between alternative views of the same subject (tabs).\n\n- **Use when:**\n  - 2–6 peer views of the same data (Overview / Transactions / Settings)\n- **Don't use when:**\n  - Sequential steps: use Steps\n  - Filtering one list: use Choice\n- **Rendering:**\n  - More than 4 views on compact screens become a menu or scrollable tabs\n  - Counts sit beside their labels and are part of the tab's accessible name\n- **Accessibility** (role: tablist / tab / tabpanel):\n  - Each tab has a visible label\n  - Arrow keys move between tabs\n- **Agents:** Select a view by its label.\n",
   "components": {
     "Action": {
       "type": "object",
@@ -42,6 +42,14 @@
         },
         "disabled": {
           "$ref": "common_types.json#/$defs/DynamicBoolean"
+        },
+        "description": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "A second line under the label saying what the action does, for menu-like actions"
+        },
+        "copy": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "For the renderer action ui.copy: the text put on the clipboard; otherwise the action context's 'text' is copied"
         }
       },
       "required": [
@@ -92,6 +100,61 @@
             "target": "custom",
             "basicAnalog": "Row of Button",
             "why": "Row is pure layout. It loses the 'set of actions ordered by importance' semantics and the stacking on narrow screens."
+          }
+        }
+      }
+    },
+    "ActionMenu": {
+      "type": "object",
+      "description": "Secondary actions behind one control: an overflow menu, a dropdown, a split button or a context menu.",
+      "properties": {
+        "component": {
+          "const": "ActionMenu"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "The control's name: 'More actions' for an overflow, or the verb for a dropdown ('Export')"
+        },
+        "kind": {
+          "enum": [
+            "overflow",
+            "dropdown",
+            "split",
+            "context"
+          ],
+          "default": "overflow",
+          "description": "'overflow' is the '…' control; 'dropdown' is a labelled button that opens the menu; 'split' pairs a primary action with a menu of alternatives; 'context' opens on right-click or long-press of the component it belongs to"
+        },
+        "children": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "array",
+          "minItems": 1,
+          "description": "The Actions in the menu, in order; a danger-toned one goes last and is separated"
+        },
+        "primary": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "For 'split': the Action that runs when the main part is pressed"
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "children"
+      ],
+      "allowedChildren": [
+        "Action"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "action",
+            "target": "custom",
+            "basicAnalog": "Column of Button",
+            "why": "A column of buttons is not a menu: it loses the single trigger, its accessible name, the split primary and the context kind."
           }
         }
       }
@@ -186,11 +249,17 @@
       "allowedChildren": [
         "Action",
         "ActionBar",
+        "ActionMenu",
+        "Code",
         "DetailList",
         "Group",
+        "Identity",
         "Media",
         "Metric",
+        "Progress",
+        "Rating",
         "Status",
+        "Tag",
         "Text",
         "Toggle"
       ],
@@ -221,9 +290,14 @@
             "trend",
             "comparison",
             "composition",
-            "distribution"
+            "distribution",
+            "relationship",
+            "flow",
+            "hierarchy",
+            "matrix",
+            "range"
           ],
-          "description": "What the chart should communicate; the renderer picks the chart type"
+          "description": "What the chart should communicate; the renderer picks the chart type. 'relationship' between two measures; 'flow' of amounts from each x value into the series; 'hierarchy' of parts by size; 'matrix' of x values against series; 'range' from the first series to the second"
         },
         "data": {
           "type": "object",
@@ -278,7 +352,9 @@
                     "time",
                     "datetime",
                     "relativeTime",
-                    "duration"
+                    "duration",
+                    "color",
+                    "bytes"
                   ]
                 },
                 "currency": {
@@ -337,7 +413,9 @@
                       "time",
                       "datetime",
                       "relativeTime",
-                      "duration"
+                      "duration",
+                      "color",
+                      "bytes"
                     ]
                   },
                   "currency": {
@@ -517,6 +595,132 @@
         }
       }
     },
+    "Code": {
+      "type": "object",
+      "description": "Code, a command or preformatted text, shown as written and copyable.",
+      "properties": {
+        "component": {
+          "const": "Code"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "text": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "The code itself, usually bound to host data (an API key, a command, a snippet)"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "What it is, shown above: 'Install', 'Your API key'"
+        },
+        "language": {
+          "type": "string",
+          "description": "A language name for highlighting, when the renderer has it: 'bash', 'json', 'ts'"
+        },
+        "copyable": {
+          "type": "boolean",
+          "default": true,
+          "description": "A Copy control beside it"
+        },
+        "wrap": {
+          "type": "boolean",
+          "default": false,
+          "description": "Wrap long lines instead of scrolling sideways"
+        },
+        "secret": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "default": false,
+          "description": "Masked until revealed: a key shown once"
+        }
+      },
+      "required": [
+        "component",
+        "text"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Text",
+            "why": "Text loses preformatting, the language, the copy control and the secret mask."
+          }
+        }
+      }
+    },
+    "CodeInput": {
+      "type": "object",
+      "description": "A one-time code or PIN, typed into one box per character.",
+      "properties": {
+        "component": {
+          "const": "CodeInput"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "'Enter the code we emailed you'"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "The code so far in host data, as a string"
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 12,
+          "default": 6
+        },
+        "kind": {
+          "enum": [
+            "numeric",
+            "alphanumeric"
+          ],
+          "default": "numeric"
+        },
+        "help": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Where the code came from and how long it lasts"
+        },
+        "required": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "default": true
+        },
+        "action": {
+          "$ref": "common_types.json#/$defs/Action",
+          "description": "Runs when every character is in, so the person needn't press a button; context binds to value"
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "TextField",
+            "why": "TextField loses the one-box-per-character entry, the length, the numeric kind and the complete action."
+          }
+        }
+      }
+    },
     "Collection": {
       "type": "object",
       "description": "A list of items from host data, each rendered with the same template.",
@@ -569,10 +773,97 @@
             "auto",
             "list",
             "grid",
-            "timeline"
+            "timeline",
+            "carousel",
+            "calendar"
           ],
           "default": "auto",
-          "description": "'grid' for visual items (products, books); 'list' for rows; 'timeline' for dated activity; 'auto' lets the renderer choose from the item template"
+          "description": "'grid' for visual items (products, books); 'list' for rows; 'timeline' for dated activity; 'carousel' for a row people page through; 'calendar' places items on a month grid by 'datePath'; 'auto' lets the renderer choose from the item template"
+        },
+        "datePath": {
+          "type": "string",
+          "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+          "description": "For 'calendar': relative path in each item to the ISO date that places it"
+        },
+        "page": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "object",
+              "required": [
+                "path"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                }
+              },
+              "additionalProperties": false,
+              "description": "1-based page number in host data"
+            },
+            "size": {
+              "type": "object",
+              "required": [
+                "path"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                }
+              },
+              "additionalProperties": false,
+              "description": "A value read from (and, for inputs, written to) host data. Data always comes from the host; the model never invents it."
+            },
+            "total": {
+              "type": "object",
+              "required": [
+                "path"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                }
+              },
+              "additionalProperties": false,
+              "description": "Total number of items, all pages"
+            },
+            "action": {
+              "$ref": "common_types.json#/$defs/Action",
+              "description": "Sent when someone changes page or page size"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Paging state, owned by the host"
+        },
+        "bulkActions": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "ActionBar shown while items are selected (selection 'multiple')"
+        },
+        "reorderable": {
+          "type": "boolean",
+          "default": false,
+          "description": "People can drag items, or move them with the keyboard, into a new order"
+        },
+        "order": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Item values (ids) in the order people put them, written when reorderable"
         }
       },
       "required": [
@@ -587,6 +878,150 @@
             "target": "custom",
             "basicAnalog": "List (templated children)",
             "why": "List has no label, no empty state and no selection model."
+          }
+        }
+      }
+    },
+    "ColorInput": {
+      "type": "object",
+      "description": "Pick a colour: from swatches the host offers, or any colour.",
+      "properties": {
+        "component": {
+          "const": "ColorInput"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "The colour in host data, as CSS text in the chosen format"
+        },
+        "swatches": {
+          "oneOf": [
+            {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "required": [
+                  "value",
+                  "label"
+                ],
+                "properties": {
+                  "value": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean"
+                    ]
+                  },
+                  "label": {
+                    "$ref": "common_types.json#/$defs/DynamicString"
+                  },
+                  "description": {
+                    "$ref": "common_types.json#/$defs/DynamicString"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "path",
+                "valuePath",
+                "labelPath"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "valuePath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "labelPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "descriptionPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "avatarPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "Initials or a media reference per option: renders people and places with a face"
+                },
+                "imagePath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "recentPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "Boolean per option: shown in a 'Recent' row above the full list"
+                }
+              },
+              "additionalProperties": false
+            }
+          ],
+          "description": "Named colours to pick from (value is the colour, label its name); without them the full picker shows"
+        },
+        "format": {
+          "enum": [
+            "hex",
+            "rgb",
+            "hsl"
+          ],
+          "default": "hex"
+        },
+        "alpha": {
+          "type": "boolean",
+          "default": false,
+          "description": "Let the person set opacity too"
+        },
+        "help": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "required": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "default": false
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "none",
+            "why": "Basic has no colour input; swatches with names and the format would be lost."
           }
         }
       }
@@ -663,7 +1098,9 @@
                       "time",
                       "datetime",
                       "relativeTime",
-                      "duration"
+                      "duration",
+                      "color",
+                      "bytes"
                     ]
                   },
                   "currency": {
@@ -847,7 +1284,9 @@
                     "time",
                     "datetime",
                     "relativeTime",
-                    "duration"
+                    "duration",
+                    "color",
+                    "bytes"
                   ]
                 },
                 "currency": {
@@ -975,9 +1414,17 @@
             "date",
             "time",
             "datetime",
-            "dateRange"
+            "dateRange",
+            "month",
+            "year"
           ],
-          "default": "date"
+          "default": "date",
+          "description": "'month' stores YYYY-MM and 'year' stores YYYY"
+        },
+        "multiple": {
+          "type": "boolean",
+          "default": false,
+          "description": "Several dates rather than one; the value is a list"
         },
         "min": {
           "$ref": "common_types.json#/$defs/DynamicString"
@@ -1057,7 +1504,9 @@
                       "time",
                       "datetime",
                       "relativeTime",
-                      "duration"
+                      "duration",
+                      "color",
+                      "bytes"
                     ]
                   },
                   "currency": {
@@ -1099,6 +1548,10 @@
           ],
           "default": "rows",
           "description": "'grid' packs many short fields into columns (record pages); 'rows' keeps one per line"
+        },
+        "rowAction": {
+          "$ref": "common_types.json#/$defs/Action",
+          "description": "Offered per row as a 'Change' link named after the row (GOV.UK summary list); the row's key is sent as 'key' with the context"
         }
       },
       "required": [
@@ -1158,6 +1611,76 @@
         }
       }
     },
+    "FileInput": {
+      "type": "object",
+      "description": "Choose or drop files to attach or upload.",
+      "properties": {
+        "component": {
+          "const": "FileInput"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "The chosen files in host data: a list of { name, size, type, ref }, written by the renderer; the host uploads them"
+        },
+        "accept": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Allowed types as extensions or MIME types: ['.pdf', 'image/*']"
+        },
+        "multiple": {
+          "type": "boolean",
+          "default": false
+        },
+        "maxSize": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Largest file, in bytes; the renderer refuses larger ones with a message"
+        },
+        "help": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "What to attach and why; the accepted types and size are said by the renderer"
+        },
+        "required": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "default": false
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "none",
+            "why": "Basic has no file input; the accepted types, size limit and multiple flag have no home."
+          }
+        }
+      }
+    },
     "FilterPanel": {
       "type": "object",
       "description": "Filters for a list of results, with the result count.",
@@ -1211,8 +1734,10 @@
       "allowedChildren": [
         "Choice",
         "Collection",
+        "ColorInput",
         "DateInput",
         "RangeInput",
+        "Rating",
         "Table",
         "TextInput",
         "Toggle"
@@ -1353,9 +1878,102 @@
         }
       }
     },
+    "Identity": {
+      "type": "object",
+      "description": "A person, team or organisation: picture, name and details, or several of them together.",
+      "properties": {
+        "component": {
+          "const": "Identity"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "name": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Always bound to host data: a name is never invented"
+        },
+        "detail": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "One line under the name: a role, an email, a team, a status"
+        },
+        "image": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "A media reference from host data, resolved by the host as Media's is; initials from the name are shown without one"
+        },
+        "kind": {
+          "enum": [
+            "person",
+            "team",
+            "organization"
+          ],
+          "default": "person",
+          "description": "A person's picture is round; a team's or organisation's is square"
+        },
+        "size": {
+          "enum": [
+            "small",
+            "default",
+            "large"
+          ],
+          "default": "default"
+        },
+        "action": {
+          "$ref": "common_types.json#/$defs/Action",
+          "description": "Activating the identity as a whole, e.g. open the person's record"
+        },
+        "group": {
+          "type": "object",
+          "required": [
+            "path",
+            "namePath"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "A list of people in host data, shown as overlapping pictures with a '+N' for the rest"
+            },
+            "namePath": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "Relative to each entry"
+            },
+            "imagePath": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "Relative to each entry"
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8,
+              "default": 4,
+              "description": "Pictures shown before '+N'"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Several identities as one element ('Rhea, Tom and 3 others'). name is then the group's accessible summary"
+        }
+      },
+      "required": [
+        "component",
+        "name"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Row of Image + Text",
+            "why": "Row is layout; it loses the person/team kind, the initials fallback, the group's '+N' and the activation."
+          }
+        }
+      }
+    },
     "Media": {
       "type": "object",
-      "description": "An image supplied by the host.",
+      "description": "An image, video, audio clip, gallery or QR code supplied by the host.",
       "properties": {
         "component": {
           "const": "Media"
@@ -1377,11 +1995,11 @@
             }
           },
           "additionalProperties": false,
-          "description": "Image reference in host data; generated UI never contains URLs"
+          "description": "Image, video or audio reference in host data; generated UI never contains URLs"
         },
         "alt": {
           "$ref": "common_types.json#/$defs/DynamicString",
-          "description": "Required unless decorative"
+          "description": "Required unless decorative. For a gallery it names the set; for a QR code it says what the code opens"
         },
         "decorative": {
           "type": "boolean",
@@ -1395,11 +2013,58 @@
             "auto"
           ],
           "default": "auto"
+        },
+        "kind": {
+          "enum": [
+            "image",
+            "video",
+            "audio",
+            "gallery",
+            "qr"
+          ],
+          "default": "image",
+          "description": "'video' and 'audio' play with native controls; 'gallery' is several images from 'items'; 'qr' encodes 'value' as a QR code"
+        },
+        "poster": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "For 'video': media reference for the frame shown before play"
+        },
+        "transcript": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "For 'video' and 'audio': the words, offered under the player"
+        },
+        "items": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "For 'gallery': array of images in host data"
+        },
+        "imagePath": {
+          "type": "string",
+          "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+          "description": "For 'gallery': relative path in each item to its image reference"
+        },
+        "altPath": {
+          "type": "string",
+          "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+          "description": "For 'gallery': relative path in each item to its alt text"
+        },
+        "value": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "For 'qr': the text encoded, e.g. a payment link from host data"
         }
       },
       "required": [
-        "component",
-        "src"
+        "component"
       ],
       "metadata": {
         "extensions": {
@@ -1457,7 +2122,9 @@
                 "time",
                 "datetime",
                 "relativeTime",
-                "duration"
+                "duration",
+                "color",
+                "bytes"
               ]
             },
             "currency": {
@@ -1510,7 +2177,9 @@
                     "time",
                     "datetime",
                     "relativeTime",
-                    "duration"
+                    "duration",
+                    "color",
+                    "bytes"
                   ]
                 },
                 "currency": {
@@ -1651,6 +2320,17 @@
           },
           "additionalProperties": false,
           "description": "Key of the current item in host data"
+        },
+        "kind": {
+          "enum": [
+            "main",
+            "breadcrumb",
+            "nested",
+            "toc",
+            "local"
+          ],
+          "default": "main",
+          "description": "'main' is the product's sections; 'breadcrumb' the ordered trail to here; 'nested' groups that expand; 'toc' the sections of this page (items link to anchors named by their keys); 'local' the sections of one area, as tabs"
         }
       },
       "required": [
@@ -1665,6 +2345,222 @@
             "target": "custom",
             "basicAnalog": "Column of Button",
             "why": "A column of buttons loses which section you are in, the grouping, the counts needing attention, and the side-navigation-or-menu behaviour."
+          }
+        }
+      }
+    },
+    "Panel": {
+      "type": "object",
+      "description": "Content over the current view: a dialog, a drawer, a bottom sheet or a popover, opened from an action and dismissed to return.",
+      "properties": {
+        "component": {
+          "const": "Panel"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "kind": {
+          "enum": [
+            "dialog",
+            "drawer",
+            "sheet",
+            "popover"
+          ],
+          "default": "dialog",
+          "description": "'dialog' centres and blocks; 'drawer' slides from the side for a form or a record; 'sheet' rises from the bottom on phones; 'popover' floats by its opener for a small choice"
+        },
+        "title": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "children": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "array",
+          "minItems": 1,
+          "description": "What the panel holds"
+        },
+        "actions": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "An ActionBar in the panel's footer: its primary action and a Cancel"
+        },
+        "open": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Bound to host data: true shows the panel; the renderer writes false on dismiss. Open when absent"
+        },
+        "dismissible": {
+          "type": "boolean",
+          "default": true,
+          "description": "Escape, the close control and the backdrop dismiss it; false for a panel that must be completed"
+        },
+        "size": {
+          "enum": [
+            "small",
+            "default",
+            "large"
+          ],
+          "default": "default"
+        }
+      },
+      "required": [
+        "component",
+        "title",
+        "children"
+      ],
+      "allowedChildren": [
+        "ActionBar",
+        "Card",
+        "Choice",
+        "Code",
+        "CodeInput",
+        "Collection",
+        "ColorInput",
+        "DateInput",
+        "DetailList",
+        "Disclosure",
+        "FileInput",
+        "Form",
+        "Group",
+        "Identity",
+        "Media",
+        "Metric",
+        "Progress",
+        "RangeInput",
+        "Rating",
+        "Section",
+        "Status",
+        "Table",
+        "Tag",
+        "Text",
+        "TextInput",
+        "Toggle",
+        "Tree",
+        "Views"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "structure",
+            "target": "custom",
+            "basicAnalog": "Modal",
+            "why": "Modal has no kind (drawer, sheet, popover), no bound open state, no footer action bar and no dismissible flag."
+          }
+        }
+      }
+    },
+    "Progress": {
+      "type": "object",
+      "description": "How far along something is, or how much of a bounded amount is used: a bar, a ring or a meter.",
+      "properties": {
+        "component": {
+          "const": "Progress"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "What is being measured: 'Storage used', 'Upload', 'Goal'"
+        },
+        "value": {
+          "$ref": "common_types.json#/$defs/DynamicNumber",
+          "description": "Bound to host data. A fraction from 0 to 1, or an amount when max is given"
+        },
+        "max": {
+          "$ref": "common_types.json#/$defs/DynamicNumber",
+          "description": "The whole, when value is an amount rather than a fraction: 200 for '180 of 200 GB'"
+        },
+        "kind": {
+          "enum": [
+            "bar",
+            "ring",
+            "meter"
+          ],
+          "default": "bar",
+          "description": "'bar' and 'ring' show progress towards done; 'meter' shows a measured amount within bounds, with tone by threshold"
+        },
+        "caption": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Text beside the readout: '180 of 200 GB', '3 days left'. The readout itself is derived from value"
+        },
+        "format": {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "text",
+                "number",
+                "currency",
+                "percent",
+                "date",
+                "time",
+                "datetime",
+                "relativeTime",
+                "duration",
+                "color",
+                "bytes"
+              ]
+            },
+            "currency": {
+              "$ref": "common_types.json#/$defs/DynamicString",
+              "description": "ISO 4217 code, required for type 'currency'"
+            },
+            "precision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6
+            }
+          },
+          "additionalProperties": false,
+          "description": "How the readout is shown; percent without it"
+        },
+        "tone": {
+          "enum": [
+            "neutral",
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "description": "Fixed tone; a meter without one takes warning past thresholds.warning and danger past thresholds.danger"
+        },
+        "thresholds": {
+          "type": "object",
+          "properties": {
+            "warning": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "danger": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "additionalProperties": false,
+          "description": "Fractions at which a meter changes tone"
+        },
+        "indeterminate": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "The task is running and how far along isn't known"
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Text",
+            "why": "Basic has no progress or meter; the fraction, bound and tone thresholds would be lost."
           }
         }
       }
@@ -1724,7 +2620,9 @@
                 "time",
                 "datetime",
                 "relativeTime",
-                "duration"
+                "duration",
+                "color",
+                "bytes"
               ]
             },
             "currency": {
@@ -1763,6 +2661,79 @@
             "target": "custom",
             "basicAnalog": "Slider",
             "why": "Slider has a step count, not a step size, and no value format."
+          }
+        }
+      }
+    },
+    "Rating": {
+      "type": "object",
+      "description": "A score out of N: given by the person, or shown as others gave it.",
+      "properties": {
+        "component": {
+          "const": "Rating"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "What is rated: 'Your rating', 'Average rating'"
+        },
+        "value": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "The score in host data; written when the person can rate"
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 10,
+          "default": 5
+        },
+        "readOnly": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "default": false,
+          "description": "Show a score rather than take one"
+        },
+        "count": {
+          "$ref": "common_types.json#/$defs/DynamicNumber",
+          "description": "How many ratings the score is from, shown after it: '4.6 (212)'"
+        },
+        "help": {
+          "$ref": "common_types.json#/$defs/DynamicString"
+        },
+        "required": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "default": false
+        },
+        "action": {
+          "$ref": "common_types.json#/$defs/Action",
+          "description": "Runs when a rating is given, with context bound to value"
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "value"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "input",
+            "target": "custom",
+            "basicAnalog": "Row of Icon",
+            "why": "Icons can't be a radiogroup that writes a value, and lose the count and read-only distinction."
           }
         }
       }
@@ -1920,10 +2891,23 @@
               },
               "content": {
                 "$ref": "common_types.json#/$defs/ComponentId"
+              },
+              "status": {
+                "$ref": "common_types.json#/$defs/DynamicString",
+                "description": "For 'tasklist': 'todo', 'inProgress', 'done' or 'blocked', usually bound to host data"
               }
             },
             "additionalProperties": false
           }
+        },
+        "kind": {
+          "enum": [
+            "wizard",
+            "tasklist",
+            "guide"
+          ],
+          "default": "wizard",
+          "description": "'wizard' shows one step at a time in order; 'tasklist' lists tasks people do in any order, each with its status; 'guide' is numbered instructions with no state"
         },
         "current": {
           "$ref": "common_types.json#/$defs/DynamicNumber",
@@ -2033,7 +3017,9 @@
                       "time",
                       "datetime",
                       "relativeTime",
-                      "duration"
+                      "duration",
+                      "color",
+                      "bytes"
                     ]
                   },
                   "currency": {
@@ -2188,6 +3174,15 @@
           "$ref": "common_types.json#/$defs/ComponentId",
           "description": "ActionBar offered per row, in a menu named after the row"
         },
+        "expandable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Rows open to show 'detail' beneath them"
+        },
+        "detail": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "Component rendered under an expanded row; relative paths inside it resolve against the row"
+        },
         "toolbar": {
           "$ref": "common_types.json#/$defs/ComponentId",
           "description": "ActionBar above the table (e.g. New, Import, Export)"
@@ -2318,7 +3313,14 @@
       ],
       "allowedChildren": [
         "ActionBar",
+        "Card",
+        "Collection",
+        "DetailList",
+        "Group",
+        "Media",
+        "Metric",
         "Status",
+        "Text",
         "TextInput"
       ],
       "metadata": {
@@ -2328,6 +3330,65 @@
             "target": "custom",
             "basicAnalog": "List of Row",
             "why": "Basic has no table. Caption, column headers, formats, row action and empty state would be lost."
+          }
+        }
+      }
+    },
+    "Tag": {
+      "type": "object",
+      "description": "A short label, status or count attached to something else.",
+      "properties": {
+        "component": {
+          "const": "Tag"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "The word or two it shows: 'Past due', 'Beta', 'Design'"
+        },
+        "kind": {
+          "enum": [
+            "label",
+            "status",
+            "count"
+          ],
+          "default": "label",
+          "description": "'status' is the state of the thing it sits on and is coloured by tone; 'count' is a number, with the label as its accessible name"
+        },
+        "tone": {
+          "enum": [
+            "neutral",
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "default": "neutral",
+          "description": "Meaning, not decoration: a status tag's tone says whether the state is fine, a warning or a problem"
+        },
+        "count": {
+          "$ref": "common_types.json#/$defs/DynamicNumber",
+          "description": "For kind 'count': the number, bound to host data"
+        },
+        "remove": {
+          "$ref": "common_types.json#/$defs/Action",
+          "description": "Present when the person can take the tag off (a filter chip, a chosen recipient): the capability that removes it"
+        }
+      },
+      "required": [
+        "component",
+        "label"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Text",
+            "why": "Text has no tone, no count and no remove control; a status tag's meaning is its tone."
           }
         }
       }
@@ -2350,9 +3411,13 @@
           "enum": [
             "body",
             "supporting",
-            "caption"
+            "caption",
+            "rich",
+            "list",
+            "quote"
           ],
-          "default": "body"
+          "default": "body",
+          "description": "'rich' allows **bold**, *italic*, `code` and [links](href) in the text; 'list' is a bulleted or numbered list of 'items'; 'quote' is a quotation with an optional 'cite'"
         },
         "format": {
           "type": "object",
@@ -2370,7 +3435,9 @@
                 "time",
                 "datetime",
                 "relativeTime",
-                "duration"
+                "duration",
+                "color",
+                "bytes"
               ]
             },
             "currency": {
@@ -2385,6 +3452,35 @@
           },
           "additionalProperties": false,
           "description": "Only when 'text' is bound to a non-string value"
+        },
+        "items": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "For 'list': array in host data, one entry per item; 'text' introduces the list"
+        },
+        "itemPath": {
+          "type": "string",
+          "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+          "description": "For 'list': relative path in each entry to the text shown, when the entries are objects"
+        },
+        "ordered": {
+          "type": "boolean",
+          "default": false,
+          "description": "For 'list': numbered rather than bulleted"
+        },
+        "cite": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "For 'quote': who or what is quoted"
         }
       },
       "required": [
@@ -2440,9 +3536,99 @@
             "email",
             "phone",
             "url",
-            "search"
+            "search",
+            "suggestions",
+            "richtext",
+            "tags",
+            "mentions",
+            "code",
+            "masked",
+            "inline"
           ],
-          "default": "text"
+          "default": "text",
+          "description": "'suggestions' offers completions from 'options' while leaving any text allowed; 'richtext' is short formatted text (bold, italic, lists) stored as markdown-ish text; 'tags' is a list of short values entered one at a time; 'mentions' offers 'options' after an @; 'code' is monospace with no autocorrection; 'masked' follows 'mask'; 'inline' reads as text until it is clicked"
+        },
+        "options": {
+          "oneOf": [
+            {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "required": [
+                  "value",
+                  "label"
+                ],
+                "properties": {
+                  "value": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean"
+                    ]
+                  },
+                  "label": {
+                    "$ref": "common_types.json#/$defs/DynamicString"
+                  },
+                  "description": {
+                    "$ref": "common_types.json#/$defs/DynamicString"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "path",
+                "valuePath",
+                "labelPath"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "valuePath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "labelPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "descriptionPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "avatarPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "Initials or a media reference per option: renders people and places with a face"
+                },
+                "imagePath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+                },
+                "recentPath": {
+                  "type": "string",
+                  "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+                  "description": "Boolean per option: shown in a 'Recent' row above the full list"
+                }
+              },
+              "additionalProperties": false
+            }
+          ],
+          "description": "For 'suggestions' and 'mentions': the completions offered"
+        },
+        "mask": {
+          "type": "string",
+          "description": "For 'masked': # for a digit, A for a letter, * for either, anything else typed for you, e.g. '#### #### #### ####'"
         },
         "currency": {
           "$ref": "common_types.json#/$defs/DynamicString",
@@ -2562,6 +3748,117 @@
             "target": "custom",
             "basicAnalog": "CheckBox",
             "why": "CheckBox has no description and no immediate-apply action (a setting that saves on change)."
+          }
+        }
+      }
+    },
+    "Tree": {
+      "type": "object",
+      "description": "A hierarchy people expand, browse and pick from: folders, an org chart, nested categories.",
+      "properties": {
+        "component": {
+          "const": "Tree"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "What the tree holds, e.g. 'Folders'"
+        },
+        "items": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "The top-level nodes in host data: a list"
+        },
+        "labelPath": {
+          "type": "string",
+          "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+          "description": "Relative to each node: the text shown"
+        },
+        "childrenPath": {
+          "type": "string",
+          "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+          "description": "Relative to each node: its list of child nodes, absent or empty for a leaf"
+        },
+        "valuePath": {
+          "type": "string",
+          "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+          "description": "Relative to each node: what selection writes; the label when absent"
+        },
+        "detailPath": {
+          "type": "string",
+          "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+          "description": "Relative to each node: a count or note shown after the label"
+        },
+        "selection": {
+          "enum": [
+            "none",
+            "single",
+            "multiple"
+          ],
+          "default": "none"
+        },
+        "selected": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Selected node value(s) in host data when selection is not 'none'"
+        },
+        "expanded": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Values of the nodes shown open; the first level is open without it"
+        },
+        "action": {
+          "$ref": "common_types.json#/$defs/Action",
+          "description": "Activating a node, e.g. open that folder; context may bind to the node's fields"
+        }
+      },
+      "required": [
+        "component",
+        "label",
+        "items",
+        "labelPath",
+        "childrenPath"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "content",
+            "target": "custom",
+            "basicAnalog": "Nested Column of Text",
+            "why": "Column can't express expand/collapse, levels, selection or the per-node action."
           }
         }
       }
@@ -2713,6 +4010,9 @@
           "$ref": "#/components/ActionBar"
         },
         {
+          "$ref": "#/components/ActionMenu"
+        },
+        {
           "$ref": "#/components/Card"
         },
         {
@@ -2722,7 +4022,16 @@
           "$ref": "#/components/Choice"
         },
         {
+          "$ref": "#/components/Code"
+        },
+        {
+          "$ref": "#/components/CodeInput"
+        },
+        {
           "$ref": "#/components/Collection"
+        },
+        {
+          "$ref": "#/components/ColorInput"
         },
         {
           "$ref": "#/components/Comparison"
@@ -2740,6 +4049,9 @@
           "$ref": "#/components/Disclosure"
         },
         {
+          "$ref": "#/components/FileInput"
+        },
+        {
           "$ref": "#/components/FilterPanel"
         },
         {
@@ -2747,6 +4059,9 @@
         },
         {
           "$ref": "#/components/Group"
+        },
+        {
+          "$ref": "#/components/Identity"
         },
         {
           "$ref": "#/components/Media"
@@ -2758,7 +4073,16 @@
           "$ref": "#/components/Navigation"
         },
         {
+          "$ref": "#/components/Panel"
+        },
+        {
+          "$ref": "#/components/Progress"
+        },
+        {
           "$ref": "#/components/RangeInput"
+        },
+        {
+          "$ref": "#/components/Rating"
         },
         {
           "$ref": "#/components/Section"
@@ -2773,6 +4097,9 @@
           "$ref": "#/components/Table"
         },
         {
+          "$ref": "#/components/Tag"
+        },
+        {
           "$ref": "#/components/Text"
         },
         {
@@ -2780,6 +4107,9 @@
         },
         {
           "$ref": "#/components/Toggle"
+        },
+        {
+          "$ref": "#/components/Tree"
         },
         {
           "$ref": "#/components/Views"

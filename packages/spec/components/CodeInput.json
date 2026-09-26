@@ -1,0 +1,67 @@
+{
+  "name": "CodeInput",
+  "category": "input",
+  "summary": "A one-time code or PIN, typed into one box per character.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "'Enter the code we emailed you'"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "The code so far in host data, as a string"
+    },
+    "length": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 12,
+      "default": 6
+    },
+    "kind": {
+      "enum": ["numeric", "alphanumeric"],
+      "default": "numeric"
+    },
+    "help": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Where the code came from and how long it lasts"
+    },
+    "required": {
+      "$ref": "#/$defs/DynamicBoolean",
+      "default": true
+    },
+    "action": {
+      "$ref": "#/$defs/Action",
+      "description": "Runs when every character is in, so the person needn't press a button; context binds to value"
+    }
+  },
+  "required": ["label", "value"],
+  "whenToUse": [
+    "A verification code from email or SMS",
+    "A PIN or a short recovery code"
+  ],
+  "whenNotToUse": [
+    "A password: the host's own sign-in flow, never a generated screen",
+    "Any text longer than twelve characters: use TextInput"
+  ],
+  "accessibility": {
+    "role": "a group named by the label; one text input per character, each named 'Digit N of M'",
+    "requirements": [
+      "Typing moves focus forward; Backspace moves it back; pasting the whole code fills every box",
+      "The numeric kind opens the numeric keyboard and accepts autofill of one-time codes",
+      "Errors are said against the group, not one box"
+    ]
+  },
+  "agent": "Reads the label and length; enters the code.",
+  "rendering": [
+    "Boxes are size.control.large squares with radius.control, type.heading.small, centred, in type.mono",
+    "The active box shows color.border.focus; a filled box shows color.border.strong",
+    "Boxes are grouped in threes or fours by a wider gap past six characters"
+  ],
+  "mappings": {
+    "web": "shadcn InputOTP",
+    "ios": "TextField with .oneTimeCode content type",
+    "android": "BasicTextField with KeyboardType.NumberPassword"
+  },
+  "a2ui": "Custom (no Basic equivalent)",
+  "sources": ["WCAG 1.3.5 identify input purpose"]
+}

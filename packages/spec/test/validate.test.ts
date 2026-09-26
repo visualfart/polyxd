@@ -69,7 +69,7 @@ for (const [name, file, fn, expected] of cases) {
 
 /** A flight list whose card template binds its fields in the ways a model gets wrong. */
 const flights = (card: Record<string, unknown>, text?: Record<string, unknown>) => ({
-  specVersion: "0.1.0",
+  specVersion: "0.2.0",
   surface: { id: "flights", title: "Flights", intent: "travel.search" },
   root: "list",
   data: { route: "LHR → LIS", order: { status: "Shipped" }, flights: [{ airline: "TAP", depart: "07:10" }, { airline: "BA", depart: "08:40" }] },
@@ -113,7 +113,7 @@ test("a misplaced absolute path points at where the field is", () => {
 
 test("a table's columns read from its rows", () => {
   const doc = {
-    specVersion: "0.1.0",
+    specVersion: "0.2.0",
     surface: { id: "accounts", title: "Accounts", intent: "accounts.list" },
     root: "t",
     data: { rows: [{ name: "Acme", mrr: 1200 }] },
@@ -145,7 +145,7 @@ test("allows one primary per view panel and per step", () => {
 
 test("emphasisBudget: a Design Direction can allow two primary actions in one view", () => {
   const doc = {
-    specVersion: "0.1.0",
+    specVersion: "0.2.0",
     surface: { id: "s", title: "Dashboard" },
     root: "bar",
     components: [

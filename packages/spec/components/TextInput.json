@@ -19,9 +19,25 @@
         "email",
         "phone",
         "url",
-        "search"
+        "search",
+        "suggestions",
+        "richtext",
+        "tags",
+        "mentions",
+        "code",
+        "masked",
+        "inline"
       ],
-      "default": "text"
+      "default": "text",
+      "description": "'suggestions' offers completions from 'options' while leaving any text allowed; 'richtext' is short formatted text (bold, italic, lists) stored as markdown-ish text; 'tags' is a list of short values entered one at a time; 'mentions' offers 'options' after an @; 'code' is monospace with no autocorrection; 'masked' follows 'mask'; 'inline' reads as text until it is clicked"
+    },
+    "options": {
+      "$ref": "#/$defs/Options",
+      "description": "For 'suggestions' and 'mentions': the completions offered"
+    },
+    "mask": {
+      "type": "string",
+      "description": "For 'masked': # for a digit, A for a letter, * for either, anything else typed for you, e.g. '#### #### #### ####'"
     },
     "currency": {
       "$ref": "#/$defs/DynamicString",
@@ -101,7 +117,13 @@
     "Width suggests expected length",
     "Errors appear after the user leaves the field or submits, not while typing",
     "kind 'search' renders as a pill search field with an icon; the label stays as its accessible name",
-    "size 'hero' renders a large centred amount with the currency symbol dimmed"
+    "size 'hero' renders a large centred amount with the currency symbol dimmed",
+    "'suggestions' and 'mentions' are comboboxes: the list opens as you type, arrow keys move through it, Enter takes an option, Escape closes it",
+    "'richtext' is an editable area with Bold, Italic and List controls; the value is text with **bold**, *italic* and '- ' items",
+    "'tags' shows each value as a chip with a remove control; Enter or a comma adds what was typed, Backspace in an empty field removes the last chip; the value is a list of strings",
+    "'code' uses type.numeric (monospace) and turns off autocorrect, autocapitalize and spellcheck",
+    "'masked' fills the mask's literal characters as you type and stores the text as shown",
+    "'inline' renders the value as text with an Edit control; Enter saves, Escape restores the previous value"
   ],
   "mappings": {
     "web": "shadcn Input / Textarea with Label and FormMessage",

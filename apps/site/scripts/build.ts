@@ -210,8 +210,7 @@ async function coveragePage(): Promise<Page> {
     renderer: { name: string; summary: string; covers: string[]; more: number; systems: number }[];
   };
   const N = data.systems.length;
-  const existing = data.components.filter((c) => !c.isNew).length;
-  const planned = data.components.filter((c) => c.isNew).length;
+    const planned = data.components.filter((c) => c.isNew).length;
   const covers = (xs: string[], more: number) => (xs.length ? `<p class="covers">Covers <em>${xs.map(esc).join(", ")}</em>${more ? ` and ${more} more` : ""}</p>` : "");
   const dots = (n: number) => `<span class="cov-dots" aria-hidden="true">${Array.from({ length: N }, (_, i) => `<i${i < n ? ' class="on"' : ""}></i>`).join("")}</span><span class="cov-n">${n} of ${N}</span>`;
   const card = (title: string, right: string, summary: string, body: string) =>
@@ -228,9 +227,9 @@ async function coveragePage(): Promise<Page> {
   const outOf = data.counts["out:layout"] + data.counts["out:utility"] + data.counts["out:app-chrome"];
   const html = [
     `<p>Every component the 13 supported design systems document, read from their official documentation in September 2026, and what Polyxd calls it. Polyxd keeps one component per meaning, and each system's variety becomes a variant of it, so a generator picks from ${data.components.length} choices instead of ${data.total.toLocaleString("en-GB")}. Every component renders in every design system, including the ones that don't have it.</p>`,
-    `<p><strong>${existing} components exist today</strong> (the <a href="/docs/reference/components/">components reference</a> has their props). <strong>${planned} are planned for spec v0.2</strong>, marked below; they came out of this survey. The survey itself, with the inventories and the mapping, is <code>research/components/</code> in the repository.</p>`,
+    `<p>All ${data.components.length} exist (the <a href="/docs/reference/components/">components reference</a> has their props). <strong>${planned} of them, and the variants marked below, were added in spec v0.2</strong> because this survey found them in the design systems and not in Polyxd. The survey itself, with the inventories and the mapping, is <code>research/components/</code> in the repository.</p>`,
     `<h2 id="components">Components<a class="anchor" href="#components" aria-label="Link to this section">#</a></h2>`,
-    `<p>The bar on each card is how many of the ${N} systems have their own version. Dashed tags are variants v0.2 adds to a component that exists.</p>`,
+    `<p>The bar on each card is how many of the ${N} systems have their own version. Dashed tags are variants v0.2 added.</p>`,
     ...groups.map(
       (g) =>
         `<h3>${esc(g)}</h3><div class="cov-grid">${data.components
@@ -238,7 +237,7 @@ async function coveragePage(): Promise<Page> {
           .map((c) =>
             card(
               c.name,
-              `${c.isNew ? '<span class="tag tag-new">Planned · v0.2</span>' : ""}<span class="cov-right">${dots(c.systems)}</span>`,
+              `${c.isNew ? '<span class="tag tag-new">New in v0.2</span>' : ""}<span class="cov-right">${dots(c.systems)}</span>`,
               c.summary,
               covers(c.covers, c.more) + (c.newVariants.length ? `<div class="cov-variants" aria-label="New variants">${c.newVariants.map(([v, n]) => `<span title="${n} system${n > 1 ? "s" : ""}">${esc(v)}</span>`).join("")}</div>` : ""),
             ),
@@ -265,14 +264,14 @@ async function coveragePage(): Promise<Page> {
       .join("")}</div>`,
     `<h2 id="every-component-by-system">Every component, by system<a class="anchor" href="#every-component-by-system" aria-label="Link to this section">#</a></h2>`,
     `<p>Search a name you know from your design system to see what Polyxd calls it.</p>`,
-    `<div class="cov-tools"><input id="cov-q" type="search" placeholder="Search: segmented, snackbar, persona…" aria-label="Search components"><label>System <select id="cov-sys"><option value="">All ${N}</option>${data.systems.map((s, i) => `<option value="${i}">${esc(s)}</option>`).join("")}</select></label><label>Status <select id="cov-st"><option value="">All</option><option value="0">Covered today</option><option value="1">New variant in v0.2</option><option value="2">Planned component</option><option value="3">Not a component</option></select></label><span id="cov-count"></span></div>`,
+    `<div class="cov-tools"><input id="cov-q" type="search" placeholder="Search: segmented, snackbar, persona…" aria-label="Search components"><label>System <select id="cov-sys"><option value="">All ${N}</option>${data.systems.map((s, i) => `<option value="${i}">${esc(s)}</option>`).join("")}</select></label><label>Status <select id="cov-st"><option value="">All</option><option value="0">Covered</option><option value="3">Not a component</option></select></label><span id="cov-count"></span></div>`,
     `<div class="table-wrap cov-table"><table><thead><tr><th>System</th><th>Their component</th><th>Polyxd</th><th>Variant</th><th>Status</th></tr></thead><tbody id="cov-rows"></tbody></table></div>`,
     `<script id="cov-data" type="application/json">${JSON.stringify({ systems: data.systems, rows: data.rows }).replace(/</g, "\\u003c")}</script>`,
     `<script>(() => {
   const D = JSON.parse(document.getElementById("cov-data").textContent);
   const q = document.getElementById("cov-q"), sys = document.getElementById("cov-sys"), st = document.getElementById("cov-st"), out = document.getElementById("cov-rows"), count = document.getElementById("cov-count");
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const LABEL = ["Covered today", "New variant", "Planned", "Not a component"];
+  const LABEL = ["Covered", "Covered", "Covered", "Not a component"];
   function render() {
     const needle = q.value.trim().toLowerCase();
     const rows = D.rows.filter((r) => (sys.value === "" || r[0] == sys.value) && (st.value === "" || r[4] == st.value) && (!needle || (r[1] + " " + r[2] + " " + r[3]).toLowerCase().includes(needle)));

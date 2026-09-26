@@ -23,7 +23,7 @@ for (const f of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
 
 test("a tree without ids gets unique ids from keys and component names", () => {
   const flat = flattenTree({
-    specVersion: "0.1.0",
+    specVersion: "0.2.0",
     surface: { id: "s", title: "T" },
     root: {
       component: "Group",
@@ -40,6 +40,6 @@ test("a tree without ids gets unique ids from keys and component names", () => {
 });
 
 test("invalid or duplicate ids from a model are replaced, never trusted", () => {
-  const flat = flattenTree({ specVersion: "0.1.0", surface: { id: "s", title: "T" }, root: { id: "x", component: "Group", children: [{ id: "x", component: "Text", text: "a" }, { id: "9bad", component: "Text", text: "b" }] } });
+  const flat = flattenTree({ specVersion: "0.2.0", surface: { id: "s", title: "T" }, root: { id: "x", component: "Group", children: [{ id: "x", component: "Text", text: "a" }, { id: "9bad", component: "Text", text: "b" }] } });
   assert.deepEqual(flat.components.map((c: any) => c.id), ["x", "x-2", "text"]);
 });

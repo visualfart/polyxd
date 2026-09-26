@@ -13,7 +13,7 @@ import { REFERENCE_TYPES } from "../src/references.ts";
 const root = new URL("../", import.meta.url);
 const read = async (p: string) => JSON.parse(await readFile(new URL(p, root), "utf8"));
 
-export const SPEC_VERSION = "0.1.0";
+export const SPEC_VERSION = "0.2.0";
 
 interface ComponentSource {
   name: string;
@@ -64,7 +64,7 @@ export function buildUiSchema(common: Record<string, unknown>, components: Compo
     required: ["specVersion", "surface", "root", "components"],
     properties: {
       $schema: { type: "string" },
-      specVersion: { type: "string", pattern: "^0\\.1\\.[0-9]+$" },
+      specVersion: { type: "string", pattern: "^0\\.[12]\\.[0-9]+$" },
       surface: {
         type: "object",
         required: ["id", "title"],

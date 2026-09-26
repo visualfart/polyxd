@@ -1,15 +1,15 @@
 {
   "name": "Media",
   "category": "content",
-  "summary": "An image supplied by the host.",
+  "summary": "An image, video, audio clip, gallery or QR code supplied by the host.",
   "props": {
     "src": {
       "$ref": "#/$defs/Binding",
-      "description": "Image reference in host data; generated UI never contains URLs"
+      "description": "Image, video or audio reference in host data; generated UI never contains URLs"
     },
     "alt": {
       "$ref": "#/$defs/DynamicString",
-      "description": "Required unless decorative"
+      "description": "Required unless decorative. For a gallery it names the set; for a QR code it says what the code opens"
     },
     "decorative": {
       "type": "boolean",
@@ -23,35 +23,75 @@
         "auto"
       ],
       "default": "auto"
+    },
+    "kind": {
+      "enum": [
+        "image",
+        "video",
+        "audio",
+        "gallery",
+        "qr"
+      ],
+      "default": "image",
+      "description": "'video' and 'audio' play with native controls; 'gallery' is several images from 'items'; 'qr' encodes 'value' as a QR code"
+    },
+    "poster": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "For 'video': media reference for the frame shown before play"
+    },
+    "transcript": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "For 'video' and 'audio': the words, offered under the player"
+    },
+    "items": {
+      "$ref": "#/$defs/Binding",
+      "description": "For 'gallery': array of images in host data"
+    },
+    "imagePath": {
+      "$ref": "#/$defs/Path",
+      "description": "For 'gallery': relative path in each item to its image reference"
+    },
+    "altPath": {
+      "$ref": "#/$defs/Path",
+      "description": "For 'gallery': relative path in each item to its alt text"
+    },
+    "value": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "For 'qr': the text encoded, e.g. a payment link from host data"
     }
   },
-  "required": [
-    "src"
-  ],
+  "required": [],
   "whenToUse": [
-    "Photos or illustrations that help identify something (a product, a place, a person)"
+    "Photos or illustrations that help identify something (a product, a place, a person)",
+    "A recording people play, or a code they scan"
   ],
   "whenNotToUse": [
     "Decoration with no information",
     "Icons for actions (renderer supplies those)"
   ],
   "accessibility": {
-    "role": "img",
+    "role": "img (video / audio players, list for a gallery)",
     "requirements": [
-      "Has alt text unless decorative (then hidden from assistive technology)"
+      "Has alt text unless decorative (then hidden from assistive technology)",
+      "Video and audio have native controls and offer a transcript",
+      "A QR code's alt says what scanning it does"
     ]
   },
-  "agent": "Reads the alt text.",
+  "agent": "Reads the alt text; a gallery's images by their own alt text; a QR code's value.",
   "rendering": [
-    "Images never convey information that is not also in text"
+    "Images never convey information that is not also in text",
+    "'video' shows 'poster' until played; 'audio' is a compact player; both put 'transcript' under a disclosure",
+    "'gallery' is a grid of the items' images, each with its own alt text",
+    "'qr' is drawn on a canvas at a size that scans from a phone, with the alt as its accessible name"
   ],
   "mappings": {
-    "web": "<img> / shadcn AspectRatio",
-    "ios": "AsyncImage",
-    "android": "AsyncImage (Coil) / Image"
+    "web": "<img> / <video> / <audio> / shadcn AspectRatio; QR on <canvas>",
+    "ios": "AsyncImage / VideoPlayer / CoreImage CIQRCodeGenerator",
+    "android": "AsyncImage (Coil) / Media3 PlayerView / ZXing"
   },
-  "a2ui": "Image",
+  "a2ui": "Image (video, audio and gallery export as Image + Text; a QR code as Text of its value)",
   "sources": [
-    "WCAG 1.1.1"
+    "WCAG 1.1.1",
+    "WCAG 1.2.1 audio-only and video-only"
   ]
 }

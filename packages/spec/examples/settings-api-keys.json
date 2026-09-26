@@ -1,0 +1,306 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.2.0",
+  "surface": {
+    "id": "api-keys",
+    "title": "API keys",
+    "intent": "settings.api_keys",
+    "subtitle": "Used by your integrations to call the API",
+    "actions": "page-actions"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "page-actions",
+      "component": "ActionBar",
+      "children": [
+        "create-key"
+      ]
+    },
+    {
+      "id": "create-key",
+      "component": "Action",
+      "label": "Create key",
+      "emphasis": "secondary",
+      "action": {
+        "event": {
+          "name": "apiKey.createStart"
+        }
+      }
+    },
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "new-key-section",
+        "keys-section",
+        "allowlist-section"
+      ]
+    },
+    {
+      "id": "new-key-section",
+      "component": "Section",
+      "title": "Your new key",
+      "children": [
+        "created",
+        "verify",
+        "new-key"
+      ]
+    },
+    {
+      "id": "created",
+      "component": "Status",
+      "kind": "success",
+      "variant": "inline",
+      "title": {
+        "path": "/newKey/title"
+      },
+      "message": "It's shown once. Enter your verification code to reveal it, then copy it somewhere safe."
+    },
+    {
+      "id": "verify",
+      "component": "CodeInput",
+      "key": "verify_code",
+      "label": "Enter the 6-digit code from your authenticator app",
+      "help": "Needed once to reveal the key. Codes change every 30 seconds.",
+      "length": 6,
+      "kind": "numeric",
+      "value": {
+        "path": "/draft/code"
+      },
+      "action": {
+        "event": {
+          "name": "verify.code",
+          "context": {
+            "code": {
+              "path": "/draft/code"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "new-key",
+      "component": "Code",
+      "key": "new_key",
+      "label": "Your new key",
+      "text": {
+        "path": "/newKey/token"
+      },
+      "secret": {
+        "path": "/newKey/masked"
+      },
+      "copyable": true
+    },
+    {
+      "id": "keys-section",
+      "component": "Section",
+      "title": "Existing keys",
+      "children": [
+        "keys"
+      ]
+    },
+    {
+      "id": "keys",
+      "component": "Collection",
+      "key": "api_keys",
+      "label": "API keys",
+      "layout": "list",
+      "items": {
+        "path": "/keys",
+        "componentId": "key"
+      },
+      "empty": "no-keys"
+    },
+    {
+      "id": "no-keys",
+      "component": "Status",
+      "kind": "empty",
+      "icon": "lock",
+      "title": "No API keys yet",
+      "message": "Create one to connect an integration."
+    },
+    {
+      "id": "key",
+      "component": "Card",
+      "title": {
+        "path": "name"
+      },
+      "subtitle": {
+        "path": "summary"
+      },
+      "children": [
+        "key-active",
+        "key-expiring",
+        "key-scope",
+        "key-menu"
+      ]
+    },
+    {
+      "id": "key-active",
+      "component": "Tag",
+      "kind": "status",
+      "tone": "success",
+      "label": "Active",
+      "visible": {
+        "path": "active"
+      }
+    },
+    {
+      "id": "key-expiring",
+      "component": "Tag",
+      "kind": "status",
+      "tone": "warning",
+      "label": "Expires soon",
+      "visible": {
+        "path": "expiring"
+      }
+    },
+    {
+      "id": "key-scope",
+      "component": "Tag",
+      "kind": "label",
+      "label": {
+        "path": "scope"
+      }
+    },
+    {
+      "id": "key-menu",
+      "component": "ActionMenu",
+      "kind": "overflow",
+      "label": "Key actions",
+      "children": [
+        "rename-key",
+        "roll-key",
+        "revoke-key"
+      ]
+    },
+    {
+      "id": "rename-key",
+      "component": "Action",
+      "label": "Rename key",
+      "action": {
+        "event": {
+          "name": "apiKey.renameStart",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "roll-key",
+      "component": "Action",
+      "label": "Roll key",
+      "action": {
+        "event": {
+          "name": "apiKey.rollStart",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "revoke-key",
+      "component": "Action",
+      "label": "Revoke key",
+      "tone": "danger",
+      "action": {
+        "event": {
+          "name": "apiKey.revokeStart",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "allowlist-section",
+      "component": "Section",
+      "title": "IP allow-list",
+      "description": "Requests from addresses that aren't on the list are refused.",
+      "children": [
+        "allowlist-form"
+      ]
+    },
+    {
+      "id": "allowlist-form",
+      "component": "Form",
+      "children": [
+        "allowlist-file"
+      ],
+      "submit": {
+        "label": "Upload allow-list",
+        "action": {
+          "event": {
+            "name": "apiKeys.allowlistUpload",
+            "context": {
+              "files": {
+                "path": "/draft/allowlist"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "allowlist-file",
+      "component": "FileInput",
+      "key": "allowlist_file",
+      "label": "Allow-list file",
+      "help": "One IP address or CIDR range per line. Replaces the current list of 14 addresses.",
+      "value": {
+        "path": "/draft/allowlist"
+      },
+      "accept": [
+        ".csv"
+      ],
+      "maxSize": 1048576,
+      "required": true
+    }
+  ],
+  "data": {
+    "newKey": {
+      "title": "Key created: CI deploy",
+      "token": "pk_live_7Kd93mZq2R8vT1nWx4Ye6Lb0Hs5Fj8Ac",
+      "masked": true
+    },
+    "draft": {
+      "code": "",
+      "allowlist": []
+    },
+    "keys": [
+      {
+        "id": "key_01J8QW",
+        "name": "CI deploy",
+        "summary": "pk_live_…8Ac · created today · not used yet",
+        "scope": "Full access",
+        "active": true,
+        "expiring": false
+      },
+      {
+        "id": "key_01HZ4R",
+        "name": "Zapier sync",
+        "summary": "pk_live_…4f2a · created 12 March 2026 · last used 2 hours ago",
+        "scope": "Read only",
+        "active": true,
+        "expiring": false
+      },
+      {
+        "id": "key_01GX7T",
+        "name": "Staging tests",
+        "summary": "pk_test_…9c1d · created 3 November 2025 · expires 3 October 2026",
+        "scope": "Full access",
+        "active": false,
+        "expiring": true
+      }
+    ]
+  }
+}

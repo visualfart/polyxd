@@ -73,7 +73,7 @@ test("catch rate is at least 90% of 20 defects", () => {
 
 test("catches: a list binding pointing at something that isn't a list", async () => {
   const doc = {
-    specVersion: "0.1.0",
+    specVersion: "0.2.0",
     surface: { id: "running", title: "Running" },
     root: "cmp",
     components: [{ id: "cmp", component: "Comparison", items: { path: "/thisMonth" }, itemTitle: "name", attributes: [{ key: "km", label: "Kilometres", path: "km" }] }],

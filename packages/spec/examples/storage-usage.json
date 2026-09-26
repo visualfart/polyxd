@@ -1,0 +1,402 @@
+{
+  "$schema": "../schema/ui.schema.json",
+  "specVersion": "0.2.0",
+  "surface": {
+    "id": "storage",
+    "title": "Storage",
+    "intent": "storage.usage",
+    "subtitle": "100 GB plan"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "nearly-full",
+        "overall",
+        "breakdown",
+        "label-panel"
+      ]
+    },
+    {
+      "id": "nearly-full",
+      "component": "Status",
+      "kind": "warning",
+      "variant": "inline",
+      "title": "You've used 83% of your storage",
+      "message": "Photos and videos take up most of it. Emptying the bin frees 1.3 GB.",
+      "action": "free-space"
+    },
+    {
+      "id": "free-space",
+      "component": "Action",
+      "label": "Free up space",
+      "action": {
+        "event": {
+          "name": "storage.cleanupStart"
+        }
+      }
+    },
+    {
+      "id": "overall",
+      "component": "Progress",
+      "key": "storage_total",
+      "kind": "ring",
+      "label": "Storage used",
+      "value": {
+        "path": "/storage/used"
+      },
+      "max": {
+        "path": "/storage/quota"
+      },
+      "caption": {
+        "path": "/storage/caption"
+      },
+      "tone": "warning"
+    },
+    {
+      "id": "breakdown",
+      "component": "Section",
+      "title": "By category",
+      "description": "Each meter shows how much of your 100 GB a category takes.",
+      "children": [
+        "cat-photos",
+        "cat-documents",
+        "cat-mail",
+        "cat-backups"
+      ]
+    },
+    {
+      "id": "cat-photos",
+      "component": "Group",
+      "label": "Photos and videos",
+      "children": [
+        "photos-meter",
+        "photos-count",
+        "photos-colour"
+      ]
+    },
+    {
+      "id": "photos-meter",
+      "component": "Progress",
+      "key": "storage.photos",
+      "kind": "meter",
+      "label": "Photos and videos",
+      "value": {
+        "path": "/categories/photos/used"
+      },
+      "max": {
+        "path": "/storage/quota"
+      },
+      "thresholds": {
+        "warning": 0.5,
+        "danger": 0.75
+      },
+      "caption": {
+        "path": "/categories/photos/caption"
+      }
+    },
+    {
+      "id": "photos-count",
+      "component": "Tag",
+      "kind": "count",
+      "label": "Photos and videos",
+      "count": {
+        "path": "/categories/photos/count"
+      }
+    },
+    {
+      "id": "photos-colour",
+      "component": "Action",
+      "label": "Change colour for Photos",
+      "emphasis": "tertiary",
+      "action": {
+        "event": {
+          "name": "storage.labelStart",
+          "context": {
+            "category": "photos"
+          }
+        }
+      }
+    },
+    {
+      "id": "cat-documents",
+      "component": "Group",
+      "label": "Documents",
+      "children": [
+        "documents-meter",
+        "documents-count",
+        "documents-colour"
+      ]
+    },
+    {
+      "id": "documents-meter",
+      "component": "Progress",
+      "key": "storage.documents",
+      "kind": "meter",
+      "label": "Documents",
+      "value": {
+        "path": "/categories/documents/used"
+      },
+      "max": {
+        "path": "/storage/quota"
+      },
+      "thresholds": {
+        "warning": 0.5,
+        "danger": 0.75
+      },
+      "caption": {
+        "path": "/categories/documents/caption"
+      }
+    },
+    {
+      "id": "documents-count",
+      "component": "Tag",
+      "kind": "count",
+      "label": "Files",
+      "count": {
+        "path": "/categories/documents/count"
+      }
+    },
+    {
+      "id": "documents-colour",
+      "component": "Action",
+      "label": "Change colour for Documents",
+      "emphasis": "tertiary",
+      "action": {
+        "event": {
+          "name": "storage.labelStart",
+          "context": {
+            "category": "documents"
+          }
+        }
+      }
+    },
+    {
+      "id": "cat-mail",
+      "component": "Group",
+      "label": "Mail",
+      "children": [
+        "mail-meter",
+        "mail-count",
+        "mail-colour"
+      ]
+    },
+    {
+      "id": "mail-meter",
+      "component": "Progress",
+      "key": "storage.mail",
+      "kind": "meter",
+      "label": "Mail",
+      "value": {
+        "path": "/categories/mail/used"
+      },
+      "max": {
+        "path": "/storage/quota"
+      },
+      "thresholds": {
+        "warning": 0.5,
+        "danger": 0.75
+      },
+      "caption": {
+        "path": "/categories/mail/caption"
+      }
+    },
+    {
+      "id": "mail-count",
+      "component": "Tag",
+      "kind": "count",
+      "label": "Messages",
+      "count": {
+        "path": "/categories/mail/count"
+      }
+    },
+    {
+      "id": "mail-colour",
+      "component": "Action",
+      "label": "Change colour for Mail",
+      "emphasis": "tertiary",
+      "action": {
+        "event": {
+          "name": "storage.labelStart",
+          "context": {
+            "category": "mail"
+          }
+        }
+      }
+    },
+    {
+      "id": "cat-backups",
+      "component": "Group",
+      "label": "Device backups",
+      "children": [
+        "backups-meter",
+        "backups-count",
+        "backups-colour"
+      ]
+    },
+    {
+      "id": "backups-meter",
+      "component": "Progress",
+      "key": "storage.backups",
+      "kind": "meter",
+      "label": "Device backups",
+      "value": {
+        "path": "/categories/backups/used"
+      },
+      "max": {
+        "path": "/storage/quota"
+      },
+      "thresholds": {
+        "warning": 0.5,
+        "danger": 0.75
+      },
+      "caption": {
+        "path": "/categories/backups/caption"
+      }
+    },
+    {
+      "id": "backups-count",
+      "component": "Tag",
+      "kind": "count",
+      "label": "Devices",
+      "count": {
+        "path": "/categories/backups/count"
+      }
+    },
+    {
+      "id": "backups-colour",
+      "component": "Action",
+      "label": "Change colour for Backups",
+      "emphasis": "tertiary",
+      "action": {
+        "event": {
+          "name": "storage.labelStart",
+          "context": {
+            "category": "backups"
+          }
+        }
+      }
+    },
+    {
+      "id": "label-panel",
+      "component": "Panel",
+      "kind": "popover",
+      "size": "small",
+      "title": {
+        "path": "/draft/label/title"
+      },
+      "children": [
+        "label-form"
+      ],
+      "open": {
+        "path": "/ui/labelOpen"
+      }
+    },
+    {
+      "id": "label-form",
+      "component": "Form",
+      "children": [
+        "label-colour"
+      ],
+      "submit": {
+        "label": "Save colour",
+        "action": {
+          "event": {
+            "name": "storage.label.set",
+            "context": {
+              "category": {
+                "path": "/draft/label/category"
+              },
+              "colour": {
+                "path": "/draft/label/colour"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "label-colour",
+      "component": "ColorInput",
+      "key": "label_colour",
+      "label": "Label colour",
+      "help": "Shown on the ring and next to the category in the sidebar.",
+      "value": {
+        "path": "/draft/label/colour"
+      },
+      "format": "hex",
+      "swatches": [
+        {
+          "value": "#2563eb",
+          "label": "Blue"
+        },
+        {
+          "value": "#0d9488",
+          "label": "Teal"
+        },
+        {
+          "value": "#16a34a",
+          "label": "Green"
+        },
+        {
+          "value": "#d97706",
+          "label": "Amber"
+        },
+        {
+          "value": "#dc2626",
+          "label": "Red"
+        },
+        {
+          "value": "#7c3aed",
+          "label": "Purple"
+        }
+      ]
+    }
+  ],
+  "data": {
+    "storage": {
+      "used": 83.4,
+      "quota": 100,
+      "caption": "83.4 of 100 GB"
+    },
+    "categories": {
+      "photos": {
+        "used": 51.8,
+        "count": 12480,
+        "caption": "51.8 GB · nearly half your space"
+      },
+      "documents": {
+        "used": 14.2,
+        "count": 3216,
+        "caption": "14.2 GB"
+      },
+      "mail": {
+        "used": 9.7,
+        "count": 41905,
+        "caption": "9.7 GB, including attachments"
+      },
+      "backups": {
+        "used": 6.4,
+        "count": 3,
+        "caption": "6.4 GB across 3 devices"
+      },
+      "bin": {
+        "used": 1.3,
+        "count": 212,
+        "caption": "1.3 GB, deleted in the last 30 days"
+      }
+    },
+    "draft": {
+      "label": {
+        "category": "photos",
+        "title": "Label colour for Photos and videos",
+        "colour": "#2563eb"
+      }
+    },
+    "ui": {
+      "labelOpen": false
+    }
+  }
+}

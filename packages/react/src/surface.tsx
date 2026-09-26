@@ -58,7 +58,7 @@ export function PolyxdSurface({ document: doc, data: initial, onAction, onDataCh
 
   const value: SurfaceContextValue = { doc, byId, data, setValue, dispatch, locale, resolveMedia, portal, components, disclosure };
   const rootIsDialog = byId.get(doc.root)?.component === "Confirm";
-  const nav = doc.components.find((c) => c.component === "Navigation");
+  const nav = doc.components.find((c) => c.component === "Navigation" && (!c.kind || c.kind === "main"));
 
   return (
     <SurfaceContext.Provider value={value}>

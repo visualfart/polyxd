@@ -133,6 +133,15 @@
       "$ref": "#/$defs/Id",
       "description": "ActionBar offered per row, in a menu named after the row"
     },
+    "expandable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Rows open to show 'detail' beneath them"
+    },
+    "detail": {
+      "$ref": "#/$defs/Id",
+      "description": "Component rendered under an expanded row; relative paths inside it resolve against the row"
+    },
     "toolbar": {
       "$ref": "#/$defs/Id",
       "description": "ActionBar above the table (e.g. New, Import, Export)"
@@ -228,7 +237,8 @@
     "Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'",
     "On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status",
     "Selection replaces the toolbar with the bulk-action bar while rows are selected",
-    "Paging shows rows per page, the range and the total"
+    "Paging shows rows per page, the range and the total",
+    "expandable: each row starts with a toggle (aria-expanded) named after the row; the open row's 'detail' spans the table beneath it"
   ],
   "mappings": {
     "web": "shadcn Table (optionally Data Table with TanStack)",

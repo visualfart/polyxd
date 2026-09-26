@@ -51,6 +51,10 @@
       ],
       "default": "rows",
       "description": "'grid' packs many short fields into columns (record pages); 'rows' keeps one per line"
+    },
+    "rowAction": {
+      "$ref": "#/$defs/Action",
+      "description": "Offered per row as a 'Change' link named after the row (GOV.UK summary list); the row's key is sent as 'key' with the context"
     }
   },
   "required": [
@@ -76,7 +80,8 @@
   "rendering": [
     "Keeps the item order stable across generations (keys are remembered)",
     "receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right",
-    "'grid' lays fields out in columns by width, label above value"
+    "'grid' lays fields out in columns by width, label above value",
+    "rowAction: each row ends with a 'Change' link whose accessible name includes the row's label; the total row has none"
   ],
   "mappings": {
     "web": "<dl> with semantic tokens",

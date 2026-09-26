@@ -1,6 +1,6 @@
 ---
 title: Components
-description: The 26 semantic components, what "semantic" means, and how the renderer turns meaning into concrete controls.
+description: The 37 semantic components, what "semantic" means, and how the renderer turns meaning into concrete controls.
 order: 11
 section: Concepts
 ---
@@ -9,7 +9,7 @@ section: Concepts
 
 > Looking for how your design system's components map onto these? See [Design-system coverage](/docs/reference/coverage/): every component in 13 systems, and what Polyxd calls it.
 
-Polyxd has 26 components. Each one describes **what something is for**, not what it looks like. The generator picks components; the renderer and the design-system pack decide how they appear on each platform.
+Polyxd has 37 components. Each one describes **what something is for**, not what it looks like. The generator picks components; the renderer and the design-system pack decide how they appear on each platform.
 
 For every component's props, usage rules, accessibility requirements and platform mappings, see the generated [components reference](/docs/reference/components). This page explains the ideas behind them.
 
@@ -17,12 +17,14 @@ For every component's props, usage rules, accessibility requirements and platfor
 
 | Category | Components |
 |---|---|
-| Structure | `Section`, `Group`, `Card`, `Disclosure`, `Views`, `Navigation` |
-| Content | `Text`, `Metric`, `DetailList`, `Collection`, `Table`, `Chart`, `Media` |
+| Structure | `Section`, `Group`, `Card`, `Disclosure`, `Views`, `Navigation`, `Panel` |
+| Content | `Text`, `Metric`, `DetailList`, `Collection`, `Table`, `Chart`, `Media`, `Tag`, `Identity`, `Tree`, `Progress`, `Code` |
 | Feedback | `Status` |
-| Input | `TextInput`, `Choice`, `Toggle`, `DateInput`, `RangeInput`, `Form`, `FilterPanel` |
-| Action | `Action`, `ActionBar` |
+| Input | `TextInput`, `Choice`, `Toggle`, `DateInput`, `RangeInput`, `Form`, `FilterPanel`, `Rating`, `FileInput`, `ColorInput`, `CodeInput` |
+| Action | `Action`, `ActionBar`, `ActionMenu` |
 | Flow | `Steps`, `Confirm`, `Comparison` |
+
+Spec v0.2 added eleven of these (`Tag`, `Identity`, `Tree`, `Progress`, `Rating`, `Code`, `FileInput`, `ColorInput`, `CodeInput`, `Panel`, `ActionMenu`) and variants on the rest, after a survey of every component in 13 design systems: [design-system coverage](/docs/reference/coverage/).
 
 The source of truth is `packages/spec/components/*.json`. The UI schema, the A2UI catalog and the reference page are all generated from those files.
 

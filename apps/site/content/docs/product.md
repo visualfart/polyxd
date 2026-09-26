@@ -149,7 +149,7 @@ Each event carries the surface (id, intent, pattern, journey, spec version, gene
   "sessionId": "s_8f2",
   "surface": {
     "id": "send-confirm", "intent": "money.send", "pattern": "confirm-destructive",
-    "journey": "money.send", "specVersion": "0.1.0",
+    "journey": "money.send", "specVersion": "0.2.0",
     "generator": "polyxd-3b@0.1.0", "direction": "calm-finance@0.1.0"
   },
   "actor": { "kind": "human", "assistiveTech": false },

@@ -30,7 +30,7 @@ test("catalog id, protocol version and $id", () => {
 
 test("every Polyxd component is in the catalog, with a recorded mapping decision", () => {
   const names = sources.map((c) => c.name);
-  assert.equal(names.length, 26);
+  assert.equal(names.length, 37);
   assert.deepEqual(Object.keys(catalog.components).sort(), [...names].sort());
   assert.deepEqual(Object.keys(MAPPING).sort(), [...names].sort());
   for (const n of names) {

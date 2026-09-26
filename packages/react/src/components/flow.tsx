@@ -11,17 +11,47 @@ export function Action({ node }: { node: Node }) {
   const b = useBindings();
   const s = useSurface();
   const steps = useContext(StepsContext);
+  const descId = useId();
+  const [copied, setCopied] = useState(false);
   const disabled = node.disabled !== undefined ? Boolean(b.value(node.disabled)) : false;
   const tone = node.tone === "danger" ? " pxd-button-danger" : "";
+  const description = node.description !== undefined ? b.text(node.description) : undefined;
   const onClick = () => {
     const name = node.action.event.name;
     if (name === "ui.back" && steps) return steps.back();
     if (name === "ui.next" && steps) return steps.next();
+    if (name === "ui.copy") {
+      // Copies 'copy', or the context's 'text', and says so; the host still hears the action.
+      const text = node.copy !== undefined ? b.text(node.copy) : String(b.context(node.action.event.context).text ?? "");
+      const done = () => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      };
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done, () => undefined);
+      else done();
+    }
     s.dispatch(node.action, b.scope, node.id);
   };
   return (
-    <button type="button" className={`pxd-button pxd-button-${node.emphasis ?? "secondary"}${tone}`} disabled={disabled} onClick={onClick} {...useA11y(node)}>
-      {b.text(node.label)}
+    <button
+      type="button"
+      className={`pxd-button pxd-button-${node.emphasis ?? "secondary"}${tone}${description ? " pxd-button-described" : ""}`}
+      disabled={disabled}
+      aria-describedby={description ? descId : undefined}
+      onClick={onClick}
+      {...useA11y(node)}
+    >
+      <span className="pxd-button-label">{copied ? "Copied" : b.text(node.label)}</span>
+      {description && (
+        <span className="pxd-button-description" id={descId}>
+          {description}
+        </span>
+      )}
+      {node.action.event.name === "ui.copy" && (
+        <span className="pxd-sr-only" aria-live="polite">
+          {copied ? "Copied" : ""}
+        </span>
+      )}
     </button>
   );
 }
@@ -37,11 +67,82 @@ export function ActionBar({ node }: { node: Node }) {
   );
 }
 
+/** Task statuses (GOV.UK task list) and the tone each is shown in. */
+const TASK_STATUS: Record<string, { label: string; tone: string }> = {
+  todo: { label: "Not started", tone: "neutral" },
+  inProgress: { label: "In progress", tone: "info" },
+  done: { label: "Completed", tone: "success" },
+  blocked: { label: "Cannot start yet", tone: "neutral" },
+};
+
 export function Steps({ node }: { node: Node }) {
   const b = useBindings();
   const s = useSurface();
+  const [openTask, setOpenTask] = useState<string | null>(null);
   const bound = node.current !== undefined ? b.value<number>(node.current) : undefined;
   const [local, setLocal] = useState<number>(typeof bound === "number" ? bound : 0);
+  const kind = node.kind ?? "wizard";
+  const finish = (
+    <div className="pxd-action-bar">
+      <button type="button" className="pxd-button pxd-button-primary" onClick={() => s.dispatch(node.finish.action, b.scope, node.id)}>
+        {b.text(node.finish.label)}
+      </button>
+    </div>
+  );
+  if (kind === "guide") {
+    // Numbered instructions, all visible, no state to keep.
+    return (
+      <div className="pxd-steps pxd-guide" {...useA11y(node)}>
+        <ol className="pxd-guide-list">
+          {node.steps.map((st: any, i: number) => (
+            <li key={st.key} className="pxd-guide-step">
+              <span className="pxd-guide-number" aria-hidden="true">
+                {i + 1}
+              </span>
+              <div className="pxd-guide-body">
+                <Heading className="pxd-guide-title">{b.text(st.title)}</Heading>
+                <Render id={st.content} />
+              </div>
+            </li>
+          ))}
+        </ol>
+        {finish}
+      </div>
+    );
+  }
+  if (kind === "tasklist") {
+    // Tasks in any order, each with its status; a task opens its content in place.
+    const status = (st: any) => TASK_STATUS[st.status !== undefined ? b.text(st.status) : "todo"] ?? TASK_STATUS.todo;
+    const done = node.steps.filter((st: any) => status(st) === TASK_STATUS.done).length;
+    return (
+      <div className="pxd-steps pxd-tasklist" {...useA11y(node)}>
+        <p className="pxd-steps-progress">{`${done} of ${node.steps.length} tasks completed`}</p>
+        <ul className="pxd-tasklist-list">
+          {node.steps.map((st: any) => {
+            const open = openTask === st.key;
+            const { label, tone } = status(st);
+            const blocked = tone === "neutral" && label === TASK_STATUS.blocked.label;
+            return (
+              <li key={st.key} className={`pxd-task${open ? " pxd-task-open" : ""}`}>
+                <div className="pxd-task-row">
+                  <button type="button" className="pxd-task-title" aria-expanded={open} disabled={blocked} onClick={() => setOpenTask(open ? null : st.key)}>
+                    {b.text(st.title)}
+                  </button>
+                  <span className={`pxd-badge pxd-tone-${tone} pxd-task-status`}>{label}</span>
+                </div>
+                {open && (
+                  <div className="pxd-task-content">
+                    <Render id={st.content} />
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+        {finish}
+      </div>
+    );
+  }
   const index = typeof bound === "number" && node.current?.path ? bound : local;
   const total = node.steps.length;
   const go = (i: number) => {

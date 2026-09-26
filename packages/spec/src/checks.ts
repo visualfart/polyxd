@@ -38,14 +38,16 @@ export interface CheckResult {
 /** Props holding a single component id (other props with the same name hold text or actions). */
 const SINGLE_REFS: Record<string, string[]> = {
   Card: ["media"],
-  Collection: ["empty"],
-  Table: ["empty", "toolbar", "bulkActions", "rowActions", "search"],
+  Collection: ["empty", "bulkActions"],
+  Table: ["empty", "toolbar", "bulkActions", "rowActions", "search", "detail"],
   Status: ["action"],
   Confirm: ["summary"],
   FilterPanel: ["results"],
+  Panel: ["actions"],
+  ActionMenu: ["primary"],
 };
 
-const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput"]);
+const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput", "Rating", "FileInput", "ColorInput", "CodeInput"]);
 
 /** Components in reading order (depth-first from root, following every reference). */
 export function readingOrder(doc: Doc): Component[] {

@@ -15,7 +15,7 @@ This is `packages/spec/examples/money-send-confirm.json`, the confirmation step 
 
 ```json
 {
-  "specVersion": "0.1.0",
+  "specVersion": "0.2.0",
   "surface": {
     "id": "send-confirm",
     "title": "Confirm payment",
@@ -64,7 +64,7 @@ This is `packages/spec/examples/money-send-confirm.json`, the confirmation step 
 
 | Field | Required | What it is |
 |---|---|---|
-| `specVersion` | Yes | The spec version the document follows. Currently `0.1.x`. |
+| `specVersion` | Yes | The spec version the document follows. Currently `0.2.x`; `0.1.x` documents still validate. |
 | `surface` | Yes | What this interface is for (see below). |
 | `root` | Yes | Id of the top-level component. |
 | `components` | Yes | A flat list of components. |

@@ -54,8 +54,8 @@ Everything is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) sco
 
 | Package | What it does |
 |---|---|
-| `@polyxd/spec` | JSON Schema and TypeScript types for UI documents; 26 semantic components; 6 core patterns and a shared check vocabulary; the semantic token contract; schemas for capabilities, journeys, analytics events and Design Direction; a validator (`polyxd-validate`); example documents across six domains |
-| `@polyxd/react` | React renderer for all 26 components, built on Radix primitives and styled only by token CSS variables, with theme CSS for every pack |
+| `@polyxd/spec` | JSON Schema and TypeScript types for UI documents; 37 semantic components; 6 core patterns and a shared check vocabulary; the semantic token contract; schemas for capabilities, journeys, analytics events and Design Direction; a validator (`polyxd-validate`); example documents across six domains |
+| `@polyxd/react` | React renderer for all 37 components, built on Radix primitives and styled only by token CSS variables, with theme CSS for every pack |
 | `@polyxd/ds-*` | Thirteen design-system packs as DTCG tokens: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend and Chakra UI |
 | `polyxd` | The `polyxd pack` command, which makes a pack from your own tokens. See [Your design system](/docs/your-design-system) |
 | `@polyxd/a2ui` | Exports UI documents to A2UI v1.0 (release candidate) messages, with a Polyxd A2UI catalog |

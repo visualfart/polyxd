@@ -1,6 +1,6 @@
 {
   "catalogId": "https://polyxd.com/catalog/0.1",
-  "specVersion": "0.1.0",
+  "specVersion": "0.2.0",
   "description": "Polyxd semantic component catalog: when to use each component, accessibility and agent requirements, rendering rules and platform mappings. Generated file.",
   "components": {
     "Action": {
@@ -24,7 +24,9 @@
       "agent": "Activate by label.",
       "rendering": [
         "At most one primary action visible at a time",
-        "danger tone uses color.action.danger.*"
+        "danger tone uses color.action.danger.*",
+        "'description' sits under the label in type.body.small, muted; the button's accessible description",
+        "ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely"
       ],
       "mappings": {
         "web": "shadcn Button (default / secondary / ghost / destructive)",
@@ -65,6 +67,44 @@
       "a2ui": "Row of Button",
       "sources": [
         "Platform conventions for action placement (Jakob's law)"
+      ]
+    },
+    "ActionMenu": {
+      "category": "action",
+      "summary": "Secondary actions behind one control: an overflow menu, a dropdown, a split button or a context menu.",
+      "whenToUse": [
+        "Three or more secondary actions on a row, a card or a page header",
+        "One usual action with rarer alternatives (split: 'Save' with 'Save as draft')",
+        "Actions that belong to the thing under the pointer (context)"
+      ],
+      "whenNotToUse": [
+        "One or two actions: use Action or ActionBar, where they are visible",
+        "The main thing to do on the surface: never hidden in a menu",
+        "Navigation between views: use Views or Navigation"
+      ],
+      "accessibility": {
+        "role": "a menu button (aria-haspopup, aria-expanded) opening a menu of menuitems; a split's main part is a plain button",
+        "requirements": [
+          "Every action is reachable by keyboard: arrows move, Enter activates, Escape closes and returns focus",
+          "An overflow control is named for what it holds ('More actions for Acme Corp'), never just '…'",
+          "A context menu's actions are also reachable another way (an overflow control), since right-click and long-press aren't discoverable"
+        ]
+      },
+      "agent": "Opens the menu by its name and activates an action by its label.",
+      "rendering": [
+        "The menu uses color.surface.overlay with elevation.overlay and radius.default; items are size.control.default tall with space.inset.default",
+        "A danger-toned Action shows in color.status.danger.emphasis after a divider",
+        "The overflow control is an icon-only button at size.target.min with the label as its accessible name; a dropdown shows the label with a chevron",
+        "A split's two parts share one outline; the menu part is at least size.target.min wide"
+      ],
+      "mappings": {
+        "web": "shadcn DropdownMenu, ContextMenu; split as a ButtonGroup",
+        "ios": "Menu, contextMenu",
+        "android": "DropdownMenu, combinedClickable for context"
+      },
+      "a2ui": "Custom (no Basic equivalent)",
+      "sources": [
+        "WAI-ARIA APG menu button pattern"
       ]
     },
     "Card": {
@@ -123,7 +163,8 @@
       "agent": "Reads the summary, and the data through the table alternative.",
       "rendering": [
         "trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram",
-        "Series colors use color.data.categorical.N in order"
+        "relationship → scatter (x is a measure too), flow → stacked flows from each x value to each series, hierarchy → treemap of the first series, matrix → heatmap of x values by series, range → bars from the first series to the second",
+        "Series colors use color.data.categorical.N in order; a matrix shades one color by value and prints the value in each cell"
       ],
       "mappings": {
         "web": "shadcn Chart (Recharts)",
@@ -173,6 +214,76 @@
         "Material 3 selection controls"
       ]
     },
+    "Code": {
+      "category": "content",
+      "summary": "Code, a command or preformatted text, shown as written and copyable.",
+      "whenToUse": [
+        "A command to run, a snippet to paste, an identifier to copy",
+        "Structured text whose spacing matters"
+      ],
+      "whenNotToUse": [
+        "Prose: use Text",
+        "Something the person types: use TextInput"
+      ],
+      "accessibility": {
+        "role": "region named by the label, holding a code element; the copy control is a button named 'Copy <label>'",
+        "requirements": [
+          "Text is real text: selectable and read by screen readers line by line",
+          "Copying is announced ('Copied')",
+          "A secret is masked with the same length, with a 'Show' control"
+        ]
+      },
+      "agent": "Reads the text verbatim; can activate Copy.",
+      "rendering": [
+        "type.mono at type.body.small on color.surface.subtle, with radius.control",
+        "Overflow scrolls sideways unless wrap is set; never clipped",
+        "The copy control sits in the top-right corner and says 'Copied' for two seconds after use"
+      ],
+      "mappings": {
+        "web": "pre > code with a Copy button",
+        "ios": "Text with monospaced design in a rounded rectangle",
+        "android": "Text with FontFamily.Monospace in a Surface"
+      },
+      "a2ui": "Text",
+      "sources": [
+        "WCAG 1.3.1 info and relationships"
+      ]
+    },
+    "CodeInput": {
+      "category": "input",
+      "summary": "A one-time code or PIN, typed into one box per character.",
+      "whenToUse": [
+        "A verification code from email or SMS",
+        "A PIN or a short recovery code"
+      ],
+      "whenNotToUse": [
+        "A password: the host's own sign-in flow, never a generated screen",
+        "Any text longer than twelve characters: use TextInput"
+      ],
+      "accessibility": {
+        "role": "a group named by the label; one text input per character, each named 'Digit N of M'",
+        "requirements": [
+          "Typing moves focus forward; Backspace moves it back; pasting the whole code fills every box",
+          "The numeric kind opens the numeric keyboard and accepts autofill of one-time codes",
+          "Errors are said against the group, not one box"
+        ]
+      },
+      "agent": "Reads the label and length; enters the code.",
+      "rendering": [
+        "Boxes are size.control.large squares with radius.control, type.heading.small, centred, in type.mono",
+        "The active box shows color.border.focus; a filled box shows color.border.strong",
+        "Boxes are grouped in threes or fours by a wider gap past six characters"
+      ],
+      "mappings": {
+        "web": "shadcn InputOTP",
+        "ios": "TextField with .oneTimeCode content type",
+        "android": "BasicTextField with KeyboardType.NumberPassword"
+      },
+      "a2ui": "Custom (no Basic equivalent)",
+      "sources": [
+        "WCAG 1.3.5 identify input purpose"
+      ]
+    },
     "Collection": {
       "category": "content",
       "summary": "A list of items from host data, each rendered with the same template.",
@@ -197,7 +308,12 @@
         "Items keep their order from host data",
         "grid: 2 columns on phones, more as width allows; list: one item per row",
         "auto: grid when the item template is a Card with media, otherwise list",
-        "'timeline' marks each item on a line, newest first, for activity feeds"
+        "'timeline' marks each item on a line, newest first, for activity feeds",
+        "'carousel' scrolls horizontally with snap points, Previous and Next buttons and an 'N of M' readout; every item stays reachable by keyboard",
+        "'calendar' is a month grid with the items on their days; Previous and Next move a month at a time",
+        "Paging shows items per page, the range and the total, as a Table does",
+        "Selection shows the bulk-action bar, naming how many items are selected, while any are",
+        "reorderable: a drag handle per item, plus Move up / Move down buttons; the new order is written to 'order'"
       ],
       "mappings": {
         "web": "List markup with Card or row template; ScrollArea for long lists",
@@ -208,6 +324,39 @@
       "sources": [
         "Recognition over recall",
         "Hick's law: filter before long lists"
+      ]
+    },
+    "ColorInput": {
+      "category": "input",
+      "summary": "Pick a colour: from swatches the host offers, or any colour.",
+      "whenToUse": [
+        "A colour for a label, a tag, a calendar, a theme",
+        "Choosing from a set of brand colours"
+      ],
+      "whenNotToUse": [
+        "A choice that happens to be shown as colours (a plan, a size): use Choice"
+      ],
+      "accessibility": {
+        "role": "swatches are a radiogroup of radios named by their labels; the free picker is a native color input plus a text field for the value",
+        "requirements": [
+          "Every swatch has a name; colour alone is never the only identification",
+          "The value is editable as text, so it can be typed and read",
+          "The chosen colour is shown beside its text value"
+        ]
+      },
+      "agent": "Reads the swatch names; picks one by name or types a value.",
+      "rendering": [
+        "Swatches are size.control.default squares with radius.control and a 1px color.border.default ring; the chosen one shows color.border.focus",
+        "The free picker is the platform's, with the text value beside it in type.mono"
+      ],
+      "mappings": {
+        "web": "input type=color + Radix RadioGroup for swatches",
+        "ios": "ColorPicker",
+        "android": "Custom (no Material picker)"
+      },
+      "a2ui": "Custom (no Basic equivalent)",
+      "sources": [
+        "WCAG 1.4.1 use of color"
       ]
     },
     "Comparison": {
@@ -301,7 +450,9 @@
       },
       "agent": "Fill by label with an ISO date.",
       "rendering": [
-        "Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar"
+        "Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar",
+        "'month' and 'year' take only that part; the year field is typed, four digits",
+        "multiple: each chosen date becomes a chip with a remove control; the field adds another"
       ],
       "mappings": {
         "web": "shadcn Calendar + Popover (Date Picker)",
@@ -336,7 +487,8 @@
       "rendering": [
         "Keeps the item order stable across generations (keys are remembered)",
         "receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right",
-        "'grid' lays fields out in columns by width, label above value"
+        "'grid' lays fields out in columns by width, label above value",
+        "rowAction: each row ends with a 'Change' link whose accessible name includes the row's label; the total row has none"
       ],
       "mappings": {
         "web": "<dl> with semantic tokens",
@@ -378,6 +530,41 @@
       "sources": [
         "Progressive disclosure",
         "GOV.UK details component"
+      ]
+    },
+    "FileInput": {
+      "category": "input",
+      "summary": "Choose or drop files to attach or upload.",
+      "whenToUse": [
+        "Attaching a document, a receipt, a photo",
+        "Importing a file the product reads"
+      ],
+      "whenNotToUse": [
+        "Taking a photo with the camera: the host's own flow",
+        "Pasting text: use TextInput"
+      ],
+      "accessibility": {
+        "role": "a native file input, labelled; the drop zone is a large target for the same input",
+        "requirements": [
+          "Keyboard opens the chooser; drag-and-drop is an addition, never the only way",
+          "Chosen files are listed as text with a 'Remove <name>' button each",
+          "Type and size limits are said before choosing and in any refusal"
+        ]
+      },
+      "agent": "Reads the label and limits; attaches files through the host.",
+      "rendering": [
+        "A dashed drop zone on color.surface.subtle with radius.control, the chooser control inside it",
+        "Each chosen file shows name, size and a remove control; a progress bar while the host uploads",
+        "Refusals use color.status.danger text under the zone"
+      ],
+      "mappings": {
+        "web": "shadcn Input type=file with a drop zone",
+        "ios": "fileImporter / PhotosPicker",
+        "android": "ActivityResultContracts.GetContent"
+      },
+      "a2ui": "Custom (no Basic equivalent)",
+      "sources": [
+        "WCAG 2.5.7 dragging movements"
       ]
     },
     "FilterPanel": {
@@ -483,34 +670,78 @@
         "Gestalt: proximity"
       ]
     },
+    "Identity": {
+      "category": "content",
+      "summary": "A person, team or organisation: picture, name and details, or several of them together.",
+      "whenToUse": [
+        "Who something belongs to, was sent by or is assigned to",
+        "The recipient on a payment, the owner on a record, the members on a team",
+        "A list of people where the face helps recognition"
+      ],
+      "whenNotToUse": [
+        "Choosing a person from a list: use Choice with avatarPath",
+        "A person's full record: use Card or DetailList"
+      ],
+      "accessibility": {
+        "role": "group named by the name; the picture is decorative and the name is text",
+        "requirements": [
+          "The name is real text, never only an image or initials",
+          "A group's accessible name lists the first names and how many more",
+          "With an action, the whole element is one button or link named by the name"
+        ]
+      },
+      "agent": "Reads the name and detail; a group exposes every member's name.",
+      "rendering": [
+        "Initials come from the name's first letters, on a neutral surface with color.text.default; a pack may derive a stable colour from the name",
+        "Sizes: small 24px, default 40px, large 64px; the name uses type.body.default or type.heading.small for large",
+        "A group overlaps pictures by a quarter, with a '+N' tag for the rest",
+        "Images are never stretched; missing images fall back to initials, never to a broken image"
+      ],
+      "mappings": {
+        "web": "shadcn Avatar",
+        "ios": "AsyncImage in a Circle + Text",
+        "android": "AsyncImage with CircleShape + Text"
+      },
+      "a2ui": "Row of Image + Text",
+      "sources": [
+        "Recognition over recall"
+      ]
+    },
     "Media": {
       "category": "content",
-      "summary": "An image supplied by the host.",
+      "summary": "An image, video, audio clip, gallery or QR code supplied by the host.",
       "whenToUse": [
-        "Photos or illustrations that help identify something (a product, a place, a person)"
+        "Photos or illustrations that help identify something (a product, a place, a person)",
+        "A recording people play, or a code they scan"
       ],
       "whenNotToUse": [
         "Decoration with no information",
         "Icons for actions (renderer supplies those)"
       ],
       "accessibility": {
-        "role": "img",
+        "role": "img (video / audio players, list for a gallery)",
         "requirements": [
-          "Has alt text unless decorative (then hidden from assistive technology)"
+          "Has alt text unless decorative (then hidden from assistive technology)",
+          "Video and audio have native controls and offer a transcript",
+          "A QR code's alt says what scanning it does"
         ]
       },
-      "agent": "Reads the alt text.",
+      "agent": "Reads the alt text; a gallery's images by their own alt text; a QR code's value.",
       "rendering": [
-        "Images never convey information that is not also in text"
+        "Images never convey information that is not also in text",
+        "'video' shows 'poster' until played; 'audio' is a compact player; both put 'transcript' under a disclosure",
+        "'gallery' is a grid of the items' images, each with its own alt text",
+        "'qr' is drawn on a canvas at a size that scans from a phone, with the alt as its accessible name"
       ],
       "mappings": {
-        "web": "<img> / shadcn AspectRatio",
-        "ios": "AsyncImage",
-        "android": "AsyncImage (Coil) / Image"
+        "web": "<img> / <video> / <audio> / shadcn AspectRatio; QR on <canvas>",
+        "ios": "AsyncImage / VideoPlayer / CoreImage CIQRCodeGenerator",
+        "android": "AsyncImage (Coil) / Media3 PlayerView / ZXing"
       },
-      "a2ui": "Image",
+      "a2ui": "Image (video, audio and gallery export as Image + Text; a QR code as Text of its value)",
       "sources": [
-        "WCAG 1.1.1"
+        "WCAG 1.1.1",
+        "WCAG 1.2.1 audio-only and video-only"
       ]
     },
     "Metric": {
@@ -569,7 +800,11 @@
       "rendering": [
         "Wide: a side navigation with grouped items",
         "Compact: a menu button that opens the navigation",
-        "Badges sit at the end of their item"
+        "Badges sit at the end of their item",
+        "'breadcrumb' is an ordered trail ending with the current item (aria-current=\"page\"), never behind a menu button",
+        "'nested' shows each group as an expandable section; the group holding the current item starts open",
+        "'toc' lists the page's sections as anchors, the section in view highlighted",
+        "'local' lays the items out as tabs, the current one marked"
       ],
       "mappings": {
         "web": "Sidebar navigation (shadcn Sidebar)",
@@ -581,6 +816,84 @@
         "Carbon UI shell",
         "Material 3 navigation drawer",
         "NN/g: navigation should show where you are"
+      ]
+    },
+    "Panel": {
+      "category": "structure",
+      "summary": "Content over the current view: a dialog, a drawer, a bottom sheet or a popover, opened from an action and dismissed to return.",
+      "whenToUse": [
+        "A short task on top of the page: edit one thing, pick one thing, see one record",
+        "Detail the person asked for that shouldn't replace where they are",
+        "A small set of options next to the control that opened them (popover)"
+      ],
+      "whenNotToUse": [
+        "Confirming a consequential action: use Confirm, which is a dialog with the right words and order",
+        "A whole flow of several steps: use Steps on its own surface",
+        "Passing feedback: use Status"
+      ],
+      "accessibility": {
+        "role": "dialog (aria-modal for dialog, drawer and sheet) named by the title; popover is a non-modal dialog",
+        "requirements": [
+          "Focus moves into the panel on open and back to the opener on close",
+          "Tab stays inside a modal panel; Escape dismisses a dismissible one",
+          "The page behind a modal panel is inert",
+          "A sheet can be dismissed by dragging down as well as by the close control"
+        ]
+      },
+      "agent": "Opens, reads the content and closes it by name; the footer actions are exposed like any ActionBar.",
+      "rendering": [
+        "A backdrop of color.surface.inverse at opacity.overlay for modal kinds",
+        "dialog: max 560px on desktop, full width with space.inset.default on phones; drawer: 420px from the end edge; sheet: from the bottom with radius.large on the top corners; popover: color.surface.overlay with elevation.overlay and an arrow",
+        "The title is type.heading.medium with the close control at the end of the header",
+        "The action bar sits in a footer; on phones it is fixed to the bottom, full width",
+        "Motion uses motion.duration.default and motion.easing.standard; reduced motion fades instead"
+      ],
+      "mappings": {
+        "web": "shadcn Dialog, Sheet, Drawer, Popover",
+        "ios": ".sheet, .popover, NavigationStack push",
+        "android": "ModalBottomSheet, AlertDialog, DropdownMenu"
+      },
+      "a2ui": "Modal",
+      "sources": [
+        "WAI-ARIA APG dialog (modal) pattern"
+      ]
+    },
+    "Progress": {
+      "category": "content",
+      "summary": "How far along something is, or how much of a bounded amount is used: a bar, a ring or a meter.",
+      "whenToUse": [
+        "A task that takes time, with a known share done",
+        "How much of a quota, budget or capacity is used",
+        "Progress towards a goal (pages read, steps walked)"
+      ],
+      "whenNotToUse": [
+        "A number the person came to see: use Metric",
+        "Steps of a task the person moves through: use Steps",
+        "A short wait with nothing to measure: Status 'loading'"
+      ],
+      "accessibility": {
+        "role": "progressbar (bar, ring) or meter, named by the label, with aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext",
+        "requirements": [
+          "The readout is real text next to the graphic, never only the fill",
+          "A meter's tone is also said in text ('nearly full'), not only shown by colour",
+          "Indeterminate progress has no value attributes and is announced as busy"
+        ]
+      },
+      "agent": "Reads label, value and max as text.",
+      "rendering": [
+        "The track uses color.surface.subtle; the fill uses color.action.primary.background, or color.status.<tone>.emphasis for a toned meter",
+        "Height is size.control.small / 3 for a bar; a ring is size.control.default across",
+        "Readout in tabular figures, type.body.small, after the label",
+        "The bar's length means the fraction: never used for an amount with no bound"
+      ],
+      "mappings": {
+        "web": "shadcn Progress; meter as a native <meter>",
+        "ios": "ProgressView, Gauge",
+        "android": "LinearProgressIndicator, CircularProgressIndicator"
+      },
+      "a2ui": "Text",
+      "sources": [
+        "WAI-ARIA progressbar and meter roles"
       ]
     },
     "RangeInput": {
@@ -613,6 +926,41 @@
       "a2ui": "Slider",
       "sources": [
         "Fitts's law: large thumb target"
+      ]
+    },
+    "Rating": {
+      "category": "input",
+      "summary": "A score out of N: given by the person, or shown as others gave it.",
+      "whenToUse": [
+        "Asking how something went, out of five",
+        "Showing a product's or place's rating with the count behind it"
+      ],
+      "whenNotToUse": [
+        "A number within bounds that isn't a score: use RangeInput",
+        "Yes or no: use Toggle or Choice"
+      ],
+      "accessibility": {
+        "role": "radiogroup of radios named '1 star' to 'N stars' when it can be given; an image named '4.6 out of 5' when read-only",
+        "requirements": [
+          "Every star is a real control at size.target.min when the person can rate",
+          "The current value is announced; half values are said as such",
+          "Read-only ratings carry the score as text, not only as filled shapes"
+        ]
+      },
+      "agent": "Reads the score and the count; sets a score by choosing '<n> stars'.",
+      "rendering": [
+        "Filled shapes use color.status.warning.emphasis; empty ones use color.border.default",
+        "The readout ('4.6') is shown after the shapes in tabular figures, with the count in color.text.muted",
+        "A rating that can be given shows the label above, like every input"
+      ],
+      "mappings": {
+        "web": "Radix RadioGroup (no shadcn rating)",
+        "ios": "HStack of Image(systemName: star) buttons",
+        "android": "Row of IconButton"
+      },
+      "a2ui": "Row of Icon",
+      "sources": [
+        "WAI-ARIA rating pattern (radio group)"
       ]
     },
     "Section": {
@@ -710,7 +1058,9 @@
       "agent": "Reads 'step N of M'; next/back are exposed as buttons.",
       "rendering": [
         "Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'",
-        "Each step validates before moving on"
+        "Each step validates before moving on",
+        "'tasklist' is a list of tasks with a status tag each (GOV.UK task list); a task opens its content in place, and 'finish' follows the list, saying how many are done",
+        "'guide' shows every step's title and content in a numbered list, with 'finish' after the last"
       ],
       "mappings": {
         "web": "Progress + step content (no shadcn stepper primitive)",
@@ -753,7 +1103,8 @@
         "Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'",
         "On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status",
         "Selection replaces the toolbar with the bulk-action bar while rows are selected",
-        "Paging shows rows per page, the range and the total"
+        "Paging shows rows per page, the range and the total",
+        "expandable: each row starts with a toggle (aria-expanded) named after the row; the open row's 'detail' spans the table beneath it"
       ],
       "mappings": {
         "web": "shadcn Table (optionally Data Table with TanStack)",
@@ -764,6 +1115,45 @@
       "sources": [
         "GOV.UK tables",
         "WAI data tables"
+      ]
+    },
+    "Tag": {
+      "category": "content",
+      "summary": "A short label, status or count attached to something else.",
+      "whenToUse": [
+        "The state of a record, next to its name: 'Past due', 'Draft', 'Live'",
+        "A category or label a thing carries",
+        "How many of something, on a navigation item or a section heading",
+        "Chosen items a person can take off again"
+      ],
+      "whenNotToUse": [
+        "A whole sentence of feedback: use Status",
+        "Something the person switches on or off: use Toggle",
+        "A metric the person came for: use Metric"
+      ],
+      "accessibility": {
+        "role": "text; for 'count', the label is the accessible name of the number; for a removable tag, a button named 'Remove <label>'",
+        "requirements": [
+          "Tone is conveyed by the label, never only by colour",
+          "A count reads as '<label>: <count>' to a screen reader",
+          "The remove control is at least size.target.min and named for what it removes"
+        ]
+      },
+      "agent": "Reads label, tone and count; can activate the remove control by its name.",
+      "rendering": [
+        "status uses color.status.<tone>.background and .foreground; label and count use neutral tokens",
+        "count is set in tabular figures",
+        "A tag never wraps: long labels are truncated with the full text on hover and in the accessible name",
+        "Fits inline with text and in a Card header; radius.small unless the pack sets a pill"
+      ],
+      "mappings": {
+        "web": "shadcn Badge",
+        "ios": "Text with capsule background",
+        "android": "AssistChip / Badge"
+      },
+      "a2ui": "Text",
+      "sources": [
+        "WCAG 1.4.1 use of color"
       ]
     },
     "Text": {
@@ -787,7 +1177,11 @@
       "agent": "Read as text.",
       "rendering": [
         "'supporting' uses color.text.muted",
-        "No inline styling; emphasis comes from structure"
+        "No inline styling; emphasis comes from structure",
+        "'rich' renders only the four markup forms, as real elements; anything else, including HTML, is shown as typed, and only http, https, mailto and tel links are live",
+        "'list' renders a ul or ol; entries are shown as text, or by 'itemPath' when they are objects",
+        "'quote' is a blockquote, the cite on its own line after it",
+        "format 'color' shows a swatch of the value beside it; 'bytes' shows a size like 1.2 MB"
       ],
       "mappings": {
         "web": "<p> with type tokens",
@@ -823,7 +1217,13 @@
         "Width suggests expected length",
         "Errors appear after the user leaves the field or submits, not while typing",
         "kind 'search' renders as a pill search field with an icon; the label stays as its accessible name",
-        "size 'hero' renders a large centred amount with the currency symbol dimmed"
+        "size 'hero' renders a large centred amount with the currency symbol dimmed",
+        "'suggestions' and 'mentions' are comboboxes: the list opens as you type, arrow keys move through it, Enter takes an option, Escape closes it",
+        "'richtext' is an editable area with Bold, Italic and List controls; the value is text with **bold**, *italic* and '- ' items",
+        "'tags' shows each value as a chip with a remove control; Enter or a comma adds what was typed, Backspace in an empty field removes the last chip; the value is a list of strings",
+        "'code' uses type.numeric (monospace) and turns off autocorrect, autocapitalize and spellcheck",
+        "'masked' fills the mask's literal characters as you type and stores the text as shown",
+        "'inline' renders the value as text with an Edit control; Enter saves, Escape restores the previous value"
       ],
       "mappings": {
         "web": "shadcn Input / Textarea with Label and FormMessage",
@@ -864,6 +1264,43 @@
       "a2ui": "CheckBox",
       "sources": [
         "Nielsen: match between system and the real world"
+      ]
+    },
+    "Tree": {
+      "category": "content",
+      "summary": "A hierarchy people expand, browse and pick from: folders, an org chart, nested categories.",
+      "whenToUse": [
+        "Things that contain things: folders and files, an organisation, nested categories",
+        "Picking a place in a hierarchy (move to folder, choose a category)"
+      ],
+      "whenNotToUse": [
+        "A flat list, however long: use Collection or Table",
+        "Nested navigation of the product itself: use Navigation",
+        "Progressive disclosure of one section: use Disclosure"
+      ],
+      "accessibility": {
+        "role": "tree with treeitem nodes; aria-expanded on nodes with children, aria-selected when selectable",
+        "requirements": [
+          "Arrow keys move and expand; Home and End jump; typing jumps to a label",
+          "Level and position are exposed (aria-level, aria-setsize, aria-posinset)",
+          "Expanded state is announced; selection is announced"
+        ]
+      },
+      "agent": "Reads every node by label and level; expands a node by name and selects or activates one by name.",
+      "rendering": [
+        "Indent per level uses space.inline.default; the expander is a chevron at size.target.min",
+        "Leaves have no expander and align with siblings' labels",
+        "Selection uses color.selection.background; the focused node shows color.border.focus",
+        "Beyond 200 nodes the renderer virtualises rows"
+      ],
+      "mappings": {
+        "web": "Radix Accordion primitives (no shadcn tree)",
+        "ios": "OutlineGroup / List with children",
+        "android": "LazyColumn with expandable rows"
+      },
+      "a2ui": "Nested Column of Text",
+      "sources": [
+        "WAI-ARIA APG tree view pattern"
       ]
     },
     "Views": {

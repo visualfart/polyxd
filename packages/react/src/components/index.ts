@@ -8,6 +8,10 @@ import { Choice, DateInput, Form, RangeInput, TextInput, Toggle } from "./inputs
 import { Action, ActionBar, Comparison, Confirm, Steps } from "./flow.tsx";
 import { FilterPanel } from "./filter.tsx";
 import { Navigation } from "./navigation.tsx";
+import { Tag, Identity, Progress, Rating, Code } from "./marks.tsx";
+import { ActionMenu, Panel } from "./overlays.tsx";
+import { FileInput, ColorInput, CodeInput } from "./pickers.tsx";
+import { Tree } from "./tree.tsx";
 
 export type ComponentRenderer = ComponentType<{ node: Node }>;
 
@@ -20,4 +24,5 @@ export const registry: Record<string, ComponentRenderer> = {
   Text, Metric, DetailList, Collection, Table, Chart, Media, Status,
   TextInput, Choice, Toggle, DateInput, RangeInput, Form,
   Action, ActionBar, Steps, Confirm, Comparison, FilterPanel,
+  Tag, Identity, Progress, Rating, Code, Tree, ActionMenu, Panel, FileInput, ColorInput, CodeInput,
 };

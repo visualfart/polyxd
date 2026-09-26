@@ -151,6 +151,80 @@
         "additionalProperties": false
       }
     },
+    "apiKey.createStart": {
+      "description": "Open the form for creating an API key",
+      "risk": "low"
+    },
+    "apiKey.renameStart": {
+      "description": "Open the rename field for an API key",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "apiKey.revokeStart": {
+      "description": "Open the revocation check for an API key",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "apiKey.rollStart": {
+      "description": "Open the check for replacing an API key with a new one",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "apiKeys.allowlistUpload": {
+      "description": "Replace the IP allow-list with an uploaded file",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "files"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "Requests from addresses not on the new list are refused"
+      ]
+    },
     "book.create": {
       "description": "Start adding a book to the reading list",
       "risk": "none"
@@ -188,6 +262,29 @@
         },
         "required": [
           "enabled"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "files.move": {
+      "description": "Move files to a folder",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "folder": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "files",
+          "folder"
         ],
         "additionalProperties": false
       }
@@ -555,6 +652,46 @@
       "description": "Retry loading statements",
       "risk": "none"
     },
+    "storage.cleanupStart": {
+      "description": "Open suggestions for freeing up storage",
+      "risk": "none"
+    },
+    "storage.label.set": {
+      "description": "Set the label colour of a storage category",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "colour": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "category",
+          "colour"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "storage.labelStart": {
+      "description": "Open the label colour picker for a storage category",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "additionalProperties": false
+      }
+    },
     "subscription.cancel": {
       "description": "Cancel an account's subscription",
       "risk": "destructive",
@@ -689,6 +826,54 @@
         "additionalProperties": false
       }
     },
+    "team.inviteStart": {
+      "description": "Open the invite form for a team",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "team": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "team"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "team.removeStart": {
+      "description": "Open the removal check for a team member",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "team.roleStart": {
+      "description": "Open the role picker for a team member",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
     "team.save": {
       "description": "Save workspace access settings",
       "risk": "low"
@@ -751,6 +936,22 @@
         "required": [
           "recipient",
           "amount"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "verify.code": {
+      "description": "Check a 2-step verification code before revealing a secret",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
         ],
         "additionalProperties": false
       }

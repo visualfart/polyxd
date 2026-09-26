@@ -31,10 +31,51 @@
         "auto",
         "list",
         "grid",
-        "timeline"
+        "timeline",
+        "carousel",
+        "calendar"
       ],
       "default": "auto",
-      "description": "'grid' for visual items (products, books); 'list' for rows; 'timeline' for dated activity; 'auto' lets the renderer choose from the item template"
+      "description": "'grid' for visual items (products, books); 'list' for rows; 'timeline' for dated activity; 'carousel' for a row people page through; 'calendar' places items on a month grid by 'datePath'; 'auto' lets the renderer choose from the item template"
+    },
+    "datePath": {
+      "$ref": "#/$defs/Path",
+      "description": "For 'calendar': relative path in each item to the ISO date that places it"
+    },
+    "page": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "$ref": "#/$defs/Binding",
+          "description": "1-based page number in host data"
+        },
+        "size": {
+          "$ref": "#/$defs/Binding"
+        },
+        "total": {
+          "$ref": "#/$defs/Binding",
+          "description": "Total number of items, all pages"
+        },
+        "action": {
+          "$ref": "#/$defs/Action",
+          "description": "Sent when someone changes page or page size"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Paging state, owned by the host"
+    },
+    "bulkActions": {
+      "$ref": "#/$defs/Id",
+      "description": "ActionBar shown while items are selected (selection 'multiple')"
+    },
+    "reorderable": {
+      "type": "boolean",
+      "default": false,
+      "description": "People can drag items, or move them with the keyboard, into a new order"
+    },
+    "order": {
+      "$ref": "#/$defs/Binding",
+      "description": "Item values (ids) in the order people put them, written when reorderable"
     }
   },
   "required": [
@@ -62,7 +103,12 @@
     "Items keep their order from host data",
     "grid: 2 columns on phones, more as width allows; list: one item per row",
     "auto: grid when the item template is a Card with media, otherwise list",
-    "'timeline' marks each item on a line, newest first, for activity feeds"
+    "'timeline' marks each item on a line, newest first, for activity feeds",
+    "'carousel' scrolls horizontally with snap points, Previous and Next buttons and an 'N of M' readout; every item stays reachable by keyboard",
+    "'calendar' is a month grid with the items on their days; Previous and Next move a month at a time",
+    "Paging shows items per page, the range and the total, as a Table does",
+    "Selection shows the bulk-action bar, naming how many items are selected, while any are",
+    "reorderable: a drag handle per item, plus Move up / Move down buttons; the new order is written to 'order'"
   ],
   "mappings": {
     "web": "List markup with Card or row template; ScrollArea for long lists",

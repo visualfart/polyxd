@@ -17,7 +17,7 @@ const assertValid = (messages: A2UIMessage[]) => {
   assert.deepEqual(checkComponentTree(componentsOf(messages)), []);
 };
 
-test("there are 24 example UI documents", () => assert.equal(files.length, 24));
+test("there are 28 example UI documents", () => assert.equal(files.length, 28));
 
 for (const file of files) {
   test(`${file} exports to A2UI v1.0 messages that validate against the official schemas`, () => {
@@ -85,7 +85,7 @@ test("the Polyxd root is renamed to 'root' and every reference follows (money-se
   assert.ok(!lossy.some((p) => p.includes("format")));
   assert.deepEqual(lossy.filter((p) => p.startsWith("/surface")).sort(), ["/surface/intent", "/surface/pattern", "/surface/title"]);
   const ext = (messages[0] as any).createSurface.metadata.extensions[EXTENSION_KEY];
-  assert.deepEqual(ext, { specVersion: "0.1.0", title: "Send money", intent: "money.send", pattern: "multi-step-form", root: "form" });
+  assert.deepEqual(ext, { specVersion: "0.2.0", title: "Send money", intent: "money.send", pattern: "multi-step-form", root: "form" });
 });
 
 test("Views and Steps panel references are remapped (travel-trip-overview, shop-checkout)", () => {
@@ -121,7 +121,7 @@ test("accessibility maps onto the A2UI accessibility block", () => {
 
 test("a non-root component already called 'root' is moved out of the way", () => {
   const doc: PolyxdDocument = {
-    specVersion: "0.1.0",
+    specVersion: "0.2.0",
     surface: { id: "s", title: "S" },
     root: "top",
     components: [

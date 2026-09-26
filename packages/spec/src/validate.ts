@@ -27,20 +27,25 @@ const validateSchema = ajv.compile(uiSchema);
 /** Props whose paths resolve against the current item of a repeated structure. */
 const ITEM_SCOPED: Record<string, string[]> = {
   Table: ["columns", "rowAction", "rowValuePath"],
+  Tree: ["labelPath", "childrenPath", "valuePath", "detailPath", "action"],
   Chart: ["x", "series"],
   Comparison: ["itemTitle", "attributes", "choose"],
+  Collection: ["datePath"],
+  Text: ["itemPath"],
+  Media: ["imagePath", "altPath"],
+  DetailList: ["rowAction"],
 };
 
 /** Props that open a separately visible context (only one panel/step/dialog shows at a time). */
 const PANEL_PROPS: Record<string, string[]> = { Views: ["views"], Steps: ["steps"] };
 
-const RENDERER_ACTIONS = new Set(["ui.dismiss", "ui.back", "ui.next"]);
+const RENDERER_ACTIONS = new Set(["ui.dismiss", "ui.back", "ui.next", "ui.copy"]);
 
 /** The prop each repeating component iterates over. Its item-scoped props read from each entry. */
-const LIST_BINDINGS: Record<string, string> = { Collection: "items", Table: "rows", Comparison: "items", Chart: "data", Choice: "options" };
+const LIST_BINDINGS: Record<string, string> = { Collection: "items", Table: "rows", Comparison: "items", Chart: "data", Choice: "options", Tree: "items", Text: "items", Media: "items" };
 
 /** Components whose `value` binding is state they write, so it needn't exist in data beforehand. */
-const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput"]);
+const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput", "Rating", "FileInput", "ColorInput", "CodeInput"]);
 
 /**
  * A list relative paths resolve against. `path` is absolute, or relative to each entry of `parent`
@@ -70,6 +75,15 @@ function walk(schema: Schema, value: Json, at: string, ctx: { prop: string; item
   if (name === "Id" && typeof value === "string") return void found.ids.push({ id: value, at, prop: ctx.prop, panel: ctx.panel });
   if (name === "Path" && typeof value === "string") return void found.paths.push({ path: value, at, itemScoped: ctx.itemScoped, list: ctx.itemScoped ? ctx.list : undefined });
   if (name === "Capability" && typeof value === "string") return void found.actions.push({ name: value, at });
+  // An Identity group: one list, with paths relative to each entry, like Options.
+  if (ctx.prop === "group" && value && !Array.isArray(value) && typeof value === "object" && "path" in (value as object)) {
+    const g = value as Record<string, string>;
+    found.paths.push({ path: g.path, at: `${at}/path`, itemScoped: ctx.itemScoped });
+    for (const k of ["namePath", "imagePath"]) {
+      if (g[k]) found.paths.push({ path: g[k], at: `${at}/${k}`, itemScoped: true, list: { path: g.path } });
+    }
+    return;
+  }
   if (name === "Options" && value && !Array.isArray(value) && typeof value === "object") {
     const opts = value as Record<string, string>;
     found.paths.push({ path: opts.path, at: `${at}/path`, itemScoped: ctx.itemScoped });
@@ -245,8 +259,8 @@ export function validateDocument(doc: Json, opts: ValidateOptions = {}): Validat
 
     for (const r of refs.get(id)!.ids) {
       if (!byId.has(r.id) || r.id === id) continue;
-      // A Collection's item template and a Table's row-action menu both render once per row.
-      const isTemplate = (r.prop === "items" && c.component === "Collection") || (r.prop === "rowActions" && c.component === "Table");
+      // A Collection's item template and a Table's row-action menu and row detail all render once per row.
+      const isTemplate = (r.prop === "items" && c.component === "Collection") || ((r.prop === "rowActions" || r.prop === "detail") && c.component === "Table");
       const prev = parent.get(r.id);
       if (prev && prev !== id) {
         error(r.at, `"${r.id}" already has parent "${prev}"; a component can appear in only one place`);

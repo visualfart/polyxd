@@ -15,6 +15,12 @@ for e in E:
     if e["target"] == "TextInput" and e["variant"] == "password":
         # The spec keeps secrets out of generated screens: the host collects them in its own flows.
         e.update(target="out:app-chrome", variant=None, status="non-component")
+# Everything the survey proposed is built as of spec v0.2: the eleven components and the variants.
+# Entries keep "since" so the page can say what v0.2 added; their status is "covered".
+for e in E:
+    if e["status"] in ("new", "existing-new-variant"):
+        e["since"] = "0.2"
+        e["status"] = "existing"
 spec = {}
 for f in glob.glob("/Users/neel/Work/Polixd/packages/spec/components/*.json"):
     c = json.load(open(f)); spec[c["name"]] = c["summary"]
@@ -48,14 +54,14 @@ for g, names in GROUPS:
         variants = collections.Counter()
         vsys = collections.defaultdict(set)
         for e in rows:
-            if e["variant"] and e["status"] == "existing-new-variant":
+            if e["variant"] and e.get("since") == "0.2":
                 vsys[e["variant"]].add(e["system"])
         covers = []
         seen = set()
         for e in rows:
             k = e["name"].lower()
             if k not in seen: seen.add(k); covers.append(e["name"])
-        comps.append({"name": n, "group": g, "isNew": n in NEW, "summary": NEW.get(n) or spec.get(n, ""), "systems": len(sys_), "entries": len(rows),
+        comps.append({"name": n, "group": g, "isNew": n in NEW, "since": "0.2" if n in NEW else "0.1", "summary": NEW.get(n) or spec.get(n, ""), "systems": len(sys_), "entries": len(rows),
                       "newVariants": sorted(([v, len(s)] for v, s in vsys.items()), key=lambda x: -x[1]), "covers": covers[:14], "more": max(0, len(covers) - 14)})
 NONC = collections.Counter()
 for e in E:

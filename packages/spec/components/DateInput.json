@@ -15,9 +15,17 @@
         "date",
         "time",
         "datetime",
-        "dateRange"
+        "dateRange",
+        "month",
+        "year"
       ],
-      "default": "date"
+      "default": "date",
+      "description": "'month' stores YYYY-MM and 'year' stores YYYY"
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false,
+      "description": "Several dates rather than one; the value is a list"
     },
     "min": {
       "$ref": "#/$defs/DynamicString"
@@ -51,7 +59,9 @@
   },
   "agent": "Fill by label with an ISO date.",
   "rendering": [
-    "Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar"
+    "Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar",
+    "'month' and 'year' take only that part; the year field is typed, four digits",
+    "multiple: each chosen date becomes a chip with a remove control; the field adds another"
   ],
   "mappings": {
     "web": "shadcn Calendar + Popover (Date Picker)",

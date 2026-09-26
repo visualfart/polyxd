@@ -12,7 +12,7 @@ export interface StaticOptions {
   emphasisBudget?: number;
 }
 
-const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput"]);
+const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput", "Rating", "FileInput", "ColorInput", "CodeInput"]);
 const GENERIC = /^(ok|okay|yes|no|submit|go|click here|here|more|continue|next|done)$/i;
 const TEXT_PROPS = ["title", "label", "summary", "caption", "text", "message", "consequence"];
 

@@ -30,7 +30,7 @@ test("generic button labels are flagged", () => {
 
 /** A list of flights; `card` and `line` are spread into its item template and a line inside it. */
 const flights = (card: Record<string, unknown> = {}, line: Record<string, unknown> = {}) => ({
-  specVersion: "0.1.0",
+  specVersion: "0.2.0",
   surface: { id: "flights", title: "Flights to Lisbon", intent: "travel.search" },
   root: "list",
   data: { route: "LHR → LIS", share: 0.4, order: { status: "Shipped" }, flights: [{ id: "f1", name: "TP1351", airline: "TAP", depart: "07:10", seats: 0.5 }] },
