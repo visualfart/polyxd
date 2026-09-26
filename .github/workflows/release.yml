@@ -9,7 +9,8 @@
 # and this workflow file (release.yml) as its trusted publisher, and npm accepts the job's GitHub
 # OIDC identity in place of a token. Provenance, linking each version to the commit and workflow
 # that built it, comes with that automatically. A package has to exist on npm before it can name a
-# trusted publisher, so the first publish of a new package is done by hand (npm run release:publish).
+# trusted publisher, so the first publish of a new package uses the NPM_TOKEN repository secret
+# instead. npm tries trusted publishing first and falls back to the token.
 name: Release
 
 on:
@@ -48,3 +49,7 @@ jobs:
           have="$(node -p "require('./packages/spec/package.json').version")"
           test "$want" = "$have" || { echo "tag v$want but packages are at $have"; exit 1; }
       - run: npm run release:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Trusted publishing adds provenance by itself; a token publish has to ask for it.
+          NPM_CONFIG_PROVENANCE: "true"
