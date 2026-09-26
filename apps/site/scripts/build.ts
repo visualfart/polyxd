@@ -172,7 +172,7 @@ async function componentsPage(): Promise<Page> {
   const toc = comps.map((c) => ({ id: slugify(c.name), text: c.name }));
   const list = (xs: string[]) => `<ul>${xs.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
   const html = [
-    `<p>Generated from <code>packages/spec/components/*.json</code>, the same source the schema, validator and renderer use. Every component also accepts <code>id</code>, <code>component</code>, <code>key</code>, <code>accessibility</code> and <code>visible</code>.</p>`,
+    `<p>Generated from <code>packages/spec/components/*.json</code>, the same source the schema, validator and renderer use. Every component also accepts <code>id</code>, <code>component</code>, <code>key</code>, <code>accessibility</code> and <code>visible</code>. For how these map onto the components of 13 design systems, and the 11 planned for v0.2, see <a href="/docs/reference/coverage/">design-system coverage</a>.</p>`,
     `<div class="table-wrap"><table><thead><tr><th>Component</th><th>Web</th><th>iOS</th><th>Android</th></tr></thead><tbody>${comps
       .map((c) => `<tr><td><a href="#${slugify(c.name)}"><strong>${c.name}</strong></a></td><td>${esc(c.mappings.web)}</td><td>${esc(c.mappings.ios)}</td><td>${esc(c.mappings.android)}</td></tr>`)
       .join("")}</tbody></table></div>`,
@@ -192,6 +192,102 @@ async function componentsPage(): Promise<Page> {
     }),
   ].join("\n");
   return { slug: "reference/components", title: "Components reference", description: "All 26 semantic components: props, when to use them, accessibility, rendering rules and platform mappings.", section: "Reference", order: 30, html, toc };
+}
+
+/**
+ * Design-system coverage: every component in 13 design systems, and what Polyxd calls it. The data
+ * is research/components/build.py's output, committed as content/coverage.json.
+ */
+async function coveragePage(): Promise<Page> {
+  const data = JSON.parse(await readFile(join(SITE, "content/coverage.json"), "utf8")) as {
+    systems: string[];
+    components: { name: string; group: string; isNew: boolean; summary: string; systems: number; covers: string[]; more: number; newVariants: [string, number][] }[];
+    rows: [number, string, string, string, number][];
+    counts: Record<string, number>;
+    total: number;
+    foundations: { name: string; count: number; summary: string; covers: string[] }[];
+    patterns: { id: string; name: string; summary: string; covers: string[]; more: number }[];
+    renderer: { name: string; summary: string; covers: string[]; more: number; systems: number }[];
+  };
+  const N = data.systems.length;
+  const existing = data.components.filter((c) => !c.isNew).length;
+  const planned = data.components.filter((c) => c.isNew).length;
+  const covers = (xs: string[], more: number) => (xs.length ? `<p class="covers">Covers <em>${xs.map(esc).join(", ")}</em>${more ? ` and ${more} more` : ""}</p>` : "");
+  const dots = (n: number) => `<span class="cov-dots" aria-hidden="true">${Array.from({ length: N }, (_, i) => `<i${i < n ? ' class="on"' : ""}></i>`).join("")}</span><span class="cov-n">${n} of ${N}</span>`;
+  const card = (title: string, right: string, summary: string, body: string) =>
+    `<article class="cov-card"><div class="cov-head"><code>${esc(title)}</code>${right}</div><p>${esc(summary)}</p>${body}</article>`;
+  const groups = [...new Set(data.components.map((c) => c.group))];
+  const toc = [
+    { id: "components", text: "Components" },
+    { id: "foundations", text: "Foundations" },
+    { id: "patterns", text: "Patterns" },
+    { id: "done-by-the-renderer", text: "Done by the renderer" },
+    { id: "out-of-scope", text: "Out of scope" },
+    { id: "every-component-by-system", text: "Every component, by system" },
+  ];
+  const outOf = data.counts["out:layout"] + data.counts["out:utility"] + data.counts["out:app-chrome"];
+  const html = [
+    `<p>Every component the 13 supported design systems document, read from their official documentation in September 2026, and what Polyxd calls it. Polyxd keeps one component per meaning, and each system's variety becomes a variant of it, so a generator picks from ${data.components.length} choices instead of ${data.total.toLocaleString("en-GB")}. Every component renders in every design system, including the ones that don't have it.</p>`,
+    `<p><strong>${existing} components exist today</strong> (the <a href="/docs/reference/components/">components reference</a> has their props). <strong>${planned} are planned for spec v0.2</strong>, marked below; they came out of this survey. The survey itself, with the inventories and the mapping, is <code>research/components/</code> in the repository.</p>`,
+    `<h2 id="components">Components<a class="anchor" href="#components" aria-label="Link to this section">#</a></h2>`,
+    `<p>The bar on each card is how many of the ${N} systems have their own version. Dashed tags are variants v0.2 adds to a component that exists.</p>`,
+    ...groups.map(
+      (g) =>
+        `<h3>${esc(g)}</h3><div class="cov-grid">${data.components
+          .filter((c) => c.group === g)
+          .map((c) =>
+            card(
+              c.name,
+              `${c.isNew ? '<span class="tag tag-new">Planned · v0.2</span>' : ""}<span class="cov-right">${dots(c.systems)}</span>`,
+              c.summary,
+              covers(c.covers, c.more) + (c.newVariants.length ? `<div class="cov-variants" aria-label="New variants">${c.newVariants.map(([v, n]) => `<span title="${n} system${n > 1 ? "s" : ""}">${esc(v)}</span>`).join("")}</div>` : ""),
+            ),
+          )
+          .join("")}</div>`,
+    ),
+    `<h2 id="foundations">Foundations<a class="anchor" href="#foundations" aria-label="Link to this section">#</a></h2>`,
+    `<p>Not components: the 87 token roles every design-system pack provides and every component draws with. A team maps its own tokens onto these; the <a href="/docs/reference/tokens/">tokens reference</a> lists each one.</p>`,
+    `<div class="cov-grid">${data.foundations.map((f) => card(f.name, `<span class="cov-right">${f.count} role${f.count > 1 ? "s" : ""}</span>`, f.summary, covers(f.covers, 0))).join("")}</div>`,
+    `<h2 id="patterns">Patterns<a class="anchor" href="#patterns" aria-label="Link to this section">#</a></h2>`,
+    `<p>Shapes for common jobs, made of components, each with rules the verifier checks. Design systems document these as guidance; Polyxd ships them as <a href="/docs/patterns/">checkable patterns</a>.</p>`,
+    `<div class="cov-grid">${data.patterns.map((p) => card(p.name, "", p.summary, covers(p.covers, p.more))).join("")}</div>`,
+    `<h2 id="done-by-the-renderer">Done by the renderer<a class="anchor" href="#done-by-the-renderer" aria-label="Link to this section">#</a></h2>`,
+    `<p>Things a design system ships as components that a generated screen never has to describe: the renderer does them the same way every time, in that design system's style.</p>`,
+    `<div class="cov-grid">${data.renderer.map((r) => card(r.name, `<span class="cov-right">${dots(r.systems)}</span>`, r.summary, covers(r.covers, r.more))).join("")}</div>`,
+    `<h2 id="out-of-scope">Out of scope<a class="anchor" href="#out-of-scope" aria-label="Link to this section">#</a></h2>`,
+    `<p>${outOf} of the ${data.total.toLocaleString("en-GB")} entries belong to the app around the screen, or to the code that builds it.</p>`,
+    `<div class="cov-grid cov-grid-3">${[
+      [data.counts["out:layout"], "Layout", "Box, Stack, Grid, Flex, Divider. The renderer lays out; a document only says what belongs together."],
+      [data.counts["out:utility"], "Utilities", "Portals, theme providers, visually hidden text. Plumbing for developers, not meaning."],
+      [data.counts["out:app-chrome"], "Your app's frame", "Site header and footer, cookie banners, command palettes, chat windows, and password fields: a product collects secrets in its own secure flows, never in a generated screen."],
+    ]
+      .map(([n, t, d]) => `<article class="cov-card"><div class="cov-head"><strong>${t}</strong><span class="cov-right">${n}</span></div><p>${d}</p></article>`)
+      .join("")}</div>`,
+    `<h2 id="every-component-by-system">Every component, by system<a class="anchor" href="#every-component-by-system" aria-label="Link to this section">#</a></h2>`,
+    `<p>Search a name you know from your design system to see what Polyxd calls it.</p>`,
+    `<div class="cov-tools"><input id="cov-q" type="search" placeholder="Search: segmented, snackbar, persona…" aria-label="Search components"><label>System <select id="cov-sys"><option value="">All ${N}</option>${data.systems.map((s, i) => `<option value="${i}">${esc(s)}</option>`).join("")}</select></label><label>Status <select id="cov-st"><option value="">All</option><option value="0">Covered today</option><option value="1">New variant in v0.2</option><option value="2">Planned component</option><option value="3">Not a component</option></select></label><span id="cov-count"></span></div>`,
+    `<div class="table-wrap cov-table"><table><thead><tr><th>System</th><th>Their component</th><th>Polyxd</th><th>Variant</th><th>Status</th></tr></thead><tbody id="cov-rows"></tbody></table></div>`,
+    `<script id="cov-data" type="application/json">${JSON.stringify({ systems: data.systems, rows: data.rows }).replace(/</g, "\\u003c")}</script>`,
+    `<script>(() => {
+  const D = JSON.parse(document.getElementById("cov-data").textContent);
+  const q = document.getElementById("cov-q"), sys = document.getElementById("cov-sys"), st = document.getElementById("cov-st"), out = document.getElementById("cov-rows"), count = document.getElementById("cov-count");
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const LABEL = ["Covered today", "New variant", "Planned", "Not a component"];
+  function render() {
+    const needle = q.value.trim().toLowerCase();
+    const rows = D.rows.filter((r) => (sys.value === "" || r[0] == sys.value) && (st.value === "" || r[4] == st.value) && (!needle || (r[1] + " " + r[2] + " " + r[3]).toLowerCase().includes(needle)));
+    count.textContent = rows.length.toLocaleString("en-GB") + " of " + D.rows.length.toLocaleString("en-GB");
+    out.innerHTML = rows.slice(0, 400).map((r) => {
+      const t = r[2].startsWith("renderer:") ? "renderer" : r[2].startsWith("out:") ? "out of scope" : r[2];
+      const v = r[2].startsWith("renderer:") ? r[2].slice(9) : r[2].startsWith("out:") ? r[2].slice(4) : r[3];
+      return "<tr><td>" + esc(D.systems[r[0]]) + "</td><td>" + esc(r[1]) + "</td><td><code>" + esc(t) + "</code></td><td><code>" + esc(v) + "</code></td><td class='cov-st-" + r[4] + "'>" + LABEL[r[4]] + "</td></tr>";
+    }).join("") + (rows.length > 400 ? "<tr><td colspan='5'>Showing the first 400. Narrow the search to see the rest.</td></tr>" : "");
+  }
+  [q, sys, st].forEach((el) => el.addEventListener("input", render));
+  render();
+})();</script>`,
+  ].join("\n");
+  return { slug: "reference/coverage", title: "Design-system coverage", description: `Every component in ${N} design systems, and what Polyxd calls it: ${data.components.length} semantic components, foundations, patterns, and what the renderer does itself.`, section: "Reference", order: 32, html, toc };
 }
 
 async function tokensPage(): Promise<Page> {
@@ -403,7 +499,7 @@ const landing = (await readFile(join(SITE, "src/index.html"), "utf8"))
   .replace("<!--FOOTER-->", footer);
 await write(join(DIST, "index.html"), landing);
 
-const pages = [...(await markdownPages()), await componentsPage(), await tokensPage()].sort(
+const pages = [...(await markdownPages()), await componentsPage(), await tokensPage(), await coveragePage()].sort(
   (a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section) || a.order - b.order,
 );
 for (const p of pages) await write(join(DIST, p.slug ? `docs/${p.slug}/index.html` : "docs/index.html"), docsPage(p, pages));

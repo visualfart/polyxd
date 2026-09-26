@@ -1,0 +1,1571 @@
+{
+  "systems": [
+    {
+      "system": "Material 3",
+      "source": "https://m3.material.io/components",
+      "notes": "36 components on the official components index (includes M3 Expressive, May 2025). Web implementation (Material Web) is unavailable for several Expressive components.",
+      "components": [
+        {
+          "name": "Button groups",
+          "category": "action",
+          "purpose": "Groups related buttons into one row and animates them together when pressed or selected.",
+          "url": "https://m3.material.io/components/button-groups/overview",
+          "notes": "M3 Expressive (May 2025). Standard and connected variants; connected button group is the Expressive replacement for segmented buttons."
+        },
+        {
+          "name": "Buttons",
+          "category": "action",
+          "purpose": "Lets people trigger an action with a labeled tap target.",
+          "url": "https://m3.material.io/components/buttons/overview",
+          "notes": "Variants: elevated, filled, filled tonal, outlined, text; Expressive adds toggle (selected/unselected) buttons and 5 sizes."
+        },
+        {
+          "name": "Extended FABs",
+          "category": "action",
+          "purpose": "A floating button with icon and label for the screen's single primary action.",
+          "url": "https://m3.material.io/components/extended-fab/overview",
+          "notes": "Documented as its own component (separate from FAB)."
+        },
+        {
+          "name": "FAB menu",
+          "category": "action",
+          "purpose": "Opens from a FAB to show a short list of related actions.",
+          "url": "https://m3.material.io/components/fab-menu/overview",
+          "notes": "M3 Expressive; replaces the older speed-dial idea. Comparable to Ant FloatButton.Group."
+        },
+        {
+          "name": "Floating action buttons (FABs)",
+          "category": "action",
+          "purpose": "A prominent floating icon button for the screen's primary action.",
+          "url": "https://m3.material.io/components/floating-action-button/overview",
+          "notes": "Sizes FAB, medium, large (small FAB no longer recommended in Expressive). Ant equivalent: FloatButton."
+        },
+        {
+          "name": "Icon buttons",
+          "category": "action",
+          "purpose": "A compact button showing only an icon for a single action.",
+          "url": "https://m3.material.io/components/icon-buttons/overview",
+          "notes": "Standard, filled, tonal, outlined; can act as a toggle."
+        },
+        {
+          "name": "Segmented buttons",
+          "category": "selection",
+          "purpose": "A row of joined buttons for picking one or several options, switching views, or sorting.",
+          "url": "https://m3.material.io/components/segmented-buttons/overview",
+          "notes": "Distinct component in M3; equivalents: Carbon Content switcher, Ant Segmented. No longer recommended in Expressive (use connected button group)."
+        },
+        {
+          "name": "Split buttons",
+          "category": "action",
+          "purpose": "A main action button joined to a menu button offering related options.",
+          "url": "https://m3.material.io/components/split-button",
+          "notes": "M3 Expressive. Equivalents: Carbon Combo button, Fluent SplitButton, Ant Dropdown.Button."
+        },
+        {
+          "name": "Date pickers",
+          "category": "data-entry-complex",
+          "purpose": "Lets people pick a single date or a date range.",
+          "url": "https://m3.material.io/components/date-pickers/overview",
+          "notes": "Variants: docked, modal, modal input (range supported)."
+        },
+        {
+          "name": "Time pickers",
+          "category": "data-entry-complex",
+          "purpose": "Lets people pick and set a specific time.",
+          "url": "https://m3.material.io/components/time-pickers/overview",
+          "notes": "Variants: dial and input."
+        },
+        {
+          "name": "Loading indicator",
+          "category": "feedback",
+          "purpose": "Shows that something is loading during a short wait, using a morphing shape.",
+          "url": "https://m3.material.io/components/loading-indicator/overview",
+          "notes": "M3 Expressive; for waits under ~5s, distinct from progress indicators."
+        },
+        {
+          "name": "Progress indicators",
+          "category": "feedback",
+          "purpose": "Shows the real-time status of an ongoing process.",
+          "url": "https://m3.material.io/components/progress-indicators/overview",
+          "notes": "Linear and circular; determinate/indeterminate; Expressive wavy style."
+        },
+        {
+          "name": "Navigation bar",
+          "category": "navigation",
+          "purpose": "Bottom bar for switching between top-level views on small screens.",
+          "url": "https://m3.material.io/components/navigation-bar/overview",
+          "notes": "Expressive 'flexible navigation bar' replaces the original."
+        },
+        {
+          "name": "Navigation drawer",
+          "category": "navigation",
+          "purpose": "Side panel listing destinations for switching views on large screens.",
+          "url": "https://m3.material.io/components/navigation-drawer/overview",
+          "notes": "Standard and modal. No longer recommended in M3 Expressive; use expanded navigation rail."
+        },
+        {
+          "name": "Navigation rail",
+          "category": "navigation",
+          "purpose": "Vertical side bar of destinations for mid-sized screens.",
+          "url": "https://m3.material.io/components/navigation-rail/overview",
+          "notes": "Collapsed and expanded (Expressive); expanded rail can be modal and replaces the drawer."
+        },
+        {
+          "name": "Bottom sheets",
+          "category": "overlay",
+          "purpose": "A surface anchored to the bottom of the screen showing secondary content or actions.",
+          "url": "https://m3.material.io/components/bottom-sheets/overview",
+          "notes": "Standard and modal."
+        },
+        {
+          "name": "Side sheets",
+          "category": "overlay",
+          "purpose": "A surface anchored to the side of the screen showing secondary content.",
+          "url": "https://m3.material.io/components/side-sheets/overview",
+          "notes": "Standard and modal. Equivalents: Ant Drawer, Fluent Drawer, Carbon UI shell right panel."
+        },
+        {
+          "name": "App bars",
+          "category": "navigation",
+          "purpose": "Bar at the top of the screen with the page title, navigation, and key actions.",
+          "url": "https://m3.material.io/components/app-bars/overview",
+          "notes": "Page title is 'Top app bar'. Variants: search app bar, small, medium flexible, large flexible. The bottom app bar now lives under Toolbars."
+        },
+        {
+          "name": "Badges",
+          "category": "data-display",
+          "purpose": "Small marker showing a count, notification, or status on icons and nav items.",
+          "url": "https://m3.material.io/components/badges/overview",
+          "notes": "Small (dot) and large (number)."
+        },
+        {
+          "name": "Cards",
+          "category": "data-display",
+          "purpose": "A container that groups content and actions about one subject.",
+          "url": "https://m3.material.io/components/cards/overview",
+          "notes": "Elevated, filled, outlined."
+        },
+        {
+          "name": "Carousel",
+          "category": "media",
+          "purpose": "A scrollable row of items, usually images, that moves on and off screen.",
+          "url": "https://m3.material.io/components/carousel/overview",
+          "notes": "Layouts: multi-browse, uncontained, hero, center-aligned hero, full-screen."
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Lets people select one or more items or turn an option on or off.",
+          "url": "https://m3.material.io/components/checkbox/overview"
+        },
+        {
+          "name": "Chips",
+          "category": "selection",
+          "purpose": "Compact elements to enter info, make selections, filter content, or trigger actions.",
+          "url": "https://m3.material.io/components/chips/overview",
+          "notes": "Four types that are distinct components elsewhere: assist (action), filter (selection), input (like Ant Tag closable / Fluent Tag / Carbon dismissible tag), suggestion."
+        },
+        {
+          "name": "Dialogs",
+          "category": "overlay",
+          "purpose": "A modal window that asks for a decision or a short focused task.",
+          "url": "https://m3.material.io/components/dialogs/overview",
+          "notes": "Basic and full-screen."
+        },
+        {
+          "name": "Divider",
+          "category": "layout",
+          "purpose": "A thin line that separates or groups content.",
+          "url": "https://m3.material.io/components/divider/overview",
+          "presentational": true,
+          "notes": "Full-width and inset."
+        },
+        {
+          "name": "Lists",
+          "category": "data-display",
+          "purpose": "A vertical index of rows with text, icons, or images.",
+          "url": "https://m3.material.io/components/lists/overview",
+          "notes": "One-, two-, three-line items; Expressive adds segmented/expressive list styles."
+        },
+        {
+          "name": "Menus",
+          "category": "overlay",
+          "purpose": "A temporary surface showing a list of choices.",
+          "url": "https://m3.material.io/components/menus/overview",
+          "notes": "Dropdown menu; Expressive vertical menus with submenus. Exposed dropdown menu (select) is documented under menus/text fields."
+        },
+        {
+          "name": "Radio button",
+          "category": "selection",
+          "purpose": "Lets people choose exactly one option from a set.",
+          "url": "https://m3.material.io/components/radio-button/overview"
+        },
+        {
+          "name": "Search",
+          "category": "input",
+          "purpose": "Lets people type a keyword or phrase to find relevant content.",
+          "url": "https://m3.material.io/components/search/overview",
+          "notes": "Search bar and search view (full-screen or docked results surface)."
+        },
+        {
+          "name": "Sliders",
+          "category": "input",
+          "purpose": "Lets people choose a value or range by dragging along a track.",
+          "url": "https://m3.material.io/components/sliders/overview",
+          "notes": "Standard, centered, range; horizontal/vertical in Expressive."
+        },
+        {
+          "name": "Snackbar",
+          "category": "feedback",
+          "purpose": "A brief message at the bottom of the screen about an app process, with an optional action.",
+          "url": "https://m3.material.io/components/snackbar/overview",
+          "notes": "Equivalents: Ant message, Carbon toast notification, Fluent Toast."
+        },
+        {
+          "name": "Switch",
+          "category": "selection",
+          "purpose": "Toggles a single setting on or off.",
+          "url": "https://m3.material.io/components/switch/overview"
+        },
+        {
+          "name": "Tabs",
+          "category": "navigation",
+          "purpose": "Organizes related content into switchable views at the same level.",
+          "url": "https://m3.material.io/components/tabs/overview",
+          "notes": "Primary and secondary tabs."
+        },
+        {
+          "name": "Text fields",
+          "category": "input",
+          "purpose": "Lets people enter and edit text.",
+          "url": "https://m3.material.io/components/text-fields/overview",
+          "notes": "Filled and outlined; multi-line (textarea) is a text field configuration."
+        },
+        {
+          "name": "Toolbars",
+          "category": "action",
+          "purpose": "A bar of frequently used actions for the current page.",
+          "url": "https://m3.material.io/components/toolbars/overview",
+          "notes": "Docked and floating toolbars (Expressive); docked toolbar replaces the bottom app bar."
+        },
+        {
+          "name": "Tooltips",
+          "category": "overlay",
+          "purpose": "A small label or message that explains an element on hover, focus, or long-press.",
+          "url": "https://m3.material.io/components/tooltips/overview",
+          "notes": "Plain and rich tooltips (rich tooltip can hold title, text, and action; like Carbon Toggletip)."
+        }
+      ],
+      "count": 36
+    },
+    {
+      "system": "IBM Carbon",
+      "source": "https://carbondesignsystem.com/components/overview/components/",
+      "notes": "41 entries in the official components index (incl. Multiselect and UI shell), plus variants that ship as separate React components, 2x Grid (Elements), and Skeleton (Loading pattern). Other patterns (common actions, dialogs, disabled states, disclosures, empty states, filtering, forms, global header, loading, login, notifications, search, text toolbar) are guidance built from core components; empty state, tearsheet, side panel, page header live in IBM Products/Carbon platform, not the core index (community index deprecated).",
+      "components": [
+        {
+          "name": "Accordion",
+          "category": "disclosure",
+          "purpose": "Stacked headers that expand and collapse to show or hide sections of content.",
+          "url": "https://carbondesignsystem.com/components/accordion/usage/"
+        },
+        {
+          "name": "AI label",
+          "category": "utility",
+          "purpose": "Marks AI-generated content and opens a popover explaining the AI.",
+          "url": "https://carbondesignsystem.com/components/ai-label/usage/",
+          "notes": "Formerly 'AI slug'. Default and inline variants. Carbon-specific; no equivalent in the other three systems."
+        },
+        {
+          "name": "Breadcrumb",
+          "category": "navigation",
+          "purpose": "Shows where the current page sits in the site hierarchy with links back up.",
+          "url": "https://carbondesignsystem.com/components/breadcrumb/usage/"
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Triggers an action; the label says what will happen.",
+          "url": "https://carbondesignsystem.com/components/button/usage/",
+          "notes": "Primary, secondary, tertiary, ghost, danger; icon-only button and button set are covered here."
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Lets users select one or more options, or toggle a single option.",
+          "url": "https://carbondesignsystem.com/components/checkbox/usage/"
+        },
+        {
+          "name": "Code snippet",
+          "category": "data-display",
+          "purpose": "Shows a piece of code that the user can copy.",
+          "url": "https://carbondesignsystem.com/components/code-snippet/usage/",
+          "notes": "Inline, single line, multi-line."
+        },
+        {
+          "name": "Contained list",
+          "category": "data-display",
+          "purpose": "A list of related items grouped inside a labeled container, often with actions per row.",
+          "url": "https://carbondesignsystem.com/components/contained-list/usage/"
+        },
+        {
+          "name": "Content switcher",
+          "category": "selection",
+          "purpose": "A row of joined buttons to switch between alternate views of the same content.",
+          "url": "https://carbondesignsystem.com/components/content-switcher/usage/",
+          "notes": "Equivalent to M3 Segmented buttons / Ant Segmented."
+        },
+        {
+          "name": "Data table",
+          "category": "data-display",
+          "purpose": "Displays rows and columns of data with sorting, selection, expansion, and batch actions.",
+          "url": "https://carbondesignsystem.com/components/data-table/usage/",
+          "notes": "Variants: default, with selection (radio/checkbox), with expansion; includes toolbar, batch actions, pagination integration."
+        },
+        {
+          "name": "Date picker",
+          "category": "data-entry-complex",
+          "purpose": "Lets users enter or pick a date or date range, optionally with a calendar.",
+          "url": "https://carbondesignsystem.com/components/date-picker/usage/",
+          "notes": "Simple date input, calendar picker (single/range); time picker documented on the same page."
+        },
+        {
+          "name": "Dropdown",
+          "category": "selection",
+          "purpose": "Lets users pick an option from a styled list to fill a form or filter/sort content.",
+          "url": "https://carbondesignsystem.com/components/dropdown/usage/",
+          "notes": "Page documents three variants that are separate React components: Dropdown, Multiselect (incl. filterable), Combo box."
+        },
+        {
+          "name": "File uploader",
+          "category": "data-entry-complex",
+          "purpose": "Lets users choose one or more files to upload.",
+          "url": "https://carbondesignsystem.com/components/file-uploader/usage/",
+          "notes": "Button uploader and drag-and-drop uploader."
+        },
+        {
+          "name": "Form",
+          "category": "data-entry-complex",
+          "purpose": "Groups related input controls so users can submit data or configure options.",
+          "url": "https://carbondesignsystem.com/components/form/usage/",
+          "notes": "Also a pattern: /patterns/forms-pattern/."
+        },
+        {
+          "name": "Inline loading",
+          "category": "feedback",
+          "purpose": "Small inline indicator showing an action is in progress, then success or failure.",
+          "url": "https://carbondesignsystem.com/components/inline-loading/usage/"
+        },
+        {
+          "name": "Link",
+          "category": "navigation",
+          "purpose": "Text that navigates to another page or resource.",
+          "url": "https://carbondesignsystem.com/components/link/usage/"
+        },
+        {
+          "name": "List",
+          "category": "typography",
+          "purpose": "Ordered or unordered bulleted list of text items.",
+          "url": "https://carbondesignsystem.com/components/list/usage/",
+          "notes": "Unordered and ordered."
+        },
+        {
+          "name": "Loading",
+          "category": "feedback",
+          "purpose": "Spinner showing that data is loading or a slow process is running.",
+          "url": "https://carbondesignsystem.com/components/loading/usage/",
+          "notes": "Can be a full-page overlay or local."
+        },
+        {
+          "name": "Menu",
+          "category": "overlay",
+          "purpose": "A temporary list of actions or options that opens from a trigger.",
+          "url": "https://carbondesignsystem.com/components/menu/usage/",
+          "notes": "Supports nesting, selectable items, danger items."
+        },
+        {
+          "name": "Menu buttons",
+          "category": "action",
+          "purpose": "Buttons that open a menu of options.",
+          "url": "https://carbondesignsystem.com/components/menu-buttons/usage/",
+          "notes": "Page covers three separate components: Menu button, Combo button (split button), Overflow menu."
+        },
+        {
+          "name": "Modal",
+          "category": "overlay",
+          "purpose": "A window on top of the page that focuses attention on one task or message.",
+          "url": "https://carbondesignsystem.com/components/modal/usage/",
+          "notes": "Passive, transactional, acknowledgment, progressive, danger variants; sizes xs–lg."
+        },
+        {
+          "name": "Multiselect",
+          "category": "selection",
+          "purpose": "Dropdown that lets users select several options, optionally with filtering.",
+          "url": "https://carbondesignsystem.com/components/dropdown/usage/",
+          "notes": "Listed separately in the components index but documented on the Dropdown page."
+        },
+        {
+          "name": "Notification",
+          "category": "feedback",
+          "purpose": "Messages that tell the user about status, updates, or results.",
+          "url": "https://carbondesignsystem.com/components/notification/usage/",
+          "notes": "Four variants that are distinct components elsewhere: inline (Fluent MessageBar / Ant Alert), toast (M3 Snackbar / Fluent Toast / Ant notification), actionable, callout."
+        },
+        {
+          "name": "Number input",
+          "category": "input",
+          "purpose": "Lets users type a number and step it up or down.",
+          "url": "https://carbondesignsystem.com/components/number-input/usage/"
+        },
+        {
+          "name": "Pagination",
+          "category": "navigation",
+          "purpose": "Splits content into pages with controls to move between them.",
+          "url": "https://carbondesignsystem.com/components/pagination/usage/",
+          "notes": "Pagination (table-style with page size) and Pagination nav (page-number links)."
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "A layer that pops over the page to show extra content attached to a trigger.",
+          "url": "https://carbondesignsystem.com/components/popover/usage/",
+          "notes": "No tip, caret tip, tab tip."
+        },
+        {
+          "name": "Progress bar",
+          "category": "feedback",
+          "purpose": "Horizontal bar showing how far a process has progressed.",
+          "url": "https://carbondesignsystem.com/components/progress-bar/usage/"
+        },
+        {
+          "name": "Progress indicator",
+          "category": "navigation",
+          "purpose": "Shows completed, current, and upcoming steps in a multi-step task.",
+          "url": "https://carbondesignsystem.com/components/progress-indicator/usage/",
+          "notes": "Stepper; equivalent to Ant Steps."
+        },
+        {
+          "name": "Radio button",
+          "category": "selection",
+          "purpose": "Lets users choose exactly one option from a set.",
+          "url": "https://carbondesignsystem.com/components/radio-button/usage/"
+        },
+        {
+          "name": "Search",
+          "category": "input",
+          "purpose": "Field for typing a word or phrase to find content.",
+          "url": "https://carbondesignsystem.com/components/search/usage/",
+          "notes": "Expandable variant exists."
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Native-style control to choose one value from a list.",
+          "url": "https://carbondesignsystem.com/components/select/usage/",
+          "notes": "Default and inline select."
+        },
+        {
+          "name": "Slider",
+          "category": "input",
+          "purpose": "Lets users pick a value or range by dragging a handle along a track.",
+          "url": "https://carbondesignsystem.com/components/slider/usage/",
+          "notes": "Single and range."
+        },
+        {
+          "name": "Structured list",
+          "category": "data-display",
+          "purpose": "A simple list of rows and columns for reading, optionally selectable.",
+          "url": "https://carbondesignsystem.com/components/structured-list/usage/"
+        },
+        {
+          "name": "Tabs",
+          "category": "navigation",
+          "purpose": "Switches between related views within the same context.",
+          "url": "https://carbondesignsystem.com/components/tabs/usage/",
+          "notes": "Line and contained; icon-only and vertical tabs."
+        },
+        {
+          "name": "Tag",
+          "category": "data-display",
+          "purpose": "Labels, categorizes, or filters items using short keywords.",
+          "url": "https://carbondesignsystem.com/components/tag/usage/",
+          "notes": "Read-only, dismissible, selectable, operational tags (selectable ~ Ant CheckableTag; operational ~ Fluent InteractionTag)."
+        },
+        {
+          "name": "Text input",
+          "category": "input",
+          "purpose": "Field for entering free-form text.",
+          "url": "https://carbondesignsystem.com/components/text-input/usage/",
+          "notes": "Also documents Text area and Password input; default and fluid styles."
+        },
+        {
+          "name": "Tile",
+          "category": "data-display",
+          "purpose": "A flexible container for grouping content, optionally clickable, selectable, or expandable.",
+          "url": "https://carbondesignsystem.com/components/tile/usage/",
+          "notes": "Base, clickable, selectable (~ Fluent Card selectable / radio tile), expandable. Carbon has no Card; tile is the foundation."
+        },
+        {
+          "name": "Toggle",
+          "category": "selection",
+          "purpose": "A switch that turns a setting on or off.",
+          "url": "https://carbondesignsystem.com/components/toggle/usage/"
+        },
+        {
+          "name": "Toggletip",
+          "category": "overlay",
+          "purpose": "A small popup opened by clicking an info icon that can hold links or buttons.",
+          "url": "https://carbondesignsystem.com/components/toggletip/usage/",
+          "notes": "Interactive counterpart to Tooltip (like M3 rich tooltip, Fluent InfoLabel)."
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Shows brief non-essential help text on hover or focus.",
+          "url": "https://carbondesignsystem.com/components/tooltip/usage/",
+          "notes": "Definition tooltip remains a separate component; icon/standard tooltips are embedded in other components."
+        },
+        {
+          "name": "Tree view",
+          "category": "data-display",
+          "purpose": "Hierarchical list of nested items that can be expanded and collapsed.",
+          "url": "https://carbondesignsystem.com/components/tree-view/usage/"
+        },
+        {
+          "name": "UI shell",
+          "category": "navigation",
+          "purpose": "The persistent app frame: global header, side navigation, and utility panels.",
+          "url": "https://carbondesignsystem.com/components/UI-shell-header/usage/",
+          "notes": "Split into three documented parts: UI shell header, UI shell left panel (side nav), UI shell right panel (switcher/utility panel). Implements the Global header pattern."
+        },
+        {
+          "name": "Combo box",
+          "category": "selection",
+          "purpose": "Dropdown where users can type to filter options or enter a custom value.",
+          "url": "https://carbondesignsystem.com/components/dropdown/usage/",
+          "notes": "Documented within Dropdown page; separate React component (ComboBox). Equivalent to Fluent Combobox / Ant AutoComplete-Select with search."
+        },
+        {
+          "name": "Overflow menu",
+          "category": "action",
+          "purpose": "An icon button (three dots) that opens a menu of extra actions.",
+          "url": "https://carbondesignsystem.com/components/menu-buttons/usage/",
+          "notes": "Documented within Menu buttons; separate React component (OverflowMenu)."
+        },
+        {
+          "name": "Combo button",
+          "category": "action",
+          "purpose": "A primary action button joined to a menu of secondary actions.",
+          "url": "https://carbondesignsystem.com/components/menu-buttons/usage/",
+          "notes": "Documented within Menu buttons; Carbon's split button (M3 Split buttons, Fluent SplitButton)."
+        },
+        {
+          "name": "Text area",
+          "category": "input",
+          "purpose": "Multi-line field for longer free-form text.",
+          "url": "https://carbondesignsystem.com/components/text-input/usage/",
+          "notes": "Documented within Text input; separate React component (TextArea)."
+        },
+        {
+          "name": "Time picker",
+          "category": "data-entry-complex",
+          "purpose": "Field for entering a time with AM/PM and time zone selectors.",
+          "url": "https://carbondesignsystem.com/components/date-picker/usage/",
+          "notes": "Documented within Date picker page; separate React component (TimePicker)."
+        },
+        {
+          "name": "UI shell left panel",
+          "category": "navigation",
+          "purpose": "Collapsible side navigation for moving between product sections.",
+          "url": "https://carbondesignsystem.com/components/UI-shell-left-panel/usage/",
+          "notes": "Part of UI shell (SideNav)."
+        },
+        {
+          "name": "UI shell right panel",
+          "category": "overlay",
+          "purpose": "Panel opened from header icons for switchers, notifications, or utilities.",
+          "url": "https://carbondesignsystem.com/components/UI-shell-right-panel/usage/",
+          "notes": "Part of UI shell (HeaderPanel / Switcher)."
+        },
+        {
+          "name": "Definition tooltip",
+          "category": "overlay",
+          "purpose": "Dotted-underlined term that shows its definition on hover or focus.",
+          "url": "https://carbondesignsystem.com/components/tooltip/usage/",
+          "notes": "Called out on the Tooltip page as the one tooltip that remains a separate component."
+        },
+        {
+          "name": "2x Grid",
+          "category": "layout",
+          "purpose": "Responsive column grid for laying out pages.",
+          "url": "https://carbondesignsystem.com/elements/2x-grid/overview/",
+          "presentational": true,
+          "notes": "From Elements, not the components index; ships as Grid/Column (and FlexGrid) React components."
+        },
+        {
+          "name": "Skeleton states",
+          "category": "feedback",
+          "purpose": "Grey placeholder shapes shown while content loads.",
+          "url": "https://carbondesignsystem.com/patterns/loading-pattern/",
+          "notes": "From the Loading pattern, not the components index; ships as SkeletonText, SkeletonPlaceholder, and per-component skeleton variants."
+        }
+      ],
+      "count": 51
+    },
+    {
+      "system": "Ant Design v5",
+      "source": "https://5x.ant.design/components/overview",
+      "notes": "69 v5 components + Util (_util). The overview also links Pro Components (ProLayout, ProForm, ProTable, ProDescriptions, ProList, EditableProTable) in the separate @ant-design/pro-components package; not listed. The current ant.design (v6) adds Masonry, Listy (6.6, grouped virtual list), and BorderBeam (6.4, decorative animated border), which are not in v5.",
+      "components": [
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Starts an immediate action when clicked.",
+          "url": "https://5x.ant.design/components/button",
+          "notes": "Types primary/default/dashed/text/link; danger, ghost, loading. Dropdown.Button covers split buttons."
+        },
+        {
+          "name": "FloatButton",
+          "category": "action",
+          "purpose": "A floating button fixed on the page for global actions such as back-to-top.",
+          "url": "https://5x.ant.design/components/float-button",
+          "notes": "FloatButton.Group (menu of floating buttons, like M3 FAB menu) and FloatButton.BackTop (replaces old BackTop)."
+        },
+        {
+          "name": "Icon",
+          "category": "media",
+          "purpose": "Shows semantic vector icons.",
+          "url": "https://5x.ant.design/components/icon",
+          "notes": "Icons ship in @ant-design/icons."
+        },
+        {
+          "name": "Typography",
+          "category": "typography",
+          "purpose": "Basic text styles for titles, paragraphs, and inline text with copy/edit/ellipsis.",
+          "url": "https://5x.ant.design/components/typography",
+          "notes": "Typography.Title, Text, Paragraph, Link."
+        },
+        {
+          "name": "Divider",
+          "category": "layout",
+          "purpose": "A line that separates content, optionally with text.",
+          "url": "https://5x.ant.design/components/divider",
+          "presentational": true,
+          "notes": "Horizontal and vertical."
+        },
+        {
+          "name": "Flex",
+          "category": "layout",
+          "purpose": "Flexbox wrapper for aligning and spacing children.",
+          "url": "https://5x.ant.design/components/flex",
+          "presentational": true,
+          "notes": "Added in 5.10."
+        },
+        {
+          "name": "Grid",
+          "category": "layout",
+          "purpose": "24-column responsive row/column grid system.",
+          "url": "https://5x.ant.design/components/grid",
+          "presentational": true,
+          "notes": "Row and Col."
+        },
+        {
+          "name": "Layout",
+          "category": "layout",
+          "purpose": "Page-level frame with header, sider, content, and footer regions.",
+          "url": "https://5x.ant.design/components/layout",
+          "presentational": true,
+          "notes": "Layout.Header, Sider, Content, Footer."
+        },
+        {
+          "name": "Space",
+          "category": "layout",
+          "purpose": "Sets consistent spacing between inline or stacked elements.",
+          "url": "https://5x.ant.design/components/space",
+          "presentational": true,
+          "notes": "Space.Compact joins inputs/buttons into one compact group."
+        },
+        {
+          "name": "Splitter",
+          "category": "layout",
+          "purpose": "Splits an area into resizable, collapsible panels.",
+          "url": "https://5x.ant.design/components/splitter",
+          "notes": "Added in 5.21. Resizable panes (not purely presentational)."
+        },
+        {
+          "name": "Anchor",
+          "category": "navigation",
+          "purpose": "In-page table of contents that jumps to and highlights sections.",
+          "url": "https://5x.ant.design/components/anchor"
+        },
+        {
+          "name": "Breadcrumb",
+          "category": "navigation",
+          "purpose": "Shows the current page's location in the hierarchy and links back up.",
+          "url": "https://5x.ant.design/components/breadcrumb"
+        },
+        {
+          "name": "Dropdown",
+          "category": "overlay",
+          "purpose": "A menu of actions that pops down from a trigger.",
+          "url": "https://5x.ant.design/components/dropdown",
+          "notes": "Dropdown.Button is the split-button variant."
+        },
+        {
+          "name": "Menu",
+          "category": "navigation",
+          "purpose": "Navigation menu for pages and functions, horizontal or vertical/inline.",
+          "url": "https://5x.ant.design/components/menu",
+          "notes": "Also used inside Dropdown. Sider menu is the app side nav."
+        },
+        {
+          "name": "Pagination",
+          "category": "navigation",
+          "purpose": "Splits long lists into pages with page-jump controls.",
+          "url": "https://5x.ant.design/components/pagination"
+        },
+        {
+          "name": "Steps",
+          "category": "navigation",
+          "purpose": "Shows progress through the steps of a multi-step task.",
+          "url": "https://5x.ant.design/components/steps",
+          "notes": "Equivalent to Carbon Progress indicator."
+        },
+        {
+          "name": "Tabs",
+          "category": "navigation",
+          "purpose": "Switches between views at the same level.",
+          "url": "https://5x.ant.design/components/tabs",
+          "notes": "Line, card, editable-card types."
+        },
+        {
+          "name": "AutoComplete",
+          "category": "input",
+          "purpose": "Text input that suggests completions as the user types.",
+          "url": "https://5x.ant.design/components/auto-complete"
+        },
+        {
+          "name": "Cascader",
+          "category": "data-entry-complex",
+          "purpose": "Picks a value from a multi-level hierarchy of options in cascading columns.",
+          "url": "https://5x.ant.design/components/cascader",
+          "notes": "Distinct Ant component; no direct equivalent in M3, Carbon, or Fluent."
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Selects one or more options from a set.",
+          "url": "https://5x.ant.design/components/checkbox",
+          "notes": "Checkbox.Group."
+        },
+        {
+          "name": "ColorPicker",
+          "category": "data-entry-complex",
+          "purpose": "Lets users choose a color.",
+          "url": "https://5x.ant.design/components/color-picker",
+          "notes": "Added in 5.5. Fluent has ColorPicker/SwatchPicker; not in M3 or Carbon."
+        },
+        {
+          "name": "DatePicker",
+          "category": "data-entry-complex",
+          "purpose": "Picks a date or date range from a popup calendar.",
+          "url": "https://5x.ant.design/components/date-picker",
+          "notes": "RangePicker; week/month/quarter/year pickers."
+        },
+        {
+          "name": "Form",
+          "category": "data-entry-complex",
+          "purpose": "Collects, validates, and submits data with labeled fields.",
+          "url": "https://5x.ant.design/components/form",
+          "notes": "Form.Item, Form.List for dynamic fields."
+        },
+        {
+          "name": "Input",
+          "category": "input",
+          "purpose": "Basic text field for keyboard input.",
+          "url": "https://5x.ant.design/components/input",
+          "notes": "Sub-components that are separate components elsewhere: Input.TextArea, Input.Search, Input.Password, Input.OTP (5.16)."
+        },
+        {
+          "name": "InputNumber",
+          "category": "input",
+          "purpose": "Numeric field with step up/down controls.",
+          "url": "https://5x.ant.design/components/input-number"
+        },
+        {
+          "name": "Mentions",
+          "category": "input",
+          "purpose": "Text area that suggests people or tags after typing @ or another trigger.",
+          "url": "https://5x.ant.design/components/mentions",
+          "notes": "Distinct Ant component."
+        },
+        {
+          "name": "Radio",
+          "category": "selection",
+          "purpose": "Selects a single option from a set.",
+          "url": "https://5x.ant.design/components/radio",
+          "notes": "Radio.Group; button-style radios act like a segmented control."
+        },
+        {
+          "name": "Rate",
+          "category": "input",
+          "purpose": "Star rating input.",
+          "url": "https://5x.ant.design/components/rate",
+          "notes": "Equivalent to Fluent Rating."
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Dropdown for choosing one or more options.",
+          "url": "https://5x.ant.design/components/select",
+          "notes": "Modes: single, multiple, tags; searchable. Covers combobox/multiselect cases."
+        },
+        {
+          "name": "Slider",
+          "category": "input",
+          "purpose": "Selects a value or range by dragging.",
+          "url": "https://5x.ant.design/components/slider",
+          "notes": "Range mode."
+        },
+        {
+          "name": "Switch",
+          "category": "selection",
+          "purpose": "Toggles between two states.",
+          "url": "https://5x.ant.design/components/switch"
+        },
+        {
+          "name": "TimePicker",
+          "category": "data-entry-complex",
+          "purpose": "Picks a time from a popup.",
+          "url": "https://5x.ant.design/components/time-picker",
+          "notes": "TimePicker.RangePicker."
+        },
+        {
+          "name": "Transfer",
+          "category": "data-entry-complex",
+          "purpose": "Moves items between two side-by-side lists to select a subset.",
+          "url": "https://5x.ant.design/components/transfer",
+          "notes": "Distinct Ant component (dual-list selector); no equivalent in M3, Carbon, or Fluent."
+        },
+        {
+          "name": "TreeSelect",
+          "category": "data-entry-complex",
+          "purpose": "Dropdown select whose options are a tree.",
+          "url": "https://5x.ant.design/components/tree-select",
+          "notes": "Distinct Ant component."
+        },
+        {
+          "name": "Upload",
+          "category": "data-entry-complex",
+          "purpose": "Uploads files by selecting or dragging.",
+          "url": "https://5x.ant.design/components/upload",
+          "notes": "Upload.Dragger; picture list/card styles."
+        },
+        {
+          "name": "Avatar",
+          "category": "data-display",
+          "purpose": "Shows a user or entity as an image, icon, or initials.",
+          "url": "https://5x.ant.design/components/avatar",
+          "notes": "Avatar.Group."
+        },
+        {
+          "name": "Badge",
+          "category": "data-display",
+          "purpose": "Small count or dot on an element, usually for notifications.",
+          "url": "https://5x.ant.design/components/badge",
+          "notes": "Badge.Ribbon."
+        },
+        {
+          "name": "Calendar",
+          "category": "data-display",
+          "purpose": "Full calendar view for showing date-based data.",
+          "url": "https://5x.ant.design/components/calendar",
+          "notes": "Display calendar (not a picker)."
+        },
+        {
+          "name": "Card",
+          "category": "data-display",
+          "purpose": "A container for content on a single subject.",
+          "url": "https://5x.ant.design/components/card",
+          "notes": "Card.Meta, Card.Grid."
+        },
+        {
+          "name": "Carousel",
+          "category": "media",
+          "purpose": "Rotating set of slides.",
+          "url": "https://5x.ant.design/components/carousel"
+        },
+        {
+          "name": "Collapse",
+          "category": "disclosure",
+          "purpose": "Panels that expand and collapse; an accordion.",
+          "url": "https://5x.ant.design/components/collapse",
+          "notes": "Accordion mode."
+        },
+        {
+          "name": "Descriptions",
+          "category": "data-display",
+          "purpose": "Read-only list of label/value pairs.",
+          "url": "https://5x.ant.design/components/descriptions",
+          "notes": "Distinct Ant component (description list)."
+        },
+        {
+          "name": "Empty",
+          "category": "feedback",
+          "purpose": "Placeholder shown when there is no data.",
+          "url": "https://5x.ant.design/components/empty",
+          "notes": "Empty-state component (Carbon treats this as a pattern)."
+        },
+        {
+          "name": "Image",
+          "category": "media",
+          "purpose": "Image with preview/zoom support.",
+          "url": "https://5x.ant.design/components/image",
+          "notes": "Image.PreviewGroup."
+        },
+        {
+          "name": "List",
+          "category": "data-display",
+          "purpose": "Displays a list of items with optional actions, pagination, and loading.",
+          "url": "https://5x.ant.design/components/list"
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "Floating card with content that appears on hover or click.",
+          "url": "https://5x.ant.design/components/popover"
+        },
+        {
+          "name": "QRCode",
+          "category": "media",
+          "purpose": "Renders text or a URL as a QR code.",
+          "url": "https://5x.ant.design/components/qr-code",
+          "notes": "Added in 5.1. Distinct Ant component."
+        },
+        {
+          "name": "Segmented",
+          "category": "selection",
+          "purpose": "A row of joined options for switching views or picking one value.",
+          "url": "https://5x.ant.design/components/segmented",
+          "notes": "Equivalent to M3 Segmented buttons / Carbon Content switcher."
+        },
+        {
+          "name": "Statistic",
+          "category": "data-display",
+          "purpose": "Shows a number or stat with a title, prefix, and suffix.",
+          "url": "https://5x.ant.design/components/statistic",
+          "notes": "Statistic.Countdown (Statistic.Timer in 5.25)."
+        },
+        {
+          "name": "Table",
+          "category": "data-display",
+          "purpose": "Displays rows and columns of data with sorting, filtering, selection, and pagination.",
+          "url": "https://5x.ant.design/components/table"
+        },
+        {
+          "name": "Tag",
+          "category": "data-display",
+          "purpose": "Short label for marking and categorizing.",
+          "url": "https://5x.ant.design/components/tag",
+          "notes": "Tag.CheckableTag (selectable tag); closable tags."
+        },
+        {
+          "name": "Timeline",
+          "category": "data-display",
+          "purpose": "Vertical list of events in time order.",
+          "url": "https://5x.ant.design/components/timeline"
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Short text shown on hover.",
+          "url": "https://5x.ant.design/components/tooltip"
+        },
+        {
+          "name": "Tour",
+          "category": "overlay",
+          "purpose": "Step-by-step guided walkthrough that highlights parts of the UI.",
+          "url": "https://5x.ant.design/components/tour",
+          "notes": "Added in 5.0. Equivalent to Fluent TeachingPopover."
+        },
+        {
+          "name": "Tree",
+          "category": "data-display",
+          "purpose": "Hierarchical list with expand, select, check, and drag.",
+          "url": "https://5x.ant.design/components/tree"
+        },
+        {
+          "name": "Alert",
+          "category": "feedback",
+          "purpose": "Inline message box for warnings, info, success, or errors.",
+          "url": "https://5x.ant.design/components/alert",
+          "notes": "Equivalent to Fluent MessageBar / Carbon inline notification."
+        },
+        {
+          "name": "Drawer",
+          "category": "overlay",
+          "purpose": "A panel that slides in from the edge of the screen.",
+          "url": "https://5x.ant.design/components/drawer"
+        },
+        {
+          "name": "Message",
+          "category": "feedback",
+          "purpose": "Brief global message at the top of the page that disappears automatically.",
+          "url": "https://5x.ant.design/components/message",
+          "notes": "Called via API (message.success()). Similar to M3 Snackbar."
+        },
+        {
+          "name": "Modal",
+          "category": "overlay",
+          "purpose": "A dialog window for focused tasks or confirmations.",
+          "url": "https://5x.ant.design/components/modal",
+          "notes": "Modal.confirm/info/success/error/warning static methods."
+        },
+        {
+          "name": "Notification",
+          "category": "feedback",
+          "purpose": "Global notification card in a screen corner, with title and details.",
+          "url": "https://5x.ant.design/components/notification",
+          "notes": "Equivalent to Fluent Toast / Carbon toast notification."
+        },
+        {
+          "name": "Popconfirm",
+          "category": "overlay",
+          "purpose": "Small popup asking to confirm an action next to the trigger.",
+          "url": "https://5x.ant.design/components/popconfirm",
+          "notes": "Distinct Ant component (inline confirmation popover)."
+        },
+        {
+          "name": "Progress",
+          "category": "feedback",
+          "purpose": "Shows progress of an operation as a line, circle, or dashboard.",
+          "url": "https://5x.ant.design/components/progress"
+        },
+        {
+          "name": "Result",
+          "category": "feedback",
+          "purpose": "Full-area page showing the outcome of an operation (success, error, 404...).",
+          "url": "https://5x.ant.design/components/result",
+          "notes": "Distinct Ant component."
+        },
+        {
+          "name": "Skeleton",
+          "category": "feedback",
+          "purpose": "Grey placeholder shapes shown while content loads.",
+          "url": "https://5x.ant.design/components/skeleton"
+        },
+        {
+          "name": "Spin",
+          "category": "feedback",
+          "purpose": "Spinner showing a section or page is loading.",
+          "url": "https://5x.ant.design/components/spin"
+        },
+        {
+          "name": "Watermark",
+          "category": "utility",
+          "purpose": "Adds a text or image watermark over an area.",
+          "url": "https://5x.ant.design/components/watermark",
+          "notes": "Added in 5.1. Distinct Ant component."
+        },
+        {
+          "name": "Affix",
+          "category": "utility",
+          "purpose": "Pins an element to the viewport while scrolling.",
+          "url": "https://5x.ant.design/components/affix"
+        },
+        {
+          "name": "App",
+          "category": "utility",
+          "purpose": "Wrapper that provides context for message/notification/modal hooks and reset styles.",
+          "url": "https://5x.ant.design/components/app",
+          "notes": "Added in 5.1."
+        },
+        {
+          "name": "ConfigProvider",
+          "category": "utility",
+          "purpose": "Sets global config such as theme, locale, and component defaults.",
+          "url": "https://5x.ant.design/components/config-provider"
+        },
+        {
+          "name": "Util",
+          "category": "utility",
+          "purpose": "Shared utilities such as GetRef and GetProps type helpers.",
+          "url": "https://5x.ant.design/components/_util",
+          "notes": "Not a UI component."
+        }
+      ],
+      "count": 70
+    },
+    {
+      "system": "Fluent 2",
+      "source": "https://fluent2.microsoft.design/components/web/react",
+      "notes": "47 components on the Fluent 2 design site (web/react) plus components that exist only in the Fluent UI React v9 Storybook (https://react.fluentui.dev). Motion preview components (Fade, Scale, Slide, Collapse, Blur, Rotate) omitted as animation utilities.",
+      "components": [
+        {
+          "name": "Accordion",
+          "category": "disclosure",
+          "purpose": "Expandable/collapsible sections of content.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/accordion/usage"
+        },
+        {
+          "name": "Avatar",
+          "category": "data-display",
+          "purpose": "Shows a person or entity as an image, initials, or icon.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/avatar/usage"
+        },
+        {
+          "name": "Avatar group",
+          "category": "data-display",
+          "purpose": "Shows a group of avatars, stacked or spread, with overflow.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/avatargroup/usage"
+        },
+        {
+          "name": "Badge",
+          "category": "data-display",
+          "purpose": "Small visual indicator for status, count, or attention.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/badge/usage",
+          "notes": "React v9 splits into Badge, CounterBadge, PresenceBadge (separate docs pages)."
+        },
+        {
+          "name": "Breadcrumb",
+          "category": "navigation",
+          "purpose": "Shows the current location in a hierarchy with links back up.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/breadcrumb/usage"
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Triggers an action.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/button/usage",
+          "notes": "React v9 ships Button, CompoundButton, MenuButton, SplitButton, ToggleButton as separate components (listed below)."
+        },
+        {
+          "name": "Card",
+          "category": "data-display",
+          "purpose": "A container grouping information and actions about one subject.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/card/usage",
+          "notes": "React v9 parts: CardHeader, CardPreview, CardFooter; selectable cards."
+        },
+        {
+          "name": "Carousel",
+          "category": "media",
+          "purpose": "Rotating set of slides with navigation controls.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/carousel/usage",
+          "notes": "React v9 includes CarouselNav."
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Selects one or more options, or toggles one option.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/checkbox/usage"
+        },
+        {
+          "name": "Combobox",
+          "category": "selection",
+          "purpose": "Text field with a dropdown list the user can type to filter or pick from.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/combobox/usage",
+          "notes": "Supports multiselect and freeform."
+        },
+        {
+          "name": "Dialog",
+          "category": "overlay",
+          "purpose": "A modal or non-modal window for focused tasks or confirmations.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/dialog/usage",
+          "notes": "Modal, non-modal, alert."
+        },
+        {
+          "name": "Divider",
+          "category": "layout",
+          "purpose": "A line separating content, optionally with a label.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/divider/usage",
+          "presentational": true
+        },
+        {
+          "name": "Drawer",
+          "category": "overlay",
+          "purpose": "A panel that slides in from the edge for extra content or navigation.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/drawer/usage",
+          "notes": "OverlayDrawer and InlineDrawer."
+        },
+        {
+          "name": "Dropdown",
+          "category": "selection",
+          "purpose": "Button-like control that opens a list of options to pick from (no typing).",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/dropdown/usage"
+        },
+        {
+          "name": "Field",
+          "category": "data-entry-complex",
+          "purpose": "Wraps a form control with a label, hint, and validation message.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/field/usage"
+        },
+        {
+          "name": "Fluent provider",
+          "category": "utility",
+          "purpose": "Supplies theme, direction, and styling context to Fluent components.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/fluentprovider/usage"
+        },
+        {
+          "name": "Icon",
+          "category": "media",
+          "purpose": "Shows Fluent system icons.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/icon/usage",
+          "notes": "Icons ship in @fluentui/react-icons."
+        },
+        {
+          "name": "Image",
+          "category": "media",
+          "purpose": "Displays an image with fit and shape options.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/image/usage"
+        },
+        {
+          "name": "Info label",
+          "category": "overlay",
+          "purpose": "A label with an info icon that opens a popover with more details.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/infolabel/usage",
+          "notes": "Similar to Carbon Toggletip."
+        },
+        {
+          "name": "Input",
+          "category": "input",
+          "purpose": "Single-line text field.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/input/usage"
+        },
+        {
+          "name": "Label",
+          "category": "typography",
+          "purpose": "Text label for a form control.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/label/usage"
+        },
+        {
+          "name": "Link",
+          "category": "navigation",
+          "purpose": "Text that navigates somewhere or triggers an action.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/link/usage"
+        },
+        {
+          "name": "List",
+          "category": "data-display",
+          "purpose": "Accessible list of items, optionally selectable and interactive.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/list/usage"
+        },
+        {
+          "name": "Menu",
+          "category": "overlay",
+          "purpose": "A popup list of actions or options.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/menu/usage",
+          "notes": "React v9 also documents MenuList (inline menu) and preview MenuGrid."
+        },
+        {
+          "name": "Message bar",
+          "category": "feedback",
+          "purpose": "Inline banner for status, warnings, or errors in a region.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/messagebar/usage",
+          "notes": "Equivalent to Ant Alert / Carbon inline notification."
+        },
+        {
+          "name": "Nav",
+          "category": "navigation",
+          "purpose": "Side navigation for moving between app sections.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/nav/usage",
+          "notes": "NavDrawer; categories and subitems."
+        },
+        {
+          "name": "Persona",
+          "category": "data-display",
+          "purpose": "Shows a person's avatar with name, status, and secondary text.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/persona/usage"
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "A floating surface with content attached to a trigger.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/popover/usage"
+        },
+        {
+          "name": "Progress bar",
+          "category": "feedback",
+          "purpose": "Horizontal bar showing progress of a task.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/progressbar/usage"
+        },
+        {
+          "name": "Radio group",
+          "category": "selection",
+          "purpose": "Choose exactly one option from a set.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/radiogroup/usage"
+        },
+        {
+          "name": "Rating",
+          "category": "input",
+          "purpose": "Star rating input.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/rating/usage",
+          "notes": "React v9 also ships RatingDisplay (read-only)."
+        },
+        {
+          "name": "Searchbox",
+          "category": "input",
+          "purpose": "Text field specialized for search with search/clear icons.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/searchbox/usage"
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Native select for choosing one option.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/select/usage"
+        },
+        {
+          "name": "Skeleton",
+          "category": "feedback",
+          "purpose": "Placeholder shapes shown while content loads.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/skeleton/usage"
+        },
+        {
+          "name": "Slider",
+          "category": "input",
+          "purpose": "Pick a value by dragging along a track.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/slider/usage",
+          "notes": "Single value only (no range)."
+        },
+        {
+          "name": "Spin button",
+          "category": "input",
+          "purpose": "Numeric field with increment/decrement buttons.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/spin/usage"
+        },
+        {
+          "name": "Spinner",
+          "category": "feedback",
+          "purpose": "Animated indicator that something is loading.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/spinner/usage"
+        },
+        {
+          "name": "Switch",
+          "category": "selection",
+          "purpose": "Toggles a setting on or off.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/switch/usage"
+        },
+        {
+          "name": "Tablist",
+          "category": "navigation",
+          "purpose": "A row of tabs for switching views.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/tablist/usage"
+        },
+        {
+          "name": "Tag",
+          "category": "data-display",
+          "purpose": "Compact label representing an item, attribute, or person, optionally dismissible.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/tag/usage",
+          "notes": "React v9: Tag, InteractionTag (tag with primary + secondary actions), TagGroup."
+        },
+        {
+          "name": "Tag picker",
+          "category": "data-entry-complex",
+          "purpose": "Combobox that lets users pick multiple items shown as tags in the input.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/tagpicker/usage",
+          "notes": "Distinct Fluent component (people/tag picker); Ant uses Select mode='tags', Carbon uses Multiselect."
+        },
+        {
+          "name": "Text",
+          "category": "typography",
+          "purpose": "Displays text with Fluent type ramp styles.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/text/usage",
+          "notes": "Presets like Title1, Body1, Caption1."
+        },
+        {
+          "name": "Textarea",
+          "category": "input",
+          "purpose": "Multi-line text field.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/textarea/usage"
+        },
+        {
+          "name": "Toast",
+          "category": "feedback",
+          "purpose": "Temporary notification that appears and disappears in a screen corner.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/toast/usage",
+          "notes": "Toaster + useToastController."
+        },
+        {
+          "name": "Toolbar",
+          "category": "action",
+          "purpose": "A row of buttons and controls for related commands.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/toolbar/usage"
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Short text shown on hover or focus.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/tooltip/usage"
+        },
+        {
+          "name": "Tree",
+          "category": "data-display",
+          "purpose": "Hierarchical list with expandable nodes.",
+          "url": "https://fluent2.microsoft.design/components/web/react/core/tree/usage",
+          "notes": "Tree and FlatTree."
+        },
+        {
+          "name": "CounterBadge",
+          "category": "data-display",
+          "purpose": "Badge that shows a number count.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-badge-counter-badge--docs",
+          "notes": "React v9 only; Fluent 2 design covers it under Badge."
+        },
+        {
+          "name": "PresenceBadge",
+          "category": "data-display",
+          "purpose": "Badge showing a person's availability (available, busy, away...).",
+          "url": "https://react.fluentui.dev/?path=/docs/components-badge-presencebadge--docs",
+          "notes": "React v9 only; Fluent 2 design covers it under Badge."
+        },
+        {
+          "name": "CompoundButton",
+          "category": "action",
+          "purpose": "Button with a primary label plus secondary descriptive text.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-button-compoundbutton--docs",
+          "notes": "React v9; Fluent 2 design covers under Button."
+        },
+        {
+          "name": "MenuButton",
+          "category": "action",
+          "purpose": "Button that opens a menu.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-button-menubutton--docs",
+          "notes": "React v9; Carbon Menu button equivalent."
+        },
+        {
+          "name": "SplitButton",
+          "category": "action",
+          "purpose": "Button with a main action and a separate menu trigger.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-button-splitbutton--docs",
+          "notes": "React v9; equivalents M3 Split buttons, Carbon Combo button."
+        },
+        {
+          "name": "ToggleButton",
+          "category": "action",
+          "purpose": "Button that stays pressed/unpressed to toggle a state.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-button-togglebutton--docs",
+          "notes": "React v9."
+        },
+        {
+          "name": "ColorPicker",
+          "category": "data-entry-complex",
+          "purpose": "Lets users pick a color with area, hue, and alpha sliders.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-colorpicker--docs",
+          "notes": "React v9 only; no Fluent 2 design page."
+        },
+        {
+          "name": "SwatchPicker",
+          "category": "selection",
+          "purpose": "Lets users pick a color or image from a grid/row of swatches.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-swatchpicker--docs",
+          "notes": "React v9 only; distinct Fluent component."
+        },
+        {
+          "name": "DataGrid",
+          "category": "data-display",
+          "purpose": "Feature-rich data table with sorting, selection, resizing, and keyboard grid navigation.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-datagrid--docs",
+          "notes": "React v9 only; built on Table."
+        },
+        {
+          "name": "Table",
+          "category": "data-display",
+          "purpose": "Primitive table for showing tabular data.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-table--docs",
+          "notes": "React v9 only."
+        },
+        {
+          "name": "InteractionTag",
+          "category": "action",
+          "purpose": "Tag with a primary click action and an optional secondary (dismiss) action.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-tag-interactiontag--docs",
+          "notes": "React v9; Carbon operational tag is similar."
+        },
+        {
+          "name": "TagGroup",
+          "category": "data-display",
+          "purpose": "Container managing a set of tags, including dismissal and focus.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-tag-taggroup--docs",
+          "notes": "React v9."
+        },
+        {
+          "name": "TeachingPopover",
+          "category": "overlay",
+          "purpose": "A popover that teaches or onboards users, optionally in multiple steps.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-teachingpopover--docs",
+          "notes": "React v9 only; equivalent to Ant Tour."
+        },
+        {
+          "name": "MenuList",
+          "category": "overlay",
+          "purpose": "The list part of a menu rendered inline without a popup.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-menu-menulist--docs",
+          "notes": "React v9."
+        },
+        {
+          "name": "MenuGrid",
+          "category": "overlay",
+          "purpose": "Menu laid out as a grid with row-level actions.",
+          "url": "https://react.fluentui.dev/?path=/docs/preview-components-menu-menugrid--docs",
+          "notes": "React v9 preview component."
+        },
+        {
+          "name": "Overflow",
+          "category": "utility",
+          "purpose": "Hides items that don't fit and moves them to an overflow menu.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-overflow--docs",
+          "notes": "React v9 utility component used by Toolbar/TabList patterns."
+        },
+        {
+          "name": "Portal",
+          "category": "utility",
+          "purpose": "Renders children into a different part of the DOM (e.g. for overlays).",
+          "url": "https://react.fluentui.dev/?path=/docs/components-portal-portal--docs",
+          "notes": "React v9 utility."
+        },
+        {
+          "name": "RatingDisplay",
+          "category": "data-display",
+          "purpose": "Read-only star rating display.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-ratingdisplay--docs",
+          "notes": "React v9."
+        },
+        {
+          "name": "CarouselNav",
+          "category": "navigation",
+          "purpose": "Dot/thumbnail controls for moving between carousel slides.",
+          "url": "https://react.fluentui.dev/?path=/docs/components-carousel-carouselnav--docs",
+          "notes": "React v9 sub-component of Carousel."
+        },
+        {
+          "name": "Calendar (compat)",
+          "category": "data-display",
+          "purpose": "Month calendar for picking a date.",
+          "url": "https://react.fluentui.dev/?path=/docs/compat-components-calendar--docs",
+          "notes": "React v9 compat component ported from v8."
+        },
+        {
+          "name": "DatePicker (compat)",
+          "category": "data-entry-complex",
+          "purpose": "Input with a popup calendar for picking a date.",
+          "url": "https://react.fluentui.dev/?path=/docs/compat-components-datepicker--docs",
+          "notes": "React v9 compat component; Fluent 2 has no design page for date picker."
+        },
+        {
+          "name": "TimePicker (compat)",
+          "category": "data-entry-complex",
+          "purpose": "Combobox for picking a time of day.",
+          "url": "https://react.fluentui.dev/?path=/docs/compat-components-timepicker--docs",
+          "notes": "React v9 compat component."
+        },
+        {
+          "name": "AriaLiveAnnouncer",
+          "category": "utility",
+          "purpose": "Announces messages to screen readers via an ARIA live region.",
+          "url": "https://react.fluentui.dev/?path=/docs/utilities-aria-live-arialiveannouncer--docs",
+          "notes": "React v9 utility."
+        }
+      ],
+      "count": 70
+    }
+  ]
+}

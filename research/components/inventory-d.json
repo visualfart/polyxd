@@ -1,0 +1,1295 @@
+{
+  "systems": [
+    {
+      "system": "GOV.UK Frontend",
+      "source": "https://design-system.service.gov.uk/components/ and https://design-system.service.gov.uk/patterns/",
+      "components": [
+        {
+          "name": "Accordion",
+          "category": "disclosure",
+          "purpose": "Lets users show and hide multiple sections of related content on one page.",
+          "url": "https://design-system.service.gov.uk/components/accordion/"
+        },
+        {
+          "name": "Back link",
+          "category": "navigation",
+          "purpose": "Link that takes users back to the previous page in a transaction.",
+          "url": "https://design-system.service.gov.uk/components/back-link/"
+        },
+        {
+          "name": "Breadcrumbs",
+          "category": "navigation",
+          "purpose": "Shows where the current page sits in the site hierarchy and links to parent pages.",
+          "url": "https://design-system.service.gov.uk/components/breadcrumbs/"
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Lets users carry out an action, such as starting or submitting a form.",
+          "url": "https://design-system.service.gov.uk/components/button/"
+        },
+        {
+          "name": "Character count",
+          "category": "input",
+          "purpose": "Textarea that tells users how many characters or words they have left.",
+          "url": "https://design-system.service.gov.uk/components/character-count/"
+        },
+        {
+          "name": "Checkboxes",
+          "category": "selection",
+          "purpose": "Lets users pick one or more options from a list, or toggle a single option.",
+          "url": "https://design-system.service.gov.uk/components/checkboxes/"
+        },
+        {
+          "name": "Cookie banner",
+          "category": "feedback",
+          "purpose": "Asks users to accept or reject non-essential cookies.",
+          "url": "https://design-system.service.gov.uk/components/cookie-banner/",
+          "notes": "Page-level banner, not a modal overlay."
+        },
+        {
+          "name": "Date input",
+          "category": "input",
+          "purpose": "Separate day, month and year fields for entering a known date.",
+          "url": "https://design-system.service.gov.uk/components/date-input/"
+        },
+        {
+          "name": "Details",
+          "category": "disclosure",
+          "purpose": "A small expandable section for less important supporting information.",
+          "url": "https://design-system.service.gov.uk/components/details/"
+        },
+        {
+          "name": "Error message",
+          "category": "feedback",
+          "purpose": "Inline message next to a field explaining what went wrong and how to fix it.",
+          "url": "https://design-system.service.gov.uk/components/error-message/"
+        },
+        {
+          "name": "Error summary",
+          "category": "feedback",
+          "purpose": "Box at the top of a page listing all validation errors with links to each field.",
+          "url": "https://design-system.service.gov.uk/components/error-summary/"
+        },
+        {
+          "name": "Exit this page",
+          "category": "action",
+          "purpose": "Button that lets users quickly leave a sensitive page for a safe site.",
+          "url": "https://design-system.service.gov.uk/components/exit-this-page/"
+        },
+        {
+          "name": "Feedback",
+          "category": "feedback",
+          "purpose": "Asks users whether a page was useful and collects comments to improve it.",
+          "url": "https://design-system.service.gov.uk/components/feedback/"
+        },
+        {
+          "name": "Fieldset",
+          "category": "layout",
+          "purpose": "Groups related form inputs under a shared legend.",
+          "url": "https://design-system.service.gov.uk/components/fieldset/",
+          "notes": "Form grouping wrapper rather than a visual layout primitive."
+        },
+        {
+          "name": "File upload",
+          "category": "input",
+          "purpose": "Lets users choose and upload a file.",
+          "url": "https://design-system.service.gov.uk/components/file-upload/"
+        },
+        {
+          "name": "Generic header",
+          "category": "navigation",
+          "purpose": "Header for non-GOV.UK-branded services, showing the service or organisation name.",
+          "url": "https://design-system.service.gov.uk/components/generic-header/"
+        },
+        {
+          "name": "GOV.UK footer",
+          "category": "navigation",
+          "purpose": "Page footer with GOV.UK links, licence and copyright information.",
+          "url": "https://design-system.service.gov.uk/components/footer/"
+        },
+        {
+          "name": "GOV.UK header",
+          "category": "navigation",
+          "purpose": "Top bar showing users they are on GOV.UK.",
+          "url": "https://design-system.service.gov.uk/components/header/"
+        },
+        {
+          "name": "Inset text",
+          "category": "typography",
+          "purpose": "Indented block that differentiates a piece of content from surrounding text.",
+          "url": "https://design-system.service.gov.uk/components/inset-text/"
+        },
+        {
+          "name": "Language navigation",
+          "category": "navigation",
+          "purpose": "Lets users switch between languages the page is available in.",
+          "url": "https://design-system.service.gov.uk/components/language-navigation/"
+        },
+        {
+          "name": "Notification banner",
+          "category": "feedback",
+          "purpose": "Tells users about something important or confirms a successful action.",
+          "url": "https://design-system.service.gov.uk/components/notification-banner/"
+        },
+        {
+          "name": "Pagination",
+          "category": "navigation",
+          "purpose": "Links to move between numbered pages or previous/next related pages.",
+          "url": "https://design-system.service.gov.uk/components/pagination/"
+        },
+        {
+          "name": "Panel",
+          "category": "feedback",
+          "purpose": "Large coloured box confirming a completed transaction, often with a reference number.",
+          "url": "https://design-system.service.gov.uk/components/panel/"
+        },
+        {
+          "name": "Password input",
+          "category": "input",
+          "purpose": "Password field with a show/hide toggle.",
+          "url": "https://design-system.service.gov.uk/components/password-input/"
+        },
+        {
+          "name": "Phase banner",
+          "category": "feedback",
+          "purpose": "Shows that a service is in alpha or beta and invites feedback.",
+          "url": "https://design-system.service.gov.uk/components/phase-banner/"
+        },
+        {
+          "name": "Radios",
+          "category": "selection",
+          "purpose": "Lets users pick exactly one option from a list.",
+          "url": "https://design-system.service.gov.uk/components/radios/"
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Native dropdown for choosing one option; use only as a last resort.",
+          "url": "https://design-system.service.gov.uk/components/select/",
+          "notes": "GOV.UK advises avoiding it where possible in favour of radios."
+        },
+        {
+          "name": "Service navigation",
+          "category": "navigation",
+          "purpose": "Shows the service name and top-level navigation links for a service.",
+          "url": "https://design-system.service.gov.uk/components/service-navigation/"
+        },
+        {
+          "name": "Skip link",
+          "category": "navigation",
+          "purpose": "Hidden-until-focused link letting keyboard users jump to main content.",
+          "url": "https://design-system.service.gov.uk/components/skip-link/"
+        },
+        {
+          "name": "Summary list",
+          "category": "data-display",
+          "purpose": "Key-value rows summarising information, often with change links.",
+          "url": "https://design-system.service.gov.uk/components/summary-list/"
+        },
+        {
+          "name": "Table",
+          "category": "data-display",
+          "purpose": "Presents data in rows and columns for comparison.",
+          "url": "https://design-system.service.gov.uk/components/table/"
+        },
+        {
+          "name": "Tabs",
+          "category": "disclosure",
+          "purpose": "Switches between related sections of content shown one at a time.",
+          "url": "https://design-system.service.gov.uk/components/tabs/"
+        },
+        {
+          "name": "Tag",
+          "category": "data-display",
+          "purpose": "Short label showing the status of something.",
+          "url": "https://design-system.service.gov.uk/components/tag/"
+        },
+        {
+          "name": "Task list",
+          "category": "data-entry-complex",
+          "purpose": "List of tasks a user must complete, each with its status.",
+          "url": "https://design-system.service.gov.uk/components/task-list/",
+          "notes": "Component version of the 'Complete multiple tasks' pattern; docs call it a new component still being tested."
+        },
+        {
+          "name": "Text input",
+          "category": "input",
+          "purpose": "Single-line field for short text answers.",
+          "url": "https://design-system.service.gov.uk/components/text-input/"
+        },
+        {
+          "name": "Textarea",
+          "category": "input",
+          "purpose": "Multi-line field for longer text answers.",
+          "url": "https://design-system.service.gov.uk/components/textarea/"
+        },
+        {
+          "name": "Warning text",
+          "category": "feedback",
+          "purpose": "Highlighted text with an icon warning users about something important.",
+          "url": "https://design-system.service.gov.uk/components/warning-text/"
+        },
+        {
+          "name": "Addresses",
+          "category": "data-entry-complex",
+          "purpose": "How to ask for UK and international addresses (multiple fields, lookup or textarea).",
+          "url": "https://design-system.service.gov.uk/patterns/addresses/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "Bank details",
+          "category": "data-entry-complex",
+          "purpose": "How to ask for account name, sort code, account and building society roll numbers.",
+          "url": "https://design-system.service.gov.uk/patterns/bank-details/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "Dates",
+          "category": "data-entry-complex",
+          "purpose": "How to ask for or show dates, choosing between date input and other controls.",
+          "url": "https://design-system.service.gov.uk/patterns/dates/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "Email addresses",
+          "category": "input",
+          "purpose": "How to ask for an email address with the right input type and validation.",
+          "url": "https://design-system.service.gov.uk/patterns/email-addresses/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "Equality information",
+          "category": "data-entry-complex",
+          "purpose": "How to ask optional equality questions such as ethnicity, sex and disability.",
+          "url": "https://design-system.service.gov.uk/patterns/equality-information/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "Names",
+          "category": "input",
+          "purpose": "How to ask for a person's name without assuming a structure.",
+          "url": "https://design-system.service.gov.uk/patterns/names/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "National Insurance numbers",
+          "category": "input",
+          "purpose": "How to ask for a National Insurance number.",
+          "url": "https://design-system.service.gov.uk/patterns/national-insurance-numbers/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "Passwords",
+          "category": "input",
+          "purpose": "How to ask users to create or enter a password.",
+          "url": "https://design-system.service.gov.uk/patterns/passwords/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "Payment card details",
+          "category": "data-entry-complex",
+          "purpose": "How to ask for card number, expiry date, security code and cardholder name.",
+          "url": "https://design-system.service.gov.uk/patterns/payment-card-details/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "Phone numbers",
+          "category": "input",
+          "purpose": "How to ask for UK and international phone numbers.",
+          "url": "https://design-system.service.gov.uk/patterns/phone-numbers/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Ask users for'."
+        },
+        {
+          "name": "Check a service is suitable",
+          "category": "data-entry-complex",
+          "purpose": "Eligibility questions that tell users early whether they can use a service.",
+          "url": "https://design-system.service.gov.uk/patterns/check-a-service-is-suitable/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Check answers",
+          "category": "data-entry-complex",
+          "purpose": "A page letting users review and change their answers before submitting.",
+          "url": "https://design-system.service.gov.uk/patterns/check-answers/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'. Implemented with the Summary list component."
+        },
+        {
+          "name": "Complete multiple tasks",
+          "category": "data-entry-complex",
+          "purpose": "Task list page for long transactions split into several tasks.",
+          "url": "https://design-system.service.gov.uk/patterns/complete-multiple-tasks/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'. Implemented with the Task list component."
+        },
+        {
+          "name": "Confirm a phone number",
+          "category": "data-entry-complex",
+          "purpose": "Sends a security code by text to check the user has access to a phone number.",
+          "url": "https://design-system.service.gov.uk/patterns/confirm-a-phone-number/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Confirm an email address",
+          "category": "data-entry-complex",
+          "purpose": "Sends a link or code by email to check the user can access an address.",
+          "url": "https://design-system.service.gov.uk/patterns/confirm-an-email-address/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Contact a department or service team",
+          "category": "data-display",
+          "purpose": "How to show contact details such as phone, email and opening hours.",
+          "url": "https://design-system.service.gov.uk/patterns/contact-a-department-or-service-team/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Create a username",
+          "category": "input",
+          "purpose": "How to help users create a username that is unique and memorable.",
+          "url": "https://design-system.service.gov.uk/patterns/create-a-username/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Create accounts",
+          "category": "data-entry-complex",
+          "purpose": "When and how to ask users to create an account in a service.",
+          "url": "https://design-system.service.gov.uk/patterns/create-accounts/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Exit a page quickly",
+          "category": "action",
+          "purpose": "Using the Exit this page component so users at risk can leave a sensitive page fast.",
+          "url": "https://design-system.service.gov.uk/patterns/exit-a-page-quickly/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Navigate a service",
+          "category": "navigation",
+          "purpose": "How to structure header and service navigation so users can move around a service.",
+          "url": "https://design-system.service.gov.uk/patterns/navigate-a-service/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Recover from validation errors",
+          "category": "feedback",
+          "purpose": "How to validate answers and show error summaries and messages.",
+          "url": "https://design-system.service.gov.uk/patterns/validation/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Start using a service",
+          "category": "action",
+          "purpose": "Start page or entry point that explains a service and begins the journey.",
+          "url": "https://design-system.service.gov.uk/patterns/start-using-a-service/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Help users to'."
+        },
+        {
+          "name": "Confirmation pages",
+          "category": "feedback",
+          "purpose": "Page telling users they have completed a transaction and what happens next.",
+          "url": "https://design-system.service.gov.uk/patterns/confirmation-pages/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Pages'."
+        },
+        {
+          "name": "Cookies page",
+          "category": "data-entry-complex",
+          "purpose": "Page explaining cookies with a form to accept or reject each type.",
+          "url": "https://design-system.service.gov.uk/patterns/cookies-page/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Pages'."
+        },
+        {
+          "name": "Interruption pages",
+          "category": "feedback",
+          "purpose": "Page that stops users mid-journey to warn them about something important.",
+          "url": "https://design-system.service.gov.uk/patterns/interruption-pages/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Pages'."
+        },
+        {
+          "name": "Page not found pages",
+          "category": "feedback",
+          "purpose": "404 page for when a URL does not exist.",
+          "url": "https://design-system.service.gov.uk/patterns/page-not-found-pages/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Pages'."
+        },
+        {
+          "name": "Question pages",
+          "category": "data-entry-complex",
+          "purpose": "Page layout for asking users one question (or a few) at a time.",
+          "url": "https://design-system.service.gov.uk/patterns/question-pages/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Pages'."
+        },
+        {
+          "name": "Service unavailable pages",
+          "category": "feedback",
+          "purpose": "Page shown when a service is closed, shut down or unavailable.",
+          "url": "https://design-system.service.gov.uk/patterns/service-unavailable-pages/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Pages'."
+        },
+        {
+          "name": "Step by step navigation",
+          "category": "navigation",
+          "purpose": "Numbered sequence of steps showing how to complete an end-to-end task across services.",
+          "url": "https://design-system.service.gov.uk/patterns/step-by-step-navigation/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Pages'. Owned by GOV.UK Publishing (mainstream GOV.UK); not in govuk-frontend, docs point to GOV.UK Publishing components."
+        },
+        {
+          "name": "There is a problem with the service pages",
+          "category": "feedback",
+          "purpose": "Page shown when something has gone wrong with the service (500 error).",
+          "url": "https://design-system.service.gov.uk/patterns/problem-with-the-service-pages/",
+          "kind": "pattern",
+          "notes": "Patterns section: 'Pages'."
+        }
+      ]
+    },
+    {
+      "system": "Chakra UI v3",
+      "source": "https://chakra-ui.com/docs/components",
+      "components": [
+        {
+          "name": "Aspect Ratio",
+          "category": "layout",
+          "purpose": "Keeps content at a fixed width-to-height ratio.",
+          "url": "https://chakra-ui.com/docs/components/aspect-ratio",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Bleed",
+          "category": "layout",
+          "purpose": "Lets content break out of its parent's horizontal padding.",
+          "url": "https://chakra-ui.com/docs/components/bleed",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Box",
+          "category": "layout",
+          "purpose": "Generic styled container; the base building block.",
+          "url": "https://chakra-ui.com/docs/components/box",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Center (Absolute)",
+          "category": "layout",
+          "purpose": "Absolutely centres an element within its positioned parent.",
+          "url": "https://chakra-ui.com/docs/components/absolute-center",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Center",
+          "category": "layout",
+          "purpose": "Centres its child horizontally and vertically.",
+          "url": "https://chakra-ui.com/docs/components/center",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Container",
+          "category": "layout",
+          "purpose": "Constrains content to a max width with horizontal padding.",
+          "url": "https://chakra-ui.com/docs/components/container",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Flex",
+          "category": "layout",
+          "purpose": "Box with flexbox display and shorthand props.",
+          "url": "https://chakra-ui.com/docs/components/flex",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Float",
+          "category": "layout",
+          "purpose": "Anchors an element to an edge or corner of a container, e.g. a badge.",
+          "url": "https://chakra-ui.com/docs/components/float",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Grid",
+          "category": "layout",
+          "purpose": "Box with CSS grid display and shorthand props.",
+          "url": "https://chakra-ui.com/docs/components/grid",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Group",
+          "category": "layout",
+          "purpose": "Groups elements together, e.g. attached buttons.",
+          "url": "https://chakra-ui.com/docs/components/group",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Scroll Area",
+          "category": "layout",
+          "purpose": "Scrollable region with custom-styled scrollbars.",
+          "url": "https://chakra-ui.com/docs/components/scroll-area",
+          "notes": "Docs sidebar group: Layout. Interactive layout helper; not marked presentational."
+        },
+        {
+          "name": "Separator",
+          "category": "layout",
+          "purpose": "Visual divider line between content.",
+          "url": "https://chakra-ui.com/docs/components/separator",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "SimpleGrid",
+          "category": "layout",
+          "purpose": "Responsive equal-width grid by column count or min child width.",
+          "url": "https://chakra-ui.com/docs/components/simple-grid",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Splitter",
+          "category": "layout",
+          "purpose": "Resizable panels separated by draggable handles.",
+          "url": "https://chakra-ui.com/docs/components/splitter",
+          "notes": "Docs sidebar group: Layout. Interactive layout component; not marked presentational."
+        },
+        {
+          "name": "Stack",
+          "category": "layout",
+          "purpose": "Stacks children vertically or horizontally with even spacing.",
+          "url": "https://chakra-ui.com/docs/components/stack",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Wrap",
+          "category": "layout",
+          "purpose": "Lays out children in a row that wraps onto new lines with gaps.",
+          "url": "https://chakra-ui.com/docs/components/wrap",
+          "presentational": true,
+          "notes": "Docs sidebar group: Layout."
+        },
+        {
+          "name": "Blockquote",
+          "category": "typography",
+          "purpose": "Styled quotation with optional citation.",
+          "url": "https://chakra-ui.com/docs/components/blockquote",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Code",
+          "category": "typography",
+          "purpose": "Inline code snippet.",
+          "url": "https://chakra-ui.com/docs/components/code",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Code Block",
+          "category": "typography",
+          "purpose": "Multi-line code with syntax highlighting, copy and line numbers.",
+          "url": "https://chakra-ui.com/docs/components/code-block",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Em",
+          "category": "typography",
+          "purpose": "Emphasised (italic) text.",
+          "url": "https://chakra-ui.com/docs/components/em",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Heading",
+          "category": "typography",
+          "purpose": "Title text rendered as a heading element.",
+          "url": "https://chakra-ui.com/docs/components/heading",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Highlight",
+          "category": "typography",
+          "purpose": "Highlights matching words or phrases inside a text string.",
+          "url": "https://chakra-ui.com/docs/components/highlight",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Kbd",
+          "category": "typography",
+          "purpose": "Shows a keyboard key or shortcut.",
+          "url": "https://chakra-ui.com/docs/components/kbd",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Link",
+          "category": "navigation",
+          "purpose": "Styled anchor for navigating to another page or resource.",
+          "url": "https://chakra-ui.com/docs/components/link",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Link Overlay",
+          "category": "navigation",
+          "purpose": "Makes a whole container (e.g. card) clickable as a link while keeping nested links.",
+          "url": "https://chakra-ui.com/docs/components/link-overlay",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "List",
+          "category": "typography",
+          "purpose": "Ordered or unordered list with optional icons.",
+          "url": "https://chakra-ui.com/docs/components/list",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Mark",
+          "category": "typography",
+          "purpose": "Marks text as highlighted for reference.",
+          "url": "https://chakra-ui.com/docs/components/mark",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Prose",
+          "category": "typography",
+          "purpose": "Applies readable typographic styles to arbitrary HTML/markdown content.",
+          "url": "https://chakra-ui.com/docs/components/prose",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Rich Text Editor",
+          "category": "data-entry-complex",
+          "purpose": "WYSIWYG editor for formatted text.",
+          "url": "https://chakra-ui.com/docs/components/rich-text-editor",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Text",
+          "category": "typography",
+          "purpose": "Renders paragraphs and inline text.",
+          "url": "https://chakra-ui.com/docs/components/text",
+          "notes": "Docs sidebar group: Typography."
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Triggers an action or event.",
+          "url": "https://chakra-ui.com/docs/components/button",
+          "notes": "Docs sidebar group: Buttons."
+        },
+        {
+          "name": "Close Button",
+          "category": "action",
+          "purpose": "Icon button that closes a dialog, drawer or similar.",
+          "url": "https://chakra-ui.com/docs/components/close-button",
+          "notes": "Docs sidebar group: Buttons."
+        },
+        {
+          "name": "Icon Button",
+          "category": "action",
+          "purpose": "Button showing only an icon.",
+          "url": "https://chakra-ui.com/docs/components/icon-button",
+          "notes": "Docs sidebar group: Buttons."
+        },
+        {
+          "name": "Download Trigger",
+          "category": "action",
+          "purpose": "Button that downloads a file or blob when clicked.",
+          "url": "https://chakra-ui.com/docs/components/download-trigger",
+          "notes": "Docs sidebar group: Buttons."
+        },
+        {
+          "name": "Date Input",
+          "category": "input",
+          "purpose": "Typed date field with segmented day/month/year entry.",
+          "url": "https://chakra-ui.com/docs/components/date-input",
+          "notes": "Docs sidebar group: Date and Time."
+        },
+        {
+          "name": "Date Picker",
+          "category": "data-entry-complex",
+          "purpose": "Input with a popup calendar for choosing a date or range.",
+          "url": "https://chakra-ui.com/docs/components/date-picker",
+          "notes": "Docs sidebar group: Date and Time."
+        },
+        {
+          "name": "Calendar",
+          "category": "selection",
+          "purpose": "Inline calendar grid for picking dates.",
+          "url": "https://chakra-ui.com/docs/components/calendar",
+          "notes": "Docs sidebar group: Date and Time."
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Lets users select one or more options.",
+          "url": "https://chakra-ui.com/docs/components/checkbox",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Checkbox Card",
+          "category": "selection",
+          "purpose": "Card-styled checkbox with title and description.",
+          "url": "https://chakra-ui.com/docs/components/checkbox-card",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Color Picker",
+          "category": "data-entry-complex",
+          "purpose": "Lets users choose a colour via area, sliders, swatches or input.",
+          "url": "https://chakra-ui.com/docs/components/color-picker",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Color Swatch",
+          "category": "data-display",
+          "purpose": "Displays a colour sample.",
+          "url": "https://chakra-ui.com/docs/components/color-swatch",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Editable",
+          "category": "input",
+          "purpose": "Text that turns into an input when clicked for in-place editing.",
+          "url": "https://chakra-ui.com/docs/components/editable",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Field",
+          "category": "layout",
+          "purpose": "Wraps a form control with label, helper text and error text.",
+          "url": "https://chakra-ui.com/docs/components/field",
+          "notes": "Docs sidebar group: Forms. Form wrapper, categorised as layout."
+        },
+        {
+          "name": "Fieldset",
+          "category": "layout",
+          "purpose": "Groups related form fields under a legend.",
+          "url": "https://chakra-ui.com/docs/components/fieldset",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "File Upload",
+          "category": "input",
+          "purpose": "Lets users select or drag-and-drop files to upload.",
+          "url": "https://chakra-ui.com/docs/components/file-upload",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Input",
+          "category": "input",
+          "purpose": "Single-line text field.",
+          "url": "https://chakra-ui.com/docs/components/input",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Number Input",
+          "category": "input",
+          "purpose": "Numeric field with increment/decrement controls.",
+          "url": "https://chakra-ui.com/docs/components/number-input",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Password Input",
+          "category": "input",
+          "purpose": "Password field with visibility toggle and optional strength meter.",
+          "url": "https://chakra-ui.com/docs/components/password-input",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Pin Input",
+          "category": "input",
+          "purpose": "Row of single-character boxes for codes or PINs.",
+          "url": "https://chakra-ui.com/docs/components/pin-input",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Radio Card",
+          "category": "selection",
+          "purpose": "Card-styled radio for choosing one option with extra detail.",
+          "url": "https://chakra-ui.com/docs/components/radio-card",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Radio",
+          "category": "selection",
+          "purpose": "Lets users pick exactly one option from a set.",
+          "url": "https://chakra-ui.com/docs/components/radio",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Rating",
+          "category": "input",
+          "purpose": "Star (or icon) rating control.",
+          "url": "https://chakra-ui.com/docs/components/rating",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Segmented Control",
+          "category": "selection",
+          "purpose": "Row of mutually exclusive segments for picking one option.",
+          "url": "https://chakra-ui.com/docs/components/segmented-control",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Select (Native)",
+          "category": "selection",
+          "purpose": "Browser-native dropdown select.",
+          "url": "https://chakra-ui.com/docs/components/native-select",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Switch",
+          "category": "selection",
+          "purpose": "On/off toggle.",
+          "url": "https://chakra-ui.com/docs/components/switch",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Slider",
+          "category": "input",
+          "purpose": "Pick a value or range by dragging a thumb along a track.",
+          "url": "https://chakra-ui.com/docs/components/slider",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Textarea",
+          "category": "input",
+          "purpose": "Multi-line text field.",
+          "url": "https://chakra-ui.com/docs/components/textarea",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Tags Input",
+          "category": "input",
+          "purpose": "Field for entering multiple values as removable tags.",
+          "url": "https://chakra-ui.com/docs/components/tags-input",
+          "notes": "Docs sidebar group: Forms."
+        },
+        {
+          "name": "Combobox",
+          "category": "selection",
+          "purpose": "Text input with a filterable dropdown of options.",
+          "url": "https://chakra-ui.com/docs/components/combobox",
+          "notes": "Docs sidebar group: Collections."
+        },
+        {
+          "name": "Listbox",
+          "category": "selection",
+          "purpose": "Inline list of selectable options.",
+          "url": "https://chakra-ui.com/docs/components/listbox",
+          "notes": "Docs sidebar group: Collections."
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Custom dropdown for choosing one or more options.",
+          "url": "https://chakra-ui.com/docs/components/select",
+          "notes": "Docs sidebar group: Collections."
+        },
+        {
+          "name": "Tree View",
+          "category": "data-display",
+          "purpose": "Hierarchical, expandable tree of items.",
+          "url": "https://chakra-ui.com/docs/components/tree-view",
+          "notes": "Docs sidebar group: Collections. Listed under Collections; also selectable/expandable."
+        },
+        {
+          "name": "Action Bar",
+          "category": "overlay",
+          "purpose": "Floating bar of actions shown when items are selected.",
+          "url": "https://chakra-ui.com/docs/components/action-bar",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Dialog",
+          "category": "overlay",
+          "purpose": "Modal window over the page requiring user attention.",
+          "url": "https://chakra-ui.com/docs/components/dialog",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Drawer",
+          "category": "overlay",
+          "purpose": "Panel that slides in from a screen edge.",
+          "url": "https://chakra-ui.com/docs/components/drawer",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Floating Panel",
+          "category": "overlay",
+          "purpose": "Draggable, resizable non-modal panel.",
+          "url": "https://chakra-ui.com/docs/components/floating-panel",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Hover Card",
+          "category": "overlay",
+          "purpose": "Preview card shown when hovering over a link.",
+          "url": "https://chakra-ui.com/docs/components/hover-card",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Menu",
+          "category": "overlay",
+          "purpose": "Dropdown list of actions or options.",
+          "url": "https://chakra-ui.com/docs/components/menu",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Overlay Manager",
+          "category": "utility",
+          "purpose": "Programmatic API for opening and managing overlays such as dialogs.",
+          "url": "https://chakra-ui.com/docs/components/overlay-manager",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "Non-modal floating content anchored to a trigger.",
+          "url": "https://chakra-ui.com/docs/components/popover",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Toggle Tip",
+          "category": "overlay",
+          "purpose": "Tooltip-like info bubble opened by click, for touch and screen readers.",
+          "url": "https://chakra-ui.com/docs/components/toggle-tip",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Short label shown on hover or focus.",
+          "url": "https://chakra-ui.com/docs/components/tooltip",
+          "notes": "Docs sidebar group: Overlays."
+        },
+        {
+          "name": "Accordion",
+          "category": "disclosure",
+          "purpose": "Stack of collapsible sections.",
+          "url": "https://chakra-ui.com/docs/components/accordion",
+          "notes": "Docs sidebar group: Disclosure."
+        },
+        {
+          "name": "Breadcrumb",
+          "category": "navigation",
+          "purpose": "Trail of links showing the current page's location.",
+          "url": "https://chakra-ui.com/docs/components/breadcrumb",
+          "notes": "Docs sidebar group: Disclosure."
+        },
+        {
+          "name": "Carousel",
+          "category": "media",
+          "purpose": "Slideshow for cycling through items or images.",
+          "url": "https://chakra-ui.com/docs/components/carousel",
+          "notes": "Docs sidebar group: Disclosure."
+        },
+        {
+          "name": "Collapsible",
+          "category": "disclosure",
+          "purpose": "Shows and hides a single region of content.",
+          "url": "https://chakra-ui.com/docs/components/collapsible",
+          "notes": "Docs sidebar group: Disclosure."
+        },
+        {
+          "name": "Pagination",
+          "category": "navigation",
+          "purpose": "Controls for moving between pages of content.",
+          "url": "https://chakra-ui.com/docs/components/pagination",
+          "notes": "Docs sidebar group: Disclosure."
+        },
+        {
+          "name": "Steps",
+          "category": "navigation",
+          "purpose": "Shows progress through a multi-step process.",
+          "url": "https://chakra-ui.com/docs/components/steps",
+          "notes": "Docs sidebar group: Disclosure."
+        },
+        {
+          "name": "Tabs",
+          "category": "disclosure",
+          "purpose": "Switches between related panels of content.",
+          "url": "https://chakra-ui.com/docs/components/tabs",
+          "notes": "Docs sidebar group: Disclosure."
+        },
+        {
+          "name": "Alert",
+          "category": "feedback",
+          "purpose": "Inline message conveying status such as info, success, warning or error.",
+          "url": "https://chakra-ui.com/docs/components/alert",
+          "notes": "Docs sidebar group: Feedback."
+        },
+        {
+          "name": "Empty State",
+          "category": "feedback",
+          "purpose": "Placeholder shown when there is no data to display.",
+          "url": "https://chakra-ui.com/docs/components/empty-state",
+          "notes": "Docs sidebar group: Feedback."
+        },
+        {
+          "name": "Progress Circle",
+          "category": "feedback",
+          "purpose": "Circular indicator of task progress.",
+          "url": "https://chakra-ui.com/docs/components/progress-circle",
+          "notes": "Docs sidebar group: Feedback."
+        },
+        {
+          "name": "Progress",
+          "category": "feedback",
+          "purpose": "Linear bar indicating task progress.",
+          "url": "https://chakra-ui.com/docs/components/progress",
+          "notes": "Docs sidebar group: Feedback."
+        },
+        {
+          "name": "Skeleton",
+          "category": "feedback",
+          "purpose": "Placeholder shapes shown while content loads.",
+          "url": "https://chakra-ui.com/docs/components/skeleton",
+          "notes": "Docs sidebar group: Feedback."
+        },
+        {
+          "name": "Spinner",
+          "category": "feedback",
+          "purpose": "Animated indicator that something is loading.",
+          "url": "https://chakra-ui.com/docs/components/spinner",
+          "notes": "Docs sidebar group: Feedback."
+        },
+        {
+          "name": "Status",
+          "category": "feedback",
+          "purpose": "Small coloured dot and label showing a state.",
+          "url": "https://chakra-ui.com/docs/components/status",
+          "notes": "Docs sidebar group: Feedback."
+        },
+        {
+          "name": "Toast",
+          "category": "feedback",
+          "purpose": "Temporary notification that appears and disappears on its own.",
+          "url": "https://chakra-ui.com/docs/components/toast",
+          "notes": "Docs sidebar group: Feedback."
+        },
+        {
+          "name": "Avatar",
+          "category": "media",
+          "purpose": "Picture or initials representing a user.",
+          "url": "https://chakra-ui.com/docs/components/avatar",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Badge",
+          "category": "data-display",
+          "purpose": "Small label to highlight status or a count.",
+          "url": "https://chakra-ui.com/docs/components/badge",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Card",
+          "category": "data-display",
+          "purpose": "Container grouping related content and actions.",
+          "url": "https://chakra-ui.com/docs/components/card",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Clipboard",
+          "category": "action",
+          "purpose": "Copies a value to the clipboard with feedback.",
+          "url": "https://chakra-ui.com/docs/components/clipboard",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Image",
+          "category": "media",
+          "purpose": "Displays an image.",
+          "url": "https://chakra-ui.com/docs/components/image",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Data List",
+          "category": "data-display",
+          "purpose": "List of label-value pairs.",
+          "url": "https://chakra-ui.com/docs/components/data-list",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Icon",
+          "category": "media",
+          "purpose": "Renders an SVG icon.",
+          "url": "https://chakra-ui.com/docs/components/icon",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Marquee",
+          "category": "media",
+          "purpose": "Continuously scrolling strip of content.",
+          "url": "https://chakra-ui.com/docs/components/marquee",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "QR Code",
+          "category": "media",
+          "purpose": "Generates and displays a QR code.",
+          "url": "https://chakra-ui.com/docs/components/qr-code",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Stat",
+          "category": "data-display",
+          "purpose": "Shows a key metric with label and change indicator.",
+          "url": "https://chakra-ui.com/docs/components/stat",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Table",
+          "category": "data-display",
+          "purpose": "Presents data in rows and columns.",
+          "url": "https://chakra-ui.com/docs/components/table",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Tag",
+          "category": "data-display",
+          "purpose": "Label for categorising items, optionally closable.",
+          "url": "https://chakra-ui.com/docs/components/tag",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "Timeline",
+          "category": "data-display",
+          "purpose": "Chronological list of events.",
+          "url": "https://chakra-ui.com/docs/components/timeline",
+          "notes": "Docs sidebar group: Data Display."
+        },
+        {
+          "name": "LocaleProvider",
+          "category": "utility",
+          "purpose": "Sets locale and text direction for descendant components.",
+          "url": "https://chakra-ui.com/docs/components/locale-provider",
+          "notes": "Docs sidebar group: Internationalization."
+        },
+        {
+          "name": "FormatNumber",
+          "category": "typography",
+          "purpose": "Formats numbers, currency and percentages for a locale.",
+          "url": "https://chakra-ui.com/docs/components/format-number",
+          "notes": "Docs sidebar group: Internationalization."
+        },
+        {
+          "name": "FormatByte",
+          "category": "typography",
+          "purpose": "Formats byte sizes into human-readable units.",
+          "url": "https://chakra-ui.com/docs/components/format-byte",
+          "notes": "Docs sidebar group: Internationalization."
+        },
+        {
+          "name": "Checkmark",
+          "category": "utility",
+          "purpose": "Standalone check indicator for building custom checkbox UIs.",
+          "url": "https://chakra-ui.com/docs/components/checkmark",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "ClientOnly",
+          "category": "utility",
+          "purpose": "Renders children only on the client, not during SSR.",
+          "url": "https://chakra-ui.com/docs/components/client-only",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "EnvironmentProvider",
+          "category": "utility",
+          "purpose": "Supplies the root node/document for iframes and shadow DOM.",
+          "url": "https://chakra-ui.com/docs/components/environment-provider",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "For",
+          "category": "utility",
+          "purpose": "Declarative loop that renders a list from an array.",
+          "url": "https://chakra-ui.com/docs/components/for",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "Presence",
+          "category": "utility",
+          "purpose": "Handles mount/unmount animations for conditional content.",
+          "url": "https://chakra-ui.com/docs/components/presence",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "Portal",
+          "category": "utility",
+          "purpose": "Renders children into a different part of the DOM.",
+          "url": "https://chakra-ui.com/docs/components/portal",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "Radiomark",
+          "category": "utility",
+          "purpose": "Standalone radio indicator for building custom radio UIs.",
+          "url": "https://chakra-ui.com/docs/components/radiomark",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "Show",
+          "category": "utility",
+          "purpose": "Conditionally renders children based on a boolean.",
+          "url": "https://chakra-ui.com/docs/components/show",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "Skip Nav",
+          "category": "navigation",
+          "purpose": "Link that lets keyboard users skip to main content.",
+          "url": "https://chakra-ui.com/docs/components/skip-nav",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "Visually Hidden",
+          "category": "utility",
+          "purpose": "Hides content visually while keeping it available to screen readers.",
+          "url": "https://chakra-ui.com/docs/components/visually-hidden",
+          "notes": "Docs sidebar group: Utilities."
+        },
+        {
+          "name": "Theme",
+          "category": "utility",
+          "purpose": "Applies a different colour mode/theme to a subtree.",
+          "url": "https://chakra-ui.com/docs/components/theme",
+          "notes": "Docs sidebar group: Utilities."
+        }
+      ],
+      "notes": "Excludes the separate Charts section (chakra-ui.com/docs/charts) and the Concepts pages (overview, composition, animation, color mode, server components, testing)."
+    }
+  ]
+}

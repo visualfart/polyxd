@@ -7,6 +7,8 @@ section: Concepts
 
 # Components
 
+> Looking for how your design system's components map onto these? See [Design-system coverage](/docs/reference/coverage/): every component in 13 systems, and what Polyxd calls it.
+
 Polyxd has 26 components. Each one describes **what something is for**, not what it looks like. The generator picks components; the renderer and the design-system pack decide how they appear on each platform.
 
 For every component's props, usage rules, accessibility requirements and platform mappings, see the generated [components reference](/docs/reference/components). This page explains the ideas behind them.

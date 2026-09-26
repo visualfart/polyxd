@@ -328,3 +328,29 @@
   border-radius: 4px;
   vertical-align: -2px;
 }
+
+
+/* Design-system coverage */
+.cov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; margin: 12px 0 28px; }
+.cov-grid-3 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+.cov-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.cov-card p { margin: 0; font-size: 14px; color: var(--ink-2); }
+.cov-card .covers { font-size: 13px; color: var(--muted); }
+.cov-card .covers em { font-style: normal; color: var(--ink-2); }
+.cov-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cov-head code { font-size: 14px; background: none; padding: 0; }
+.cov-right { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cov-dots { display: inline-flex; gap: 2px; }
+.cov-dots i { width: 5px; height: 12px; border-radius: 2px; background: var(--line-soft); display: block; }
+.cov-dots i.on { background: var(--ink-2); }
+.tag-new { background: var(--signal); color: #fff; }
+.cov-variants { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.cov-variants span { font-family: var(--mono); font-size: 12px; padding: 1px 7px; border-radius: 6px; border: 1px dashed var(--signal); color: var(--signal-ink); }
+.cov-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0; }
+.cov-tools input, .cov-tools select { font: inherit; font-size: 14px; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 8px; height: 38px; padding: 0 12px; }
+.cov-tools input { flex: 1 1 240px; min-width: 0; }
+.cov-tools label { font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.cov-tools #cov-count { margin-left: auto; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cov-table { max-height: 640px; overflow-y: auto; }
+.cov-table th { position: sticky; top: 0; background: var(--paper); }
+.cov-st-0 { color: var(--ok-ink, #1d6b3f); } .cov-st-1, .cov-st-2 { color: var(--signal-ink); } .cov-st-2 { font-weight: 600; } .cov-st-3 { color: var(--muted); }

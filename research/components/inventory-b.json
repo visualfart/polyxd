@@ -1,0 +1,2301 @@
+{
+  "systems": [
+    {
+      "system": "shadcn/ui",
+      "source": "https://ui.shadcn.com/docs/components",
+      "notes": "Docs now publish each component in three flavors: Base UI (/base/, default), Radix (/radix/) and a partial React Aria set (/aria/, currently Accordion only). Component lists for base and radix are identical except Sonner, which exists only under /radix/ (base redirects Sonner to Toast). Chat-oriented components (Attachment, Bubble, Marker, Message, Message Scroller, Questionnaire) are recent additions.",
+      "components": [
+        {
+          "name": "Accordion",
+          "category": "disclosure",
+          "purpose": "Stack of headings that each expand to reveal a section of content.",
+          "url": "https://ui.shadcn.com/docs/components/base/accordion"
+        },
+        {
+          "name": "Alert",
+          "category": "feedback",
+          "purpose": "Static inline callout that draws attention to a message.",
+          "url": "https://ui.shadcn.com/docs/components/base/alert",
+          "notes": "Radix Themes calls this Callout; Bootstrap 'Alerts'."
+        },
+        {
+          "name": "Alert Dialog",
+          "category": "overlay",
+          "purpose": "Modal that interrupts the user with an important message and requires a response.",
+          "url": "https://ui.shadcn.com/docs/components/base/alert-dialog",
+          "notes": "Confirmation-dialog variant of Dialog. Bootstrap has no separate component (Modal with static backdrop); Mantine uses modals.openConfirmModal from @mantine/modals."
+        },
+        {
+          "name": "Aspect Ratio",
+          "category": "layout",
+          "purpose": "Keeps content at a fixed width-to-height ratio.",
+          "url": "https://ui.shadcn.com/docs/components/base/aspect-ratio",
+          "presentational": true
+        },
+        {
+          "name": "Attachment",
+          "category": "data-display",
+          "purpose": "Shows a file or image attachment with preview, metadata, upload state and actions.",
+          "url": "https://ui.shadcn.com/docs/components/base/attachment",
+          "notes": "Newer chat/AI-oriented component; closest elsewhere is Mantine Dropzone previews or a Card."
+        },
+        {
+          "name": "Avatar",
+          "category": "media",
+          "purpose": "User image with a fallback (initials/icon).",
+          "url": "https://ui.shadcn.com/docs/components/base/avatar"
+        },
+        {
+          "name": "Badge",
+          "category": "data-display",
+          "purpose": "Small label/tag, or something styled like one.",
+          "url": "https://ui.shadcn.com/docs/components/base/badge"
+        },
+        {
+          "name": "Breadcrumb",
+          "category": "navigation",
+          "purpose": "Shows the path to the current page as a trail of links.",
+          "url": "https://ui.shadcn.com/docs/components/base/breadcrumb"
+        },
+        {
+          "name": "Bubble",
+          "category": "data-display",
+          "purpose": "Chat message bubble with variants, alignment, grouping, reactions and collapsible content.",
+          "url": "https://ui.shadcn.com/docs/components/base/bubble",
+          "notes": "Chat UI component; no equivalent in Bootstrap, Mantine core or Radix Themes."
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Clickable button, or a link styled as a button.",
+          "url": "https://ui.shadcn.com/docs/components/base/button",
+          "notes": "Icon-only buttons are a size variant here; Radix Themes (Icon Button) and Mantine (ActionIcon) have separate components."
+        },
+        {
+          "name": "Button Group",
+          "category": "action",
+          "purpose": "Groups related buttons together with joined styling.",
+          "url": "https://ui.shadcn.com/docs/components/base/button-group"
+        },
+        {
+          "name": "Calendar",
+          "category": "data-entry-complex",
+          "purpose": "Inline month calendar for picking a date or date range.",
+          "url": "https://ui.shadcn.com/docs/components/base/calendar"
+        },
+        {
+          "name": "Card",
+          "category": "layout",
+          "purpose": "Surface container with header, content and footer sections.",
+          "url": "https://ui.shadcn.com/docs/components/base/card"
+        },
+        {
+          "name": "Carousel",
+          "category": "media",
+          "purpose": "Swipeable slideshow of items (Embla-based).",
+          "url": "https://ui.shadcn.com/docs/components/base/carousel"
+        },
+        {
+          "name": "Chart",
+          "category": "data-display",
+          "purpose": "Recharts-based chart wrappers with theming, tooltip and legend.",
+          "url": "https://ui.shadcn.com/docs/components/base/chart",
+          "notes": "One page covering area/bar/line/pie/radar/radial charts; Mantine splits these into separate components in @mantine/charts."
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Toggle a single option between checked and unchecked.",
+          "url": "https://ui.shadcn.com/docs/components/base/checkbox"
+        },
+        {
+          "name": "Collapsible",
+          "category": "disclosure",
+          "purpose": "Single panel that expands and collapses.",
+          "url": "https://ui.shadcn.com/docs/components/base/collapsible",
+          "notes": "Bootstrap 'Collapse', Mantine 'Collapse'; Radix Themes lacks it (Primitives only)."
+        },
+        {
+          "name": "Combobox",
+          "category": "selection",
+          "purpose": "Text input with a filtered list of suggestions to choose from.",
+          "url": "https://ui.shadcn.com/docs/components/base/combobox",
+          "notes": "Covers autocomplete, searchable select and multi-select patterns that Mantine splits into Autocomplete/Select/MultiSelect/TagsInput."
+        },
+        {
+          "name": "Command",
+          "category": "selection",
+          "purpose": "Searchable list of commands/actions (cmdk-based), usable inline or as a command palette dialog.",
+          "url": "https://ui.shadcn.com/docs/components/base/command",
+          "notes": "CommandDialog = command palette; Mantine's equivalent is Spotlight (@mantine/spotlight)."
+        },
+        {
+          "name": "Context Menu",
+          "category": "overlay",
+          "purpose": "Menu of actions opened by right-click or long-press.",
+          "url": "https://ui.shadcn.com/docs/components/base/context-menu"
+        },
+        {
+          "name": "Data Table",
+          "category": "data-display",
+          "purpose": "Recipe for sortable, filterable, paginated tables with row selection using TanStack Table.",
+          "url": "https://ui.shadcn.com/docs/components/base/data-table",
+          "notes": "A guide/pattern built on Table rather than a single component; no equivalent in the other three systems."
+        },
+        {
+          "name": "Date Picker",
+          "category": "data-entry-complex",
+          "purpose": "Date or date-range picker with presets, built from Popover + Calendar.",
+          "url": "https://ui.shadcn.com/docs/components/base/date-picker",
+          "notes": "Composition recipe; Mantine has dedicated DatePickerInput/DateInput/DateTimePicker components."
+        },
+        {
+          "name": "Dialog",
+          "category": "overlay",
+          "purpose": "Modal window over the page that makes content underneath inert.",
+          "url": "https://ui.shadcn.com/docs/components/base/dialog"
+        },
+        {
+          "name": "Direction",
+          "category": "utility",
+          "purpose": "Provider that sets text direction (LTR/RTL) for the app.",
+          "url": "https://ui.shadcn.com/docs/components/base/direction"
+        },
+        {
+          "name": "Drawer",
+          "category": "overlay",
+          "purpose": "Draggable bottom sheet panel (Vaul-based).",
+          "url": "https://ui.shadcn.com/docs/components/base/drawer",
+          "notes": "Distinct from Sheet (side panel). Bootstrap Offcanvas and Mantine Drawer cover both uses."
+        },
+        {
+          "name": "Dropdown Menu",
+          "category": "overlay",
+          "purpose": "Menu of actions opened by clicking a button.",
+          "url": "https://ui.shadcn.com/docs/components/base/dropdown-menu"
+        },
+        {
+          "name": "Empty",
+          "category": "feedback",
+          "purpose": "Empty-state placeholder with icon, title, description and actions.",
+          "url": "https://ui.shadcn.com/docs/components/base/empty",
+          "notes": "Mantine v9 EmptyState is the equivalent; Bootstrap and Radix Themes have none."
+        },
+        {
+          "name": "Field",
+          "category": "input",
+          "purpose": "Wrapper that combines label, control, description and error into an accessible form field; also fieldset/grouping.",
+          "url": "https://ui.shadcn.com/docs/components/base/field",
+          "notes": "Maps to Mantine Input.Wrapper/Fieldset and Bootstrap form layout + validation feedback."
+        },
+        {
+          "name": "Hover Card",
+          "category": "overlay",
+          "purpose": "Preview card shown when hovering a link.",
+          "url": "https://ui.shadcn.com/docs/components/base/hover-card"
+        },
+        {
+          "name": "Input",
+          "category": "input",
+          "purpose": "Single-line text input.",
+          "url": "https://ui.shadcn.com/docs/components/base/input",
+          "notes": "File inputs are type=file on this component; Bootstrap/Mantine document File input separately."
+        },
+        {
+          "name": "Input Group",
+          "category": "input",
+          "purpose": "Input with attached addons such as icons, text or buttons.",
+          "url": "https://ui.shadcn.com/docs/components/base/input-group"
+        },
+        {
+          "name": "Input OTP",
+          "category": "input",
+          "purpose": "Segmented one-time-password/PIN input with paste support.",
+          "url": "https://ui.shadcn.com/docs/components/base/input-otp",
+          "notes": "Mantine PinInput; Radix Primitives One-Time Password Field; not in Radix Themes or Bootstrap."
+        },
+        {
+          "name": "Item",
+          "category": "data-display",
+          "purpose": "Flexible row with media, title, description and actions (list/settings item).",
+          "url": "https://ui.shadcn.com/docs/components/base/item",
+          "notes": "Roughly Bootstrap's List group item."
+        },
+        {
+          "name": "Kbd",
+          "category": "typography",
+          "purpose": "Shows a keyboard key or shortcut.",
+          "url": "https://ui.shadcn.com/docs/components/base/kbd"
+        },
+        {
+          "name": "Label",
+          "category": "input",
+          "purpose": "Accessible label tied to a form control.",
+          "url": "https://ui.shadcn.com/docs/components/base/label"
+        },
+        {
+          "name": "Marker",
+          "category": "data-display",
+          "purpose": "Inline status, system note, bordered row or labeled separator inside a conversation.",
+          "url": "https://ui.shadcn.com/docs/components/base/marker",
+          "notes": "Chat UI component."
+        },
+        {
+          "name": "Menubar",
+          "category": "navigation",
+          "purpose": "Persistent desktop-app style row of menus.",
+          "url": "https://ui.shadcn.com/docs/components/base/menubar"
+        },
+        {
+          "name": "Message",
+          "category": "data-display",
+          "purpose": "A conversation message with optional avatar, header, footer and alignment.",
+          "url": "https://ui.shadcn.com/docs/components/base/message",
+          "notes": "Chat UI component."
+        },
+        {
+          "name": "Message Scroller",
+          "category": "layout",
+          "purpose": "Chat scroll container that anchors turns, follows streamed replies and loads history without jumping.",
+          "url": "https://ui.shadcn.com/docs/components/base/message-scroller",
+          "notes": "Chat UI component."
+        },
+        {
+          "name": "Native Select",
+          "category": "selection",
+          "purpose": "Styled native HTML select element.",
+          "url": "https://ui.shadcn.com/docs/components/base/native-select"
+        },
+        {
+          "name": "Navigation Menu",
+          "category": "navigation",
+          "purpose": "Website navigation links with optional rich dropdown panels.",
+          "url": "https://ui.shadcn.com/docs/components/base/navigation-menu"
+        },
+        {
+          "name": "Pagination",
+          "category": "navigation",
+          "purpose": "Page number links with previous/next controls.",
+          "url": "https://ui.shadcn.com/docs/components/base/pagination"
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "Floating panel of rich content opened from a trigger.",
+          "url": "https://ui.shadcn.com/docs/components/base/popover"
+        },
+        {
+          "name": "Progress",
+          "category": "feedback",
+          "purpose": "Bar showing how far a task has completed.",
+          "url": "https://ui.shadcn.com/docs/components/base/progress"
+        },
+        {
+          "name": "Questionnaire",
+          "category": "data-entry-complex",
+          "purpose": "Multi-step questionnaire with single-choice, multiple-choice, free-form and skippable questions.",
+          "url": "https://ui.shadcn.com/docs/components/base/questionnaire",
+          "notes": "Wizard-like flow; Mantine Stepper is the nearest equivalent."
+        },
+        {
+          "name": "Radio Group",
+          "category": "selection",
+          "purpose": "Set of options where only one can be chosen.",
+          "url": "https://ui.shadcn.com/docs/components/base/radio-group"
+        },
+        {
+          "name": "Resizable",
+          "category": "layout",
+          "purpose": "Panel groups the user can resize by dragging handles.",
+          "url": "https://ui.shadcn.com/docs/components/base/resizable",
+          "notes": "Mantine v9 Splitter is the equivalent."
+        },
+        {
+          "name": "Scroll Area",
+          "category": "layout",
+          "purpose": "Scroll container with custom cross-browser scrollbars.",
+          "url": "https://ui.shadcn.com/docs/components/base/scroll-area"
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Button-triggered list of options to pick one value.",
+          "url": "https://ui.shadcn.com/docs/components/base/select"
+        },
+        {
+          "name": "Separator",
+          "category": "layout",
+          "purpose": "Horizontal or vertical dividing line.",
+          "url": "https://ui.shadcn.com/docs/components/base/separator",
+          "presentational": true
+        },
+        {
+          "name": "Sheet",
+          "category": "overlay",
+          "purpose": "Side panel dialog that slides in from a screen edge.",
+          "url": "https://ui.shadcn.com/docs/components/base/sheet",
+          "notes": "Bootstrap Offcanvas; Mantine Drawer."
+        },
+        {
+          "name": "Sidebar",
+          "category": "navigation",
+          "purpose": "Composable, collapsible app sidebar for navigation.",
+          "url": "https://ui.shadcn.com/docs/components/base/sidebar",
+          "notes": "Mantine's nearest is AppShell navbar + NavLink; Bootstrap uses Offcanvas/Nav."
+        },
+        {
+          "name": "Skeleton",
+          "category": "feedback",
+          "purpose": "Placeholder shapes shown while content loads.",
+          "url": "https://ui.shadcn.com/docs/components/base/skeleton"
+        },
+        {
+          "name": "Slider",
+          "category": "input",
+          "purpose": "Pick a value (or range) by dragging along a track.",
+          "url": "https://ui.shadcn.com/docs/components/base/slider"
+        },
+        {
+          "name": "Sonner",
+          "category": "feedback",
+          "purpose": "Toast notifications via the Sonner library.",
+          "url": "https://ui.shadcn.com/docs/components/radix/sonner",
+          "notes": "Only listed in the Radix-based docs variant; /base/sonner now redirects to Toast."
+        },
+        {
+          "name": "Spinner",
+          "category": "feedback",
+          "purpose": "Animated loading indicator.",
+          "url": "https://ui.shadcn.com/docs/components/base/spinner"
+        },
+        {
+          "name": "Switch",
+          "category": "selection",
+          "purpose": "On/off toggle switch.",
+          "url": "https://ui.shadcn.com/docs/components/base/switch"
+        },
+        {
+          "name": "Table",
+          "category": "data-display",
+          "purpose": "Styled, responsive HTML table.",
+          "url": "https://ui.shadcn.com/docs/components/base/table"
+        },
+        {
+          "name": "Tabs",
+          "category": "navigation",
+          "purpose": "Layered panels where one is shown at a time via a tab list.",
+          "url": "https://ui.shadcn.com/docs/components/base/tabs"
+        },
+        {
+          "name": "Textarea",
+          "category": "input",
+          "purpose": "Multi-line text input.",
+          "url": "https://ui.shadcn.com/docs/components/base/textarea"
+        },
+        {
+          "name": "Toast",
+          "category": "feedback",
+          "purpose": "Brief, temporary notification message.",
+          "url": "https://ui.shadcn.com/docs/components/base/toast"
+        },
+        {
+          "name": "Toggle",
+          "category": "selection",
+          "purpose": "Two-state button that can be on or off.",
+          "url": "https://ui.shadcn.com/docs/components/base/toggle"
+        },
+        {
+          "name": "Toggle Group",
+          "category": "selection",
+          "purpose": "Set of toggle buttons (single or multiple selection).",
+          "url": "https://ui.shadcn.com/docs/components/base/toggle-group",
+          "notes": "Close to Radix Themes Segmented Control / Mantine SegmentedControl."
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Small label shown on hover or focus of an element.",
+          "url": "https://ui.shadcn.com/docs/components/base/tooltip"
+        },
+        {
+          "name": "Typography",
+          "category": "typography",
+          "purpose": "CSS styling system for HTML and rendered markdown (prose).",
+          "url": "https://ui.shadcn.com/docs/components/base/typography"
+        }
+      ]
+    },
+    {
+      "system": "Bootstrap 5.3",
+      "source": "https://getbootstrap.com/docs/5.3/components/accordion/",
+      "notes": "Primary scope is the Forms and Components sidebar sections (9 Forms pages, 24 Components pages). Checks & radios and Form control pages are split into their distinct sub-components (Checks, Radios, Switches, Toggle buttons; File input, Color input, Datalists) with anchor URLs. Entries noted as Layout/Content/Helpers section are included for coverage of presentational primitives, typography and tables. Omitted pure CSS helpers: Clearfix, Color & background, Colored links, Focus ring, Position, Text truncation, plus Breakpoints, Columns, Gutters, Z-index, Reboot and the Utilities section. The Forms 'Overview' page (form-label, form-text basics) is not a separate component.",
+      "components": [
+        {
+          "name": "Form control",
+          "category": "input",
+          "purpose": "Styled text input and textarea with sizing, disabled, readonly and plain-text states.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/form-control/",
+          "notes": "Covers <input> and <textarea>; also documents form-text help text and readonly plain text."
+        },
+        {
+          "name": "File input",
+          "category": "input",
+          "purpose": "Styled native file picker input.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/form-control/#file-input",
+          "notes": "Section of Form control page; separate component in Mantine (FileInput/FileButton)."
+        },
+        {
+          "name": "Color input",
+          "category": "input",
+          "purpose": "Native color picker input styled as a form control.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/form-control/#color",
+          "notes": "Section of Form control page; Mantine has ColorInput/ColorPicker."
+        },
+        {
+          "name": "Datalists",
+          "category": "selection",
+          "purpose": "Text input with native browser-suggested options (<datalist>).",
+          "url": "https://getbootstrap.com/docs/5.3/forms/form-control/#datalists",
+          "notes": "Section of Form control page; closest to an Autocomplete/Combobox in other systems."
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Custom-styled native <select>, including multiple and sized.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/select/",
+          "notes": "Native select only; no custom searchable select."
+        },
+        {
+          "name": "Checks",
+          "category": "selection",
+          "purpose": "Styled checkboxes, including indeterminate, inline and reverse layouts.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/checks-radios/#checks"
+        },
+        {
+          "name": "Radios",
+          "category": "selection",
+          "purpose": "Styled radio buttons for picking one option.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/checks-radios/#radios"
+        },
+        {
+          "name": "Switches",
+          "category": "selection",
+          "purpose": "Checkbox rendered as an on/off toggle switch.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/checks-radios/#switches",
+          "notes": "A .form-switch variant of Checks; separate component in all other systems."
+        },
+        {
+          "name": "Toggle buttons",
+          "category": "selection",
+          "purpose": "Checkboxes/radios rendered as toggleable buttons.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/checks-radios/#toggle-buttons",
+          "notes": "Equivalent to Toggle/Toggle Group (shadcn, Radix) or Chip/SegmentedControl (Mantine)."
+        },
+        {
+          "name": "Range",
+          "category": "input",
+          "purpose": "Styled native range slider input.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/range/",
+          "notes": "Single value only; no range (two-thumb) slider."
+        },
+        {
+          "name": "Input group",
+          "category": "input",
+          "purpose": "Attach text, buttons, dropdowns or button groups to either side of an input.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/input-group/"
+        },
+        {
+          "name": "Floating labels",
+          "category": "input",
+          "purpose": "Labels that sit inside the field and float above it when filled.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/floating-labels/"
+        },
+        {
+          "name": "Form layout",
+          "category": "layout",
+          "purpose": "Structure forms with grid, inline, horizontal and gutter layouts.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/layout/"
+        },
+        {
+          "name": "Validation",
+          "category": "feedback",
+          "purpose": "Show valid/invalid states and feedback messages or tooltips on form fields.",
+          "url": "https://getbootstrap.com/docs/5.3/forms/validation/"
+        },
+        {
+          "name": "Accordion",
+          "category": "disclosure",
+          "purpose": "Vertically collapsing sections, one or many open.",
+          "url": "https://getbootstrap.com/docs/5.3/components/accordion/"
+        },
+        {
+          "name": "Alerts",
+          "category": "feedback",
+          "purpose": "Contextual inline feedback message, optionally dismissible.",
+          "url": "https://getbootstrap.com/docs/5.3/components/alerts/"
+        },
+        {
+          "name": "Badge",
+          "category": "data-display",
+          "purpose": "Small count or label, including pill badges and positioned notification dots.",
+          "url": "https://getbootstrap.com/docs/5.3/components/badge/",
+          "notes": "Positioned badges on buttons cover Mantine's Indicator."
+        },
+        {
+          "name": "Breadcrumb",
+          "category": "navigation",
+          "purpose": "Shows the current page's position in the site hierarchy.",
+          "url": "https://getbootstrap.com/docs/5.3/components/breadcrumb/"
+        },
+        {
+          "name": "Buttons",
+          "category": "action",
+          "purpose": "Buttons in color, outline, size and state variants; also for links and inputs.",
+          "url": "https://getbootstrap.com/docs/5.3/components/buttons/"
+        },
+        {
+          "name": "Button group",
+          "category": "action",
+          "purpose": "Group buttons on one line or stacked vertically; also button toolbars.",
+          "url": "https://getbootstrap.com/docs/5.3/components/button-group/"
+        },
+        {
+          "name": "Card",
+          "category": "layout",
+          "purpose": "Flexible content container with header, body, footer, images and list groups.",
+          "url": "https://getbootstrap.com/docs/5.3/components/card/",
+          "notes": "Page also documents card groups/grid card layouts and card navigation (tabs in header)."
+        },
+        {
+          "name": "Carousel",
+          "category": "media",
+          "purpose": "Slideshow cycling through images or text slides.",
+          "url": "https://getbootstrap.com/docs/5.3/components/carousel/"
+        },
+        {
+          "name": "Close button",
+          "category": "action",
+          "purpose": "Generic X button for dismissing modals, alerts, etc.",
+          "url": "https://getbootstrap.com/docs/5.3/components/close-button/"
+        },
+        {
+          "name": "Collapse",
+          "category": "disclosure",
+          "purpose": "Show and hide a block of content via a toggle.",
+          "url": "https://getbootstrap.com/docs/5.3/components/collapse/"
+        },
+        {
+          "name": "Dropdowns",
+          "category": "overlay",
+          "purpose": "Toggleable menu of links or actions attached to a button.",
+          "url": "https://getbootstrap.com/docs/5.3/components/dropdowns/",
+          "notes": "Also used for split buttons and dropup/dropstart directions; no separate context menu component."
+        },
+        {
+          "name": "List group",
+          "category": "data-display",
+          "purpose": "Styled list of items, optionally actionable, with badges and checkboxes.",
+          "url": "https://getbootstrap.com/docs/5.3/components/list-group/",
+          "notes": "Also works as a tab-like navigation list via the tab plugin."
+        },
+        {
+          "name": "Modal",
+          "category": "overlay",
+          "purpose": "Dialog window over the page for notifications or custom content.",
+          "url": "https://getbootstrap.com/docs/5.3/components/modal/",
+          "notes": "Includes fullscreen and scrollable variants; also used for confirmations (no separate Alert Dialog)."
+        },
+        {
+          "name": "Navbar",
+          "category": "navigation",
+          "purpose": "Responsive top navigation header with brand, links and collapsible menu.",
+          "url": "https://getbootstrap.com/docs/5.3/components/navbar/"
+        },
+        {
+          "name": "Navs & tabs",
+          "category": "navigation",
+          "purpose": "Base navigation list styled as tabs, pills or underline, with tab panes.",
+          "url": "https://getbootstrap.com/docs/5.3/components/navs-tabs/",
+          "notes": "Tabs and pills are distinct components elsewhere (Tabs vs Tab Nav in Radix Themes; Tabs vs SegmentedControl)."
+        },
+        {
+          "name": "Offcanvas",
+          "category": "overlay",
+          "purpose": "Hidden side (or top/bottom) panel that slides in.",
+          "url": "https://getbootstrap.com/docs/5.3/components/offcanvas/",
+          "notes": "Equivalent to Sheet/Drawer in shadcn and Drawer in Mantine."
+        },
+        {
+          "name": "Pagination",
+          "category": "navigation",
+          "purpose": "Page links for moving through a multi-page series.",
+          "url": "https://getbootstrap.com/docs/5.3/components/pagination/"
+        },
+        {
+          "name": "Placeholders",
+          "category": "feedback",
+          "purpose": "Loading placeholder blocks (skeleton loaders).",
+          "url": "https://getbootstrap.com/docs/5.3/components/placeholders/",
+          "notes": "Equivalent to Skeleton elsewhere."
+        },
+        {
+          "name": "Popovers",
+          "category": "overlay",
+          "purpose": "Click-triggered floating box with title and content.",
+          "url": "https://getbootstrap.com/docs/5.3/components/popovers/"
+        },
+        {
+          "name": "Progress",
+          "category": "feedback",
+          "purpose": "Progress bars with labels, stacking, stripes and animation.",
+          "url": "https://getbootstrap.com/docs/5.3/components/progress/"
+        },
+        {
+          "name": "Scrollspy",
+          "category": "navigation",
+          "purpose": "Highlights nav links based on which section is in view.",
+          "url": "https://getbootstrap.com/docs/5.3/components/scrollspy/",
+          "notes": "Mantine's TableOfContents is the closest equivalent."
+        },
+        {
+          "name": "Spinners",
+          "category": "feedback",
+          "purpose": "CSS loading indicators (border and grow styles).",
+          "url": "https://getbootstrap.com/docs/5.3/components/spinners/"
+        },
+        {
+          "name": "Toasts",
+          "category": "feedback",
+          "purpose": "Lightweight, temporary push notification messages.",
+          "url": "https://getbootstrap.com/docs/5.3/components/toasts/"
+        },
+        {
+          "name": "Tooltips",
+          "category": "overlay",
+          "purpose": "Small label shown on hover/focus of an element.",
+          "url": "https://getbootstrap.com/docs/5.3/components/tooltips/"
+        },
+        {
+          "name": "Containers",
+          "category": "layout",
+          "purpose": "Centered, padded wrapper with responsive max-widths.",
+          "url": "https://getbootstrap.com/docs/5.3/layout/containers/",
+          "presentational": true,
+          "notes": "Layout section."
+        },
+        {
+          "name": "Grid",
+          "category": "layout",
+          "purpose": "12-column responsive flexbox grid (rows, columns, gutters).",
+          "url": "https://getbootstrap.com/docs/5.3/layout/grid/",
+          "presentational": true,
+          "notes": "Layout section; Columns and Gutters pages document parts of the same system."
+        },
+        {
+          "name": "CSS Grid",
+          "category": "layout",
+          "purpose": "Opt-in alternate layout system built on CSS Grid.",
+          "url": "https://getbootstrap.com/docs/5.3/layout/css-grid/",
+          "presentational": true,
+          "notes": "Layout section; experimental/opt-in."
+        },
+        {
+          "name": "Stacks",
+          "category": "layout",
+          "purpose": "Vertical and horizontal flex stacks with gaps.",
+          "url": "https://getbootstrap.com/docs/5.3/helpers/stacks/",
+          "presentational": true,
+          "notes": "Helpers section."
+        },
+        {
+          "name": "Ratio",
+          "category": "layout",
+          "purpose": "Keeps an embed or element at a fixed aspect ratio.",
+          "url": "https://getbootstrap.com/docs/5.3/helpers/ratio/",
+          "presentational": true,
+          "notes": "Helpers section."
+        },
+        {
+          "name": "Vertical rule",
+          "category": "layout",
+          "purpose": "Vertical divider line (like a vertical <hr>).",
+          "url": "https://getbootstrap.com/docs/5.3/helpers/vertical-rule/",
+          "presentational": true,
+          "notes": "Helpers section; horizontal dividers are plain <hr> styled by Reboot."
+        },
+        {
+          "name": "Visually hidden",
+          "category": "utility",
+          "purpose": "Hide content visually while keeping it for screen readers.",
+          "url": "https://getbootstrap.com/docs/5.3/helpers/visually-hidden/",
+          "notes": "Helpers section."
+        },
+        {
+          "name": "Icon link",
+          "category": "typography",
+          "purpose": "Link styled with an accompanying icon.",
+          "url": "https://getbootstrap.com/docs/5.3/helpers/icon-link/",
+          "notes": "Helpers section."
+        },
+        {
+          "name": "Stretched link",
+          "category": "utility",
+          "purpose": "Makes a whole container clickable via its nested link.",
+          "url": "https://getbootstrap.com/docs/5.3/helpers/stretched-link/",
+          "notes": "Helpers section."
+        },
+        {
+          "name": "Typography",
+          "category": "typography",
+          "purpose": "Headings, display headings, lead text, inline text elements, blockquotes and lists.",
+          "url": "https://getbootstrap.com/docs/5.3/content/typography/",
+          "notes": "Content section; Radix Themes and Mantine split these into Heading/Text/Blockquote/Code/List etc."
+        },
+        {
+          "name": "Images",
+          "category": "media",
+          "purpose": "Responsive and thumbnail image styles.",
+          "url": "https://getbootstrap.com/docs/5.3/content/images/",
+          "notes": "Content section."
+        },
+        {
+          "name": "Tables",
+          "category": "data-display",
+          "purpose": "Opt-in styled tables: striped, bordered, hover, responsive.",
+          "url": "https://getbootstrap.com/docs/5.3/content/tables/",
+          "notes": "Content section."
+        },
+        {
+          "name": "Figures",
+          "category": "media",
+          "purpose": "Image with caption.",
+          "url": "https://getbootstrap.com/docs/5.3/content/figures/",
+          "notes": "Content section."
+        }
+      ]
+    },
+    {
+      "system": "Mantine",
+      "source": "https://mantine.dev/core/button/",
+      "notes": "mantine.dev currently documents Mantine v9 (9.6.3). The inventory is the v9 docs; items not present in the v7 (v7.mantine.dev, 7.17.8) or v8 (v8.mantine.dev, 8.3.18) docs are marked 'New in v9 docs'. Everything else exists in v8. v7-only page not in v8/v9: DatesProvider (dates/dates-provider). Includes @mantine/core, @mantine/dates, @mantine/charts, @mantine/carousel, @mantine/dropzone, @mantine/notifications, @mantine/spotlight, @mantine/tiptap; other official packages (@mantine/modals, @mantine/nprogress, @mantine/code-highlight, @mantine/lightbox, @mantine/schedule) are added and flagged as outside the requested scope. Community extensions listed on /x/extensions are excluded. Compound sub-components (Checkbox.Group, Radio.Card, Button.Group, Avatar.Group, Input.Wrapper, etc.) live on their parent's page.",
+      "components": [
+        {
+          "name": "Accordion",
+          "category": "disclosure",
+          "purpose": "Divide content into collapsible sections.",
+          "url": "https://mantine.dev/core/accordion/"
+        },
+        {
+          "name": "ActionBar",
+          "category": "action",
+          "purpose": "Fixed bottom bar showing bulk actions for selected items.",
+          "url": "https://mantine.dev/core/action-bar/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "ActionIcon",
+          "category": "action",
+          "purpose": "Icon-only button.",
+          "url": "https://mantine.dev/core/action-icon/",
+          "notes": "shadcn uses Button size='icon'; Radix Themes 'Icon Button'."
+        },
+        {
+          "name": "Affix",
+          "category": "utility",
+          "purpose": "Renders children in a portal at a fixed screen position.",
+          "url": "https://mantine.dev/core/affix/"
+        },
+        {
+          "name": "Alert",
+          "category": "feedback",
+          "purpose": "Static message that attracts user attention.",
+          "url": "https://mantine.dev/core/alert/"
+        },
+        {
+          "name": "AlphaSlider",
+          "category": "input",
+          "purpose": "Slider for picking a color's alpha (opacity) channel.",
+          "url": "https://mantine.dev/core/alpha-slider/",
+          "notes": "New in v9 docs; not documented in v7/v8. Previously only a sub-part of ColorPicker docs."
+        },
+        {
+          "name": "Anchor",
+          "category": "typography",
+          "purpose": "Link with theme styles.",
+          "url": "https://mantine.dev/core/anchor/"
+        },
+        {
+          "name": "AngleSlider",
+          "category": "input",
+          "purpose": "Pick an angle between 0 and 360 degrees.",
+          "url": "https://mantine.dev/core/angle-slider/"
+        },
+        {
+          "name": "AppShell",
+          "category": "layout",
+          "purpose": "Responsive app frame with header, navbar, aside and footer.",
+          "url": "https://mantine.dev/core/app-shell/"
+        },
+        {
+          "name": "AspectRatio",
+          "category": "layout",
+          "purpose": "Keeps content at a consistent width/height ratio.",
+          "url": "https://mantine.dev/core/aspect-ratio/",
+          "presentational": true
+        },
+        {
+          "name": "Autocomplete",
+          "category": "selection",
+          "purpose": "Free text input with a list of suggestions.",
+          "url": "https://mantine.dev/core/autocomplete/"
+        },
+        {
+          "name": "Avatar",
+          "category": "media",
+          "purpose": "User image, initials or fallback icon; supports avatar groups.",
+          "url": "https://mantine.dev/core/avatar/"
+        },
+        {
+          "name": "BackgroundImage",
+          "category": "media",
+          "purpose": "Displays an image as a background behind content.",
+          "url": "https://mantine.dev/core/background-image/"
+        },
+        {
+          "name": "Badge",
+          "category": "data-display",
+          "purpose": "Badge, pill or tag label.",
+          "url": "https://mantine.dev/core/badge/"
+        },
+        {
+          "name": "Blockquote",
+          "category": "typography",
+          "purpose": "Quotation block with optional citation.",
+          "url": "https://mantine.dev/core/blockquote/"
+        },
+        {
+          "name": "Box",
+          "category": "layout",
+          "purpose": "Base polymorphic element all components build on.",
+          "url": "https://mantine.dev/core/box/",
+          "presentational": true
+        },
+        {
+          "name": "Breadcrumbs",
+          "category": "navigation",
+          "purpose": "Separates a list of items/links with a separator.",
+          "url": "https://mantine.dev/core/breadcrumbs/"
+        },
+        {
+          "name": "Burger",
+          "category": "action",
+          "purpose": "Hamburger button to open/close navigation.",
+          "url": "https://mantine.dev/core/burger/"
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Button or link rendered as a button; includes Button.Group.",
+          "url": "https://mantine.dev/core/button/"
+        },
+        {
+          "name": "Card",
+          "category": "layout",
+          "purpose": "Container with sections, often for content previews.",
+          "url": "https://mantine.dev/core/card/"
+        },
+        {
+          "name": "Cascader",
+          "category": "selection",
+          "purpose": "Select a path through hierarchical data in cascading columns.",
+          "url": "https://mantine.dev/core/cascader/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Center",
+          "category": "layout",
+          "purpose": "Centers content vertically and horizontally.",
+          "url": "https://mantine.dev/core/center/",
+          "presentational": true
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Boolean checkbox; includes Checkbox.Group and Checkbox.Card.",
+          "url": "https://mantine.dev/core/checkbox/",
+          "notes": "Checkbox.Card is a separate component in Radix Themes (Checkbox Cards)."
+        },
+        {
+          "name": "Chip",
+          "category": "selection",
+          "purpose": "Inline toggle pills to pick one or multiple values.",
+          "url": "https://mantine.dev/core/chip/"
+        },
+        {
+          "name": "CloseButton",
+          "category": "action",
+          "purpose": "Button with a close (X) icon.",
+          "url": "https://mantine.dev/core/close-button/"
+        },
+        {
+          "name": "Code",
+          "category": "typography",
+          "purpose": "Inline or block code text.",
+          "url": "https://mantine.dev/core/code/"
+        },
+        {
+          "name": "Collapse",
+          "category": "disclosure",
+          "purpose": "Animated show/hide of content with slide transition.",
+          "url": "https://mantine.dev/core/collapse/"
+        },
+        {
+          "name": "ColorInput",
+          "category": "data-entry-complex",
+          "purpose": "Input with a dropdown color picker.",
+          "url": "https://mantine.dev/core/color-input/"
+        },
+        {
+          "name": "ColorPicker",
+          "category": "data-entry-complex",
+          "purpose": "Inline color picker supporting hex/rgb/hsl/hsv (with alpha).",
+          "url": "https://mantine.dev/core/color-picker/"
+        },
+        {
+          "name": "ColorSwatch",
+          "category": "data-display",
+          "purpose": "Displays a color sample.",
+          "url": "https://mantine.dev/core/color-swatch/"
+        },
+        {
+          "name": "Combobox",
+          "category": "selection",
+          "purpose": "Low-level primitives to build custom select, autocomplete or multiselect inputs.",
+          "url": "https://mantine.dev/core/combobox/"
+        },
+        {
+          "name": "ComboboxPopover",
+          "category": "selection",
+          "purpose": "Attach a combobox dropdown to any button.",
+          "url": "https://mantine.dev/core/combobox-popover/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Container",
+          "category": "layout",
+          "purpose": "Centers content with padding and max-width.",
+          "url": "https://mantine.dev/core/container/",
+          "presentational": true
+        },
+        {
+          "name": "CopyButton",
+          "category": "action",
+          "purpose": "Copies given text to the clipboard (render-prop).",
+          "url": "https://mantine.dev/core/copy-button/"
+        },
+        {
+          "name": "DataList",
+          "category": "data-display",
+          "purpose": "Label-value pairs displayed as a description list.",
+          "url": "https://mantine.dev/core/data-list/",
+          "notes": "New in v9 docs; not documented in v7/v8. Equivalent to Radix Themes Data List."
+        },
+        {
+          "name": "Dialog",
+          "category": "overlay",
+          "purpose": "Fixed, non-modal dialog pinned to a side of the screen.",
+          "url": "https://mantine.dev/core/dialog/",
+          "notes": "Unlike other systems' Dialog this is a non-blocking corner panel; Mantine's modal is 'Modal'."
+        },
+        {
+          "name": "Divider",
+          "category": "layout",
+          "purpose": "Horizontal or vertical line with optional label.",
+          "url": "https://mantine.dev/core/divider/",
+          "presentational": true
+        },
+        {
+          "name": "Drawer",
+          "category": "overlay",
+          "purpose": "Overlay panel sliding in from any side of the screen.",
+          "url": "https://mantine.dev/core/drawer/"
+        },
+        {
+          "name": "EmptyState",
+          "category": "feedback",
+          "purpose": "Placeholder for no data, empty results and first-run states.",
+          "url": "https://mantine.dev/core/empty-state/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Fieldset",
+          "category": "layout",
+          "purpose": "Groups related form elements with a legend.",
+          "url": "https://mantine.dev/core/fieldset/"
+        },
+        {
+          "name": "FileButton",
+          "category": "action",
+          "purpose": "Button that opens the file picker.",
+          "url": "https://mantine.dev/core/file-button/"
+        },
+        {
+          "name": "FileInput",
+          "category": "input",
+          "purpose": "Input for picking files, styled like other inputs.",
+          "url": "https://mantine.dev/core/file-input/"
+        },
+        {
+          "name": "Flex",
+          "category": "layout",
+          "purpose": "Flexbox container with style props.",
+          "url": "https://mantine.dev/core/flex/",
+          "presentational": true
+        },
+        {
+          "name": "FloatingIndicator",
+          "category": "utility",
+          "purpose": "Animated indicator that floats over a group of elements (e.g. active tab).",
+          "url": "https://mantine.dev/core/floating-indicator/"
+        },
+        {
+          "name": "FloatingWindow",
+          "category": "overlay",
+          "purpose": "Draggable floating panel.",
+          "url": "https://mantine.dev/core/floating-window/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "FocusTrap",
+          "category": "utility",
+          "purpose": "Traps keyboard focus inside a child node.",
+          "url": "https://mantine.dev/core/focus-trap/"
+        },
+        {
+          "name": "Grid",
+          "category": "layout",
+          "purpose": "Responsive 12-column grid.",
+          "url": "https://mantine.dev/core/grid/",
+          "presentational": true
+        },
+        {
+          "name": "Group",
+          "category": "layout",
+          "purpose": "Horizontal flex row of elements with spacing.",
+          "url": "https://mantine.dev/core/group/",
+          "presentational": true
+        },
+        {
+          "name": "Highlight",
+          "category": "typography",
+          "purpose": "Highlights matching parts of a string.",
+          "url": "https://mantine.dev/core/highlight/"
+        },
+        {
+          "name": "HoverCard",
+          "category": "overlay",
+          "purpose": "Popover shown when the target is hovered.",
+          "url": "https://mantine.dev/core/hover-card/"
+        },
+        {
+          "name": "HueSlider",
+          "category": "input",
+          "purpose": "Slider for picking a color's hue (0-360).",
+          "url": "https://mantine.dev/core/hue-slider/",
+          "notes": "New in v9 docs; not documented in v7/v8. Previously only a sub-part of ColorPicker docs."
+        },
+        {
+          "name": "Image",
+          "category": "media",
+          "purpose": "Image with optional fallback.",
+          "url": "https://mantine.dev/core/image/"
+        },
+        {
+          "name": "Indicator",
+          "category": "data-display",
+          "purpose": "Dot or label displayed at the corner of another element.",
+          "url": "https://mantine.dev/core/indicator/",
+          "notes": "Bootstrap does this with positioned Badges."
+        },
+        {
+          "name": "Input",
+          "category": "input",
+          "purpose": "Base component for building custom inputs; includes Input.Wrapper/Label/Description/Error.",
+          "url": "https://mantine.dev/core/input/"
+        },
+        {
+          "name": "JsonInput",
+          "category": "input",
+          "purpose": "Textarea for JSON with validation and formatting.",
+          "url": "https://mantine.dev/core/json-input/"
+        },
+        {
+          "name": "Kbd",
+          "category": "typography",
+          "purpose": "Displays a keyboard key.",
+          "url": "https://mantine.dev/core/kbd/"
+        },
+        {
+          "name": "List",
+          "category": "typography",
+          "purpose": "Ordered or unordered list.",
+          "url": "https://mantine.dev/core/list/"
+        },
+        {
+          "name": "Loader",
+          "category": "feedback",
+          "purpose": "Loading indicator (oval, bars, dots).",
+          "url": "https://mantine.dev/core/loader/"
+        },
+        {
+          "name": "LoadingOverlay",
+          "category": "feedback",
+          "purpose": "Overlay with a centered loader covering its parent.",
+          "url": "https://mantine.dev/core/loading-overlay/"
+        },
+        {
+          "name": "Mark",
+          "category": "typography",
+          "purpose": "Highlights a piece of text.",
+          "url": "https://mantine.dev/core/mark/"
+        },
+        {
+          "name": "Marquee",
+          "category": "media",
+          "purpose": "Continuously scrolling content animation.",
+          "url": "https://mantine.dev/core/marquee/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "MaskInput",
+          "category": "input",
+          "purpose": "Input that formats text to a mask pattern.",
+          "url": "https://mantine.dev/core/mask-input/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Menu",
+          "category": "overlay",
+          "purpose": "Dropdown list of secondary actions opened from a target.",
+          "url": "https://mantine.dev/core/menu/",
+          "notes": "Mantine has no separate context menu component; Menu is used for dropdown menus."
+        },
+        {
+          "name": "Menubar",
+          "category": "navigation",
+          "purpose": "Desktop-app style row of menu triggers.",
+          "url": "https://mantine.dev/core/menubar/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Modal",
+          "category": "overlay",
+          "purpose": "Accessible modal dialog.",
+          "url": "https://mantine.dev/core/modal/"
+        },
+        {
+          "name": "MultiSelect",
+          "category": "selection",
+          "purpose": "Searchable select that allows multiple values.",
+          "url": "https://mantine.dev/core/multi-select/"
+        },
+        {
+          "name": "NativeSelect",
+          "category": "selection",
+          "purpose": "Native select element with Mantine input styling.",
+          "url": "https://mantine.dev/core/native-select/"
+        },
+        {
+          "name": "NavLink",
+          "category": "navigation",
+          "purpose": "Navigation link with icon, description and nested links.",
+          "url": "https://mantine.dev/core/nav-link/"
+        },
+        {
+          "name": "Notification",
+          "category": "feedback",
+          "purpose": "Notification/alert card; the visual part of the notifications system.",
+          "url": "https://mantine.dev/core/notification/"
+        },
+        {
+          "name": "NumberFormatter",
+          "category": "typography",
+          "purpose": "Formats numbers with separators, prefix and suffix.",
+          "url": "https://mantine.dev/core/number-formatter/"
+        },
+        {
+          "name": "NumberInput",
+          "category": "input",
+          "purpose": "Input for numbers with increment/decrement controls.",
+          "url": "https://mantine.dev/core/number-input/"
+        },
+        {
+          "name": "OverflowList",
+          "category": "layout",
+          "purpose": "Collapses items that don't fit into a single overflow item.",
+          "url": "https://mantine.dev/core/overflow-list/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Overlay",
+          "category": "utility",
+          "purpose": "Colored, semi-transparent layer over a parent element.",
+          "url": "https://mantine.dev/core/overlay/"
+        },
+        {
+          "name": "Pagination",
+          "category": "navigation",
+          "purpose": "Shows the active page and navigates between pages.",
+          "url": "https://mantine.dev/core/pagination/"
+        },
+        {
+          "name": "Paper",
+          "category": "layout",
+          "purpose": "Surface with background, border, radius and shadow for the color scheme.",
+          "url": "https://mantine.dev/core/paper/",
+          "presentational": true
+        },
+        {
+          "name": "PasswordInput",
+          "category": "input",
+          "purpose": "Password input with show/hide toggle.",
+          "url": "https://mantine.dev/core/password-input/",
+          "notes": "Radix Primitives 'Password Toggle Field'; not in shadcn, Bootstrap or Radix Themes."
+        },
+        {
+          "name": "Pill",
+          "category": "data-display",
+          "purpose": "Removable or non-removable tag.",
+          "url": "https://mantine.dev/core/pill/"
+        },
+        {
+          "name": "PillsInput",
+          "category": "input",
+          "purpose": "Base input for building custom tag inputs and multi-selects.",
+          "url": "https://mantine.dev/core/pills-input/"
+        },
+        {
+          "name": "PinInput",
+          "category": "input",
+          "purpose": "Segmented input for PIN or one-time codes.",
+          "url": "https://mantine.dev/core/pin-input/"
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "Floating panel positioned relative to a target.",
+          "url": "https://mantine.dev/core/popover/"
+        },
+        {
+          "name": "Portal",
+          "category": "utility",
+          "purpose": "Renders children outside the parent DOM tree.",
+          "url": "https://mantine.dev/core/portal/"
+        },
+        {
+          "name": "Progress",
+          "category": "feedback",
+          "purpose": "Progress bar, including segmented/stacked sections.",
+          "url": "https://mantine.dev/core/progress/"
+        },
+        {
+          "name": "Radio",
+          "category": "selection",
+          "purpose": "Radio input; includes Radio.Group and Radio.Card.",
+          "url": "https://mantine.dev/core/radio/",
+          "notes": "Radio.Card is a separate component in Radix Themes (Radio Cards)."
+        },
+        {
+          "name": "RangeSlider",
+          "category": "input",
+          "purpose": "Slider with two thumbs to select a range.",
+          "url": "https://mantine.dev/core/range-slider/",
+          "notes": "Own page from v8; in v7 documented on the Slider page."
+        },
+        {
+          "name": "Rating",
+          "category": "input",
+          "purpose": "Pick and display a star rating.",
+          "url": "https://mantine.dev/core/rating/"
+        },
+        {
+          "name": "RingProgress",
+          "category": "data-display",
+          "purpose": "Circular ring progress/diagram.",
+          "url": "https://mantine.dev/core/ring-progress/"
+        },
+        {
+          "name": "RollingNumber",
+          "category": "data-display",
+          "purpose": "Animates value changes with rolling digits.",
+          "url": "https://mantine.dev/core/rolling-number/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "ScrollArea",
+          "category": "layout",
+          "purpose": "Area with custom scrollbars.",
+          "url": "https://mantine.dev/core/scroll-area/"
+        },
+        {
+          "name": "Scroller",
+          "category": "layout",
+          "purpose": "Horizontal scroll container with navigation controls.",
+          "url": "https://mantine.dev/core/scroller/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "SegmentedControl",
+          "category": "selection",
+          "purpose": "Linear set of segments to switch between values.",
+          "url": "https://mantine.dev/core/segmented-control/"
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Custom searchable single select.",
+          "url": "https://mantine.dev/core/select/"
+        },
+        {
+          "name": "SemiCircleProgress",
+          "category": "data-display",
+          "purpose": "Progress shown as a semicircle gauge.",
+          "url": "https://mantine.dev/core/semi-circle-progress/"
+        },
+        {
+          "name": "SimpleGrid",
+          "category": "layout",
+          "purpose": "Responsive grid where every item takes equal width.",
+          "url": "https://mantine.dev/core/simple-grid/",
+          "presentational": true
+        },
+        {
+          "name": "Skeleton",
+          "category": "feedback",
+          "purpose": "Loading-state placeholder shapes.",
+          "url": "https://mantine.dev/core/skeleton/"
+        },
+        {
+          "name": "Slider",
+          "category": "input",
+          "purpose": "Pick a single value from a range.",
+          "url": "https://mantine.dev/core/slider/"
+        },
+        {
+          "name": "Space",
+          "category": "layout",
+          "purpose": "Adds horizontal or vertical theme spacing.",
+          "url": "https://mantine.dev/core/space/",
+          "presentational": true
+        },
+        {
+          "name": "Splitter",
+          "category": "layout",
+          "purpose": "Resizable split-pane layout.",
+          "url": "https://mantine.dev/core/splitter/",
+          "notes": "New in v9 docs; not documented in v7/v8. Equivalent to shadcn Resizable."
+        },
+        {
+          "name": "Spoiler",
+          "category": "disclosure",
+          "purpose": "Hides long content behind a 'show more' control.",
+          "url": "https://mantine.dev/core/spoiler/"
+        },
+        {
+          "name": "Stack",
+          "category": "layout",
+          "purpose": "Vertical flex column with spacing.",
+          "url": "https://mantine.dev/core/stack/",
+          "presentational": true
+        },
+        {
+          "name": "Stepper",
+          "category": "navigation",
+          "purpose": "Content divided into a sequence of steps with progress.",
+          "url": "https://mantine.dev/core/stepper/",
+          "notes": "Wizard/steps component; not in shadcn, Bootstrap or Radix Themes."
+        },
+        {
+          "name": "Switch",
+          "category": "selection",
+          "purpose": "On/off toggle switch; includes Switch.Group.",
+          "url": "https://mantine.dev/core/switch/"
+        },
+        {
+          "name": "Table",
+          "category": "data-display",
+          "purpose": "Table with theme styles; includes a data prop and scroll container.",
+          "url": "https://mantine.dev/core/table/"
+        },
+        {
+          "name": "TableOfContents",
+          "category": "navigation",
+          "purpose": "List of page headings that tracks the heading in view.",
+          "url": "https://mantine.dev/core/table-of-contents/",
+          "notes": "Similar to Bootstrap Scrollspy."
+        },
+        {
+          "name": "Tabs",
+          "category": "navigation",
+          "purpose": "Switch between views via a tab list.",
+          "url": "https://mantine.dev/core/tabs/"
+        },
+        {
+          "name": "TagsInput",
+          "category": "input",
+          "purpose": "Enter a list of free-form values with suggestions.",
+          "url": "https://mantine.dev/core/tags-input/"
+        },
+        {
+          "name": "Text",
+          "category": "typography",
+          "purpose": "Displays text with theme styles.",
+          "url": "https://mantine.dev/core/text/"
+        },
+        {
+          "name": "TextInput",
+          "category": "input",
+          "purpose": "Single-line text input.",
+          "url": "https://mantine.dev/core/text-input/"
+        },
+        {
+          "name": "Textarea",
+          "category": "input",
+          "purpose": "Multi-line input, optionally autosizing.",
+          "url": "https://mantine.dev/core/textarea/"
+        },
+        {
+          "name": "ThemeIcon",
+          "category": "media",
+          "purpose": "Icon inside a themed colored container.",
+          "url": "https://mantine.dev/core/theme-icon/"
+        },
+        {
+          "name": "Timeline",
+          "category": "data-display",
+          "purpose": "Vertical list of events in chronological order.",
+          "url": "https://mantine.dev/core/timeline/"
+        },
+        {
+          "name": "Title",
+          "category": "typography",
+          "purpose": "h1-h6 heading.",
+          "url": "https://mantine.dev/core/title/"
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Label shown on hover or other events on an element.",
+          "url": "https://mantine.dev/core/tooltip/"
+        },
+        {
+          "name": "Transition",
+          "category": "utility",
+          "purpose": "Animates component mount/unmount with preset transitions.",
+          "url": "https://mantine.dev/core/transition/"
+        },
+        {
+          "name": "Tree",
+          "category": "data-display",
+          "purpose": "Expandable tree structure.",
+          "url": "https://mantine.dev/core/tree/"
+        },
+        {
+          "name": "TreeSelect",
+          "category": "selection",
+          "purpose": "Select from hierarchical tree data.",
+          "url": "https://mantine.dev/core/tree-select/",
+          "notes": "New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Typography",
+          "category": "typography",
+          "purpose": "Styles provider for raw HTML content.",
+          "url": "https://mantine.dev/core/typography/",
+          "notes": "Named TypographyStylesProvider in v7."
+        },
+        {
+          "name": "UnstyledButton",
+          "category": "action",
+          "purpose": "Unstyled polymorphic button base.",
+          "url": "https://mantine.dev/core/unstyled-button/"
+        },
+        {
+          "name": "VisuallyHidden",
+          "category": "utility",
+          "purpose": "Hides content visually but keeps it for screen readers.",
+          "url": "https://mantine.dev/core/visually-hidden/"
+        },
+        {
+          "name": "Calendar",
+          "category": "data-entry-complex",
+          "purpose": "Base calendar for building custom date pickers.",
+          "url": "https://mantine.dev/dates/calendar/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "DateInput",
+          "category": "input",
+          "purpose": "Free-form typed date input with dropdown calendar.",
+          "url": "https://mantine.dev/dates/date-input/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "DatePickerInput",
+          "category": "data-entry-complex",
+          "purpose": "Input that opens a picker for a date, multiple dates or a range.",
+          "url": "https://mantine.dev/dates/date-picker-input/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "DatePicker",
+          "category": "data-entry-complex",
+          "purpose": "Inline picker for a date, multiple dates or a range.",
+          "url": "https://mantine.dev/dates/date-picker/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "DateTimePicker",
+          "category": "data-entry-complex",
+          "purpose": "Input for picking a date and time.",
+          "url": "https://mantine.dev/dates/date-time-picker/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "InlineDateTimePicker",
+          "category": "data-entry-complex",
+          "purpose": "Inline date and time picker with range support.",
+          "url": "https://mantine.dev/dates/inline-date-time-picker/",
+          "notes": "@mantine/dates. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "MiniCalendar",
+          "category": "data-entry-complex",
+          "purpose": "Compact row of a few days for quick date selection.",
+          "url": "https://mantine.dev/dates/mini-calendar/",
+          "notes": "@mantine/dates. Added in v8."
+        },
+        {
+          "name": "MonthPickerInput",
+          "category": "data-entry-complex",
+          "purpose": "Input for picking a month, multiple months or a range.",
+          "url": "https://mantine.dev/dates/month-picker-input/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "MonthPicker",
+          "category": "data-entry-complex",
+          "purpose": "Inline month / months / range picker.",
+          "url": "https://mantine.dev/dates/month-picker/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "TimeGrid",
+          "category": "selection",
+          "purpose": "Pick a time from a predefined grid of slots.",
+          "url": "https://mantine.dev/dates/time-grid/",
+          "notes": "@mantine/dates. Added in v8."
+        },
+        {
+          "name": "TimeInput",
+          "category": "input",
+          "purpose": "Native time input with Mantine styling.",
+          "url": "https://mantine.dev/dates/time-input/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "TimePicker",
+          "category": "input",
+          "purpose": "Time picker with hour/minute/second fields and dropdown.",
+          "url": "https://mantine.dev/dates/time-picker/",
+          "notes": "@mantine/dates. Added in v8."
+        },
+        {
+          "name": "TimeValue",
+          "category": "typography",
+          "purpose": "Displays a formatted time value.",
+          "url": "https://mantine.dev/dates/time-value/",
+          "notes": "@mantine/dates. Added in v8."
+        },
+        {
+          "name": "YearPickerInput",
+          "category": "data-entry-complex",
+          "purpose": "Input for picking a year, multiple years or a range.",
+          "url": "https://mantine.dev/dates/year-picker-input/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "YearPicker",
+          "category": "data-entry-complex",
+          "purpose": "Inline year / years / range picker.",
+          "url": "https://mantine.dev/dates/year-picker/",
+          "notes": "@mantine/dates"
+        },
+        {
+          "name": "AreaChart",
+          "category": "data-display",
+          "purpose": "Area chart with stacked, percent and split variants.",
+          "url": "https://mantine.dev/charts/area-chart/",
+          "notes": "@mantine/charts (Recharts)"
+        },
+        {
+          "name": "BarChart",
+          "category": "data-display",
+          "purpose": "Bar chart with stacked and percent variants.",
+          "url": "https://mantine.dev/charts/bar-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "BarsList",
+          "category": "data-display",
+          "purpose": "List of labeled horizontal bars with values.",
+          "url": "https://mantine.dev/charts/bars-list/",
+          "notes": "@mantine/charts. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "BubbleChart",
+          "category": "data-display",
+          "purpose": "Bubble chart.",
+          "url": "https://mantine.dev/charts/bubble-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "BulletChart",
+          "category": "data-display",
+          "purpose": "Compact KPI bar with value, target and ranges.",
+          "url": "https://mantine.dev/charts/bullet-chart/",
+          "notes": "@mantine/charts. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "CandlestickChart",
+          "category": "data-display",
+          "purpose": "Financial OHLC candlestick chart.",
+          "url": "https://mantine.dev/charts/candlestick-chart/",
+          "notes": "@mantine/charts. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "CompositeChart",
+          "category": "data-display",
+          "purpose": "Combined area, bar and line chart.",
+          "url": "https://mantine.dev/charts/composite-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "DonutChart",
+          "category": "data-display",
+          "purpose": "Donut chart.",
+          "url": "https://mantine.dev/charts/donut-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "FunnelChart",
+          "category": "data-display",
+          "purpose": "Funnel chart.",
+          "url": "https://mantine.dev/charts/funnel-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "GaugeChart",
+          "category": "data-display",
+          "purpose": "Radial gauge for KPI/status.",
+          "url": "https://mantine.dev/charts/gauge-chart/",
+          "notes": "@mantine/charts. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Heatmap",
+          "category": "data-display",
+          "purpose": "Calendar-style heatmap.",
+          "url": "https://mantine.dev/charts/heatmap/",
+          "notes": "@mantine/charts. Added in v8."
+        },
+        {
+          "name": "LineChart",
+          "category": "data-display",
+          "purpose": "Line chart.",
+          "url": "https://mantine.dev/charts/line-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "MatrixChart",
+          "category": "data-display",
+          "purpose": "Generic x/y heatmap with categorical axes.",
+          "url": "https://mantine.dev/charts/matrix-chart/",
+          "notes": "@mantine/charts. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "PieChart",
+          "category": "data-display",
+          "purpose": "Pie chart.",
+          "url": "https://mantine.dev/charts/pie-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "RadarChart",
+          "category": "data-display",
+          "purpose": "Radar chart.",
+          "url": "https://mantine.dev/charts/radar-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "RadialBarChart",
+          "category": "data-display",
+          "purpose": "Radial bar chart.",
+          "url": "https://mantine.dev/charts/radial-bar-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "SankeyChart",
+          "category": "data-display",
+          "purpose": "Sankey flow diagram.",
+          "url": "https://mantine.dev/charts/sankey-chart/",
+          "notes": "@mantine/charts. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "ScatterChart",
+          "category": "data-display",
+          "purpose": "Scatter chart.",
+          "url": "https://mantine.dev/charts/scatter-chart/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "Sparkline",
+          "category": "data-display",
+          "purpose": "Small simplified area chart showing a trend.",
+          "url": "https://mantine.dev/charts/sparkline/",
+          "notes": "@mantine/charts"
+        },
+        {
+          "name": "SunburstChart",
+          "category": "data-display",
+          "purpose": "Sunburst chart for hierarchical data.",
+          "url": "https://mantine.dev/charts/sunburst-chart/",
+          "notes": "@mantine/charts. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Treemap",
+          "category": "data-display",
+          "purpose": "Treemap chart.",
+          "url": "https://mantine.dev/charts/treemap/",
+          "notes": "@mantine/charts. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "WaffleChart",
+          "category": "data-display",
+          "purpose": "Part-to-whole grid of colored cells.",
+          "url": "https://mantine.dev/charts/waffle-chart/",
+          "notes": "@mantine/charts. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Carousel",
+          "category": "media",
+          "purpose": "Embla-based carousel.",
+          "url": "https://mantine.dev/x/carousel/",
+          "notes": "@mantine/carousel"
+        },
+        {
+          "name": "Dropzone",
+          "category": "data-entry-complex",
+          "purpose": "Drag-and-drop file capture area (also full-screen variant).",
+          "url": "https://mantine.dev/x/dropzone/",
+          "notes": "@mantine/dropzone"
+        },
+        {
+          "name": "Notifications system",
+          "category": "feedback",
+          "purpose": "Toast-style notifications manager (show/update/hide from anywhere).",
+          "url": "https://mantine.dev/x/notifications/",
+          "notes": "@mantine/notifications; equivalent of Toast/Sonner/Toasts. Uses core Notification for rendering."
+        },
+        {
+          "name": "Spotlight",
+          "category": "overlay",
+          "purpose": "Command center / command palette with search and actions.",
+          "url": "https://mantine.dev/x/spotlight/",
+          "notes": "@mantine/spotlight; equivalent of shadcn Command (CommandDialog)."
+        },
+        {
+          "name": "Rich text editor",
+          "category": "data-entry-complex",
+          "purpose": "Tiptap-based rich text editor with toolbar controls.",
+          "url": "https://mantine.dev/x/tiptap/",
+          "notes": "@mantine/tiptap (RichTextEditor); no equivalent in the other three systems."
+        },
+        {
+          "name": "Modals manager",
+          "category": "overlay",
+          "purpose": "Centralized manager for opening modals, including confirm and multi-step modals.",
+          "url": "https://mantine.dev/x/modals/",
+          "notes": "@mantine/modals - outside the requested package list. modals.openConfirmModal is Mantine's Alert Dialog equivalent."
+        },
+        {
+          "name": "NavigationProgress",
+          "category": "feedback",
+          "purpose": "Top-of-page navigation progress bar.",
+          "url": "https://mantine.dev/x/nprogress/",
+          "notes": "@mantine/nprogress - outside the requested package list."
+        },
+        {
+          "name": "CodeHighlight",
+          "category": "typography",
+          "purpose": "Syntax-highlighted code block (shiki or highlight.js).",
+          "url": "https://mantine.dev/x/code-highlight/",
+          "notes": "@mantine/code-highlight - outside the requested package list."
+        },
+        {
+          "name": "Lightbox",
+          "category": "media",
+          "purpose": "Full-screen media viewer with carousel navigation.",
+          "url": "https://mantine.dev/x/lightbox/",
+          "notes": "@mantine/lightbox - outside the requested package list. New in v9 docs; not documented in v7/v8."
+        },
+        {
+          "name": "Schedule",
+          "category": "data-entry-complex",
+          "purpose": "Event scheduler/calendar with day, week, month, year and agenda views.",
+          "url": "https://mantine.dev/schedule/schedule/",
+          "notes": "@mantine/schedule - outside the requested package list; docs also have separate pages per view (DayView, WeekView, MonthView, YearView, AgendaView, resources views). New in v9 docs; not documented in v7/v8."
+        }
+      ]
+    },
+    {
+      "system": "Radix Themes",
+      "source": "https://www.radix-ui.com/themes/docs/components/button",
+      "notes": "All pages in the Themes Layout, Typography, Components and Utilities sidebar groups. 'primitivesNotInThemes' lists Radix Primitives components/utilities with no Themes counterpart (from https://www.radix-ui.com/primitives/docs).",
+      "components": [
+        {
+          "name": "Accessible Icon",
+          "category": "utility",
+          "purpose": "Makes an icon accessible by giving it a label.",
+          "url": "https://www.radix-ui.com/themes/docs/components/accessible-icon"
+        },
+        {
+          "name": "Alert Dialog",
+          "category": "overlay",
+          "purpose": "Modal confirmation dialog that requires a response.",
+          "url": "https://www.radix-ui.com/themes/docs/components/alert-dialog"
+        },
+        {
+          "name": "Aspect Ratio",
+          "category": "layout",
+          "purpose": "Displays content within a set ratio.",
+          "url": "https://www.radix-ui.com/themes/docs/components/aspect-ratio",
+          "presentational": true
+        },
+        {
+          "name": "Avatar",
+          "category": "media",
+          "purpose": "Profile picture, initials or fallback icon.",
+          "url": "https://www.radix-ui.com/themes/docs/components/avatar"
+        },
+        {
+          "name": "Badge",
+          "category": "data-display",
+          "purpose": "Stylized small label.",
+          "url": "https://www.radix-ui.com/themes/docs/components/badge"
+        },
+        {
+          "name": "Blockquote",
+          "category": "typography",
+          "purpose": "Block-level quotation.",
+          "url": "https://www.radix-ui.com/themes/docs/components/blockquote"
+        },
+        {
+          "name": "Box",
+          "category": "layout",
+          "purpose": "Fundamental layout building block.",
+          "url": "https://www.radix-ui.com/themes/docs/components/box",
+          "presentational": true
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Triggers an action such as submitting a form or opening a dialog.",
+          "url": "https://www.radix-ui.com/themes/docs/components/button"
+        },
+        {
+          "name": "Callout",
+          "category": "feedback",
+          "purpose": "Short message that draws attention (icon + text).",
+          "url": "https://www.radix-ui.com/themes/docs/components/callout",
+          "notes": "Equivalent of Alert in shadcn/Bootstrap/Mantine."
+        },
+        {
+          "name": "Card",
+          "category": "layout",
+          "purpose": "Container grouping related content and actions.",
+          "url": "https://www.radix-ui.com/themes/docs/components/card"
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Toggle an option on and off.",
+          "url": "https://www.radix-ui.com/themes/docs/components/checkbox"
+        },
+        {
+          "name": "Checkbox Cards",
+          "category": "selection",
+          "purpose": "Set of selectable cards where multiple can be chosen.",
+          "url": "https://www.radix-ui.com/themes/docs/components/checkbox-cards",
+          "notes": "Mantine has Checkbox.Card; no equivalent in shadcn/Bootstrap."
+        },
+        {
+          "name": "Checkbox Group",
+          "category": "selection",
+          "purpose": "Set of checkboxes where multiple options can be selected.",
+          "url": "https://www.radix-ui.com/themes/docs/components/checkbox-group"
+        },
+        {
+          "name": "Code",
+          "category": "typography",
+          "purpose": "Marks a short fragment of code.",
+          "url": "https://www.radix-ui.com/themes/docs/components/code"
+        },
+        {
+          "name": "Container",
+          "category": "layout",
+          "purpose": "Constrains the maximum width of page content.",
+          "url": "https://www.radix-ui.com/themes/docs/components/container",
+          "presentational": true
+        },
+        {
+          "name": "Context Menu",
+          "category": "overlay",
+          "purpose": "Menu of actions opened on right-click or long-press.",
+          "url": "https://www.radix-ui.com/themes/docs/components/context-menu"
+        },
+        {
+          "name": "Data List",
+          "category": "data-display",
+          "purpose": "Metadata shown as key-value pairs.",
+          "url": "https://www.radix-ui.com/themes/docs/components/data-list"
+        },
+        {
+          "name": "Dialog",
+          "category": "overlay",
+          "purpose": "Modal dialog window above the page.",
+          "url": "https://www.radix-ui.com/themes/docs/components/dialog"
+        },
+        {
+          "name": "Dropdown Menu",
+          "category": "overlay",
+          "purpose": "Menu of actions opened by a button.",
+          "url": "https://www.radix-ui.com/themes/docs/components/dropdown-menu"
+        },
+        {
+          "name": "Em",
+          "category": "typography",
+          "purpose": "Marks text with emphasis (italic).",
+          "url": "https://www.radix-ui.com/themes/docs/components/em"
+        },
+        {
+          "name": "Flex",
+          "category": "layout",
+          "purpose": "Flexbox layout component.",
+          "url": "https://www.radix-ui.com/themes/docs/components/flex",
+          "presentational": true
+        },
+        {
+          "name": "Grid",
+          "category": "layout",
+          "purpose": "CSS grid layout component.",
+          "url": "https://www.radix-ui.com/themes/docs/components/grid",
+          "presentational": true
+        },
+        {
+          "name": "Heading",
+          "category": "typography",
+          "purpose": "Semantic heading element.",
+          "url": "https://www.radix-ui.com/themes/docs/components/heading"
+        },
+        {
+          "name": "Hover Card",
+          "category": "overlay",
+          "purpose": "Preview card shown when hovering a link.",
+          "url": "https://www.radix-ui.com/themes/docs/components/hover-card"
+        },
+        {
+          "name": "Icon Button",
+          "category": "action",
+          "purpose": "Button designed for a single icon.",
+          "url": "https://www.radix-ui.com/themes/docs/components/icon-button"
+        },
+        {
+          "name": "Inset",
+          "category": "layout",
+          "purpose": "Negative margin so content bleeds to the edges of its container (e.g. card images).",
+          "url": "https://www.radix-ui.com/themes/docs/components/inset",
+          "presentational": true
+        },
+        {
+          "name": "Kbd",
+          "category": "typography",
+          "purpose": "Keyboard input or hotkey.",
+          "url": "https://www.radix-ui.com/themes/docs/components/kbd"
+        },
+        {
+          "name": "Link",
+          "category": "typography",
+          "purpose": "Semantic link for navigating between pages.",
+          "url": "https://www.radix-ui.com/themes/docs/components/link"
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "Floating panel of rich content triggered by a button.",
+          "url": "https://www.radix-ui.com/themes/docs/components/popover"
+        },
+        {
+          "name": "Portal",
+          "category": "utility",
+          "purpose": "Renders a subtree in a different part of the DOM.",
+          "url": "https://www.radix-ui.com/themes/docs/components/portal"
+        },
+        {
+          "name": "Progress",
+          "category": "feedback",
+          "purpose": "Progress bar for a task.",
+          "url": "https://www.radix-ui.com/themes/docs/components/progress"
+        },
+        {
+          "name": "Quote",
+          "category": "typography",
+          "purpose": "Short inline quotation.",
+          "url": "https://www.radix-ui.com/themes/docs/components/quote"
+        },
+        {
+          "name": "Radio",
+          "category": "selection",
+          "purpose": "Standalone radio button usable in any layout.",
+          "url": "https://www.radix-ui.com/themes/docs/components/radio"
+        },
+        {
+          "name": "Radio Cards",
+          "category": "selection",
+          "purpose": "Set of selectable cards where only one can be chosen.",
+          "url": "https://www.radix-ui.com/themes/docs/components/radio-cards",
+          "notes": "Mantine has Radio.Card; no equivalent in shadcn/Bootstrap."
+        },
+        {
+          "name": "Radio Group",
+          "category": "selection",
+          "purpose": "Set of radio buttons where only one can be chosen.",
+          "url": "https://www.radix-ui.com/themes/docs/components/radio-group"
+        },
+        {
+          "name": "Reset",
+          "category": "utility",
+          "purpose": "Removes default browser styles from an element.",
+          "url": "https://www.radix-ui.com/themes/docs/components/reset"
+        },
+        {
+          "name": "Scroll Area",
+          "category": "layout",
+          "purpose": "Custom-styled scrollable area.",
+          "url": "https://www.radix-ui.com/themes/docs/components/scroll-area"
+        },
+        {
+          "name": "Section",
+          "category": "layout",
+          "purpose": "Denotes a vertical section of page content with consistent spacing.",
+          "url": "https://www.radix-ui.com/themes/docs/components/section",
+          "presentational": true
+        },
+        {
+          "name": "Segmented Control",
+          "category": "selection",
+          "purpose": "Toggle buttons for switching between values or views.",
+          "url": "https://www.radix-ui.com/themes/docs/components/segmented-control"
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Button-triggered list of options to pick one.",
+          "url": "https://www.radix-ui.com/themes/docs/components/select"
+        },
+        {
+          "name": "Separator",
+          "category": "layout",
+          "purpose": "Visual or semantic divider.",
+          "url": "https://www.radix-ui.com/themes/docs/components/separator",
+          "presentational": true
+        },
+        {
+          "name": "Skeleton",
+          "category": "feedback",
+          "purpose": "Loading placeholder in the shape of the content.",
+          "url": "https://www.radix-ui.com/themes/docs/components/skeleton"
+        },
+        {
+          "name": "Slider",
+          "category": "input",
+          "purpose": "Select a value (or range) along a track.",
+          "url": "https://www.radix-ui.com/themes/docs/components/slider"
+        },
+        {
+          "name": "Slot",
+          "category": "utility",
+          "purpose": "Merges its props onto its immediate child.",
+          "url": "https://www.radix-ui.com/themes/docs/components/slot"
+        },
+        {
+          "name": "Spinner",
+          "category": "feedback",
+          "purpose": "Animated loading indicator.",
+          "url": "https://www.radix-ui.com/themes/docs/components/spinner"
+        },
+        {
+          "name": "Strong",
+          "category": "typography",
+          "purpose": "Marks text of strong importance (bold).",
+          "url": "https://www.radix-ui.com/themes/docs/components/strong"
+        },
+        {
+          "name": "Switch",
+          "category": "selection",
+          "purpose": "On/off toggle switch.",
+          "url": "https://www.radix-ui.com/themes/docs/components/switch"
+        },
+        {
+          "name": "Tab Nav",
+          "category": "navigation",
+          "purpose": "Page navigation links styled as tabs.",
+          "url": "https://www.radix-ui.com/themes/docs/components/tab-nav",
+          "notes": "Link-based tabs, distinct from Tabs (panel switching); Bootstrap covers both with Navs & tabs."
+        },
+        {
+          "name": "Table",
+          "category": "data-display",
+          "purpose": "Semantic table for presenting data.",
+          "url": "https://www.radix-ui.com/themes/docs/components/table"
+        },
+        {
+          "name": "Tabs",
+          "category": "navigation",
+          "purpose": "Set of content sections shown one at a time.",
+          "url": "https://www.radix-ui.com/themes/docs/components/tabs"
+        },
+        {
+          "name": "Text",
+          "category": "typography",
+          "purpose": "Foundational text primitive.",
+          "url": "https://www.radix-ui.com/themes/docs/components/text"
+        },
+        {
+          "name": "Text Area",
+          "category": "input",
+          "purpose": "Multi-line text input.",
+          "url": "https://www.radix-ui.com/themes/docs/components/text-area"
+        },
+        {
+          "name": "Text Field",
+          "category": "input",
+          "purpose": "Text input with optional slots for icons and buttons.",
+          "url": "https://www.radix-ui.com/themes/docs/components/text-field",
+          "notes": "Slots cover what shadcn/Bootstrap call Input Group."
+        },
+        {
+          "name": "Theme",
+          "category": "utility",
+          "purpose": "Provides theme configuration (colors, radius, scaling, appearance) to a subtree.",
+          "url": "https://www.radix-ui.com/themes/docs/components/theme"
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Floating label shown on hover/focus.",
+          "url": "https://www.radix-ui.com/themes/docs/components/tooltip"
+        },
+        {
+          "name": "Visually Hidden",
+          "category": "utility",
+          "purpose": "Hides content visually while keeping it accessible.",
+          "url": "https://www.radix-ui.com/themes/docs/components/visually-hidden"
+        }
+      ],
+      "primitivesNotInThemes": [
+        {
+          "name": "Accordion",
+          "category": "disclosure",
+          "purpose": "Stack of headings that each reveal a section of content.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/accordion"
+        },
+        {
+          "name": "Collapsible",
+          "category": "disclosure",
+          "purpose": "Single panel that expands and collapses.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/collapsible"
+        },
+        {
+          "name": "Form",
+          "category": "input",
+          "purpose": "Form wrapper with built-in field validation and messages.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/form",
+          "notes": "Marked Preview in Primitives."
+        },
+        {
+          "name": "Label",
+          "category": "input",
+          "purpose": "Accessible label associated with a control.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/label"
+        },
+        {
+          "name": "Menubar",
+          "category": "navigation",
+          "purpose": "Persistent desktop-style row of menus.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/menubar"
+        },
+        {
+          "name": "Navigation Menu",
+          "category": "navigation",
+          "purpose": "Website navigation links with dropdown panels.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/navigation-menu"
+        },
+        {
+          "name": "One-Time Password Field",
+          "category": "input",
+          "purpose": "Group of single-character inputs for OTP codes.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/one-time-password-field",
+          "notes": "Marked Preview in Primitives."
+        },
+        {
+          "name": "Password Toggle Field",
+          "category": "input",
+          "purpose": "Password input with a show/hide toggle button.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/password-toggle-field",
+          "notes": "Marked Preview in Primitives."
+        },
+        {
+          "name": "Toast",
+          "category": "feedback",
+          "purpose": "Brief, temporary notification.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/toast"
+        },
+        {
+          "name": "Toggle",
+          "category": "selection",
+          "purpose": "Two-state on/off button.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/toggle"
+        },
+        {
+          "name": "Toggle Group",
+          "category": "selection",
+          "purpose": "Set of toggle buttons.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/toggle-group",
+          "notes": "Themes' Segmented Control covers the single-select case."
+        },
+        {
+          "name": "Toolbar",
+          "category": "action",
+          "purpose": "Container grouping buttons, toggle groups and menus with keyboard navigation.",
+          "url": "https://www.radix-ui.com/primitives/docs/components/toolbar"
+        },
+        {
+          "name": "Direction Provider",
+          "category": "utility",
+          "purpose": "Sets global reading direction (LTR/RTL).",
+          "url": "https://www.radix-ui.com/primitives/docs/utilities/direction-provider"
+        }
+      ]
+    }
+  ]
+}

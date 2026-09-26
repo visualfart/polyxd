@@ -1,0 +1,3318 @@
+{
+  "generated": "2026-09-27",
+  "systems": [
+    {
+      "system": "Shopify Polaris",
+      "source": "https://shopify.dev/docs/api/app-home/polaris-web-components",
+      "additional_sources": [
+        "https://polaris-react.shopify.com/components (now 301-redirects to https://shopify.dev/docs/api/polaris)",
+        "https://shopify.github.io/polaris-react-archive/ (official archived Polaris React Storybook)",
+        "https://shopify.dev/docs/api/app-home/latest/app-bridge-web-components"
+      ],
+      "notes": "Polaris React is deprecated and its docs site (polaris-react.shopify.com) now redirects to shopify.dev. React entries come from the official archived Storybook plus the old site's Deprecated list. 'url' points to the live web-component page when one exists, else to the archived Storybook story; legacy_docs_url is the old (redirecting) polaris-react.shopify.com path. implementations: react-legacy, web-components (s-* tags, App Home), app-bridge-web-components.",
+      "components": [
+        {
+          "name": "Account connection",
+          "category": "action",
+          "purpose": "Card that lets a merchant connect or disconnect a third-party account.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-accountconnection--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/actions/account-connection",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Action list",
+          "category": "action",
+          "purpose": "List of actions or links, usually shown inside a popover.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-actionlist--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/lists/action-list",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Web-components equivalent is Menu (s-menu)."
+        },
+        {
+          "name": "App provider",
+          "category": "utility",
+          "purpose": "Root wrapper that supplies i18n, theme and link settings to all Polaris components.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-appprovider--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/utilities/app-provider",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Autocomplete",
+          "category": "selection",
+          "purpose": "Text field that filters and suggests options from a list as the user types.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-autocomplete--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/autocomplete",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Avatar",
+          "category": "media",
+          "purpose": "Shows a person's or business's picture or initials.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/media-and-visuals/avatar",
+          "tag": "s-avatar",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-avatar--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/images-and-icons/avatar",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Badge",
+          "category": "feedback",
+          "purpose": "Small colored label for an object's status or attribute.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/feedback-and-status-indicators/badge",
+          "tag": "s-badge",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-badge--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/badge",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "Tone + progress variants; other systems split this into StatusLight/StateLabel vs Label/Tag."
+        },
+        {
+          "name": "Banner",
+          "category": "feedback",
+          "purpose": "Prominent message about an important change or persistent condition.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/feedback-and-status-indicators/banner",
+          "tag": "s-banner",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-banner--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/banner",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "Tone variants (info/success/warning/critical)."
+        },
+        {
+          "name": "Bleed",
+          "category": "layout",
+          "purpose": "Applies negative margins so content can extend into a parent's padding.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-bleed--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/bleed",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Block stack",
+          "category": "layout",
+          "purpose": "Stacks children vertically with consistent spacing.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-blockstack--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/block-stack",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Web components merge BlockStack/InlineStack into Stack (s-stack)."
+        },
+        {
+          "name": "Box",
+          "category": "layout",
+          "purpose": "Generic container that applies spacing, borders, background and other style tokens.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/box",
+          "tag": "s-box",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-box--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/box",
+          "presentational": true,
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Bulk actions",
+          "category": "action",
+          "purpose": "Bar of actions applied to several selected rows at once.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-bulkactions--default",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Only in the archived Storybook; on the old docs site it was part of IndexTable/ResourceList, not its own page."
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Triggers an action or navigates when clicked.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/actions/button",
+          "tag": "s-button",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-button--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/actions/button",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "Variants primary/secondary/tertiary/plain/monochromePlain and tone=critical; used as a link via url prop. Other systems split plain/link-styled buttons out (e.g., LinkButton, IconButton)."
+        },
+        {
+          "name": "Button group",
+          "category": "action",
+          "purpose": "Arranges several related buttons together.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/actions/button-group",
+          "tag": "s-button-group",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-buttongroup--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/actions/button-group",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "variant=segmented acts like a segmented control."
+        },
+        {
+          "name": "Callout card",
+          "category": "layout",
+          "purpose": "Card that promotes a feature or next step with an illustration and call to action.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-calloutcard--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/callout-card",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Card",
+          "category": "layout",
+          "purpose": "Surface that groups related content and actions.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-card--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/card",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Web-components equivalent is Section (s-section)."
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Lets the user turn a single option on or off, or pick several options.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/checkbox",
+          "tag": "s-checkbox",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-checkbox--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/checkbox",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Choice list",
+          "category": "selection",
+          "purpose": "Group of radio buttons or checkboxes for picking one or many options.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/choice-list",
+          "tag": "s-choice-list",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-choicelist--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/choice-list",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "Covers both RadioGroup and CheckboxGroup from other systems (allowMultiple)."
+        },
+        {
+          "name": "Collapsible",
+          "category": "disclosure",
+          "purpose": "Shows or hides a section of content.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-collapsible--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/utilities/collapsible",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Color picker",
+          "category": "data-entry-complex",
+          "purpose": "Lets the user pick a color visually (hue, saturation/brightness, alpha).",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/color-picker",
+          "tag": "s-color-picker",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-colorpicker--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/color-picker",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Combobox",
+          "category": "selection",
+          "purpose": "Text input with a popover list of options for single or multi select.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-combobox--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/combobox",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Contextual save bar",
+          "category": "action",
+          "purpose": "Top bar telling the merchant they have unsaved changes, with Save and Discard.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-contextualsavebar--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/contextual-save-bar",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by the App Bridge Save bar."
+        },
+        {
+          "name": "Data table",
+          "category": "data-display",
+          "purpose": "Table for displaying and comparing rows of data with sorting and totals.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-datatable--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/tables/data-table",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Web-components equivalent is Table (s-table)."
+        },
+        {
+          "name": "Date picker",
+          "category": "data-entry-complex",
+          "purpose": "Calendar for picking a single date or a date range.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/date-picker",
+          "tag": "s-date-picker",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-datepicker--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/date-picker",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Description list",
+          "category": "data-display",
+          "purpose": "List of terms paired with their descriptions.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-descriptionlist--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/lists/description-list",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Divider",
+          "category": "layout",
+          "purpose": "Horizontal or vertical line that separates content.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/divider",
+          "tag": "s-divider",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-divider--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/divider",
+          "presentational": true,
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Drop zone",
+          "category": "data-entry-complex",
+          "purpose": "Area where users drag and drop or browse to upload files.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/drop-zone",
+          "tag": "s-drop-zone",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-dropzone--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/drop-zone",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Empty state",
+          "category": "feedback",
+          "purpose": "Explains why there is no content yet and what to do next.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/feedback-and-status-indicators/empty-state",
+          "tag": "s-empty-state",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-emptystate--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/empty-state",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Exception list",
+          "category": "feedback",
+          "purpose": "Compact list of warnings or notable details about an object.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-exceptionlist--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/exception-list",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Filters",
+          "category": "data-entry-complex",
+          "purpose": "Search box plus filter controls for narrowing a list of resources.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-filters--with-a-resource-list",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/filters",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Footer help",
+          "category": "navigation",
+          "purpose": "Footer link pointing merchants to help docs for the page.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-footerhelp--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/navigation/footer-help",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Form",
+          "category": "utility",
+          "purpose": "Wraps form fields and handles native form submission.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-form--custom-on-submit",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/form",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Form layout",
+          "category": "layout",
+          "purpose": "Arranges form fields in consistent rows and groups.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-formlayout--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/form-layout",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Frame",
+          "category": "layout",
+          "purpose": "Top-level app structure holding top bar, navigation, toasts and loading.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-frame--in-an-application",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/frame",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by the Shopify admin frame via App Bridge."
+        },
+        {
+          "name": "Fullscreen bar",
+          "category": "navigation",
+          "purpose": "Top bar with a back/exit action for full-screen app views.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-fullscreenbar--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/fullscreen-bar",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Grid",
+          "category": "layout",
+          "purpose": "Responsive column grid for arranging content.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/grid",
+          "tag": "s-grid",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-grid--two-column",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/grid",
+          "presentational": true,
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Icon",
+          "category": "media",
+          "purpose": "Displays an icon from the Polaris icon set.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/media-and-visuals/icon",
+          "tag": "s-icon",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-icon--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/images-and-icons/icon",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Index filters",
+          "category": "data-entry-complex",
+          "purpose": "Tabs for saved views plus search, filter and sort controls above an index table.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-indexfilters--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/index-filters",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Index table",
+          "category": "data-display",
+          "purpose": "Table of resources with row selection, bulk actions and navigation to each item.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-indextable--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/tables/index-table",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Web-components equivalent is Table (s-table)."
+        },
+        {
+          "name": "Inline error",
+          "category": "feedback",
+          "purpose": "Short error message shown next to a form field.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-inlineerror--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/inline-error",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Inline grid",
+          "category": "layout",
+          "purpose": "Places children in columns across a row with responsive widths.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-inlinegrid--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/inline-grid",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Inline stack",
+          "category": "layout",
+          "purpose": "Arranges children horizontally with spacing, alignment and wrapping.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-inlinestack--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/inline-stack",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Keyboard key",
+          "category": "typography",
+          "purpose": "Shows a keyboard key or shortcut as a styled key cap.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-keyboardkey--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/images-and-icons/keyboard-key",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Layout",
+          "category": "layout",
+          "purpose": "Page-level structure with main and secondary columns and annotated sections.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-layout--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/layout",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Legacy card",
+          "category": "layout",
+          "purpose": "Older card with built-in sections, header actions and footer actions.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-legacycard--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/legacy-card",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Legacy filters",
+          "category": "data-entry-complex",
+          "purpose": "Older filter bar for resource lists.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-legacyfilters--with-a-resource-list",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/legacy-filters",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Legacy stack",
+          "category": "layout",
+          "purpose": "Older flexbox stack layout.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-legacystack--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/legacy-stack",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Legacy tabs",
+          "category": "navigation",
+          "purpose": "Older tab bar.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-legacytabs--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/legacy-tabs",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Link",
+          "category": "navigation",
+          "purpose": "Inline text link to another page or resource.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/actions/link",
+          "tag": "s-link",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-link--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/navigation/link",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "List",
+          "category": "typography",
+          "purpose": "Bulleted or numbered list of text items.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-list--bulleted",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/lists/list",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Web components split this into Ordered list (s-ordered-list) and Unordered list (s-unordered-list)."
+        },
+        {
+          "name": "Listbox",
+          "category": "selection",
+          "purpose": "Accessible list of selectable options, used as the building block for Combobox.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-listbox--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/lists/listbox",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Loading",
+          "category": "feedback",
+          "purpose": "Thin progress bar at the top of the app while a page loads.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-loading--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/loading",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by App Bridge loading API."
+        },
+        {
+          "name": "Media card",
+          "category": "data-display",
+          "purpose": "Card combining an image or video with a title, description and actions.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-mediacard--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/media-card",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Modal",
+          "category": "overlay",
+          "purpose": "Dialog that blocks the page to focus on a task or decision.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/overlays/modal",
+          "tag": "s-modal",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-modal--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/modal",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "React Modal is deprecated in favor of App Bridge / the Modal web component (s-modal). Fullscreen variant is App window."
+        },
+        {
+          "name": "Navigation",
+          "category": "navigation",
+          "purpose": "Left-hand app navigation with sections and items.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-navigation--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/navigation",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by App Bridge App nav."
+        },
+        {
+          "name": "Option list",
+          "category": "selection",
+          "purpose": "List of options the user can select one or many of, often inside a popover.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-optionlist--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/lists/option-list",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Page",
+          "category": "layout",
+          "purpose": "Page wrapper with title, breadcrumbs, primary/secondary actions and pagination.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/page",
+          "tag": "s-page",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-page--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/layout-and-structure/page",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "The web component also configures the admin title bar."
+        },
+        {
+          "name": "Page actions",
+          "category": "action",
+          "purpose": "Primary and secondary action buttons at the bottom of a page.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-pageactions--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/page-actions",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Pagination",
+          "category": "navigation",
+          "purpose": "Previous/next controls for moving through pages of content.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-pagination--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/navigation/pagination",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "Small overlay anchored to a trigger that shows content or actions.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/overlays/popover",
+          "tag": "s-popover",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-popover--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/overlays/popover",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Progress bar",
+          "category": "feedback",
+          "purpose": "Shows how far a task or process has progressed.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-progressbar--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/progress-bar",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Web-components equivalent is Progress (s-progress)."
+        },
+        {
+          "name": "Radio button",
+          "category": "selection",
+          "purpose": "Lets the user choose one option from a mutually exclusive set.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-radiobutton--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/radio-button",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "In web components, radio groups are built with Choice list."
+        },
+        {
+          "name": "Range slider",
+          "category": "input",
+          "purpose": "Slider for choosing a single value or a range between min and max.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-rangeslider--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/range-slider",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Covers both single Slider and RangeSlider from other systems."
+        },
+        {
+          "name": "Resource item",
+          "category": "data-display",
+          "purpose": "One row in a resource list, with media, details and shortcut actions.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-resourceitem--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/lists/resource-item",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Resource list",
+          "category": "data-display",
+          "purpose": "List of resources (products, orders, customers) with selection, sorting and bulk actions.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-resourcelist--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/lists/resource-list",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Scrollable",
+          "category": "utility",
+          "purpose": "Container that makes a region independently scrollable with shadows at the edges.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-scrollable--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/utilities/scrollable",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Native dropdown for picking one option from a list.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/select",
+          "tag": "s-select",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-select--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/select",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Select all actions",
+          "category": "action",
+          "purpose": "Checkbox and label for selecting all items plus bulk-action controls.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-selectallactions--default",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Only in the archived Storybook; internal piece of IndexTable/ResourceList bulk actions."
+        },
+        {
+          "name": "Setting toggle",
+          "category": "selection",
+          "purpose": "Row that explains a setting and toggles it on or off with a button.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-settingtoggle--with-deprecated-component",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/setting-toggle",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Shadow bevel",
+          "category": "layout",
+          "purpose": "Internal helper that draws the bevelled shadow edge used by cards.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-shadowbevel--default",
+          "presentational": true,
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Only in the archived Storybook; not a public docs page."
+        },
+        {
+          "name": "Sheet",
+          "category": "overlay",
+          "purpose": "Panel that slides in from the edge of the screen.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-sheet--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/sheet",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Skeleton body text",
+          "category": "feedback",
+          "purpose": "Placeholder lines shown while body text loads.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-skeletonbodytext--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/skeleton-body-text",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Skeleton display text",
+          "category": "feedback",
+          "purpose": "Placeholder for a large heading while it loads.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-skeletondisplaytext--medium-and-large",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/skeleton-display-text",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Skeleton page",
+          "category": "feedback",
+          "purpose": "Placeholder layout for a whole page while it loads.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-skeletonpage--with-dynamic-content",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/skeleton-page",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Skeleton tabs",
+          "category": "feedback",
+          "purpose": "Placeholder for tabs while they load.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-skeletontabs--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/skeleton-tabs",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Skeleton thumbnail",
+          "category": "feedback",
+          "purpose": "Placeholder for a thumbnail image while it loads.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-skeletonthumbnail--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/skeleton-thumbnail",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Spinner",
+          "category": "feedback",
+          "purpose": "Animated indicator that something is loading.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/feedback-and-status-indicators/spinner",
+          "tag": "s-spinner",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-spinner--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/feedback-indicators/spinner",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Tabs",
+          "category": "navigation",
+          "purpose": "Lets the user switch between views of the same content.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-tabs--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/navigation/tabs",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Tag",
+          "category": "data-display",
+          "purpose": "Small removable or clickable label for a keyword or filter.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-tag--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/tag",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Web-components equivalents are Chip (s-chip) and Clickable chip (s-clickable-chip)."
+        },
+        {
+          "name": "Text",
+          "category": "typography",
+          "purpose": "Renders text with a type variant, tone, weight and alignment.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/typography-and-content/text",
+          "tag": "s-text",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-text--variants",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/typography/text",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "React Text covers headings and body via variant; web components split out Heading and Paragraph."
+        },
+        {
+          "name": "Text container",
+          "category": "typography",
+          "purpose": "Adds consistent vertical spacing between text blocks.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-textcontainer--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/text-container",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Text field",
+          "category": "input",
+          "purpose": "Single- or multi-line text input with label, help text and validation.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/text-field",
+          "tag": "s-text-field",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-textfield--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/selection-and-input/text-field",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "React TextField's type/multiline props are separate web components: Email, Money, Number, Password, Search, URL fields and Text area."
+        },
+        {
+          "name": "Theme provider",
+          "category": "utility",
+          "purpose": "Applies a Polaris theme to a subtree.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-themeprovider--default",
+          "implementations": [
+            "react-legacy"
+          ],
+          "notes": "Only in the archived Storybook; not a public docs page."
+        },
+        {
+          "name": "Thumbnail",
+          "category": "media",
+          "purpose": "Small preview image of a product or file.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/media-and-visuals/thumbnail",
+          "tag": "s-thumbnail",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-thumbnail--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/images-and-icons/thumbnail",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Toast",
+          "category": "feedback",
+          "purpose": "Short, non-disruptive message that appears briefly at the bottom of the screen.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-toast--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/toast",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by the App Bridge toast API (shopify.toast.show); there is no s-toast web component."
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Small label shown on hover or focus to explain a control.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/typography-and-content/tooltip",
+          "tag": "s-tooltip",
+          "react_url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-tooltip--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/overlays/tooltip",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ]
+        },
+        {
+          "name": "Top bar",
+          "category": "navigation",
+          "purpose": "App header with search, user menu and navigation toggle.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-topbar--default",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/top-bar",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated"
+        },
+        {
+          "name": "Video thumbnail",
+          "category": "media",
+          "purpose": "Thumbnail for a video with a play button and duration.",
+          "url": "https://shopify.github.io/polaris-react-archive/?path=/story/all-components-videothumbnail--all",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/images-and-icons/video-thumbnail",
+          "implementations": [
+            "react-legacy"
+          ]
+        },
+        {
+          "name": "Caption",
+          "category": "typography",
+          "purpose": "Small text for captions and secondary information.",
+          "url": "https://polaris-react.shopify.com/components/deprecated/caption",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/caption",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by Text; listed on the old docs site's Deprecated page but absent from the archived Storybook."
+        },
+        {
+          "name": "Display text",
+          "category": "typography",
+          "purpose": "Large, prominent text for headlines.",
+          "url": "https://polaris-react.shopify.com/components/deprecated/display-text",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/display-text",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by Text; listed on the old Deprecated page only."
+        },
+        {
+          "name": "Heading",
+          "category": "typography",
+          "purpose": "Title for a page or section.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/typography-and-content/heading",
+          "tag": "s-heading",
+          "react_url": "https://polaris-react.shopify.com/components/deprecated/heading",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/heading",
+          "implementations": [
+            "react-legacy",
+            "web-components"
+          ],
+          "notes": "React Heading was deprecated (use Text); the web components bring back Heading (s-heading).",
+          "react_status": "deprecated"
+        },
+        {
+          "name": "Subheading",
+          "category": "typography",
+          "purpose": "Secondary heading for a section.",
+          "url": "https://polaris-react.shopify.com/components/deprecated/subheading",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/subheading",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by Text; listed on the old Deprecated page only."
+        },
+        {
+          "name": "Text style",
+          "category": "typography",
+          "purpose": "Applies emphasis styles (subdued, strong, code) to inline text.",
+          "url": "https://polaris-react.shopify.com/components/deprecated/text-style",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/text-style",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by Text; listed on the old Deprecated page only."
+        },
+        {
+          "name": "Visually hidden",
+          "category": "utility",
+          "purpose": "Hides content visually while keeping it available to screen readers.",
+          "url": "https://polaris-react.shopify.com/components/deprecated/visually-hidden",
+          "legacy_docs_url": "https://polaris-react.shopify.com/components/deprecated/visually-hidden",
+          "implementations": [
+            "react-legacy"
+          ],
+          "status": "deprecated",
+          "notes": "Replaced by Text visuallyHidden prop; listed on the old Deprecated page only."
+        },
+        {
+          "name": "Clickable",
+          "category": "action",
+          "purpose": "Makes any content clickable when a Button or Link is not flexible enough.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/actions/clickable",
+          "tag": "s-clickable",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Clickable chip",
+          "category": "action",
+          "purpose": "Compact interactive chip, optionally removable, for filters or selections.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/actions/clickable-chip",
+          "tag": "s-clickable-chip",
+          "implementations": [
+            "web-components"
+          ],
+          "notes": "Roughly the web-component successor of React Tag."
+        },
+        {
+          "name": "Menu",
+          "category": "action",
+          "purpose": "List of actions shown in a popover from a button.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/actions/menu",
+          "tag": "s-menu",
+          "implementations": [
+            "web-components"
+          ],
+          "notes": "Successor of React Action list."
+        },
+        {
+          "name": "Progress",
+          "category": "feedback",
+          "purpose": "Shows how much of a task is complete.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/feedback-and-status-indicators/progress",
+          "tag": "s-progress",
+          "implementations": [
+            "web-components"
+          ],
+          "notes": "Successor of React Progress bar."
+        },
+        {
+          "name": "Color field",
+          "category": "input",
+          "purpose": "Text field for typing a color value with a swatch preview.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/color-field",
+          "tag": "s-color-field",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Date field",
+          "category": "input",
+          "purpose": "Text field for typing a date, with an optional calendar picker.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/date-field",
+          "tag": "s-date-field",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Email field",
+          "category": "input",
+          "purpose": "Text field for email addresses.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/email-field",
+          "tag": "s-email-field",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Money field",
+          "category": "input",
+          "purpose": "Text field for currency amounts.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/money-field",
+          "tag": "s-money-field",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Number field",
+          "category": "input",
+          "purpose": "Text field for numbers with step controls.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/number-field",
+          "tag": "s-number-field",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Password field",
+          "category": "input",
+          "purpose": "Text field that masks password input.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/password-field",
+          "tag": "s-password-field",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Search field",
+          "category": "input",
+          "purpose": "Text field for search queries.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/search-field",
+          "tag": "s-search-field",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Switch",
+          "category": "selection",
+          "purpose": "Toggle for turning a single setting on or off.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/switch",
+          "tag": "s-switch",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Text area",
+          "category": "input",
+          "purpose": "Multi-line text input.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/text-area",
+          "tag": "s-text-area",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "URL field",
+          "category": "input",
+          "purpose": "Text field for web addresses.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/forms/url-field",
+          "tag": "s-url-field",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Ordered list",
+          "category": "typography",
+          "purpose": "Numbered list of items.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/ordered-list",
+          "tag": "s-ordered-list",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Unordered list",
+          "category": "typography",
+          "purpose": "Bulleted list of items.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/unordered-list",
+          "tag": "s-unordered-list",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Query container",
+          "category": "layout",
+          "purpose": "Sets up a container-query context so children can respond to the container's width.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/query-container",
+          "tag": "s-query-container",
+          "presentational": true,
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Section",
+          "category": "layout",
+          "purpose": "Groups related content into a titled block with a card-like container.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/section",
+          "tag": "s-section",
+          "implementations": [
+            "web-components"
+          ],
+          "notes": "Successor of React Card/LegacyCard sections."
+        },
+        {
+          "name": "Stack",
+          "category": "layout",
+          "purpose": "Arranges children in a row or column with spacing and alignment.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/stack",
+          "tag": "s-stack",
+          "presentational": true,
+          "implementations": [
+            "web-components"
+          ],
+          "notes": "Replaces React BlockStack and InlineStack (direction prop)."
+        },
+        {
+          "name": "Table",
+          "category": "data-display",
+          "purpose": "Displays rows and columns of data, with optional pagination and filtering slots.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/layout-and-structure/table",
+          "tag": "s-table",
+          "implementations": [
+            "web-components"
+          ],
+          "notes": "Successor of React DataTable / IndexTable; built from s-table-header, s-table-row, s-table-cell."
+        },
+        {
+          "name": "Image",
+          "category": "media",
+          "purpose": "Displays an image with sizing, aspect ratio and loading options.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/media-and-visuals/image",
+          "tag": "s-image",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Chip",
+          "category": "data-display",
+          "purpose": "Static compact label for a piece of information.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/typography-and-content/chip",
+          "tag": "s-chip",
+          "implementations": [
+            "web-components"
+          ],
+          "notes": "Non-interactive counterpart of Clickable chip."
+        },
+        {
+          "name": "Number",
+          "category": "typography",
+          "purpose": "Inline number rendered with tabular figures so values line up.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/typography-and-content/number",
+          "tag": "s-number",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "Paragraph",
+          "category": "typography",
+          "purpose": "Block of body text.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/web-components/typography-and-content/paragraph",
+          "tag": "s-paragraph",
+          "implementations": [
+            "web-components"
+          ]
+        },
+        {
+          "name": "App nav",
+          "category": "navigation",
+          "purpose": "Sets the app's navigation items in the Shopify admin left sidebar.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/app-bridge-web-components/app-nav",
+          "implementations": [
+            "app-bridge-web-components"
+          ],
+          "notes": "App Bridge web component (s-app-nav); replaces React Navigation."
+        },
+        {
+          "name": "App window",
+          "category": "overlay",
+          "purpose": "Full-screen modal window that loads a route of the app for complex workflows.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/app-bridge-web-components/app-window",
+          "implementations": [
+            "app-bridge-web-components"
+          ],
+          "notes": "App Bridge web component; the fullscreen modal variant, distinct component in other systems (FullscreenDialog)."
+        },
+        {
+          "name": "Save bar",
+          "category": "action",
+          "purpose": "Admin bar that appears when form data changes, prompting Save or Discard.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/app-bridge-web-components/save-bar",
+          "implementations": [
+            "app-bridge-web-components"
+          ],
+          "notes": "App Bridge; enabled with data-save-bar on a form or ui-save-bar. Replaces React ContextualSaveBar."
+        },
+        {
+          "name": "Title bar",
+          "category": "navigation",
+          "purpose": "Configures the admin title bar: page title, breadcrumbs and primary/secondary actions.",
+          "url": "https://shopify.dev/docs/api/app-home/latest/app-bridge-web-components/title-bar",
+          "implementations": [
+            "app-bridge-web-components"
+          ],
+          "notes": "App Bridge; current docs describe configuring it through the Page component."
+        }
+      ]
+    },
+    {
+      "system": "GitHub Primer",
+      "source": "https://primer.style/product/components/",
+      "notes": "62 public components from the React components index (Rails/Figma share the same pages). internal:true marks the 25 'Internal components' pages (GitHub-internal, not in @primer/react). Not listed in the docs index and therefore not included: legacy @primer/react exports such as Box, Octicon, Portal, Hidden, Header, SubNav, TabNav, SideNav, Pagehead, Flash. Per-component status (alpha/beta/stable/deprecated) is rendered client-side and was not captured.",
+      "components": [
+        {
+          "name": "ActionBar",
+          "category": "action",
+          "purpose": "Horizontal toolbar of icon buttons that moves overflow into a menu.",
+          "url": "https://primer.style/product/components/action-bar/"
+        },
+        {
+          "name": "ActionList",
+          "category": "action",
+          "purpose": "Vertical list of items for actions, selection or navigation; the base for menus and nav lists.",
+          "url": "https://primer.style/product/components/action-list/",
+          "notes": "Supports single/multi selection, groups, dividers, leading/trailing visuals; ActionList.LinkItem for links."
+        },
+        {
+          "name": "ActionMenu",
+          "category": "action",
+          "purpose": "Button that opens a menu of actions.",
+          "url": "https://primer.style/product/components/action-menu/",
+          "notes": "Also used with ActionList selection for single-select dropdowns."
+        },
+        {
+          "name": "AnchoredOverlay",
+          "category": "overlay",
+          "purpose": "Low-level overlay positioned next to a trigger element.",
+          "url": "https://primer.style/product/components/anchored-overlay/",
+          "notes": "Primitive used to build menus and panels."
+        },
+        {
+          "name": "Autocomplete",
+          "category": "selection",
+          "purpose": "Text input that filters a list of suggestions and lets the user pick one or many.",
+          "url": "https://primer.style/product/components/autocomplete/"
+        },
+        {
+          "name": "Avatar",
+          "category": "media",
+          "purpose": "Image representing a user or organization.",
+          "url": "https://primer.style/product/components/avatar/",
+          "notes": "square prop for org/bot avatars."
+        },
+        {
+          "name": "AvatarStack",
+          "category": "media",
+          "purpose": "Overlapping group of avatars.",
+          "url": "https://primer.style/product/components/avatar-stack/"
+        },
+        {
+          "name": "Banner",
+          "category": "feedback",
+          "purpose": "Prominent message about system status or the result of an action.",
+          "url": "https://primer.style/product/components/banner/",
+          "notes": "Variants critical/info/success/upsell/warning; replaces deprecated Flash."
+        },
+        {
+          "name": "Blankslate",
+          "category": "feedback",
+          "purpose": "Empty state explaining why there is no content and what to do.",
+          "url": "https://primer.style/product/components/blankslate/"
+        },
+        {
+          "name": "BranchName",
+          "category": "data-display",
+          "purpose": "Shows a git branch name in monospaced, link-capable styling.",
+          "url": "https://primer.style/product/components/branch-name/"
+        },
+        {
+          "name": "Breadcrumbs",
+          "category": "navigation",
+          "purpose": "Trail of links showing where the page sits in a hierarchy.",
+          "url": "https://primer.style/product/components/breadcrumbs/"
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Triggers an action.",
+          "url": "https://primer.style/product/components/button/",
+          "notes": "Variants default/primary/danger/invisible; can render as a link (LinkButton pattern); IconButton is a separate component."
+        },
+        {
+          "name": "ButtonGroup",
+          "category": "action",
+          "purpose": "Visually joins related buttons into one group.",
+          "url": "https://primer.style/product/components/button-group/"
+        },
+        {
+          "name": "Card",
+          "category": "data-display",
+          "purpose": "Container that summarizes a piece of content with optional heading, description, icon or image.",
+          "url": "https://primer.style/product/components/card/"
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Lets the user turn an option on or off, or pick several options.",
+          "url": "https://primer.style/product/components/checkbox/"
+        },
+        {
+          "name": "CheckboxGroup",
+          "category": "selection",
+          "purpose": "Group of checkboxes with a shared label, caption and validation.",
+          "url": "https://primer.style/product/components/checkbox-group/"
+        },
+        {
+          "name": "CircleBadge",
+          "category": "media",
+          "purpose": "Circular badge holding an icon or logo, e.g. for an app or integration.",
+          "url": "https://primer.style/product/components/circle-badge/"
+        },
+        {
+          "name": "ConfirmationDialog",
+          "category": "overlay",
+          "purpose": "Dialog asking the user to confirm or cancel an action.",
+          "url": "https://primer.style/product/components/confirmation-dialog/",
+          "notes": "Distinct from Dialog; equivalent to AlertDialog elsewhere. Also available via the useConfirm hook."
+        },
+        {
+          "name": "CounterLabel",
+          "category": "data-display",
+          "purpose": "Small pill showing a count, e.g. next to a tab.",
+          "url": "https://primer.style/product/components/counter-label/"
+        },
+        {
+          "name": "DataTable",
+          "category": "data-display",
+          "purpose": "Table for displaying tabular data with sorting and pagination.",
+          "url": "https://primer.style/product/components/data-table/",
+          "notes": "Table.Pagination and Table container parts are documented with it."
+        },
+        {
+          "name": "Details",
+          "category": "disclosure",
+          "purpose": "Native details/summary element for showing and hiding content.",
+          "url": "https://primer.style/product/components/details/"
+        },
+        {
+          "name": "Dialog",
+          "category": "overlay",
+          "purpose": "Modal window for a focused task or content.",
+          "url": "https://primer.style/product/components/dialog/",
+          "notes": "position prop supports side sheets (left/right) and bottom sheet on narrow viewports."
+        },
+        {
+          "name": "FormControl",
+          "category": "utility",
+          "purpose": "Wraps an input with its label, caption and validation message.",
+          "url": "https://primer.style/product/components/form-control/"
+        },
+        {
+          "name": "Heading",
+          "category": "typography",
+          "purpose": "Section or page heading.",
+          "url": "https://primer.style/product/components/heading/"
+        },
+        {
+          "name": "IconButton",
+          "category": "action",
+          "purpose": "Button that shows only an icon, with an accessible label and tooltip.",
+          "url": "https://primer.style/product/components/icon-button/"
+        },
+        {
+          "name": "InlineMessage",
+          "category": "feedback",
+          "purpose": "Short inline status message next to related content, e.g. under a form field.",
+          "url": "https://primer.style/product/components/inline-message/"
+        },
+        {
+          "name": "KeybindingHint",
+          "category": "typography",
+          "purpose": "Shows a keyboard shortcut as key caps.",
+          "url": "https://primer.style/product/components/keybinding-hint/"
+        },
+        {
+          "name": "Label",
+          "category": "data-display",
+          "purpose": "Small label for metadata such as a status or category.",
+          "url": "https://primer.style/product/components/label/",
+          "notes": "Variants primary/secondary/accent/success/attention/severe/danger/done/sponsors."
+        },
+        {
+          "name": "LabelGroup",
+          "category": "data-display",
+          "purpose": "Group of labels or tokens that can truncate and expand overflow.",
+          "url": "https://primer.style/product/components/label-group/"
+        },
+        {
+          "name": "Link",
+          "category": "navigation",
+          "purpose": "Inline text link.",
+          "url": "https://primer.style/product/components/link/"
+        },
+        {
+          "name": "NavList",
+          "category": "navigation",
+          "purpose": "Vertical list of navigation links, supporting nested sub-items and groups.",
+          "url": "https://primer.style/product/components/nav-list/"
+        },
+        {
+          "name": "Overlay",
+          "category": "overlay",
+          "purpose": "Low-level floating layer used to build dialogs, menus and panels.",
+          "url": "https://primer.style/product/components/overlay/"
+        },
+        {
+          "name": "PageHeader",
+          "category": "layout",
+          "purpose": "Top-of-page area with title, context navigation, description and actions.",
+          "url": "https://primer.style/product/components/page-header/"
+        },
+        {
+          "name": "PageLayout",
+          "category": "layout",
+          "purpose": "Page structure with header, content, side pane and footer regions.",
+          "url": "https://primer.style/product/components/page-layout/",
+          "presentational": true
+        },
+        {
+          "name": "Pagination",
+          "category": "navigation",
+          "purpose": "Numbered page links with previous/next controls.",
+          "url": "https://primer.style/product/components/pagination/"
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "Floating box with a caret that points at related content, e.g. onboarding hints.",
+          "url": "https://primer.style/product/components/popover/",
+          "notes": "More like a coach mark than an interactive anchored popover."
+        },
+        {
+          "name": "ProgressBar",
+          "category": "feedback",
+          "purpose": "Horizontal bar showing progress, optionally with multiple colored segments.",
+          "url": "https://primer.style/product/components/progress-bar/"
+        },
+        {
+          "name": "Radio",
+          "category": "selection",
+          "purpose": "Single radio button for choosing one option from a set.",
+          "url": "https://primer.style/product/components/radio/"
+        },
+        {
+          "name": "RadioGroup",
+          "category": "selection",
+          "purpose": "Group of radio buttons with a shared label, caption and validation.",
+          "url": "https://primer.style/product/components/radio-group/"
+        },
+        {
+          "name": "RelativeTime",
+          "category": "data-display",
+          "purpose": "Shows a date as relative ('3 days ago') or formatted time that updates.",
+          "url": "https://primer.style/product/components/relative-time/"
+        },
+        {
+          "name": "SegmentedControl",
+          "category": "selection",
+          "purpose": "Row of buttons for switching between related views or modes.",
+          "url": "https://primer.style/product/components/segmented-control/"
+        },
+        {
+          "name": "Select",
+          "category": "selection",
+          "purpose": "Native dropdown for picking one option.",
+          "url": "https://primer.style/product/components/select/"
+        },
+        {
+          "name": "SelectPanel",
+          "category": "selection",
+          "purpose": "Filterable overlay list for picking one or many items (e.g. labels, assignees).",
+          "url": "https://primer.style/product/components/select-panel/",
+          "notes": "Richer than Select; closer to a multi-select combobox in other systems."
+        },
+        {
+          "name": "SkeletonAvatar",
+          "category": "feedback",
+          "purpose": "Placeholder shape for an avatar while loading.",
+          "url": "https://primer.style/product/components/skeleton-avatar/"
+        },
+        {
+          "name": "SkeletonBox",
+          "category": "feedback",
+          "purpose": "Placeholder rectangle while content loads.",
+          "url": "https://primer.style/product/components/skeleton-box/"
+        },
+        {
+          "name": "SkeletonText",
+          "category": "feedback",
+          "purpose": "Placeholder lines for text while loading.",
+          "url": "https://primer.style/product/components/skeleton-text/"
+        },
+        {
+          "name": "Spinner",
+          "category": "feedback",
+          "purpose": "Animated indicator that something is loading.",
+          "url": "https://primer.style/product/components/spinner/"
+        },
+        {
+          "name": "SplitPageLayout",
+          "category": "layout",
+          "purpose": "Two-pane page layout with a sidebar and main content.",
+          "url": "https://primer.style/product/components/split-page-layout/",
+          "presentational": true
+        },
+        {
+          "name": "Stack",
+          "category": "layout",
+          "purpose": "Arranges children in a row or column with gap and alignment.",
+          "url": "https://primer.style/product/components/stack/",
+          "presentational": true
+        },
+        {
+          "name": "StateLabel",
+          "category": "feedback",
+          "purpose": "Colored label with an icon showing an item's state (open, closed, merged, draft).",
+          "url": "https://primer.style/product/components/state-label/"
+        },
+        {
+          "name": "Text",
+          "category": "typography",
+          "purpose": "Renders text with size and weight styles.",
+          "url": "https://primer.style/product/components/text/"
+        },
+        {
+          "name": "TextInput",
+          "category": "input",
+          "purpose": "Single-line text input.",
+          "url": "https://primer.style/product/components/text-input/",
+          "notes": "Supports leading/trailing visuals and actions; TextInput.Action for inline buttons."
+        },
+        {
+          "name": "TextInputWithTokens",
+          "category": "data-entry-complex",
+          "purpose": "Text input that shows entered values as removable tokens.",
+          "url": "https://primer.style/product/components/text-input-with-tokens/"
+        },
+        {
+          "name": "Textarea",
+          "category": "input",
+          "purpose": "Multi-line text input.",
+          "url": "https://primer.style/product/components/textarea/"
+        },
+        {
+          "name": "Timeline",
+          "category": "data-display",
+          "purpose": "Vertical list of events in time order with badges and connecting line.",
+          "url": "https://primer.style/product/components/timeline/"
+        },
+        {
+          "name": "ToggleSwitch",
+          "category": "selection",
+          "purpose": "Switch that turns a setting on or off immediately.",
+          "url": "https://primer.style/product/components/toggle-switch/"
+        },
+        {
+          "name": "Token",
+          "category": "data-display",
+          "purpose": "Compact, optionally removable item representing a value such as a label or user.",
+          "url": "https://primer.style/product/components/token/",
+          "notes": "IssueLabelToken and AvatarToken variants documented on the same page."
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Short text label shown on hover or focus to describe an element.",
+          "url": "https://primer.style/product/components/tooltip/"
+        },
+        {
+          "name": "TreeView",
+          "category": "navigation",
+          "purpose": "Hierarchical, expandable list such as a file tree.",
+          "url": "https://primer.style/product/components/tree-view/"
+        },
+        {
+          "name": "Truncate",
+          "category": "typography",
+          "purpose": "Shortens text that overflows with an ellipsis and optional expand.",
+          "url": "https://primer.style/product/components/truncate/"
+        },
+        {
+          "name": "UnderlineNav",
+          "category": "navigation",
+          "purpose": "Horizontal tab-style navigation links with an underline on the current one.",
+          "url": "https://primer.style/product/components/underline-nav/"
+        },
+        {
+          "name": "UnderlinePanels",
+          "category": "navigation",
+          "purpose": "Tabs that switch between panels of content on the same page.",
+          "url": "https://primer.style/product/components/underline-panels/",
+          "notes": "Primer's in-page Tabs; UnderlineNav is for page-level navigation."
+        },
+        {
+          "name": "ActionListItems",
+          "category": "action",
+          "purpose": "Prebuilt ActionList item types for GitHub-specific entities.",
+          "url": "https://primer.style/product/internal-components/action-list-items/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "BannerStack",
+          "category": "feedback",
+          "purpose": "Provider and outlet for stacking multiple Banner notifications.",
+          "url": "https://primer.style/product/internal-components/banner-stack/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "ChartCard",
+          "category": "data-display",
+          "purpose": "Card that shows an accessible chart.",
+          "url": "https://primer.style/product/internal-components/chart-card/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "CommandPalette",
+          "category": "overlay",
+          "purpose": "Global search and command dialog.",
+          "url": "https://primer.style/product/internal-components/command-palette/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "ControlGroup",
+          "category": "layout",
+          "purpose": "Builds grouped rows of controls for top-level settings pages.",
+          "url": "https://primer.style/product/internal-components/control-group/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "CopilotAnimation",
+          "category": "media",
+          "purpose": "Animated Copilot avatar or logo.",
+          "url": "https://primer.style/product/internal-components/copilot-animation/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "CopyToClipboard",
+          "category": "action",
+          "purpose": "Button that copies content to the clipboard.",
+          "url": "https://primer.style/product/internal-components/copy-to-clipboard/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "DatePicker",
+          "category": "data-entry-complex",
+          "purpose": "Lets the user pick a single date or a date range.",
+          "url": "https://primer.style/product/internal-components/date-picker/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "DragAndDrop",
+          "category": "utility",
+          "purpose": "Adds drag-and-drop reordering and move dialogs to lists.",
+          "url": "https://primer.style/product/internal-components/drag-and-drop/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "EmojiAutocomplete",
+          "category": "utility",
+          "purpose": "Provides emoji suggestions while typing.",
+          "url": "https://primer.style/product/internal-components/emoji-autocomplete/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "FilterCore",
+          "category": "utility",
+          "purpose": "Shared logic behind filter-style components.",
+          "url": "https://primer.style/product/internal-components/filter-core/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "Filter",
+          "category": "data-entry-complex",
+          "purpose": "Filter bar with suggestions and validation that builds a search query string.",
+          "url": "https://primer.style/product/internal-components/filter/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "GitHubAvatar",
+          "category": "media",
+          "purpose": "Avatar that loads a correctly sized image for its display size.",
+          "url": "https://primer.style/product/internal-components/github-avatar/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "InlineAutocomplete",
+          "category": "input",
+          "purpose": "Suggests completions for the word being typed inside a text input or textarea.",
+          "url": "https://primer.style/product/internal-components/inline-autocomplete/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "LifecycleLabels",
+          "category": "feedback",
+          "purpose": "Labels marking a feature's stage such as alpha, beta, new or deprecated.",
+          "url": "https://primer.style/product/internal-components/lifecycle-labels/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "ListFilterButton",
+          "category": "action",
+          "purpose": "Button that opens filter or sort overlays for a list.",
+          "url": "https://primer.style/product/internal-components/list-filter-button/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "ListItemActionMenu",
+          "category": "action",
+          "purpose": "Menu of secondary actions for a list row.",
+          "url": "https://primer.style/product/internal-components/list-item-action-menu/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "ListView",
+          "category": "data-display",
+          "purpose": "List of items each with a primary action, secondary actions and metadata.",
+          "url": "https://primer.style/product/internal-components/list-view/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "MarkdownEditorViewSwitch",
+          "category": "selection",
+          "purpose": "Toggle between edit and preview in the Markdown editor toolbar.",
+          "url": "https://primer.style/product/internal-components/markdown-editor-view-switch/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "MarkdownEditor",
+          "category": "data-entry-complex",
+          "purpose": "Textarea with toolbar for writing and previewing Markdown.",
+          "url": "https://primer.style/product/internal-components/markdown-editor/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "NestedListView",
+          "category": "data-display",
+          "purpose": "List view whose items can nest into parent/child groups.",
+          "url": "https://primer.style/product/internal-components/nested-list-view/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "QuickSearch",
+          "category": "navigation",
+          "purpose": "Search entry point in the global navigation.",
+          "url": "https://primer.style/product/internal-components/quick-search/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "SimpleListView",
+          "category": "data-display",
+          "purpose": "Lightweight list view for simple item lists.",
+          "url": "https://primer.style/product/internal-components/simple-list-view/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "SimpleSelect",
+          "category": "selection",
+          "purpose": "Select-like dropdown component.",
+          "url": "https://primer.style/product/internal-components/simple-select/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        },
+        {
+          "name": "UiCommands",
+          "category": "utility",
+          "purpose": "Framework for registering commands and keyboard shortcuts.",
+          "url": "https://primer.style/product/internal-components/ui-commands/",
+          "internal": true,
+          "notes": "Listed under Primer 'Internal components' (used internally at GitHub, not available for external use; not in @primer/react)."
+        }
+      ]
+    },
+    {
+      "system": "Adobe Spectrum 2",
+      "source": "https://react-spectrum.adobe.com/",
+      "additional_sources": [
+        "https://react-spectrum.adobe.com/llms.txt",
+        "https://react-spectrum.adobe.com/ai-components",
+        "https://react-spectrum.adobe.com/v3/",
+        "https://spectrum.adobe.com/sitemap.xml"
+      ],
+      "notes": "React Spectrum S2 (@react-spectrum/s2, now the default docs at react-spectrum.adobe.com) is the primary list. React Spectrum v3 (now at /v3/) entries are merged in; v3-only ones have implementations ['react-spectrum-v3']. AI components are a preview package. spectrum.adobe.com is the original (Spectrum 1-era) design-guideline site; its nav is client-rendered, so guideline-only components were taken from its sitemap and flagged 'spectrum-guidelines'. Deprecated guideline pages (Bar loader, Circle loader, Dropdown, Tool, Quick actions) are folded into their successors' notes. There is no public standalone S2 guidelines site (s2.spectrum.adobe.com is an overview page).",
+      "components": [
+        {
+          "name": "Accordion",
+          "category": "disclosure",
+          "purpose": "Stack of expandable sections, each with a header and panel.",
+          "url": "https://react-spectrum.adobe.com/Accordion",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Accordion.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ActionBar",
+          "category": "action",
+          "purpose": "Bar of actions that appears when items in a collection are selected.",
+          "url": "https://react-spectrum.adobe.com/ActionBar",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ActionBar.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Replaces deprecated 'Quick actions' guideline."
+        },
+        {
+          "name": "ActionButton",
+          "category": "action",
+          "purpose": "Quiet or subtle button for task actions, often icon-only, in toolbars.",
+          "url": "https://react-spectrum.adobe.com/ActionButton",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ActionButton.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Separate from Button in Spectrum; 'Tool' guideline was merged into it."
+        },
+        {
+          "name": "ActionButtonGroup",
+          "category": "action",
+          "purpose": "Group of related ActionButtons with overflow handling.",
+          "url": "https://react-spectrum.adobe.com/ActionButtonGroup",
+          "implementations": [
+            "react-spectrum-s2"
+          ],
+          "notes": "S2 splits v3 ActionGroup into ActionButtonGroup (actions) and ToggleButtonGroup (selection)."
+        },
+        {
+          "name": "ActionMenu",
+          "category": "action",
+          "purpose": "ActionButton that opens a menu for 'more actions'.",
+          "url": "https://react-spectrum.adobe.com/ActionMenu",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ActionMenu.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Avatar",
+          "category": "media",
+          "purpose": "Thumbnail image for a user or organization.",
+          "url": "https://react-spectrum.adobe.com/Avatar",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Avatar.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "AvatarGroup",
+          "category": "media",
+          "purpose": "Group of related avatars shown together.",
+          "url": "https://react-spectrum.adobe.com/AvatarGroup",
+          "implementations": [
+            "react-spectrum-s2"
+          ]
+        },
+        {
+          "name": "Badge",
+          "category": "data-display",
+          "purpose": "Small color-coded label for metadata or status.",
+          "url": "https://react-spectrum.adobe.com/Badge",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Badge.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "S2 also exports NotificationBadge (count/dot), which has no dedicated docs page."
+        },
+        {
+          "name": "Breadcrumbs",
+          "category": "navigation",
+          "purpose": "Shows the user's location in a hierarchy and lets them go up levels.",
+          "url": "https://react-spectrum.adobe.com/Breadcrumbs",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Breadcrumbs.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Button",
+          "category": "action",
+          "purpose": "Main button for performing an action.",
+          "url": "https://react-spectrum.adobe.com/Button",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Button.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Variants accent/primary/secondary/negative, fill/outline; LinkButton is separate."
+        },
+        {
+          "name": "ButtonGroup",
+          "category": "action",
+          "purpose": "Group of related buttons that handles overflow by stacking.",
+          "url": "https://react-spectrum.adobe.com/ButtonGroup",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ButtonGroup.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Calendar",
+          "category": "data-entry-complex",
+          "purpose": "Month grid for picking a single date (or multiple dates).",
+          "url": "https://react-spectrum.adobe.com/Calendar",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Calendar.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Card",
+          "category": "data-display",
+          "purpose": "Summary of an object the user can select or open.",
+          "url": "https://react-spectrum.adobe.com/Card",
+          "implementations": [
+            "react-spectrum-s2"
+          ],
+          "notes": "Same page documents AssetCard, UserCard and ProductCard, which are separate components in other systems."
+        },
+        {
+          "name": "CardView",
+          "category": "data-display",
+          "purpose": "Grid of cards with selection and bulk actions.",
+          "url": "https://react-spectrum.adobe.com/CardView",
+          "implementations": [
+            "react-spectrum-s2"
+          ]
+        },
+        {
+          "name": "Checkbox",
+          "category": "selection",
+          "purpose": "Lets the user turn an option on or off.",
+          "url": "https://react-spectrum.adobe.com/Checkbox",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Checkbox.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "CheckboxGroup",
+          "category": "selection",
+          "purpose": "Group of checkboxes for picking several options.",
+          "url": "https://react-spectrum.adobe.com/CheckboxGroup",
+          "v3_url": "https://react-spectrum.adobe.com/v3/CheckboxGroup.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ColorArea",
+          "category": "data-entry-complex",
+          "purpose": "2D area for adjusting two channels of a color.",
+          "url": "https://react-spectrum.adobe.com/ColorArea",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ColorArea.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ColorField",
+          "category": "input",
+          "purpose": "Text field for editing a hex color or a single color channel.",
+          "url": "https://react-spectrum.adobe.com/ColorField",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ColorField.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ColorPicker",
+          "category": "data-entry-complex",
+          "purpose": "Swatch button that opens a popover with color editing controls.",
+          "url": "https://react-spectrum.adobe.com/v3/ColorPicker.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "v3 only; S2 composes ColorArea/ColorSlider/ColorSwatchPicker instead."
+        },
+        {
+          "name": "ColorSlider",
+          "category": "input",
+          "purpose": "Slider for adjusting one channel of a color.",
+          "url": "https://react-spectrum.adobe.com/ColorSlider",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ColorSlider.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ColorSwatch",
+          "category": "data-display",
+          "purpose": "Shows a preview of a color.",
+          "url": "https://react-spectrum.adobe.com/ColorSwatch",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ColorSwatch.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Design guidelines call it 'Swatch'."
+        },
+        {
+          "name": "ColorSwatchPicker",
+          "category": "selection",
+          "purpose": "Grid of color swatches to pick from.",
+          "url": "https://react-spectrum.adobe.com/ColorSwatchPicker",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ColorSwatchPicker.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Design guidelines call it 'Swatch group'."
+        },
+        {
+          "name": "ColorWheel",
+          "category": "input",
+          "purpose": "Circular track for adjusting the hue of a color.",
+          "url": "https://react-spectrum.adobe.com/ColorWheel",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ColorWheel.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ComboBox",
+          "category": "selection",
+          "purpose": "Text field with a dropdown list for filtering and choosing one option.",
+          "url": "https://react-spectrum.adobe.com/ComboBox",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ComboBox.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ContextualHelp",
+          "category": "overlay",
+          "purpose": "Info or help icon button that opens a popover with extra explanation.",
+          "url": "https://react-spectrum.adobe.com/ContextualHelp",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ContextualHelp.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "DateField",
+          "category": "input",
+          "purpose": "Keyboard-editable field for a date and optional time.",
+          "url": "https://react-spectrum.adobe.com/DateField",
+          "v3_url": "https://react-spectrum.adobe.com/v3/DateField.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "DatePicker",
+          "category": "data-entry-complex",
+          "purpose": "Date field with a calendar popover for choosing a date.",
+          "url": "https://react-spectrum.adobe.com/DatePicker",
+          "v3_url": "https://react-spectrum.adobe.com/v3/DatePicker.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "DateRangePicker",
+          "category": "data-entry-complex",
+          "purpose": "Two date fields with a range calendar popover for choosing a start and end date.",
+          "url": "https://react-spectrum.adobe.com/DateRangePicker",
+          "v3_url": "https://react-spectrum.adobe.com/v3/DateRangePicker.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Dialog",
+          "category": "overlay",
+          "purpose": "Modal window for contextual information, tasks or decisions.",
+          "url": "https://react-spectrum.adobe.com/Dialog",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Dialog.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "S2 page documents Dialog, AlertDialog, FullscreenDialog, CustomDialog, DialogTrigger and DialogContainer. v3 had type='tray' / 'popover' variants; Tray is its own guideline."
+        },
+        {
+          "name": "Disclosure",
+          "category": "disclosure",
+          "purpose": "Single collapsible section with a header and panel.",
+          "url": "https://react-spectrum.adobe.com/Disclosure",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Disclosure.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Divider",
+          "category": "layout",
+          "purpose": "Line that separates content.",
+          "url": "https://react-spectrum.adobe.com/Divider",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Divider.html",
+          "presentational": true,
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "DropZone",
+          "category": "data-entry-complex",
+          "purpose": "Area into which files or objects can be dragged and dropped.",
+          "url": "https://react-spectrum.adobe.com/DropZone",
+          "v3_url": "https://react-spectrum.adobe.com/v3/DropZone.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Form",
+          "category": "layout",
+          "purpose": "Groups form fields with consistent label alignment, sizing and validation behavior.",
+          "url": "https://react-spectrum.adobe.com/Form",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Form.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "IllustratedMessage",
+          "category": "feedback",
+          "purpose": "Illustration with a heading and message, used for empty states and errors.",
+          "url": "https://react-spectrum.adobe.com/IllustratedMessage",
+          "v3_url": "https://react-spectrum.adobe.com/v3/IllustratedMessage.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Image",
+          "category": "media",
+          "purpose": "Image with skeleton loading and custom error states.",
+          "url": "https://react-spectrum.adobe.com/Image",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Image.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "InlineAlert",
+          "category": "feedback",
+          "purpose": "Non-modal message tied to content in the page.",
+          "url": "https://react-spectrum.adobe.com/InlineAlert",
+          "v3_url": "https://react-spectrum.adobe.com/v3/InlineAlert.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "LabeledValue",
+          "category": "data-display",
+          "purpose": "Non-editable value with a label, formatted for numbers, dates or lists.",
+          "url": "https://react-spectrum.adobe.com/LabeledValue",
+          "v3_url": "https://react-spectrum.adobe.com/v3/LabeledValue.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Link",
+          "category": "navigation",
+          "purpose": "Text link to another location.",
+          "url": "https://react-spectrum.adobe.com/Link",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Link.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "LinkButton",
+          "category": "navigation",
+          "purpose": "Link that looks like a Button.",
+          "url": "https://react-spectrum.adobe.com/LinkButton",
+          "implementations": [
+            "react-spectrum-s2"
+          ]
+        },
+        {
+          "name": "ListView",
+          "category": "data-display",
+          "purpose": "Interactive list of items with selection, actions and drag and drop.",
+          "url": "https://react-spectrum.adobe.com/ListView",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ListView.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Menu",
+          "category": "action",
+          "purpose": "List of actions or options shown from a trigger.",
+          "url": "https://react-spectrum.adobe.com/Menu",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Menu.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Includes MenuTrigger, SubmenuTrigger, sections, unavailable items and context menus."
+        },
+        {
+          "name": "Meter",
+          "category": "data-display",
+          "purpose": "Shows a quantity or level within a known range.",
+          "url": "https://react-spectrum.adobe.com/Meter",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Meter.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "NumberField",
+          "category": "input",
+          "purpose": "Number input with increment/decrement steppers.",
+          "url": "https://react-spectrum.adobe.com/NumberField",
+          "v3_url": "https://react-spectrum.adobe.com/v3/NumberField.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Picker",
+          "category": "selection",
+          "purpose": "Dropdown for choosing one option from a list.",
+          "url": "https://react-spectrum.adobe.com/Picker",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Picker.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Formerly 'Dropdown' in the guidelines."
+        },
+        {
+          "name": "Popover",
+          "category": "overlay",
+          "purpose": "Overlay positioned next to a trigger holding content or controls.",
+          "url": "https://react-spectrum.adobe.com/Popover",
+          "implementations": [
+            "react-spectrum-s2"
+          ],
+          "notes": "In v3 this was a Dialog type."
+        },
+        {
+          "name": "ProgressBar",
+          "category": "feedback",
+          "purpose": "Horizontal bar showing progress of an operation.",
+          "url": "https://react-spectrum.adobe.com/ProgressBar",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ProgressBar.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Formerly 'Bar loader'."
+        },
+        {
+          "name": "ProgressCircle",
+          "category": "feedback",
+          "purpose": "Circular indicator of progress or loading.",
+          "url": "https://react-spectrum.adobe.com/ProgressCircle",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ProgressCircle.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Formerly 'Circle loader'."
+        },
+        {
+          "name": "Provider",
+          "category": "utility",
+          "purpose": "Root container that sets theme, color scheme, locale and scale for its children.",
+          "url": "https://react-spectrum.adobe.com/Provider",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Provider.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "RadioGroup",
+          "category": "selection",
+          "purpose": "Group of radio buttons for choosing one option.",
+          "url": "https://react-spectrum.adobe.com/RadioGroup",
+          "v3_url": "https://react-spectrum.adobe.com/v3/RadioGroup.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "RangeCalendar",
+          "category": "data-entry-complex",
+          "purpose": "Month grid for choosing a date range.",
+          "url": "https://react-spectrum.adobe.com/RangeCalendar",
+          "v3_url": "https://react-spectrum.adobe.com/v3/RangeCalendar.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "RangeSlider",
+          "category": "input",
+          "purpose": "Slider with two handles for choosing a range.",
+          "url": "https://react-spectrum.adobe.com/RangeSlider",
+          "v3_url": "https://react-spectrum.adobe.com/v3/RangeSlider.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "SearchField",
+          "category": "input",
+          "purpose": "Text field for search with a clear button.",
+          "url": "https://react-spectrum.adobe.com/SearchField",
+          "v3_url": "https://react-spectrum.adobe.com/v3/SearchField.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "SegmentedControl",
+          "category": "selection",
+          "purpose": "Row of mutually exclusive buttons for switching views.",
+          "url": "https://react-spectrum.adobe.com/SegmentedControl",
+          "implementations": [
+            "react-spectrum-s2"
+          ]
+        },
+        {
+          "name": "SelectBoxGroup",
+          "category": "selection",
+          "purpose": "Large selectable boxes for choosing one or more options.",
+          "url": "https://react-spectrum.adobe.com/SelectBoxGroup",
+          "implementations": [
+            "react-spectrum-s2"
+          ],
+          "status": "alpha"
+        },
+        {
+          "name": "SideNav",
+          "category": "navigation",
+          "purpose": "Sidebar navigation of nested, hierarchical links.",
+          "url": "https://react-spectrum.adobe.com/SideNav",
+          "implementations": [
+            "react-spectrum-s2"
+          ],
+          "notes": "Guideline name: Side navigation."
+        },
+        {
+          "name": "Skeleton",
+          "category": "feedback",
+          "purpose": "Wraps content to render it as a loading placeholder.",
+          "url": "https://react-spectrum.adobe.com/Skeleton",
+          "implementations": [
+            "react-spectrum-s2"
+          ]
+        },
+        {
+          "name": "Slider",
+          "category": "input",
+          "purpose": "Lets the user pick a value within a range by dragging.",
+          "url": "https://react-spectrum.adobe.com/Slider",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Slider.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "StatusLight",
+          "category": "feedback",
+          "purpose": "Colored dot with a label to show status or category.",
+          "url": "https://react-spectrum.adobe.com/StatusLight",
+          "v3_url": "https://react-spectrum.adobe.com/v3/StatusLight.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Switch",
+          "category": "selection",
+          "purpose": "Turns a single option on or off.",
+          "url": "https://react-spectrum.adobe.com/Switch",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Switch.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "TableView",
+          "category": "data-display",
+          "purpose": "Table for scanning, sorting, selecting and acting on data.",
+          "url": "https://react-spectrum.adobe.com/TableView",
+          "v3_url": "https://react-spectrum.adobe.com/v3/TableView.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Supports expandable rows, drag and drop, TableFooter."
+        },
+        {
+          "name": "Tabs",
+          "category": "navigation",
+          "purpose": "Organizes content into sections the user switches between.",
+          "url": "https://react-spectrum.adobe.com/Tabs",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Tabs.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "TagGroup",
+          "category": "data-display",
+          "purpose": "Group of tags for keywords or categories, optionally removable.",
+          "url": "https://react-spectrum.adobe.com/TagGroup",
+          "v3_url": "https://react-spectrum.adobe.com/v3/TagGroup.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "TextArea",
+          "category": "input",
+          "purpose": "Multi-line text input.",
+          "url": "https://react-spectrum.adobe.com/TextArea",
+          "v3_url": "https://react-spectrum.adobe.com/v3/TextArea.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "TextField",
+          "category": "input",
+          "purpose": "Single-line text input.",
+          "url": "https://react-spectrum.adobe.com/TextField",
+          "v3_url": "https://react-spectrum.adobe.com/v3/TextField.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "TimeField",
+          "category": "input",
+          "purpose": "Keyboard-editable field for a time value.",
+          "url": "https://react-spectrum.adobe.com/TimeField",
+          "v3_url": "https://react-spectrum.adobe.com/v3/TimeField.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Toast",
+          "category": "feedback",
+          "purpose": "Brief notification that appears temporarily, optionally with an action.",
+          "url": "https://react-spectrum.adobe.com/Toast",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Toast.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ],
+          "notes": "Uses ToastContainer + ToastQueue."
+        },
+        {
+          "name": "ToggleButton",
+          "category": "selection",
+          "purpose": "Button that toggles between selected and unselected.",
+          "url": "https://react-spectrum.adobe.com/ToggleButton",
+          "v3_url": "https://react-spectrum.adobe.com/v3/ToggleButton.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ToggleButtonGroup",
+          "category": "selection",
+          "purpose": "Group of ToggleButtons with single or multiple selection.",
+          "url": "https://react-spectrum.adobe.com/ToggleButtonGroup",
+          "implementations": [
+            "react-spectrum-s2"
+          ]
+        },
+        {
+          "name": "Tooltip",
+          "category": "overlay",
+          "purpose": "Short label shown on hover or focus of a control.",
+          "url": "https://react-spectrum.adobe.com/Tooltip",
+          "v3_url": "https://react-spectrum.adobe.com/v3/Tooltip.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "TreeView",
+          "category": "data-display",
+          "purpose": "Hierarchical list with expandable items and selection.",
+          "url": "https://react-spectrum.adobe.com/TreeView",
+          "v3_url": "https://react-spectrum.adobe.com/v3/TreeView.html",
+          "implementations": [
+            "react-spectrum-s2",
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ActionGroup",
+          "category": "action",
+          "purpose": "Group of ActionButtons with optional selection and overflow.",
+          "url": "https://react-spectrum.adobe.com/v3/ActionGroup.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "v3 only; split into ActionButtonGroup and ToggleButtonGroup in S2."
+        },
+        {
+          "name": "AlertDialog",
+          "category": "overlay",
+          "purpose": "Dialog asking the user to confirm or acknowledge something.",
+          "url": "https://react-spectrum.adobe.com/v3/AlertDialog.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "Separate page in v3; documented on the Dialog page in S2."
+        },
+        {
+          "name": "Content",
+          "category": "typography",
+          "purpose": "Slot wrapper for the main content of a component (e.g. Dialog body).",
+          "url": "https://react-spectrum.adobe.com/v3/Content.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "v3 page; still exported by S2 as a slot component."
+        },
+        {
+          "name": "DialogContainer",
+          "category": "overlay",
+          "purpose": "Shows a dialog programmatically without a trigger.",
+          "url": "https://react-spectrum.adobe.com/v3/DialogContainer.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "DialogTrigger",
+          "category": "overlay",
+          "purpose": "Connects a trigger button to a dialog or popover.",
+          "url": "https://react-spectrum.adobe.com/v3/DialogTrigger.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "FileTrigger",
+          "category": "action",
+          "purpose": "Wraps a button to open the system file picker.",
+          "url": "https://react-spectrum.adobe.com/v3/FileTrigger.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Flex",
+          "category": "layout",
+          "purpose": "Flexbox layout container.",
+          "url": "https://react-spectrum.adobe.com/v3/Flex.html",
+          "presentational": true,
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "v3 only; S2 uses the style macro instead."
+        },
+        {
+          "name": "Footer",
+          "category": "typography",
+          "purpose": "Slot for footer content in dialogs and other components.",
+          "url": "https://react-spectrum.adobe.com/v3/Footer.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Grid",
+          "category": "layout",
+          "purpose": "CSS grid layout container.",
+          "url": "https://react-spectrum.adobe.com/v3/Grid.html",
+          "presentational": true,
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "v3 only."
+        },
+        {
+          "name": "Header",
+          "category": "typography",
+          "purpose": "Slot for header content in dialogs and other components.",
+          "url": "https://react-spectrum.adobe.com/v3/Header.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Heading",
+          "category": "typography",
+          "purpose": "Heading text slot.",
+          "url": "https://react-spectrum.adobe.com/v3/Heading.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "Also a Spectrum guideline typography component."
+        },
+        {
+          "name": "Keyboard",
+          "category": "typography",
+          "purpose": "Shows a keyboard shortcut.",
+          "url": "https://react-spectrum.adobe.com/v3/Keyboard.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "ListBox",
+          "category": "selection",
+          "purpose": "Plain list of selectable options.",
+          "url": "https://react-spectrum.adobe.com/v3/ListBox.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "v3 only as a standalone component."
+        },
+        {
+          "name": "LogicButton",
+          "category": "action",
+          "purpose": "Button for choosing a boolean operator (and/or) between conditions.",
+          "url": "https://react-spectrum.adobe.com/v3/LogicButton.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "MenuTrigger",
+          "category": "action",
+          "purpose": "Connects a button to a Menu.",
+          "url": "https://react-spectrum.adobe.com/v3/MenuTrigger.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "Documented on the Menu page in S2."
+        },
+        {
+          "name": "SearchAutocomplete",
+          "category": "selection",
+          "purpose": "Search field with a list of suggestions.",
+          "url": "https://react-spectrum.adobe.com/v3/SearchAutocomplete.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "StepList",
+          "category": "navigation",
+          "purpose": "Shows steps in a process and lets the user move between them.",
+          "url": "https://react-spectrum.adobe.com/v3/StepList.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Text",
+          "category": "typography",
+          "purpose": "Plain text slot.",
+          "url": "https://react-spectrum.adobe.com/v3/Text.html",
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "View",
+          "category": "layout",
+          "purpose": "General-purpose container with Spectrum style props.",
+          "url": "https://react-spectrum.adobe.com/v3/View.html",
+          "presentational": true,
+          "implementations": [
+            "react-spectrum-v3"
+          ],
+          "notes": "v3 only; Spectrum's Box equivalent."
+        },
+        {
+          "name": "Well",
+          "category": "layout",
+          "purpose": "Container that sets non-editable content apart, e.g. code or examples.",
+          "url": "https://react-spectrum.adobe.com/v3/Well.html",
+          "presentational": true,
+          "implementations": [
+            "react-spectrum-v3"
+          ]
+        },
+        {
+          "name": "Chat",
+          "category": "data-display",
+          "purpose": "Container for an AI chat conversation including thread and prompt.",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7). Includes ThreadScrollButton."
+        },
+        {
+          "name": "Thread",
+          "category": "data-display",
+          "purpose": "Scrollable list of chat messages.",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7). Parts: ThreadItem, ThreadLoadMoreItem."
+        },
+        {
+          "name": "UserMessage",
+          "category": "data-display",
+          "purpose": "A message sent by the user in a chat thread.",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7)."
+        },
+        {
+          "name": "ResponseStatus",
+          "category": "feedback",
+          "purpose": "Shows an assistant's progress/status with expandable execution steps.",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7). Parts: ResponseStatusTitle, ResponseStatusPanel, ExecutionTrace, ExecutionTraceItem."
+        },
+        {
+          "name": "Alert",
+          "category": "feedback",
+          "purpose": "Alert message shown inside a chat thread.",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7). AI package Alert, distinct from InlineAlert."
+        },
+        {
+          "name": "MessageSuggestionList",
+          "category": "selection",
+          "purpose": "List of suggested prompts the user can pick.",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7)."
+        },
+        {
+          "name": "MessageFeedback",
+          "category": "action",
+          "purpose": "Controls for rating an assistant response (e.g. thumbs up/down).",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7)."
+        },
+        {
+          "name": "MessageSource",
+          "category": "data-display",
+          "purpose": "Shows a source or citation for an assistant response.",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7)."
+        },
+        {
+          "name": "PromptField",
+          "category": "data-entry-complex",
+          "purpose": "Prompt input with attachments, tokens, toolbar, submit and voice buttons.",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7). Parts: PromptFieldAttachmentList, Attachment, AttachmentPreview, PromptFieldToolbar, PromptFieldSubmitButton, PromptFieldVoiceButton, InsertMenuButton, AttachFileMenuItem, CommandMenuItem, InsertTokenMenuItem."
+        },
+        {
+          "name": "PromptTokenField",
+          "category": "data-entry-complex",
+          "purpose": "Prompt text field that supports inline tokens (e.g. mentions, commands).",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7). PromptToken is its token part."
+        },
+        {
+          "name": "PixelLoader",
+          "category": "feedback",
+          "purpose": "Animated pixel icon shown while the AI assistant is working.",
+          "url": "https://react-spectrum.adobe.com/ai-components",
+          "implementations": [
+            "react-spectrum-ai"
+          ],
+          "status": "preview",
+          "notes": "From @react-spectrum/ai (first preview in S2 v1.7)."
+        },
+        {
+          "name": "Alert banner",
+          "category": "feedback",
+          "purpose": "Prominent banner for high-signal system messages that prompt action.",
+          "url": "https://spectrum.adobe.com/page/alert-banner/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Application frame",
+          "category": "layout",
+          "purpose": "Shared structure for Adobe app shells (headers, panels, rails).",
+          "url": "https://spectrum.adobe.com/page/application-frame/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Close button",
+          "category": "action",
+          "purpose": "Button used inside other components (toast, action bar) to dismiss them.",
+          "url": "https://spectrum.adobe.com/page/close-button/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Coach mark",
+          "category": "overlay",
+          "purpose": "Temporary message that teaches a new feature; can chain into a tour.",
+          "url": "https://spectrum.adobe.com/page/coach-mark/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Color loupe",
+          "category": "data-display",
+          "purpose": "Magnified preview of the color under the cursor or finger while picking.",
+          "url": "https://spectrum.adobe.com/page/color-loupe/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Rating",
+          "category": "input",
+          "purpose": "Lets the user give an item a star rating.",
+          "url": "https://spectrum.adobe.com/page/rating/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Tray",
+          "category": "overlay",
+          "purpose": "Mobile-only container sliding from the bottom for menus and options.",
+          "url": "https://spectrum.adobe.com/page/tray/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page. In v3 React Spectrum this is Dialog type='tray' / mobile rendering of pickers."
+        },
+        {
+          "name": "Tab bar (iOS)",
+          "category": "navigation",
+          "purpose": "Top-level navigation bar for iOS apps.",
+          "url": "https://spectrum.adobe.com/page/tab-bar-ios/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Bottom navigation (Android)",
+          "category": "navigation",
+          "purpose": "Top-level bottom navigation for Android apps.",
+          "url": "https://spectrum.adobe.com/page/bottom-navigation-android/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Field label",
+          "category": "typography",
+          "purpose": "Label that gives context to a form input.",
+          "url": "https://spectrum.adobe.com/page/field-label/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page. In React Spectrum it is the label prop of each field."
+        },
+        {
+          "name": "Help text",
+          "category": "feedback",
+          "purpose": "Description or error message under a form field.",
+          "url": "https://spectrum.adobe.com/page/help-text/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page. In React Spectrum it is description/errorMessage props."
+        },
+        {
+          "name": "Headers",
+          "category": "navigation",
+          "purpose": "Top-of-app container for global actions, navigation, preferences and branding.",
+          "url": "https://spectrum.adobe.com/page/headers/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Big number",
+          "category": "data-display",
+          "purpose": "Single metric value with its label.",
+          "url": "https://spectrum.adobe.com/page/big-number/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Area chart",
+          "category": "data-display",
+          "purpose": "Chart showing change in a metric over time as filled areas.",
+          "url": "https://spectrum.adobe.com/page/area-chart/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Bar chart",
+          "category": "data-display",
+          "purpose": "Chart comparing values with bars.",
+          "url": "https://spectrum.adobe.com/page/bar-chart/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Donut chart",
+          "category": "data-display",
+          "purpose": "Chart showing proportions of a whole.",
+          "url": "https://spectrum.adobe.com/page/donut-chart/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Line chart",
+          "category": "data-display",
+          "purpose": "Chart showing change over time with lines.",
+          "url": "https://spectrum.adobe.com/page/line-chart/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Scatter plot",
+          "category": "data-display",
+          "purpose": "Chart comparing two metrics across many items.",
+          "url": "https://spectrum.adobe.com/page/scatter-plot/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Histogram",
+          "category": "data-display",
+          "purpose": "Chart showing the distribution of values in bins.",
+          "url": "https://spectrum.adobe.com/page/histogram/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Legend",
+          "category": "data-display",
+          "purpose": "Key explaining how chart colors or shapes map to data.",
+          "url": "https://spectrum.adobe.com/page/legend/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Axis",
+          "category": "data-display",
+          "purpose": "Chart axis with scale labels.",
+          "url": "https://spectrum.adobe.com/page/axis/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Scroll-zoom bar",
+          "category": "data-display",
+          "purpose": "Control for scrolling and zooming through chart data.",
+          "url": "https://spectrum.adobe.com/page/scroll-zoom-bar/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Body",
+          "category": "typography",
+          "purpose": "Typography style for body text.",
+          "url": "https://spectrum.adobe.com/page/body/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Detail",
+          "category": "typography",
+          "purpose": "Typography style for small supporting text.",
+          "url": "https://spectrum.adobe.com/page/detail/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        },
+        {
+          "name": "Code",
+          "category": "typography",
+          "purpose": "Typography style for code text.",
+          "url": "https://spectrum.adobe.com/page/code/",
+          "implementations": [
+            "spectrum-guidelines"
+          ],
+          "notes": "Design-guideline page on spectrum.adobe.com only; no React Spectrum component page."
+        }
+      ]
+    }
+  ]
+}
