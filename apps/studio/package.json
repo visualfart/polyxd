@@ -1,0 +1,33 @@
+{
+  "name": "@polyxd/studio",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Polyxd Studio: where a design-system team decides what generated screens may look like, and reviews what they actually look like",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build:app && wrangler dev",
+    "build:app": "vite build",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "db:migrate": "wrangler d1 migrations apply studio --local",
+    "db:migrate:remote": "wrangler d1 migrations apply studio --remote",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "dependencies": {
+    "@polyxd/ds-kit": "^0.1.1",
+    "@polyxd/spec": "^0.1.1",
+    "hono": "^4.6.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260919.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "vite": "^6.0.0",
+    "wrangler": "^4.135.0"
+  }
+}

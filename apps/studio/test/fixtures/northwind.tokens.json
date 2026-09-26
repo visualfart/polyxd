@@ -1,0 +1,35 @@
+{
+  "$metadata": { "tokenSetOrder": ["primitives", "semantic", "semantic-dark", "components"] },
+  "$themes": [
+    { "id": "light", "name": "Light", "group": "Mode", "selectedTokenSets": { "primitives": "source", "semantic": "enabled", "components": "enabled" } },
+    { "id": "dark", "name": "Dark", "group": "Mode", "selectedTokenSets": { "primitives": "source", "semantic": "source", "semantic-dark": "enabled", "components": "enabled" } }
+  ],
+  "primitives": {
+    "color": {
+      "brand": { "300": { "value": "#84ADFF", "type": "color" }, "600": { "value": "#1849A9", "type": "color" }, "700": { "value": "#1D3A8A", "type": "color" }, "800": { "value": "#1D2F6F", "type": "color", "description": "Deprecated: use 700" } },
+      "gray": { "50": { "value": "#F9FAFB", "type": "color" }, "400": { "value": "#98A2B3", "type": "color" }, "500": { "value": "#667085", "type": "color" }, "800": { "value": "#1D2939", "type": "color" }, "900": { "value": "#101828", "type": "color" } },
+      "white": { "value": "#FFFFFF", "type": "color" },
+      "error": { "600": { "value": "#D92D20", "type": "color" } }
+    },
+    "space": { "1": { "value": "4px", "type": "spacing" }, "2": { "value": "8px", "type": "spacing" }, "4": { "value": "16px", "type": "spacing" } },
+    "radius": { "md": { "value": "8px", "type": "borderRadius" } },
+    "font": { "size": { "md": { "value": "16px", "type": "fontSizes" } } }
+  },
+  "semantic": {
+    "bg": { "default": { "value": "{color.white}", "type": "color" }, "subtle": { "value": "{color.gray.50}", "type": "color" } },
+    "text": { "default": { "value": "{color.gray.900}", "type": "color" }, "muted": { "value": "{color.gray.400}", "type": "color" } },
+    "action": { "primary": { "value": "{color.brand.600}", "type": "color" }, "primary-hover": { "value": "{color.brand.650}", "type": "color" } },
+    "border": { "focus": { "value": "{color.brand.300}", "type": "color" } },
+    "danger": { "value": "{color.error.600}", "type": "color" },
+    "loop": { "a": { "value": "{loop.b}", "type": "color" }, "b": { "value": "{loop.a}", "type": "color" } },
+    "radius": { "control": { "value": "{radius.md}", "type": "borderRadius" } }
+  },
+  "semantic-dark": {
+    "bg": { "default": { "value": "{color.gray.900}", "type": "color" }, "subtle": { "value": "{color.gray.800}", "type": "color" } },
+    "text": { "default": { "value": "{color.white}", "type": "color" }, "muted": { "value": "{color.gray.400}", "type": "color" } }
+  },
+  "components": {
+    "button": { "primary": { "bg": { "value": "{action.primary}", "type": "color" } } },
+    "input": { "border": { "value": "{color.gray.400}", "type": "color" } }
+  }
+}

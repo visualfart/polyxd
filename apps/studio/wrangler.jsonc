@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "polyxd-studio",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  // Local dev uses a local SQLite file; `wrangler d1 create studio` gives the id for production.
+  "d1_databases": [{ "binding": "DB", "database_name": "studio", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "migrations" }],
+  "r2_buckets": [{ "binding": "FILES", "bucket_name": "polyxd-studio-files" }],
+  "vars": {
+    // Email-only sign-in for local development. Never set in production: sign-in there is WorkOS.
+    "DEV_AUTH": "1",
+    "APP_URL": "http://localhost:8789"
+  },
+  "observability": { "enabled": true }
+}

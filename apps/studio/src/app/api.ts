@@ -1,0 +1,58 @@
+/** One fetch wrapper: JSON in, JSON out, errors as messages a person can read. */
+export class ApiError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+  }
+}
+
+export async function api<T = unknown>(method: string, path: string, body?: unknown): Promise<T> {
+  const init: RequestInit = { method, credentials: "same-origin" };
+  if (body instanceof FormData) init.body = body;
+  else if (body !== undefined) {
+    init.headers = { "content-type": "application/json" };
+    init.body = JSON.stringify(body);
+  }
+  const r = await fetch(path, init);
+  const text = await r.text();
+  const data = text ? JSON.parse(text) : {};
+  if (!r.ok) throw new ApiError(r.status, data.error ?? `${r.status} ${r.statusText}`);
+  return data as T;
+}
+
+export interface Me {
+  user: { id: string; email: string; name: string } | null;
+  workspaces: { id: string; slug: string; name: string; role: string }[];
+  signIn?: { dev: boolean; workos: boolean };
+}
+
+export interface Scan {
+  format: string;
+  total: number;
+  byTier: { primitive: number; semantic: number; component: number };
+  byType: { type: string; label: string; total: number; primitive: number; semantic: number; component: number }[];
+  sets: string[];
+  modes: { name: string; sets: string[] }[];
+  issues: { kind: string; count: number; examples: string[] }[];
+  picked?: string[];
+}
+
+export interface RoleRow {
+  role: string;
+  type: string;
+  description: string;
+  token: string | null;
+  chain: string[];
+  values: Record<string, string | null>;
+  how: string;
+  why: string;
+  status: "exact" | "guessed" | "missing" | "fails" | "primitive" | "off";
+  contrast: { against: string; mode: string; ratio: number; min: number; passes: boolean }[];
+}
+
+export interface Candidate {
+  token: string;
+  chain: string[];
+  value: string | null;
+  tier: string;
+  contrast: RoleRow["contrast"];
+}
