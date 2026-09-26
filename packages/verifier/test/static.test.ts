@@ -73,5 +73,24 @@ test("a progress bar bound to something that isn't a fraction is an error", () =
 test("a template placeholder and a raw id are caught inside items", () => {
   assert.match(found(flights({}, { text: "Departs {{depart}}" })), /error text:template-placeholder/);
   assert.match(found(flights({}, { text: "Plan: {plan}" })), /"\{plan\}" is a template placeholder/);
-  assert.match(found(flights({ title: { path: "id" } })), /warning copy:raw-identifier card.title shows "f1", an internal id, where name is a name/);
+  assert.match(found(flights({ title: { path: "id" } })), /error copy:raw-identifier card.title shows "f1", an internal id, where the data has a name: "TP1351" \(\/flights\/0\/name\)/);
+});
+
+test("an id is caught where the data names it elsewhere, and in a text field", () => {
+  const pay = { ...flights({}, { text: { path: "/draft/to" } }), data: { draft: { to: "p1" }, payees: [{ id: "p1", name: "Alex Kim" }], flights: [{ airline: "TAP", depart: "07:10" }] } };
+  assert.match(found(pay), /line.text shows "p1", an internal id, where the data has a name: "Alex Kim" \(\/payees\/0\/name\)/);
+});
+
+test("a number format over something that isn't a number renders NaN", () => {
+  const seats = { ...flights({}, { text: { path: "/seats" }, format: { type: "number" } }), data: { seats: "ten", flights: [{ airline: "TAP", depart: "07:10" }] } };
+  assert.match(found(seats), /error data:not-a-number line formats \/seats as number, but it holds "ten"/);
+  const fine = { ...flights({}, { text: { path: "/seats" }, format: { type: "number" } }), data: { seats: "10", flights: [{ airline: "TAP", depart: "07:10" }] } };
+  assert.doesNotMatch(found(fine), /not-a-number/);
+});
+
+test("money with no currency shows dollars, which is wrong when the data is in pounds", () => {
+  const gbp = (format: any) => ({ ...flights({}, { text: { path: "/total" }, format }), data: { total: 312, currency: "GBP", flights: [{ airline: "TAP", depart: "07:10" }] } });
+  assert.match(found(gbp({ type: "currency" })), /error data:wrong-currency .*the data is in GBP/);
+  assert.doesNotMatch(found(gbp({ type: "currency", currency: "GBP" })), /wrong-currency/);
+  assert.doesNotMatch(found(gbp({ type: "currency", currency: { path: "/currency" } })), /wrong-currency/);
 });

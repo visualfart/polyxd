@@ -7,9 +7,21 @@
   },
   "runs": [
     {
+      "run": "gemma-4-e4b-it-4bit+sft-v4-tree-constrained",
+      "valid": 100,
+      "score": 70,
+      "tasks": 18,
+      "taskTotal": 37,
+      "expectations": 58,
+      "direction": 93,
+      "latency": 4.753,
+      "ttft": 1.082,
+      "tps": 51.8
+    },
+    {
       "run": "gemma-4-e4b-it-4bit+sft-v2-tree-constrained",
       "valid": 100,
-      "score": 68,
+      "score": 66,
       "tasks": 16,
       "taskTotal": 37,
       "expectations": 56,
@@ -19,33 +31,9 @@
       "tps": 56.1
     },
     {
-      "run": "gemma-4-e4b-it-4bit+rl-1-tree-constrained",
-      "valid": 98,
-      "score": 65,
-      "tasks": 14,
-      "taskTotal": 37,
-      "expectations": 53,
-      "direction": 96,
-      "latency": 4.222,
-      "ttft": 1.022,
-      "tps": 55.7
-    },
-    {
-      "run": "gemma-4-e4b-it-4bit+sft-v1-tree-constrained",
-      "valid": 98,
-      "score": 65,
-      "tasks": 10,
-      "taskTotal": 37,
-      "expectations": 42,
-      "direction": 96,
-      "latency": 3.41,
-      "ttft": 0.862,
-      "tps": 56.2
-    },
-    {
       "run": "gemma-4-e4b-sft-v2-fused-q6-tree-constrained",
       "valid": 98,
-      "score": 65,
+      "score": 64,
       "tasks": 12,
       "taskTotal": 37,
       "expectations": 54,
@@ -57,7 +45,7 @@
     {
       "run": "gemma-4-e4b-sft-v2-fused-q8-tree-constrained",
       "valid": 100,
-      "score": 65,
+      "score": 64,
       "tasks": 15,
       "taskTotal": 37,
       "expectations": 55,
@@ -67,21 +55,33 @@
       "tps": 47.3
     },
     {
-      "run": "gemma-4-e4b-sft-v2-fused-tree-constrained",
-      "valid": 100,
-      "score": 64,
-      "tasks": 12,
+      "run": "gemma-4-e4b-it-4bit+rl-1-tree-constrained",
+      "valid": 98,
+      "score": 63,
+      "tasks": 14,
       "taskTotal": 37,
-      "expectations": 57,
-      "direction": 93,
-      "latency": 3.413,
-      "ttft": 0.924,
-      "tps": 76.1
+      "expectations": 53,
+      "direction": 96,
+      "latency": 4.222,
+      "ttft": 1.022,
+      "tps": 55.7
+    },
+    {
+      "run": "gemma-4-e4b-it-4bit+sft-v1-tree-constrained",
+      "valid": 98,
+      "score": 63,
+      "tasks": 10,
+      "taskTotal": 37,
+      "expectations": 42,
+      "direction": 96,
+      "latency": 3.41,
+      "ttft": 0.862,
+      "tps": 56.2
     },
     {
       "run": "gemma-4-e4b-it-4bit+rl-2-tree-constrained",
       "valid": 96,
-      "score": 63,
+      "score": 61,
       "tasks": 13,
       "taskTotal": 37,
       "expectations": 59,
@@ -91,9 +91,21 @@
       "tps": 55.4
     },
     {
+      "run": "gemma-4-e4b-sft-v2-fused-tree-constrained",
+      "valid": 100,
+      "score": 61,
+      "tasks": 12,
+      "taskTotal": 37,
+      "expectations": 57,
+      "direction": 93,
+      "latency": 3.413,
+      "ttft": 0.924,
+      "tps": 76.1
+    },
+    {
       "run": "Qwen3.5-9B-4bit-tree-constrained",
       "valid": 86,
-      "score": 59,
+      "score": 58,
       "tasks": 13,
       "taskTotal": 37,
       "expectations": 68,
@@ -103,21 +115,9 @@
       "tps": 54
     },
     {
-      "run": "gemma-4-e4b-it-4bit-tree-constrained",
-      "valid": 96,
-      "score": 59,
-      "tasks": 14,
-      "taskTotal": 37,
-      "expectations": 64,
-      "direction": 93,
-      "latency": 3.477,
-      "ttft": 0.928,
-      "tps": 74.2
-    },
-    {
       "run": "gemma-4-e4b-it-4bit+sft-v3-tree-constrained",
       "valid": 98,
-      "score": 58,
+      "score": 57,
       "tasks": 14,
       "taskTotal": 37,
       "expectations": 61,
@@ -127,9 +127,21 @@
       "tps": 55.4
     },
     {
+      "run": "gemma-4-e4b-it-4bit-tree-constrained",
+      "valid": 96,
+      "score": 57,
+      "tasks": 14,
+      "taskTotal": 37,
+      "expectations": 64,
+      "direction": 93,
+      "latency": 3.477,
+      "ttft": 0.928,
+      "tps": 74.2
+    },
+    {
       "run": "Qwen3.5-4B-4bit-tree-constrained",
       "valid": 86,
-      "score": 52,
+      "score": 50,
       "tasks": 13,
       "taskTotal": 37,
       "expectations": 75,
@@ -137,18 +149,6 @@
       "latency": 3.916,
       "ttft": 1.367,
       "tps": 87.2
-    },
-    {
-      "run": "Qwen3.5-4B-4bit-tree-untyped-constrained",
-      "valid": 66,
-      "score": 41,
-      "tasks": 10,
-      "taskTotal": 37,
-      "expectations": 76,
-      "direction": 91,
-      "latency": 3.908,
-      "ttft": 1.386,
-      "tps": 87.5
     },
     {
       "run": "Qwen3.5-2B-4bit-tree-constrained",
@@ -161,6 +161,18 @@
       "latency": 1.989,
       "ttft": 0.567,
       "tps": 177.1
+    },
+    {
+      "run": "Qwen3.5-4B-4bit-tree-untyped-constrained",
+      "valid": 66,
+      "score": 40,
+      "tasks": 10,
+      "taskTotal": 37,
+      "expectations": 76,
+      "direction": 91,
+      "latency": 3.908,
+      "ttft": 1.386,
+      "tps": 87.5
     },
     {
       "run": "Qwen3.5-4B-4bit-constrained",
@@ -188,79 +200,83 @@
     }
   ],
   "best": {
-    "run": "gemma-4-e4b-it-4bit+sft-v2-tree-constrained",
+    "run": "gemma-4-e4b-it-4bit+sft-v4-tree-constrained",
     "scores": [
       100,
-      40,
-      80,
-      100,
       20,
+      80,
+      40,
       100,
+      80,
       60,
-      100,
       100,
       0,
-      20,
-      60,
-      100,
-      60,
-      100,
-      20,
-      100,
-      100,
       80,
+      80,
+      40,
+      100,
+      60,
+      100,
       0,
       100,
       100,
       100,
-      40,
       60,
       100,
       100,
       100,
+      100,
+      60,
+      60,
+      100,
+      80,
       96,
-      0,
-      100,
-      100,
-      40,
-      40,
-      0,
-      80,
-      100,
-      60,
-      60,
-      100,
-      40,
-      80,
-      40,
-      60,
-      100,
-      40,
-      40,
       20,
       100,
-      40
+      60,
+      40,
+      80,
+      60,
+      80,
+      80,
+      40,
+      40,
+      100,
+      40,
+      80,
+      40,
+      60,
+      100,
+      60,
+      40,
+      40,
+      100,
+      60
     ],
     "problems": [
       {
-        "name": "Other",
-        "count": 56
+        "name": "Missing component",
+        "count": 24
       },
       {
-        "name": "Agent task",
+        "name": "Other",
         "count": 21
       },
       {
-        "name": "Missing component",
+        "name": "Agent task",
         "count": 19
+      },
+      {
+        "name": "Copy and direction",
+        "count": 16
+      },
+      {
+        "name": "Capability wiring",
+        "count": 11
       },
       {
         "name": "Pattern",
         "count": 10
-      },
-      {
-        "name": "Capability wiring",
-        "count": 8
       }
     ]
   }

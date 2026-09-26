@@ -226,27 +226,89 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
   }
 
   // An internal id is not a name. "pr_1" tells a person nothing about which project they are
-  // deleting, and the record it came from usually carries the name right next to it.
+  // deleting, and the data usually carries the name: beside it in the same record, or in the record
+  // that id belongs to ("p1" on a payment, where /payees has { id: "p1", name: "Alex Kim" }).
   const ID = /^[a-z]{1,4}[-_]?\d+$/i;
+  const nameOfId = new Map<string, string>();
+  const collect = (v: any, at: string) => {
+    if (Array.isArray(v)) v.forEach((x, i) => collect(x, `${at}/${i}`));
+    else if (v && typeof v === "object") {
+      const name = ["name", "title", "label"].find((k) => typeof v[k] === "string");
+      if (typeof v.id === "string" && name && !nameOfId.has(v.id)) nameOfId.set(v.id, `"${v[name]}" (${at}/${name})`);
+      for (const [k, x] of Object.entries(v)) collect(x, `${at}/${k}`);
+    }
+  };
+  collect(doc.data, "");
   for (const c of order) {
-    // Same reason: the value an input holds is a key, and a key is allowed to look like one.
-    if (INPUTS.has(c.component)) continue;
+    // A choice's value is a key, and a key is allowed to look like one: the person sees its label.
+    // A text field shows its value as it is, so an id in one is an id on screen.
+    if (INPUTS.has(c.component) && c.component !== "TextInput") continue;
     const shown: { where: string; path?: string }[] = [
       ...(Array.isArray(c.items) ? c.items.map((i: any, n: number) => ({ where: `items[${n}]`, path: i.value?.path })) : []),
       { where: "value", path: c.value?.path },
       { where: "title", path: c.title?.path },
+      { where: "text", path: c.text?.path },
+      { where: "subtitle", path: c.subtitle?.path },
     ];
     for (const { where, path } of shown) {
       if (!path) continue;
       const value = read(c, path);
       if (typeof value !== "string" || !ID.test(value)) continue;
-      // Only a problem when the same record offers something readable instead.
       const parent = path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : "";
       const record = (parent ? read(c, parent) : path.startsWith("/") ? doc.data : scopes.get(c.id)) as any;
-      const better = record && typeof record === "object" ? ["name", "title", "label"].find((k) => typeof record[k] === "string") : undefined;
-      if (better) out.push({ severity: "warning", check: "copy:raw-identifier", message: `${c.id}.${where} shows "${value}", an internal id, where ${parent ? `${parent}/` : path.startsWith("/") ? "/" : ""}${better} is a name` });
+      const beside = record && typeof record === "object" ? ["name", "title", "label"].find((k) => typeof record[k] === "string") : undefined;
+      const instead = nameOfId.get(value) ?? (beside ? `${parent ? `${parent}/` : path.startsWith("/") ? "/" : ""}${beside}` : undefined);
+      if (instead) out.push({ severity: "error", check: "copy:raw-identifier", message: `${c.id}.${where} shows "${value}", an internal id, where the data has a name: ${instead}` });
     }
   }
+
+  // Numbers formatted from something that isn't one render "NaN": "US$NaN", "NaN seats".
+  // And a currency format with no currency falls back to US dollars, whatever the data is in.
+  const NUMERIC = new Set(["number", "currency", "percent", "duration"]);
+  const currencies = new Set<string>();
+  const findCurrency = (v: any) => {
+    if (Array.isArray(v)) v.forEach(findCurrency);
+    else if (v && typeof v === "object")
+      for (const [k, x] of Object.entries(v)) {
+        if (/currency/i.test(k) && typeof x === "string" && /^[A-Z]{3}$/.test(x)) currencies.add(x);
+        findCurrency(x);
+      }
+  };
+  findCurrency(doc.data);
+  const LIST_OF: Record<string, string> = { Table: "rows", Comparison: "items", Chart: "data" };
+  for (const c of order) {
+    // An input's value is its state: a range holds a pair, and a pair is fine there.
+    if (INPUTS.has(c.component)) continue;
+    const rows = LIST_OF[c.component] ? read(c, c[LIST_OF[c.component]]?.path) : undefined;
+    const firstRow = Array.isArray(rows) ? rows[0] : undefined;
+    // Every { format, value } pair in the component, wherever it sits: a Text, a Metric, a detail
+    // row, a table column (whose path reads from each row), a comparison attribute.
+    const pairs: { at: string; format: any; path?: string; perRow: boolean }[] = [];
+    const walk = (v: any, at: string, perRow: boolean) => {
+      if (Array.isArray(v)) return v.forEach((x, i) => walk(x, `${at}[${i}]`, perRow));
+      if (!v || typeof v !== "object") return;
+      if (v.format && typeof v.format === "object") {
+        const path = typeof v.path === "string" ? v.path : v.value?.path ?? v.text?.path;
+        pairs.push({ at, format: v.format, path, perRow });
+      }
+      for (const [k, x] of Object.entries(v)) if (k !== "format" && x && typeof x === "object") walk(x, `${at}.${k}`, perRow || ["columns", "attributes", "series", "x"].includes(k));
+    };
+    walk(c, c.id, false);
+    for (const { at, format, path, perRow } of pairs) {
+      if (!NUMERIC.has(format.type)) continue;
+      if (path) {
+        const value = perRow && !path.startsWith("/") ? (firstRow && typeof firstRow === "object" ? (firstRow as any)[path] : undefined) : read(c, path);
+        const n = typeof value === "number" ? value : typeof value === "string" && value.trim() !== "" ? Number(value) : NaN;
+        if (value !== undefined && value !== null && Number.isNaN(n)) {
+          out.push({ severity: "error", check: "data:not-a-number", message: `${at} formats ${path} as ${format.type}, but it holds ${JSON.stringify(value).slice(0, 40)}: it renders "NaN"` });
+        }
+      }
+      if (format.type === "currency" && format.currency === undefined && currencies.size && !currencies.has("USD")) {
+        out.push({ severity: "error", check: "data:wrong-currency", message: `${at} formats money with no currency, which shows US dollars; the data is in ${[...currencies].join(", ")} — set format.currency or bind it to the data's currency` });
+      }
+    }
+  }
+
 
   // Action labels should say what happens.
   for (const c of order) {

@@ -218,6 +218,14 @@ Rating sft-v2's output against the approved flow designs, 8 of 12 screens showed
 | `data:missing-path` | an error now: a binding that reads nothing from the data the screen is shown with. That covers `/status` where the data has `/order/status`, `/airline` inside a flight card where each flight has `airline`, and a table column or item field that no row has. The message names the likely fix. Inputs are exempt for the values they write, and so is anything that reads those back |
 | `text:dangling-label` | a short text ending in a colon with nothing after it: "Departs:" where the departure time should be |
 
+The first blind review against the designs named three more, now checks too:
+
+| Check | What it catches |
+|---|---|
+| `data:not-a-number` | a number, currency or percent format over something that isn't a number: "48 of 50" formatted as a number, a time as money. It renders `NaN` |
+| `data:wrong-currency` | money formatted with no currency, which shows US dollars, when the data says it's in pounds |
+| `copy:raw-identifier` | now an error, and it looks across the data: `p1` on a payment, where `/payees` has `{ "id": "p1", "name": "Alex Kim" }`. A text field showing an id counts too |
+
 The same change fixed how the verifier reads bindings inside a repeated item. It now resolves them the way the renderer does: a relative path from the item, an absolute path from the top of the data wherever it appears.
 
 ## Consistency
