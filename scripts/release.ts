@@ -72,7 +72,12 @@ for (const name of ORDER) {
   }
   if (!files.has("LICENSE")) mine.push("ships without LICENSE");
   if (PACKS.includes(name)) {
-    const vendored = run("git", ["ls-files", "scripts/sources"], dir).split("\n").filter((f) => /LICEN[CS]E/i.test(f));
+    const sources = join(dir, "scripts/sources");
+    const vendored = existsSync(sources)
+      ? readdirSync(sources, { recursive: true, encoding: "utf8" })
+          .filter((f) => /LICEN[CS]E/i.test(f))
+          .map((f) => `scripts/sources/${f}`)
+      : [];
     for (const licence of vendored) if (!files.has(licence)) mine.push(`derived from a source whose licence (${licence}) doesn't ship with it`);
   }
   if (name === "verifier" && ![...files].some((f) => f.startsWith("harness-dist/"))) mine.push("ships without harness-dist, so it can't render");

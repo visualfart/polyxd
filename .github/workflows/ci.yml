@@ -23,7 +23,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npx tsc -b
+      # Spec first, in its own run: on a clean checkout, one tsc -b (TypeScript 7) resolves
+      # @polyxd/spec before spec has emitted and keeps that failure for the rest of the build.
+      - run: npm run typecheck
       - run: npm run test:all
       - run: npm run check:licences
       - run: npm run release:check
