@@ -13,35 +13,15 @@ import { resolveMedia } from "./media.ts";
 import { Avatar, Button, Icon, Kbd, NAV, NavList, useModal } from "./ui.tsx";
 import { Home } from "./screens/home.tsx";
 import { Orders, Order, Drafts, Draft, Checkouts } from "./screens/orders.tsx";
-import { Products, Product, Collections, Collection, Inventory } from "./screens/products.tsx";
+import { Products, Product, Collections, Collection } from "./screens/products.tsx";
 import { Customers, Customer } from "./screens/customers.tsx";
-import { Discounts, Discount } from "./screens/discounts.tsx";
+import { Discount } from "./screens/discounts.tsx";
 import { Marketing } from "./screens/marketing.tsx";
-import { Analytics } from "./screens/analytics.tsx";
 import { Settings } from "./screens/settings.tsx";
+import { AnalyticsScreen, AuthoredScreen } from "./authored.tsx";
+import { PACKS, loadPack } from "./packs.ts";
 
 export { store, useQuay } from "./session.ts";
-
-const PACKS = [
-  ["polaris", "Polaris"],
-  ["shadcn", "shadcn/ui"],
-  ["material3", "Material 3"],
-  ["carbon", "Carbon"],
-  ["antd", "Ant Design"],
-  ["govuk", "GOV.UK"],
-  ["fluent", "Fluent 2"],
-  ["primer", "Primer"],
-  ["spectrum", "Spectrum 2"],
-  ["chakra", "Chakra"],
-  ["mantine", "Mantine"],
-  ["radix", "Radix Themes"],
-  ["bootstrap", "Bootstrap"],
-].map(([id, name]) => ({ id, name }));
-const themeFiles = import.meta.glob("../../../packages/react/themes/*.css");
-const loadPack = async (id: string) => {
-  const load = themeFiles[`../../../packages/react/themes/${id}.css`];
-  if (load) await load();
-};
 
 const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 export const MOD = isMac ? "⌘" : "Ctrl";
@@ -123,14 +103,14 @@ export function App() {
             <Route path="products" element={<Products />} />
             <Route path="products/collections" element={<Collections />} />
             <Route path="products/collections/:id" element={<Collection />} />
-            <Route path="products/inventory" element={<Inventory />} />
+            <Route path="products/inventory" element={<AuthoredScreen id="screen.inventory" />} />
             <Route path="products/:id" element={<Product />} />
             <Route path="customers" element={<Customers />} />
             <Route path="customers/:id" element={<Customer />} />
-            <Route path="discounts" element={<Discounts />} />
+            <Route path="discounts" element={<AuthoredScreen id="screen.discounts" />} />
             <Route path="discounts/:id" element={<Discount />} />
             <Route path="marketing" element={<Marketing />} />
-            <Route path="analytics" element={<Analytics />} />
+            <Route path="analytics" element={<AnalyticsScreen />} />
             <Route path="settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

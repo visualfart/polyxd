@@ -2,6 +2,7 @@ import type { ActionEvent } from "@polyxd/react";
 import type { Store, Undo } from "../kit/store.ts";
 import { AUDIENCE_LABEL, TYPE_LABEL, customer, fullName, isLate, order, variantOf, type Audience, type DiscountType, type ProductType, type Quay } from "./seed.ts";
 import { fromDay, isoDay, money, plural, round2, shortDate } from "./format.ts";
+import { rangeOf, reportCsv } from "./views.ts";
 
 /**
  * What Quay does when a generated surface asks for a capability. Every action changes the data
@@ -25,6 +26,17 @@ const uid = (prefix: string) => `${prefix}_${Date.now().toString(36)}${Math.floo
 const tracking = () => `9400 1000 0000 ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)}`;
 const newPrice = (price: number, pct: number) => Math.max(0.5, Math.round((price * (1 + pct / 100)) / 0.5) * 0.5);
 
+/** A real CSV of what a report shows, the way Export does in a store admin (a no-op outside a browser). */
+function download(name: string, text: string) {
+  if (typeof document === "undefined" || typeof URL.createObjectURL !== "function") return;
+  const url = URL.createObjectURL(new Blob([text], { type: "text/csv" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 export function runAction(store: Store<Quay>, e: ActionEvent): Outcome {
   const h = store.get();
   const c = e.context as Record<string, any>;
@@ -34,10 +46,26 @@ export function runAction(store: Store<Quay>, e: ActionEvent): Outcome {
     case "order.open":
       return { go: `/orders/${c.id}`, close: true };
     case "products.open":
-      return { go: "/products?view=low", close: true };
+      return { go: typeof c.type === "string" && c.type in TYPE_LABEL ? `/products?type=${c.type}` : "/products?view=low", close: true };
     case "restock.open": {
       const ids: string[] = Array.isArray(c.variantIds) ? c.variantIds : [];
       return { next: { intent: "inventory.restock", slots: ids.length ? { variant: ids[0] } : {} } };
+    }
+
+    // The authored screens: their buttons open a screen or an ask the way a React screen's did.
+    case "discount.open":
+      return { go: `/discounts/${c.id}`, close: true };
+    case "discount.new":
+      return { next: { intent: "discount.create" } };
+    case "analytics.range": {
+      const range = rangeOf(c);
+      return { go: range === "30" ? "/analytics" : `/analytics?range=${range}` };
+    }
+    case "report.export": {
+      const file = reportCsv(h, String(c.report), c);
+      if (!file) return { say: `Quay has no "${c.report}" report to export.` };
+      download(file.name, file.text);
+      return { say: `Exported ${file.count} as ${file.name}.` };
     }
 
     case "inventory.adjust": {

@@ -1,5 +1,5 @@
 import type { IntentFile } from "../kit/types.ts";
-import { AUDIENCE_LABEL, DISCOUNT_TYPE_LABEL, PAYMENT_LABEL, TYPES, TYPE_LABEL, audienceOf, campaignPausedOn, cover, covers, customer, daily, daysAgo, discountState, fullName, initials, isLate, netTotal, order, orderByNumber, product, refundedTotal, revenueOf, summarize, unitsSold, variantOf, type Audience, type DiscountType, type Product, type ProductType, type Quay, type Variant } from "./seed.ts";
+import { AUDIENCE_LABEL, DISCOUNT_TYPE_LABEL, PAYMENT_LABEL, TYPES, TYPE_LABEL, audienceOf, campaignPausedOn, cover, covers, customer, daily, daysAgo, discountState, discountSummary, discountUses, fullName, initials, isLate, netTotal, order, orderByNumber, ordersBetween, product, refundedTotal, revenueOf, summarize, unitsSold, variantOf, type Audience, type DiscountState, type DiscountType, type Product, type ProductType, type Quay, type Source, type Variant } from "./seed.ts";
 import { dateOnly, dayRange, fromDay, isoDay, money, plural, round2, shortDate } from "./format.ts";
 
 /**
@@ -57,6 +57,14 @@ export function view(h: Quay, name: string, slots: Record<string, unknown>): unk
       return recover(h, slots);
     case "recoverConfirm":
       return recoverConfirm(h, slots);
+
+    // The screens written as documents (authored/*.json): the same views a React screen computed.
+    case "analyticsScreen":
+      return analyticsScreen(h, slots);
+    case "inventoryScreen":
+      return inventoryScreen(h, inventoryFilters(slots));
+    case "discountsScreen":
+      return discountsScreen(h, slots);
     default:
       throw new Error(`Unknown view ${name}`);
   }
@@ -466,6 +474,222 @@ function recoverConfirm(h: Quay, slots: Record<string, unknown>) {
   };
 }
 
+/* ---- Analytics: a range against the period before it ---- */
+
+const RANGES: Record<string, { label: string; days: number; bucket: number }> = {
+  today: { label: "Today", days: 1, bucket: 1 },
+  "7": { label: "Last 7 days", days: 7, bucket: 1 },
+  "30": { label: "Last 30 days", days: 30, bucket: 3 },
+  "90": { label: "Last 90 days", days: 90, bucket: 6 },
+};
+const SOURCE_LABEL: Record<Source, string> = { ads: "Paid ads", organic: "Organic search", email: "Email", social: "Social", direct: "Direct" };
+const SOURCES: Source[] = ["ads", "organic", "email", "social", "direct"];
+const TYPE_PLURAL: Record<ProductType, string> = { candle: "Candles", diffuser: "Diffusers", melt: "Wax melts", gift: "Gift sets", accessory: "Accessories" };
+export const rangeOf = (slots: Record<string, unknown>) => (RANGES[String(slots.range)] ? String(slots.range) : "30");
+const change = (a: number, b: number) => (b ? (a - b) / b : a ? 1 : 0);
+/** "9/14": fifteen of these share one axis, so a numeric day fits where "Sep 14" crowds. */
+const dayLabel = (d: string) => `${fromDay(d).getMonth() + 1}/${fromDay(d).getDate()}`;
+function rangeBounds(range: string) {
+  const { days } = RANGES[range];
+  return { days, from: daysAgo(days - 1), to: daysAgo(0), prevFrom: daysAgo(days * 2 - 1), prevTo: daysAgo(days) };
+}
+function analyticsScreen(h: Quay, slots: Record<string, unknown>) {
+  const range = rangeOf(slots);
+  const { days, from, to, prevFrom, prevTo } = rangeBounds(range);
+  const { bucket } = RANGES[range];
+  const cur = summarize(h, from, to);
+  const prev = summarize(h, prevFrom, prevTo);
+  const orders = ordersBetween(h, from, to);
+  // The chart: a point a day up to a week, then 3- and 6-day periods, so fifteen labels at most
+  // share the axis. "Today" shows the week ending today, so a single point isn't drawn as a trend.
+  const chartDays = Math.max(days, 7);
+  const curDaily = daily(h, daysAgo(chartDays - 1), to);
+  const prevDaily = daily(h, daysAgo(chartDays * 2 - 1), daysAgo(chartDays));
+  const series: { date: string; revenue: number; previous: number; orders: number }[] = [];
+  for (let i = 0; i < curDaily.length; i += bucket) {
+    const a = curDaily.slice(i, i + bucket);
+    const b = prevDaily.slice(i, i + bucket);
+    series.push({ date: dayLabel(a[0].date), revenue: round2(a.reduce((s, d) => s + d.revenue, 0)), previous: round2(b.reduce((s, d) => s + d.revenue, 0)), orders: a.reduce((s, d) => s + d.orders, 0) });
+  }
+  const peak = series.reduce((x, y) => (y.revenue > x.revenue ? y : x), series[0]);
+  const low = series.reduce((x, y) => (y.revenue < x.revenue ? y : x), series[0]);
+  const period = bucket === 1 ? "day" : "period";
+  const chartTitle = bucket === 1 ? "Daily sales, last 7 days" : `Sales by ${bucket}-day period, last ${days} days`;
+  const chartSummary = `${days === 1 ? `Today's sales are ${money(cur.sales)} against ${money(prev.sales)} yesterday; the chart shows the week ending today` : `Sales ${dayRange(from, to)} came to ${money(cur.sales)} against ${money(prev.sales)} the period before`}. The best ${period} started ${peak.date} at ${money(peak.revenue)}, the lowest ${low.date} at ${money(low.revenue)}.`;
+
+  const byProduct = new Map<string, { units: number; sales: number }>();
+  const byType = new Map<ProductType, number>();
+  for (const o of orders) {
+    for (const it of o.items) {
+      const p = byProduct.get(it.productId) ?? { units: 0, sales: 0 };
+      p.units += it.qty;
+      p.sales += it.qty * it.price;
+      byProduct.set(it.productId, p);
+      const t = product(h, it.productId)?.type ?? "accessory";
+      byType.set(t, (byType.get(t) ?? 0) + it.qty * it.price);
+    }
+  }
+  const gross = round2(orders.reduce((s, o) => s + o.subtotal, 0));
+  const top = [...byProduct.entries()]
+    .map(([id, v]) => ({ id, p: product(h, id), ...v }))
+    .filter((x): x is typeof x & { p: Product } => !!x.p)
+    .sort((a, b) => b.sales - a.sales)
+    .slice(0, 8)
+    .map((x) => ({ id: x.id, name: x.p.title, media: x.p.media[0] ?? "", type: TYPE_LABEL[x.p.type], units: x.units, sales: round2(x.sales), share: gross ? x.sales / gross : 0 }));
+  const discounts = round2(orders.reduce((s, o) => s + o.discountAmount, 0));
+  const shipping = round2(orders.reduce((s, o) => s + o.shipping, 0));
+  const taxes = round2(orders.reduce((s, o) => s + o.tax, 0));
+  const returns = round2(orders.reduce((s, o) => s + o.refunds.reduce((t, r) => t + r.amount, 0), 0));
+  return {
+    range,
+    rangeLabel: RANGES[range].label,
+    subtitle: `${dayRange(from, to)} compared to ${dayRange(prevFrom, prevTo)}.`,
+    periodLabel: dayRange(from, to),
+    previousLabel: dayRange(prevFrom, prevTo),
+    compareCaption: `Against ${dayRange(prevFrom, prevTo)}`,
+    sales: cur.sales,
+    salesChange: change(cur.sales, prev.sales),
+    orders: cur.orders,
+    ordersChange: change(cur.orders, prev.orders),
+    sessions: cur.sessions,
+    sessionsChange: change(cur.sessions, prev.sessions),
+    conversion: cur.conversion,
+    conversionChange: change(cur.conversion, prev.conversion),
+    aov: cur.aov,
+    aovChange: change(cur.aov, prev.aov),
+    returningRate: cur.returningRate,
+    returningChange: change(cur.returningRate, prev.returningRate),
+    series,
+    chartTitle,
+    chartSummary,
+    top,
+    topCaption: `Top products by sales, ${dayRange(from, to)}`,
+    byType: [...byType.entries()].sort((a, b) => b[1] - a[1]).map(([t, sales]) => ({ type: t, name: TYPE_PLURAL[t], sales: round2(sales) })),
+    bySource: SOURCES.map((s) => ({ source: s, name: SOURCE_LABEL[s], sales: round2(orders.filter((o) => o.source === s).reduce((t, o) => t + o.total, 0)) })).sort((a, b) => b.sales - a.sales),
+    breakdown: { grossLabel: `Gross sales · ${plural(cur.items, "item")}`, gross, discounts: -discounts, returns: -returns, shipping, taxes, net: cur.net },
+  };
+}
+
+/* ---- Inventory: every tracked variant, with its days of stock ---- */
+
+interface InventoryFilters { q: string; threshold: string; types: string[] }
+const THRESHOLDS = ["all", "0", "7", "14", "30"];
+function inventoryFilters(slots: Record<string, unknown>): InventoryFilters {
+  return { q: typeof slots.q === "string" ? slots.q : "", threshold: THRESHOLDS.includes(String(slots.threshold)) ? String(slots.threshold) : "all", types: Array.isArray(slots.types) ? slots.types.map(String) : [] };
+}
+const committedOf = (h: Quay, variantId: string) => h.orders.filter((o) => o.status === "open").reduce((s, o) => s + o.items.filter((it) => it.variantId === variantId).reduce((t, it) => t + it.qty - it.fulfilled, 0), 0);
+const stockStatus = (inventory: number, days: number | null) => (inventory === 0 ? "Out of stock" : days === null ? "No sales" : days <= 7 ? "Under a week" : days <= 14 ? "Under two weeks" : days <= 30 ? "Under a month" : "In stock");
+function inventoryScreen(h: Quay, f: InventoryFilters) {
+  const all = covers(h);
+  const needle = f.q.trim().toLowerCase();
+  const limit = f.threshold === "all" ? null : Number(f.threshold);
+  const rows = all
+    .filter((c) => !needle || c.product.title.toLowerCase().includes(needle) || c.variant.sku.toLowerCase().includes(needle))
+    .filter((c) => limit === null || c.variant.inventory === 0 || (limit > 0 && c.days !== null && c.days <= limit))
+    .filter((c) => !f.types.length || f.types.includes(c.product.type))
+    .sort((a, b) => a.product.title.localeCompare(b.product.title) || a.variant.title.localeCompare(b.variant.title))
+    .map((c) => ({
+      id: c.variant.id,
+      productId: c.product.id,
+      name: c.product.title,
+      media: c.product.media[0] ?? "",
+      line: `${c.product.option ? `${c.variant.title} · ` : ""}${c.variant.sku}`,
+      type: TYPE_LABEL[c.product.type],
+      status: stockStatus(c.variant.inventory, c.days),
+      committed: committedOf(h, c.variant.id),
+      inventory: c.variant.inventory,
+      incoming: c.variant.incoming?.qty ?? 0,
+      incomingText: c.variant.incoming ? `${c.variant.incoming.qty} on ${shortDate(fromDay(c.variant.incoming.expectedAt).toISOString())}` : "–",
+      days: c.days,
+      // A meter of the six weeks a restock aims for (views.ts's suggestedQty): full means no rush.
+      coverDays: c.days === null ? 42 : Math.min(c.days, 42),
+      coverCaption: c.days === null ? "No sales in the last 30 days" : c.days >= 42 ? "Six weeks or more" : `${plural(c.days, "day")} of 42`,
+      salesLine: `Sells ${round2(c.perDay * 7)} a week · ${c.sold30} sold in the last 30 days${c.variant.incoming ? ` · ${c.variant.incoming.qty} on the way for ${shortDate(fromDay(c.variant.incoming.expectedAt).toISOString())}` : ""}`,
+      variantIds: [c.variant.id],
+    }));
+  const outOfStock = all.filter((c) => c.variant.inventory === 0).length;
+  const low = all.filter((c) => c.variant.inventory === 0 || (c.days !== null && c.days <= 14)).length;
+  const deliveries = all.filter((c) => c.variant.incoming);
+  const incomingUnits = deliveries.reduce((s, c) => s + c.variant.incoming!.qty, 0);
+  return {
+    filters: f,
+    rows,
+    count: rows.length,
+    caption: `${plural(rows.length, "variant")}, days of stock from the last 30 days' sales`,
+    subtitle: `${plural(all.length, "variant")} tracked at ${h.shop.address.city}, ${h.shop.address.state}.`,
+    tracked: all.length,
+    locationCaption: `Quantity tracked at ${h.shop.address.city}`,
+    outOfStock,
+    outCaption: outOfStock ? "Sold out, not yet restocked" : "Everything is in stock",
+    low,
+    lowCaption: `${low} of ${plural(all.length, "variant")}`,
+    incomingUnits,
+    incomingCaption: deliveries.length ? `Across ${plural(deliveries.length, "delivery", "deliveries")}` : "No deliveries on the way",
+  };
+}
+
+/* ---- Discounts: every discount, by state ---- */
+
+const DISCOUNT_VIEWS: (DiscountState | "all")[] = ["all", "active", "scheduled", "expired", "disabled"];
+const STATE_LABEL: Record<DiscountState, string> = { active: "Active", scheduled: "Scheduled", expired: "Expired", disabled: "Inactive" };
+const EMPTY: Record<DiscountState | "all", [string, string]> = {
+  all: ["No discounts", "Create one for a launch, a segment or a season."],
+  active: ["Nothing active", "A discount that has started and not ended shows here."],
+  scheduled: ["Nothing scheduled", "A discount with a start date still to come shows here."],
+  expired: ["Nothing expired", "A discount past its end date shows here."],
+  disabled: ["Nothing inactive", "A discount you've turned off shows here until you turn it back on."],
+};
+function discountsScreen(h: Quay, slots: Record<string, unknown>) {
+  const view = (DISCOUNT_VIEWS.includes(slots.view as DiscountState) ? slots.view : "all") as DiscountState | "all";
+  const all = [...h.discounts].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((d) => ({ d, state: discountState(d) }));
+  const counts = Object.fromEntries(DISCOUNT_VIEWS.map((v) => [v, v === "all" ? all.length : all.filter((x) => x.state === v).length])) as Record<DiscountState | "all", number>;
+  const since = daysAgo(29);
+  const given = round2(ordersBetween(h, since, daysAgo(0)).reduce((s, o) => s + o.discountAmount, 0));
+  const rows = all
+    .filter((x) => view === "all" || x.state === view)
+    .map(({ d, state }) => ({
+      id: d.id,
+      title: d.title,
+      summary: discountSummary(d),
+      status: STATE_LABEL[state],
+      method: d.method === "code" ? "Code" : "Automatic",
+      type: DISCOUNT_TYPE_LABEL[d.type],
+      uses: d.method === "code" ? discountUses(h, d).length : null,
+      dates: `${shortDate(d.startsAt)}${d.endsAt ? ` – ${shortDate(d.endsAt)}` : ""}`,
+    }));
+  return {
+    view,
+    counts,
+    rows,
+    subtitle: `${plural(counts.active, "discount")} active, ${counts.scheduled} scheduled · ${money(given)} given away in the last 30 days.`,
+    emptyTitle: EMPTY[view][0],
+    emptyMessage: EMPTY[view][1],
+  };
+}
+
+/* ---- Exports: the CSV a report's Export button downloads, from the same views ---- */
+
+const csv = (header: string[], rows: unknown[][]) => [header, ...rows].map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+/** The rows a report shows, as CSV, named for the download; `count` is what the toast says. */
+export function reportCsv(h: Quay, report: string, ctx: Record<string, unknown>): { name: string; text: string; count: string } | null {
+  const stamp = isoDay(new Date());
+  if (report === "analytics") {
+    const range = rangeOf(ctx);
+    const { from, to } = rangeBounds(range);
+    const rows = daily(h, from, to);
+    return { name: `analytics-${range}-${stamp}.csv`, text: csv(["Date", "Sales", "Orders", "Sessions"], rows.map((d) => [d.date, d.revenue.toFixed(2), d.orders, d.sessions])), count: plural(rows.length, "day") };
+  }
+  if (report === "inventory") {
+    const { rows } = inventoryScreen(h, inventoryFilters((ctx.filters as Record<string, unknown>) ?? {}));
+    return { name: `inventory-${stamp}.csv`, text: csv(["Product", "Variant", "Committed", "Available", "Incoming", "Days of stock"], rows.map((r) => [r.name, r.line, r.committed, r.inventory, r.incoming, r.days ?? ""])), count: plural(rows.length, "variant") };
+  }
+  if (report === "discounts") {
+    const { rows } = discountsScreen(h, ctx);
+    return { name: `discounts-${stamp}.csv`, text: csv(["Title", "Status", "Method", "Type", "Used", "Dates"], rows.map((r) => [r.title, r.status, r.method, r.type, r.uses ?? "", r.dates])), count: plural(rows.length, "discount") };
+  }
+  return null;
+}
+
 /* ---- Slots and surface data ---- */
 
 /** Turn matched slot text into ids and numbers the views understand. */
@@ -555,6 +779,14 @@ export function live(h: Quay, intentId: string, data: Record<string, any>): Reco
     }
     case "products.reprice":
       return data.reprice ? { preview: repricePreview(h, data.reprice) } : null;
+
+    // The authored screens: the range, the filters and the view live in the surface; everything else follows the store.
+    case "screen.analytics":
+      return { analytics: analyticsScreen(h, { range: data.analytics?.range }) };
+    case "screen.inventory":
+      return { inventory: inventoryScreen(h, inventoryFilters(data.inventory?.filters ?? {})) };
+    case "screen.discounts":
+      return { discounts: discountsScreen(h, { view: data.discounts?.view }) };
     default:
       return null;
   }

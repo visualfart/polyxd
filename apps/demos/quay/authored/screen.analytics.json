@@ -1,0 +1,841 @@
+{
+  "id": "screen.analytics",
+  "title": "Analytics",
+  "ask": [],
+  "capabilities": [
+    "analytics.range",
+    "product.open",
+    "products.open",
+    "report.export"
+  ],
+  "data": {
+    "analytics": "view:analyticsScreen"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "analytics",
+      "title": "Analytics",
+      "intent": "screen.analytics",
+      "subtitle": {
+        "path": "/analytics/subtitle"
+      },
+      "actions": "page_actions",
+      "presentation": "page",
+      "origin": "authored"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page_actions",
+        "component": "ActionBar",
+        "children": [
+          "export"
+        ]
+      },
+      {
+        "id": "export",
+        "component": "Action",
+        "key": "export",
+        "label": "Export",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "report.export",
+            "context": {
+              "report": "analytics",
+              "range": {
+                "path": "/analytics/range"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "range",
+          "figures",
+          "over_time",
+          "body"
+        ]
+      },
+      {
+        "id": "range",
+        "component": "Choice",
+        "key": "range",
+        "label": "Date range",
+        "options": [
+          {
+            "value": "today",
+            "label": "Today"
+          },
+          {
+            "value": "7",
+            "label": "Last 7 days"
+          },
+          {
+            "value": "30",
+            "label": "Last 30 days"
+          },
+          {
+            "value": "90",
+            "label": "Last 90 days"
+          }
+        ],
+        "value": {
+          "path": "/analytics/range"
+        },
+        "required": true
+      },
+      {
+        "id": "figures",
+        "component": "Group",
+        "label": "Figures for the range",
+        "children": [
+          "figures_sales",
+          "figures_rates"
+        ]
+      },
+      {
+        "id": "figures_sales",
+        "component": "Group",
+        "arrangement": "inline",
+        "children": [
+          "sales",
+          "orders",
+          "sessions"
+        ]
+      },
+      {
+        "id": "figures_rates",
+        "component": "Group",
+        "arrangement": "inline",
+        "children": [
+          "conversion",
+          "aov",
+          "returning"
+        ]
+      },
+      {
+        "id": "sales",
+        "component": "Metric",
+        "key": "total_sales",
+        "label": "Total sales",
+        "value": {
+          "path": "/analytics/sales"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "USD"
+        },
+        "change": {
+          "value": {
+            "path": "/analytics/salesChange"
+          },
+          "format": {
+            "type": "percent",
+            "precision": 0
+          },
+          "favorable": "increase"
+        },
+        "caption": {
+          "path": "/analytics/compareCaption"
+        }
+      },
+      {
+        "id": "orders",
+        "component": "Metric",
+        "key": "total_orders",
+        "label": "Total orders",
+        "value": {
+          "path": "/analytics/orders"
+        },
+        "format": {
+          "type": "number"
+        },
+        "change": {
+          "value": {
+            "path": "/analytics/ordersChange"
+          },
+          "format": {
+            "type": "percent",
+            "precision": 0
+          },
+          "favorable": "increase"
+        },
+        "caption": {
+          "path": "/analytics/compareCaption"
+        }
+      },
+      {
+        "id": "sessions",
+        "component": "Metric",
+        "key": "sessions",
+        "label": "Sessions",
+        "value": {
+          "path": "/analytics/sessions"
+        },
+        "format": {
+          "type": "number"
+        },
+        "change": {
+          "value": {
+            "path": "/analytics/sessionsChange"
+          },
+          "format": {
+            "type": "percent",
+            "precision": 0
+          },
+          "favorable": "increase"
+        },
+        "caption": {
+          "path": "/analytics/compareCaption"
+        }
+      },
+      {
+        "id": "conversion",
+        "component": "Metric",
+        "key": "conversion_rate",
+        "label": "Conversion rate",
+        "value": {
+          "path": "/analytics/conversion"
+        },
+        "format": {
+          "type": "percent",
+          "precision": 2
+        },
+        "change": {
+          "value": {
+            "path": "/analytics/conversionChange"
+          },
+          "format": {
+            "type": "percent",
+            "precision": 0
+          },
+          "favorable": "increase"
+        },
+        "caption": {
+          "path": "/analytics/compareCaption"
+        }
+      },
+      {
+        "id": "aov",
+        "component": "Metric",
+        "key": "average_order_value",
+        "label": "Average order value",
+        "value": {
+          "path": "/analytics/aov"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "USD"
+        },
+        "change": {
+          "value": {
+            "path": "/analytics/aovChange"
+          },
+          "format": {
+            "type": "percent",
+            "precision": 0
+          },
+          "favorable": "increase"
+        },
+        "caption": {
+          "path": "/analytics/compareCaption"
+        }
+      },
+      {
+        "id": "returning",
+        "component": "Metric",
+        "key": "returning_customer_rate",
+        "label": "Returning customer rate",
+        "value": {
+          "path": "/analytics/returningRate"
+        },
+        "format": {
+          "type": "percent",
+          "precision": 1
+        },
+        "change": {
+          "value": {
+            "path": "/analytics/returningChange"
+          },
+          "format": {
+            "type": "percent",
+            "precision": 0
+          },
+          "favorable": "increase"
+        },
+        "caption": {
+          "path": "/analytics/compareCaption"
+        }
+      },
+      {
+        "id": "over_time",
+        "component": "Section",
+        "title": "Total sales over time",
+        "children": [
+          "chart"
+        ]
+      },
+      {
+        "id": "chart",
+        "component": "Chart",
+        "key": "sales_over_time",
+        "intent": "trend",
+        "data": {
+          "path": "/analytics/series"
+        },
+        "title": {
+          "path": "/analytics/chartTitle"
+        },
+        "summary": {
+          "path": "/analytics/chartSummary"
+        },
+        "x": {
+          "path": "date",
+          "label": "Day"
+        },
+        "series": [
+          {
+            "key": "sales",
+            "path": "revenue",
+            "label": {
+              "path": "/analytics/periodLabel"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "previous",
+            "path": "previous",
+            "label": {
+              "path": "/analytics/previousLabel"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          }
+        ]
+      },
+      {
+        "id": "body",
+        "component": "Group",
+        "children": [
+          "main",
+          "side"
+        ]
+      },
+      {
+        "id": "main",
+        "component": "Group",
+        "children": [
+          "top_section"
+        ]
+      },
+      {
+        "id": "top_section",
+        "component": "Section",
+        "title": "Top products by sales",
+        "children": [
+          "top_table"
+        ]
+      },
+      {
+        "id": "top_table",
+        "component": "Table",
+        "key": "top_products",
+        "rows": {
+          "path": "/analytics/top"
+        },
+        "caption": {
+          "path": "/analytics/topCaption"
+        },
+        "rowValuePath": "id",
+        "columns": [
+          {
+            "key": "product",
+            "label": "Product",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "media",
+            "secondaryPath": "type"
+          },
+          {
+            "key": "units",
+            "label": "Units",
+            "path": "units",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            },
+            "sortable": true
+          },
+          {
+            "key": "sales",
+            "label": "Sales",
+            "path": "sales",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "sortable": true
+          },
+          {
+            "key": "share",
+            "label": "Share",
+            "path": "share",
+            "kind": "number",
+            "format": {
+              "type": "percent",
+              "precision": 0
+            }
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "product.open",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        },
+        "empty": "top_empty"
+      },
+      {
+        "id": "top_empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "inbox",
+        "title": "No sales in this range",
+        "message": "Orders placed in the range show here by product. Widen the date range."
+      },
+      {
+        "id": "side",
+        "component": "Group",
+        "children": [
+          "breakdown_section",
+          "types_section",
+          "sources_section"
+        ]
+      },
+      {
+        "id": "breakdown_section",
+        "component": "Section",
+        "title": "Sales breakdown",
+        "children": [
+          "breakdown"
+        ]
+      },
+      {
+        "id": "breakdown",
+        "component": "DetailList",
+        "key": "sales_breakdown",
+        "items": [
+          {
+            "key": "gross_sales",
+            "label": {
+              "path": "/analytics/breakdown/grossLabel"
+            },
+            "value": {
+              "path": "/analytics/breakdown/gross"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "discounts",
+            "label": "Discounts",
+            "value": {
+              "path": "/analytics/breakdown/discounts"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "returns",
+            "label": "Returns",
+            "value": {
+              "path": "/analytics/breakdown/returns"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "shipping",
+            "label": "Shipping",
+            "value": {
+              "path": "/analytics/breakdown/shipping"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "taxes",
+            "label": "Taxes",
+            "value": {
+              "path": "/analytics/breakdown/taxes"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "net_sales",
+            "label": "Net sales",
+            "value": {
+              "path": "/analytics/breakdown/net"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "total": true
+          }
+        ]
+      },
+      {
+        "id": "types_section",
+        "component": "Section",
+        "title": "Sales by product type",
+        "children": [
+          "types_table"
+        ]
+      },
+      {
+        "id": "types_table",
+        "component": "Table",
+        "key": "sales_by_type",
+        "rows": {
+          "path": "/analytics/byType"
+        },
+        "caption": "Sales by product type, most first",
+        "rowValuePath": "type",
+        "columns": [
+          {
+            "key": "type",
+            "label": "Type",
+            "path": "name",
+            "kind": "text"
+          },
+          {
+            "key": "sales",
+            "label": "Sales",
+            "path": "sales",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "products.open",
+            "context": {
+              "type": {
+                "path": "type"
+              }
+            }
+          }
+        },
+        "empty": "types_empty"
+      },
+      {
+        "id": "types_empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "tag",
+        "title": "No sales by type yet",
+        "message": "Each product type's sales for the range show here."
+      },
+      {
+        "id": "sources_section",
+        "component": "Section",
+        "title": "Sales by traffic source",
+        "children": [
+          "sources_table"
+        ]
+      },
+      {
+        "id": "sources_table",
+        "component": "Table",
+        "key": "sales_by_source",
+        "rows": {
+          "path": "/analytics/bySource"
+        },
+        "caption": "Sales by traffic source, most first",
+        "rowValuePath": "source",
+        "columns": [
+          {
+            "key": "source",
+            "label": "Source",
+            "path": "name",
+            "kind": "text"
+          },
+          {
+            "key": "sales",
+            "label": "Sales",
+            "path": "sales",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          }
+        ],
+        "empty": "sources_empty"
+      },
+      {
+        "id": "sources_empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "search",
+        "title": "No traffic yet",
+        "message": "Where orders came from shows here for the range."
+      }
+    ],
+    "data": {
+      "analytics": {
+        "range": "30",
+        "rangeLabel": "Last 30 days",
+        "subtitle": "Aug 30 – Sep 28 compared to Jul 31 – Aug 29.",
+        "periodLabel": "Aug 30 – Sep 28",
+        "previousLabel": "Jul 31 – Aug 29",
+        "compareCaption": "Against Jul 31 – Aug 29",
+        "sales": 3746.3,
+        "salesChange": -0.11440431557398363,
+        "orders": 61,
+        "ordersChange": 0.03389830508474576,
+        "sessions": 2444,
+        "sessionsChange": -0.06252397391637898,
+        "conversion": 0.02495908346972177,
+        "conversionChange": 0.10285306111126523,
+        "aov": 61.41,
+        "aovChange": -0.14351464435146452,
+        "returningRate": 0.5409836065573771,
+        "returningChange": 0.10062182023742232,
+        "series": [
+          {
+            "date": "8/30",
+            "revenue": 392.67,
+            "previous": 240.9,
+            "orders": 7
+          },
+          {
+            "date": "9/2",
+            "revenue": 400.17,
+            "previous": 304.23,
+            "orders": 5
+          },
+          {
+            "date": "9/5",
+            "revenue": 396.59,
+            "previous": 577.15,
+            "orders": 7
+          },
+          {
+            "date": "9/8",
+            "revenue": 319.97,
+            "previous": 671.97,
+            "orders": 6
+          },
+          {
+            "date": "9/11",
+            "revenue": 501.92,
+            "previous": 299.79,
+            "orders": 8
+          },
+          {
+            "date": "9/14",
+            "revenue": 296.12,
+            "previous": 437.28,
+            "orders": 6
+          },
+          {
+            "date": "9/17",
+            "revenue": 537.1,
+            "previous": 260.95,
+            "orders": 7
+          },
+          {
+            "date": "9/20",
+            "revenue": 169.61,
+            "previous": 598.19,
+            "orders": 4
+          },
+          {
+            "date": "9/23",
+            "revenue": 143.04,
+            "previous": 446.56,
+            "orders": 3
+          },
+          {
+            "date": "9/26",
+            "revenue": 589.11,
+            "previous": 393.24,
+            "orders": 8
+          }
+        ],
+        "chartTitle": "Sales by 3-day period, last 30 days",
+        "chartSummary": "Sales Aug 30 – Sep 28 came to $3,746.30 against $4,230.26 the period before. The best period started 9/26 at $589.11, the lowest 9/23 at $143.04.",
+        "top": [
+          {
+            "id": "prd_0001",
+            "name": "Amber & Oak Candle",
+            "media": "media:candle:amber-oak",
+            "type": "Candle",
+            "units": 16,
+            "sales": 468,
+            "share": 0.13390557939914163
+          },
+          {
+            "id": "prd_0002",
+            "name": "Sea Salt & Sage Candle",
+            "media": "media:candle:sea-salt-sage",
+            "type": "Candle",
+            "units": 16,
+            "sales": 448,
+            "share": 0.12818311874105864
+          },
+          {
+            "id": "prd_0007",
+            "name": "Black Currant Candle",
+            "media": "media:candle:black-currant",
+            "type": "Candle",
+            "units": 9,
+            "sales": 182,
+            "share": 0.052074391988555076
+          },
+          {
+            "id": "prd_0037",
+            "name": "Discovery Set",
+            "media": "media:gift:discovery-set",
+            "type": "Gift set",
+            "units": 4,
+            "sales": 168,
+            "share": 0.048068669527897
+          },
+          {
+            "id": "prd_0003",
+            "name": "Fig & Cassis Candle",
+            "media": "media:candle:fig-cassis",
+            "type": "Candle",
+            "units": 6,
+            "sales": 168,
+            "share": 0.048068669527897
+          },
+          {
+            "id": "prd_0010",
+            "name": "Pine & Birch Candle",
+            "media": "media:candle:pine-birch",
+            "type": "Candle",
+            "units": 6,
+            "sales": 160,
+            "share": 0.045779685264663805
+          },
+          {
+            "id": "prd_0013",
+            "name": "Eucalyptus Mint Candle",
+            "media": "media:candle:eucalyptus-mint",
+            "type": "Candle",
+            "units": 5,
+            "sales": 152,
+            "share": 0.04349070100143061
+          },
+          {
+            "id": "prd_0015",
+            "name": "Amber & Oak Reed Diffuser",
+            "media": "media:diffuser:amber-oak",
+            "type": "Diffuser",
+            "units": 4,
+            "sales": 152,
+            "share": 0.04349070100143061
+          }
+        ],
+        "topCaption": "Top products by sales, Aug 30 – Sep 28",
+        "byType": [
+          {
+            "type": "candle",
+            "name": "Candles",
+            "sales": 2158
+          },
+          {
+            "type": "gift",
+            "name": "Gift sets",
+            "sales": 462
+          },
+          {
+            "type": "diffuser",
+            "name": "Diffusers",
+            "sales": 402
+          },
+          {
+            "type": "accessory",
+            "name": "Accessories",
+            "sales": 321
+          },
+          {
+            "type": "melt",
+            "name": "Wax melts",
+            "sales": 152
+          }
+        ],
+        "bySource": [
+          {
+            "source": "ads",
+            "name": "Paid ads",
+            "sales": 1335.94
+          },
+          {
+            "source": "organic",
+            "name": "Organic search",
+            "sales": 736.36
+          },
+          {
+            "source": "email",
+            "name": "Email",
+            "sales": 640.54
+          },
+          {
+            "source": "direct",
+            "name": "Direct",
+            "sales": 593.02
+          },
+          {
+            "source": "social",
+            "name": "Social",
+            "sales": 440.44
+          }
+        ],
+        "breakdown": {
+          "grossLabel": "Gross sales · 129 items",
+          "gross": 3495,
+          "discounts": -82.7,
+          "returns": 0,
+          "shipping": 152.9,
+          "taxes": 181.1,
+          "net": 3746.3
+        }
+      }
+    }
+  }
+}

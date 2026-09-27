@@ -7,37 +7,6 @@ import { Badge, Button, Card, CardSection, Empty, IndexTable, Modal, Page, dateO
 const STATE_TONE: Record<DiscountState, "success" | "info" | "neutral"> = { active: "success", scheduled: "info", expired: "neutral", disabled: "neutral" };
 const STATE_LABEL: Record<DiscountState, string> = { active: "Active", scheduled: "Scheduled", expired: "Expired", disabled: "Inactive" };
 
-export function Discounts() {
-  const { h, open } = useQuay();
-  const rows = [...h.discounts].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  return (
-    <Page title="Discounts" fullWidth actions={<Button variant="primary" icon="spark" onClick={() => open("discount.create")}>Create discount</Button>}>
-      <Card padded={false}>
-        <IndexTable
-          rows={rows}
-          rowKey={(d) => d.id}
-          href={(d) => `/discounts/${d.id}`}
-          caption="Discounts"
-          columns={[
-            { key: "title", label: "Title", sort: (d) => d.title, render: (d) => (
-                <span>
-                  <span className="q-strong">{d.title}</span>
-                  <span className="q-cell-sub">{discountSummary(d)}</span>
-                </span>
-              ) },
-            { key: "status", label: "Status", sort: (d) => discountState(d), render: (d) => <Badge tone={STATE_TONE[discountState(d)]}>{STATE_LABEL[discountState(d)]}</Badge> },
-            { key: "method", label: "Method", render: (d) => (d.method === "code" ? "Code" : "Automatic"), secondary: true },
-            { key: "type", label: "Type", render: (d) => DISCOUNT_TYPE_LABEL[d.type], secondary: true },
-            { key: "used", label: "Used", align: "end", sort: (d) => discountUses(h, d).length, render: (d) => <span className="q-tabular">{d.method === "code" ? plural(discountUses(h, d).length, "time") : <span className="q-muted">–</span>}</span> },
-            { key: "dates", label: "Dates", render: (d) => `${shortDate(d.startsAt)}${d.endsAt ? ` – ${shortDate(d.endsAt)}` : ""}`, secondary: true },
-          ]}
-          empty={<Empty icon="discounts" title="No discounts" body="Create one for a launch, a segment or a season." action={<Button size="slim" onClick={() => open("discount.create")}>Create discount</Button>} />}
-        />
-      </Card>
-    </Page>
-  );
-}
-
 export function Discount() {
   const { id } = useParams();
   const { h, store, say } = useQuay();

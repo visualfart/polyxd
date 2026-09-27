@@ -8,23 +8,36 @@ Quay is the commerce case for just-in-time interfaces: an admin whose screens (o
 
 ## Screens the product has
 
-| Route | Screen | Notes |
-|---|---|---|
-| `/` | Home | Today's sales, orders to fulfill, sessions; a "what's next" list; the ask box |
-| `/orders` | Orders | Index with views All / Unfulfilled / Unpaid / Open / Archived; search; payment, fulfillment and date filters; bulk Fulfill, Print packing slips, Archive; CSV export |
-| `/orders/:id` | Order | Unfulfilled / Fulfilled items, Paid receipt, Timeline with comments, Notes, Customer with addresses, Tags; Fulfill items, Refund, Print, Mark as paid, Archive, Cancel |
-| `/orders/drafts` | Draft orders | Send invoice, mark as paid (becomes a real order), delete |
-| `/orders/checkouts` | Abandoned checkouts | Email and recovery status; Send reminders |
-| `/products` | Products | Product / Status / Inventory / Type / Vendor; views All / Active / Draft / Archived / Low stock; bulk status changes |
-| `/products/:id` | Product | Media, Pricing, Inventory, Shipping or the Variants table, Status, Product organization; a contextual save bar while it's dirty |
-| `/products/collections` | Collections | Automated and manual, with the rule |
-| `/products/inventory` | Inventory | Committed, available (editable), incoming, days of stock |
-| `/customers` | Customers | Customer / Email subscription / Location / Orders / Amount spent; views All / New / Returning / Subscribers |
-| `/customers/:id` | Customer | Amount spent, orders, last order, notes, marketing, tags |
-| `/discounts` | Discounts | Shopify's types and methods; Active / Scheduled / Expired / Inactive; usage |
-| `/marketing` | Marketing | Campaigns with pause and resume; sales by source |
-| `/analytics` | Analytics | Total sales, orders, sessions, conversion, AOV, returning rate over a range, against the previous period; sales over time; top products |
-| `/settings` | Settings | Store details, your account, appearance, reset the demo |
+Polyxd is for surfaces, generated or authored; the shell (top bar, sidebar, palette, toast) stays the
+product's React. Three of the screens are *authored* Polyxd documents in `authored/<id>.json`: written by
+a person in the same shape as an intent file, bound to the same views as the generated surfaces, verified
+in the same 13 design systems (their reports land in `reports/` too), and rendered in Polaris through the
+kit's `JitSurface` inside the shell (`authored.tsx`). The mark under them reads "Authored · Checked".
+
+| Route | Screen | Written as | Notes |
+|---|---|---|---|
+| `/` | Home | React | Today's sales, orders to fulfill, sessions; a "what's next" list; the ask box |
+| `/orders` | Orders | React | Index with views All / Unfulfilled / Unpaid / Open / Archived; search; payment, fulfillment and date filters; bulk Fulfill, Print packing slips, Archive; CSV export |
+| `/orders/:id` | Order | React | Unfulfilled / Fulfilled items, Paid receipt, Timeline with comments, Notes, Customer with addresses, Tags; Fulfill items, Refund, Print, Mark as paid, Archive, Cancel |
+| `/orders/drafts` | Draft orders | React | Send invoice, mark as paid (becomes a real order), delete |
+| `/orders/checkouts` | Abandoned checkouts | React | Email and recovery status; Send reminders |
+| `/products` | Products | React | Product / Status / Inventory / Type / Vendor; views All / Active / Draft / Archived / Low stock; bulk status changes |
+| `/products/:id` | Product | React | Media, Pricing, Inventory, Shipping or the Variants table, Status, Product organization; a contextual save bar while it's dirty |
+| `/products/collections` | Collections | React | Automated and manual, with the rule |
+| `/products/inventory` | Inventory | Authored document `screen.inventory` | Variants tracked, out of stock, incoming, a meter of what's under two weeks; a filter panel (search, stock window, type) that re-derives the table; committed, available, days of stock, a cover meter per row; Record a delivery per row and for the page; Export |
+| `/customers` | Customers | React | Customer / Email subscription / Location / Orders / Amount spent; views All / New / Returning / Subscribers |
+| `/customers/:id` | Customer | React | Amount spent, orders, last order, notes, marketing, tags |
+| `/discounts` | Discounts | Authored document `screen.discounts` | Saved views All / Active / Scheduled / Expired / Inactive with counts; title, status, method, type, uses, dates; a row opens the discount; Create discount opens the ask; Export |
+| `/discounts/:id` | Discount | React | Summary, performance, the orders that used it; activate, deactivate, delete |
+| `/marketing` | Marketing | React | Campaigns with pause and resume; sales by source |
+| `/analytics` | Analytics | Authored document `screen.analytics` | Date range (kept in the URL through `analytics.range`) refigures total sales, orders, sessions, conversion, AOV and returning rate against the period before; sales over time with the comparison series; top products, breakdown, by type, by source; Export |
+| `/settings` | Settings | React | Store details, your account, appearance, reset the demo |
+
+The authored screens' buttons are capabilities like any other, handled in `actions.ts`: `report.export`
+(low risk, no undo: a CSV of what the report shows) and the ones that open a screen or an ask
+(`analytics.range`, `discount.open`, `discount.new` → `discount.create`, `restock.open` →
+`inventory.restock`, `product.open`, `products.open` by type). The range, the stock filters and the saved
+view live in the surface; `views.ts`'s `live` recomputes the rest from the store as they change.
 
 `⌘K` (`Ctrl+K`) opens the palette: the ask box, orders by number, products and customers by name, the screens. The same box sits in the top bar.
 

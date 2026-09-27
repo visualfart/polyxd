@@ -1955,3 +1955,32 @@ th[aria-sort="none"]:hover .q-sort-idle {
     bottom: 16px;
   }
 }
+
+/* ---- Authored screens: a Polyxd document inside the admin's shell ----
+   Analytics, Inventory and Discounts are documents in authored/*.json, rendered by the same
+   renderer as a generated surface. The shell around them stays the admin's; these rules only
+   place the document where a React screen used to sit and lay Analytics out in two columns. */
+
+.q-authored {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.q-authored .pxd-surface {
+  padding: 0;
+  background: transparent;
+}
+.q-authored .pxd-surface-title {
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 28px;
+  letter-spacing: -0.01em;
+}
+/* Analytics: the top products take the width (a table wants 720px), and the breakdown, the types
+   and the sources sit in a row of three beneath. */
+@media (min-width: 900px) {
+  .q-authored [data-pxd-id="side"] {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+}

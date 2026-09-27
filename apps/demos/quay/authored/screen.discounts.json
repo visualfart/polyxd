@@ -1,0 +1,292 @@
+{
+  "id": "screen.discounts",
+  "title": "Discounts",
+  "ask": [],
+  "capabilities": [
+    "discount.new",
+    "discount.open",
+    "report.export"
+  ],
+  "data": {
+    "discounts": "view:discountsScreen"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "discounts",
+      "title": "Discounts",
+      "intent": "screen.discounts",
+      "subtitle": {
+        "path": "/discounts/subtitle"
+      },
+      "actions": "page_actions",
+      "presentation": "page",
+      "origin": "authored"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page_actions",
+        "component": "ActionBar",
+        "children": [
+          "create",
+          "export"
+        ]
+      },
+      {
+        "id": "create",
+        "component": "Action",
+        "key": "create_discount",
+        "label": "Create discount",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "discount.new",
+            "context": {}
+          }
+        }
+      },
+      {
+        "id": "export",
+        "component": "Action",
+        "key": "export",
+        "label": "Export",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "report.export",
+            "context": {
+              "report": "discounts",
+              "view": {
+                "path": "/discounts/view"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "table"
+        ]
+      },
+      {
+        "id": "table",
+        "component": "Table",
+        "key": "discounts",
+        "rows": {
+          "path": "/discounts/rows"
+        },
+        "caption": "Discounts, newest first",
+        "rowValuePath": "id",
+        "views": [
+          {
+            "key": "all",
+            "label": "All",
+            "count": {
+              "path": "/discounts/counts/all"
+            }
+          },
+          {
+            "key": "active",
+            "label": "Active",
+            "count": {
+              "path": "/discounts/counts/active"
+            }
+          },
+          {
+            "key": "scheduled",
+            "label": "Scheduled",
+            "count": {
+              "path": "/discounts/counts/scheduled"
+            }
+          },
+          {
+            "key": "expired",
+            "label": "Expired",
+            "count": {
+              "path": "/discounts/counts/expired"
+            }
+          },
+          {
+            "key": "disabled",
+            "label": "Inactive",
+            "count": {
+              "path": "/discounts/counts/disabled"
+            }
+          }
+        ],
+        "view": {
+          "path": "/discounts/view"
+        },
+        "columns": [
+          {
+            "key": "title",
+            "label": "Title",
+            "path": "title",
+            "kind": "entity",
+            "secondaryPath": "summary",
+            "sortable": true
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "path": "status",
+            "kind": "status",
+            "tones": {
+              "Active": "success",
+              "Scheduled": "info",
+              "Expired": "neutral",
+              "Inactive": "neutral"
+            },
+            "sortable": true
+          },
+          {
+            "key": "method",
+            "label": "Method",
+            "path": "method",
+            "kind": "text"
+          },
+          {
+            "key": "type",
+            "label": "Type",
+            "path": "type",
+            "kind": "text"
+          },
+          {
+            "key": "used",
+            "label": "Used",
+            "path": "uses",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            },
+            "sortable": true
+          },
+          {
+            "key": "dates",
+            "label": "Dates",
+            "path": "dates",
+            "kind": "text"
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "discount.open",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        },
+        "empty": "empty"
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "tag",
+        "title": {
+          "path": "/discounts/emptyTitle"
+        },
+        "message": {
+          "path": "/discounts/emptyMessage"
+        },
+        "action": "empty_create"
+      },
+      {
+        "id": "empty_create",
+        "component": "Action",
+        "key": "create_discount_from_empty",
+        "label": "Create discount",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "discount.new",
+            "context": {}
+          }
+        }
+      }
+    ],
+    "data": {
+      "discounts": {
+        "view": "all",
+        "counts": {
+          "all": 6,
+          "active": 3,
+          "scheduled": 1,
+          "expired": 2,
+          "disabled": 0
+        },
+        "rows": [
+          {
+            "id": "dsc_bogo",
+            "title": "Buy 2 melts, get 1 free",
+            "summary": "Buy 2 wax melt, get 1 free",
+            "status": "Scheduled",
+            "method": "Automatic",
+            "type": "Buy X get Y",
+            "uses": null,
+            "dates": "Oct 10 – Nov 7"
+          },
+          {
+            "id": "dsc_fall",
+            "title": "FALL15",
+            "summary": "15% off candles",
+            "status": "Active",
+            "method": "Code",
+            "type": "Amount off products",
+            "uses": 7,
+            "dates": "Aug 18 – Oct 31"
+          },
+          {
+            "id": "dsc_bundle",
+            "title": "BUNDLE20",
+            "summary": "20% off gift sets · Minimum purchase of $80.00",
+            "status": "Expired",
+            "method": "Code",
+            "type": "Amount off products",
+            "uses": 0,
+            "dates": "Jul 30 – Sep 23"
+          },
+          {
+            "id": "dsc_loyal",
+            "title": "LOYAL20",
+            "summary": "20% off the order · Minimum purchase of $50.00 · Returning customers",
+            "status": "Expired",
+            "method": "Code",
+            "type": "Amount off order",
+            "uses": 5,
+            "dates": "Jun 30 – Aug 28"
+          },
+          {
+            "id": "dsc_ship",
+            "title": "Free shipping over $40",
+            "summary": "Free shipping · Minimum purchase of $40.00",
+            "status": "Active",
+            "method": "Automatic",
+            "type": "Free shipping",
+            "uses": null,
+            "dates": "May 31"
+          },
+          {
+            "id": "dsc_welcome",
+            "title": "WELCOME10",
+            "summary": "10% off the order · New customers",
+            "status": "Active",
+            "method": "Code",
+            "type": "Amount off order",
+            "uses": 27,
+            "dates": "Dec 2, 2025"
+          }
+        ],
+        "subtitle": "3 discounts active, 1 scheduled · $82.70 given away in the last 30 days.",
+        "emptyTitle": "No discounts",
+        "emptyMessage": "Create one for a launch, a segment or a season."
+      }
+    }
+  }
+}

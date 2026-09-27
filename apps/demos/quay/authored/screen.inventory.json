@@ -1,0 +1,2752 @@
+{
+  "id": "screen.inventory",
+  "title": "Inventory",
+  "ask": [],
+  "capabilities": [
+    "restock.open",
+    "product.open",
+    "report.export"
+  ],
+  "data": {
+    "inventory": "view:inventoryScreen"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "inventory",
+      "title": "Inventory",
+      "intent": "screen.inventory",
+      "subtitle": {
+        "path": "/inventory/subtitle"
+      },
+      "actions": "page_actions",
+      "presentation": "page",
+      "origin": "authored"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page_actions",
+        "component": "ActionBar",
+        "children": [
+          "record_delivery",
+          "export"
+        ]
+      },
+      {
+        "id": "record_delivery",
+        "component": "Action",
+        "key": "record_delivery",
+        "label": "Record a delivery",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "restock.open",
+            "context": {}
+          }
+        }
+      },
+      {
+        "id": "export",
+        "component": "Action",
+        "key": "export",
+        "label": "Export",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "report.export",
+            "context": {
+              "report": "inventory",
+              "filters": {
+                "path": "/inventory/filters"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "figures",
+          "low_meter",
+          "panel"
+        ]
+      },
+      {
+        "id": "figures",
+        "component": "Group",
+        "arrangement": "inline",
+        "children": [
+          "tracked",
+          "out_of_stock",
+          "incoming"
+        ]
+      },
+      {
+        "id": "tracked",
+        "component": "Metric",
+        "key": "variants_tracked",
+        "label": "Variants tracked",
+        "value": {
+          "path": "/inventory/tracked"
+        },
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "/inventory/locationCaption"
+        }
+      },
+      {
+        "id": "out_of_stock",
+        "component": "Metric",
+        "key": "out_of_stock",
+        "label": "Out of stock",
+        "value": {
+          "path": "/inventory/outOfStock"
+        },
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "/inventory/outCaption"
+        }
+      },
+      {
+        "id": "incoming",
+        "component": "Metric",
+        "key": "incoming_units",
+        "label": "Incoming",
+        "value": {
+          "path": "/inventory/incomingUnits"
+        },
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "/inventory/incomingCaption"
+        }
+      },
+      {
+        "id": "low_meter",
+        "component": "Progress",
+        "key": "low_stock",
+        "kind": "meter",
+        "label": "Under two weeks of stock",
+        "value": {
+          "path": "/inventory/low"
+        },
+        "max": {
+          "path": "/inventory/tracked"
+        },
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "/inventory/lowCaption"
+        },
+        "thresholds": {
+          "warning": 0.15,
+          "danger": 0.3
+        }
+      },
+      {
+        "id": "panel",
+        "component": "FilterPanel",
+        "label": "Narrow the list",
+        "children": [
+          "search",
+          "threshold",
+          "types"
+        ],
+        "results": "table",
+        "resultCount": {
+          "path": "/inventory/count"
+        }
+      },
+      {
+        "id": "search",
+        "component": "TextInput",
+        "key": "search",
+        "label": "Search",
+        "kind": "search",
+        "placeholder": "Product or SKU",
+        "value": {
+          "path": "/inventory/filters/q"
+        }
+      },
+      {
+        "id": "threshold",
+        "component": "Choice",
+        "key": "stock",
+        "label": "Stock",
+        "options": [
+          {
+            "value": "all",
+            "label": "Everything"
+          },
+          {
+            "value": "0",
+            "label": "Out of stock"
+          },
+          {
+            "value": "7",
+            "label": "Under a week"
+          },
+          {
+            "value": "14",
+            "label": "Under two weeks"
+          },
+          {
+            "value": "30",
+            "label": "Under a month"
+          }
+        ],
+        "value": {
+          "path": "/inventory/filters/threshold"
+        },
+        "required": true
+      },
+      {
+        "id": "types",
+        "component": "Choice",
+        "key": "types",
+        "label": "Product type",
+        "mode": "multiple",
+        "options": [
+          {
+            "value": "candle",
+            "label": "Candles"
+          },
+          {
+            "value": "diffuser",
+            "label": "Diffusers"
+          },
+          {
+            "value": "melt",
+            "label": "Wax melts"
+          },
+          {
+            "value": "gift",
+            "label": "Gift sets"
+          },
+          {
+            "value": "accessory",
+            "label": "Accessories"
+          }
+        ],
+        "value": {
+          "path": "/inventory/filters/types"
+        }
+      },
+      {
+        "id": "table",
+        "component": "Table",
+        "key": "variants",
+        "rows": {
+          "path": "/inventory/rows"
+        },
+        "caption": {
+          "path": "/inventory/caption"
+        },
+        "rowValuePath": "id",
+        "columns": [
+          {
+            "key": "product",
+            "label": "Product",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "media",
+            "secondaryPath": "line"
+          },
+          {
+            "key": "status",
+            "label": "Stock",
+            "path": "status",
+            "kind": "status",
+            "tones": {
+              "Out of stock": "danger",
+              "Under a week": "danger",
+              "Under two weeks": "warning",
+              "Under a month": "info",
+              "In stock": "success",
+              "No sales": "neutral"
+            }
+          },
+          {
+            "key": "committed",
+            "label": "Committed",
+            "path": "committed",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "available",
+            "label": "Available",
+            "path": "inventory",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            },
+            "sortable": true
+          },
+          {
+            "key": "days",
+            "label": "Days of stock",
+            "path": "days",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            },
+            "sortable": true
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "product.open",
+            "context": {
+              "id": {
+                "path": "productId"
+              }
+            }
+          }
+        },
+        "rowActions": "row_actions",
+        "expandable": true,
+        "detail": "row_detail",
+        "empty": "empty"
+      },
+      {
+        "id": "row_actions",
+        "component": "ActionBar",
+        "children": [
+          "row_restock"
+        ]
+      },
+      {
+        "id": "row_restock",
+        "component": "Action",
+        "key": "restock_variant",
+        "label": "Record a delivery",
+        "action": {
+          "event": {
+            "name": "restock.open",
+            "context": {
+              "variantIds": {
+                "path": "variantIds"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "row_detail",
+        "component": "Group",
+        "children": [
+          "cover",
+          "sales_line"
+        ]
+      },
+      {
+        "id": "cover",
+        "component": "Progress",
+        "key": "cover",
+        "kind": "meter",
+        "label": "Days of stock",
+        "value": {
+          "path": "coverDays"
+        },
+        "max": 42,
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "coverCaption"
+        }
+      },
+      {
+        "id": "sales_line",
+        "component": "Text",
+        "key": "sales_line",
+        "variant": "caption",
+        "text": {
+          "path": "salesLine"
+        }
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "search",
+        "title": "No variants match",
+        "message": "Widen the stock window, clear a type or try another word."
+      }
+    ],
+    "data": {
+      "inventory": {
+        "filters": {
+          "q": "",
+          "threshold": "all",
+          "types": []
+        },
+        "rows": [
+          {
+            "id": "var_0003",
+            "productId": "prd_0001",
+            "name": "Amber & Oak Candle",
+            "media": "media:candle:amber-oak",
+            "line": "14 oz three-wick · LW-C-AMOA-14",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 12,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 360,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0003"
+            ]
+          },
+          {
+            "id": "var_0001",
+            "productId": "prd_0001",
+            "name": "Amber & Oak Candle",
+            "media": "media:candle:amber-oak",
+            "line": "4 oz travel tin · LW-C-AMOA-04",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 31,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0001"
+            ]
+          },
+          {
+            "id": "var_0002",
+            "productId": "prd_0001",
+            "name": "Amber & Oak Candle",
+            "media": "media:candle:amber-oak",
+            "line": "8 oz · LW-C-AMOA-08",
+            "type": "Candle",
+            "status": "Under two weeks",
+            "committed": 0,
+            "inventory": 6,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 9,
+            "coverDays": 9,
+            "coverCaption": "9 days of 42",
+            "salesLine": "Sells 4.67 a week · 16 sold in the last 30 days",
+            "variantIds": [
+              "var_0002"
+            ]
+          },
+          {
+            "id": "var_0043",
+            "productId": "prd_0015",
+            "name": "Amber & Oak Reed Diffuser",
+            "media": "media:diffuser:amber-oak",
+            "line": "100 ml · LW-D-AMOA-100",
+            "type": "Diffuser",
+            "status": "Under a month",
+            "committed": 0,
+            "inventory": 4,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 30,
+            "coverDays": 30,
+            "coverCaption": "30 days of 42",
+            "salesLine": "Sells 0.93 a week · 4 sold in the last 30 days",
+            "variantIds": [
+              "var_0043"
+            ]
+          },
+          {
+            "id": "var_0044",
+            "productId": "prd_0015",
+            "name": "Amber & Oak Reed Diffuser",
+            "media": "media:diffuser:amber-oak",
+            "line": "200 ml refill · LW-D-AMOA-R",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 20,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0044"
+            ]
+          },
+          {
+            "id": "var_0064",
+            "productId": "prd_0025",
+            "name": "Amber & Oak Wax Melts",
+            "media": "media:melt:amber-oak",
+            "line": "12 cubes · LW-M-AMOA-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 27,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0064"
+            ]
+          },
+          {
+            "id": "var_0063",
+            "productId": "prd_0025",
+            "name": "Amber & Oak Wax Melts",
+            "media": "media:melt:amber-oak",
+            "line": "6 cubes · LW-M-AMOA-06",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 20,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0063"
+            ]
+          },
+          {
+            "id": "var_0021",
+            "productId": "prd_0007",
+            "name": "Black Currant Candle",
+            "media": "media:candle:black-currant",
+            "line": "14 oz three-wick · LW-C-BLCU-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 21,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0021"
+            ]
+          },
+          {
+            "id": "var_0019",
+            "productId": "prd_0007",
+            "name": "Black Currant Candle",
+            "media": "media:candle:black-currant",
+            "line": "4 oz travel tin · LW-C-BLCU-04",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 17,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 102,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 1.17 a week · 5 sold in the last 30 days",
+            "variantIds": [
+              "var_0019"
+            ]
+          },
+          {
+            "id": "var_0020",
+            "productId": "prd_0007",
+            "name": "Black Currant Candle",
+            "media": "media:candle:black-currant",
+            "line": "8 oz · LW-C-BLCU-08",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 2,
+            "inventory": 32,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 240,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.93 a week · 4 sold in the last 30 days",
+            "variantIds": [
+              "var_0020"
+            ]
+          },
+          {
+            "id": "var_0055",
+            "productId": "prd_0021",
+            "name": "Black Currant Reed Diffuser",
+            "media": "media:diffuser:black-currant",
+            "line": "100 ml · LW-D-BLCU-100",
+            "type": "Diffuser",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 29,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 435,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0055"
+            ]
+          },
+          {
+            "id": "var_0056",
+            "productId": "prd_0021",
+            "name": "Black Currant Reed Diffuser",
+            "media": "media:diffuser:black-currant",
+            "line": "200 ml refill · LW-D-BLCU-R",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 20,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0056"
+            ]
+          },
+          {
+            "id": "var_0076",
+            "productId": "prd_0031",
+            "name": "Black Currant Wax Melts",
+            "media": "media:melt:black-currant",
+            "line": "12 cubes · LW-M-BLCU-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 28,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0076"
+            ]
+          },
+          {
+            "id": "var_0075",
+            "productId": "prd_0031",
+            "name": "Black Currant Wax Melts",
+            "media": "media:melt:black-currant",
+            "line": "6 cubes · LW-M-BLCU-06",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 26,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0075"
+            ]
+          },
+          {
+            "id": "var_0116",
+            "productId": "prd_0057",
+            "name": "Bulb for Warming Lamp",
+            "media": "media:accessory:natural",
+            "line": "LW-A-13",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 50,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0116"
+            ]
+          },
+          {
+            "id": "var_0093",
+            "productId": "prd_0042",
+            "name": "Candle & Matches Set",
+            "media": "media:gift:candle-matches-set",
+            "line": "LW-G-06",
+            "type": "Gift set",
+            "status": "In stock",
+            "committed": 1,
+            "inventory": 18,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 540,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0093"
+            ]
+          },
+          {
+            "id": "var_0112",
+            "productId": "prd_0054",
+            "name": "Candle Care Kit",
+            "media": "media:accessory:natural",
+            "line": "LW-A-10",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 12,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 360,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0112"
+            ]
+          },
+          {
+            "id": "var_0104",
+            "productId": "prd_0049",
+            "name": "Candle Lid",
+            "media": "media:accessory:brass",
+            "line": "Black · LW-A-05-BL",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 22,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 660,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0104"
+            ]
+          },
+          {
+            "id": "var_0103",
+            "productId": "prd_0049",
+            "name": "Candle Lid",
+            "media": "media:accessory:brass",
+            "line": "Brass · LW-A-05-BR",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 30,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0103"
+            ]
+          },
+          {
+            "id": "var_0099",
+            "productId": "prd_0046",
+            "name": "Candle Snuffer",
+            "media": "media:accessory:brass",
+            "line": "Black · LW-A-02-BL",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 9,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 270,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0099"
+            ]
+          },
+          {
+            "id": "var_0098",
+            "productId": "prd_0046",
+            "name": "Candle Snuffer",
+            "media": "media:accessory:brass",
+            "line": "Brass · LW-A-02-BR",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 12,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0098"
+            ]
+          },
+          {
+            "id": "var_0012",
+            "productId": "prd_0004",
+            "name": "Cedar Smoke Candle",
+            "media": "media:candle:cedar-smoke",
+            "line": "14 oz three-wick · LW-C-CESM-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 2,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0012"
+            ]
+          },
+          {
+            "id": "var_0010",
+            "productId": "prd_0004",
+            "name": "Cedar Smoke Candle",
+            "media": "media:candle:cedar-smoke",
+            "line": "4 oz travel tin · LW-C-CESM-04",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 22,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 660,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0010"
+            ]
+          },
+          {
+            "id": "var_0011",
+            "productId": "prd_0004",
+            "name": "Cedar Smoke Candle",
+            "media": "media:candle:cedar-smoke",
+            "line": "8 oz · LW-C-CESM-08",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 1,
+            "inventory": 14,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 210,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0011"
+            ]
+          },
+          {
+            "id": "var_0049",
+            "productId": "prd_0018",
+            "name": "Cedar Smoke Reed Diffuser",
+            "media": "media:diffuser:cedar-smoke",
+            "line": "100 ml · LW-D-CESM-100",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 19,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0049"
+            ]
+          },
+          {
+            "id": "var_0050",
+            "productId": "prd_0018",
+            "name": "Cedar Smoke Reed Diffuser",
+            "media": "media:diffuser:cedar-smoke",
+            "line": "200 ml refill · LW-D-CESM-R",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 2,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0050"
+            ]
+          },
+          {
+            "id": "var_0070",
+            "productId": "prd_0028",
+            "name": "Cedar Smoke Wax Melts",
+            "media": "media:melt:cedar-smoke",
+            "line": "12 cubes · LW-M-CESM-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 31,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0070"
+            ]
+          },
+          {
+            "id": "var_0069",
+            "productId": "prd_0028",
+            "name": "Cedar Smoke Wax Melts",
+            "media": "media:melt:cedar-smoke",
+            "line": "6 cubes · LW-M-CESM-06",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 47,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0069"
+            ]
+          },
+          {
+            "id": "var_0114",
+            "productId": "prd_0055",
+            "name": "Ceramic Tray",
+            "media": "media:accessory:small",
+            "line": "Large · LW-A-11-LA",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 7,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 210,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0114"
+            ]
+          },
+          {
+            "id": "var_0113",
+            "productId": "prd_0055",
+            "name": "Ceramic Tray",
+            "media": "media:accessory:small",
+            "line": "Small · LW-A-11-SM",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 10,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0113"
+            ]
+          },
+          {
+            "id": "var_0089",
+            "productId": "prd_0038",
+            "name": "Cozy Evening Set",
+            "media": "media:gift:cozy-evening-set",
+            "line": "LW-G-02",
+            "type": "Gift set",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 5,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 150,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0089"
+            ]
+          },
+          {
+            "id": "var_0094",
+            "productId": "prd_0043",
+            "name": "Diffuser & Candle Pair",
+            "media": "media:gift:diffuser-candle-pair",
+            "line": "LW-G-07",
+            "type": "Gift set",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 5,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0094"
+            ]
+          },
+          {
+            "id": "var_0088",
+            "productId": "prd_0037",
+            "name": "Discovery Set",
+            "media": "media:gift:discovery-set",
+            "line": "Fresh · LW-G-DS-F",
+            "type": "Gift set",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 11,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 165,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0088"
+            ]
+          },
+          {
+            "id": "var_0087",
+            "productId": "prd_0037",
+            "name": "Discovery Set",
+            "media": "media:gift:discovery-set",
+            "line": "Warm · LW-G-DS-W",
+            "type": "Gift set",
+            "status": "In stock",
+            "committed": 1,
+            "inventory": 3,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 45,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0087"
+            ]
+          },
+          {
+            "id": "var_0039",
+            "productId": "prd_0013",
+            "name": "Eucalyptus Mint Candle",
+            "media": "media:candle:eucalyptus-mint",
+            "line": "14 oz three-wick · LW-C-EUMI-14",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 10,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 100,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.7 a week · 3 sold in the last 30 days",
+            "variantIds": [
+              "var_0039"
+            ]
+          },
+          {
+            "id": "var_0037",
+            "productId": "prd_0013",
+            "name": "Eucalyptus Mint Candle",
+            "media": "media:candle:eucalyptus-mint",
+            "line": "4 oz travel tin · LW-C-EUMI-04",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 1,
+            "inventory": 22,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 330,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0037"
+            ]
+          },
+          {
+            "id": "var_0038",
+            "productId": "prd_0013",
+            "name": "Eucalyptus Mint Candle",
+            "media": "media:candle:eucalyptus-mint",
+            "line": "8 oz · LW-C-EUMI-08",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 23,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 690,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0038"
+            ]
+          },
+          {
+            "id": "var_0009",
+            "productId": "prd_0003",
+            "name": "Fig & Cassis Candle",
+            "media": "media:candle:fig-cassis",
+            "line": "14 oz three-wick · LW-C-FICA-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 11,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0009"
+            ]
+          },
+          {
+            "id": "var_0007",
+            "productId": "prd_0003",
+            "name": "Fig & Cassis Candle",
+            "media": "media:candle:fig-cassis",
+            "line": "4 oz travel tin · LW-C-FICA-04",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 28,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0007"
+            ]
+          },
+          {
+            "id": "var_0008",
+            "productId": "prd_0003",
+            "name": "Fig & Cassis Candle",
+            "media": "media:candle:fig-cassis",
+            "line": "8 oz · LW-C-FICA-08",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 24,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 120,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 1.4 a week · 6 sold in the last 30 days",
+            "variantIds": [
+              "var_0008"
+            ]
+          },
+          {
+            "id": "var_0047",
+            "productId": "prd_0017",
+            "name": "Fig & Cassis Reed Diffuser",
+            "media": "media:diffuser:fig-cassis",
+            "line": "100 ml · LW-D-FICA-100",
+            "type": "Diffuser",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 20,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 600,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0047"
+            ]
+          },
+          {
+            "id": "var_0048",
+            "productId": "prd_0017",
+            "name": "Fig & Cassis Reed Diffuser",
+            "media": "media:diffuser:fig-cassis",
+            "line": "200 ml refill · LW-D-FICA-R",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 2,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0048"
+            ]
+          },
+          {
+            "id": "var_0068",
+            "productId": "prd_0027",
+            "name": "Fig & Cassis Wax Melts",
+            "media": "media:melt:fig-cassis",
+            "line": "12 cubes · LW-M-FICA-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 21,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0068"
+            ]
+          },
+          {
+            "id": "var_0067",
+            "productId": "prd_0027",
+            "name": "Fig & Cassis Wax Melts",
+            "media": "media:melt:fig-cassis",
+            "line": "6 cubes · LW-M-FICA-06",
+            "type": "Wax melt",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 56,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 1680,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0067"
+            ]
+          },
+          {
+            "id": "var_0024",
+            "productId": "prd_0008",
+            "name": "Fresh Linen Candle",
+            "media": "media:candle:fresh-linen",
+            "line": "14 oz three-wick · LW-C-FRLI-14",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 2,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 60,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0024"
+            ]
+          },
+          {
+            "id": "var_0022",
+            "productId": "prd_0008",
+            "name": "Fresh Linen Candle",
+            "media": "media:candle:fresh-linen",
+            "line": "4 oz travel tin · LW-C-FRLI-04",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 40,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 1200,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0022"
+            ]
+          },
+          {
+            "id": "var_0023",
+            "productId": "prd_0008",
+            "name": "Fresh Linen Candle",
+            "media": "media:candle:fresh-linen",
+            "line": "8 oz · LW-C-FRLI-08",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 1,
+            "inventory": 18,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 180,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.7 a week · 3 sold in the last 30 days",
+            "variantIds": [
+              "var_0023"
+            ]
+          },
+          {
+            "id": "var_0057",
+            "productId": "prd_0022",
+            "name": "Fresh Linen Reed Diffuser",
+            "media": "media:diffuser:fresh-linen",
+            "line": "100 ml · LW-D-FRLI-100",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 26,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0057"
+            ]
+          },
+          {
+            "id": "var_0058",
+            "productId": "prd_0022",
+            "name": "Fresh Linen Reed Diffuser",
+            "media": "media:diffuser:fresh-linen",
+            "line": "200 ml refill · LW-D-FRLI-R",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 22,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0058"
+            ]
+          },
+          {
+            "id": "var_0078",
+            "productId": "prd_0032",
+            "name": "Fresh Linen Wax Melts",
+            "media": "media:melt:fresh-linen",
+            "line": "12 cubes · LW-M-FRLI-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 32,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0078"
+            ]
+          },
+          {
+            "id": "var_0077",
+            "productId": "prd_0032",
+            "name": "Fresh Linen Wax Melts",
+            "media": "media:melt:fresh-linen",
+            "line": "6 cubes · LW-M-FRLI-06",
+            "type": "Wax melt",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 25,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 750,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0077"
+            ]
+          },
+          {
+            "id": "var_0111",
+            "productId": "prd_0053",
+            "name": "Gift Bag",
+            "media": "media:accessory:natural",
+            "line": "LW-A-09",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 17,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0111"
+            ]
+          },
+          {
+            "id": "var_0092",
+            "productId": "prd_0041",
+            "name": "Holiday Trio",
+            "media": "media:gift:holiday-trio",
+            "line": "LW-G-05",
+            "type": "Gift set",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 18,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0092"
+            ]
+          },
+          {
+            "id": "var_0090",
+            "productId": "prd_0039",
+            "name": "Housewarming Set",
+            "media": "media:gift:housewarming-set",
+            "line": "LW-G-03",
+            "type": "Gift set",
+            "status": "No sales",
+            "committed": 1,
+            "inventory": 15,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0090"
+            ]
+          },
+          {
+            "id": "var_0015",
+            "productId": "prd_0005",
+            "name": "Lavender Field Candle",
+            "media": "media:candle:lavender-field",
+            "line": "14 oz three-wick · LW-C-LAFI-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 8,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0015"
+            ]
+          },
+          {
+            "id": "var_0013",
+            "productId": "prd_0005",
+            "name": "Lavender Field Candle",
+            "media": "media:candle:lavender-field",
+            "line": "4 oz travel tin · LW-C-LAFI-04",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 19,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0013"
+            ]
+          },
+          {
+            "id": "var_0014",
+            "productId": "prd_0005",
+            "name": "Lavender Field Candle",
+            "media": "media:candle:lavender-field",
+            "line": "8 oz · LW-C-LAFI-08",
+            "type": "Candle",
+            "status": "Under a month",
+            "committed": 0,
+            "inventory": 3,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 30,
+            "coverDays": 30,
+            "coverCaption": "30 days of 42",
+            "salesLine": "Sells 0.7 a week · 3 sold in the last 30 days",
+            "variantIds": [
+              "var_0014"
+            ]
+          },
+          {
+            "id": "var_0051",
+            "productId": "prd_0019",
+            "name": "Lavender Field Reed Diffuser",
+            "media": "media:diffuser:lavender-field",
+            "line": "100 ml · LW-D-LAFI-100",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 22,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0051"
+            ]
+          },
+          {
+            "id": "var_0052",
+            "productId": "prd_0019",
+            "name": "Lavender Field Reed Diffuser",
+            "media": "media:diffuser:lavender-field",
+            "line": "200 ml refill · LW-D-LAFI-R",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 22,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0052"
+            ]
+          },
+          {
+            "id": "var_0072",
+            "productId": "prd_0029",
+            "name": "Lavender Field Wax Melts",
+            "media": "media:melt:lavender-field",
+            "line": "12 cubes · LW-M-LAFI-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 17,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0072"
+            ]
+          },
+          {
+            "id": "var_0071",
+            "productId": "prd_0029",
+            "name": "Lavender Field Wax Melts",
+            "media": "media:melt:lavender-field",
+            "line": "6 cubes · LW-M-LAFI-06",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 39,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0071"
+            ]
+          },
+          {
+            "id": "var_0100",
+            "productId": "prd_0047",
+            "name": "Long Matches",
+            "media": "media:accessory:natural",
+            "line": "LW-A-03",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 41,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0100"
+            ]
+          },
+          {
+            "id": "var_0101",
+            "productId": "prd_0048",
+            "name": "Match Striker",
+            "media": "media:accessory:sage",
+            "line": "Sage · LW-A-04-SA",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 7,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 210,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0101"
+            ]
+          },
+          {
+            "id": "var_0102",
+            "productId": "prd_0048",
+            "name": "Match Striker",
+            "media": "media:accessory:sage",
+            "line": "Terracotta · LW-A-04-TE",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 13,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 390,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0102"
+            ]
+          },
+          {
+            "id": "var_0027",
+            "productId": "prd_0009",
+            "name": "Orange Blossom Candle",
+            "media": "media:candle:orange-blossom",
+            "line": "14 oz three-wick · LW-C-ORBL-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 12,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0027"
+            ]
+          },
+          {
+            "id": "var_0025",
+            "productId": "prd_0009",
+            "name": "Orange Blossom Candle",
+            "media": "media:candle:orange-blossom",
+            "line": "4 oz travel tin · LW-C-ORBL-04",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 15,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 150,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.7 a week · 3 sold in the last 30 days",
+            "variantIds": [
+              "var_0025"
+            ]
+          },
+          {
+            "id": "var_0026",
+            "productId": "prd_0009",
+            "name": "Orange Blossom Candle",
+            "media": "media:candle:orange-blossom",
+            "line": "8 oz · LW-C-ORBL-08",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 27,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0026"
+            ]
+          },
+          {
+            "id": "var_0059",
+            "productId": "prd_0023",
+            "name": "Orange Blossom Reed Diffuser",
+            "media": "media:diffuser:orange-blossom",
+            "line": "100 ml · LW-D-ORBL-100",
+            "type": "Diffuser",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 30,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 900,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0059"
+            ]
+          },
+          {
+            "id": "var_0060",
+            "productId": "prd_0023",
+            "name": "Orange Blossom Reed Diffuser",
+            "media": "media:diffuser:orange-blossom",
+            "line": "200 ml refill · LW-D-ORBL-R",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 17,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0060"
+            ]
+          },
+          {
+            "id": "var_0080",
+            "productId": "prd_0033",
+            "name": "Orange Blossom Wax Melts",
+            "media": "media:melt:orange-blossom",
+            "line": "12 cubes · LW-M-ORBL-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 13,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0080"
+            ]
+          },
+          {
+            "id": "var_0079",
+            "productId": "prd_0033",
+            "name": "Orange Blossom Wax Melts",
+            "media": "media:melt:orange-blossom",
+            "line": "6 cubes · LW-M-ORBL-06",
+            "type": "Wax melt",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 37,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 370,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.7 a week · 3 sold in the last 30 days",
+            "variantIds": [
+              "var_0079"
+            ]
+          },
+          {
+            "id": "var_0030",
+            "productId": "prd_0010",
+            "name": "Pine & Birch Candle",
+            "media": "media:candle:pine-birch",
+            "line": "14 oz three-wick · LW-C-PIBI-14",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 15,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 450,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0030"
+            ]
+          },
+          {
+            "id": "var_0028",
+            "productId": "prd_0010",
+            "name": "Pine & Birch Candle",
+            "media": "media:candle:pine-birch",
+            "line": "4 oz travel tin · LW-C-PIBI-04",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 40,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 600,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0028"
+            ]
+          },
+          {
+            "id": "var_0029",
+            "productId": "prd_0010",
+            "name": "Pine & Birch Candle",
+            "media": "media:candle:pine-birch",
+            "line": "8 oz · LW-C-PIBI-08",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 1,
+            "inventory": 43,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 430,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.7 a week · 3 sold in the last 30 days",
+            "variantIds": [
+              "var_0029"
+            ]
+          },
+          {
+            "id": "var_0061",
+            "productId": "prd_0024",
+            "name": "Pine & Birch Reed Diffuser",
+            "media": "media:diffuser:pine-birch",
+            "line": "100 ml · LW-D-PIBI-100",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 9,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0061"
+            ]
+          },
+          {
+            "id": "var_0062",
+            "productId": "prd_0024",
+            "name": "Pine & Birch Reed Diffuser",
+            "media": "media:diffuser:pine-birch",
+            "line": "200 ml refill · LW-D-PIBI-R",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 14,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0062"
+            ]
+          },
+          {
+            "id": "var_0082",
+            "productId": "prd_0034",
+            "name": "Pine & Birch Wax Melts",
+            "media": "media:melt:pine-birch",
+            "line": "12 cubes · LW-M-PIBI-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 40,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0082"
+            ]
+          },
+          {
+            "id": "var_0081",
+            "productId": "prd_0034",
+            "name": "Pine & Birch Wax Melts",
+            "media": "media:melt:pine-birch",
+            "line": "6 cubes · LW-M-PIBI-06",
+            "type": "Wax melt",
+            "status": "In stock",
+            "committed": 3,
+            "inventory": 41,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 205,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 1.4 a week · 6 sold in the last 30 days",
+            "variantIds": [
+              "var_0081"
+            ]
+          },
+          {
+            "id": "var_0117",
+            "productId": "prd_0058",
+            "name": "Reed Diffuser Cap",
+            "media": "media:accessory:natural",
+            "line": "LW-A-14",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 25,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0117"
+            ]
+          },
+          {
+            "id": "var_0110",
+            "productId": "prd_0052",
+            "name": "Reed Refill Pack",
+            "media": "media:accessory:natural",
+            "line": "LW-A-08",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 47,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0110"
+            ]
+          },
+          {
+            "id": "var_0036",
+            "productId": "prd_0012",
+            "name": "Rose Water Candle",
+            "media": "media:candle:rose-water",
+            "line": "14 oz three-wick · LW-C-ROWA-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 17,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0036"
+            ]
+          },
+          {
+            "id": "var_0034",
+            "productId": "prd_0012",
+            "name": "Rose Water Candle",
+            "media": "media:candle:rose-water",
+            "line": "4 oz travel tin · LW-C-ROWA-04",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 1,
+            "inventory": 24,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 360,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0034"
+            ]
+          },
+          {
+            "id": "var_0035",
+            "productId": "prd_0012",
+            "name": "Rose Water Candle",
+            "media": "media:candle:rose-water",
+            "line": "8 oz · LW-C-ROWA-08",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 29,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 435,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0035"
+            ]
+          },
+          {
+            "id": "var_0042",
+            "productId": "prd_0014",
+            "name": "Sandalwood Candle",
+            "media": "media:candle:sandalwood",
+            "line": "14 oz three-wick · LW-C-SA-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 14,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0042"
+            ]
+          },
+          {
+            "id": "var_0040",
+            "productId": "prd_0014",
+            "name": "Sandalwood Candle",
+            "media": "media:candle:sandalwood",
+            "line": "4 oz travel tin · LW-C-SA-04",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 20,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0040"
+            ]
+          },
+          {
+            "id": "var_0041",
+            "productId": "prd_0014",
+            "name": "Sandalwood Candle",
+            "media": "media:candle:sandalwood",
+            "line": "8 oz · LW-C-SA-08",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 24,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0041"
+            ]
+          },
+          {
+            "id": "var_0119",
+            "productId": "prd_0060",
+            "name": "Scent Card Set",
+            "media": "media:accessory:natural",
+            "line": "LW-A-16",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 9,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0119"
+            ]
+          },
+          {
+            "id": "var_0006",
+            "productId": "prd_0002",
+            "name": "Sea Salt & Sage Candle",
+            "media": "media:candle:sea-salt-sage",
+            "line": "14 oz three-wick · LW-C-SESA-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 9,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0006"
+            ]
+          },
+          {
+            "id": "var_0004",
+            "productId": "prd_0002",
+            "name": "Sea Salt & Sage Candle",
+            "media": "media:candle:sea-salt-sage",
+            "line": "4 oz travel tin · LW-C-SESA-04",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 26,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0004"
+            ]
+          },
+          {
+            "id": "var_0005",
+            "productId": "prd_0002",
+            "name": "Sea Salt & Sage Candle",
+            "media": "media:candle:sea-salt-sage",
+            "line": "8 oz · LW-C-SESA-08",
+            "type": "Candle",
+            "status": "Under a week",
+            "committed": 2,
+            "inventory": 4,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 5,
+            "coverDays": 5,
+            "coverCaption": "5 days of 42",
+            "salesLine": "Sells 4.96 a week · 17 sold in the last 30 days",
+            "variantIds": [
+              "var_0005"
+            ]
+          },
+          {
+            "id": "var_0045",
+            "productId": "prd_0016",
+            "name": "Sea Salt & Sage Reed Diffuser",
+            "media": "media:diffuser:sea-salt-sage",
+            "line": "100 ml · LW-D-SESA-100",
+            "type": "Diffuser",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 19,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 285,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0045"
+            ]
+          },
+          {
+            "id": "var_0046",
+            "productId": "prd_0016",
+            "name": "Sea Salt & Sage Reed Diffuser",
+            "media": "media:diffuser:sea-salt-sage",
+            "line": "200 ml refill · LW-D-SESA-R",
+            "type": "Diffuser",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 16,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 480,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0046"
+            ]
+          },
+          {
+            "id": "var_0066",
+            "productId": "prd_0026",
+            "name": "Sea Salt & Sage Wax Melts",
+            "media": "media:melt:sea-salt-sage",
+            "line": "12 cubes · LW-M-SESA-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 32,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0066"
+            ]
+          },
+          {
+            "id": "var_0065",
+            "productId": "prd_0026",
+            "name": "Sea Salt & Sage Wax Melts",
+            "media": "media:melt:sea-salt-sage",
+            "line": "6 cubes · LW-M-SESA-06",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 25,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0065"
+            ]
+          },
+          {
+            "id": "var_0091",
+            "productId": "prd_0040",
+            "name": "Spa Set",
+            "media": "media:gift:spa-set",
+            "line": "LW-G-04",
+            "type": "Gift set",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 12,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 360,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0091"
+            ]
+          },
+          {
+            "id": "var_0115",
+            "productId": "prd_0056",
+            "name": "Storage Tin",
+            "media": "media:accessory:natural",
+            "line": "LW-A-12",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 3,
+            "inventory": 42,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 252,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 1.17 a week · 5 sold in the last 30 days",
+            "variantIds": [
+              "var_0115"
+            ]
+          },
+          {
+            "id": "var_0118",
+            "productId": "prd_0059",
+            "name": "Tea Lights",
+            "media": "media:accessory:natural",
+            "line": "LW-A-15",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 46,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0118"
+            ]
+          },
+          {
+            "id": "var_0033",
+            "productId": "prd_0011",
+            "name": "Tobacco Leaf Candle",
+            "media": "media:candle:tobacco-leaf",
+            "line": "14 oz three-wick · LW-C-TOLE-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 12,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0033"
+            ]
+          },
+          {
+            "id": "var_0031",
+            "productId": "prd_0011",
+            "name": "Tobacco Leaf Candle",
+            "media": "media:candle:tobacco-leaf",
+            "line": "4 oz travel tin · LW-C-TOLE-04",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 29,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 870,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0031"
+            ]
+          },
+          {
+            "id": "var_0032",
+            "productId": "prd_0011",
+            "name": "Tobacco Leaf Candle",
+            "media": "media:candle:tobacco-leaf",
+            "line": "8 oz · LW-C-TOLE-08",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 1,
+            "inventory": 46,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 1380,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0032"
+            ]
+          },
+          {
+            "id": "var_0084",
+            "productId": "prd_0035",
+            "name": "Tobacco Leaf Wax Melts",
+            "media": "media:melt:tobacco-leaf",
+            "line": "12 cubes · LW-M-TOLE-12",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 17,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0084"
+            ]
+          },
+          {
+            "id": "var_0083",
+            "productId": "prd_0035",
+            "name": "Tobacco Leaf Wax Melts",
+            "media": "media:melt:tobacco-leaf",
+            "line": "6 cubes · LW-M-TOLE-06",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 44,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0083"
+            ]
+          },
+          {
+            "id": "var_0018",
+            "productId": "prd_0006",
+            "name": "Vanilla Bean Candle",
+            "media": "media:candle:vanilla-bean",
+            "line": "14 oz three-wick · LW-C-VABE-14",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 16,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0018"
+            ]
+          },
+          {
+            "id": "var_0016",
+            "productId": "prd_0006",
+            "name": "Vanilla Bean Candle",
+            "media": "media:candle:vanilla-bean",
+            "line": "4 oz travel tin · LW-C-VABE-04",
+            "type": "Candle",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 23,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0016"
+            ]
+          },
+          {
+            "id": "var_0017",
+            "productId": "prd_0006",
+            "name": "Vanilla Bean Candle",
+            "media": "media:candle:vanilla-bean",
+            "line": "8 oz · LW-C-VABE-08",
+            "type": "Candle",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 48,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 360,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.93 a week · 4 sold in the last 30 days",
+            "variantIds": [
+              "var_0017"
+            ]
+          },
+          {
+            "id": "var_0053",
+            "productId": "prd_0020",
+            "name": "Vanilla Bean Reed Diffuser",
+            "media": "media:diffuser:vanilla-bean",
+            "line": "100 ml · LW-D-VABE-100",
+            "type": "Diffuser",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 23,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 690,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0053"
+            ]
+          },
+          {
+            "id": "var_0054",
+            "productId": "prd_0020",
+            "name": "Vanilla Bean Reed Diffuser",
+            "media": "media:diffuser:vanilla-bean",
+            "line": "200 ml refill · LW-D-VABE-R",
+            "type": "Diffuser",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 22,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0054"
+            ]
+          },
+          {
+            "id": "var_0074",
+            "productId": "prd_0030",
+            "name": "Vanilla Bean Wax Melts",
+            "media": "media:melt:vanilla-bean",
+            "line": "12 cubes · LW-M-VABE-12",
+            "type": "Wax melt",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 12,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 360,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0074"
+            ]
+          },
+          {
+            "id": "var_0073",
+            "productId": "prd_0030",
+            "name": "Vanilla Bean Wax Melts",
+            "media": "media:melt:vanilla-bean",
+            "line": "6 cubes · LW-M-VABE-06",
+            "type": "Wax melt",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 1,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0073"
+            ]
+          },
+          {
+            "id": "var_0106",
+            "productId": "prd_0050",
+            "name": "Warming Lamp",
+            "media": "media:accessory:brass",
+            "line": "Black · LW-A-06-BL",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 8,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0106"
+            ]
+          },
+          {
+            "id": "var_0105",
+            "productId": "prd_0050",
+            "name": "Warming Lamp",
+            "media": "media:accessory:brass",
+            "line": "Brass · LW-A-06-BR",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 1,
+            "inventory": 6,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0105"
+            ]
+          },
+          {
+            "id": "var_0095",
+            "productId": "prd_0044",
+            "name": "Wax Melt Sampler",
+            "media": "media:gift:wax-melt-sampler",
+            "line": "LW-G-08",
+            "type": "Gift set",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 9,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0095"
+            ]
+          },
+          {
+            "id": "var_0108",
+            "productId": "prd_0051",
+            "name": "Wax Melt Warmer",
+            "media": "media:accessory:white",
+            "line": "Sage · LW-A-07-SA",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 9,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 270,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0108"
+            ]
+          },
+          {
+            "id": "var_0109",
+            "productId": "prd_0051",
+            "name": "Wax Melt Warmer",
+            "media": "media:accessory:white",
+            "line": "Terracotta · LW-A-07-TE",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 12,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 360,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0109"
+            ]
+          },
+          {
+            "id": "var_0107",
+            "productId": "prd_0051",
+            "name": "Wax Melt Warmer",
+            "media": "media:accessory:white",
+            "line": "White · LW-A-07-WH",
+            "type": "Accessory",
+            "status": "In stock",
+            "committed": 0,
+            "inventory": 15,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 450,
+            "coverDays": 42,
+            "coverCaption": "Six weeks or more",
+            "salesLine": "Sells 0.23 a week · 1 sold in the last 30 days",
+            "variantIds": [
+              "var_0107"
+            ]
+          },
+          {
+            "id": "var_0097",
+            "productId": "prd_0045",
+            "name": "Wick Trimmer",
+            "media": "media:accessory:brass",
+            "line": "Black · LW-A-01-BL",
+            "type": "Accessory",
+            "status": "Under a month",
+            "committed": 0,
+            "inventory": 2,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": 30,
+            "coverDays": 30,
+            "coverCaption": "30 days of 42",
+            "salesLine": "Sells 0.47 a week · 2 sold in the last 30 days",
+            "variantIds": [
+              "var_0097"
+            ]
+          },
+          {
+            "id": "var_0096",
+            "productId": "prd_0045",
+            "name": "Wick Trimmer",
+            "media": "media:accessory:brass",
+            "line": "Brass · LW-A-01-BR",
+            "type": "Accessory",
+            "status": "No sales",
+            "committed": 0,
+            "inventory": 4,
+            "incoming": 0,
+            "incomingText": "–",
+            "days": null,
+            "coverDays": 42,
+            "coverCaption": "No sales in the last 30 days",
+            "salesLine": "Sells 0 a week · 0 sold in the last 30 days",
+            "variantIds": [
+              "var_0096"
+            ]
+          }
+        ],
+        "count": 117,
+        "caption": "117 variants, days of stock from the last 30 days' sales",
+        "subtitle": "117 variants tracked at Portland, OR.",
+        "tracked": 117,
+        "locationCaption": "Quantity tracked at Portland",
+        "outOfStock": 0,
+        "outCaption": "Everything is in stock",
+        "low": 2,
+        "lowCaption": "2 of 117 variants",
+        "incomingUnits": 0,
+        "incomingCaption": "No deliveries on the way"
+      }
+    }
+  }
+}

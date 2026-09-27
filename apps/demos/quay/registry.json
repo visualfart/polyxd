@@ -13,13 +13,57 @@
       }
     },
     "products.open": {
-      "description": "Open the products index, filtered to what's running low",
+      "description": "Open the products index, filtered to what's running low or to one product type",
       "risk": "none",
       "inputs": {
         "type": "object",
-        "properties": { "ids": { "type": "array", "items": { "type": "string" } } },
+        "properties": {
+          "ids": { "type": "array", "items": { "type": "string" } },
+          "type": { "enum": ["candle", "diffuser", "melt", "gift", "accessory"] }
+        },
         "additionalProperties": false
       }
+    },
+    "discount.open": {
+      "description": "Open a discount's page",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "discount.new": {
+      "description": "Start a new discount: opens the create flow, which reviews before anything goes live",
+      "risk": "none",
+      "inputs": { "type": "object", "properties": {}, "additionalProperties": false }
+    },
+    "analytics.range": {
+      "description": "Show the analytics for a date range: today, or the last 7, 30 or 90 days",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "range": { "enum": ["today", "7", "30", "90"] } },
+        "required": ["range"],
+        "additionalProperties": false
+      }
+    },
+    "report.export": {
+      "description": "Download what a report shows as a CSV file: the analytics for a range, the inventory as filtered, or the discounts in a view",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "report": { "enum": ["analytics", "inventory", "discounts"] },
+          "range": { "type": "string" },
+          "view": { "type": "string" },
+          "filters": { "type": "object" }
+        },
+        "required": ["report"],
+        "additionalProperties": false
+      },
+      "sideEffects": ["A CSV file is saved to your computer; nothing on the store changes"]
     },
     "order.open": {
       "description": "Open an order's page",
