@@ -98,18 +98,41 @@ const ask = async (q: string) => {
 };
 
 /**
- * Trust needs two-factor authentication. npm's own approval prompt runs in this terminal first; if
- * it still refuses, ask for a code from the authenticator app (Enter alone retries); five tries.
+ * Trust needs two-factor authentication with a typed one-time code: npm answers 400 without one,
+ * and an account whose second factor is a passkey or security key has no code to give. So: try once
+ * with npm's own prompts; if refused, ask for a code (Enter alone skips); with none, stop trying on
+ * the command line and hand over the web steps instead, which work with a passkey.
  */
+let web = false;
 const trust = async (name: string) => {
-  for (let i = 0; i < 5; i++) {
+  if (web) return false;
+  for (let i = 0; i < 3; i++) {
     const args = ["trust", "github", name, "--repo", REPO, "--file", "release.yml", "--yes", ...(otp ? [`--otp=${otp}`] : [])];
     const r = spawnSync("npm", args, { cwd: ROOT, stdio: "inherit" });
-    if (r.status === 0) return console.log(`  trusted`);
-    if (trustState(name) === true) return console.log(`  trusted`);
-    otp = await ask("  npm refused. Enter a code from your authenticator app, or Enter alone to try again: ");
+    if (r.status === 0 || trustState(name) === true) {
+      console.log(`  trusted`);
+      return true;
+    }
+    otp = await ask("  npm refused. If you have an authenticator app for npm, enter a code; if your second factor is a passkey, press Enter: ");
+    if (!/^\d{6,8}$/.test(otp)) {
+      otp = "";
+      web = true;
+      return false;
+    }
   }
-  throw new Error(`Couldn't trust the release workflow for ${name}. Run \`npm run release:first -- --trust-only\` to pick up where this stopped, or add it on npmjs.com: the package's Settings, Trusted publishing, GitHub Actions, ${REPO}, release.yml.`);
+  return false;
+};
+
+/** The web steps, one link per package: the settings page takes a passkey. */
+const webSteps = (names: string[]) => {
+  console.log(`\nSet these up on npmjs.com instead (a passkey works there). For each package: open the link, go to Trusted publishing, choose GitHub Actions, and enter:
+  Organization or user: ${REPO.split("/")[0]}
+  Repository:           ${REPO.split("/")[1]}
+  Workflow filename:    release.yml
+  Environment:          (leave empty)
+then Set up connection.\n`);
+  for (const n of names) console.log(`  https://www.npmjs.com/package/${n}/access`);
+  console.log(`\nRun \`npm run release:first -- --trust-only\` afterwards to confirm every package is covered.`);
 };
 
 const have = owned();
@@ -128,9 +151,14 @@ for (const name of missing) {
 // Checking all of them also finishes a run that stopped between a publish and its trust.
 const untrusted = ORDER.map((name) => pkgOf(name).name).filter((name) => !trusted(name));
 if (untrusted.length) console.log(`\n${untrusted.length} package(s) don't trust the release workflow yet: ${untrusted.join(", ")}\n`);
+const left: string[] = [];
 for (const name of untrusted) {
-  console.log(`\n→ trust ${name}`);
-  await trust(name);
+  if (!web) console.log(`\n→ trust ${name}`);
+  if (!(await trust(name))) left.push(name);
+}
+if (left.length) {
+  webSteps(left);
+  process.exit(1);
 }
 
 if (!missing.length && !untrusted.length) console.log("\nEvery package is on npm and trusts the release workflow.");
