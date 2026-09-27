@@ -1,0 +1,272 @@
+{
+  "$description": "Neon, light mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "neon": {
+    "palette": {
+      "$type": "color",
+      "day": {
+        "$value": "#f6f4ff"
+      },
+      "day-1": {
+        "$value": "#ece8fb"
+      },
+      "white": {
+        "$value": "#ffffff"
+      },
+      "ink": {
+        "$value": "#16122b"
+      },
+      "ink-soft": {
+        "$value": "#5a5478"
+      },
+      "night": {
+        "$value": "#14102a"
+      },
+      "line": {
+        "$value": "#d8d2f0"
+      },
+      "line-strong": {
+        "$value": "#7d76a8"
+      },
+      "magenta": {
+        "$value": "#b0138f"
+      },
+      "magenta-deep": {
+        "$value": "#6a0b57"
+      },
+      "magenta-wash": {
+        "$value": "#ffd6f5"
+      },
+      "cyan": {
+        "$value": "#0e8aa8"
+      },
+      "cyan-deep": {
+        "$value": "#0b4a5c"
+      },
+      "cyan-wash": {
+        "$value": "#dff4fb"
+      },
+      "lime": {
+        "$value": "#12915a"
+      },
+      "lime-deep": {
+        "$value": "#0f5a3a"
+      },
+      "lime-wash": {
+        "$value": "#dcf7ea"
+      },
+      "sun": {
+        "$value": "#a07800"
+      },
+      "sun-deep": {
+        "$value": "#5c4600"
+      },
+      "sun-wash": {
+        "$value": "#fff3c4"
+      },
+      "hot": {
+        "$value": "#c8203f"
+      },
+      "hot-deep": {
+        "$value": "#7a1028"
+      },
+      "hot-wash": {
+        "$value": "#ffe0e6"
+      },
+      "violet": {
+        "$value": "#6a3ad9"
+      },
+      "orange": {
+        "$value": "#d4551c"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{neon.palette.day}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{neon.palette.day-1}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{neon.palette.white}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{neon.palette.white}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{neon.palette.night}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(20, 16, 42, 0.5)"
+      },
+      "text-default": {
+        "$value": "{neon.palette.ink}"
+      },
+      "text-muted": {
+        "$value": "{neon.palette.ink-soft}"
+      },
+      "text-inverse": {
+        "$value": "{neon.palette.day}"
+      },
+      "text-link": {
+        "$value": "{neon.palette.magenta}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{neon.palette.line}"
+      },
+      "border-strong": {
+        "$value": "{neon.palette.line-strong}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{neon.palette.magenta}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{neon.palette.magenta}"
+      },
+      "action-primary-foreground": {
+        "$value": "{neon.palette.white}"
+      },
+      "action-secondary-background": {
+        "$value": "{neon.palette.white}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{neon.palette.ink}"
+      },
+      "action-secondary-border": {
+        "$value": "{neon.palette.magenta}"
+      },
+      "action-danger-background": {
+        "$value": "{neon.palette.hot}"
+      },
+      "action-danger-foreground": {
+        "$value": "{neon.palette.white}"
+      },
+      "selection-background": {
+        "$value": "{neon.palette.magenta-wash}"
+      },
+      "selection-foreground": {
+        "$value": "{neon.palette.magenta-deep}"
+      },
+      "status-info-background": {
+        "$value": "{neon.palette.cyan-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{neon.palette.cyan-deep}"
+      },
+      "status-info-emphasis": {
+        "$value": "{neon.palette.cyan}"
+      },
+      "status-success-background": {
+        "$value": "{neon.palette.lime-wash}"
+      },
+      "status-success-foreground": {
+        "$value": "{neon.palette.lime-deep}"
+      },
+      "status-success-emphasis": {
+        "$value": "{neon.palette.lime}"
+      },
+      "status-warning-background": {
+        "$value": "{neon.palette.sun-wash}"
+      },
+      "status-warning-foreground": {
+        "$value": "{neon.palette.sun-deep}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{neon.palette.sun}"
+      },
+      "status-danger-background": {
+        "$value": "{neon.palette.hot-wash}"
+      },
+      "status-danger-foreground": {
+        "$value": "{neon.palette.hot-deep}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{neon.palette.hot}"
+      },
+      "data-1": {
+        "$value": "{neon.palette.magenta}"
+      },
+      "data-2": {
+        "$value": "{neon.palette.cyan}"
+      },
+      "data-3": {
+        "$value": "{neon.palette.lime}"
+      },
+      "data-4": {
+        "$value": "{neon.palette.sun}"
+      },
+      "data-5": {
+        "$value": "{neon.palette.violet}"
+      },
+      "data-6": {
+        "$value": "{neon.palette.orange}"
+      },
+      "data-positive": {
+        "$value": "{neon.palette.lime}"
+      },
+      "data-negative": {
+        "$value": "{neon.palette.hot}"
+      },
+      "data-neutral": {
+        "$value": "{neon.palette.line-strong}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 4,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 20,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(176, 19, 143, 0.15)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 16,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 48,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(176, 19, 143, 0.28)"
+          }
+        ]
+      }
+    }
+  }
+}

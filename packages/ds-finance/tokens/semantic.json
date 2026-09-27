@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Finance template. Every token aliases a finance.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{finance.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{finance.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{finance.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{finance.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{finance.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{finance.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{finance.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{finance.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{finance.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{finance.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{finance.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{finance.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{finance.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{finance.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{finance.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{finance.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{finance.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{finance.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{finance.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{finance.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{finance.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{finance.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{finance.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{finance.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{finance.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{finance.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{finance.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{finance.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{finance.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{finance.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{finance.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{finance.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{finance.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{finance.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{finance.sys.data-1}"
+        },
+        "2": {
+          "$value": "{finance.sys.data-2}"
+        },
+        "3": {
+          "$value": "{finance.sys.data-3}"
+        },
+        "4": {
+          "$value": "{finance.sys.data-4}"
+        },
+        "5": {
+          "$value": "{finance.sys.data-5}"
+        },
+        "6": {
+          "$value": "{finance.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{finance.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{finance.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{finance.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{finance.font.display}",
+          "fontSize": "{finance.text.title-page}",
+          "fontWeight": "{finance.weight.600}",
+          "lineHeight": 1.2,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{finance.font.display}",
+          "fontSize": "{finance.text.title-section}",
+          "fontWeight": "{finance.weight.600}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{finance.font.body}",
+          "fontSize": "{finance.text.title-item}",
+          "fontWeight": "{finance.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{finance.font.body}",
+          "fontSize": "{finance.text.body-default}",
+          "fontWeight": "{finance.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{finance.font.body}",
+          "fontSize": "{finance.text.body-small}",
+          "fontWeight": "{finance.weight.400}",
+          "lineHeight": 1.45,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{finance.font.label}",
+          "fontSize": "{finance.text.label-default}",
+          "fontWeight": "{finance.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.1,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{finance.font.label}",
+          "fontSize": "{finance.text.label-small}",
+          "fontWeight": "{finance.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.4,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{finance.font.display}",
+          "fontSize": "{finance.text.numeric-display}",
+          "fontWeight": "{finance.weight.600}",
+          "lineHeight": 1.1,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{finance.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{finance.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{finance.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{finance.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{finance.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{finance.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{finance.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{finance.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{finance.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{finance.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{finance.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{finance.size.icon-small}"
+      },
+      "default": {
+        "$value": "{finance.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{finance.radius.small}"
+    },
+    "control": {
+      "$value": "{finance.radius.control}"
+    },
+    "default": {
+      "$value": "{finance.radius.default}"
+    },
+    "large": {
+      "$value": "{finance.radius.large}"
+    },
+    "full": {
+      "$value": "{finance.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{finance.border.default}"
+      },
+      "strong": {
+        "$value": "{finance.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{finance.focus.width}"
+      },
+      "offset": {
+        "$value": "{finance.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{finance.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{finance.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{finance.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{finance.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{finance.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{finance.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{finance.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{finance.duration.instant}"
+      },
+      "short": {
+        "$value": "{finance.duration.short}"
+      },
+      "medium": {
+        "$value": "{finance.duration.medium}"
+      },
+      "long": {
+        "$value": "{finance.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{finance.ease.standard}"
+      },
+      "enter": {
+        "$value": "{finance.ease.enter}"
+      },
+      "exit": {
+        "$value": "{finance.ease.exit}"
+      }
+    }
+  }
+}

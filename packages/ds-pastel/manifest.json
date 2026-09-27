@@ -1,0 +1,29 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "pastel",
+  "displayName": "Pastel",
+  "version": "0.3.0",
+  "contractVersion": "0.2.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": [
+      "tokens/system.json",
+      "tokens/system.light.json",
+      "tokens/semantic.json"
+    ],
+    "dark": [
+      "tokens/system.json",
+      "tokens/system.dark.json",
+      "tokens/semantic.json"
+    ]
+  },
+  "defaultMode": "light",
+  "template": true,
+  "provenance": [
+    {
+      "source": "Polyxd",
+      "license": "Apache-2.0",
+      "notes": "Original template by Polyxd: Light, soft mint, lavender and peach, 16px radii, a friendly rounded sans; consumer apps. Not derived from any design system's tokens; every value was chosen for this template and checked against the semantic contract. Google Fonts named here are under the SIL Open Font License and are not distributed with the pack."
+    }
+  ]
+}

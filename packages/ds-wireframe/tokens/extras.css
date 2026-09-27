@@ -1,0 +1,26 @@
+/*
+ * Wireframe: what tokens can't draw. The theme compiler appends this file verbatim to themes/wireframe.css.
+ * Every rule is scoped to [data-pxd-theme="wireframe"], and every colour is a token variable, so recolouring
+ * the tokens recolours this too. Delete the "extras" line in manifest.json and the pack is plain tokens.
+ */
+
+/* Containers and fields are dashed: a box that stands for a box. */
+[data-pxd-theme="wireframe"] .pxd-card,
+[data-pxd-theme="wireframe"] .pxd-input,
+[data-pxd-theme="wireframe"] .pxd-panel,
+[data-pxd-theme="wireframe"] .pxd-status,
+[data-pxd-theme="wireframe"] .pxd-dropzone,
+[data-pxd-theme="wireframe"] .pxd-button-secondary {
+  border-style: dashed;
+}
+
+/* A media placeholder is a hatched box, which is what a wireframe has always drawn where a picture will go. */
+[data-pxd-theme="wireframe"] .pxd-media,
+[data-pxd-theme="wireframe"] .pxd-media-placeholder,
+[data-pxd-theme="wireframe"] .pxd-media-audio-placeholder,
+[data-pxd-theme="wireframe"] .pxd-qr-placeholder,
+[data-pxd-theme="wireframe"] .pxd-gallery-image {
+  background-color: var(--pxd-color-surface-subtle);
+  background-image: repeating-linear-gradient(-45deg, transparent 0 7px, var(--pxd-color-border-default) 7px 8px);
+  border: var(--pxd-border-width-default) dashed var(--pxd-color-border-strong);
+}

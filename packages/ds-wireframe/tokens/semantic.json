@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Wireframe template. Every token aliases a wireframe.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{wireframe.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{wireframe.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{wireframe.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{wireframe.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{wireframe.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{wireframe.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{wireframe.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{wireframe.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{wireframe.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{wireframe.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{wireframe.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{wireframe.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{wireframe.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{wireframe.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{wireframe.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{wireframe.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{wireframe.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{wireframe.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{wireframe.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{wireframe.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{wireframe.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{wireframe.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{wireframe.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{wireframe.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{wireframe.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{wireframe.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{wireframe.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{wireframe.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{wireframe.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{wireframe.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{wireframe.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{wireframe.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{wireframe.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{wireframe.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{wireframe.sys.data-1}"
+        },
+        "2": {
+          "$value": "{wireframe.sys.data-2}"
+        },
+        "3": {
+          "$value": "{wireframe.sys.data-3}"
+        },
+        "4": {
+          "$value": "{wireframe.sys.data-4}"
+        },
+        "5": {
+          "$value": "{wireframe.sys.data-5}"
+        },
+        "6": {
+          "$value": "{wireframe.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{wireframe.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{wireframe.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{wireframe.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{wireframe.font.display}",
+          "fontSize": "{wireframe.text.title-page}",
+          "fontWeight": "{wireframe.weight.600}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{wireframe.font.display}",
+          "fontSize": "{wireframe.text.title-section}",
+          "fontWeight": "{wireframe.weight.600}",
+          "lineHeight": 1.3,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{wireframe.font.display}",
+          "fontSize": "{wireframe.text.title-item}",
+          "fontWeight": "{wireframe.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{wireframe.font.body}",
+          "fontSize": "{wireframe.text.body-default}",
+          "fontWeight": "{wireframe.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{wireframe.font.body}",
+          "fontSize": "{wireframe.text.body-small}",
+          "fontWeight": "{wireframe.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{wireframe.font.label}",
+          "fontSize": "{wireframe.text.label-default}",
+          "fontWeight": "{wireframe.weight.500}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.3,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{wireframe.font.label}",
+          "fontSize": "{wireframe.text.label-small}",
+          "fontWeight": "{wireframe.weight.500}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.4,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{wireframe.font.mono}",
+          "fontSize": "{wireframe.text.numeric-display}",
+          "fontWeight": "{wireframe.weight.500}",
+          "lineHeight": 1.2,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{wireframe.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{wireframe.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{wireframe.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{wireframe.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{wireframe.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{wireframe.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{wireframe.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{wireframe.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{wireframe.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{wireframe.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{wireframe.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{wireframe.size.icon-small}"
+      },
+      "default": {
+        "$value": "{wireframe.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{wireframe.radius.small}"
+    },
+    "control": {
+      "$value": "{wireframe.radius.control}"
+    },
+    "default": {
+      "$value": "{wireframe.radius.default}"
+    },
+    "large": {
+      "$value": "{wireframe.radius.large}"
+    },
+    "full": {
+      "$value": "{wireframe.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{wireframe.border.default}"
+      },
+      "strong": {
+        "$value": "{wireframe.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{wireframe.focus.width}"
+      },
+      "offset": {
+        "$value": "{wireframe.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{wireframe.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{wireframe.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{wireframe.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{wireframe.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{wireframe.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{wireframe.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{wireframe.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{wireframe.duration.instant}"
+      },
+      "short": {
+        "$value": "{wireframe.duration.short}"
+      },
+      "medium": {
+        "$value": "{wireframe.duration.medium}"
+      },
+      "long": {
+        "$value": "{wireframe.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{wireframe.ease.standard}"
+      },
+      "enter": {
+        "$value": "{wireframe.ease.enter}"
+      },
+      "exit": {
+        "$value": "{wireframe.ease.exit}"
+      }
+    }
+  }
+}

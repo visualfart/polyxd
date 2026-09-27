@@ -1,0 +1,266 @@
+{
+  "$description": "Mono, light mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "mono": {
+    "palette": {
+      "$type": "color",
+      "brand-25": {
+        "$value": "oklch(99% 0.006 275)"
+      },
+      "brand-50": {
+        "$value": "oklch(96.5% 0.02 275)"
+      },
+      "brand-100": {
+        "$value": "oklch(93% 0.04 275)"
+      },
+      "brand-200": {
+        "$value": "oklch(87% 0.07 275)"
+      },
+      "brand-300": {
+        "$value": "oklch(78% 0.11 275)"
+      },
+      "brand-400": {
+        "$value": "oklch(68% 0.16 275)"
+      },
+      "brand-500": {
+        "$value": "oklch(57% 0.2 275)"
+      },
+      "brand-600": {
+        "$value": "oklch(48% 0.21 275)"
+      },
+      "brand-700": {
+        "$value": "oklch(42% 0.19 275)"
+      },
+      "brand-800": {
+        "$value": "oklch(35% 0.15 275)"
+      },
+      "brand-900": {
+        "$value": "oklch(28% 0.11 275)"
+      },
+      "brand-950": {
+        "$value": "oklch(20% 0.07 275)"
+      },
+      "grey-600": {
+        "$value": "oklch(50% 0.03 275)"
+      },
+      "white": {
+        "$value": "#ffffff"
+      },
+      "success-600": {
+        "$value": "oklch(48% 0.15 150)"
+      },
+      "success-800": {
+        "$value": "oklch(36% 0.11 150)"
+      },
+      "success-100": {
+        "$value": "oklch(94% 0.05 150)"
+      },
+      "warning-600": {
+        "$value": "oklch(52% 0.13 70)"
+      },
+      "warning-800": {
+        "$value": "oklch(38% 0.1 70)"
+      },
+      "warning-100": {
+        "$value": "oklch(95% 0.05 80)"
+      },
+      "danger-600": {
+        "$value": "oklch(50% 0.2 25)"
+      },
+      "danger-800": {
+        "$value": "oklch(38% 0.15 25)"
+      },
+      "danger-100": {
+        "$value": "oklch(94% 0.04 25)"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{mono.palette.brand-25}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{mono.palette.brand-50}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{mono.palette.white}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{mono.palette.white}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{mono.palette.brand-900}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "oklch(20% 0.07 275 / 0.5)"
+      },
+      "text-default": {
+        "$value": "{mono.palette.brand-950}"
+      },
+      "text-muted": {
+        "$value": "{mono.palette.brand-700}"
+      },
+      "text-inverse": {
+        "$value": "{mono.palette.brand-50}"
+      },
+      "text-link": {
+        "$value": "{mono.palette.brand-600}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{mono.palette.brand-200}"
+      },
+      "border-strong": {
+        "$value": "{mono.palette.brand-500}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{mono.palette.brand-600}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{mono.palette.brand-600}"
+      },
+      "action-primary-foreground": {
+        "$value": "{mono.palette.white}"
+      },
+      "action-secondary-background": {
+        "$value": "{mono.palette.brand-100}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{mono.palette.brand-900}"
+      },
+      "action-secondary-border": {
+        "$value": "{mono.palette.brand-300}"
+      },
+      "action-danger-background": {
+        "$value": "{mono.palette.danger-600}"
+      },
+      "action-danger-foreground": {
+        "$value": "{mono.palette.white}"
+      },
+      "selection-background": {
+        "$value": "{mono.palette.brand-100}"
+      },
+      "selection-foreground": {
+        "$value": "{mono.palette.brand-900}"
+      },
+      "status-info-background": {
+        "$value": "{mono.palette.brand-100}"
+      },
+      "status-info-foreground": {
+        "$value": "{mono.palette.brand-800}"
+      },
+      "status-info-emphasis": {
+        "$value": "{mono.palette.brand-600}"
+      },
+      "status-success-background": {
+        "$value": "{mono.palette.success-100}"
+      },
+      "status-success-foreground": {
+        "$value": "{mono.palette.success-800}"
+      },
+      "status-success-emphasis": {
+        "$value": "{mono.palette.success-600}"
+      },
+      "status-warning-background": {
+        "$value": "{mono.palette.warning-100}"
+      },
+      "status-warning-foreground": {
+        "$value": "{mono.palette.warning-800}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{mono.palette.warning-600}"
+      },
+      "status-danger-background": {
+        "$value": "{mono.palette.danger-100}"
+      },
+      "status-danger-foreground": {
+        "$value": "{mono.palette.danger-800}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{mono.palette.danger-600}"
+      },
+      "data-1": {
+        "$value": "{mono.palette.brand-600}"
+      },
+      "data-2": {
+        "$value": "{mono.palette.brand-900}"
+      },
+      "data-3": {
+        "$value": "{mono.palette.brand-500}"
+      },
+      "data-4": {
+        "$value": "{mono.palette.brand-800}"
+      },
+      "data-5": {
+        "$value": "{mono.palette.grey-600}"
+      },
+      "data-6": {
+        "$value": "{mono.palette.brand-700}"
+      },
+      "data-positive": {
+        "$value": "{mono.palette.success-600}"
+      },
+      "data-negative": {
+        "$value": "{mono.palette.danger-600}"
+      },
+      "data-neutral": {
+        "$value": "{mono.palette.grey-600}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 3,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "oklch(28% 0.11 275 / 0.12)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 12,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 32,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "oklch(28% 0.11 275 / 0.28)"
+          }
+        ]
+      }
+    }
+  }
+}

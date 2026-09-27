@@ -37,7 +37,25 @@ const PACK_INFO: Record<string, { name: string; by: string }> = {
   govuk: { name: "GOV.UK Frontend", by: "GDS · one theme, no dark" },
   chakra: { name: "Chakra UI 3", by: "Chakra · Inter" },
 };
-const packs: Pack[] = themes.map((key) => ({ key, ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) }));
+/** Original Polyxd templates: not reproductions of anyone's system, meant to be copied and changed. Listed after the real systems, under their own heading. */
+const TEMPLATE_INFO: Record<string, { name: string; by: string }> = {
+  sketch: { name: "Sketch", by: "Hand-drawn · Caveat, Patrick Hand" },
+  wireframe: { name: "Wireframe", by: "Low-fidelity · greys, dashed, mono" },
+  editorial: { name: "Editorial", by: "Serif display · Fraunces" },
+  brutalist: { name: "Brutalist", by: "Black, yellow, hard shadows" },
+  glass: { name: "Glass", by: "Translucent · cool, 20px" },
+  terminal: { name: "Terminal", by: "Dark · JetBrains Mono, green" },
+  pastel: { name: "Pastel", by: "Mint, lavender, peach · Nunito" },
+  civic: { name: "Civic", by: "Plain, high-contrast, large" },
+  finance: { name: "Finance", by: "Navy and gold · dense tables" },
+  health: { name: "Health", by: "Calm teal, cream · roomy" },
+  neon: { name: "Neon", by: "Dark · magenta, cyan · Space Grotesk" },
+  mono: { name: "Mono", by: "One hue in every role · indigo" },
+};
+const packs: Pack[] = [
+  ...themes.filter((key) => !(key in TEMPLATE_INFO)).map((key) => ({ key, group: "Design systems", ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) })),
+  ...Object.keys(TEMPLATE_INFO).filter((key) => themes.includes(key)).map((key) => ({ key, group: "Templates", ...TEMPLATE_INFO[key] })),
+];
 
 /** Example files are named <domain>-<thing>; these are the words people use for those domains. */
 const GROUP_NAMES: Record<string, string> = {

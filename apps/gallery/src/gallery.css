@@ -314,6 +314,20 @@ body {
 .g-option > svg:last-child {
   margin-left: auto;
 }
+.g-listbox-group {
+  margin: 8px 6px 2px;
+  padding: 6px 8px 4px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.g-listbox-group:first-child {
+  margin-top: 0;
+  border-top: 0;
+}
 .g-listbox-note {
   margin: 4px 6px 2px;
   padding-top: 8px;

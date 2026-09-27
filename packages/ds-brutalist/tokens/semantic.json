@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Brutalist template. Every token aliases a brutalist.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{brutalist.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{brutalist.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{brutalist.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{brutalist.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{brutalist.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{brutalist.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{brutalist.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{brutalist.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{brutalist.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{brutalist.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{brutalist.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{brutalist.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{brutalist.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{brutalist.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{brutalist.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{brutalist.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{brutalist.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{brutalist.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{brutalist.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{brutalist.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{brutalist.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{brutalist.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{brutalist.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{brutalist.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{brutalist.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{brutalist.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{brutalist.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{brutalist.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{brutalist.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{brutalist.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{brutalist.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{brutalist.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{brutalist.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{brutalist.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{brutalist.sys.data-1}"
+        },
+        "2": {
+          "$value": "{brutalist.sys.data-2}"
+        },
+        "3": {
+          "$value": "{brutalist.sys.data-3}"
+        },
+        "4": {
+          "$value": "{brutalist.sys.data-4}"
+        },
+        "5": {
+          "$value": "{brutalist.sys.data-5}"
+        },
+        "6": {
+          "$value": "{brutalist.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{brutalist.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{brutalist.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{brutalist.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{brutalist.font.display}",
+          "fontSize": "{brutalist.text.title-page}",
+          "fontWeight": "{brutalist.weight.700}",
+          "lineHeight": 1.05,
+          "letterSpacing": {
+            "value": -1,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{brutalist.font.display}",
+          "fontSize": "{brutalist.text.title-section}",
+          "fontWeight": "{brutalist.weight.700}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": -0.5,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{brutalist.font.display}",
+          "fontSize": "{brutalist.text.title-item}",
+          "fontWeight": "{brutalist.weight.700}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{brutalist.font.body}",
+          "fontSize": "{brutalist.text.body-default}",
+          "fontWeight": "{brutalist.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{brutalist.font.body}",
+          "fontSize": "{brutalist.text.body-small}",
+          "fontWeight": "{brutalist.weight.400}",
+          "lineHeight": 1.45,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{brutalist.font.label}",
+          "fontSize": "{brutalist.text.label-default}",
+          "fontWeight": "{brutalist.weight.700}",
+          "lineHeight": 1.3,
+          "letterSpacing": {
+            "value": 0.5,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{brutalist.font.label}",
+          "fontSize": "{brutalist.text.label-small}",
+          "fontWeight": "{brutalist.weight.700}",
+          "lineHeight": 1.3,
+          "letterSpacing": {
+            "value": 0.8,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{brutalist.font.display}",
+          "fontSize": "{brutalist.text.numeric-display}",
+          "fontWeight": "{brutalist.weight.700}",
+          "lineHeight": 1,
+          "letterSpacing": {
+            "value": -1,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{brutalist.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{brutalist.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{brutalist.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{brutalist.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{brutalist.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{brutalist.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{brutalist.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{brutalist.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{brutalist.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{brutalist.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{brutalist.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{brutalist.size.icon-small}"
+      },
+      "default": {
+        "$value": "{brutalist.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{brutalist.radius.small}"
+    },
+    "control": {
+      "$value": "{brutalist.radius.control}"
+    },
+    "default": {
+      "$value": "{brutalist.radius.default}"
+    },
+    "large": {
+      "$value": "{brutalist.radius.large}"
+    },
+    "full": {
+      "$value": "{brutalist.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{brutalist.border.default}"
+      },
+      "strong": {
+        "$value": "{brutalist.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{brutalist.focus.width}"
+      },
+      "offset": {
+        "$value": "{brutalist.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{brutalist.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{brutalist.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{brutalist.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{brutalist.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{brutalist.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{brutalist.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{brutalist.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{brutalist.duration.instant}"
+      },
+      "short": {
+        "$value": "{brutalist.duration.short}"
+      },
+      "medium": {
+        "$value": "{brutalist.duration.medium}"
+      },
+      "long": {
+        "$value": "{brutalist.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{brutalist.ease.standard}"
+      },
+      "enter": {
+        "$value": "{brutalist.ease.enter}"
+      },
+      "exit": {
+        "$value": "{brutalist.ease.exit}"
+      }
+    }
+  }
+}

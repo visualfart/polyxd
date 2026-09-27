@@ -1,0 +1,316 @@
+{
+  "$description": "Glass, dark mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "glass": {
+    "palette": {
+      "$type": "color",
+      "ground": {
+        "$value": "#0e1424"
+      },
+      "frost-thin": {
+        "$value": "rgba(30, 40, 70, 0.55)"
+      },
+      "frost": {
+        "$value": "rgba(34, 45, 78, 0.7)"
+      },
+      "frost-thick": {
+        "$value": "rgba(28, 38, 66, 0.92)"
+      },
+      "frost-edge": {
+        "$value": "rgba(255, 255, 255, 0.16)"
+      },
+      "bright": {
+        "$value": "#e8edff"
+      },
+      "text": {
+        "$value": "#e6ecff"
+      },
+      "text-soft": {
+        "$value": "#a9b4d0"
+      },
+      "steel": {
+        "$value": "#7f8cae"
+      },
+      "blue": {
+        "$value": "#8aa6ff"
+      },
+      "blue-deep": {
+        "$value": "#0b1230"
+      },
+      "blue-pale": {
+        "$value": "#c9d6ff"
+      },
+      "blue-wash": {
+        "$value": "rgba(34, 50, 110, 0.8)"
+      },
+      "red": {
+        "$value": "#ff7d93"
+      },
+      "red-pale": {
+        "$value": "#ffc4cf"
+      },
+      "red-wash": {
+        "$value": "rgba(90, 30, 45, 0.8)"
+      },
+      "green": {
+        "$value": "#5ad4a4"
+      },
+      "green-pale": {
+        "$value": "#b9f0da"
+      },
+      "green-wash": {
+        "$value": "rgba(20, 70, 55, 0.8)"
+      },
+      "amber": {
+        "$value": "#f0b64a"
+      },
+      "amber-pale": {
+        "$value": "#fbe1a6"
+      },
+      "amber-wash": {
+        "$value": "rgba(80, 60, 20, 0.8)"
+      },
+      "cyan": {
+        "$value": "#5fd3ec"
+      },
+      "cyan-pale": {
+        "$value": "#b6edf8"
+      },
+      "cyan-wash": {
+        "$value": "rgba(16, 60, 78, 0.8)"
+      },
+      "violet": {
+        "$value": "#b79bff"
+      },
+      "rose": {
+        "$value": "#f08ac2"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{glass.palette.ground}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{glass.palette.frost-thin}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{glass.palette.frost}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{glass.palette.frost-thick}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{glass.palette.bright}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(0, 0, 0, 0.5)"
+      },
+      "text-default": {
+        "$value": "{glass.palette.text}"
+      },
+      "text-muted": {
+        "$value": "{glass.palette.text-soft}"
+      },
+      "text-inverse": {
+        "$value": "{glass.palette.blue-deep}"
+      },
+      "text-link": {
+        "$value": "{glass.palette.blue}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{glass.palette.frost-edge}"
+      },
+      "border-strong": {
+        "$value": "{glass.palette.steel}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{glass.palette.blue}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{glass.palette.blue}"
+      },
+      "action-primary-foreground": {
+        "$value": "{glass.palette.blue-deep}"
+      },
+      "action-secondary-background": {
+        "$value": "{glass.palette.frost-thick}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{glass.palette.text}"
+      },
+      "action-secondary-border": {
+        "$value": "{glass.palette.frost-edge}"
+      },
+      "action-danger-background": {
+        "$value": "{glass.palette.red}"
+      },
+      "action-danger-foreground": {
+        "$value": "{glass.palette.blue-deep}"
+      },
+      "selection-background": {
+        "$value": "{glass.palette.blue-wash}"
+      },
+      "selection-foreground": {
+        "$value": "{glass.palette.blue-pale}"
+      },
+      "status-info-background": {
+        "$value": "{glass.palette.cyan-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{glass.palette.cyan-pale}"
+      },
+      "status-info-emphasis": {
+        "$value": "{glass.palette.cyan}"
+      },
+      "status-success-background": {
+        "$value": "{glass.palette.green-wash}"
+      },
+      "status-success-foreground": {
+        "$value": "{glass.palette.green-pale}"
+      },
+      "status-success-emphasis": {
+        "$value": "{glass.palette.green}"
+      },
+      "status-warning-background": {
+        "$value": "{glass.palette.amber-wash}"
+      },
+      "status-warning-foreground": {
+        "$value": "{glass.palette.amber-pale}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{glass.palette.amber}"
+      },
+      "status-danger-background": {
+        "$value": "{glass.palette.red-wash}"
+      },
+      "status-danger-foreground": {
+        "$value": "{glass.palette.red-pale}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{glass.palette.red}"
+      },
+      "data-1": {
+        "$value": "{glass.palette.blue}"
+      },
+      "data-2": {
+        "$value": "{glass.palette.cyan}"
+      },
+      "data-3": {
+        "$value": "{glass.palette.green}"
+      },
+      "data-4": {
+        "$value": "{glass.palette.amber}"
+      },
+      "data-5": {
+        "$value": "{glass.palette.violet}"
+      },
+      "data-6": {
+        "$value": "{glass.palette.rose}"
+      },
+      "data-positive": {
+        "$value": "{glass.palette.green}"
+      },
+      "data-negative": {
+        "$value": "{glass.palette.red}"
+      },
+      "data-neutral": {
+        "$value": "{glass.palette.steel}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 8,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 32,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.35)"
+          },
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(255, 255, 255, 0.08)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 24,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 64,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.55)"
+          },
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(255, 255, 255, 0.1)"
+          }
+        ]
+      }
+    }
+  }
+}

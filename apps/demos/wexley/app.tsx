@@ -34,6 +34,19 @@ const PACKS = [
   ["mantine", "Mantine"],
   ["radix", "Radix Themes"],
   ["bootstrap", "Bootstrap"],
+  // Templates: original Polyxd looks to start from, after the real systems. The drawer's select is flat, so the label carries the group.
+  ["sketch", "Templates · Sketch"],
+  ["wireframe", "Templates · Wireframe"],
+  ["editorial", "Templates · Editorial"],
+  ["brutalist", "Templates · Brutalist"],
+  ["glass", "Templates · Glass"],
+  ["terminal", "Templates · Terminal"],
+  ["pastel", "Templates · Pastel"],
+  ["civic", "Templates · Civic"],
+  ["finance", "Templates · Finance"],
+  ["health", "Templates · Health"],
+  ["neon", "Templates · Neon"],
+  ["mono", "Templates · Mono"],
 ].map(([id, name]) => ({ id, name }));
 const themeFiles = import.meta.glob("../../../packages/react/themes/*.css");
 const loadPack = async (id: string) => {

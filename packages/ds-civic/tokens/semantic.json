@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Civic template. Every token aliases a civic.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{civic.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{civic.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{civic.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{civic.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{civic.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{civic.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{civic.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{civic.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{civic.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{civic.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{civic.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{civic.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{civic.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{civic.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{civic.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{civic.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{civic.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{civic.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{civic.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{civic.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{civic.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{civic.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{civic.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{civic.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{civic.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{civic.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{civic.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{civic.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{civic.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{civic.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{civic.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{civic.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{civic.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{civic.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{civic.sys.data-1}"
+        },
+        "2": {
+          "$value": "{civic.sys.data-2}"
+        },
+        "3": {
+          "$value": "{civic.sys.data-3}"
+        },
+        "4": {
+          "$value": "{civic.sys.data-4}"
+        },
+        "5": {
+          "$value": "{civic.sys.data-5}"
+        },
+        "6": {
+          "$value": "{civic.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{civic.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{civic.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{civic.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{civic.font.display}",
+          "fontSize": "{civic.text.title-page}",
+          "fontWeight": "{civic.weight.700}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{civic.font.display}",
+          "fontSize": "{civic.text.title-section}",
+          "fontWeight": "{civic.weight.700}",
+          "lineHeight": 1.2,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{civic.font.display}",
+          "fontSize": "{civic.text.title-item}",
+          "fontWeight": "{civic.weight.700}",
+          "lineHeight": 1.3,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{civic.font.body}",
+          "fontSize": "{civic.text.body-default}",
+          "fontWeight": "{civic.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{civic.font.body}",
+          "fontSize": "{civic.text.body-small}",
+          "fontWeight": "{civic.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{civic.font.label}",
+          "fontSize": "{civic.text.label-default}",
+          "fontWeight": "{civic.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{civic.font.label}",
+          "fontSize": "{civic.text.label-small}",
+          "fontWeight": "{civic.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{civic.font.display}",
+          "fontSize": "{civic.text.numeric-display}",
+          "fontWeight": "{civic.weight.700}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{civic.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{civic.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{civic.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{civic.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{civic.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{civic.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{civic.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{civic.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{civic.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{civic.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{civic.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{civic.size.icon-small}"
+      },
+      "default": {
+        "$value": "{civic.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{civic.radius.small}"
+    },
+    "control": {
+      "$value": "{civic.radius.control}"
+    },
+    "default": {
+      "$value": "{civic.radius.default}"
+    },
+    "large": {
+      "$value": "{civic.radius.large}"
+    },
+    "full": {
+      "$value": "{civic.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{civic.border.default}"
+      },
+      "strong": {
+        "$value": "{civic.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{civic.focus.width}"
+      },
+      "offset": {
+        "$value": "{civic.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{civic.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{civic.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{civic.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{civic.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{civic.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{civic.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{civic.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{civic.duration.instant}"
+      },
+      "short": {
+        "$value": "{civic.duration.short}"
+      },
+      "medium": {
+        "$value": "{civic.duration.medium}"
+      },
+      "long": {
+        "$value": "{civic.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{civic.ease.standard}"
+      },
+      "enter": {
+        "$value": "{civic.ease.enter}"
+      },
+      "exit": {
+        "$value": "{civic.ease.exit}"
+      }
+    }
+  }
+}

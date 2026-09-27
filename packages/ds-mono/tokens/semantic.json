@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Mono template. Every token aliases a mono.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{mono.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{mono.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{mono.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{mono.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{mono.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{mono.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{mono.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{mono.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{mono.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{mono.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{mono.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{mono.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{mono.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{mono.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{mono.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{mono.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{mono.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{mono.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{mono.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{mono.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{mono.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{mono.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{mono.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{mono.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{mono.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{mono.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{mono.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{mono.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{mono.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{mono.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{mono.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{mono.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{mono.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{mono.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{mono.sys.data-1}"
+        },
+        "2": {
+          "$value": "{mono.sys.data-2}"
+        },
+        "3": {
+          "$value": "{mono.sys.data-3}"
+        },
+        "4": {
+          "$value": "{mono.sys.data-4}"
+        },
+        "5": {
+          "$value": "{mono.sys.data-5}"
+        },
+        "6": {
+          "$value": "{mono.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{mono.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{mono.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{mono.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{mono.font.display}",
+          "fontSize": "{mono.text.title-page}",
+          "fontWeight": "{mono.weight.700}",
+          "lineHeight": 1.2,
+          "letterSpacing": {
+            "value": -0.3,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{mono.font.display}",
+          "fontSize": "{mono.text.title-section}",
+          "fontWeight": "{mono.weight.600}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": -0.1,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{mono.font.display}",
+          "fontSize": "{mono.text.title-item}",
+          "fontWeight": "{mono.weight.600}",
+          "lineHeight": 1.35,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{mono.font.body}",
+          "fontSize": "{mono.text.body-default}",
+          "fontWeight": "{mono.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{mono.font.body}",
+          "fontSize": "{mono.text.body-small}",
+          "fontWeight": "{mono.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{mono.font.label}",
+          "fontSize": "{mono.text.label-default}",
+          "fontWeight": "{mono.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{mono.font.label}",
+          "fontSize": "{mono.text.label-small}",
+          "fontWeight": "{mono.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.2,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{mono.font.display}",
+          "fontSize": "{mono.text.numeric-display}",
+          "fontWeight": "{mono.weight.700}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": -0.3,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{mono.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{mono.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{mono.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{mono.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{mono.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{mono.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{mono.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{mono.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{mono.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{mono.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{mono.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{mono.size.icon-small}"
+      },
+      "default": {
+        "$value": "{mono.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{mono.radius.small}"
+    },
+    "control": {
+      "$value": "{mono.radius.control}"
+    },
+    "default": {
+      "$value": "{mono.radius.default}"
+    },
+    "large": {
+      "$value": "{mono.radius.large}"
+    },
+    "full": {
+      "$value": "{mono.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{mono.border.default}"
+      },
+      "strong": {
+        "$value": "{mono.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{mono.focus.width}"
+      },
+      "offset": {
+        "$value": "{mono.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{mono.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{mono.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{mono.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{mono.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{mono.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{mono.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{mono.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{mono.duration.instant}"
+      },
+      "short": {
+        "$value": "{mono.duration.short}"
+      },
+      "medium": {
+        "$value": "{mono.duration.medium}"
+      },
+      "long": {
+        "$value": "{mono.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{mono.ease.standard}"
+      },
+      "enter": {
+        "$value": "{mono.ease.enter}"
+      },
+      "exit": {
+        "$value": "{mono.ease.exit}"
+      }
+    }
+  }
+}

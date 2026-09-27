@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Glass template. Every token aliases a glass.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{glass.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{glass.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{glass.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{glass.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{glass.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{glass.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{glass.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{glass.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{glass.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{glass.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{glass.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{glass.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{glass.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{glass.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{glass.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{glass.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{glass.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{glass.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{glass.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{glass.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{glass.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{glass.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{glass.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{glass.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{glass.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{glass.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{glass.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{glass.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{glass.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{glass.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{glass.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{glass.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{glass.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{glass.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{glass.sys.data-1}"
+        },
+        "2": {
+          "$value": "{glass.sys.data-2}"
+        },
+        "3": {
+          "$value": "{glass.sys.data-3}"
+        },
+        "4": {
+          "$value": "{glass.sys.data-4}"
+        },
+        "5": {
+          "$value": "{glass.sys.data-5}"
+        },
+        "6": {
+          "$value": "{glass.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{glass.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{glass.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{glass.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{glass.font.display}",
+          "fontSize": "{glass.text.title-page}",
+          "fontWeight": "{glass.weight.600}",
+          "lineHeight": 1.2,
+          "letterSpacing": {
+            "value": -0.4,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{glass.font.display}",
+          "fontSize": "{glass.text.title-section}",
+          "fontWeight": "{glass.weight.600}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": -0.2,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{glass.font.display}",
+          "fontSize": "{glass.text.title-item}",
+          "fontWeight": "{glass.weight.600}",
+          "lineHeight": 1.35,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{glass.font.body}",
+          "fontSize": "{glass.text.body-default}",
+          "fontWeight": "{glass.weight.400}",
+          "lineHeight": 1.55,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{glass.font.body}",
+          "fontSize": "{glass.text.body-small}",
+          "fontWeight": "{glass.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{glass.font.label}",
+          "fontSize": "{glass.text.label-default}",
+          "fontWeight": "{glass.weight.500}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{glass.font.label}",
+          "fontSize": "{glass.text.label-small}",
+          "fontWeight": "{glass.weight.500}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.2,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{glass.font.display}",
+          "fontSize": "{glass.text.numeric-display}",
+          "fontWeight": "{glass.weight.600}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": -0.4,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{glass.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{glass.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{glass.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{glass.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{glass.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{glass.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{glass.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{glass.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{glass.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{glass.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{glass.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{glass.size.icon-small}"
+      },
+      "default": {
+        "$value": "{glass.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{glass.radius.small}"
+    },
+    "control": {
+      "$value": "{glass.radius.control}"
+    },
+    "default": {
+      "$value": "{glass.radius.default}"
+    },
+    "large": {
+      "$value": "{glass.radius.large}"
+    },
+    "full": {
+      "$value": "{glass.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{glass.border.default}"
+      },
+      "strong": {
+        "$value": "{glass.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{glass.focus.width}"
+      },
+      "offset": {
+        "$value": "{glass.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{glass.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{glass.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{glass.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{glass.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{glass.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{glass.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{glass.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{glass.duration.instant}"
+      },
+      "short": {
+        "$value": "{glass.duration.short}"
+      },
+      "medium": {
+        "$value": "{glass.duration.medium}"
+      },
+      "long": {
+        "$value": "{glass.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{glass.ease.standard}"
+      },
+      "enter": {
+        "$value": "{glass.ease.enter}"
+      },
+      "exit": {
+        "$value": "{glass.ease.exit}"
+      }
+    }
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "$description": "Terminal, dark mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "terminal": {
+    "palette": {
+      "$type": "color",
+      "bg": {
+        "$value": "#0b0f0c"
+      },
+      "bg-1": {
+        "$value": "#121a14"
+      },
+      "bg-2": {
+        "$value": "#0f1511"
+      },
+      "bg-3": {
+        "$value": "#151d17"
+      },
+      "fg": {
+        "$value": "#d6e9d6"
+      },
+      "fg-dim": {
+        "$value": "#8fb08f"
+      },
+      "fg-bright": {
+        "$value": "#e8ffe8"
+      },
+      "line": {
+        "$value": "#24312a"
+      },
+      "line-strong": {
+        "$value": "#527058"
+      },
+      "green": {
+        "$value": "#3fb950"
+      },
+      "green-bright": {
+        "$value": "#7ee787"
+      },
+      "green-wash": {
+        "$value": "#0f2a17"
+      },
+      "green-pale": {
+        "$value": "#8de39c"
+      },
+      "amber": {
+        "$value": "#ffb000"
+      },
+      "amber-wash": {
+        "$value": "#2e2308"
+      },
+      "amber-pale": {
+        "$value": "#ffd27a"
+      },
+      "red": {
+        "$value": "#ff6b5b"
+      },
+      "red-wash": {
+        "$value": "#331512"
+      },
+      "red-pale": {
+        "$value": "#ffa198"
+      },
+      "cyan": {
+        "$value": "#4cc2e6"
+      },
+      "cyan-wash": {
+        "$value": "#12262e"
+      },
+      "cyan-pale": {
+        "$value": "#8fd8f0"
+      },
+      "magenta": {
+        "$value": "#d59bff"
+      },
+      "white": {
+        "$value": "#e6e6e6"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{terminal.palette.bg}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{terminal.palette.bg-1}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{terminal.palette.bg-2}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{terminal.palette.bg-3}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{terminal.palette.fg-bright}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(0, 0, 0, 0.7)"
+      },
+      "text-default": {
+        "$value": "{terminal.palette.fg}"
+      },
+      "text-muted": {
+        "$value": "{terminal.palette.fg-dim}"
+      },
+      "text-inverse": {
+        "$value": "{terminal.palette.bg}"
+      },
+      "text-link": {
+        "$value": "{terminal.palette.green-bright}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{terminal.palette.line}"
+      },
+      "border-strong": {
+        "$value": "{terminal.palette.line-strong}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{terminal.palette.amber}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{terminal.palette.green}"
+      },
+      "action-primary-foreground": {
+        "$value": "{terminal.palette.bg}"
+      },
+      "action-secondary-background": {
+        "$value": "{terminal.palette.bg-1}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{terminal.palette.fg}"
+      },
+      "action-secondary-border": {
+        "$value": "{terminal.palette.line-strong}"
+      },
+      "action-danger-background": {
+        "$value": "{terminal.palette.red}"
+      },
+      "action-danger-foreground": {
+        "$value": "{terminal.palette.bg}"
+      },
+      "selection-background": {
+        "$value": "{terminal.palette.green-wash}"
+      },
+      "selection-foreground": {
+        "$value": "{terminal.palette.green-pale}"
+      },
+      "status-info-background": {
+        "$value": "{terminal.palette.cyan-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{terminal.palette.cyan-pale}"
+      },
+      "status-info-emphasis": {
+        "$value": "{terminal.palette.cyan}"
+      },
+      "status-success-background": {
+        "$value": "{terminal.palette.green-wash}"
+      },
+      "status-success-foreground": {
+        "$value": "{terminal.palette.green-pale}"
+      },
+      "status-success-emphasis": {
+        "$value": "{terminal.palette.green}"
+      },
+      "status-warning-background": {
+        "$value": "{terminal.palette.amber-wash}"
+      },
+      "status-warning-foreground": {
+        "$value": "{terminal.palette.amber-pale}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{terminal.palette.amber}"
+      },
+      "status-danger-background": {
+        "$value": "{terminal.palette.red-wash}"
+      },
+      "status-danger-foreground": {
+        "$value": "{terminal.palette.red-pale}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{terminal.palette.red}"
+      },
+      "data-1": {
+        "$value": "{terminal.palette.green}"
+      },
+      "data-2": {
+        "$value": "{terminal.palette.amber}"
+      },
+      "data-3": {
+        "$value": "{terminal.palette.cyan}"
+      },
+      "data-4": {
+        "$value": "{terminal.palette.red}"
+      },
+      "data-5": {
+        "$value": "{terminal.palette.magenta}"
+      },
+      "data-6": {
+        "$value": "{terminal.palette.white}"
+      },
+      "data-positive": {
+        "$value": "{terminal.palette.green}"
+      },
+      "data-negative": {
+        "$value": "{terminal.palette.red}"
+      },
+      "data-neutral": {
+        "$value": "{terminal.palette.fg-dim}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 1,
+              "unit": "px"
+            },
+            "color": "#527058"
+          }
+        ]
+      }
+    }
+  }
+}

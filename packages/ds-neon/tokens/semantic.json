@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Neon template. Every token aliases a neon.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{neon.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{neon.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{neon.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{neon.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{neon.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{neon.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{neon.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{neon.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{neon.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{neon.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{neon.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{neon.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{neon.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{neon.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{neon.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{neon.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{neon.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{neon.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{neon.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{neon.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{neon.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{neon.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{neon.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{neon.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{neon.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{neon.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{neon.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{neon.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{neon.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{neon.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{neon.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{neon.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{neon.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{neon.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{neon.sys.data-1}"
+        },
+        "2": {
+          "$value": "{neon.sys.data-2}"
+        },
+        "3": {
+          "$value": "{neon.sys.data-3}"
+        },
+        "4": {
+          "$value": "{neon.sys.data-4}"
+        },
+        "5": {
+          "$value": "{neon.sys.data-5}"
+        },
+        "6": {
+          "$value": "{neon.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{neon.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{neon.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{neon.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{neon.font.display}",
+          "fontSize": "{neon.text.title-page}",
+          "fontWeight": "{neon.weight.700}",
+          "lineHeight": 1.1,
+          "letterSpacing": {
+            "value": -0.8,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{neon.font.display}",
+          "fontSize": "{neon.text.title-section}",
+          "fontWeight": "{neon.weight.700}",
+          "lineHeight": 1.2,
+          "letterSpacing": {
+            "value": -0.4,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{neon.font.display}",
+          "fontSize": "{neon.text.title-item}",
+          "fontWeight": "{neon.weight.600}",
+          "lineHeight": 1.3,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{neon.font.body}",
+          "fontSize": "{neon.text.body-default}",
+          "fontWeight": "{neon.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{neon.font.body}",
+          "fontSize": "{neon.text.body-small}",
+          "fontWeight": "{neon.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{neon.font.label}",
+          "fontSize": "{neon.text.label-default}",
+          "fontWeight": "{neon.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.6,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{neon.font.label}",
+          "fontSize": "{neon.text.label-small}",
+          "fontWeight": "{neon.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 1,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{neon.font.display}",
+          "fontSize": "{neon.text.numeric-display}",
+          "fontWeight": "{neon.weight.700}",
+          "lineHeight": 1.05,
+          "letterSpacing": {
+            "value": -0.8,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{neon.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{neon.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{neon.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{neon.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{neon.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{neon.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{neon.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{neon.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{neon.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{neon.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{neon.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{neon.size.icon-small}"
+      },
+      "default": {
+        "$value": "{neon.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{neon.radius.small}"
+    },
+    "control": {
+      "$value": "{neon.radius.control}"
+    },
+    "default": {
+      "$value": "{neon.radius.default}"
+    },
+    "large": {
+      "$value": "{neon.radius.large}"
+    },
+    "full": {
+      "$value": "{neon.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{neon.border.default}"
+      },
+      "strong": {
+        "$value": "{neon.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{neon.focus.width}"
+      },
+      "offset": {
+        "$value": "{neon.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{neon.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{neon.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{neon.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{neon.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{neon.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{neon.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{neon.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{neon.duration.instant}"
+      },
+      "short": {
+        "$value": "{neon.duration.short}"
+      },
+      "medium": {
+        "$value": "{neon.duration.medium}"
+      },
+      "long": {
+        "$value": "{neon.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{neon.ease.standard}"
+      },
+      "enter": {
+        "$value": "{neon.ease.enter}"
+      },
+      "exit": {
+        "$value": "{neon.ease.exit}"
+      }
+    }
+  }
+}

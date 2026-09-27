@@ -26,6 +26,8 @@ export interface DesignSystemManifest {
   defaultMode: string;
   /** Layout variables the renderer defines and this pack sets; see the schema. */
   layout?: Record<string, string>;
+  /** A stylesheet, relative to the manifest, that the theme compiler appends verbatim; see the schema. */
+  extras?: string;
 }
 
 export interface ContractIssue {

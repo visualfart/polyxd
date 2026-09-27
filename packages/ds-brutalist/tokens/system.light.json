@@ -1,0 +1,242 @@
+{
+  "$description": "Brutalist, light mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "brutalist": {
+    "palette": {
+      "$type": "color",
+      "white": {
+        "$value": "#ffffff"
+      },
+      "black": {
+        "$value": "#000000"
+      },
+      "yellow": {
+        "$value": "#ffe600"
+      },
+      "yellow-pale": {
+        "$value": "#fff6b3"
+      },
+      "grey": {
+        "$value": "#5c5c5c"
+      },
+      "grey-dark": {
+        "$value": "#333333"
+      },
+      "blue": {
+        "$value": "#1400ff"
+      },
+      "blue-wash": {
+        "$value": "#cfe8ff"
+      },
+      "red": {
+        "$value": "#d10000"
+      },
+      "red-bright": {
+        "$value": "#ff2d2d"
+      },
+      "red-wash": {
+        "$value": "#ffc9c9"
+      },
+      "green": {
+        "$value": "#007a1f"
+      },
+      "green-wash": {
+        "$value": "#c8f7c5"
+      },
+      "olive": {
+        "$value": "#7a6100"
+      },
+      "magenta": {
+        "$value": "#c400a0"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{brutalist.palette.white}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{brutalist.palette.yellow-pale}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{brutalist.palette.white}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{brutalist.palette.yellow}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{brutalist.palette.black}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(0, 0, 0, 0.7)"
+      },
+      "text-default": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "text-muted": {
+        "$value": "{brutalist.palette.grey-dark}"
+      },
+      "text-inverse": {
+        "$value": "{brutalist.palette.yellow}"
+      },
+      "text-link": {
+        "$value": "{brutalist.palette.blue}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "border-strong": {
+        "$value": "{brutalist.palette.black}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{brutalist.palette.blue}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "action-primary-foreground": {
+        "$value": "{brutalist.palette.yellow}"
+      },
+      "action-secondary-background": {
+        "$value": "{brutalist.palette.yellow}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "action-secondary-border": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "action-danger-background": {
+        "$value": "{brutalist.palette.red-bright}"
+      },
+      "action-danger-foreground": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "selection-background": {
+        "$value": "{brutalist.palette.yellow}"
+      },
+      "selection-foreground": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "status-info-background": {
+        "$value": "{brutalist.palette.blue-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "status-info-emphasis": {
+        "$value": "{brutalist.palette.blue}"
+      },
+      "status-success-background": {
+        "$value": "{brutalist.palette.green-wash}"
+      },
+      "status-success-foreground": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "status-success-emphasis": {
+        "$value": "{brutalist.palette.green}"
+      },
+      "status-warning-background": {
+        "$value": "{brutalist.palette.yellow}"
+      },
+      "status-warning-foreground": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{brutalist.palette.olive}"
+      },
+      "status-danger-background": {
+        "$value": "{brutalist.palette.red-wash}"
+      },
+      "status-danger-foreground": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{brutalist.palette.red}"
+      },
+      "data-1": {
+        "$value": "{brutalist.palette.black}"
+      },
+      "data-2": {
+        "$value": "{brutalist.palette.blue}"
+      },
+      "data-3": {
+        "$value": "{brutalist.palette.red}"
+      },
+      "data-4": {
+        "$value": "{brutalist.palette.green}"
+      },
+      "data-5": {
+        "$value": "{brutalist.palette.olive}"
+      },
+      "data-6": {
+        "$value": "{brutalist.palette.magenta}"
+      },
+      "data-positive": {
+        "$value": "{brutalist.palette.green}"
+      },
+      "data-negative": {
+        "$value": "{brutalist.palette.red}"
+      },
+      "data-neutral": {
+        "$value": "{brutalist.palette.grey}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 4,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 4,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "#000000"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 8,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 8,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "#000000"
+          }
+        ]
+      }
+    }
+  }
+}

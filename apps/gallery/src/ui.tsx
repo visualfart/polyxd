@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { Fragment, useEffect, useId, useRef, useState } from "react";
 
 const PATHS: Record<string, string> = {
   search: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.3-4.3",
@@ -29,6 +29,8 @@ export interface Pack {
   key: string;
   name: string;
   by: string;
+  /** Packs with the same group sit under one heading in the picker: real design systems, then templates. */
+  group?: string;
 }
 
 /** A pack's own primary colour and body typeface, read from the theme it compiled. */
@@ -140,22 +142,28 @@ export function PackPicker({ packs, value, onChange }: { packs: Pack[]; value: s
           }}
         >
           {packs.map((p, i) => (
-            <li
-              key={p.key}
-              id={`${id}-${i}`}
-              role="option"
-              aria-selected={p.key === value}
-              className={`g-option${i === active ? " g-option-active" : ""}`}
-              onMouseEnter={() => setActive(i)}
-              onClick={() => choose(i)}
-            >
-              <Specimen style={styles[p.key]} size={32} />
-              <span className="g-picker-text">
-                <span className="g-picker-name">{p.name}</span>
-                <span className="g-picker-by">{p.by}</span>
-              </span>
-              {p.key === value && <Icon name="check" size={18} />}
-            </li>
+            <Fragment key={p.key}>
+              {p.group && p.group !== packs[i - 1]?.group && (
+                <li className="g-listbox-group" role="presentation">
+                  {p.group}
+                </li>
+              )}
+              <li
+                id={`${id}-${i}`}
+                role="option"
+                aria-selected={p.key === value}
+                className={`g-option${i === active ? " g-option-active" : ""}`}
+                onMouseEnter={() => setActive(i)}
+                onClick={() => choose(i)}
+              >
+                <Specimen style={styles[p.key]} size={32} />
+                <span className="g-picker-text">
+                  <span className="g-picker-name">{p.name}</span>
+                  <span className="g-picker-by">{p.by}</span>
+                </span>
+                {p.key === value && <Icon name="check" size={18} />}
+              </li>
+            </Fragment>
           ))}
           <li className="g-listbox-note" role="presentation">
             Same UI document. Only the pack changes.

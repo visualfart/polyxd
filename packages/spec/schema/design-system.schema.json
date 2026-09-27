@@ -29,6 +29,15 @@
       "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
       "additionalProperties": { "type": "string" }
     },
+    "template": {
+      "type": "boolean",
+      "description": "True for an original Polyxd template: a pack meant to be copied and changed, counted apart from the packs that reproduce a real design system."
+    },
+    "extras": {
+      "type": "string",
+      "pattern": "\\.css$",
+      "description": "Optional stylesheet, relative to the manifest, that the theme compiler appends verbatim to the pack's theme CSS: the few things tokens can't express, such as a hand-drawn pack's uneven radii or a wireframe's dashed borders. Every rule must be scoped by [data-pxd-theme=\"<name>\"], and it may name no colour of its own — only var(--pxd-…) tokens — so the compiler rejects it otherwise."
+    },
     "provenance": {
       "type": "array",
       "description": "Where the values came from, so packs stay auditable",

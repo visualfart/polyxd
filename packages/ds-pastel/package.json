@@ -1,0 +1,28 @@
+{
+  "name": "@polyxd/ds-pastel",
+  "version": "0.3.0",
+  "description": "Pastel template pack for Polyxd (DTCG 2025.10 tokens): an original design to start from and make your own",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "manifest.json",
+    "tokens",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "check": "node ../spec/src/cli/check-design-system.ts manifest.json",
+    "test": "npm run check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualfart/polyxd.git",
+    "directory": "packages/ds-pastel"
+  },
+  "homepage": "https://polyxd.com/docs/design-systems/",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "publishConfig": {
+    "access": "public"
+  }
+}

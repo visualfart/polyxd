@@ -77,7 +77,7 @@ It reads your CSS custom properties, maps what it can onto the contract, writes 
 | [`@polyxd/a2ui`](https://www.npmjs.com/package/@polyxd/a2ui) | Export to A2UI v1.0 |
 | [`polyxd`](https://www.npmjs.com/package/polyxd) | The `polyxd` command: `pack` and `check` |
 | [`@polyxd/ds-kit`](https://www.npmjs.com/package/@polyxd/ds-kit) | The library behind `polyxd pack` |
-| `@polyxd/ds-*` | The thirteen packs as DTCG tokens, for building your own themes. The renderer already includes their CSS |
+| `@polyxd/ds-*` | The thirteen packs as DTCG tokens, for building your own themes, plus twelve original templates to start from (`sketch`, `wireframe`, `editorial`, `brutalist`, `glass`, `terminal`, `pastel`, `civic`, `finance`, `health`, `neon`, `mono`). The renderer already includes their CSS |
 
 ### From source
 
@@ -114,7 +114,7 @@ Polyxd ships no model. Any model or program that emits spec-valid JSON drives it
 | `packages/spec` | The spec: components, patterns, token contract, validator, JSON Schema |
 | `packages/react` | The React renderer and the compiled theme CSS for every pack |
 | `packages/verifier` | Static, rendered and agent checks; the benchmark scorer |
-| `packages/ds-*` | Thirteen design-system packs, each generated from vendored, version-pinned sources |
+| `packages/ds-*` | Thirteen design-system packs, each generated from vendored, version-pinned sources, plus twelve original templates (`"template": true` in the manifest) meant to be copied and changed |
 | `packages/ds-kit` | Builds packs — including the `polyxd pack` command for yours |
 | `packages/a2ui` | Export to A2UI v1.0 |
 | `apps/gallery`, `apps/site` | The gallery and polyxd.com |

@@ -1,0 +1,272 @@
+{
+  "$description": "Health, light mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "health": {
+    "palette": {
+      "$type": "color",
+      "cream": {
+        "$value": "#fdfbf6"
+      },
+      "mist": {
+        "$value": "#f1f4f0"
+      },
+      "white": {
+        "$value": "#ffffff"
+      },
+      "deep-teal": {
+        "$value": "#13403f"
+      },
+      "ink": {
+        "$value": "#1f2d2c"
+      },
+      "ink-soft": {
+        "$value": "#4e6b69"
+      },
+      "line": {
+        "$value": "#d6ddd9"
+      },
+      "line-strong": {
+        "$value": "#6f8a87"
+      },
+      "teal": {
+        "$value": "#0f6e6a"
+      },
+      "teal-wash": {
+        "$value": "#e4f1ef"
+      },
+      "teal-line": {
+        "$value": "#b6d3cf"
+      },
+      "teal-select": {
+        "$value": "#d9efe9"
+      },
+      "terracotta": {
+        "$value": "#b5432f"
+      },
+      "terracotta-deep": {
+        "$value": "#7f2a20"
+      },
+      "terracotta-wash": {
+        "$value": "#f9e2dd"
+      },
+      "sea": {
+        "$value": "#2f7fa8"
+      },
+      "sea-deep": {
+        "$value": "#1e4b66"
+      },
+      "sea-wash": {
+        "$value": "#e2eef5"
+      },
+      "leaf": {
+        "$value": "#2f8a52"
+      },
+      "leaf-deep": {
+        "$value": "#1e5a34"
+      },
+      "leaf-wash": {
+        "$value": "#e2f2e6"
+      },
+      "apricot": {
+        "$value": "#c17a1d"
+      },
+      "apricot-deep": {
+        "$value": "#6e4210"
+      },
+      "apricot-wash": {
+        "$value": "#fbecd9"
+      },
+      "lilac": {
+        "$value": "#8a5fa8"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{health.palette.cream}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{health.palette.mist}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{health.palette.white}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{health.palette.white}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{health.palette.deep-teal}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(19, 64, 63, 0.45)"
+      },
+      "text-default": {
+        "$value": "{health.palette.ink}"
+      },
+      "text-muted": {
+        "$value": "{health.palette.ink-soft}"
+      },
+      "text-inverse": {
+        "$value": "{health.palette.cream}"
+      },
+      "text-link": {
+        "$value": "{health.palette.teal}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{health.palette.line}"
+      },
+      "border-strong": {
+        "$value": "{health.palette.line-strong}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{health.palette.teal}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{health.palette.teal}"
+      },
+      "action-primary-foreground": {
+        "$value": "{health.palette.white}"
+      },
+      "action-secondary-background": {
+        "$value": "{health.palette.teal-wash}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{health.palette.deep-teal}"
+      },
+      "action-secondary-border": {
+        "$value": "{health.palette.teal-line}"
+      },
+      "action-danger-background": {
+        "$value": "{health.palette.terracotta}"
+      },
+      "action-danger-foreground": {
+        "$value": "{health.palette.white}"
+      },
+      "selection-background": {
+        "$value": "{health.palette.teal-select}"
+      },
+      "selection-foreground": {
+        "$value": "{health.palette.deep-teal}"
+      },
+      "status-info-background": {
+        "$value": "{health.palette.sea-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{health.palette.sea-deep}"
+      },
+      "status-info-emphasis": {
+        "$value": "{health.palette.sea}"
+      },
+      "status-success-background": {
+        "$value": "{health.palette.leaf-wash}"
+      },
+      "status-success-foreground": {
+        "$value": "{health.palette.leaf-deep}"
+      },
+      "status-success-emphasis": {
+        "$value": "{health.palette.leaf}"
+      },
+      "status-warning-background": {
+        "$value": "{health.palette.apricot-wash}"
+      },
+      "status-warning-foreground": {
+        "$value": "{health.palette.apricot-deep}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{health.palette.apricot}"
+      },
+      "status-danger-background": {
+        "$value": "{health.palette.terracotta-wash}"
+      },
+      "status-danger-foreground": {
+        "$value": "{health.palette.terracotta-deep}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{health.palette.terracotta}"
+      },
+      "data-1": {
+        "$value": "{health.palette.teal}"
+      },
+      "data-2": {
+        "$value": "{health.palette.apricot}"
+      },
+      "data-3": {
+        "$value": "{health.palette.sea}"
+      },
+      "data-4": {
+        "$value": "{health.palette.lilac}"
+      },
+      "data-5": {
+        "$value": "{health.palette.leaf}"
+      },
+      "data-6": {
+        "$value": "{health.palette.terracotta}"
+      },
+      "data-positive": {
+        "$value": "{health.palette.leaf}"
+      },
+      "data-negative": {
+        "$value": "{health.palette.terracotta}"
+      },
+      "data-neutral": {
+        "$value": "{health.palette.line-strong}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 2,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 8,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(19, 64, 63, 0.06)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 12,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 32,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(19, 64, 63, 0.18)"
+          }
+        ]
+      }
+    }
+  }
+}

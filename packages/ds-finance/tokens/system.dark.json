@@ -1,0 +1,272 @@
+{
+  "$description": "Finance, dark mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "finance": {
+    "palette": {
+      "$type": "color",
+      "navy-night": {
+        "$value": "#0b1424"
+      },
+      "navy-deep": {
+        "$value": "#111d33"
+      },
+      "navy-raised": {
+        "$value": "#0f1a2e"
+      },
+      "navy-lift": {
+        "$value": "#152340"
+      },
+      "cool-100": {
+        "$value": "#e8ecf3"
+      },
+      "cool-300": {
+        "$value": "#a5b0c4"
+      },
+      "cool-500": {
+        "$value": "#8a97ad"
+      },
+      "line": {
+        "$value": "#26344d"
+      },
+      "line-strong": {
+        "$value": "#6f7f9c"
+      },
+      "sky": {
+        "$value": "#9dbdf5"
+      },
+      "sky-mid": {
+        "$value": "#7fa8ef"
+      },
+      "sky-pale": {
+        "$value": "#bcd4ff"
+      },
+      "sky-wash": {
+        "$value": "#152b4d"
+      },
+      "gold": {
+        "$value": "#e2b93b"
+      },
+      "gold-ink": {
+        "$value": "#1a1300"
+      },
+      "gold-pale": {
+        "$value": "#f5dd8a"
+      },
+      "gold-wash": {
+        "$value": "#3b3212"
+      },
+      "red": {
+        "$value": "#f26b6b"
+      },
+      "red-ink": {
+        "$value": "#2a0707"
+      },
+      "red-pale": {
+        "$value": "#ffb3b3"
+      },
+      "red-wash": {
+        "$value": "#3f1414"
+      },
+      "green": {
+        "$value": "#4fbf7f"
+      },
+      "green-pale": {
+        "$value": "#a6e3c2"
+      },
+      "green-wash": {
+        "$value": "#0f3324"
+      },
+      "lilac": {
+        "$value": "#c1a0ff"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{finance.palette.navy-night}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{finance.palette.navy-deep}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{finance.palette.navy-raised}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{finance.palette.navy-lift}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{finance.palette.cool-100}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(0, 0, 0, 0.6)"
+      },
+      "text-default": {
+        "$value": "{finance.palette.cool-100}"
+      },
+      "text-muted": {
+        "$value": "{finance.palette.cool-300}"
+      },
+      "text-inverse": {
+        "$value": "{finance.palette.navy-night}"
+      },
+      "text-link": {
+        "$value": "{finance.palette.sky}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{finance.palette.line}"
+      },
+      "border-strong": {
+        "$value": "{finance.palette.line-strong}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{finance.palette.gold}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{finance.palette.gold}"
+      },
+      "action-primary-foreground": {
+        "$value": "{finance.palette.gold-ink}"
+      },
+      "action-secondary-background": {
+        "$value": "{finance.palette.navy-night}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{finance.palette.cool-100}"
+      },
+      "action-secondary-border": {
+        "$value": "{finance.palette.line-strong}"
+      },
+      "action-danger-background": {
+        "$value": "{finance.palette.red}"
+      },
+      "action-danger-foreground": {
+        "$value": "{finance.palette.red-ink}"
+      },
+      "selection-background": {
+        "$value": "{finance.palette.gold-wash}"
+      },
+      "selection-foreground": {
+        "$value": "{finance.palette.gold-pale}"
+      },
+      "status-info-background": {
+        "$value": "{finance.palette.sky-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{finance.palette.sky-pale}"
+      },
+      "status-info-emphasis": {
+        "$value": "{finance.palette.sky-mid}"
+      },
+      "status-success-background": {
+        "$value": "{finance.palette.green-wash}"
+      },
+      "status-success-foreground": {
+        "$value": "{finance.palette.green-pale}"
+      },
+      "status-success-emphasis": {
+        "$value": "{finance.palette.green}"
+      },
+      "status-warning-background": {
+        "$value": "{finance.palette.gold-wash}"
+      },
+      "status-warning-foreground": {
+        "$value": "{finance.palette.gold-pale}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{finance.palette.gold}"
+      },
+      "status-danger-background": {
+        "$value": "{finance.palette.red-wash}"
+      },
+      "status-danger-foreground": {
+        "$value": "{finance.palette.red-pale}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{finance.palette.red}"
+      },
+      "data-1": {
+        "$value": "{finance.palette.gold}"
+      },
+      "data-2": {
+        "$value": "{finance.palette.sky-mid}"
+      },
+      "data-3": {
+        "$value": "{finance.palette.green}"
+      },
+      "data-4": {
+        "$value": "{finance.palette.red}"
+      },
+      "data-5": {
+        "$value": "{finance.palette.lilac}"
+      },
+      "data-6": {
+        "$value": "{finance.palette.cool-300}"
+      },
+      "data-positive": {
+        "$value": "{finance.palette.green}"
+      },
+      "data-negative": {
+        "$value": "{finance.palette.red}"
+      },
+      "data-neutral": {
+        "$value": "{finance.palette.cool-500}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 2,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.4)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 12,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 32,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.6)"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Health template. Every token aliases a health.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{health.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{health.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{health.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{health.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{health.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{health.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{health.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{health.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{health.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{health.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{health.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{health.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{health.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{health.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{health.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{health.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{health.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{health.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{health.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{health.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{health.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{health.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{health.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{health.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{health.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{health.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{health.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{health.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{health.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{health.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{health.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{health.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{health.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{health.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{health.sys.data-1}"
+        },
+        "2": {
+          "$value": "{health.sys.data-2}"
+        },
+        "3": {
+          "$value": "{health.sys.data-3}"
+        },
+        "4": {
+          "$value": "{health.sys.data-4}"
+        },
+        "5": {
+          "$value": "{health.sys.data-5}"
+        },
+        "6": {
+          "$value": "{health.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{health.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{health.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{health.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{health.font.display}",
+          "fontSize": "{health.text.title-page}",
+          "fontWeight": "{health.weight.600}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": -0.2,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{health.font.display}",
+          "fontSize": "{health.text.title-section}",
+          "fontWeight": "{health.weight.600}",
+          "lineHeight": 1.3,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{health.font.display}",
+          "fontSize": "{health.text.title-item}",
+          "fontWeight": "{health.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{health.font.body}",
+          "fontSize": "{health.text.body-default}",
+          "fontWeight": "{health.weight.400}",
+          "lineHeight": 1.6,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{health.font.body}",
+          "fontSize": "{health.text.body-small}",
+          "fontWeight": "{health.weight.400}",
+          "lineHeight": 1.55,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{health.font.label}",
+          "fontSize": "{health.text.label-default}",
+          "fontWeight": "{health.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{health.font.label}",
+          "fontSize": "{health.text.label-small}",
+          "fontWeight": "{health.weight.600}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.1,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{health.font.display}",
+          "fontSize": "{health.text.numeric-display}",
+          "fontWeight": "{health.weight.600}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": -0.2,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{health.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{health.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{health.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{health.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{health.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{health.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{health.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{health.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{health.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{health.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{health.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{health.size.icon-small}"
+      },
+      "default": {
+        "$value": "{health.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{health.radius.small}"
+    },
+    "control": {
+      "$value": "{health.radius.control}"
+    },
+    "default": {
+      "$value": "{health.radius.default}"
+    },
+    "large": {
+      "$value": "{health.radius.large}"
+    },
+    "full": {
+      "$value": "{health.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{health.border.default}"
+      },
+      "strong": {
+        "$value": "{health.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{health.focus.width}"
+      },
+      "offset": {
+        "$value": "{health.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{health.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{health.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{health.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{health.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{health.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{health.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{health.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{health.duration.instant}"
+      },
+      "short": {
+        "$value": "{health.duration.short}"
+      },
+      "medium": {
+        "$value": "{health.duration.medium}"
+      },
+      "long": {
+        "$value": "{health.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{health.ease.standard}"
+      },
+      "enter": {
+        "$value": "{health.ease.enter}"
+      },
+      "exit": {
+        "$value": "{health.ease.exit}"
+      }
+    }
+  }
+}

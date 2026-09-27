@@ -1,0 +1,287 @@
+{
+  "$description": "Pastel, dark mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "pastel": {
+    "palette": {
+      "$type": "color",
+      "plum-night": {
+        "$value": "#221e2e"
+      },
+      "plum-deep": {
+        "$value": "#2c2739"
+      },
+      "plum-raised": {
+        "$value": "#2a2536"
+      },
+      "plum-lift": {
+        "$value": "#332d42"
+      },
+      "lavender-wash": {
+        "$value": "#f3eefb"
+      },
+      "lavender-text": {
+        "$value": "#f1ecf8"
+      },
+      "lavender-soft": {
+        "$value": "#b8b0c9"
+      },
+      "line": {
+        "$value": "#3e3850"
+      },
+      "line-strong": {
+        "$value": "#8a80a3"
+      },
+      "lilac": {
+        "$value": "#c4b3ff"
+      },
+      "lilac-fill": {
+        "$value": "#b6a4ff"
+      },
+      "lilac-ink": {
+        "$value": "#22173f"
+      },
+      "mint-dark": {
+        "$value": "#213a31"
+      },
+      "mint-pale": {
+        "$value": "#bfe9d4"
+      },
+      "mint-line": {
+        "$value": "#3f6b57"
+      },
+      "mint": {
+        "$value": "#6fcf9a"
+      },
+      "peach-dark": {
+        "$value": "#4a3328"
+      },
+      "peach-pale": {
+        "$value": "#ffd3bd"
+      },
+      "peach": {
+        "$value": "#ffab8f"
+      },
+      "coral": {
+        "$value": "#ff8f80"
+      },
+      "coral-ink": {
+        "$value": "#3d0f0a"
+      },
+      "coral-dark": {
+        "$value": "#4a2626"
+      },
+      "coral-pale": {
+        "$value": "#ffb8b0"
+      },
+      "sky-dark": {
+        "$value": "#24344d"
+      },
+      "sky-pale": {
+        "$value": "#b9d4ff"
+      },
+      "sky": {
+        "$value": "#8ab4f2"
+      },
+      "butter-dark": {
+        "$value": "#3f3220"
+      },
+      "butter-pale": {
+        "$value": "#ffd89a"
+      },
+      "butter": {
+        "$value": "#e5a94a"
+      },
+      "rose": {
+        "$value": "#f2a0cf"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{pastel.palette.plum-night}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{pastel.palette.plum-deep}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{pastel.palette.plum-raised}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{pastel.palette.plum-lift}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{pastel.palette.lavender-wash}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(0, 0, 0, 0.55)"
+      },
+      "text-default": {
+        "$value": "{pastel.palette.lavender-text}"
+      },
+      "text-muted": {
+        "$value": "{pastel.palette.lavender-soft}"
+      },
+      "text-inverse": {
+        "$value": "{pastel.palette.plum-night}"
+      },
+      "text-link": {
+        "$value": "{pastel.palette.lilac}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{pastel.palette.line}"
+      },
+      "border-strong": {
+        "$value": "{pastel.palette.line-strong}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{pastel.palette.lilac}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{pastel.palette.lilac-fill}"
+      },
+      "action-primary-foreground": {
+        "$value": "{pastel.palette.lilac-ink}"
+      },
+      "action-secondary-background": {
+        "$value": "{pastel.palette.mint-dark}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{pastel.palette.mint-pale}"
+      },
+      "action-secondary-border": {
+        "$value": "{pastel.palette.mint-line}"
+      },
+      "action-danger-background": {
+        "$value": "{pastel.palette.coral}"
+      },
+      "action-danger-foreground": {
+        "$value": "{pastel.palette.coral-ink}"
+      },
+      "selection-background": {
+        "$value": "{pastel.palette.peach-dark}"
+      },
+      "selection-foreground": {
+        "$value": "{pastel.palette.peach-pale}"
+      },
+      "status-info-background": {
+        "$value": "{pastel.palette.sky-dark}"
+      },
+      "status-info-foreground": {
+        "$value": "{pastel.palette.sky-pale}"
+      },
+      "status-info-emphasis": {
+        "$value": "{pastel.palette.sky}"
+      },
+      "status-success-background": {
+        "$value": "{pastel.palette.mint-dark}"
+      },
+      "status-success-foreground": {
+        "$value": "{pastel.palette.mint-pale}"
+      },
+      "status-success-emphasis": {
+        "$value": "{pastel.palette.mint}"
+      },
+      "status-warning-background": {
+        "$value": "{pastel.palette.butter-dark}"
+      },
+      "status-warning-foreground": {
+        "$value": "{pastel.palette.butter-pale}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{pastel.palette.butter}"
+      },
+      "status-danger-background": {
+        "$value": "{pastel.palette.coral-dark}"
+      },
+      "status-danger-foreground": {
+        "$value": "{pastel.palette.coral-pale}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{pastel.palette.coral}"
+      },
+      "data-1": {
+        "$value": "{pastel.palette.lilac-fill}"
+      },
+      "data-2": {
+        "$value": "{pastel.palette.mint}"
+      },
+      "data-3": {
+        "$value": "{pastel.palette.peach}"
+      },
+      "data-4": {
+        "$value": "{pastel.palette.sky}"
+      },
+      "data-5": {
+        "$value": "{pastel.palette.butter}"
+      },
+      "data-6": {
+        "$value": "{pastel.palette.rose}"
+      },
+      "data-positive": {
+        "$value": "{pastel.palette.mint}"
+      },
+      "data-negative": {
+        "$value": "{pastel.palette.coral}"
+      },
+      "data-neutral": {
+        "$value": "{pastel.palette.line-strong}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 4,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 16,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.25)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 16,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 40,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.45)"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Sketch template. Every token aliases a sketch.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{sketch.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{sketch.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{sketch.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{sketch.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{sketch.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{sketch.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{sketch.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{sketch.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{sketch.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{sketch.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{sketch.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{sketch.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{sketch.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{sketch.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{sketch.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{sketch.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{sketch.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{sketch.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{sketch.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{sketch.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{sketch.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{sketch.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{sketch.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{sketch.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{sketch.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{sketch.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{sketch.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{sketch.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{sketch.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{sketch.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{sketch.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{sketch.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{sketch.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{sketch.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{sketch.sys.data-1}"
+        },
+        "2": {
+          "$value": "{sketch.sys.data-2}"
+        },
+        "3": {
+          "$value": "{sketch.sys.data-3}"
+        },
+        "4": {
+          "$value": "{sketch.sys.data-4}"
+        },
+        "5": {
+          "$value": "{sketch.sys.data-5}"
+        },
+        "6": {
+          "$value": "{sketch.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{sketch.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{sketch.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{sketch.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{sketch.font.display}",
+          "fontSize": "{sketch.text.title-page}",
+          "fontWeight": "{sketch.weight.700}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{sketch.font.display}",
+          "fontSize": "{sketch.text.title-section}",
+          "fontWeight": "{sketch.weight.700}",
+          "lineHeight": 1.2,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{sketch.font.display}",
+          "fontSize": "{sketch.text.title-item}",
+          "fontWeight": "{sketch.weight.700}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{sketch.font.body}",
+          "fontSize": "{sketch.text.body-default}",
+          "fontWeight": "{sketch.weight.400}",
+          "lineHeight": 1.55,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{sketch.font.body}",
+          "fontSize": "{sketch.text.body-small}",
+          "fontWeight": "{sketch.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{sketch.font.label}",
+          "fontSize": "{sketch.text.label-default}",
+          "fontWeight": "{sketch.weight.400}",
+          "lineHeight": 1.35,
+          "letterSpacing": {
+            "value": 0.2,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{sketch.font.label}",
+          "fontSize": "{sketch.text.label-small}",
+          "fontWeight": "{sketch.weight.400}",
+          "lineHeight": 1.3,
+          "letterSpacing": {
+            "value": 0.2,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{sketch.font.display}",
+          "fontSize": "{sketch.text.numeric-display}",
+          "fontWeight": "{sketch.weight.700}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{sketch.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{sketch.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{sketch.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{sketch.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{sketch.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{sketch.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{sketch.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{sketch.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{sketch.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{sketch.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{sketch.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{sketch.size.icon-small}"
+      },
+      "default": {
+        "$value": "{sketch.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{sketch.radius.small}"
+    },
+    "control": {
+      "$value": "{sketch.radius.control}"
+    },
+    "default": {
+      "$value": "{sketch.radius.default}"
+    },
+    "large": {
+      "$value": "{sketch.radius.large}"
+    },
+    "full": {
+      "$value": "{sketch.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{sketch.border.default}"
+      },
+      "strong": {
+        "$value": "{sketch.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{sketch.focus.width}"
+      },
+      "offset": {
+        "$value": "{sketch.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{sketch.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{sketch.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{sketch.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{sketch.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{sketch.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{sketch.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{sketch.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{sketch.duration.instant}"
+      },
+      "short": {
+        "$value": "{sketch.duration.short}"
+      },
+      "medium": {
+        "$value": "{sketch.duration.medium}"
+      },
+      "long": {
+        "$value": "{sketch.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{sketch.ease.standard}"
+      },
+      "enter": {
+        "$value": "{sketch.ease.enter}"
+      },
+      "exit": {
+        "$value": "{sketch.ease.exit}"
+      }
+    }
+  }
+}

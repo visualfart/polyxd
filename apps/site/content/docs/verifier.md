@@ -73,7 +73,7 @@ Inside the Polyxd repository, `npm run verify:examples -w @polyxd/verifier` runs
 
 | Flag | What it does |
 |---|---|
-| `--themes a,b` | Design-system packs to render in, any of the thirteen. Default `material3,carbon,antd` |
+| `--themes a,b` | Design-system packs to render in: any of the thirteen, or a template such as `sketch`. Default `material3,carbon,antd` |
 | `--modes light,dark` | Modes. Default both |
 | `--widths 390,1100` | Viewport widths in CSS pixels. Default `390,1100` |
 | `--registry file` | Capability registry for capability checks |

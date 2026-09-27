@@ -1,0 +1,233 @@
+{
+  "$description": "Wireframe, dark mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "wireframe": {
+    "palette": {
+      "$type": "color",
+      "grey-950": {
+        "$value": "#1c1c1c"
+      },
+      "grey-900": {
+        "$value": "#242424"
+      },
+      "grey-850": {
+        "$value": "#2a2a2a"
+      },
+      "grey-800": {
+        "$value": "#303030"
+      },
+      "grey-600": {
+        "$value": "#5a5a5a"
+      },
+      "grey-400": {
+        "$value": "#8c8c8c"
+      },
+      "grey-300": {
+        "$value": "#ababab"
+      },
+      "grey-200": {
+        "$value": "#cfcfcf"
+      },
+      "grey-100": {
+        "$value": "#eaeaea"
+      },
+      "blue": {
+        "$value": "#7fb0ff"
+      },
+      "blue-pale": {
+        "$value": "#cfe0ff"
+      },
+      "blue-wash": {
+        "$value": "#26385a"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{wireframe.palette.grey-950}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{wireframe.palette.grey-900}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{wireframe.palette.grey-850}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{wireframe.palette.grey-800}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{wireframe.palette.grey-100}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(0, 0, 0, 0.6)"
+      },
+      "text-default": {
+        "$value": "{wireframe.palette.grey-100}"
+      },
+      "text-muted": {
+        "$value": "{wireframe.palette.grey-300}"
+      },
+      "text-inverse": {
+        "$value": "{wireframe.palette.grey-950}"
+      },
+      "text-link": {
+        "$value": "{wireframe.palette.blue}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{wireframe.palette.grey-600}"
+      },
+      "border-strong": {
+        "$value": "{wireframe.palette.grey-400}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{wireframe.palette.blue}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{wireframe.palette.blue}"
+      },
+      "action-primary-foreground": {
+        "$value": "{wireframe.palette.grey-950}"
+      },
+      "action-secondary-background": {
+        "$value": "{wireframe.palette.grey-950}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{wireframe.palette.grey-100}"
+      },
+      "action-secondary-border": {
+        "$value": "{wireframe.palette.grey-400}"
+      },
+      "action-danger-background": {
+        "$value": "{wireframe.palette.grey-200}"
+      },
+      "action-danger-foreground": {
+        "$value": "{wireframe.palette.grey-950}"
+      },
+      "selection-background": {
+        "$value": "{wireframe.palette.blue-wash}"
+      },
+      "selection-foreground": {
+        "$value": "{wireframe.palette.blue-pale}"
+      },
+      "status-info-background": {
+        "$value": "{wireframe.palette.blue-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{wireframe.palette.blue-pale}"
+      },
+      "status-info-emphasis": {
+        "$value": "{wireframe.palette.blue}"
+      },
+      "status-success-background": {
+        "$value": "{wireframe.palette.grey-900}"
+      },
+      "status-success-foreground": {
+        "$value": "{wireframe.palette.grey-100}"
+      },
+      "status-success-emphasis": {
+        "$value": "{wireframe.palette.grey-300}"
+      },
+      "status-warning-background": {
+        "$value": "{wireframe.palette.grey-800}"
+      },
+      "status-warning-foreground": {
+        "$value": "{wireframe.palette.grey-100}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{wireframe.palette.grey-400}"
+      },
+      "status-danger-background": {
+        "$value": "{wireframe.palette.grey-800}"
+      },
+      "status-danger-foreground": {
+        "$value": "{wireframe.palette.grey-100}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{wireframe.palette.grey-200}"
+      },
+      "data-1": {
+        "$value": "{wireframe.palette.blue}"
+      },
+      "data-2": {
+        "$value": "{wireframe.palette.grey-100}"
+      },
+      "data-3": {
+        "$value": "{wireframe.palette.grey-300}"
+      },
+      "data-4": {
+        "$value": "{wireframe.palette.grey-400}"
+      },
+      "data-5": {
+        "$value": "{wireframe.palette.grey-200}"
+      },
+      "data-6": {
+        "$value": "{wireframe.palette.blue-pale}"
+      },
+      "data-positive": {
+        "$value": "{wireframe.palette.grey-200}"
+      },
+      "data-negative": {
+        "$value": "{wireframe.palette.blue}"
+      },
+      "data-neutral": {
+        "$value": "{wireframe.palette.grey-400}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      }
+    }
+  }
+}

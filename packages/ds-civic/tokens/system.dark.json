@@ -1,0 +1,269 @@
+{
+  "$description": "Civic, dark mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "civic": {
+    "palette": {
+      "$type": "color",
+      "black": {
+        "$value": "#121212"
+      },
+      "grey-900": {
+        "$value": "#1e1e1e"
+      },
+      "grey-850": {
+        "$value": "#181818"
+      },
+      "white": {
+        "$value": "#ffffff"
+      },
+      "grey-200": {
+        "$value": "#cfcfcf"
+      },
+      "grey-500": {
+        "$value": "#4d4d4d"
+      },
+      "grey-400": {
+        "$value": "#9a9a9a"
+      },
+      "blue": {
+        "$value": "#8ab8ff"
+      },
+      "blue-ink": {
+        "$value": "#0b1f3d"
+      },
+      "blue-pale": {
+        "$value": "#cfe0ff"
+      },
+      "blue-wash": {
+        "$value": "#0f2d52"
+      },
+      "yellow": {
+        "$value": "#ffd54a"
+      },
+      "red": {
+        "$value": "#ff7b7b"
+      },
+      "red-ink": {
+        "$value": "#3d0b0b"
+      },
+      "red-pale": {
+        "$value": "#ffc9c9"
+      },
+      "red-wash": {
+        "$value": "#4a1010"
+      },
+      "green": {
+        "$value": "#5fd075"
+      },
+      "green-pale": {
+        "$value": "#c6efc9"
+      },
+      "green-wash": {
+        "$value": "#0f3a19"
+      },
+      "gold": {
+        "$value": "#f0c040"
+      },
+      "gold-pale": {
+        "$value": "#ffe9a3"
+      },
+      "gold-wash": {
+        "$value": "#3f3000"
+      },
+      "purple": {
+        "$value": "#c9a0ff"
+      },
+      "teal": {
+        "$value": "#5fd3e0"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{civic.palette.black}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{civic.palette.grey-900}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{civic.palette.grey-850}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{civic.palette.grey-900}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{civic.palette.white}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(0, 0, 0, 0.7)"
+      },
+      "text-default": {
+        "$value": "{civic.palette.white}"
+      },
+      "text-muted": {
+        "$value": "{civic.palette.grey-200}"
+      },
+      "text-inverse": {
+        "$value": "{civic.palette.black}"
+      },
+      "text-link": {
+        "$value": "{civic.palette.blue}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{civic.palette.grey-500}"
+      },
+      "border-strong": {
+        "$value": "{civic.palette.grey-400}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{civic.palette.yellow}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{civic.palette.blue}"
+      },
+      "action-primary-foreground": {
+        "$value": "{civic.palette.blue-ink}"
+      },
+      "action-secondary-background": {
+        "$value": "{civic.palette.black}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{civic.palette.white}"
+      },
+      "action-secondary-border": {
+        "$value": "{civic.palette.white}"
+      },
+      "action-danger-background": {
+        "$value": "{civic.palette.red}"
+      },
+      "action-danger-foreground": {
+        "$value": "{civic.palette.red-ink}"
+      },
+      "selection-background": {
+        "$value": "{civic.palette.blue-wash}"
+      },
+      "selection-foreground": {
+        "$value": "{civic.palette.blue-pale}"
+      },
+      "status-info-background": {
+        "$value": "{civic.palette.blue-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{civic.palette.blue-pale}"
+      },
+      "status-info-emphasis": {
+        "$value": "{civic.palette.blue}"
+      },
+      "status-success-background": {
+        "$value": "{civic.palette.green-wash}"
+      },
+      "status-success-foreground": {
+        "$value": "{civic.palette.green-pale}"
+      },
+      "status-success-emphasis": {
+        "$value": "{civic.palette.green}"
+      },
+      "status-warning-background": {
+        "$value": "{civic.palette.gold-wash}"
+      },
+      "status-warning-foreground": {
+        "$value": "{civic.palette.gold-pale}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{civic.palette.gold}"
+      },
+      "status-danger-background": {
+        "$value": "{civic.palette.red-wash}"
+      },
+      "status-danger-foreground": {
+        "$value": "{civic.palette.red-pale}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{civic.palette.red}"
+      },
+      "data-1": {
+        "$value": "{civic.palette.blue}"
+      },
+      "data-2": {
+        "$value": "{civic.palette.green}"
+      },
+      "data-3": {
+        "$value": "{civic.palette.red}"
+      },
+      "data-4": {
+        "$value": "{civic.palette.gold}"
+      },
+      "data-5": {
+        "$value": "{civic.palette.purple}"
+      },
+      "data-6": {
+        "$value": "{civic.palette.teal}"
+      },
+      "data-positive": {
+        "$value": "{civic.palette.green}"
+      },
+      "data-negative": {
+        "$value": "{civic.palette.red}"
+      },
+      "data-neutral": {
+        "$value": "{civic.palette.grey-400}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 8,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 24,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.6)"
+          }
+        ]
+      }
+    }
+  }
+}

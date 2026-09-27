@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const REPO = fileURLToPath(new URL("../../../", import.meta.url));
-const isTemplate = (m: any) => (Array.isArray(m.provenance) ? m.provenance : [m.provenance]).some((e: any) => e?.template === true || /^Original template/.test(String(e?.notes ?? "")));
+const isTemplate = (m: any) => m?.template === true || (Array.isArray(m.provenance) ? m.provenance : [m.provenance]).some((e: any) => e?.template === true || /^Original template/.test(String(e?.notes ?? "")));
 const DOCS = join(REPO, "apps/site/content/docs");
 const read = (p: string) => readFile(join(REPO, p), "utf8");
 

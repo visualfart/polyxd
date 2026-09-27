@@ -1,0 +1,266 @@
+{
+  "$description": "Terminal, light mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "terminal": {
+    "palette": {
+      "$type": "color",
+      "bg": {
+        "$value": "#f4f7f2"
+      },
+      "bg-1": {
+        "$value": "#e8eee5"
+      },
+      "bg-2": {
+        "$value": "#fbfcfa"
+      },
+      "bg-3": {
+        "$value": "#ffffff"
+      },
+      "fg": {
+        "$value": "#0f1a12"
+      },
+      "fg-dim": {
+        "$value": "#4c6650"
+      },
+      "line": {
+        "$value": "#c5d1c6"
+      },
+      "line-strong": {
+        "$value": "#5f7a63"
+      },
+      "green": {
+        "$value": "#1f7a30"
+      },
+      "green-deep": {
+        "$value": "#12501e"
+      },
+      "green-wash": {
+        "$value": "#d9f0dc"
+      },
+      "amber": {
+        "$value": "#8a5a00"
+      },
+      "amber-deep": {
+        "$value": "#5c3d00"
+      },
+      "amber-wash": {
+        "$value": "#fbeccc"
+      },
+      "red": {
+        "$value": "#b3261e"
+      },
+      "red-deep": {
+        "$value": "#7a1c16"
+      },
+      "red-wash": {
+        "$value": "#f7dcd9"
+      },
+      "cyan": {
+        "$value": "#0e6f8a"
+      },
+      "cyan-deep": {
+        "$value": "#0f4a5c"
+      },
+      "cyan-wash": {
+        "$value": "#dceef5"
+      },
+      "magenta": {
+        "$value": "#6b3fa0"
+      },
+      "grey": {
+        "$value": "#3d3d3d"
+      },
+      "white": {
+        "$value": "#ffffff"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{terminal.palette.bg}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{terminal.palette.bg-1}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{terminal.palette.bg-2}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{terminal.palette.bg-3}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{terminal.palette.fg}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(15, 26, 18, 0.5)"
+      },
+      "text-default": {
+        "$value": "{terminal.palette.fg}"
+      },
+      "text-muted": {
+        "$value": "{terminal.palette.fg-dim}"
+      },
+      "text-inverse": {
+        "$value": "{terminal.palette.bg}"
+      },
+      "text-link": {
+        "$value": "{terminal.palette.green}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{terminal.palette.line}"
+      },
+      "border-strong": {
+        "$value": "{terminal.palette.line-strong}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{terminal.palette.amber}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{terminal.palette.green}"
+      },
+      "action-primary-foreground": {
+        "$value": "{terminal.palette.white}"
+      },
+      "action-secondary-background": {
+        "$value": "{terminal.palette.bg}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{terminal.palette.fg}"
+      },
+      "action-secondary-border": {
+        "$value": "{terminal.palette.line-strong}"
+      },
+      "action-danger-background": {
+        "$value": "{terminal.palette.red}"
+      },
+      "action-danger-foreground": {
+        "$value": "{terminal.palette.white}"
+      },
+      "selection-background": {
+        "$value": "{terminal.palette.green-wash}"
+      },
+      "selection-foreground": {
+        "$value": "{terminal.palette.green-deep}"
+      },
+      "status-info-background": {
+        "$value": "{terminal.palette.cyan-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{terminal.palette.cyan-deep}"
+      },
+      "status-info-emphasis": {
+        "$value": "{terminal.palette.cyan}"
+      },
+      "status-success-background": {
+        "$value": "{terminal.palette.green-wash}"
+      },
+      "status-success-foreground": {
+        "$value": "{terminal.palette.green-deep}"
+      },
+      "status-success-emphasis": {
+        "$value": "{terminal.palette.green}"
+      },
+      "status-warning-background": {
+        "$value": "{terminal.palette.amber-wash}"
+      },
+      "status-warning-foreground": {
+        "$value": "{terminal.palette.amber-deep}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{terminal.palette.amber}"
+      },
+      "status-danger-background": {
+        "$value": "{terminal.palette.red-wash}"
+      },
+      "status-danger-foreground": {
+        "$value": "{terminal.palette.red-deep}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{terminal.palette.red}"
+      },
+      "data-1": {
+        "$value": "{terminal.palette.green}"
+      },
+      "data-2": {
+        "$value": "{terminal.palette.amber}"
+      },
+      "data-3": {
+        "$value": "{terminal.palette.cyan}"
+      },
+      "data-4": {
+        "$value": "{terminal.palette.red}"
+      },
+      "data-5": {
+        "$value": "{terminal.palette.magenta}"
+      },
+      "data-6": {
+        "$value": "{terminal.palette.grey}"
+      },
+      "data-positive": {
+        "$value": "{terminal.palette.green}"
+      },
+      "data-negative": {
+        "$value": "{terminal.palette.red}"
+      },
+      "data-neutral": {
+        "$value": "{terminal.palette.line-strong}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 0,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 1,
+              "unit": "px"
+            },
+            "color": "#5f7a63"
+          }
+        ]
+      }
+    }
+  }
+}

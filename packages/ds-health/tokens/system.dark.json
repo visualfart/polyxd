@@ -1,0 +1,290 @@
+{
+  "$description": "Health, dark mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "health": {
+    "palette": {
+      "$type": "color",
+      "night": {
+        "$value": "#14201f"
+      },
+      "night-deep": {
+        "$value": "#1c2a29"
+      },
+      "night-raised": {
+        "$value": "#192625"
+      },
+      "night-lift": {
+        "$value": "#1f2e2d"
+      },
+      "mist": {
+        "$value": "#e6f0ee"
+      },
+      "mist-soft": {
+        "$value": "#a3b8b5"
+      },
+      "mist-dim": {
+        "$value": "#8ca6a3"
+      },
+      "line": {
+        "$value": "#2d3f3d"
+      },
+      "line-strong": {
+        "$value": "#6e8e8b"
+      },
+      "teal": {
+        "$value": "#7fd1cb"
+      },
+      "teal-fill": {
+        "$value": "#5fc4bd"
+      },
+      "teal-ink": {
+        "$value": "#062c2a"
+      },
+      "teal-dark": {
+        "$value": "#1f3634"
+      },
+      "teal-pale": {
+        "$value": "#cfe9e6"
+      },
+      "teal-line": {
+        "$value": "#3c5f5b"
+      },
+      "teal-select": {
+        "$value": "#1f3f3c"
+      },
+      "teal-select-text": {
+        "$value": "#bfe6e1"
+      },
+      "terracotta": {
+        "$value": "#ea8a78"
+      },
+      "terracotta-ink": {
+        "$value": "#3a1108"
+      },
+      "terracotta-dark": {
+        "$value": "#432220"
+      },
+      "terracotta-pale": {
+        "$value": "#f5bdb2"
+      },
+      "sea": {
+        "$value": "#7fb8dc"
+      },
+      "sea-dark": {
+        "$value": "#1a3242"
+      },
+      "sea-pale": {
+        "$value": "#b5d7ee"
+      },
+      "leaf": {
+        "$value": "#6fc48f"
+      },
+      "leaf-dark": {
+        "$value": "#193526"
+      },
+      "leaf-pale": {
+        "$value": "#b3e3c3"
+      },
+      "apricot": {
+        "$value": "#e0a35a"
+      },
+      "apricot-dark": {
+        "$value": "#3f2e17"
+      },
+      "apricot-pale": {
+        "$value": "#f5d3a3"
+      },
+      "lilac": {
+        "$value": "#c0a5e0"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{health.palette.night}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{health.palette.night-deep}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{health.palette.night-raised}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{health.palette.night-lift}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{health.palette.mist}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(0, 0, 0, 0.55)"
+      },
+      "text-default": {
+        "$value": "{health.palette.mist}"
+      },
+      "text-muted": {
+        "$value": "{health.palette.mist-soft}"
+      },
+      "text-inverse": {
+        "$value": "{health.palette.night}"
+      },
+      "text-link": {
+        "$value": "{health.palette.teal}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{health.palette.line}"
+      },
+      "border-strong": {
+        "$value": "{health.palette.line-strong}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{health.palette.teal}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{health.palette.teal-fill}"
+      },
+      "action-primary-foreground": {
+        "$value": "{health.palette.teal-ink}"
+      },
+      "action-secondary-background": {
+        "$value": "{health.palette.teal-dark}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{health.palette.teal-pale}"
+      },
+      "action-secondary-border": {
+        "$value": "{health.palette.teal-line}"
+      },
+      "action-danger-background": {
+        "$value": "{health.palette.terracotta}"
+      },
+      "action-danger-foreground": {
+        "$value": "{health.palette.terracotta-ink}"
+      },
+      "selection-background": {
+        "$value": "{health.palette.teal-select}"
+      },
+      "selection-foreground": {
+        "$value": "{health.palette.teal-select-text}"
+      },
+      "status-info-background": {
+        "$value": "{health.palette.sea-dark}"
+      },
+      "status-info-foreground": {
+        "$value": "{health.palette.sea-pale}"
+      },
+      "status-info-emphasis": {
+        "$value": "{health.palette.sea}"
+      },
+      "status-success-background": {
+        "$value": "{health.palette.leaf-dark}"
+      },
+      "status-success-foreground": {
+        "$value": "{health.palette.leaf-pale}"
+      },
+      "status-success-emphasis": {
+        "$value": "{health.palette.leaf}"
+      },
+      "status-warning-background": {
+        "$value": "{health.palette.apricot-dark}"
+      },
+      "status-warning-foreground": {
+        "$value": "{health.palette.apricot-pale}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{health.palette.apricot}"
+      },
+      "status-danger-background": {
+        "$value": "{health.palette.terracotta-dark}"
+      },
+      "status-danger-foreground": {
+        "$value": "{health.palette.terracotta-pale}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{health.palette.terracotta}"
+      },
+      "data-1": {
+        "$value": "{health.palette.teal-fill}"
+      },
+      "data-2": {
+        "$value": "{health.palette.apricot}"
+      },
+      "data-3": {
+        "$value": "{health.palette.sea}"
+      },
+      "data-4": {
+        "$value": "{health.palette.lilac}"
+      },
+      "data-5": {
+        "$value": "{health.palette.leaf}"
+      },
+      "data-6": {
+        "$value": "{health.palette.terracotta}"
+      },
+      "data-positive": {
+        "$value": "{health.palette.leaf}"
+      },
+      "data-negative": {
+        "$value": "{health.palette.terracotta}"
+      },
+      "data-neutral": {
+        "$value": "{health.palette.mist-dim}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 2,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 8,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.3)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 12,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 32,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.5)"
+          }
+        ]
+      }
+    }
+  }
+}

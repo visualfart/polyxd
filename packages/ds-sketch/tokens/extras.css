@@ -1,0 +1,54 @@
+/*
+ * Sketch: what tokens can't draw. The theme compiler appends this file verbatim to themes/sketch.css.
+ * Every rule is scoped to [data-pxd-theme="sketch"], and every colour is a token variable, so recolouring
+ * the tokens recolours this too. Delete the "extras" line in manifest.json and the pack is plain tokens.
+ */
+
+/* Cards lean a third of a degree; even ones lean the other way. Set it to 0deg to straighten them. */
+[data-pxd-theme="sketch"] {
+  --pxd-sketch-tilt: -0.3deg;
+}
+
+/* An uneven radius on each corner is what reads as a drawn line rather than a rounded rectangle. */
+[data-pxd-theme="sketch"] .pxd-button,
+[data-pxd-theme="sketch"] .pxd-card,
+[data-pxd-theme="sketch"] .pxd-input,
+[data-pxd-theme="sketch"] .pxd-status,
+[data-pxd-theme="sketch"] .pxd-panel,
+[data-pxd-theme="sketch"] .pxd-chip,
+[data-pxd-theme="sketch"] .pxd-tag,
+[data-pxd-theme="sketch"] .pxd-badge,
+[data-pxd-theme="sketch"] .pxd-snackbar,
+[data-pxd-theme="sketch"] .pxd-dropzone,
+[data-pxd-theme="sketch"] .pxd-media {
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+/* Pencil lines are thick; a button or a field gets the strong width, and a text button gets a line at all. */
+[data-pxd-theme="sketch"] .pxd-button,
+[data-pxd-theme="sketch"] .pxd-input {
+  border-width: var(--pxd-border-width-strong);
+}
+[data-pxd-theme="sketch"] .pxd-button-primary,
+[data-pxd-theme="sketch"] .pxd-button-danger {
+  border-color: var(--pxd-color-text-default);
+}
+[data-pxd-theme="sketch"] .pxd-button-tertiary {
+  border-color: var(--pxd-color-border-default);
+}
+
+[data-pxd-theme="sketch"] .pxd-card {
+  transform: rotate(var(--pxd-sketch-tilt));
+}
+[data-pxd-theme="sketch"] .pxd-card:nth-child(even) {
+  --pxd-sketch-tilt: 0.3deg;
+}
+
+/* Links are underlined by hand. */
+[data-pxd-theme="sketch"] .pxd-link,
+[data-pxd-theme="sketch"] .pxd-nav-toc-link,
+[data-pxd-theme="sketch"] .pxd-footer-link {
+  text-decoration: underline wavy;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}

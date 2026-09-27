@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Terminal template. Every token aliases a terminal.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{terminal.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{terminal.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{terminal.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{terminal.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{terminal.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{terminal.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{terminal.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{terminal.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{terminal.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{terminal.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{terminal.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{terminal.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{terminal.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{terminal.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{terminal.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{terminal.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{terminal.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{terminal.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{terminal.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{terminal.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{terminal.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{terminal.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{terminal.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{terminal.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{terminal.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{terminal.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{terminal.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{terminal.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{terminal.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{terminal.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{terminal.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{terminal.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{terminal.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{terminal.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{terminal.sys.data-1}"
+        },
+        "2": {
+          "$value": "{terminal.sys.data-2}"
+        },
+        "3": {
+          "$value": "{terminal.sys.data-3}"
+        },
+        "4": {
+          "$value": "{terminal.sys.data-4}"
+        },
+        "5": {
+          "$value": "{terminal.sys.data-5}"
+        },
+        "6": {
+          "$value": "{terminal.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{terminal.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{terminal.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{terminal.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{terminal.font.display}",
+          "fontSize": "{terminal.text.title-page}",
+          "fontWeight": "{terminal.weight.700}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{terminal.font.display}",
+          "fontSize": "{terminal.text.title-section}",
+          "fontWeight": "{terminal.weight.700}",
+          "lineHeight": 1.3,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{terminal.font.display}",
+          "fontSize": "{terminal.text.title-item}",
+          "fontWeight": "{terminal.weight.700}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{terminal.font.body}",
+          "fontSize": "{terminal.text.body-default}",
+          "fontWeight": "{terminal.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{terminal.font.body}",
+          "fontSize": "{terminal.text.body-small}",
+          "fontWeight": "{terminal.weight.400}",
+          "lineHeight": 1.45,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{terminal.font.label}",
+          "fontSize": "{terminal.text.label-default}",
+          "fontWeight": "{terminal.weight.500}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{terminal.font.label}",
+          "fontSize": "{terminal.text.label-small}",
+          "fontWeight": "{terminal.weight.500}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.3,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{terminal.font.display}",
+          "fontSize": "{terminal.text.numeric-display}",
+          "fontWeight": "{terminal.weight.700}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{terminal.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{terminal.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{terminal.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{terminal.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{terminal.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{terminal.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{terminal.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{terminal.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{terminal.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{terminal.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{terminal.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{terminal.size.icon-small}"
+      },
+      "default": {
+        "$value": "{terminal.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{terminal.radius.small}"
+    },
+    "control": {
+      "$value": "{terminal.radius.control}"
+    },
+    "default": {
+      "$value": "{terminal.radius.default}"
+    },
+    "large": {
+      "$value": "{terminal.radius.large}"
+    },
+    "full": {
+      "$value": "{terminal.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{terminal.border.default}"
+      },
+      "strong": {
+        "$value": "{terminal.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{terminal.focus.width}"
+      },
+      "offset": {
+        "$value": "{terminal.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{terminal.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{terminal.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{terminal.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{terminal.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{terminal.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{terminal.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{terminal.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{terminal.duration.instant}"
+      },
+      "short": {
+        "$value": "{terminal.duration.short}"
+      },
+      "medium": {
+        "$value": "{terminal.duration.medium}"
+      },
+      "long": {
+        "$value": "{terminal.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{terminal.ease.standard}"
+      },
+      "enter": {
+        "$value": "{terminal.ease.enter}"
+      },
+      "exit": {
+        "$value": "{terminal.ease.exit}"
+      }
+    }
+  }
+}

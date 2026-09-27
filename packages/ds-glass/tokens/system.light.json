@@ -1,0 +1,316 @@
+{
+  "$description": "Glass, light mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "glass": {
+    "palette": {
+      "$type": "color",
+      "ground": {
+        "$value": "#e6ebf7"
+      },
+      "frost-thin": {
+        "$value": "rgba(255, 255, 255, 0.45)"
+      },
+      "frost": {
+        "$value": "rgba(255, 255, 255, 0.65)"
+      },
+      "frost-thick": {
+        "$value": "rgba(255, 255, 255, 0.82)"
+      },
+      "frost-edge": {
+        "$value": "rgba(255, 255, 255, 0.75)"
+      },
+      "deep": {
+        "$value": "#101a33"
+      },
+      "ink": {
+        "$value": "#0f172a"
+      },
+      "ink-soft": {
+        "$value": "#465063"
+      },
+      "steel": {
+        "$value": "#68758f"
+      },
+      "blue": {
+        "$value": "#3552c9"
+      },
+      "blue-deep": {
+        "$value": "#243a8f"
+      },
+      "blue-wash": {
+        "$value": "rgba(219, 228, 255, 0.8)"
+      },
+      "white": {
+        "$value": "#ffffff"
+      },
+      "red": {
+        "$value": "#c22f4a"
+      },
+      "red-deep": {
+        "$value": "#8a1f34"
+      },
+      "red-wash": {
+        "$value": "rgba(250, 222, 228, 0.8)"
+      },
+      "green": {
+        "$value": "#1f7f5c"
+      },
+      "green-deep": {
+        "$value": "#155a40"
+      },
+      "green-wash": {
+        "$value": "rgba(216, 240, 230, 0.8)"
+      },
+      "amber": {
+        "$value": "#9a6200"
+      },
+      "amber-deep": {
+        "$value": "#6b4400"
+      },
+      "amber-wash": {
+        "$value": "rgba(250, 237, 210, 0.8)"
+      },
+      "cyan": {
+        "$value": "#0c7a92"
+      },
+      "cyan-deep": {
+        "$value": "#085566"
+      },
+      "cyan-wash": {
+        "$value": "rgba(214, 236, 244, 0.8)"
+      },
+      "violet": {
+        "$value": "#6b45c9"
+      },
+      "rose": {
+        "$value": "#b23a7a"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{glass.palette.ground}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{glass.palette.frost-thin}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{glass.palette.frost}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{glass.palette.frost-thick}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{glass.palette.deep}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "rgba(16, 26, 51, 0.35)"
+      },
+      "text-default": {
+        "$value": "{glass.palette.ink}"
+      },
+      "text-muted": {
+        "$value": "{glass.palette.ink-soft}"
+      },
+      "text-inverse": {
+        "$value": "{glass.palette.white}"
+      },
+      "text-link": {
+        "$value": "{glass.palette.blue}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{glass.palette.frost-edge}"
+      },
+      "border-strong": {
+        "$value": "{glass.palette.steel}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{glass.palette.blue}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{glass.palette.blue}"
+      },
+      "action-primary-foreground": {
+        "$value": "{glass.palette.white}"
+      },
+      "action-secondary-background": {
+        "$value": "{glass.palette.frost-thick}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{glass.palette.ink}"
+      },
+      "action-secondary-border": {
+        "$value": "{glass.palette.frost-edge}"
+      },
+      "action-danger-background": {
+        "$value": "{glass.palette.red}"
+      },
+      "action-danger-foreground": {
+        "$value": "{glass.palette.white}"
+      },
+      "selection-background": {
+        "$value": "{glass.palette.blue-wash}"
+      },
+      "selection-foreground": {
+        "$value": "{glass.palette.blue-deep}"
+      },
+      "status-info-background": {
+        "$value": "{glass.palette.cyan-wash}"
+      },
+      "status-info-foreground": {
+        "$value": "{glass.palette.cyan-deep}"
+      },
+      "status-info-emphasis": {
+        "$value": "{glass.palette.cyan}"
+      },
+      "status-success-background": {
+        "$value": "{glass.palette.green-wash}"
+      },
+      "status-success-foreground": {
+        "$value": "{glass.palette.green-deep}"
+      },
+      "status-success-emphasis": {
+        "$value": "{glass.palette.green}"
+      },
+      "status-warning-background": {
+        "$value": "{glass.palette.amber-wash}"
+      },
+      "status-warning-foreground": {
+        "$value": "{glass.palette.amber-deep}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{glass.palette.amber}"
+      },
+      "status-danger-background": {
+        "$value": "{glass.palette.red-wash}"
+      },
+      "status-danger-foreground": {
+        "$value": "{glass.palette.red-deep}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{glass.palette.red}"
+      },
+      "data-1": {
+        "$value": "{glass.palette.blue}"
+      },
+      "data-2": {
+        "$value": "{glass.palette.cyan}"
+      },
+      "data-3": {
+        "$value": "{glass.palette.green}"
+      },
+      "data-4": {
+        "$value": "{glass.palette.amber}"
+      },
+      "data-5": {
+        "$value": "{glass.palette.violet}"
+      },
+      "data-6": {
+        "$value": "{glass.palette.rose}"
+      },
+      "data-positive": {
+        "$value": "{glass.palette.green}"
+      },
+      "data-negative": {
+        "$value": "{glass.palette.red}"
+      },
+      "data-neutral": {
+        "$value": "{glass.palette.steel}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 8,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 32,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(31, 38, 135, 0.12)"
+          },
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(255, 255, 255, 0.6)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 24,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 64,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(31, 38, 135, 0.22)"
+          },
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 0,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(255, 255, 255, 0.7)"
+          }
+        ]
+      }
+    }
+  }
+}

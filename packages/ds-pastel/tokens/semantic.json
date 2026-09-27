@@ -1,0 +1,433 @@
+{
+  "$description": "Polyxd semantic tier for the Pastel template. Every token aliases a pastel.* token; the file is the same in both modes.",
+  "color": {
+    "surface": {
+      "default": {
+        "$value": "{pastel.sys.surface-default}"
+      },
+      "subtle": {
+        "$value": "{pastel.sys.surface-subtle}"
+      },
+      "raised": {
+        "$value": "{pastel.sys.surface-raised}"
+      },
+      "overlay": {
+        "$value": "{pastel.sys.surface-overlay}"
+      },
+      "inverse": {
+        "$value": "{pastel.sys.surface-inverse}"
+      }
+    },
+    "scrim": {
+      "$value": "{pastel.sys.scrim}"
+    },
+    "text": {
+      "default": {
+        "$value": "{pastel.sys.text-default}"
+      },
+      "muted": {
+        "$value": "{pastel.sys.text-muted}"
+      },
+      "inverse": {
+        "$value": "{pastel.sys.text-inverse}"
+      },
+      "link": {
+        "$value": "{pastel.sys.text-link}"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{pastel.sys.border-default}"
+      },
+      "strong": {
+        "$value": "{pastel.sys.border-strong}"
+      },
+      "focus": {
+        "$value": "{pastel.sys.border-focus}"
+      }
+    },
+    "action": {
+      "primary": {
+        "background": {
+          "$value": "{pastel.sys.action-primary-background}"
+        },
+        "foreground": {
+          "$value": "{pastel.sys.action-primary-foreground}"
+        }
+      },
+      "secondary": {
+        "background": {
+          "$value": "{pastel.sys.action-secondary-background}"
+        },
+        "foreground": {
+          "$value": "{pastel.sys.action-secondary-foreground}"
+        },
+        "border": {
+          "$value": "{pastel.sys.action-secondary-border}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{pastel.sys.action-danger-background}"
+        },
+        "foreground": {
+          "$value": "{pastel.sys.action-danger-foreground}"
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$value": "{pastel.sys.selection-background}"
+      },
+      "foreground": {
+        "$value": "{pastel.sys.selection-foreground}"
+      }
+    },
+    "status": {
+      "info": {
+        "background": {
+          "$value": "{pastel.sys.status-info-background}"
+        },
+        "foreground": {
+          "$value": "{pastel.sys.status-info-foreground}"
+        },
+        "emphasis": {
+          "$value": "{pastel.sys.status-info-emphasis}"
+        }
+      },
+      "success": {
+        "background": {
+          "$value": "{pastel.sys.status-success-background}"
+        },
+        "foreground": {
+          "$value": "{pastel.sys.status-success-foreground}"
+        },
+        "emphasis": {
+          "$value": "{pastel.sys.status-success-emphasis}"
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{pastel.sys.status-warning-background}"
+        },
+        "foreground": {
+          "$value": "{pastel.sys.status-warning-foreground}"
+        },
+        "emphasis": {
+          "$value": "{pastel.sys.status-warning-emphasis}"
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{pastel.sys.status-danger-background}"
+        },
+        "foreground": {
+          "$value": "{pastel.sys.status-danger-foreground}"
+        },
+        "emphasis": {
+          "$value": "{pastel.sys.status-danger-emphasis}"
+        }
+      }
+    },
+    "data": {
+      "categorical": {
+        "1": {
+          "$value": "{pastel.sys.data-1}"
+        },
+        "2": {
+          "$value": "{pastel.sys.data-2}"
+        },
+        "3": {
+          "$value": "{pastel.sys.data-3}"
+        },
+        "4": {
+          "$value": "{pastel.sys.data-4}"
+        },
+        "5": {
+          "$value": "{pastel.sys.data-5}"
+        },
+        "6": {
+          "$value": "{pastel.sys.data-6}"
+        }
+      },
+      "positive": {
+        "$value": "{pastel.sys.data-positive}"
+      },
+      "negative": {
+        "$value": "{pastel.sys.data-negative}"
+      },
+      "neutral": {
+        "$value": "{pastel.sys.data-neutral}"
+      }
+    },
+    "$type": "color"
+  },
+  "type": {
+    "$type": "typography",
+    "title": {
+      "page": {
+        "$value": {
+          "fontFamily": "{pastel.font.display}",
+          "fontSize": "{pastel.text.title-page}",
+          "fontWeight": "{pastel.weight.800}",
+          "lineHeight": 1.2,
+          "letterSpacing": {
+            "value": -0.3,
+            "unit": "px"
+          }
+        }
+      },
+      "section": {
+        "$value": {
+          "fontFamily": "{pastel.font.display}",
+          "fontSize": "{pastel.text.title-section}",
+          "fontWeight": "{pastel.weight.700}",
+          "lineHeight": 1.25,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "item": {
+        "$value": {
+          "fontFamily": "{pastel.font.display}",
+          "fontSize": "{pastel.text.title-item}",
+          "fontWeight": "{pastel.weight.700}",
+          "lineHeight": 1.35,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "body": {
+      "default": {
+        "$value": {
+          "fontFamily": "{pastel.font.body}",
+          "fontSize": "{pastel.text.body-default}",
+          "fontWeight": "{pastel.weight.400}",
+          "lineHeight": 1.6,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{pastel.font.body}",
+          "fontSize": "{pastel.text.body-small}",
+          "fontWeight": "{pastel.weight.400}",
+          "lineHeight": 1.5,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "label": {
+      "default": {
+        "$value": {
+          "fontFamily": "{pastel.font.label}",
+          "fontSize": "{pastel.text.label-default}",
+          "fontWeight": "{pastel.weight.700}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "small": {
+        "$value": {
+          "fontFamily": "{pastel.font.label}",
+          "fontSize": "{pastel.text.label-small}",
+          "fontWeight": "{pastel.weight.700}",
+          "lineHeight": 1.4,
+          "letterSpacing": {
+            "value": 0.2,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "numeric": {
+      "display": {
+        "$value": {
+          "fontFamily": "{pastel.font.display}",
+          "fontSize": "{pastel.text.numeric-display}",
+          "fontWeight": "{pastel.weight.800}",
+          "lineHeight": 1.15,
+          "letterSpacing": {
+            "value": -0.3,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.polyxd": {
+            "numeric": "tabular"
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "compact": {
+        "$value": "{pastel.space.inset.compact}"
+      },
+      "default": {
+        "$value": "{pastel.space.inset.default}"
+      },
+      "comfortable": {
+        "$value": "{pastel.space.inset.comfortable}"
+      }
+    },
+    "stack": {
+      "tight": {
+        "$value": "{pastel.space.stack.tight}"
+      },
+      "default": {
+        "$value": "{pastel.space.stack.default}"
+      },
+      "loose": {
+        "$value": "{pastel.space.stack.loose}"
+      },
+      "section": {
+        "$value": "{pastel.space.stack.section}"
+      }
+    },
+    "inline": {
+      "tight": {
+        "$value": "{pastel.space.inline.tight}"
+      },
+      "default": {
+        "$value": "{pastel.space.inline.default}"
+      },
+      "loose": {
+        "$value": "{pastel.space.inline.loose}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "target": {
+      "min": {
+        "$value": "{pastel.size.target}"
+      }
+    },
+    "icon": {
+      "small": {
+        "$value": "{pastel.size.icon-small}"
+      },
+      "default": {
+        "$value": "{pastel.size.icon-default}"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "small": {
+      "$value": "{pastel.radius.small}"
+    },
+    "control": {
+      "$value": "{pastel.radius.control}"
+    },
+    "default": {
+      "$value": "{pastel.radius.default}"
+    },
+    "large": {
+      "$value": "{pastel.radius.large}"
+    },
+    "full": {
+      "$value": "{pastel.radius.full}"
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "default": {
+        "$value": "{pastel.border.default}"
+      },
+      "strong": {
+        "$value": "{pastel.border.strong}"
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "width": {
+        "$value": "{pastel.focus.width}"
+      },
+      "offset": {
+        "$value": "{pastel.focus.offset}"
+      }
+    }
+  },
+  "measure": {
+    "max": {
+      "$value": "{pastel.measure}",
+      "$type": "number"
+    }
+  },
+  "opacity": {
+    "state": {
+      "$type": "number",
+      "hover": {
+        "$value": "{pastel.opacity.hover}"
+      },
+      "pressed": {
+        "$value": "{pastel.opacity.pressed}"
+      },
+      "focus": {
+        "$value": "{pastel.opacity.focus}"
+      },
+      "disabled": {
+        "$value": "{pastel.opacity.disabled}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "raised": {
+      "$value": "{pastel.shadow.raised}"
+    },
+    "overlay": {
+      "$value": "{pastel.shadow.overlay}"
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": "{pastel.duration.instant}"
+      },
+      "short": {
+        "$value": "{pastel.duration.short}"
+      },
+      "medium": {
+        "$value": "{pastel.duration.medium}"
+      },
+      "long": {
+        "$value": "{pastel.duration.long}"
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": "{pastel.ease.standard}"
+      },
+      "enter": {
+        "$value": "{pastel.ease.enter}"
+      },
+      "exit": {
+        "$value": "{pastel.ease.exit}"
+      }
+    }
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "$description": "Mono, dark mode: the palette (named colours) and the roles that pick from it. Change a palette entry to recolour every role that uses it; point a role at a different entry to change one thing.",
+  "mono": {
+    "palette": {
+      "$type": "color",
+      "brand-950": {
+        "$value": "oklch(17% 0.035 275)"
+      },
+      "brand-900": {
+        "$value": "oklch(22% 0.045 275)"
+      },
+      "brand-875": {
+        "$value": "oklch(20% 0.04 275)"
+      },
+      "brand-850": {
+        "$value": "oklch(26% 0.05 275)"
+      },
+      "brand-800": {
+        "$value": "oklch(32% 0.07 275)"
+      },
+      "brand-700": {
+        "$value": "oklch(42% 0.12 275)"
+      },
+      "brand-600": {
+        "$value": "oklch(58% 0.15 275)"
+      },
+      "brand-500": {
+        "$value": "oklch(66% 0.14 275)"
+      },
+      "brand-400": {
+        "$value": "oklch(76% 0.13 275)"
+      },
+      "brand-300": {
+        "$value": "oklch(82% 0.1 275)"
+      },
+      "brand-200": {
+        "$value": "oklch(88% 0.07 275)"
+      },
+      "brand-100": {
+        "$value": "oklch(93% 0.04 275)"
+      },
+      "brand-50": {
+        "$value": "oklch(96% 0.02 275)"
+      },
+      "grey-400": {
+        "$value": "oklch(70% 0.03 275)"
+      },
+      "ink": {
+        "$value": "oklch(16% 0.04 275)"
+      },
+      "success-400": {
+        "$value": "oklch(78% 0.15 150)"
+      },
+      "success-200": {
+        "$value": "oklch(90% 0.08 150)"
+      },
+      "success-900": {
+        "$value": "oklch(30% 0.07 150)"
+      },
+      "warning-400": {
+        "$value": "oklch(80% 0.14 75)"
+      },
+      "warning-200": {
+        "$value": "oklch(91% 0.08 80)"
+      },
+      "warning-900": {
+        "$value": "oklch(32% 0.07 70)"
+      },
+      "danger-400": {
+        "$value": "oklch(74% 0.16 25)"
+      },
+      "danger-200": {
+        "$value": "oklch(88% 0.07 25)"
+      },
+      "danger-900": {
+        "$value": "oklch(30% 0.09 25)"
+      }
+    },
+    "sys": {
+      "$type": "color",
+      "surface-default": {
+        "$value": "{mono.palette.brand-950}",
+        "$description": "Main page background"
+      },
+      "surface-subtle": {
+        "$value": "{mono.palette.brand-900}",
+        "$description": "Grouping background: table headers, wells"
+      },
+      "surface-raised": {
+        "$value": "{mono.palette.brand-875}",
+        "$description": "Cards and sheets"
+      },
+      "surface-overlay": {
+        "$value": "{mono.palette.brand-850}",
+        "$description": "Dialogs and popovers"
+      },
+      "surface-inverse": {
+        "$value": "{mono.palette.brand-100}",
+        "$description": "Snackbars and tooltips"
+      },
+      "scrim": {
+        "$value": "oklch(10% 0.03 275 / 0.6)"
+      },
+      "text-default": {
+        "$value": "{mono.palette.brand-50}"
+      },
+      "text-muted": {
+        "$value": "{mono.palette.brand-300}"
+      },
+      "text-inverse": {
+        "$value": "{mono.palette.brand-950}"
+      },
+      "text-link": {
+        "$value": "{mono.palette.brand-400}",
+        "$description": "Inline links"
+      },
+      "border-default": {
+        "$value": "{mono.palette.brand-800}"
+      },
+      "border-strong": {
+        "$value": "{mono.palette.brand-600}",
+        "$description": "Input outlines (3:1 on the page)"
+      },
+      "border-focus": {
+        "$value": "{mono.palette.brand-400}",
+        "$description": "Keyboard focus ring (3:1 on the page)"
+      },
+      "action-primary-background": {
+        "$value": "{mono.palette.brand-400}"
+      },
+      "action-primary-foreground": {
+        "$value": "{mono.palette.ink}"
+      },
+      "action-secondary-background": {
+        "$value": "{mono.palette.brand-850}"
+      },
+      "action-secondary-foreground": {
+        "$value": "{mono.palette.brand-100}"
+      },
+      "action-secondary-border": {
+        "$value": "{mono.palette.brand-700}"
+      },
+      "action-danger-background": {
+        "$value": "{mono.palette.danger-400}"
+      },
+      "action-danger-foreground": {
+        "$value": "{mono.palette.ink}"
+      },
+      "selection-background": {
+        "$value": "{mono.palette.brand-800}"
+      },
+      "selection-foreground": {
+        "$value": "{mono.palette.brand-100}"
+      },
+      "status-info-background": {
+        "$value": "{mono.palette.brand-800}"
+      },
+      "status-info-foreground": {
+        "$value": "{mono.palette.brand-200}"
+      },
+      "status-info-emphasis": {
+        "$value": "{mono.palette.brand-400}"
+      },
+      "status-success-background": {
+        "$value": "{mono.palette.success-900}"
+      },
+      "status-success-foreground": {
+        "$value": "{mono.palette.success-200}"
+      },
+      "status-success-emphasis": {
+        "$value": "{mono.palette.success-400}"
+      },
+      "status-warning-background": {
+        "$value": "{mono.palette.warning-900}"
+      },
+      "status-warning-foreground": {
+        "$value": "{mono.palette.warning-200}"
+      },
+      "status-warning-emphasis": {
+        "$value": "{mono.palette.warning-400}"
+      },
+      "status-danger-background": {
+        "$value": "{mono.palette.danger-900}"
+      },
+      "status-danger-foreground": {
+        "$value": "{mono.palette.danger-200}"
+      },
+      "status-danger-emphasis": {
+        "$value": "{mono.palette.danger-400}"
+      },
+      "data-1": {
+        "$value": "{mono.palette.brand-400}"
+      },
+      "data-2": {
+        "$value": "{mono.palette.brand-100}"
+      },
+      "data-3": {
+        "$value": "{mono.palette.brand-600}"
+      },
+      "data-4": {
+        "$value": "{mono.palette.brand-300}"
+      },
+      "data-5": {
+        "$value": "{mono.palette.grey-400}"
+      },
+      "data-6": {
+        "$value": "{mono.palette.brand-500}"
+      },
+      "data-positive": {
+        "$value": "{mono.palette.success-400}"
+      },
+      "data-negative": {
+        "$value": "{mono.palette.danger-400}"
+      },
+      "data-neutral": {
+        "$value": "{mono.palette.grey-400}"
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "raised": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 1,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 3,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.4)"
+          }
+        ]
+      },
+      "overlay": {
+        "$value": [
+          {
+            "offsetX": {
+              "value": 0,
+              "unit": "px"
+            },
+            "offsetY": {
+              "value": 12,
+              "unit": "px"
+            },
+            "blur": {
+              "value": 32,
+              "unit": "px"
+            },
+            "spread": {
+              "value": 0,
+              "unit": "px"
+            },
+            "color": "rgba(0, 0, 0, 0.6)"
+          }
+        ]
+      }
+    }
+  }
+}

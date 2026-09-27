@@ -1,0 +1,313 @@
+{
+  "$description": "Civic primitives shared by both modes: type, spacing, radii, borders, motion. Original template by Polyxd; every value here is yours to change.",
+  "civic": {
+    "font": {
+      "$type": "fontFamily",
+      "display": {
+        "$value": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+        "$type": "fontFamily"
+      },
+      "body": {
+        "$value": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+        "$type": "fontFamily"
+      },
+      "label": {
+        "$value": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+        "$type": "fontFamily"
+      },
+      "mono": {
+        "$value": "ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace",
+        "$type": "fontFamily"
+      }
+    },
+    "text": {
+      "$type": "dimension",
+      "title-page": {
+        "$value": {
+          "value": 36,
+          "unit": "px"
+        }
+      },
+      "title-section": {
+        "$value": {
+          "value": 26,
+          "unit": "px"
+        }
+      },
+      "title-item": {
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "body-default": {
+        "$value": {
+          "value": 18,
+          "unit": "px"
+        }
+      },
+      "body-small": {
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "label-default": {
+        "$value": {
+          "value": 18,
+          "unit": "px"
+        }
+      },
+      "label-small": {
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "numeric-display": {
+        "$value": {
+          "value": 36,
+          "unit": "px"
+        }
+      }
+    },
+    "weight": {
+      "$type": "number",
+      "400": {
+        "$value": 400
+      },
+      "600": {
+        "$value": 600
+      },
+      "700": {
+        "$value": 700
+      }
+    },
+    "space": {
+      "$type": "dimension",
+      "inset": {
+        "compact": {
+          "$value": {
+            "value": 12,
+            "unit": "px"
+          }
+        },
+        "default": {
+          "$value": {
+            "value": 20,
+            "unit": "px"
+          }
+        },
+        "comfortable": {
+          "$value": {
+            "value": 32,
+            "unit": "px"
+          }
+        }
+      },
+      "stack": {
+        "tight": {
+          "$value": {
+            "value": 8,
+            "unit": "px"
+          }
+        },
+        "default": {
+          "$value": {
+            "value": 12,
+            "unit": "px"
+          }
+        },
+        "loose": {
+          "$value": {
+            "value": 20,
+            "unit": "px"
+          }
+        },
+        "section": {
+          "$value": {
+            "value": 48,
+            "unit": "px"
+          }
+        }
+      },
+      "inline": {
+        "tight": {
+          "$value": {
+            "value": 8,
+            "unit": "px"
+          }
+        },
+        "default": {
+          "$value": {
+            "value": 12,
+            "unit": "px"
+          }
+        },
+        "loose": {
+          "$value": {
+            "value": 20,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    "size": {
+      "$type": "dimension",
+      "target": {
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        }
+      },
+      "icon-small": {
+        "$value": {
+          "value": 18,
+          "unit": "px"
+        }
+      },
+      "icon-default": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      }
+    },
+    "radius": {
+      "$type": "dimension",
+      "small": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      },
+      "control": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      },
+      "default": {
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "large": {
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "full": {
+        "$value": {
+          "value": 999,
+          "unit": "px"
+        }
+      }
+    },
+    "border": {
+      "$type": "dimension",
+      "default": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        }
+      },
+      "strong": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      }
+    },
+    "focus": {
+      "$type": "dimension",
+      "width": {
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        }
+      },
+      "offset": {
+        "$value": {
+          "value": 0,
+          "unit": "px"
+        }
+      }
+    },
+    "measure": {
+      "$value": 65,
+      "$type": "number"
+    },
+    "opacity": {
+      "$type": "number",
+      "hover": {
+        "$value": 0.08
+      },
+      "pressed": {
+        "$value": 0.16
+      },
+      "focus": {
+        "$value": 0.16
+      },
+      "disabled": {
+        "$value": 0.5
+      }
+    },
+    "duration": {
+      "$type": "duration",
+      "instant": {
+        "$value": {
+          "value": 0,
+          "unit": "ms"
+        }
+      },
+      "short": {
+        "$value": {
+          "value": 100,
+          "unit": "ms"
+        }
+      },
+      "medium": {
+        "$value": {
+          "value": 150,
+          "unit": "ms"
+        }
+      },
+      "long": {
+        "$value": {
+          "value": 200,
+          "unit": "ms"
+        }
+      }
+    },
+    "ease": {
+      "$type": "cubicBezier",
+      "standard": {
+        "$value": [
+          0.4,
+          0,
+          0.2,
+          1
+        ]
+      },
+      "enter": {
+        "$value": [
+          0,
+          0,
+          0.2,
+          1
+        ]
+      },
+      "exit": {
+        "$value": [
+          0.4,
+          0,
+          1,
+          1
+        ]
+      }
+    }
+  }
+}

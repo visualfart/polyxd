@@ -135,6 +135,19 @@ Upstream: https://github.com/adobe/spectrum-tokens
 
 Vendored under `packages/ds-spectrum/scripts/sources/`, with the upstream licence file beside it.
 
+## Template packs
+
+Twelve packs are original Polyxd templates, not readings of any design system:
+`@polyxd/ds-sketch`, `@polyxd/ds-wireframe`, `@polyxd/ds-editorial`,
+`@polyxd/ds-brutalist`, `@polyxd/ds-glass`, `@polyxd/ds-terminal`,
+`@polyxd/ds-pastel`, `@polyxd/ds-civic`, `@polyxd/ds-finance`,
+`@polyxd/ds-health`, `@polyxd/ds-neon` and `@polyxd/ds-mono`. Every value in
+them was chosen for the template, they vendor nothing, and they are Apache-2.0
+like the rest of Polyxd. The typefaces some of them name (Caveat, Patrick Hand,
+Fraunces, Nunito, JetBrains Mono, Space Grotesk) are under the SIL Open Font
+License and are loaded from Google Fonts by the page that uses them, never
+distributed here.
+
 ## Specification
 
 ### A2UI

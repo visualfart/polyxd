@@ -399,12 +399,9 @@ ${footer}
 async function demoHtml(): Promise<{ html: string; themes: string; count: number; packs: { key: string; name: string }[] }> {
   // ds-kit is the shared builder, not a pack: a pack is a directory with a manifest.
   const dirs = (await readdir(join(REPO, "packages"))).filter((d) => d.startsWith("ds-") && existsSync(join(REPO, "packages", d, "manifest.json"))).sort();
-  const packs = await Promise.all(
-    dirs.map(async (dir) => {
-      const manifest = JSON.parse(await readFile(join(REPO, "packages", dir, "manifest.json"), "utf8"));
-      return { key: manifest.name as string, name: manifest.displayName as string };
-    }),
-  );
+  const manifests = await Promise.all(dirs.map(async (dir) => JSON.parse(await readFile(join(REPO, "packages", dir, "manifest.json"), "utf8"))));
+  // The landing demo shows real design systems; the templates are counted separately (templateCount) and live in the gallery.
+  const packs = manifests.filter((m) => !isTemplate(m)).map((manifest) => ({ key: manifest.name as string, name: manifest.displayName as string }));
   // Material 3 first, because it is the one most people recognise; the rest keep pack order.
   packs.sort((a, b) => Number(b.key === "material3") - Number(a.key === "material3"));
 
@@ -528,12 +525,17 @@ async function renderCount(): Promise<number> {
   return (examples + reports) * 52;
 }
 
+/** A template pack says so in its manifest (`"template": true`); older drafts said it in a provenance note. */
+function isTemplate(m: any): boolean {
+  return m?.template === true || (Array.isArray(m?.provenance) ? m.provenance : [m?.provenance]).some((e: any) => e?.template === true || /^Original template/.test(String(e?.notes ?? "")));
+}
+
 /** Template packs: ds-* packages whose manifest says so, spelled out for prose. */
 async function templateCount(): Promise<string> {
   let n = 0;
   for (const p of (await readdir(join(REPO, "packages"))).filter((p) => p.startsWith("ds-") && p !== "ds-kit")) {
     const m = JSON.parse(await readFile(join(REPO, "packages", p, "manifest.json"), "utf8").catch(() => "{}"));
-    if ((Array.isArray(m.provenance) ? m.provenance : [m.provenance]).some((e: any) => e?.template === true || /^Original template/.test(String(e?.notes ?? "")))) n++;
+    if (isTemplate(m)) n++;
   }
   return spelled[n - 1] ?? String(n);
 }
