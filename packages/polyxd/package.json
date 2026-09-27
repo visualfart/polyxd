@@ -1,6 +1,6 @@
 {
   "name": "polyxd",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "The polyxd command: make a Polyxd design-system pack from your own tokens, and check it against the contract",
   "license": "Apache-2.0",
   "type": "module",
@@ -14,7 +14,7 @@
     "NOTICE"
   ],
   "dependencies": {
-    "@polyxd/ds-kit": "^0.2.1"
+    "@polyxd/ds-kit": "^0.2.2"
   },
   "repository": {
     "type": "git",
