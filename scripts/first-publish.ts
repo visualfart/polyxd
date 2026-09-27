@@ -39,18 +39,59 @@ console.log(`Signed in to npm as ${who.stdout.trim()}.`);
 console.log("Checking every package first (release:check)…");
 execFileSync("npm", ["run", "release:check"], { cwd: ROOT, stdio: "inherit" });
 
-const missing = ORDER.filter((name) => !onNpm(JSON.parse(readFileSync(join(ROOT, "packages", name, "package.json"), "utf8")).name));
-if (!missing.length) {
-  console.log("Every package already exists on npm; the release workflow can publish them all.");
-  process.exit(0);
-}
-console.log(`\n${missing.length} package(s) not on npm yet: ${missing.join(", ")}\nEach publish may ask for your one-time code.\n`);
+const pkgOf = (name: string) => JSON.parse(readFileSync(join(ROOT, "packages", name, "package.json"), "utf8")) as { name: string; version: string };
+
+/** Whether the release workflow is already a trusted publisher of this package. */
+const trusted = (name: string) => {
+  const r = spawnSync("npm", ["trust", "list", name, "--json"], { encoding: "utf8" });
+  return r.status === 0 && r.stdout.includes(`"file": "release.yml"`) && r.stdout.includes(REPO);
+};
+
+/**
+ * The packages the signed-in account can write. A package published a minute ago is here straight
+ * away, while its public page can keep answering 404 for a while (the CDN caches the old 404).
+ */
+const owned = () => {
+  const r = spawnSync("npm", ["access", "list", "packages", who.stdout.trim(), "--json"], { encoding: "utf8" });
+  try {
+    return new Set(Object.keys(JSON.parse(r.stdout)));
+  } catch {
+    return new Set<string>();
+  }
+};
+const exists = (name: string) => owned().has(name) || onNpm(name);
+
+/** Trust right after a first publish can race the registry; try a few times. */
+const trust = (name: string) => {
+  for (let i = 0; i < 6; i++) {
+    const r = spawnSync("npm", ["trust", "github", name, "--repo", REPO, "--file", "release.yml", "--yes"], { cwd: ROOT, stdio: "inherit" });
+    if (r.status === 0) return;
+    console.log(`  not yet, trying again in 10 s…`);
+    execFileSync("sleep", ["10"]);
+  }
+  throw new Error(`Couldn't trust the release workflow for ${name}; run this again in a minute (it picks up where it stopped).`);
+};
+
+const have = owned();
+const missing = ORDER.filter((name) => !have.has(pkgOf(name).name) && !onNpm(pkgOf(name).name));
+if (missing.length) console.log(`\n${missing.length} package(s) not on npm yet: ${missing.join(", ")}\nEach publish may ask you to authenticate.\n`);
 for (const name of missing) {
   const dir = join(ROOT, "packages", name);
-  const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
+  const pkg = pkgOf(name);
   console.log(`\n→ ${pkg.name}@${pkg.version}`);
-  execFileSync("npm", ["publish", "--access", "public", "--ignore-scripts"], { cwd: dir, stdio: "inherit" });
-  // From now on the release workflow may publish this package without a token.
-  execFileSync("npm", ["trust", "github", pkg.name, "--repo", REPO, "--file", "release.yml", "--allow-publish", "--allow-stage-publish"], { cwd: ROOT, stdio: "inherit" });
+  const r = spawnSync("npm", ["publish", "--access", "public", "--ignore-scripts"], { cwd: dir, stdio: "inherit" });
+  // A package published a moment ago can still read as missing; publishing it again fails, which is fine if it's there now.
+  if (r.status !== 0 && !exists(pkg.name)) throw new Error(`npm publish failed for ${pkg.name}`);
 }
+
+// Every package, new or not, must trust the release workflow, or the next release can't publish it.
+// Checking all of them also finishes a run that stopped between a publish and its trust.
+const untrusted = ORDER.map((name) => pkgOf(name).name).filter((name) => !trusted(name));
+if (untrusted.length) console.log(`\n${untrusted.length} package(s) don't trust the release workflow yet: ${untrusted.join(", ")}\n`);
+for (const name of untrusted) {
+  console.log(`\n→ trust ${name}`);
+  trust(name);
+}
+
+if (!missing.length && !untrusted.length) console.log("\nEvery package is on npm and trusts the release workflow.");
 console.log(`\nDone. Re-run the release workflow for the tag (gh run rerun <run id>) to publish the rest.`);
