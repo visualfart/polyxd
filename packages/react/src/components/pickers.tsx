@@ -1,9 +1,9 @@
 import { useId, useRef, useState, type ChangeEvent, type ClipboardEvent, type DragEvent, type KeyboardEvent } from "react";
 import { RadioGroup } from "radix-ui";
 import { useBindings, useSurface, type Node, type SurfaceContextValue } from "../context.tsx";
-import { absolute } from "../data.ts";
+import { clamp, colorPlaceholder, contextWithValue, fileLimits, formatBytes, formatColor, parseColor, refuseFile, sameColor, toHex6, type ColorFormat, type RGBA } from "@polyxd/core";
 import { useA11y } from "../surface.tsx";
-import { optionsOf } from "./inputs.tsx";
+import { optionsOf } from "@polyxd/core";
 import { Icon } from "./avatar.tsx";
 
 /*
@@ -23,11 +23,7 @@ type Bindings = ReturnType<typeof useBindings>;
 
 /** Dispatch `node.action` with `next` applied wherever its context binds to `node.value` (as Toggle does). */
 function dispatchWith(s: SurfaceContextValue, b: Bindings, node: Node, next: unknown) {
-  const ptr = b.pointer(node.value);
-  const context = Object.fromEntries(
-    Object.entries(node.action.event.context ?? {}).map(([k, v]: [string, any]) => [k, v && typeof v === "object" && "path" in v && absolute(v.path, b.scope) === ptr ? next : b.value(v)]),
-  );
-  s.dispatch({ event: { name: node.action.event.name, context } }, { pointer: "" }, node.id);
+  s.dispatch({ event: { name: node.action.event.name, context: contextWithValue(node, s.data, b.scope, next) } }, { pointer: "" }, node.id);
 }
 
 const describedBy = (...ids: (string | false | null | undefined)[]) => ids.filter(Boolean).join(" ") || undefined;
@@ -44,50 +40,6 @@ interface FileRef {
   ref: string;
   /** 0–1 while the host uploads, if it reports it. */
   progress?: number;
-}
-
-const UNITS = ["byte", "kilobyte", "megabyte", "gigabyte"] as const;
-
-function formatBytes(n: number, locale: string): string {
-  let i = 0;
-  let v = n;
-  while (v >= 1024 && i < UNITS.length - 1) {
-    v /= 1024;
-    i++;
-  }
-  try {
-    return new Intl.NumberFormat(locale, { style: "unit", unit: UNITS[i], unitDisplay: "short", maximumFractionDigits: v < 10 ? 1 : 0 }).format(v);
-  } catch {
-    return `${Math.round(v * 10) / 10} ${["B", "KB", "MB", "GB"][i]}`;
-  }
-}
-
-/** '.pdf' → 'PDF', 'image/*' → 'images', 'application/zip' → 'ZIP'. */
-function describeType(a: string): string {
-  const t = a.trim().toLowerCase();
-  if (t.startsWith(".")) return t.slice(1).toUpperCase();
-  const wild: Record<string, string> = { "image/*": "images", "video/*": "videos", "audio/*": "audio", "text/*": "text files" };
-  if (wild[t]) return wild[t];
-  if (t === "application/pdf") return "PDF";
-  const sub = t.split("/")[1];
-  return sub ? sub.replace(/^(x-|vnd\.)/, "").toUpperCase() : a;
-}
-
-function listText(items: string[]): string {
-  if (items.length <= 1) return items.join("");
-  return `${items.slice(0, -1).join(", ")} or ${items[items.length - 1]}`;
-}
-
-function matchesAccept(file: File, accept: string[]): boolean {
-  if (accept.length === 0) return true;
-  const name = file.name.toLowerCase();
-  const type = file.type.toLowerCase();
-  return accept.some((a) => {
-    const t = a.trim().toLowerCase();
-    if (t.startsWith(".")) return name.endsWith(t);
-    if (t.endsWith("/*")) return type.startsWith(t.slice(0, -1));
-    return type === t;
-  });
 }
 
 const revoke = (f: FileRef) => {
@@ -110,8 +62,7 @@ export function FileInput({ node }: { node: Node }) {
   const label = b.text(node.label);
 
   // The limits are always said before choosing, after whatever the host says about what to attach.
-  const acceptText = accept.length ? listText(accept.map(describeType)) : "";
-  const limits = [acceptText && `Accepts ${acceptText}.`, maxSize && `Up to ${formatBytes(maxSize, s.locale)}${multiple ? " each" : ""}.`].filter(Boolean).join(" ");
+  const limits = fileLimits(accept, maxSize, multiple, s.locale);
   const help = [node.help !== undefined ? b.text(node.help) : "", limits].filter(Boolean).join(" ") || undefined;
 
   const add = (list: FileList | File[] | null) => {
@@ -120,8 +71,8 @@ export function FileInput({ node }: { node: Node }) {
     const accepted: FileRef[] = [];
     const refused: string[] = [];
     for (const f of multiple ? chosen : chosen.slice(0, 1)) {
-      if (maxSize && f.size > maxSize) refused.push(`${f.name} is ${formatBytes(f.size, s.locale)}; the limit is ${formatBytes(maxSize, s.locale)}.`);
-      else if (!matchesAccept(f, accept)) refused.push(`${f.name} isn't an accepted type${acceptText ? ` (${acceptText})` : ""}.`);
+      const why = refuseFile(f, accept, maxSize, s.locale);
+      if (why) refused.push(why);
       else accepted.push({ name: f.name, size: f.size, type: f.type, ref: URL.createObjectURL(f) });
     }
     setError(refused.length ? refused.join(" ") : null);
@@ -223,105 +174,6 @@ export function FileInput({ node }: { node: Node }) {
 /* ColorInput                                                                                  */
 /* ------------------------------------------------------------------------------------------ */
 
-type ColorFormat = "hex" | "rgb" | "hsl";
-interface RGBA {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-}
-
-const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
-const hex2 = (n: number) => clamp(Math.round(n), 0, 255).toString(16).padStart(2, "0");
-const parseAlpha = (t: string | undefined) => (t === undefined ? 1 : clamp(t.endsWith("%") ? parseFloat(t) / 100 : parseFloat(t), 0, 1));
-const channel = (t: string) => (t.endsWith("%") ? (parseFloat(t) / 100) * 255 : parseFloat(t));
-
-function hslToRgb(h: number, s: number, l: number): [number, number, number] {
-  const hh = (((h % 360) + 360) % 360) / 360;
-  if (s === 0) return [l * 255, l * 255, l * 255];
-  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-  const p = 2 * l - q;
-  const f = (t: number) => {
-    if (t < 0) t += 1;
-    if (t > 1) t -= 1;
-    if (t < 1 / 6) return p + (q - p) * 6 * t;
-    if (t < 1 / 2) return q;
-    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-    return p;
-  };
-  return [f(hh + 1 / 3) * 255, f(hh) * 255, f(hh - 1 / 3) * 255];
-}
-
-function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
-  const rr = r / 255;
-  const gg = g / 255;
-  const bb = b / 255;
-  const max = Math.max(rr, gg, bb);
-  const min = Math.min(rr, gg, bb);
-  const l = (max + min) / 2;
-  if (max === min) return [0, 0, l];
-  const d = max - min;
-  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-  let h = max === rr ? (gg - bb) / d + (gg < bb ? 6 : 0) : max === gg ? (bb - rr) / d + 2 : (rr - gg) / d + 4;
-  h /= 6;
-  return [h * 360, s, l];
-}
-
-/** Parse CSS hex, rgb()/rgba() and hsl()/hsla() text; null when it isn't a colour yet. */
-function parseColor(text: unknown): RGBA | null {
-  if (typeof text !== "string") return null;
-  const t = text.trim();
-  const hex = /^#([0-9a-f]{3,8})$/i.exec(t);
-  if (hex) {
-    const h = hex[1];
-    if (h.length === 3 || h.length === 4) {
-      const [r, g, b, a] = h.split("").map((c) => parseInt(c + c, 16));
-      return { r, g, b, a: h.length === 4 ? a / 255 : 1 };
-    }
-    if (h.length === 6 || h.length === 8) {
-      const at = (i: number) => parseInt(h.slice(i, i + 2), 16);
-      return { r: at(0), g: at(2), b: at(4), a: h.length === 8 ? at(6) / 255 : 1 };
-    }
-    return null;
-  }
-  const fn = /^(rgba?|hsla?)\(\s*([^)]+?)\s*\)$/i.exec(t);
-  if (!fn) return null;
-  const parts = fn[2].split(/\s*[,/]\s*|\s+/).filter(Boolean);
-  if (parts.length < 3 || parts.length > 4) return null;
-  const a = parseAlpha(parts[3]);
-  if (Number.isNaN(a)) return null;
-  if (fn[1].toLowerCase().startsWith("rgb")) {
-    const [r, g, b] = parts.slice(0, 3).map(channel);
-    if ([r, g, b].some(Number.isNaN)) return null;
-    return { r: clamp(r, 0, 255), g: clamp(g, 0, 255), b: clamp(b, 0, 255), a };
-  }
-  const h = parseFloat(parts[0]);
-  const sat = parseFloat(parts[1]) / 100;
-  const light = parseFloat(parts[2]) / 100;
-  if ([h, sat, light].some(Number.isNaN)) return null;
-  const [r, g, b] = hslToRgb(h, clamp(sat, 0, 1), clamp(light, 0, 1));
-  return { r, g, b, a };
-}
-
-/** Write a colour as CSS text in the requested format; alpha appears only when allowed and below 1. */
-function formatColor(c: RGBA, format: ColorFormat, alpha: boolean): string {
-  const a = alpha ? Math.round(c.a * 100) / 100 : 1;
-  const r = Math.round(c.r);
-  const g = Math.round(c.g);
-  const b = Math.round(c.b);
-  if (format === "rgb") return a < 1 ? `rgba(${r}, ${g}, ${b}, ${a})` : `rgb(${r}, ${g}, ${b})`;
-  if (format === "hsl") {
-    const [h, s, l] = rgbToHsl(r, g, b);
-    const hh = Math.round(h);
-    const ss = Math.round(s * 100);
-    const ll = Math.round(l * 100);
-    return a < 1 ? `hsla(${hh}, ${ss}%, ${ll}%, ${a})` : `hsl(${hh}, ${ss}%, ${ll}%)`;
-  }
-  return `#${hex2(r)}${hex2(g)}${hex2(b)}${a < 1 ? hex2(a * 255) : ""}`;
-}
-
-const toHex6 = (c: RGBA | null) => (c ? `#${hex2(c.r)}${hex2(c.g)}${hex2(c.b)}` : "#000000");
-
 const OTHER = "__other";
 
 export function ColorInput({ node }: { node: Node }) {
@@ -352,8 +204,7 @@ export function ColorInput({ node }: { node: Node }) {
     if (c) write(c);
   };
   // Which swatch holds the current value (by colour, not by text: '#FFF' is 'rgb(255, 255, 255)').
-  const same = (a: RGBA | null, c: RGBA | null) => Boolean(a && c && Math.round(a.r) === Math.round(c.r) && Math.round(a.g) === Math.round(c.g) && Math.round(a.b) === Math.round(c.b) && (!alpha || Math.abs(a.a - c.a) < 0.005));
-  const matchIdx = swatches.findIndex((o) => (parsed ? same(parseColor(o.value), parsed) : String(o.value) === storedText && storedText !== ""));
+  const matchIdx = swatches.findIndex((o) => (parsed ? sameColor(parseColor(o.value), parsed, alpha) : String(o.value) === storedText && storedText !== ""));
   const current = otherChosen ? OTHER : matchIdx >= 0 ? String(matchIdx) : storedText ? OTHER : "";
   const showPicker = !hasSwatches || current === OTHER;
 
@@ -381,7 +232,7 @@ export function ColorInput({ node }: { node: Node }) {
         inputMode="text"
         autoComplete="off"
         spellCheck={false}
-        placeholder={format === "hex" ? "#000000" : format === "rgb" ? "rgb(0, 0, 0)" : "hsl(0, 0%, 0%)"}
+        placeholder={colorPlaceholder(format)}
         value={draft ?? storedText}
         aria-label={`${label}: value`}
         aria-describedby={describedBy(help && helpId)}

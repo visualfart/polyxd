@@ -1,19 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { useBindings, useSurface, type Node } from "../context.tsx";
-import { absolute, asList, childPointer, get, resolve } from "../data.ts";
+import { SHARE, SHARE_MAX, SHARE_MIN, SPLIT_COMPACT_PX as COMPACT_PX, clampShare, splitItemValue as itemValue, splitSelection } from "@polyxd/core";
 import { Render, useA11y } from "../surface.tsx";
 import { Icon } from "./avatar.tsx";
 
-/** Below this surface width the detail replaces the list instead of sitting beside it. */
-const COMPACT_PX = 640;
-/** The list's share of the width, by ratio, and how far a resizable handle may move it. */
-const SHARE: Record<string, number> = { narrow: 33.333, balanced: 50, wide: 66.667 };
-const SHARE_MIN = 20;
-const SHARE_MAX = 80;
-
-/** The value the primary selects an item by: its id when it has one, else its index (as Collection and Table do). */
-const itemValue = (item: unknown, index: number, valuePath: string | undefined, data: unknown, pointer: string) =>
-  valuePath ? get(data, absolute(valuePath, { pointer })) : item && typeof item === "object" && "id" in item ? (item as { id: unknown }).id : index;
+void itemValue;
 
 /**
  * Master and detail. The primary (a Collection or Table with single selection) and the Split
@@ -44,18 +35,8 @@ export function Split({ node }: { node: Node }) {
   }, []);
 
   const selected = b.value<unknown>(node.selected);
-  const has = selected !== undefined && selected !== null && selected !== "";
-  const primary = s.byId.get(node.primary);
-  const listPath: unknown = primary?.component === "Table" ? primary.rows?.path : primary?.items?.path;
-  const pointer = typeof listPath === "string" ? absolute(listPath, b.scope) : undefined;
-  const items = pointer ? asList(get(s.data, pointer)) : [];
-  const index = pointer ? items.findIndex((item, i) => itemValue(item, i, primary?.rowValuePath, s.data, childPointer(pointer, i)) === selected) : -1;
-  const scope = pointer && index >= 0 ? { pointer: childPointer(pointer, index) } : undefined;
-  // The item's name, for the announcement: what the list shows as its title, else a name-like field.
-  const template = primary?.items?.componentId ? s.byId.get(primary.items.componentId) : undefined;
-  const item = index >= 0 ? (items[index] as Record<string, unknown> | undefined) : undefined;
-  const titled = scope && template?.title !== undefined ? resolve(template.title, s.data, scope) : undefined;
-  const name = has ? String(titled ?? item?.name ?? item?.title ?? item?.label ?? selected) : undefined;
+  // What the primary selects, its scope for the detail, and its name for the announcement.
+  const { has, scope, name } = splitSelection(node, s.byId, s.data, b.scope);
 
   // A new selection shows its detail; on compact it takes the screen and focus.
   const previous = useRef(selected);
@@ -69,7 +50,7 @@ export function Split({ node }: { node: Node }) {
   const showDetail = !compact || (has && !listShown);
   const showList = !compact || !showDetail;
 
-  const clamp = (v: number) => Math.min(SHARE_MAX, Math.max(SHARE_MIN, v));
+  const clamp = clampShare;
   const onKey = (e: KeyboardEvent) => {
     const step = e.shiftKey ? 10 : 5;
     const next = e.key === "ArrowLeft" ? share - step : e.key === "ArrowRight" ? share + step : e.key === "Home" ? SHARE_MIN : e.key === "End" ? SHARE_MAX : undefined;

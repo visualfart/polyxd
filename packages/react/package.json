@@ -41,6 +41,7 @@
     "esbuild": "^0.28.1"
   },
   "dependencies": {
+    "@polyxd/core": "^0.3.0",
     "@polyxd/spec": "^0.2.2",
     "radix-ui": "^1.6.7"
   },

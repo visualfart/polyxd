@@ -1,0 +1,4 @@
+# Built by scripts/build-preview.ts: the bundle, and the stylesheet and themes copied from packages/react
+preview/
+styles.css
+themes/

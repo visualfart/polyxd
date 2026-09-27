@@ -1,6 +1,6 @@
 # @polyxd/react
 
-Renders Polyxd UI documents in React. Behaviour comes from Radix primitives (the same ones shadcn/ui uses); the look comes entirely from a design-system pack's semantic tokens, compiled to CSS variables.
+Renders Polyxd UI documents in React. Behaviour comes from Radix primitives (the same ones shadcn/ui uses); the look comes entirely from a design-system pack's semantic tokens, compiled to CSS variables. Everything that isn't React (the document types, bindings, formatting, and every decision the renderer makes instead of the model) lives in `@polyxd/core`, which `@polyxd/web` shares; a conformance suite in `@polyxd/verifier` holds the two renderers to the same DOM, ARIA and text.
 
 ```tsx
 import { PolyxdSurface } from "@polyxd/react";
@@ -28,7 +28,7 @@ import "@polyxd/react/themes/material3.css"; // one file per pack: carbon.css, p
 | `useFrame()` | The layout the frame chose (`side`, `rail`, `bar`, `drawer`; `compact`) for a host's own screens. |
 | `useBindings()`, `useSurface()`, `Render` | For custom renderers. |
 | `registry` | The default renderer map, to wrap or replace per component; also where a `Custom`'s host components go, by namespaced name. |
-| `formatValue`, `getPointer`, `setPointer` | Formatting and JSON Pointer helpers. |
+| `formatValue`, `getPointer`, `setPointer` | Formatting and JSON Pointer helpers, re-exported from `@polyxd/core`. |
 | `preview/polyxd.js` | A self-contained browser bundle (`window.Polyxd.mount`) used by `polyxd dev` and the editor extension. |
 
 ## What the renderer decides (not the model)

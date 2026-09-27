@@ -3,6 +3,9 @@ import { Checkbox, RadioGroup, Slider, Switch } from "radix-ui";
 import { HeadingContext, resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { asList, absolute, childPointer, get, type Scope } from "../data.ts";
 import { currencySymbol, formatValue } from "../format.ts";
+import { applyMask, optionsOf, planChoice, type Option } from "@polyxd/core";
+
+export type { Option };
 import { Render, useA11y } from "../surface.tsx";
 import { Children } from "./structure.tsx";
 import { Avatar, Icon } from "./avatar.tsx";
@@ -189,25 +192,6 @@ export function TextInput({ node }: { node: Node }) {
 
 type FieldProps = { label: string; help?: string; required?: boolean; id: string; helpId: string };
 type CommonProps = Record<string, unknown> & { id: string; className: string };
-
-/** Fills a mask as you type: # takes a digit, A a letter, * either; other characters are typed for you. */
-export function applyMask(mask: string, text: string, deleting = false): string {
-  const chars = text.replace(/[^A-Za-z0-9]/g, "").split("");
-  let out = "";
-  let ci = 0;
-  for (const m of mask) {
-    if (ci >= chars.length) break;
-    if (m === "#" || m === "A" || m === "*") {
-      const ok = m === "#" ? /\d/ : m === "A" ? /[A-Za-z]/ : /./;
-      while (ci < chars.length && !ok.test(chars[ci])) ci++;
-      if (ci >= chars.length) break;
-      out += chars[ci++];
-    } else out += m;
-  }
-  // Deleting past a literal would put it straight back; drop trailing literals so Backspace moves on.
-  if (deleting) while (out.length && !/[#A*]/.test(mask[out.length - 1])) out = out.slice(0, -1);
-  return out;
-}
 
 /** A listbox under a text field, driven by the arrow keys; the option under the cursor is announced through aria-activedescendant. */
 function useCombobox(options: Option[], pick: (o: Option) => void) {
@@ -469,33 +453,6 @@ function InlineInput({ node, field, common }: { node: Node; field: FieldProps; c
   );
 }
 
-export interface Option {
-  value: string | number | boolean;
-  label: string;
-  description?: string;
-  avatar?: unknown;
-  recent?: boolean;
-}
-
-/** A Choice's options, from literal options or host data. */
-export function optionsOf(node: Node, data: unknown, scope: Scope, text: (v: unknown) => string): Option[] {
-  const o = node.options;
-  if (Array.isArray(o)) return o.map((x: any) => ({ value: x.value, label: text(x.label), description: x.description !== undefined ? text(x.description) : undefined }));
-  const pointer = absolute(o.path, scope);
-  const items = asList(get(data, pointer));
-  return items.map((_, i) => {
-    const p = { pointer: childPointer(pointer, i) };
-    const at = (path?: string) => (path ? get(data, absolute(path, p)) : undefined);
-    return {
-      value: at(o.valuePath) as string,
-      label: String(at(o.labelPath) ?? ""),
-      description: o.descriptionPath ? String(at(o.descriptionPath) ?? "") || undefined : undefined,
-      avatar: o.avatarPath || o.imagePath ? at(o.avatarPath ?? o.imagePath) ?? "" : undefined,
-      recent: o.recentPath ? Boolean(at(o.recentPath)) : false,
-    };
-  });
-}
-
 function useOptions(node: Node): Option[] {
   const b = useBindings();
   const s = useSurface();
@@ -533,10 +490,11 @@ export function Choice({ node }: { node: Node }) {
   // Element ids from a value: JSON is exact but not id-safe ("p_tom" has quotes), so encode it.
   const idOf = (v: unknown) => `${labelId}-${encodeURIComponent(key(v)).replace(/%/g, "_")}`;
   const help = node.help !== undefined ? b.text(node.help) : undefined;
-  const withFaces = options.some((o) => o.avatar !== undefined);
-  const searchable = options.length > 10 || (withFaces && options.length > 6);
+  // The control follows the options' number and shape: chips, a people picker, or a list (core's rule).
+  const plan = planChoice(options, node.mode);
+  const { withFaces, searchable } = plan;
+  const chips = plan.control === "chips";
   const matches = (o: Option) => !query || `${o.label} ${o.description ?? ""}`.toLowerCase().includes(query.toLowerCase());
-  const chips = !withFaces && options.length <= 6 && options.every((o) => o.label.length <= 24 && !o.description);
   const a11y = useA11y(node);
   const label = b.text(node.label);
   const heading = (

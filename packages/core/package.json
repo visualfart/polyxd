@@ -1,0 +1,36 @@
+{
+  "name": "@polyxd/core",
+  "version": "0.3.0",
+  "description": "The framework-free heart of Polyxd rendering: document types, JSON Pointer bindings, localised formatting, the renderer's decisions, and a headless surface model every renderer walks the same way",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualfart/polyxd.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://polyxd.com",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "publishConfig": {
+    "access": "public"
+  }
+}

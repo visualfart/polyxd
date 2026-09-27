@@ -21,6 +21,12 @@ Inside the Polyxd repository, `npm run verify:examples -w @polyxd/verifier` runs
 
 Default matrix: Material 3, Carbon and Ant Design × light and dark × 390px and 1100px.
 
+## Renderers
+
+The verifier renders through a **harness**: a page that draws `window.__PXD__ = { document, theme, mode }` into `#root` and records what the surface sends (`harness/README.md` is the contract). Two ship: the React renderer's (`harness/`) and the Web Components renderer's (`harness-web/`, `@polyxd/web`'s preview bundle). Pass any renderer's page as `verifyDocument(doc, { harness: { url } | { html } })`; `HARNESSES.react` and `HARNESSES.web` name the shipped ones.
+
+`npm run conformance -w @polyxd/verifier` renders every spec example and every demo document with both shipped renderers in 13 packs × light/dark × 390/1100 and compares the rendered fingerprint (`fingerprint: true` on `verifyDocument`: components in order, ARIA snapshot, visible text; `compareFingerprints` explains a difference), the findings and the agent tasks. Both must score 100 and the fingerprints must match.
+
 ## Score (v0)
 
 Start at 100. Each distinct failing error check costs 20, each distinct warning 4, and failed agent runs cost up to 40 in proportion. A document that fails the schema scores 0. The weights are a starting point; the gold set (`bench/gold`) exists to calibrate them against designers' rankings.

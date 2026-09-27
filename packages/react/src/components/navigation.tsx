@@ -2,12 +2,9 @@ import { useContext, useLayoutEffect, useRef, useState } from "react";
 import { Dialog } from "radix-ui";
 import { FrameContext, useBindings, useSurface, type Node } from "../context.tsx";
 import { useA11y } from "../surface.tsx";
+import { BAR_MAX, NAV_COMPACT_PX as COMPACT_PX, groupItems, navigationLabel } from "@polyxd/core";
 import { Icon } from "./avatar.tsx";
 
-/** Below this width the navigation moves behind a menu button. */
-const COMPACT_PX = 900;
-/** A bottom bar shows this many items at most; the Frame sends longer navigations to a drawer. */
-const BAR_MAX = 5;
 
 /**
  * Navigation: the product's sections. A side navigation on wide surfaces (grouped, with the
@@ -29,7 +26,7 @@ export function Navigation({ node }: { node: Node }) {
   // The host marks the current item through PolyxdFrame; otherwise the binding says.
   const bound = b.value<string>(node.current);
   const current = placed && frame?.current?.key !== undefined ? frame.current.key : bound;
-  const label = node.label !== undefined ? b.text(node.label) : kind === "breadcrumb" ? "Breadcrumb" : kind === "toc" ? "On this page" : "Main";
+  const label = node.label !== undefined ? b.text(node.label) : navigationLabel(kind);
   const a11y = useA11y(node);
 
   useLayoutEffect(() => {
@@ -130,14 +127,7 @@ export function Navigation({ node }: { node: Node }) {
     );
   }
 
-  // Items under their group headings, in first-seen order.
-  const groups: { label?: string; items: any[] }[] = [];
-  for (const item of node.items) {
-    const g = item.group !== undefined ? b.text(item.group) : undefined;
-    const found = groups.find((x) => x.label === g);
-    if (found) found.items.push(item);
-    else groups.push({ label: g, items: [item] });
-  }
+  const groups = groupItems<any>(node.items, b.text);
   const nested = kind === "nested";
   const isOpen = (g: { label?: string; items: any[] }) => (g.label && g.label in toggled ? toggled[g.label] : !g.label || g.items.some((item) => item.key === current));
 

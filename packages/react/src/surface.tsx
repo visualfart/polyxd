@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState, type ComponentType } from "react";
 import { SurfaceContext, ScopeContext, StepsContext, useSurface, type ActionEvent, type Node, type UIDocument, type SurfaceContextValue } from "./context.tsx";
-import { ROOT_SCOPE, resolve, resolveContext, set, type Data, type Scope } from "./data.ts";
+import { dispatchAction } from "@polyxd/core";
+import { ROOT_SCOPE, resolve, set, type Data, type Scope } from "./data.ts";
 import { registry, type ComponentRenderer } from "./components/index.ts";
 import { Avatar } from "./components/avatar.tsx";
 
@@ -58,12 +59,7 @@ export function PolyxdSurface({ document: doc, data: initial, onAction, onDataCh
   );
 
   const dispatch = useCallback<SurfaceContextValue["dispatch"]>(
-    (action, scope, source) => {
-      if (!action) return;
-      const { name, context } = action.event;
-      if (name === "ui.dismiss") return onDismiss?.();
-      onAction?.({ name, context: resolveContext(context, data, scope), source });
-    },
+    (action, scope, source) => dispatchAction(action, scope, source, data, { onAction, onDismiss }),
     [data, onAction, onDismiss],
   );
 

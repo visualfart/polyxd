@@ -1,17 +1,12 @@
 import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import { Checkbox, DropdownMenu } from "radix-ui";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
+import { PAGE_SIZES, TABLE_COMPACT_PX as COMPACT_PX, isNumericColumn as isNumeric, paging as pagingOf, stackedColumns } from "@polyxd/core";
 import { asList, absolute, childPointer, get, resolve, type Scope } from "../data.ts";
 import { formatValue, safeColor } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Avatar, Icon } from "./avatar.tsx";
 
-/** Below this width a table becomes a list of rows. */
-const COMPACT_PX = 720;
-const NUMERIC = new Set(["number", "currency", "percent", "duration"]);
-const PAGE_SIZES = [10, 25, 50, 100];
-
-const isNumeric = (c: any) => c.align === "end" || (c.align !== "start" && (c.kind === "number" || c.kind === "currency" || NUMERIC.has(c.format?.type)));
 
 /**
  * Table: the dense list B2B software is made of. Saved views, a toolbar with search and filters,
@@ -163,10 +158,8 @@ export function Table({ node }: { node: Node }) {
       <ul className="pxd-row-list" aria-label={caption}>
         {rows.map((_, i) => {
           const scope = { pointer: childPointer(pointer, i) };
-          const [first, ...rest] = node.columns;
+          const { first, status, details } = stackedColumns(node.columns);
           const name = formatValue(get(s.data, absolute(first.path, scope)), resolveFormat(first.format, s.data, b.scope), s.locale);
-          const status = rest.find((c: any) => c.kind === "status");
-          const details = rest.filter((c: any) => c.kind !== "status").slice(0, 3);
           return (
             <li key={String(valueOf(scope, i))} className="pxd-row-item">
               {selection && node.selected && (
@@ -353,12 +346,8 @@ export function Paging({ node, rows }: { node: Node; rows: number }) {
   const b = useBindings();
   const s = useSurface();
   const p = node.page;
-  const index = p.index ? (b.value<number>(p.index) ?? 1) : 1;
-  const size = p.size ? (b.value<number>(p.size) ?? rows) : rows;
-  const total = p.total ? (b.value<number>(p.total) ?? rows) : rows;
-  const pages = Math.max(1, Math.ceil(total / (size || 1)));
-  const from = total === 0 ? 0 : (index - 1) * size + 1;
-  const to = Math.min(index * size, total);
+  const { index, size, total, pages, from, to, sizes } = pagingOf(p.index ? b.value(p.index) : undefined, p.size ? b.value(p.size) : undefined, p.total ? b.value(p.total) : undefined, rows);
+  void PAGE_SIZES;
   const n = (v: number) => new Intl.NumberFormat(s.locale).format(v);
   const go = (next: number) => {
     if (p.index) b.write(p.index, next);
@@ -377,7 +366,7 @@ export function Paging({ node, rows }: { node: Node; rows: number }) {
               s.dispatch(p.action, b.scope, node.id);
             }}
           >
-            {[...new Set([...PAGE_SIZES, size])].sort((a, c) => a - c).map((x) => (
+            {sizes.map((x) => (
               <option key={x} value={x}>
                 {x}
               </option>

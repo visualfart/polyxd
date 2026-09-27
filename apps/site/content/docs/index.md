@@ -17,7 +17,7 @@ A just-in-time interface is not code. It is a **UI document**, a small JSON file
 request ──► generator (any model that emits spec-valid JSON)
                       │  UI document (semantic only)
                       ▼
-              renderer (@polyxd/react, themed by a design-system pack)
+              renderer (@polyxd/react or @polyxd/web, themed by a design-system pack)
                       │
                       ▼
               verifier (polyxd-verify) → score
@@ -57,7 +57,9 @@ Everything is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) sco
 | Package | What it does |
 |---|---|
 | `@polyxd/spec` | JSON Schema and TypeScript types for UI documents; 44 semantic components, five of them the authored-only shell; 6 core patterns and a shared check vocabulary; the semantic token contract; schemas for capabilities, journeys, analytics events and Design Direction; a validator (`polyxd-validate`); example documents across six domains |
+| `@polyxd/core` | The framework-free heart of rendering: document types, JSON Pointer bindings, localised formatting, every decision the renderer makes instead of the model, and a headless surface model. No DOM, no dependencies; both renderers are built on it |
 | `@polyxd/react` | React renderer for all 44 components, built on Radix primitives and styled only by token CSS variables, with theme CSS for every pack |
+| `@polyxd/web` | Web Components renderer: `<polyxd-surface>` and `<polyxd-frame>`, no framework, no shadow DOM, the same DOM and ARIA as the React renderer, so the same styles and checks apply; Vue and Svelte adapters as files to copy |
 | `@polyxd/ds-*` | Thirteen design-system packs as DTCG tokens: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend and Chakra UI |
 | `polyxd` | The `polyxd pack` command, which makes a pack from your own tokens. See [Your design system](/docs/your-design-system) |
 | `@polyxd/a2ui` | Exports UI documents to A2UI v1.0 (release candidate) messages, with a Polyxd A2UI catalog |
@@ -73,7 +75,7 @@ Polyxd is an **early preview**. The spec is at `specVersion` 0.3 and may still c
 |---|---|
 | 0: Setup and grounding | Done |
 | 1: Spec v0 | Done |
-| 2: Web renderer and theming | Done |
+| 2: Web renderer and theming | Done: React and Web Components renderers on one core, held to each other by a [conformance suite](/docs/renderers/) |
 | 3: Verifier and benchmark | In progress. The verifier is done; the benchmark is in progress |
 | 4–6: Generator experiments | Paused |
 | 7: Demo and release | Done: [three demo products](/demos/), packages at 0.2 |
@@ -84,4 +86,5 @@ Polyxd is an **early preview**. The spec is at `specVersion` 0.3 and may still c
 
 - [Quickstart](/docs/quickstart): render, validate and verify a document.
 - [UI documents](/docs/ui-documents): how a document is put together.
+- [Renderers](/docs/renderers/): not React? The Web Components renderer, the shared core, and what a conformant renderer must do.
 - [Components reference](/docs/reference/components): every component and its props.

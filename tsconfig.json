@@ -5,10 +5,16 @@
       "path": "packages/spec"
     },
     {
+      "path": "packages/core"
+    },
+    {
       "path": "packages/a2ui"
     },
     {
       "path": "packages/react"
+    },
+    {
+      "path": "packages/web"
     },
     {
       "path": "packages/verifier"

@@ -3,58 +3,12 @@ import { AlertDialog } from "radix-ui";
 import { StepsContext, resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { asList, absolute, childPointer, get } from "../data.ts";
 import { formatValue } from "../format.ts";
+import { TASK_STATUS, bestPerAttribute, groupAttributes, isApplePlatform, parseShortcut, recommendedFirst, shortcutMatches, unmodified } from "@polyxd/core";
 import { Render, useA11y } from "../surface.tsx";
 import { Heading } from "./structure.tsx";
 import { Avatar, Icon } from "./avatar.tsx";
 
-/*
- * Shortcut keys: how each is shown on Apple, shown elsewhere, written in aria-keyshortcuts, and
- * what KeyboardEvent.key reports. Letters, digits and F-keys are derived. 'mod' is a modifier
- * that resolves per platform, so it is handled in parseShortcut.
- */
-const SHORTCUT_KEYS: Record<string, [apple: string, other: string, aria: string, event: string]> = {
-  ctrl: ["⌃", "Ctrl", "Control", "ctrlKey"],
-  alt: ["⌥", "Alt", "Alt", "altKey"],
-  shift: ["⇧", "Shift", "Shift", "shiftKey"],
-  enter: ["↵", "Enter", "Enter", "enter"],
-  escape: ["⎋", "Esc", "Escape", "escape"],
-  space: ["Space", "Space", "Space", " "],
-  tab: ["⇥", "Tab", "Tab", "tab"],
-  backspace: ["⌫", "Backspace", "Backspace", "backspace"],
-  delete: ["⌦", "Del", "Delete", "delete"],
-  arrowup: ["↑", "↑", "ArrowUp", "arrowup"],
-  arrowdown: ["↓", "↓", "ArrowDown", "arrowdown"],
-  arrowleft: ["←", "←", "ArrowLeft", "arrowleft"],
-  arrowright: ["→", "→", "ArrowRight", "arrowright"],
-  home: ["Home", "Home", "Home", "home"],
-  end: ["End", "End", "End", "end"],
-  slash: ["/", "/", "/", "/"],
-  comma: [",", ",", ",", ","],
-  period: [".", ".", ".", "."],
-};
-const MODIFIER_FLAGS = ["metaKey", "ctrlKey", "altKey", "shiftKey"] as const;
-type ModifierFlag = (typeof MODIFIER_FLAGS)[number];
-
-/** Splits "mod+shift+d" into what to show, what to announce, and what to match on keydown. */
-function parseShortcut(shortcut: string, apple: boolean) {
-  const parts = shortcut.toLowerCase().split("+");
-  const key = parts.pop()!;
-  const hint: string[] = [];
-  const aria: string[] = [];
-  const flags = new Set<ModifierFlag>();
-  for (const m of parts) {
-    const [a, o, name, flag] = m === "mod" ? (apple ? ["⌘", "Ctrl", "Meta", "metaKey"] : SHORTCUT_KEYS.ctrl) : SHORTCUT_KEYS[m];
-    hint.push(apple ? a : o);
-    aria.push(name);
-    flags.add(flag as ModifierFlag);
-  }
-  const named = SHORTCUT_KEYS[key];
-  hint.push(named ? (apple ? named[0] : named[1]) : key.toUpperCase());
-  aria.push(named ? named[2] : key.toUpperCase());
-  return { hint, aria: aria.join("+"), flags, key: named ? named[3] : key };
-}
-
-const isApple = () => /mac|iphone|ipad|ipod/i.test((navigator as any).userAgentData?.platform ?? navigator.platform ?? "");
+const isApple = () => isApplePlatform((navigator as any).userAgentData?.platform ?? navigator.platform ?? "");
 const never = () => () => {};
 /** Server render says non-Apple so the markup is deterministic; the client corrects after hydration. */
 const useApple = () => useSyncExternalStore(never, isApple, () => false);
@@ -103,11 +57,8 @@ export function Action({ node }: { node: Node }) {
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || e.repeat) return;
       if (!shell && !root.contains(document.activeElement) && !(e.target instanceof HTMLElement && root.contains(e.target))) return;
-      if (!MODIFIER_FLAGS.every((f) => e[f] === shortcut.flags.has(f))) return;
-      if (!shortcut.flags.has("metaKey") && !shortcut.flags.has("ctrlKey") && !shortcut.flags.has("altKey") && isEditable(e.target)) return;
-      // Alt on a Mac rewrites e.key to a symbol, so letters and digits also match by physical key.
-      const physical = /^[a-z0-9]$/.test(shortcut.key) && e.code.toLowerCase() === (/\d/.test(shortcut.key) ? `digit${shortcut.key}` : `key${shortcut.key}`);
-      if (e.key.toLowerCase() !== shortcut.key && !physical) return;
+      if (!shortcutMatches(shortcut, e)) return;
+      if (unmodified(shortcut) && isEditable(e.target)) return;
       e.preventDefault();
       click.current();
     };
@@ -147,14 +98,6 @@ export function Action({ node }: { node: Node }) {
     </button>
   );
 }
-
-/** Task statuses (GOV.UK task list) and the tone each is shown in. */
-const TASK_STATUS: Record<string, { label: string; tone: string }> = {
-  todo: { label: "Not started", tone: "neutral" },
-  inProgress: { label: "In progress", tone: "info" },
-  done: { label: "Completed", tone: "success" },
-  blocked: { label: "Cannot start yet", tone: "neutral" },
-};
 
 export function Steps({ node }: { node: Node }) {
   const b = useBindings();
@@ -422,26 +365,9 @@ export function Comparison({ node }: { node: Node }) {
   const at = (path: string, i: number) => get(s.data, absolute(path, scopes[i]));
   const recommended = node.recommended !== undefined ? b.text(node.recommended) : undefined;
   const reason = node.recommendedReason !== undefined ? b.text(node.recommendedReason) : undefined;
-  // Best item per attribute, when the attribute says which direction is better.
-  const best = new Map<string, number>();
-  for (const a of node.attributes) {
-    if (!a.better || a.better === "none") continue;
-    const vals = items.map((_, i) => Number(at(a.path, i)));
-    const target = a.better === "higher" ? Math.max(...vals) : Math.min(...vals);
-    if (vals.filter((v) => v === target).length === 1) best.set(a.key, vals.indexOf(target));
-  }
-  // Attributes under their group headings, in first-seen order.
-  const groups: { label?: string; attributes: any[] }[] = [];
-  for (const a of node.attributes) {
-    const label = a.group !== undefined ? b.text(a.group) : undefined;
-    const g = groups.find((x) => x.label === label);
-    if (g) g.attributes.push(a);
-    else groups.push({ label, attributes: [a] });
-  }
-  // The recommended item comes first, so it's read (and seen on phones) first.
-  const order = items.map((_, i) => i);
-  const ri = order.findIndex((i) => String(at(node.itemTitle, i) ?? "") === recommended);
-  if (ri > 0) order.unshift(...order.splice(ri, 1));
+  const best = bestPerAttribute(node.attributes, items.length, at);
+  const groups = groupAttributes<any>(node.attributes, b.text);
+  const order = recommendedFirst(items.map((_, i) => String(at(node.itemTitle, i) ?? "")), recommended);
   const value = (a: any, i: number) => {
     const v = at(a.path, i);
     if (typeof v === "boolean")

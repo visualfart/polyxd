@@ -545,7 +545,7 @@
   flex: none;
   width: var(--pxd-size-icon-default);
   height: var(--pxd-size-icon-default);
-  border-radius: 50%;
+  border-radius: var(--pxd-radius-full);
   border: 3px solid var(--pxd-color-border-default);
   border-top-color: var(--pxd-color-action-primary-background);
   animation: pxd-spin 800ms linear infinite;
@@ -687,7 +687,7 @@ textarea.pxd-input {
   cursor: pointer;
 }
 .pxd-radio {
-  border-radius: 50%;
+  border-radius: var(--pxd-radius-full);
 }
 .pxd-checkbox {
   border-radius: var(--pxd-radius-small);
@@ -709,7 +709,7 @@ textarea.pxd-input {
   display: block;
   width: 12px;
   height: 12px;
-  border-radius: 50%;
+  border-radius: var(--pxd-radius-full);
   background: var(--pxd-color-action-primary-background);
 }
 .pxd-segmented {
@@ -779,7 +779,7 @@ textarea.pxd-input {
   display: block;
   width: 16px;
   height: 16px;
-  border-radius: 50%;
+  border-radius: var(--pxd-radius-full);
   background: var(--pxd-color-border-strong);
   transform: translateX(2px);
   transition: transform var(--pxd-motion-duration-short) var(--pxd-motion-easing-standard);
@@ -824,7 +824,7 @@ textarea.pxd-input {
   display: block;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
+  border-radius: var(--pxd-radius-full);
   background: var(--pxd-color-action-primary-background);
   box-shadow: var(--pxd-shadow-raised);
   cursor: grab;
@@ -942,6 +942,25 @@ textarea.pxd-input {
 
 .pxd-portal {
   display: contents;
+}
+/* The Web renderer's overlays are native <dialog> elements: the browser's own dialog box steps
+   aside (zero specificity, so every .pxd-* rule above and below still wins) and the scrim is the
+   surface's .pxd-overlay, not the backdrop. */
+:where(.pxd-portal > dialog) {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  inset: auto;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  color: inherit;
+  background: transparent;
+  overflow: visible;
+}
+:where(.pxd-portal > dialog)::backdrop {
+  background: transparent;
 }
 .pxd-overlay {
   position: fixed;
@@ -1169,7 +1188,7 @@ textarea.pxd-input {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: var(--pxd-radius-full);
   object-fit: cover;
   font-weight: 600;
 }
@@ -1223,7 +1242,7 @@ textarea.pxd-input {
   justify-content: center;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: var(--pxd-radius-full);
   border: 2px solid var(--pxd-color-surface-default);
   background: var(--pxd-color-action-primary-background);
   color: var(--pxd-color-action-primary-foreground);
@@ -2128,7 +2147,7 @@ textarea.pxd-input {
   top: 10px;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: var(--pxd-radius-full);
   background: var(--pxd-color-border-strong);
 }
 .pxd-status-notice {

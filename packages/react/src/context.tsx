@@ -1,42 +1,9 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { resolve, resolveContext, set, absolute, type Data, type Scope } from "./data.ts";
-import { formatValue, type Format } from "./format.ts";
+import { formatValue, resolveFormat, type Format } from "./format.ts";
+import type { ActionEvent, FrameLayout, NavigationPlacement, Node, UIDocument } from "@polyxd/core";
 
-export type Node = Record<string, any> & { id: string; component: string };
-
-export interface UIDocument {
-  specVersion: string;
-  surface: {
-    id: string;
-    title: string;
-    intent?: string;
-    pattern?: string;
-    journey?: string;
-    dismissible?: boolean;
-    subtitle?: unknown;
-    breadcrumbs?: { label: unknown; action?: any }[];
-    badge?: { text: unknown; tone?: string };
-    avatar?: unknown;
-    /** ActionBar id: what you can do to this record */
-    actions?: string;
-    presentation?: "page" | "panel";
-    origin?: "generated" | "authored";
-    /** A shell is the product's frame (a Frame with an Outlet); a surface is a screen inside one. */
-    kind?: "surface" | "shell";
-  };
-  root: string;
-  components: Node[];
-  data?: Data;
-}
-
-export interface ActionEvent {
-  /** Capability name, e.g. "transfer.confirm" */
-  name: string;
-  /** Resolved context values */
-  context: Record<string, unknown>;
-  /** Id of the component that triggered it */
-  source: string;
-}
+export type { ActionEvent, FrameLayout, NavigationPlacement, Node, UIDocument };
 
 export interface SurfaceContextValue {
   doc: UIDocument;
@@ -64,14 +31,6 @@ export const HeadingContext = createContext(2);
 export const StepsContext = createContext<{ back: () => void; next: () => void } | null>(null);
 
 /* ---- The shell ---- */
-
-export type NavigationPlacement = "side" | "rail" | "bar" | "drawer";
-
-/** What a Frame decided for the width it has, so a host's own screens can adapt with it. */
-export interface FrameLayout {
-  navigation: NavigationPlacement;
-  compact: boolean;
-}
 
 /** What the host gives a shell through PolyxdFrame: the screen for the outlet, which item is current, whether one is on its way. */
 export interface FrameHost {
@@ -129,10 +88,5 @@ export function useBindings() {
   };
 }
 
-/** A format's currency may itself be bound to data (e.g. the account's currency). */
-export function resolveFormat(format: Format | undefined, data: unknown, scope: Scope): Format | undefined {
-  if (!format?.currency || typeof format.currency === "string") return format;
-  return { ...format, currency: resolve<string>(format.currency, data, scope) };
-}
-
+export { resolveFormat };
 export { set, type Data, type Scope, type ReactNode };

@@ -5,6 +5,7 @@ import { asList, absolute, childPointer, get } from "../data.ts";
 import { formatValue } from "../format.ts";
 import { useA11y } from "../surface.tsx";
 import { Avatar, Icon } from "./avatar.tsx";
+import { IDENTITY_SIZE, STAR_PATH as STAR, contextWithValue, groupSummary, maskSecret, meterHint, ratingSaid, starsLabel as stars } from "@polyxd/core";
 
 type Surface = ReturnType<typeof useSurface>;
 type Bindings = ReturnType<typeof useBindings>;
@@ -15,11 +16,7 @@ type Bindings = ReturnType<typeof useBindings>;
  */
 function dispatchWithValue(s: Surface, b: Bindings, node: Node, next: unknown) {
   if (!node.action) return;
-  const ptr = b.pointer(node.value);
-  const context = Object.fromEntries(
-    Object.entries(node.action.event.context ?? {}).map(([k, v]: [string, any]) => [k, v && typeof v === "object" && "path" in v && absolute(v.path, b.scope) === ptr ? next : b.value(v)]),
-  );
-  s.dispatch({ event: { name: node.action.event.name, context } }, { pointer: "" }, node.id);
+  s.dispatch({ event: { name: node.action.event.name, context: contextWithValue(node, s.data, b.scope, next) } }, { pointer: "" }, node.id);
 }
 
 /* ---------------------------------------------------------------- Tag */
@@ -61,8 +58,6 @@ export function Tag({ node }: { node: Node }) {
 
 /* ----------------------------------------------------------- Identity */
 
-const IDENTITY_SIZE: Record<string, number> = { small: 24, default: 40, large: 64 };
-
 /**
  * A person, team or organisation: picture, name and a line of detail; or a group of them as
  * overlapping pictures with "+N" for the rest. With an action, the whole element is one button
@@ -94,9 +89,8 @@ export function Identity({ node }: { node: Node }) {
     const max: number = node.group.max ?? 4;
     const shown = members.slice(0, max);
     const rest = members.slice(max);
-    const first = (n: string) => n.split(/\s+/)[0] || n;
     // The host's summary names the group; without one, list the first names and how many more.
-    if (!summary) summary = rest.length ? `${shown.map((m) => first(m.name)).join(", ")} and ${rest.length} more` : shown.map((m) => first(m.name)).join(", ");
+    if (!summary) summary = groupSummary(members, max);
     faces = (
       <span className="pxd-identity-faces">
         {shown.map((m, i) => (
@@ -147,14 +141,6 @@ export function Identity({ node }: { node: Node }) {
 }
 
 /* ----------------------------------------------------------- Progress */
-
-/** What a meter's tone means, said in words next to the readout. */
-function meterHint(fraction: number, thresholds: { warning?: number; danger?: number } | undefined): { tone?: string; hint?: string } {
-  if (fraction >= 1) return { tone: "danger", hint: "full" };
-  if (thresholds?.danger !== undefined && fraction >= thresholds.danger) return { tone: "danger", hint: "nearly full" };
-  if (thresholds?.warning !== undefined && fraction >= thresholds.warning) return { tone: "warning", hint: "getting full" };
-  return {};
-}
 
 /**
  * A bar or ring (progress towards done: role progressbar) or a meter (an amount within bounds:
@@ -230,8 +216,6 @@ export function Progress({ node }: { node: Node }) {
 
 /* ------------------------------------------------------------- Rating */
 
-const STAR = "M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.6 6 21l1.3-6.8-5-4.7 6.8-.8z";
-
 /** One star shape, filled to a fraction (so 4.6 shows a 60% fifth star). */
 function Star({ fill }: { fill: number }) {
   const pct = Math.round(Math.max(0, Math.min(1, fill)) * 100);
@@ -248,8 +232,6 @@ function Star({ fill }: { fill: number }) {
     </span>
   );
 }
-
-const stars = (n: number) => `${n} ${n === 1 ? "star" : "stars"}`;
 
 /**
  * A score out of N. Given by the person: a radiogroup of radios named "1 star" to "N stars",
@@ -276,7 +258,7 @@ export function Rating({ node }: { node: Node }) {
   const countSpoken = count !== undefined && count !== null ? `from ${countText} ${Number(count) === 1 ? "rating" : "ratings"}` : undefined;
 
   if (readOnly) {
-    const said = score !== undefined ? `${scoreText} out of ${max}` : `not yet rated`;
+    const said = ratingSaid(scoreText, max);
     return (
       <div className="pxd-rating pxd-rating-readonly" {...a11y}>
         <span className="pxd-rating-label">{label}</span>
@@ -386,7 +368,7 @@ export function Code({ node }: { node: Node }) {
   };
 
   const masked = secret && !revealed;
-  const shown = masked ? text.replace(/[^\s]/g, "•") : text;
+  const shown = masked ? maskSecret(text) : text;
   const what = label ?? "code";
   const name = label ?? (node.language ? `${node.language} code` : "Code");
   return (

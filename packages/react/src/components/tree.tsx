@@ -1,36 +1,12 @@
-import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type UIEvent } from "react";
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type UIEvent } from "react";
 import { ScopeContext, useBindings, useSurface, type Node } from "../context.tsx";
-import { absolute, asList, childPointer, get, type Scope } from "../data.ts";
+import { asList } from "../data.ts";
 import { useA11y } from "../surface.tsx";
 import { Icon } from "./avatar.tsx";
+import { OVERSCAN, TYPEAHEAD_MS, VIRTUAL_LIMIT, treeRows, typeAheadTarget, type TreeRow as Row } from "@polyxd/core";
 
-/** Beyond this many visible rows the tree renders only the rows in (and just around) its viewport. */
-const VIRTUAL_LIMIT = 200;
-/** Rows rendered above and below the viewport so keyboard moves and quick scrolls don't flash blank. */
-const OVERSCAN = 10;
 /** Fallback row height (px) until the first row has been measured. */
 const FALLBACK_ROW_HEIGHT = 40;
-/** Type-ahead resets after this pause. */
-const TYPEAHEAD_MS = 500;
-
-/** One visible row of the flattened tree. */
-interface Row {
-  /** Pointer to the node in host data; stable identity for keys and focus. */
-  key: string;
-  scope: Scope;
-  level: number;
-  setsize: number;
-  posinset: number;
-  label: string;
-  value: unknown;
-  detail: string | undefined;
-  hasChildren: boolean;
-  expanded: boolean;
-  /** Index of the parent row in the flat list, -1 at the top level. */
-  parent: number;
-}
-
-const asText = (v: unknown): string => (v === undefined || v === null ? "" : String(v));
 
 /**
  * Tree: a hierarchy people expand, browse and pick from (WAI-ARIA APG tree view).
@@ -46,8 +22,6 @@ export function Tree({ node }: { node: Node }) {
   const listRef = useRef<HTMLUListElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
-  const itemsPointer = absolute(node.items.path, b.scope);
-  const items = asList(get(s.data, itemsPointer));
   const selection: "none" | "single" | "multiple" = node.selection ?? "none";
   const selectable = selection !== "none" && !!node.selected;
 
@@ -55,46 +29,13 @@ export function Tree({ node }: { node: Node }) {
   const boundExpanded = node.expanded ? asList(b.value<unknown>(node.expanded)) : undefined;
   const [localExpanded, setLocalExpanded] = useState<Set<unknown> | null>(null);
   const expandedSet = useMemo(() => (boundExpanded ? new Set(boundExpanded) : localExpanded), [boundExpanded, localExpanded]);
-  const isExpanded = useCallback((value: unknown, level: number) => (expandedSet ? expandedSet.has(value) : level === 1), [expandedSet]);
 
   // Selection: a value (single) or a list of values (multiple) in host data.
   const selected = selectable ? b.value<unknown>(node.selected) : undefined;
   const isSelected = (v: unknown) => (Array.isArray(selected) ? selected.includes(v) : selected !== undefined && selected === v);
 
-  const readNode = useCallback(
-    (scope: Scope) => {
-      const label = asText(get(s.data, absolute(node.labelPath, scope)));
-      const rawValue = node.valuePath ? get(s.data, absolute(node.valuePath, scope)) : label;
-      const value = rawValue === undefined || rawValue === null ? label || scope.pointer : rawValue;
-      const detailRaw = node.detailPath ? get(s.data, absolute(node.detailPath, scope)) : undefined;
-      const detail = detailRaw === undefined || detailRaw === null || detailRaw === "" ? undefined : String(detailRaw);
-      const children = asList(get(s.data, absolute(node.childrenPath, scope)));
-      return { label, value, detail, children };
-    },
-    [s.data, node.labelPath, node.valuePath, node.detailPath, node.childrenPath],
-  );
-
-  // Flatten the open part of the hierarchy, depth first.
-  const { rows, indexByKey, topValues } = useMemo(() => {
-    const rows: Row[] = [];
-    const indexByKey = new Map<string, number>();
-    const topValues: unknown[] = [];
-    const walk = (list: unknown[], pointer: string, level: number, parent: number) => {
-      list.forEach((_, i) => {
-        const scope = { pointer: childPointer(pointer, i) };
-        const { label, value, detail, children } = readNode(scope);
-        if (level === 1) topValues.push(value);
-        const hasChildren = children.length > 0;
-        const expanded = hasChildren && isExpanded(value, level);
-        const index = rows.length;
-        indexByKey.set(scope.pointer, index);
-        rows.push({ key: scope.pointer, scope, level, setsize: list.length, posinset: i + 1, label, value, detail, hasChildren, expanded, parent });
-        if (expanded) walk(children, absolute(node.childrenPath, scope), level + 1, index);
-      });
-    };
-    walk(items, itemsPointer, 1, -1);
-    return { rows, indexByKey, topValues };
-  }, [items, itemsPointer, readNode, isExpanded, node.childrenPath]);
+  // Flatten the open part of the hierarchy, depth first (core's rule: without a set, the first level is open).
+  const { rows, indexByKey, topValues } = useMemo(() => treeRows(node, s.data, b.scope, expandedSet), [node, s.data, b.scope, expandedSet]);
 
   // Roving tabindex: focus is tracked by node pointer so it survives expand/collapse and data updates.
   const [focusKey, setFocusKey] = useState<string | null>(null);
@@ -192,17 +133,7 @@ export function Tree({ node }: { node: Node }) {
     const t = typed.current;
     t.buffer = now - t.at < TYPEAHEAD_MS ? t.buffer + char.toLowerCase() : char.toLowerCase();
     t.at = now;
-    const find = (prefix: string) => {
-      for (let step = 1; step <= rows.length; step++) {
-        const j = (focusIndex + step) % rows.length;
-        if (rows[j].label.toLowerCase().startsWith(prefix)) return j;
-      }
-      return -1;
-    };
-    // The same letter repeated cycles through matches of that letter.
-    const single = t.buffer.length > 1 && [...t.buffer].every((c) => c === t.buffer[0]);
-    let j = single ? find(t.buffer[0]) : find(t.buffer);
-    if (j < 0 && t.buffer.length > 1) j = find(t.buffer[0]);
+    const j = typeAheadTarget(rows, focusIndex, t.buffer);
     if (j >= 0) focusRow(j);
   };
 

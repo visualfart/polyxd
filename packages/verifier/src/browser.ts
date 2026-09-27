@@ -3,8 +3,21 @@ import { createRequire } from "node:module";
 import { extname } from "node:path";
 import { chromium, type Browser, type Page } from "playwright";
 
-const HARNESS = new URL("../harness-dist/", import.meta.url);
 const ORIGIN = "http://harness.polyxd.local";
+
+/**
+ * A page that renders `window.__PXD__` (see harness/README.md): the built-in React harness, the
+ * Web Components harness, or any renderer's own page, by URL or as a directory of static files.
+ */
+export type RendererHarness =
+  | { name?: string; url: string }
+  | { name?: string; html: string | URL };
+
+/** The harnesses this package ships, built by `npm run build:harness`. */
+export const HARNESSES: Record<"react" | "web", RendererHarness> = {
+  react: { name: "react", html: new URL("../harness-dist/index.html", import.meta.url) },
+  web: { name: "web", html: new URL("../harness-web-dist/index.html", import.meta.url) },
+};
 const TYPES: Record<string, string> = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml" };
 const axeSource = readFile(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
 
@@ -23,23 +36,38 @@ export async function launch(): Promise<Browser> {
  * Opens a page with one document rendered in one theme/mode/width. The harness is served from
  * disk through request interception, so nothing listens on a port.
  */
-export async function renderPage(browser: Browser, document: unknown, target: RenderTarget): Promise<{ page: Page; errors: string[] }> {
+export async function renderPage(browser: Browser, document: unknown, target: RenderTarget, harness: RendererHarness = HARNESSES.react): Promise<{ page: Page; errors: string[] }> {
   const page = await browser.newPage({ viewport: { width: target.width, height: 900 }, reducedMotion: "reduce" });
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
-  await page.route(`${ORIGIN}/**`, async (route) => {
-    const path = new URL(route.request().url()).pathname.slice(1) || "index.html";
-    try {
-      const body = await readFile(new URL(path, HARNESS));
-      await route.fulfill({ body, contentType: TYPES[extname(path)] ?? "application/octet-stream" });
-    } catch {
-      await route.fulfill({ status: 404 });
-    }
-  });
+  let url: string;
+  if ("url" in harness) url = harness.url;
+  else {
+    // A directory of static files is served from disk through request interception, so nothing listens on a port.
+    const index = harness.html instanceof URL ? harness.html : new URL(harness.html, `file://${process.cwd()}/`);
+    const dir = new URL("./", index);
+    await page.route(`${ORIGIN}/**`, async (route) => {
+      const path = new URL(route.request().url()).pathname.slice(1) || "index.html";
+      try {
+        const body = await readFile(new URL(path, dir));
+        await route.fulfill({ body, contentType: TYPES[extname(path)] ?? "application/octet-stream" });
+      } catch {
+        await route.fulfill({ status: 404 });
+      }
+    });
+    url = `${ORIGIN}/${index.pathname.split("/").pop() ?? "index.html"}`;
+  }
   await page.addInitScript((cfg) => ((window as any).__PXD__ = cfg), { document, theme: target.theme, mode: target.mode });
-  await page.goto(`${ORIGIN}/index.html`);
+  await page.goto(url);
   await page.waitForFunction(() => (window as any).__pxdReady === true, undefined, { timeout: 10_000 });
+  // Entrances (a panel fading in) finish before anything is measured, so a contrast or layout
+  // reading never depends on how far into an animation a renderer's first paint was. Endless
+  // animations (a spinner) are left running.
+  await page.evaluate(() => {
+    const doc = (globalThis as any).document as { getAnimations(): { effect?: { getTiming(): { iterations: number } }; finished: Promise<unknown> }[] };
+    return Promise.all(doc.getAnimations().filter((a) => a.effect?.getTiming().iterations !== Infinity).map((a) => a.finished.catch(() => undefined)));
+  });
   await page.addScriptTag({ content: await axeSource });
   return { page, errors };
 }

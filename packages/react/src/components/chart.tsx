@@ -3,29 +3,7 @@ import { resolveFormat, useBindings, useSurface, type Node } from "../context.ts
 import { asList, absolute, childPointer, get } from "../data.ts";
 import { formatValue } from "../format.ts";
 import { useA11y } from "../surface.tsx";
-
-const W = 600;
-const H = 240;
-const PAD = { top: 16, right: 16, bottom: 32, left: 56 };
-const MARKERS = ["circle", "square", "diamond", "triangle", "circle", "square"] as const;
-
-function niceMax(v: number) {
-  if (v <= 0) return 1;
-  const p = 10 ** Math.floor(Math.log10(v));
-  return Math.ceil(v / p) * p;
-}
-
-/** Short axis labels: dates as "Apr" (or "3 Apr"), everything else as text. */
-function axisLabel(v: unknown, type: string | undefined, locale: string): string {
-  if (type === "date" || type === "datetime") {
-    const d = new Date(String(v));
-    if (!Number.isNaN(d.getTime())) {
-      const opts: Intl.DateTimeFormatOptions = d.getUTCDate() === 1 ? { month: "short", timeZone: "UTC" } : { month: "short", day: "numeric", timeZone: "UTC" };
-      return new Intl.DateTimeFormat(locale, opts).format(d);
-    }
-  }
-  return String(v ?? "").slice(0, 12);
-}
+import { CHART_H as H, CHART_PAD as PAD, CHART_W as W, MARKERS, axisLabel, flowLayout, niceMax, seriesColor, treemap, verticalScale } from "@polyxd/core";
 
 function Marker({ kind, x, y, color }: { kind: string; x: number; y: number; color: string }) {
   if (kind === "square") return <rect x={x - 4} y={y - 4} width={8} height={8} fill={color} />;
@@ -44,7 +22,7 @@ export function Chart({ node }: { node: Node }) {
   const points = asList(get(s.data, pointer)).map((_, i) => childPointer(pointer, i));
   const x = (p: string) => get(s.data, absolute(node.x.path, { pointer: p }));
   const y = (p: string, series: any) => Number(get(s.data, absolute(series.path, { pointer: p }))) || 0;
-  const color = (i: number) => `var(--pxd-color-data-categorical-${(i % 6) + 1})`;
+  const color = seriesColor;
   const series: any[] = node.series;
   const a11y = useA11y(node);
   const fmt = (v: unknown, format: any) => formatValue(v, resolveFormat(format, s.data, b.scope), s.locale);
@@ -240,22 +218,11 @@ export function Chart({ node }: { node: Node }) {
   if (node.intent === "flow") {
     // Stacked flows from each x value (left) into each series (right), band widths by amount.
     const values = points.map((p) => series.map((sr) => Math.max(0, y(p, sr))));
-    const leftTotals = values.map((row) => row.reduce((a, v) => a + v, 0));
-    const rightTotals = series.map((_, si) => values.reduce((a, row) => a + row[si], 0));
-    const total = leftTotals.reduce((a, v) => a + v, 0) || 1;
-    const gap = 6;
-    const usable = H - gap * (Math.max(points.length, series.length) - 1);
-    const scale = usable / total;
+    const { leftY, rightY, leftTotals, rightTotals, scale } = flowLayout(values, series.length, H);
     const nodeW = 12;
     const labelW = 110;
     const x0 = labelW;
     const x1 = W - labelW;
-    const leftY: number[] = [];
-    const rightY: number[] = [];
-    let yy = 0;
-    leftTotals.forEach((t) => (leftY.push(yy), (yy += t * scale + gap)));
-    yy = 0;
-    rightTotals.forEach((t) => (rightY.push(yy), (yy += t * scale + gap)));
     const leftOff = [...leftY];
     const rightOff = [...rightY];
     const xm = (x0 + x1) / 2;
@@ -332,12 +299,8 @@ export function Chart({ node }: { node: Node }) {
   }
 
   const all = points.flatMap((p) => series.map((sr) => y(p, sr)));
-  const max = niceMax(Math.max(0, ...all));
-  const min = node.intent === "trend" ? Math.min(0, ...all) : 0;
-  const trendMin = node.intent === "trend" && all.length ? Math.max(min, Math.min(...all) - (Math.max(...all) - Math.min(...all)) * 0.2) : min;
-  const lo = node.intent === "trend" ? Math.floor(trendMin) : 0;
+  const { lo, max, ticks } = verticalScale(all, node.intent === "trend");
   const scaleY = (v: number) => PAD.top + plotH - ((v - lo) / (max - lo || 1)) * plotH;
-  const ticks = [0, 0.5, 1].map((t) => lo + (max - lo) * t);
   const band = plotW / Math.max(points.length, 1);
 
   const axis = (
@@ -409,51 +372,6 @@ export function Chart({ node }: { node: Node }) {
       <DataTable node={node} points={points} x={x} y={y} />
     </figure>
   );
-}
-
-/** Squarified treemap: tiles laid in rows along the shorter side, keeping them near square. */
-function treemap(values: number[], w: number, h: number): ({ x: number; y: number; w: number; h: number } | null)[] {
-  const total = values.reduce((a, v) => a + v, 0);
-  const rects: ({ x: number; y: number; w: number; h: number } | null)[] = values.map(() => null);
-  if (total <= 0) return rects;
-  const order = values.map((_, i) => i).filter((i) => values[i] > 0).sort((a, c) => values[c] - values[a]);
-  const area = (i: number) => (values[i] / total) * w * h;
-  let x = 0;
-  let y = 0;
-  let cw = w;
-  let ch = h;
-  let i = 0;
-  while (i < order.length && cw > 0 && ch > 0) {
-    const vertical = cw >= ch;
-    const side = vertical ? ch : cw;
-    let row: number[] = [];
-    let rowArea = 0;
-    let best = Infinity;
-    while (i < order.length) {
-      const trial = [...row, order[i]];
-      const trialArea = rowArea + area(order[i]);
-      const thickness = trialArea / side;
-      const worst = Math.max(...trial.map((j) => {
-        const len = area(j) / thickness;
-        return Math.max(len / thickness, thickness / len);
-      }));
-      if (worst > best && row.length) break;
-      row = trial;
-      rowArea = trialArea;
-      best = worst;
-      i++;
-    }
-    const thickness = rowArea / side;
-    let off = 0;
-    for (const j of row) {
-      const len = area(j) / thickness;
-      rects[j] = vertical ? { x, y: y + off, w: thickness, h: len } : { x: x + off, y, w: len, h: thickness };
-      off += len;
-    }
-    if (vertical) (x += thickness), (cw -= thickness);
-    else (y += thickness), (ch -= thickness);
-  }
-  return rects;
 }
 
 function DataTable({ node, points, x, y }: { node: Node; points: string[]; x: (p: string) => unknown; y: (p: string, s: any) => number }) {

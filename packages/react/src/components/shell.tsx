@@ -1,31 +1,16 @@
 import { createElement, useContext, useEffect, useId, useLayoutEffect, useRef, useState, type ComponentType, type MouseEvent } from "react";
-import { FrameContext, FrameHostContext, HeadingContext, useBindings, useSurface, type FrameContextValue, type NavigationPlacement, type Node } from "../context.tsx";
-import { ROOT_SCOPE, isBinding, resolve, type Scope } from "../data.ts";
+import { FrameContext, FrameHostContext, HeadingContext, useBindings, useSurface, type FrameContextValue, type Node } from "../context.tsx";
+import { BAR_MAX, MEDIUM_PX, WIDE_PX, frameWidth, placementFor, appBarTitle, type FrameWidth } from "@polyxd/core";
+import { ROOT_SCOPE, resolve, resolveDeep } from "../data.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { PolyxdSkeleton } from "../skeleton.tsx";
 import { Icon } from "./avatar.tsx";
 
-/** The Frame's breakpoints, on its own width: wide has room for a side column, medium for a rail. */
-const WIDE_PX = 1024;
-const MEDIUM_PX = 640;
-/** A bottom bar holds at most this many items; more go behind a menu button. */
-const BAR_MAX = 5;
-
-type Width = "wide" | "medium" | "compact";
-
-/**
- * Where the main navigation goes. 'auto' follows the width. 'side' and 'rail' hold on wide and
- * medium layouts and still collapse on compact, where neither fits beside a screen; 'bar' and
- * 'drawer' hold everywhere, except that a bar with too many items becomes a drawer.
- */
-function placementFor(placement: string | undefined, width: Width, items: number): NavigationPlacement {
-  const fits = items <= BAR_MAX;
-  if (placement === "bar") return fits ? "bar" : "drawer";
-  if (placement === "drawer") return "drawer";
-  if (width === "compact") return fits ? "bar" : "drawer";
-  if (placement === "side" || placement === "rail") return placement;
-  return width === "wide" ? "side" : "rail";
-}
+// The breakpoints (WIDE_PX, MEDIUM_PX), the bar's limit (BAR_MAX) and the placement rule come from core.
+void WIDE_PX;
+void MEDIUM_PX;
+void BAR_MAX;
+type Width = FrameWidth;
 
 /**
  * The product's frame: its regions in reading order (skip link, banner, header, navigation,
@@ -46,10 +31,7 @@ export function Frame({ node }: { node: Node }) {
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === "undefined") return;
-    const measure = () => {
-      const w = el.getBoundingClientRect().width;
-      setWidth(w >= WIDE_PX ? "wide" : w >= MEDIUM_PX ? "medium" : "compact");
-    };
+    const measure = () => setWidth(frameWidth(el.getBoundingClientRect().width));
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
@@ -155,7 +137,7 @@ export function AppBar({ node }: { node: Node }) {
   const sticky = node.sticky !== false;
   const compact = frame?.compact ?? false;
   const product = b.text(node.title);
-  const title = compact && frame?.current?.title ? frame.current.title : product;
+  const title = appBarTitle(product, compact, frame?.current?.title);
   const menu = frame?.navigation === "drawer";
 
   // Elevation once content scrolls under the bar: a sentinel just above it leaves the viewport.
@@ -322,14 +304,6 @@ const DEV = (() => {
 })();
 const noted = new Set<string>();
 
-/** A prop's value, with bindings resolved wherever they sit in it. */
-function resolveProps(value: unknown, data: unknown, scope: Scope): unknown {
-  if (isBinding(value)) return resolve(value, data, scope);
-  if (Array.isArray(value)) return value.map((v) => resolveProps(v, data, scope));
-  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolveProps(v, data, scope)]));
-  return value;
-}
-
 /**
  * A slot for a component the host implements: looked up by name in the surface's `components`
  * (the same registry that overrides renderers, under a namespaced key like "brand.logo") and
@@ -348,7 +322,7 @@ export function Custom({ node }: { node: Node }) {
     }
     return node.fallback ? <Render id={node.fallback} /> : null;
   }
-  const props = (resolveProps(node.props ?? {}, s.data, b.scope) ?? {}) as Record<string, unknown>;
+  const props = (resolveDeep(node.props ?? {}, s.data, b.scope) ?? {}) as Record<string, unknown>;
   const el = <Host {...props} node={node} />;
   if (node.label === undefined) return el;
   return (

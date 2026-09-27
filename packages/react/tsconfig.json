@@ -10,5 +10,5 @@
     "verbatimModuleSyntax": true
   },
   "include": ["src"],
-  "references": [{ "path": "../spec" }]
+  "references": [{ "path": "../spec" }, { "path": "../core" }]
 }

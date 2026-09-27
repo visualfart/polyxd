@@ -1,5 +1,6 @@
 import type { Browser } from "playwright";
-import { launch, renderPage, type RenderTarget } from "./browser.ts";
+import { launch, renderPage, type RendererHarness, type RenderTarget } from "./browser.ts";
+import { renderedFingerprint, type Fingerprint } from "./fingerprint.ts";
 import { axeAudit, layoutAudit, type Finding } from "./rendered.ts";
 import { runTask, type AgentResult, type Task } from "./agent.ts";
 import { staticAudit, type StaticOptions } from "./static.ts";
@@ -12,11 +13,16 @@ export interface VerifyOptions extends StaticOptions {
   tasks?: Task[];
   /** Reuse a browser across many documents */
   browser?: Browser;
+  /** The page that renders the document (see harness/README.md); the built-in React harness by default */
+  harness?: RendererHarness;
+  /** Record each target's rendered fingerprint (components, ARIA tree, text), for comparing renderers */
+  fingerprint?: boolean;
 }
 
 export interface TargetReport extends RenderTarget {
   findings: Finding[];
   agent: (AgentResult & { task: string })[];
+  fingerprint?: Fingerprint;
 }
 
 export interface Report {
@@ -59,7 +65,7 @@ export async function verifyDocument(doc: any, opts: VerifyOptions = {}): Promis
             let page: Awaited<ReturnType<typeof renderPage>>["page"];
             let errors: string[];
             try {
-              ({ page, errors } = await renderPage(browser, doc, target));
+              ({ page, errors } = await renderPage(browser, doc, target, opts.harness));
             } catch (e) {
               // Timed out or crashed before the surface was ready: that is the renderer's problem
               // with this document, and the run carries on.
@@ -74,15 +80,16 @@ export async function verifyDocument(doc: any, opts: VerifyOptions = {}): Promis
               continue;
             }
             const findings: Finding[] = [...(await axeAudit(page)), ...(await layoutAudit(page))];
+            const fingerprint = opts.fingerprint ? await renderedFingerprint(page) : undefined;
             const agent: TargetReport["agent"] = [];
             for (const task of opts.tasks ?? []) {
               // Each task gets a fresh render so earlier tasks can't leave state behind.
-              const fresh = agent.length === 0 ? page : (await renderPage(browser, doc, target)).page;
+              const fresh = agent.length === 0 ? page : (await renderPage(browser, doc, target, opts.harness)).page;
               agent.push({ task: task.id, ...(await runTask(fresh, task)) });
               if (fresh !== page) await fresh.close();
             }
             for (const e of errors) findings.push({ severity: "error", check: "runtime", message: e });
-            targets.push({ ...target, findings, agent });
+            targets.push({ ...target, findings, agent, ...(fingerprint ? { fingerprint } : {}) });
             await page.close();
           }
         }

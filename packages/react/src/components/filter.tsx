@@ -4,7 +4,7 @@ import { resolveFormat, useBindings, useSurface, type Node } from "../context.ts
 import { formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Icon } from "./avatar.tsx";
-import { optionsOf } from "./inputs.tsx";
+import { optionsOf } from "@polyxd/core";
 import { Heading } from "./structure.tsx";
 
 /** Below this width the filters move into a bottom sheet. */

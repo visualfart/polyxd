@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@polyxd/web demo</title>
+    <link rel="stylesheet" href="../preview/polyxd-web.css" />
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; background: #eee; color: #222; }
+      .demo { display: grid; grid-template-columns: minmax(0, 1fr) 22rem; gap: 24px; padding: 24px; }
+      .stage { background: #fff; border: 1px solid #ccc; }
+      .log { font: 12px/1.5 ui-monospace, monospace; background: #fff; border: 1px solid #ccc; padding: 12px; overflow: auto; max-height: 80vh; }
+      .log li { margin: 0 0 8px; white-space: pre-wrap; }
+      h2 { font-size: 14px; margin: 24px 24px 0; }
+      .frame { margin: 12px 24px 24px; border: 1px solid #ccc; background: #fff; resize: horizontal; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <h2>&lt;polyxd-surface&gt; · money-send-form.json · Material 3</h2>
+    <div class="demo">
+      <div class="stage"><polyxd-surface id="send" theme="material3" mode="light"></polyxd-surface></div>
+      <ol class="log" id="log" aria-live="polite" aria-label="Events"></ol>
+    </div>
+    <h2>&lt;polyxd-frame&gt; · shell-product.json · Material 3 · <button type="button" data-w="390">390</button> <button type="button" data-w="1280">1280</button></h2>
+    <div class="frame" id="frame-box" style="width: 1280px">
+      <polyxd-frame id="shell" theme="material3" mode="light">
+        <h1 class="pxd-surface-title">Orders</h1>
+        <p>The current screen renders here.</p>
+      </polyxd-frame>
+    </div>
+    <script src="../preview/polyxd-web.js"></script>
+    <script>
+      const log = (kind, detail) => {
+        const li = document.createElement("li");
+        li.textContent = `${kind} ${JSON.stringify(detail)}`;
+        document.getElementById("log").prepend(li);
+      };
+      (async () => {
+        const send = document.getElementById("send");
+        send.document = await (await fetch("../../spec/examples/money-send-form.json")).json();
+        send.resolveMedia = PolyxdWeb.placeholderMedia;
+        send.addEventListener("polyxd-action", (e) => log("polyxd-action", e.detail));
+        send.addEventListener("polyxd-datachange", (e) => log("polyxd-datachange", e.detail));
+        send.addEventListener("polyxd-dismiss", () => log("polyxd-dismiss", {}));
+        const shell = document.getElementById("shell");
+        const doc = await (await fetch("../../spec/examples/shell-product.json")).json();
+        shell.current = { key: doc.components.find((c) => c.component === "Navigation")?.items?.[0]?.key, title: "Orders" };
+        shell.document = doc;
+        shell.resolveMedia = PolyxdWeb.placeholderMedia;
+        shell.addEventListener("polyxd-action", (e) => log("frame polyxd-action", e.detail));
+        for (const b of document.querySelectorAll("button[data-w]")) b.addEventListener("click", () => (document.getElementById("frame-box").style.width = `${b.dataset.w}px`));
+      })();
+    </script>
+  </body>
+</html>

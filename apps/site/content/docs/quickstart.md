@@ -63,6 +63,8 @@ export function SendConfirm({ quote, close }) {
 
 The renderer handles `ui.back` and `ui.next` itself inside `Steps`, and `ui.copy`. Every other action name goes to `onAction`, and your app decides what it does.
 
+**Not React?** `@polyxd/web` renders the same documents as `<polyxd-surface>` and `<polyxd-frame>`, no framework and no shadow DOM, with the same DOM, styles and checks; Vue and Svelte wrappers are a file each. See [Renderers](/docs/renderers/).
+
 Two more exports: `PolyxdSkeleton` shows a loading state shaped by the coming document's pattern (`<PolyxdSkeleton pattern="multi-step-form" title="Send money" theme="material3" />`) while a document is on its way; `PolyxdFrame` renders a **shell document**, the product's frame, with your screens in its Outlet (see [Rendering a shell](/docs/shell/)).
 
 ### Write documents with help

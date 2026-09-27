@@ -47,6 +47,10 @@ Besides the validator, pattern, capability and rule checks, the document layer a
 | `runtime` | error | Page errors and console errors during rendering |
 | `runtime:render` | error | The surface never rendered, or never finished rendering, in that design system, mode and width |
 
+## Other renderers
+
+The rendered checks run through a **harness** page that renders `window.__PXD__` and records what the surface sends; the React and Web Components renderers each ship one, and any renderer can provide its own (`verifyDocument(doc, { harness: { url } | { html } })`). `npm run conformance -w @polyxd/verifier` holds the two shipped renderers to the same DOM, ARIA, text and findings across every document and pack. See [Renderers](/docs/renderers/).
+
 ## The default matrix
 
 Material 3, Carbon and Ant Design × light and dark × 390px and 1100px wide. That is 12 renders per document.

@@ -1,0 +1,52 @@
+{
+  "name": "@polyxd/web",
+  "version": "0.3.0",
+  "description": "Web Components renderer for Polyxd UI documents: <polyxd-surface> and <polyxd-frame>, no framework, no shadow DOM, the same DOM and ARIA as @polyxd/react",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./styles.css",
+    "./themes/*": "./themes/*",
+    "./preview/*": "./preview/*",
+    "./adapters/*": "./adapters/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "styles.css",
+    "themes",
+    "preview",
+    "adapters",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "tsc -b && node scripts/build-preview.ts",
+    "build:preview": "node scripts/build-preview.ts",
+    "test": "tsc -b && node --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@polyxd/core": "^0.3.0"
+  },
+  "devDependencies": {
+    "@polyxd/spec": "^0.2.2",
+    "esbuild": "^0.28.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualfart/polyxd.git",
+    "directory": "packages/web"
+  },
+  "homepage": "https://polyxd.com",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "publishConfig": {
+    "access": "public"
+  }
+}
