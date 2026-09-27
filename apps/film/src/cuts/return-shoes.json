@@ -1,0 +1,13 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": { "id": "return", "title": "Return an item", "intent": "commerce.order.return", "pattern": "single-form" },
+  "root": "form",
+  "components": [
+    { "id": "form", "component": "Form", "children": ["item", "reason", "refund"], "submit": { "label": "Start return", "action": { "event": { "name": "return.start", "context": { "reason": { "path": "/draft/reason" }, "refund": { "path": "/draft/refund" } } } } } },
+    { "id": "item", "component": "Card", "title": "Trail runners, size 9", "subtitle": "Delivered 12 September · £84.00", "badge": { "text": "Returnable until 12 Oct", "tone": "success" } },
+    { "id": "reason", "component": "Choice", "key": "reason", "label": "Why are you sending them back?", "options": [ { "value": "small", "label": "Too small" }, { "value": "big", "label": "Too big" }, { "value": "other", "label": "Something else" } ], "value": { "path": "/draft/reason" }, "required": true },
+    { "id": "refund", "component": "Choice", "key": "refund", "label": "What would you like?", "options": [ { "value": "exchange", "label": "Swap for size 10", "description": "In stock, sent when we receive these" }, { "value": "refund", "label": "Refund to my card", "description": "£84.00 in 3–5 days" } ], "value": { "path": "/draft/refund" }, "required": true }
+  ],
+  "data": { "draft": { "reason": "small", "refund": "exchange" } }
+}
