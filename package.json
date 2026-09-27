@@ -13,7 +13,8 @@
     "check:licences": "node scripts/check-licences.ts",
     "test:all": "node scripts/test-all.ts",
     "release:check": "node scripts/release.ts",
-    "release:publish": "node scripts/release.ts --publish"
+    "release:publish": "node scripts/release.ts --publish",
+    "release:first": "node scripts/first-publish.ts"
   },
   "engines": {
     "node": ">=22"
