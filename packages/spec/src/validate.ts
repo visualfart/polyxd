@@ -1,6 +1,6 @@
-import { readFileSync } from "node:fs";
 import { Ajv2020, type ErrorObject } from "ajv/dist/2020.js";
 import { REFERENCE_TYPES } from "./references.ts";
+import { UI_SCHEMA } from "./ui-schema.generated.ts";
 
 type Json = unknown;
 type Schema = Record<string, any>;
@@ -19,7 +19,7 @@ export interface ValidationResult {
   issues: Issue[];
 }
 
-export const uiSchema: Schema = JSON.parse(readFileSync(new URL("../schema/ui.schema.json", import.meta.url), "utf8"));
+export const uiSchema: Schema = UI_SCHEMA;
 
 const ajv = new Ajv2020({ allErrors: true, discriminator: true, strict: false });
 const validateSchema = ajv.compile(uiSchema);

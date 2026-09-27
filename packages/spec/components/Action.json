@@ -35,6 +35,11 @@
     "copy": {
       "$ref": "#/$defs/DynamicString",
       "description": "For the renderer action ui.copy: the text put on the clipboard; otherwise the action context's 'text' is copied"
+    },
+    "shortcut": {
+      "type": "string",
+      "pattern": "^((mod|ctrl|alt|shift)\\+){0,3}([a-z0-9]|enter|escape|space|tab|backspace|delete|arrowup|arrowdown|arrowleft|arrowright|home|end|f[1-9]|f1[0-2]|slash|comma|period)$",
+      "description": "Keyboard shortcut that triggers the action while the surface has focus, e.g. \"mod+enter\" or \"shift+d\". 'mod' is Command on Apple platforms and Control elsewhere. The renderer shows the hint beside the label and never binds it outside the surface."
     }
   },
   "required": [
@@ -53,7 +58,8 @@
     "requirements": [
       "Label describes the outcome",
       "Target at least size.target.min",
-      "Disabled actions explain why nearby"
+      "Disabled actions explain why nearby",
+      "A shortcut is a hint, never the only way: the button itself stays clickable and focusable"
     ]
   },
   "agent": "Activate by label.",
@@ -61,7 +67,8 @@
     "At most one primary action visible at a time",
     "danger tone uses color.action.danger.*",
     "'description' sits under the label in type.body.small, muted; the button's accessible description",
-    "ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely"
+    "ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely",
+    "'shortcut' shows as a keyboard hint (kbd) beside the label, with mod written as ⌘ or Ctrl for the platform; it fires only while focus is inside the surface, never over the host page, and never on a disabled action"
   ],
   "mappings": {
     "web": "shadcn Button (default / secondary / ghost / destructive)",

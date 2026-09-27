@@ -45,6 +45,8 @@ export interface SurfaceContextValue {
   resolveMedia?: (ref: string) => string | undefined;
   /** Element dialogs portal into, so they stay inside the themed surface */
   portal: HTMLElement | null;
+  /** The surface's outer element: shortcuts fire only while focus is inside it, never over the host page */
+  root: HTMLElement | null;
   /** Component renderers in use (the default adapter plus any overrides) */
   components: Record<string, React.ComponentType<{ node: Node }>>;
   /** Design Direction's profile.disclosure: whether secondary detail starts hidden. */

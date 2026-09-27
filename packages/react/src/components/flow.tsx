@@ -1,4 +1,4 @@
-import { useContext, useEffect, useId, useRef, useState } from "react";
+import { useContext, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { AlertDialog } from "radix-ui";
 import { StepsContext, resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { asList, absolute, childPointer, get } from "../data.ts";
@@ -6,6 +6,64 @@ import { formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Heading } from "./structure.tsx";
 import { Avatar, Icon } from "./avatar.tsx";
+
+/*
+ * Shortcut keys: how each is shown on Apple, shown elsewhere, written in aria-keyshortcuts, and
+ * what KeyboardEvent.key reports. Letters, digits and F-keys are derived. 'mod' is a modifier
+ * that resolves per platform, so it is handled in parseShortcut.
+ */
+const SHORTCUT_KEYS: Record<string, [apple: string, other: string, aria: string, event: string]> = {
+  ctrl: ["⌃", "Ctrl", "Control", "ctrlKey"],
+  alt: ["⌥", "Alt", "Alt", "altKey"],
+  shift: ["⇧", "Shift", "Shift", "shiftKey"],
+  enter: ["↵", "Enter", "Enter", "enter"],
+  escape: ["⎋", "Esc", "Escape", "escape"],
+  space: ["Space", "Space", "Space", " "],
+  tab: ["⇥", "Tab", "Tab", "tab"],
+  backspace: ["⌫", "Backspace", "Backspace", "backspace"],
+  delete: ["⌦", "Del", "Delete", "delete"],
+  arrowup: ["↑", "↑", "ArrowUp", "arrowup"],
+  arrowdown: ["↓", "↓", "ArrowDown", "arrowdown"],
+  arrowleft: ["←", "←", "ArrowLeft", "arrowleft"],
+  arrowright: ["→", "→", "ArrowRight", "arrowright"],
+  home: ["Home", "Home", "Home", "home"],
+  end: ["End", "End", "End", "end"],
+  slash: ["/", "/", "/", "/"],
+  comma: [",", ",", ",", ","],
+  period: [".", ".", ".", "."],
+};
+const MODIFIER_FLAGS = ["metaKey", "ctrlKey", "altKey", "shiftKey"] as const;
+type ModifierFlag = (typeof MODIFIER_FLAGS)[number];
+
+/** Splits "mod+shift+d" into what to show, what to announce, and what to match on keydown. */
+function parseShortcut(shortcut: string, apple: boolean) {
+  const parts = shortcut.toLowerCase().split("+");
+  const key = parts.pop()!;
+  const hint: string[] = [];
+  const aria: string[] = [];
+  const flags = new Set<ModifierFlag>();
+  for (const m of parts) {
+    const [a, o, name, flag] = m === "mod" ? (apple ? ["⌘", "Ctrl", "Meta", "metaKey"] : SHORTCUT_KEYS.ctrl) : SHORTCUT_KEYS[m];
+    hint.push(apple ? a : o);
+    aria.push(name);
+    flags.add(flag as ModifierFlag);
+  }
+  const named = SHORTCUT_KEYS[key];
+  hint.push(named ? (apple ? named[0] : named[1]) : key.toUpperCase());
+  aria.push(named ? named[2] : key.toUpperCase());
+  return { hint, aria: aria.join("+"), flags, key: named ? named[3] : key };
+}
+
+const isApple = () => /mac|iphone|ipad|ipod/i.test((navigator as any).userAgentData?.platform ?? navigator.platform ?? "");
+const never = () => () => {};
+/** Server render says non-Apple so the markup is deterministic; the client corrects after hydration. */
+const useApple = () => useSyncExternalStore(never, isApple, () => false);
+
+/** Typing into a field must never fire an unmodified shortcut (shift alone still types). */
+function isEditable(el: EventTarget | null): boolean {
+  if (!(el instanceof HTMLElement)) return false;
+  return el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
+}
 
 export function Action({ node }: { node: Node }) {
   const b = useBindings();
@@ -16,6 +74,8 @@ export function Action({ node }: { node: Node }) {
   const disabled = node.disabled !== undefined ? Boolean(b.value(node.disabled)) : false;
   const tone = node.tone === "danger" ? " pxd-button-danger" : "";
   const description = node.description !== undefined ? b.text(node.description) : undefined;
+  const apple = useApple();
+  const shortcut = typeof node.shortcut === "string" && node.shortcut ? parseShortcut(node.shortcut, apple) : undefined;
   const onClick = () => {
     const name = node.action.event.name;
     if (name === "ui.back" && steps) return steps.back();
@@ -32,16 +92,46 @@ export function Action({ node }: { node: Node }) {
     }
     s.dispatch(node.action, b.scope, node.id);
   };
+  // The listener sees the latest click handler without re-subscribing on every render.
+  const click = useRef(onClick);
+  click.current = onClick;
+  const root = s.root;
+  useEffect(() => {
+    if (!shortcut || disabled || !root) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.repeat) return;
+      if (!root.contains(document.activeElement) && !(e.target instanceof HTMLElement && root.contains(e.target))) return;
+      if (!MODIFIER_FLAGS.every((f) => e[f] === shortcut.flags.has(f))) return;
+      if (!shortcut.flags.has("metaKey") && !shortcut.flags.has("ctrlKey") && !shortcut.flags.has("altKey") && isEditable(e.target)) return;
+      // Alt on a Mac rewrites e.key to a symbol, so letters and digits also match by physical key.
+      const physical = /^[a-z0-9]$/.test(shortcut.key) && e.code.toLowerCase() === (/\d/.test(shortcut.key) ? `digit${shortcut.key}` : `key${shortcut.key}`);
+      if (e.key.toLowerCase() !== shortcut.key && !physical) return;
+      e.preventDefault();
+      click.current();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [node.shortcut, apple, disabled, root]);
   return (
     <button
       type="button"
       className={`pxd-button pxd-button-${node.emphasis ?? "secondary"}${tone}${description ? " pxd-button-described" : ""}`}
       disabled={disabled}
       aria-describedby={description ? descId : undefined}
+      aria-keyshortcuts={shortcut?.aria}
       onClick={onClick}
       {...useA11y(node)}
     >
       <span className="pxd-button-label">{copied ? "Copied" : b.text(node.label)}</span>
+      {shortcut && (
+        <span className="pxd-kbd-hint" aria-hidden="true">
+          {shortcut.hint.map((k, i) => (
+            <kbd key={i} className="pxd-kbd">
+              {k}
+            </kbd>
+          ))}
+        </span>
+      )}
       {description && (
         <span className="pxd-button-description" id={descId}>
           {description}
@@ -53,17 +143,6 @@ export function Action({ node }: { node: Node }) {
         </span>
       )}
     </button>
-  );
-}
-
-/** Children are in order of importance; CSS places the primary where each layout expects it. */
-export function ActionBar({ node }: { node: Node }) {
-  return (
-    <div className="pxd-action-bar" role="group" aria-label="Actions" {...useA11y(node)}>
-      {node.children.map((id: string) => (
-        <Render key={id} id={id} />
-      ))}
-    </div>
   );
 }
 

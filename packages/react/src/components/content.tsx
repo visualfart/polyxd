@@ -1,4 +1,5 @@
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import { Dialog } from "radix-ui";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { asList, absolute, childPointer, get, type Scope } from "../data.ts";
 import { formatValue, safeColor } from "../format.ts";
@@ -490,6 +491,9 @@ export function Media({ node }: { node: Node }) {
   const b = useBindings();
   const s = useSurface();
   const a11y = useA11y(node);
+  // Which gallery picture the viewer shows (null when closed), and the button that opened it.
+  const [open, setOpen] = useState<number | null>(null);
+  const opener = useRef<HTMLElement | null>(null);
   const kind = node.kind ?? "image";
   const ref = node.src ? b.value<string>(node.src) : undefined;
   const url = ref ? s.resolveMedia?.(ref) : undefined;
@@ -501,20 +505,43 @@ export function Media({ node }: { node: Node }) {
   if (kind === "gallery") {
     const pointer = node.items ? absolute(node.items.path, b.scope) : undefined;
     const entries = pointer ? asList(get(s.data, pointer)) : [];
+    const items = entries.map((_, i) => {
+      const scope: Scope = { pointer: childPointer(pointer!, i) };
+      const imageRef = node.imagePath ? get(s.data, absolute(node.imagePath, scope)) : undefined;
+      const src = imageRef ? s.resolveMedia?.(String(imageRef)) : undefined;
+      const itemAlt = node.altPath ? String(get(s.data, absolute(node.altPath, scope)) ?? "") : "";
+      return { src, alt: itemAlt };
+    });
+    // Only pictures that resolved can be opened; the viewer counts and moves among those.
+    const pictures = items.filter((it): it is Picture => Boolean(it.src));
     return (
-      <ul className="pxd-gallery" aria-label={alt || undefined} {...a11y}>
-        {entries.map((_, i) => {
-          const scope: Scope = { pointer: childPointer(pointer!, i) };
-          const imageRef = node.imagePath ? get(s.data, absolute(node.imagePath, scope)) : undefined;
-          const src = imageRef ? s.resolveMedia?.(String(imageRef)) : undefined;
-          const itemAlt = node.altPath ? String(get(s.data, absolute(node.altPath, scope)) ?? "") : "";
-          return (
-            <li key={i}>
-              {src ? <img className={`${cls} pxd-gallery-image`} src={src} alt={itemAlt} /> : <div className={`${cls} pxd-media-placeholder pxd-gallery-image`} role="img" aria-label={itemAlt || undefined} />}
-            </li>
-          );
-        })}
-      </ul>
+      <>
+        <ul className="pxd-gallery" aria-label={alt || undefined} {...a11y}>
+          {items.map((it, i) => {
+            const at = pictures.indexOf(it as Picture);
+            return (
+              <li key={i}>
+                {at >= 0 ? (
+                  <button
+                    type="button"
+                    className="pxd-gallery-item"
+                    aria-label={it.alt ? `Open ${it.alt}` : `Open image ${at + 1} of ${pictures.length}`}
+                    onClick={(e) => {
+                      opener.current = e.currentTarget;
+                      setOpen(at);
+                    }}
+                  >
+                    <img className={`${cls} pxd-gallery-image`} src={it.src} alt={it.alt} />
+                  </button>
+                ) : (
+                  <div className={`${cls} pxd-media-placeholder pxd-gallery-image`} role="img" aria-label={it.alt || undefined} />
+                )}
+              </li>
+            );
+          })}
+        </ul>
+        {open !== null && pictures[open] && <GalleryViewer name={alt} pictures={pictures} index={open} onIndex={setOpen} onClose={() => setOpen(null)} returnTo={opener} />}
+      </>
     );
   }
 
@@ -548,6 +575,75 @@ export function Media({ node }: { node: Node }) {
 
   if (!url) return <div className={`${cls} pxd-media-placeholder`} role={node.decorative ? "presentation" : "img"} aria-label={alt || undefined} />;
   return <img className={cls} src={url} alt={alt} {...a11y} />;
+}
+
+type Picture = { src: string; alt: string };
+
+/** A left or right chevron: the icon set only has the downward one. */
+function Arrow({ dir }: { dir: "left" | "right" }) {
+  return (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={dir === "left" ? "m15 6-6 6 6 6" : "m9 6 6 6-6 6"} />
+    </svg>
+  );
+}
+
+/**
+ * One gallery picture at a time, large, with previous/next and a counter. The arrow keys move
+ * while it is open; Escape closes (Radix Dialog). It portals into the surface, like every overlay.
+ */
+function GalleryViewer({ name, pictures, index, onIndex, onClose, returnTo }: { name: string; pictures: Picture[]; index: number; onIndex: (i: number) => void; onClose: () => void; returnTo: React.RefObject<HTMLElement | null> }) {
+  const s = useSurface();
+  const prev = useRef<HTMLButtonElement>(null);
+  const next = useRef<HTMLButtonElement>(null);
+  const n = pictures.length;
+  const { src, alt } = pictures[index];
+  const go = (i: number) => onIndex(Math.max(0, Math.min(n - 1, i)));
+  // At either end the button just used goes disabled; focus moves to the other one rather than dying.
+  useEffect(() => {
+    const active = prev.current?.ownerDocument.activeElement as HTMLButtonElement | null;
+    if (active?.disabled) (active === prev.current ? next : prev).current?.focus();
+  }, [index]);
+  return (
+    <Dialog.Root open onOpenChange={(o) => !o && onClose()}>
+      <Dialog.Portal container={s.portal}>
+        <Dialog.Overlay className="pxd-overlay" />
+        <Dialog.Content
+          className="pxd-viewer"
+          aria-describedby={undefined}
+          // Focus goes back to the picture that was opened, whichever picture was shown last.
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+            returnTo.current?.focus();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowLeft") go(index - 1);
+            else if (e.key === "ArrowRight") go(index + 1);
+          }}
+        >
+          <Dialog.Title className="pxd-sr-only">{name || "Pictures"}</Dialog.Title>
+          <div className="pxd-viewer-bar">
+            <span className="pxd-viewer-counter" aria-live="polite">{`${index + 1} of ${n}`}</span>
+            <Dialog.Close className="pxd-icon-button pxd-viewer-close" aria-label="Close">
+              <Icon name="close" />
+            </Dialog.Close>
+          </div>
+          <figure className="pxd-viewer-figure">
+            <img className="pxd-viewer-image" src={src} alt={alt} />
+            {alt && <figcaption className="pxd-viewer-caption">{alt}</figcaption>}
+          </figure>
+          <div className="pxd-viewer-bar pxd-viewer-nav">
+            <button ref={prev} type="button" className="pxd-icon-button pxd-viewer-step" aria-label="Previous picture" disabled={index === 0} onClick={() => go(index - 1)}>
+              <Arrow dir="left" />
+            </button>
+            <button ref={next} type="button" className="pxd-icon-button pxd-viewer-step" aria-label="Next picture" disabled={index === n - 1} onClick={() => go(index + 1)}>
+              <Arrow dir="right" />
+            </button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
 }
 
 /* ---- QR codes: byte mode, error correction level M, versions 1–10 (up to 213 bytes). ---- */

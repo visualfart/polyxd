@@ -1,6 +1,6 @@
-import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type MouseEvent } from "react";
+import { createElement, useContext, useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type MouseEvent } from "react";
 import { Checkbox, RadioGroup, Slider, Switch } from "radix-ui";
-import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
+import { HeadingContext, resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { asList, absolute, childPointer, get, type Scope } from "../data.ts";
 import { currencySymbol, formatValue } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
@@ -991,16 +991,103 @@ export function RangeInput({ node }: { node: Node }) {
   );
 }
 
+/** A field the summary points at: the control's id, what it is called, and what is wrong with it. */
+type Problem = { id: string; label: string; message: string };
+type Control = HTMLInputElement & { pxdNote?: HTMLElement; pxdDescribed?: string | null };
+
+/** What a control is called, as the summary says it: its label, else its aria-label, else its field's. */
+function controlName(control: Control): string {
+  const own = control.labels?.[0]?.textContent ?? control.getAttribute("aria-label") ?? control.closest(".pxd-field")?.querySelector(".pxd-field-label, legend")?.textContent ?? "";
+  return own.replace(/\*\s*$/, "").trim(); // the required mark is for the eye, not the summary
+}
+
+/** The controls that failed, in DOM order, one per radio group. Each gets an id the summary can link to. */
+function collectProblems(form: HTMLFormElement, base: string): Control[] {
+  const seen = new Set<string>();
+  const out: Control[] = [];
+  for (const el of Array.from(form.elements) as Control[]) {
+    if (!el.willValidate || el.validity.valid) continue;
+    if (el.type === "radio" && el.name) {
+      if (seen.has(el.name)) continue;
+      seen.add(el.name);
+    }
+    if (!el.id) el.id = `${base}-${out.length}`;
+    out.push(el);
+  }
+  return out;
+}
+
+/**
+ * Submits through checkValidity, so every control's own message is set (onInvalid) without the
+ * browser's bubbles. When something fails, a summary at the top of the fields says what, in plain
+ * words, and links to each control; each control is marked and, if its field says nothing yet, the
+ * message is said under it. The marks are undone on the next submit and redone from scratch.
+ */
 export function Form({ node }: { node: Node }) {
   const b = useBindings();
   const s = useSurface();
+  const level = Math.min(useContext(HeadingContext), 6);
+  const summaryId = useId();
+  const summary = useRef<HTMLElement>(null);
+  const marked = useRef<Control[]>([]);
+  const [problems, setProblems] = useState<Problem[]>([]);
   // An asterisk has to say what it means, once, before the fields it marks.
   const anyRequired = (node.children ?? []).some((id: string) => s.byId.get(id)?.required);
+
+  useEffect(() => {
+    if (problems.length) summary.current?.focus();
+  }, [problems]);
+
+  const unmark = () => {
+    for (const c of marked.current) {
+      c.removeAttribute("aria-invalid");
+      if (c.pxdDescribed) c.setAttribute("aria-describedby", c.pxdDescribed);
+      else c.removeAttribute("aria-describedby");
+      c.pxdNote?.remove();
+      c.pxdNote = undefined;
+    }
+    marked.current = [];
+  };
+  const mark = (controls: Control[]) => {
+    for (const c of controls) {
+      c.setAttribute("aria-invalid", "true");
+      const field = c.closest(".pxd-field");
+      if (field && !field.querySelector(".pxd-field-error")) {
+        const note = field.ownerDocument.createElement("p");
+        note.className = "pxd-field-error";
+        note.id = `${c.id}-error`;
+        note.textContent = c.validationMessage;
+        field.append(note);
+        c.pxdNote = note;
+        c.pxdDescribed = c.getAttribute("aria-describedby");
+        c.setAttribute("aria-describedby", [c.pxdDescribed, note.id].filter(Boolean).join(" "));
+      }
+    }
+    marked.current = controls;
+  };
+  const goTo = (id: string) => {
+    const el = summary.current?.ownerDocument.getElementById(id) as Control | null;
+    if (!el) return;
+    el.scrollIntoView({ block: "center" });
+    el.focus();
+    // A Radix group's native input is hidden; the group's first real control takes the focus.
+    if (el.ownerDocument.activeElement !== el) el.closest(".pxd-field")?.querySelector<HTMLElement>("[role='radio'], button, input:not([aria-hidden]), textarea, select")?.focus();
+  };
+
   return (
     <form
       className={`pxd-form${node.aside ? " pxd-form-with-aside" : ""}${node.layout === "horizontal" ? " pxd-form-horizontal" : ""}`}
+      noValidate
       onSubmit={(e) => {
         e.preventDefault();
+        const form = e.currentTarget;
+        unmark();
+        if (!form.checkValidity()) {
+          const failed = collectProblems(form, summaryId);
+          mark(failed);
+          return setProblems(failed.map((c) => ({ id: c.id, label: controlName(c), message: c.validationMessage })));
+        }
+        setProblems([]);
         s.dispatch(node.submit.action, b.scope, node.id);
       }}
       {...useA11y(node)}
@@ -1011,6 +1098,27 @@ export function Form({ node }: { node: Node }) {
         </aside>
       )}
       <div className="pxd-stack pxd-form-fields">
+        {problems.length > 0 && (
+          <section ref={summary} className="pxd-error-summary" role="alert" tabIndex={-1} aria-labelledby={summaryId}>
+            {createElement(`h${level}`, { id: summaryId, className: "pxd-error-summary-title" }, "Check these fields before continuing")}
+            <ul className="pxd-error-summary-list">
+              {problems.map((p) => (
+                <li key={p.id}>
+                  <a
+                    href={`#${p.id}`}
+                    className="pxd-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goTo(p.id);
+                    }}
+                  >
+                    {p.label ? `${p.label}: ${p.message}` : p.message}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         {anyRequired && (
           <p className="pxd-required-legend">
             <span className="pxd-required" aria-hidden="true">

@@ -872,7 +872,7 @@ An on/off setting.
 
 A button that triggers a host capability.
 
-**Required props:** `label`, `action`. **Optional:** `emphasis`, `tone`, `disabled`, `description`, `copy`.
+**Required props:** `label`, `action`. **Optional:** `emphasis`, `tone`, `disabled`, `description`, `copy`, `shortcut`.
 
 **Use when**
 - Anything the user can do that isn't typing or choosing
@@ -885,6 +885,7 @@ A button that triggers a host capability.
 - Label describes the outcome
 - Target at least size.target.min
 - Disabled actions explain why nearby
+- A shortcut is a hint, never the only way: the button itself stays clickable and focusable
 
 **Agents:** Activate by label.
 
@@ -893,6 +894,7 @@ A button that triggers a host capability.
 - danger tone uses color.action.danger.*
 - 'description' sits under the label in type.body.small, muted; the button's accessible description
 - ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely
+- 'shortcut' shows as a keyboard hint (kbd) beside the label, with mod written as ⌘ or Ctrl for the platform; it fires only while focus is inside the surface, never over the host page, and never on a disabled action
 
 ## ActionBar
 

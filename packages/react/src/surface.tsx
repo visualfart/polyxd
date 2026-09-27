@@ -33,6 +33,7 @@ export interface PolyxdSurfaceProps {
 export function PolyxdSurface({ document: doc, data: initial, onAction, onDataChange, onDismiss, theme, mode, density, disclosure = "progressive", locale = "en-GB", resolveMedia, components: overrides, className }: PolyxdSurfaceProps) {
   const [data, setData] = useState<Data>(() => initial ?? doc.data ?? {});
   const [portal, setPortal] = useState<HTMLElement | null>(null);
+  const [root, setRoot] = useState<HTMLElement | null>(null);
   const byId = useMemo(() => new Map(doc.components.map((c) => [c.id, c])), [doc]);
   const components = useMemo(() => ({ ...registry, ...overrides }) as Record<string, ComponentRenderer>, [overrides]);
 
@@ -56,13 +57,14 @@ export function PolyxdSurface({ document: doc, data: initial, onAction, onDataCh
     [data, onAction, onDismiss],
   );
 
-  const value: SurfaceContextValue = { doc, byId, data, setValue, dispatch, locale, resolveMedia, portal, components, disclosure };
+  const value: SurfaceContextValue = { doc, byId, data, setValue, dispatch, locale, resolveMedia, portal, root, components, disclosure };
   const rootIsDialog = byId.get(doc.root)?.component === "Confirm";
   const nav = doc.components.find((c) => c.component === "Navigation" && (!c.kind || c.kind === "main"));
 
   return (
     <SurfaceContext.Provider value={value}>
       <div
+        ref={setRoot}
         className={["pxd-surface", doc.surface.presentation === "panel" ? "pxd-surface-panel" : null, nav ? "pxd-surface-with-nav" : null, className].filter(Boolean).join(" ")}
         data-pxd-theme={theme}
         data-pxd-mode={mode}

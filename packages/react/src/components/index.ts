@@ -5,7 +5,8 @@ import { Collection, DetailList, Media, Metric, Status, Text } from "./content.t
 import { Table } from "./table.tsx";
 import { Chart } from "./chart.tsx";
 import { Choice, DateInput, Form, RangeInput, TextInput, Toggle } from "./inputs.tsx";
-import { Action, ActionBar, Comparison, Confirm, Steps } from "./flow.tsx";
+import { Action, Comparison, Confirm, Steps } from "./flow.tsx";
+import { ActionBar } from "./action-bar.tsx";
 import { FilterPanel } from "./filter.tsx";
 import { Navigation } from "./navigation.tsx";
 import { Tag, Identity, Progress, Rating, Code } from "./marks.tsx";

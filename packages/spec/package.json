@@ -38,6 +38,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "default": "./dist/browser.js"
+    },
     "./color": {
       "types": "./dist/color.d.ts",
       "default": "./dist/color.js"

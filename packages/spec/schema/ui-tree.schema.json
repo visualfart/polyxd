@@ -459,6 +459,11 @@
         "copy": {
           "$ref": "#/$defs/DynamicString",
           "description": "For the renderer action ui.copy: the text put on the clipboard; otherwise the action context's 'text' is copied"
+        },
+        "shortcut": {
+          "type": "string",
+          "pattern": "^((mod|ctrl|alt|shift)\\+){0,3}([a-z0-9]|enter|escape|space|tab|backspace|delete|arrowup|arrowdown|arrowleft|arrowright|home|end|f[1-9]|f1[0-2]|slash|comma|period)$",
+          "description": "Keyboard shortcut that triggers the action while the surface has focus, e.g. \"mod+enter\" or \"shift+d\". 'mod' is Command on Apple platforms and Control elsewhere. The renderer shows the hint beside the label and never binds it outside the surface."
         }
       },
       "additionalProperties": false

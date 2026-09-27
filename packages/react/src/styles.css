@@ -4120,3 +4120,289 @@ video.pxd-media {
     transition: none;
   }
 }
+
+/* Keyboard shortcut hints (Action.shortcut): one kbd per key after the label, hidden where there is
+   no keyboard. The hint is decoration; aria-keyshortcuts on the button carries the meaning. */
+.pxd-kbd-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--pxd-space-inline-tight) / 2);
+  margin-inline-start: var(--pxd-space-inline-tight);
+}
+.pxd-kbd {
+  font-family: var(--pxd-type-label-small-family);
+  font-size: var(--pxd-type-label-small-size);
+  font-weight: var(--pxd-type-label-small-weight);
+  line-height: var(--pxd-type-label-small-line-height);
+  letter-spacing: var(--pxd-type-label-small-letter-spacing);
+  font-variant-numeric: tabular-nums;
+  min-width: 1.6em;
+  padding: 0 var(--pxd-space-inline-tight);
+  border: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  border-radius: var(--pxd-radius-small);
+  color: var(--pxd-color-text-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+/* On a filled button the muted grey is not guaranteed to contrast with the pack's primary, so the
+   hint borrows the button's own foreground, only slightly faded, and the border fades further. */
+.pxd-button-primary .pxd-kbd,
+.pxd-button-danger .pxd-kbd {
+  color: color-mix(in srgb, currentColor 85%, transparent);
+  border-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+/* A described button stacks label over description; the hint sits in the top trailing corner. */
+.pxd-button-described {
+  position: relative;
+}
+.pxd-button-described .pxd-kbd-hint {
+  position: absolute;
+  inset-inline-end: var(--pxd-space-inset-default);
+  top: var(--pxd-space-stack-tight);
+  margin-inline-start: 0;
+}
+@container pxd (width < 30rem) {
+  /* Stacked action bars are the phone layout, and phones have no keyboard. */
+  .pxd-action-bar .pxd-kbd-hint {
+    display: none;
+  }
+}
+
+/* Skeleton (PolyxdSkeleton): the loading state for a surface that has not arrived yet. Blocks are
+   sized from the type and control tokens so the placeholder has the pack's rhythm, and shimmer
+   with a sweep across two neutral mixes of the surface colour. */
+.pxd-skeleton-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--polyxd-stack-apart);
+}
+.pxd-skeleton-block {
+  --polyxd-skeleton-base: color-mix(in srgb, var(--pxd-color-text-muted) 14%, var(--pxd-color-surface-default));
+  --polyxd-skeleton-sheen: color-mix(in srgb, var(--pxd-color-text-muted) 6%, var(--pxd-color-surface-default));
+  display: block;
+  flex: none;
+  width: 100%;
+  border-radius: var(--pxd-radius-small);
+  background: linear-gradient(90deg, var(--polyxd-skeleton-base) 0 35%, var(--polyxd-skeleton-sheen) 50%, var(--polyxd-skeleton-base) 65% 100%);
+  background-size: 300% 100%;
+  animation: pxd-skeleton-sweep calc(var(--pxd-motion-duration-long) * 4) linear infinite;
+}
+@keyframes pxd-skeleton-sweep {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+/* Widths as a share of the row, so the lines look like text of varying length. */
+.pxd-skeleton-short { width: 30%; }
+.pxd-skeleton-medium { width: 55%; }
+.pxd-skeleton-long { width: 85%; }
+.pxd-skeleton-full { width: 100%; }
+/* Heights: each text block is one line of the role it stands in for. */
+.pxd-skeleton-title { height: calc(var(--pxd-type-title-page-size) * var(--pxd-type-title-page-line-height)); }
+.pxd-skeleton-line { height: calc(var(--pxd-type-body-default-size) * var(--pxd-type-body-default-line-height)); }
+.pxd-skeleton-small { height: calc(var(--pxd-type-body-small-size) * var(--pxd-type-body-small-line-height)); }
+.pxd-skeleton-value { height: calc(var(--pxd-type-numeric-display-size) * var(--pxd-type-numeric-display-line-height)); }
+.pxd-skeleton-field,
+.pxd-skeleton-button {
+  height: var(--polyxd-control);
+  border-radius: var(--pxd-radius-control);
+}
+.pxd-skeleton-button { width: calc(var(--pxd-size-target-min) * 2.5); }
+.pxd-skeleton-square {
+  width: var(--polyxd-row-height);
+  height: var(--polyxd-row-height);
+  border-radius: var(--pxd-radius-default);
+}
+.pxd-skeleton-circle {
+  width: var(--pxd-size-target-min);
+  height: var(--pxd-size-target-min);
+  border-radius: var(--pxd-radius-full);
+}
+.pxd-skeleton-badge {
+  width: calc(var(--pxd-space-inset-comfortable) * 3);
+  height: calc(var(--pxd-type-label-small-size) * var(--pxd-type-label-small-line-height));
+  border-radius: var(--pxd-radius-full);
+}
+.pxd-skeleton-chart {
+  height: 16rem; /* the chart's own max-height in .pxd-chart-svg */
+  border-radius: var(--pxd-radius-default);
+}
+.pxd-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+}
+.pxd-skeleton-lines {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-tight);
+}
+.pxd-skeleton-actions {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: var(--pxd-space-inline-default);
+}
+.pxd-skeleton-dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--polyxd-stack) var(--pxd-space-inline-loose);
+}
+.pxd-skeleton-dl .pxd-skeleton-row {
+  display: contents;
+}
+.pxd-skeleton-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--pxd-space-inline-default);
+}
+.pxd-skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--polyxd-stack);
+  padding: var(--pxd-space-inset-default);
+  background: var(--pxd-color-surface-raised);
+  border: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  border-radius: var(--pxd-radius-default);
+}
+@container pxd (width < 30rem) {
+  .pxd-skeleton-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pxd-skeleton-actions .pxd-skeleton-button {
+    width: 100%;
+  }
+  .pxd-skeleton-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Reduced motion: flat blocks, no sweep. (The base sheet zeroes the duration; this also removes the gradient.) */
+@media (prefers-reduced-motion: reduce) {
+  .pxd-skeleton-block {
+    background: var(--polyxd-skeleton-base);
+    animation: none;
+  }
+}
+
+/* ---- Form error summary ---- */
+/* Said once at the top of the fields, in the danger tokens as .pxd-field-error is; the links are
+   the surface's link style on the surface itself, where the link colour is guaranteed readable. */
+.pxd-error-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-tight);
+  padding: var(--pxd-space-inset-default);
+  border-left: var(--pxd-border-width-strong) solid var(--pxd-color-status-danger-emphasis);
+  background: var(--pxd-color-surface-default);
+  color: var(--pxd-color-text-default);
+}
+.pxd-error-summary:focus-visible {
+  outline-offset: var(--pxd-focus-ring-offset);
+}
+.pxd-error-summary-title {
+  margin: 0;
+  color: var(--pxd-color-status-danger-foreground);
+  font-family: var(--pxd-type-title-item-family);
+  font-size: var(--pxd-type-title-item-size);
+  font-weight: var(--pxd-type-title-item-weight);
+  line-height: var(--pxd-type-title-item-line-height);
+  letter-spacing: var(--pxd-type-title-item-letter-spacing);
+}
+.pxd-error-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-tight);
+  margin: 0;
+  padding-left: 1.25em;
+}
+/* A control the summary marked is drawn like one the browser marked. */
+.pxd-input[aria-invalid="true"] {
+  border-color: var(--pxd-color-status-danger-emphasis);
+  border-width: var(--pxd-border-width-strong);
+}
+
+/* ---- ActionBar overflow ---- */
+/* The "More actions" control sits where the least important action would have been. */
+.pxd-action-bar-more {
+  flex: none;
+  align-self: center;
+}
+
+/* ---- Media gallery viewer ---- */
+/* Each resolved picture is a button; the viewer shows one at a time over the surface's scrim. */
+.pxd-gallery-item {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: var(--pxd-radius-default);
+  cursor: pointer;
+}
+.pxd-gallery-item .pxd-gallery-image {
+  display: block;
+}
+.pxd-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pxd-space-stack-default);
+  padding: var(--pxd-space-inset-default);
+  color: var(--pxd-color-text-default);
+}
+.pxd-viewer-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pxd-space-stack-tight);
+  margin: 0;
+  min-height: 0;
+  max-width: 100%;
+}
+.pxd-viewer-image {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: var(--pxd-radius-default);
+}
+/* Text and controls sit on the overlay surface, so they are readable whatever is behind the scrim. */
+.pxd-viewer-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  width: min(100%, 48rem);
+  padding: var(--pxd-space-inline-tight) var(--pxd-space-inset-compact);
+  background: var(--pxd-color-surface-overlay);
+  border-radius: var(--pxd-radius-default);
+  box-shadow: var(--pxd-shadow-overlay);
+}
+.pxd-viewer-nav {
+  width: auto;
+}
+.pxd-viewer-counter {
+  flex: 1;
+  font-size: var(--pxd-type-body-small-size);
+}
+.pxd-viewer-caption {
+  padding: var(--pxd-space-inline-tight) var(--pxd-space-inset-compact);
+  background: var(--pxd-color-surface-overlay);
+  border-radius: var(--pxd-radius-default);
+  color: var(--pxd-color-text-default);
+  font-size: var(--pxd-type-body-small-size);
+  text-align: center;
+}
+.pxd-viewer-close,
+.pxd-viewer-step {
+  min-width: var(--pxd-size-target-min);
+  min-height: var(--pxd-size-target-min);
+}
+.pxd-viewer-step:disabled {
+  opacity: var(--pxd-opacity-state-disabled);
+  cursor: not-allowed;
+}
