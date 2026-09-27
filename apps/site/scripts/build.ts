@@ -501,6 +501,9 @@ const landing = (await readFile(join(SITE, "src/index.html"), "utf8"))
   .replace("<!--PACKNAMES-->", demo.packs.map((p) => `<span data-pack="${p.key}">${esc(p.name)}</span>`).join(""))
   .replace("<!--SCENARIOS-->", await scenariosHtml(demo.packs))
   .replace("<!--EXAMPLECOUNT-->", String((await readdir(join(REPO, "packages/spec/examples"))).filter((f) => f.endsWith(".json")).length))
+  .replace("<!--COMPONENTCOUNT-->", String((await readdir(join(REPO, "packages/spec/components"))).filter((f) => f.endsWith(".json")).length))
+  .replace("<!--RENDERCOUNT-->", (await renderCount()).toLocaleString("en-GB"))
+  .replace("<!--TEMPLATECOUNT-->", await templateCount())
   .replace("<!--FOOTER-->", footer);
 await write(join(DIST, "index.html"), landing);
 
@@ -513,6 +516,27 @@ await write(
   join(DIST, "404.html"),
   `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Not found · Polyxd</title>${head({ title: "Not found · Polyxd", description: "This page doesn't exist.", path: "/404" })}</head><body>${header("home")}<main class="section"><div class="wrap"><p class="eyebrow">404</p><h1 class="display" style="font-size:clamp(40px,6vw,80px);margin:16px 0 24px">This page stepped aside.</h1><p style="max-width:52ch;color:var(--ink-2)">Interfaces here are supposed to disappear when they're done, but this one never existed. Try the <a href="/docs/">docs</a> or go <a href="/">home</a>.</p></div></main>${footer}</body></html>`,
 );
+
+/** Verified renders: every spec example and every demo report is 13 packs × 2 modes × 2 widths. */
+async function renderCount(): Promise<number> {
+  const examples = (await readdir(join(REPO, "packages/spec/examples"))).filter((f) => f.endsWith(".json")).length;
+  let reports = 0;
+  for (const d of await readdir(join(REPO, "apps/demos"), { withFileTypes: true })) {
+    if (!d.isDirectory()) continue;
+    reports += (await readdir(join(REPO, "apps/demos", d.name, "reports")).catch(() => [] as string[])).filter((f) => f.endsWith(".json")).length;
+  }
+  return (examples + reports) * 52;
+}
+
+/** Template packs: ds-* packages whose manifest says so, spelled out for prose. */
+async function templateCount(): Promise<string> {
+  let n = 0;
+  for (const p of (await readdir(join(REPO, "packages"))).filter((p) => p.startsWith("ds-") && p !== "ds-kit")) {
+    const m = JSON.parse(await readFile(join(REPO, "packages", p, "manifest.json"), "utf8").catch(() => "{}"));
+    if ((Array.isArray(m.provenance) ? m.provenance : [m.provenance]).some((e: any) => e?.source === "Polyxd" || e?.template === true)) n++;
+  }
+  return spelled[n - 1] ?? String(n);
+}
 
 // The live gallery, served under /gallery/.
 execFileSync("npx", ["vite", "build", "--base", "/gallery/", "--outDir", join(DIST, "gallery"), "--emptyOutDir", "--logLevel", "warn"], {

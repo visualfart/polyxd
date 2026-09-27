@@ -9,6 +9,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const REPO = fileURLToPath(new URL("../../../", import.meta.url));
+const isTemplate = (m: any) => (Array.isArray(m.provenance) ? m.provenance : [m.provenance]).some((e: any) => e?.source === "Polyxd" || e?.template === true);
 const DOCS = join(REPO, "apps/site/content/docs");
 const read = (p: string) => readFile(join(REPO, p), "utf8");
 
@@ -43,7 +44,8 @@ for (const d of demos) if (!all.includes(`/demos/${d}/`)) problems.push(`docs do
 
 // Packs: the number of real design-system packs stated in the docs.
 const packs = (await readdir(join(REPO, "packages"))).filter((p) => p.startsWith("ds-") && p !== "ds-kit");
-const templates = await Promise.all(packs.map(async (p) => JSON.parse(await read(`packages/${p}/manifest.json`)).provenance?.template ? p : null));
+// A template pack's provenance names Polyxd as the source; a real system's names the system.
+const templates = await Promise.all(packs.map(async (p) => (isTemplate(JSON.parse(await read(`packages/${p}/manifest.json`))) ? p : null)));
 const real = packs.length - templates.filter(Boolean).length;
 const packWords = [...all.matchAll(/\b(\d+|thirteen|twelve|fourteen|fifteen) (?:real )?(?:design[- ]system )?packs\b/gi)];
 const words: Record<string, number> = { thirteen: 13, twelve: 12, fourteen: 14, fifteen: 15 };

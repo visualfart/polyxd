@@ -34,23 +34,23 @@
 
 <div class="acts">
 <div class="act is-current" data-act="ask">
-<span class="badge"><span class="badge-dot" aria-hidden="true"></span>Early preview · spec v0.2</span>
+<span class="badge"><span class="badge-dot" aria-hidden="true"></span>Early preview · spec v0.3</span>
 <h1 id="hero-title">Interfaces that show up when you need them.</h1>
-<p class="lede">Ask for something. A real, accessible interface is drawn for that moment, in your design system. When the task is done, it goes.</p>
-<div class="cta-row"><a class="btn btn-signal" href="/gallery/">Try the live gallery</a><a class="btn btn-line" href="/docs/">Read the docs</a></div>
+<p class="lede">Ask for something. A real, accessible interface is drawn for that moment, in your design system, and checked before you see it. Your designers write the rest of the product the same way.</p>
+<div class="cta-row"><a class="btn btn-signal" href="/demos/">Try the demo products</a><a class="btn btn-line" href="/docs/">Read the docs</a></div>
 <p class="scroll-hint" aria-hidden="true">Scroll to watch it happen</p>
 </div>
 
 <div class="act" data-act="mean">
 <span class="eyebrow">Meaning, not pixels</span>
 <h2 class="display">Four layers. Your generator touches one.</h2>
-<p>Whichever model writes the JSON chooses the intent, the pattern and the components. Your design system supplies every token. The verifier signs the top.</p>
+<p>Whoever writes the JSON, a model or a designer, chooses the intent, the pattern and the components. Your design system supplies every token. The verifier signs the top.</p>
 </div>
 
 <div class="act" data-act="skin">
 <span class="eyebrow">Any design system</span>
 <h2 class="display">Taken apart. Rebuilt in yours.</h2>
-<p>The same document, drawn again from <!--PACKCOUNT--> design systems' real tokens. No retraining.</p>
+<p>The same document, drawn again from <!--PACKCOUNT--> design systems' real tokens, or from <!--TEMPLATECOUNT--> templates you make your own. No retraining.</p>
 </div>
 
 <div class="act" data-act="agents">
@@ -173,11 +173,25 @@ press <span class="s">"Send £250.00"</span>  →  transfer.confirm <span class=
 
 <section class="proof" aria-label="Results so far">
 <dl class="wrap">
-<div class="stat"><dt>semantic components, one vocabulary</dt><dd>24</dd></div>
-<div class="stat"><dt>verified renders, zero accessibility violations</dt><dd>1248</dd></div>
+<div class="stat"><dt>semantic components, shell included</dt><dd><!--COMPONENTCOUNT--></dd></div>
+<div class="stat"><dt>verified renders across the examples and four products</dt><dd><!--RENDERCOUNT--></dd></div>
 <div class="stat"><dt>agent tasks completed by name alone</dt><dd>936/936</dd></div>
 <div class="stat"><dt>injected defects caught by the verifier</dt><dd>20/20</dd></div>
 </dl>
+</section>
+
+<section class="section demos-strip" id="write" aria-labelledby="write-title">
+<div class="wrap">
+<span class="eyebrow">Generated or authored</span>
+<h2 class="display" id="write-title">One format for every surface. The shell too.</h2>
+<p>A document doesn't have to come from a model. Designers author screens in the same format, in Studio or in their editor, and the product's frame can be a document as well: authored once, verified like everything inside it, never touched by a generator.</p>
+<div class="demo-cards">
+<a class="demo-card" href="/docs/studio/"><b>Studio Screens</b><span>A component tree, a property panel from the spec, live preview in your design system, versions, publish</span></a>
+<a class="demo-card" href="/docs/your-design-system/#in-your-editor"><b>In your editor</b><span><code>polyxd dev</code> previews a folder as you type; the VS Code extension adds diagnostics and a preview panel</span></a>
+<a class="demo-card" href="/docs/shell/"><b>The shell as a document</b><span>Frame, AppBar, Navigation, Footer: authored-only components a generated screen can never draw</span></a>
+<a class="demo-card" href="/docs/your-design-system/"><b>Only the design system</b><span><code>polyxd pack</code> and <code>check</code> turn your tokens into a contract-clean pack you can use without a single document</span></a>
+</div>
+</div>
 </section>
 
 <section class="section demos-strip" id="demos" aria-labelledby="demos-title">
