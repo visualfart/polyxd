@@ -1,6 +1,8 @@
 /**
  * The mark, drawn from the same definition as brand/build.ts: a solid p, a squircle in the accent,
  * and a pupil cut through both so the paper shows. Only the pupil moves; the letter never does.
+ * The states are brand/mark-states.svg's: idle (2.4 at the centre), reading (17.3, 14.9),
+ * looking (14.7, 17.1), blink (a line), attention (3), checked (a tick).
  */
 import { interpolate } from "remotion";
 
@@ -8,6 +10,7 @@ export const INK = "#141413";
 export const PAPER = "#f4f1ea";
 export const ACCENT = "#ff5a1f";
 export const MUTED = "#6b675e";
+export const GRAPHITE = "#3a3a3a";
 
 const c = 16;
 const half = 4.8;
@@ -16,10 +19,18 @@ const SQUIRCLE = `M${c} ${c - half}C${c + k} ${c - half} ${c + half} ${c - k} ${
 const P = "M13 6h6a7 7 0 0 1 7 7v6a7 7 0 0 1-7 7h-6a7 7 0 0 1-7-7v-6a7 7 0 0 1 7-7z";
 const circle = (cx: number, cy: number, r: number) => (r > 0.01 ? `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0z` : "");
 
+export const STATES = {
+  idle: { x: 16, y: 16 },
+  reading: { x: 17.3, y: 14.9 },
+  looking: { x: 14.7, y: 17.1 },
+};
+
 export interface MarkProps {
   size: number;
   /** Pupil radius: 2.4 idle, 3 attention, 0 closed. */
   pupil?: number;
+  /** Where the pupil is, in the 32-unit grid (16, 16 is the centre). */
+  at?: { x: number; y: number };
   /** 0–1: how much of the blink line is drawn. */
   blink?: number;
   /** 0–1: how much of the tick is drawn (the "checked" state). */
@@ -29,8 +40,8 @@ export interface MarkProps {
   style?: React.CSSProperties;
 }
 
-export function Mark({ size, pupil = 2.4, blink = 0, tick = 0, ink = INK, accent = ACCENT, style }: MarkProps) {
-  const hole = circle(c, c, pupil);
+export function Mark({ size, pupil = 2.4, at = STATES.idle, blink = 0, tick = 0, ink = INK, accent = ACCENT, style }: MarkProps) {
+  const hole = circle(at.x, at.y, pupil);
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" style={{ display: "block", ...style }}>
       <path fillRule="evenodd" d={P + hole} fill={ink} />
@@ -71,11 +82,11 @@ export function Wordmark({ size, ink = INK, style }: { size: number; ink?: strin
 }
 
 /** Mark and wordmark together, sized by the mark. */
-export function Lockup({ mark, pupil, blink, tick, wordStyle, style }: { mark: number; pupil?: number; blink?: number; tick?: number; wordStyle?: React.CSSProperties; style?: React.CSSProperties }) {
+export function Lockup({ mark, pupil, at, blink, tick, wordStyle, style }: { mark: number; pupil?: number; at?: { x: number; y: number }; blink?: number; tick?: number; wordStyle?: React.CSSProperties; style?: React.CSSProperties }) {
   const gap = (mark * 5) / 32;
   return (
     <div style={{ display: "flex", alignItems: "center", gap, ...style }}>
-      <Mark size={mark} pupil={pupil} blink={blink} tick={tick} />
+      <Mark size={mark} pupil={pupil} at={at} blink={blink} tick={tick} />
       <Wordmark size={mark * 0.8} style={{ marginTop: -mark * 0.02, ...wordStyle }} />
     </div>
   );

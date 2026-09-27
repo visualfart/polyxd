@@ -1,13 +1,12 @@
 /**
- * Captures the film's raw material from the running dev servers into assets/:
- *   clips (MP4, 30fps, 2× pixels) of the four products and Studio being used,
- *   stills (PNG, 2×) of the four home screens and the gallery's one document in seven packs.
+ * Captures the film's real footage from the running dev servers into assets/:
+ *   clips (MP4, 30fps, 2× pixels) of the four products and Studio being used, with the stills and
+ *   the measurements the motion graphics are keyed to (the form's geometry for the pencil skeleton,
+ *   its accessibility tree for the split frame, Foundry's shell regions for the frame draw).
  *
- *   node scripts/capture.ts [clip…]        default: everything. Names: halden-send halden-spend
- *                                          foundry quay wexley studio gallery homes
+ *   node scripts/capture.ts [take…]        default: everything. Names: halden foundry studio quay wexley
  *
- * Needs: demos on http://localhost:5174, gallery on :5183, Studio on :8789 (see .claude/launch.json;
- * the gallery port is what this repo's session used, set GALLERY to change it), and ffmpeg.
+ * Needs: demos on http://localhost:5174, Studio on :8789 (see .claude/launch.json), and ffmpeg.
  *
  * Why not Playwright's recordVideo: a headless screencast is captured at CSS pixels whatever the
  * deviceScaleFactor, so a 2× recording is a 1× picture padded with grey. Instead a take screenshots
@@ -22,7 +21,6 @@ import { launch } from "@polyxd/verifier";
 import type { Browser, BrowserContext, Page } from "playwright";
 
 const DEMOS = process.env.DEMOS ?? "http://localhost:5174/demos";
-const GALLERY = process.env.GALLERY ?? "http://localhost:5183";
 const STUDIO = process.env.STUDIO ?? "http://localhost:8789";
 const FFMPEG = process.env.FFMPEG ?? "/opt/homebrew/bin/ffmpeg";
 /** A throwaway local Studio account: the Worker sends no email in development, so it works at once. */
@@ -122,6 +120,7 @@ class Take {
   }
   async shot(name: string) {
     await this.page.screenshot({ path: `${dir}${name}.png` });
+    this.mark(`shot ${name}`);
   }
   /** Ends the take: the frames become <name>.mp4 at 30fps, the beats <name>.log. */
   async end() {
@@ -159,10 +158,38 @@ async function take(browser: Browser, name: string, viewport: { width: number; h
   return new Take(name, page, context, ctxDir);
 }
 
-async function still(browser: Browser, viewport: { width: number; height: number }, colorScheme: "light" | "dark" = "light") {
-  const context = await browser.newContext({ viewport, deviceScaleFactor: DSF, colorScheme });
-  const page = await context.newPage();
-  return { page, close: () => context.close() };
+/**
+ * The geometry of what is on screen inside a container, in CSS pixels of the viewport: every visible
+ * heading, label, input, button, option and paragraph with its box, so a pencil can draw it.
+ */
+async function geometry(page: Page, container: string) {
+  return page.evaluate((sel) => {
+    const root = document.querySelector(sel);
+    if (!root) return null;
+    const box = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return { x: Math.round(r.left * 10) / 10, y: Math.round(r.top * 10) / 10, w: Math.round(r.width * 10) / 10, h: Math.round(r.height * 10) / 10 };
+    };
+    const visible = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      const cs = getComputedStyle(el);
+      return r.width > 2 && r.height > 2 && cs.visibility !== "hidden" && cs.display !== "none" && r.bottom > 0 && r.top < innerHeight;
+    };
+    const items: { kind: string; role: string; text: string; x: number; y: number; w: number; h: number; radius: number }[] = [];
+    const seen = new Set<Element>();
+    const push = (el: Element, kind: string) => {
+      if (seen.has(el) || !visible(el)) return;
+      seen.add(el);
+      items.push({ kind, role: el.getAttribute("role") ?? el.tagName.toLowerCase(), text: (el.getAttribute("aria-label") ?? el.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 60), ...box(el), radius: parseFloat(getComputedStyle(el).borderRadius) || 0 });
+    };
+    root.querySelectorAll("h1, h2, h3, .pxd-field-label, legend, label").forEach((el) => push(el, "label"));
+    root.querySelectorAll(".pxd-avatar, .pxd-person-tile [class*=avatar]").forEach((el) => push(el, "avatar"));
+    root.querySelectorAll("[role=radio], .pxd-person-tile, .pxd-person-row, .pxd-chip").forEach((el) => push(el, "option"));
+    root.querySelectorAll("input, textarea, select, .pxd-input").forEach((el) => push(el, "input"));
+    root.querySelectorAll("button").forEach((el) => push(el, "button"));
+    root.querySelectorAll("p, .pxd-field-help, .pxd-detail-row, dt, dd").forEach((el) => push(el, "text"));
+    return { frame: box(root), viewport: { w: innerWidth, h: innerHeight }, items };
+  }, container);
 }
 
 /** Halden's first visit shows three welcome screens; skip them. */
@@ -242,28 +269,36 @@ async function studioScreens(page: Page) {
 const PHONE = { width: 390, height: 844 };
 const DESK = { width: 1280, height: 800 };
 const TABLET = { width: 1024, height: 800 };
-const PACKS = ["material3", "carbon", "polaris", "govuk", "shadcn", "sketch", "wireframe"];
 
 await mkdir(dir, { recursive: true });
 const browser = await launch();
 try {
-  if (wanted("halden-send")) {
+  if (wanted("halden")) {
     const t = await take(browser, "halden-send", PHONE);
     await haldenHome(t.page);
     await t.glide(200, 700, 10);
-    await t.hold(900);
+    await t.hold(700);
     t.mark("home");
-    await t.click(".hal-ask", { after: 600 });
+    await t.click(".hal-ask", { after: 500 });
     await t.type("send £40 to Priya for dinner");
-    await t.hold(500);
-    await t.press("Enter", 200);
+    await t.hold(400);
+    await t.press("Enter", 100);
     await t.page.waitForSelector(".pxd-surface");
     t.mark("surface: form");
-    await t.hold(1500);
+    await t.hold(900);
+    // The form as drawn: its geometry for the pencil skeleton, its accessibility tree for the split frame.
+    await t.shot("halden-form");
+    await writeFile(`${dir}halden-geometry.json`, JSON.stringify(await geometry(t.page, ".pxd-surface[data-pxd-surface=send]"), null, 1));
+    const a11yForm = await t.page.locator(".pxd-surface:not(.pxd-surface-shell)").first().ariaSnapshot();
+    await t.hold(500);
     await t.click("button:has-text('Continue')", { after: 300 });
     await t.page.waitForSelector("button:has-text('Send £40.00')");
     t.mark("surface: confirm");
-    await t.hold(1500);
+    await t.hold(900);
+    const a11yConfirm = await t.page.locator(".pxd-surface:not(.pxd-surface-shell)").first().ariaSnapshot();
+    // Playwright's ARIA snapshot of the real DOM (role, name, state, value), one line per node, as JSON so the film can import it.
+    await writeFile(`${dir}halden-a11y.json`, JSON.stringify({ form: a11yForm.split("\n"), confirm: a11yConfirm.split("\n") }, null, 1));
+    await t.hold(400);
     await t.click("button:has-text('Send £40.00')", { after: 300 });
     t.mark("sent");
     await t.hold(2200);
@@ -271,36 +306,33 @@ try {
     await t.end();
   }
 
-  if (wanted("halden-spend")) {
-    const t = await take(browser, "halden-spend", PHONE);
-    await haldenHome(t.page);
-    await t.glide(200, 700, 10);
-    await t.hold(700);
-    await t.click(".hal-ask", { after: 600 });
-    await t.type("what did I spend on eating out this month");
-    await t.hold(400);
-    await t.press("Enter", 200);
-    await t.page.waitForSelector(".pxd-surface");
-    t.mark("surface: spend");
-    await t.hold(2400);
-    await t.shot("halden-spend-end");
-    await t.end();
-  }
-
   if (wanted("foundry")) {
     const t = await take(browser, "foundry-filter", DESK, "dark");
     await foundrySignIn(t.page);
     await t.glide(640, 500, 10);
-    await t.hold(900);
+    await t.hold(600);
     t.mark("overview");
+    await t.shot("foundry-home");
+    // The shell's regions, for the frame draw.
+    const regions = await t.page.evaluate(() => {
+      const box = (sel: string) => {
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return { x: r.left, y: r.top, w: r.width, h: r.height };
+      };
+      return { viewport: { w: innerWidth, h: innerHeight }, header: box(".fd-top"), navigation: box(".fd-side nav"), aside: box(".fd-side"), main: box(".fd-main"), footer: box(".fd-side > :last-child") };
+    });
+    await writeFile(`${dir}foundry-frame.json`, JSON.stringify(regions, null, 1));
+    await t.hold(1600);
     await t.press("Meta+k", 500);
     await t.page.waitForSelector("input[aria-label='Ask Foundry']");
     await t.type("accounts renewing in 30 days with open tickets");
-    await t.hold(500);
+    await t.hold(400);
     await t.press("Enter", 200);
     await t.page.waitForSelector(".pxd-surface");
     t.mark("surface: filter");
-    await t.hold(1400);
+    await t.hold(1200);
     await t.shot("foundry-filter-surface");
     // Narrow it: health "At risk", then plan "Growth", through the surface's own filter chips.
     for (const label of ["At risk", "Growth"]) {
@@ -308,29 +340,29 @@ try {
       await chip.waitFor({ state: "visible" });
       const box = (await chip.boundingBox())!;
       await t.glide(box.x + box.width / 2, box.y + box.height / 2);
-      await t.hold(260);
+      await t.hold(200);
       await t.page.mouse.down();
       await t.hold(90);
       await t.page.mouse.up();
       t.mark(`filter ${label}`);
-      await t.hold(1400);
+      await t.hold(1100);
     }
     await t.shot("foundry-filter-narrowed");
-    await t.hold(800);
+    await t.hold(600);
     // The Checked mark, then its report.
-    await t.click(".jit-mark", { after: 900 });
+    await t.click(".jit-mark", { after: 800 });
     await t.page.waitForSelector(".jit-hood");
     t.mark("hood");
     {
       const tab = t.page.locator(".jit-tab", { hasText: "Report" });
       const box = (await tab.boundingBox())!;
       await t.glide(box.x + box.width / 2, box.y + box.height / 2);
-      await t.hold(260);
+      await t.hold(240);
       await tab.click();
       t.mark("report");
       await t.hold(1200);
     }
-    await t.hold(2200);
+    await t.hold(2000);
     await t.shot("foundry-report");
     await t.end();
   }
@@ -339,19 +371,19 @@ try {
     const t = await take(browser, "quay-dip", DESK);
     await quayHome(t.page);
     await t.glide(640, 520, 10);
-    await t.hold(900);
+    await t.hold(700);
     t.mark("home");
-    await t.press("Meta+k", 500);
+    await t.press("Meta+k", 400);
     await t.page.waitForSelector("input[aria-label='Search or ask Quay']");
-    await t.type("why did sales drop last week");
-    await t.hold(500);
+    await t.type("why did sales drop last week", 48);
+    await t.hold(400);
     await t.press("Enter", 200);
     await t.page.waitForSelector(".pxd-surface");
     t.mark("surface: dip");
     await t.hold(1600);
     await t.page.mouse.wheel(0, 140);
     t.mark("scroll");
-    await t.hold(4800);
+    await t.hold(2400);
     await t.shot("quay-dip-end");
     await t.end();
   }
@@ -360,27 +392,27 @@ try {
     const t = await take(browser, "wexley-move", TABLET);
     await wexleySignIn(t.page);
     await t.glide(500, 600, 10);
-    await t.hold(900);
+    await t.hold(700);
     t.mark("account");
     await t.click("#ask-home", { after: 300 });
-    await t.type("I've moved, update the address on my permit");
-    await t.hold(500);
+    await t.type("I've moved, update the address on my permit", 44);
+    await t.hold(400);
     await t.press("Enter", 200);
     await t.page.waitForSelector(".pxd-surface");
     t.mark("surface: wizard");
-    await t.hold(1600);
+    await t.hold(1400);
     await t.shot("wexley-wizard");
     // Step 1: the new address, then Continue to step 2.
     await t.click(".pxd-surface input >> nth=0", { after: 300 });
     await t.type("22 Ashfield Road");
-    await t.hold(400);
+    await t.hold(300);
     await t.click(".pxd-surface input >> nth=3", { after: 300 });
     await t.type("WX2 4RQ");
-    await t.hold(500);
-    await t.click(".pxd-surface button:has-text('Continue')", { after: 1600 });
+    await t.hold(400);
+    await t.click(".pxd-surface button:has-text('Continue')", { after: 1400 });
     t.mark("step 2");
     await t.shot("wexley-step2");
-    await t.hold(1200);
+    await t.hold(1000);
     await t.end();
   }
 
@@ -389,7 +421,7 @@ try {
     {
       const prep = await browser.newContext({ viewport: DESK, deviceScaleFactor: 1 });
       const p = await prep.newPage();
-      const slug = await studioScreens(p);
+      await studioScreens(p);
       p.on("dialog", (d) => d.accept());
       for (let i = 0; i < 5; i++) {
         const row = p.locator("tr.row-link", { hasText: "Send money" }).first();
@@ -398,77 +430,41 @@ try {
         await p.waitForTimeout(600);
       }
       await prep.close();
-      void slug;
     }
     const t = await take(browser, "studio-editor", DESK);
     const slug = await studioScreens(t.page);
     await t.glide(640, 400, 10);
-    await t.hold(600);
+    await t.hold(500);
     t.mark("screens");
-    await t.click("button:has-text('New screen')", { after: 700 });
+    await t.click("button:has-text('New screen')", { after: 600 });
     await t.click("input[aria-label='Search examples']", { after: 200 });
     await t.type("Send money");
-    await t.hold(500);
-    await t.click("[role=option]:has-text('Send money')", { after: 500 });
+    await t.hold(400);
+    await t.click("[role=option]:has-text('Send money')", { after: 400 });
     await t.click("button:has-text('Create screen')", { after: 800 });
     await t.page.waitForURL(new RegExp(`/w/${slug}/screens/`));
     await t.page.waitForSelector(".pxd-surface");
     await t.page.evaluate(() => document.fonts?.ready);
     t.mark("editor");
-    await t.hold(1200);
+    await t.hold(1000);
     await t.shot("studio-editor");
     const nodes = t.page.locator("[role=treeitem][aria-label]");
     const count = await nodes.count();
     if (count > 2) {
-      await t.click("[role=treeitem][aria-label] >> nth=2", { after: 1400 });
+      await t.click("[role=treeitem][aria-label] >> nth=2", { after: 1300 });
       t.mark("selected node 2");
       await t.shot("studio-editor-selected");
       if (count > 4) {
-        await t.click("[role=treeitem][aria-label] >> nth=4", { after: 1600 });
+        await t.click("[role=treeitem][aria-label] >> nth=4", { after: 1400 });
         t.mark("selected node 4");
       }
+      if (count > 3) {
+        await t.click("[role=treeitem][aria-label] >> nth=3", { after: 1200 });
+        t.mark("selected node 3");
+      }
     }
-    await t.hold(800);
+    await t.hold(600);
     await t.end();
-  }
-
-  if (wanted("gallery")) {
-    // One document, seven packs, the same frame: a tall viewport so the whole surface fits, the gallery's own chrome hidden.
-    const s = await still(browser, { width: 900, height: 1500 });
-    for (const pack of PACKS) {
-      await s.page.goto(`${GALLERY}/?example=money-send-form&theme=${pack}&width=phone`);
-      await s.page.waitForSelector(".pxd-surface");
-      await s.page.addStyleTag({ content: "header, nav, .g-side, .g-tools, .g-panel { visibility: hidden !important } body { background: transparent !important }" });
-      await s.page.evaluate(() => document.fonts?.ready);
-      await sleep(900);
-      const frame = s.page.locator(".pxd-surface");
-      await frame.screenshot({ path: `${dir}gallery-${pack}.png`, omitBackground: true });
-      console.log(`wrote assets/gallery-${pack}.png`);
-    }
-    await s.close();
-  }
-
-  if (wanted("homes")) {
-    const s = await still(browser, DESK);
-    await haldenHome(s.page);
-    await sleep(600);
-    await s.page.screenshot({ path: `${dir}home-halden-desk.png` });
-    await foundrySignIn(s.page);
-    await sleep(600);
-    await s.page.screenshot({ path: `${dir}home-foundry.png` });
-    await wexleySignIn(s.page);
-    await sleep(600);
-    await s.page.screenshot({ path: `${dir}home-wexley.png` });
-    await quayHome(s.page);
-    await sleep(600);
-    await s.page.screenshot({ path: `${dir}home-quay.png` });
-    await s.close();
-    const p = await still(browser, PHONE);
-    await haldenHome(p.page);
-    await sleep(600);
-    await p.page.screenshot({ path: `${dir}home-halden.png` });
-    await p.close();
-    console.log("wrote assets/home-*.png");
   }
 } finally {
   await browser.close();

@@ -3,15 +3,20 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "The Polyxd launch film: product clips captured with Playwright, composed and rendered with Remotion.",
+  "description": "The Polyxd launch film: real footage captured with Playwright, motion graphics and the real renderer composed in Remotion, music and sound design synthesised in code.",
   "scripts": {
     "capture": "node scripts/capture.ts",
+    "sound": "node scripts/sound.ts",
     "render": "node scripts/render.ts",
+    "stills": "node scripts/stills.ts",
     "preview": "remotion studio src/index.ts"
   },
   "dependencies": {
+    "@polyxd/react": "*",
+    "@remotion/bundler": "4.0.529",
     "@remotion/cli": "4.0.529",
     "@remotion/google-fonts": "4.0.529",
+    "@remotion/renderer": "4.0.529",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "remotion": "4.0.529"

@@ -1,39 +1,107 @@
 1
-00:00:04,600 --> 00:00:09,600
-Interfaces that show up when you need them.
+00:00:00,000 --> 00:00:00,400
+No results.
 
 2
-00:00:11,400 --> 00:00:21,600
-Ask for something. A real, accessible interface is drawn for that moment, in your design system, and checked before you see it.
+00:00:00,400 --> 00:00:00,800
+That feature is coming soon.
 
 3
-00:00:22,600 --> 00:00:27,800
-Thirteen design systems' real tokens. Twelve templates to make your own. Two of them hand-drawn.
+00:00:00,800 --> 00:00:01,200
+I can't help with that here.
 
 4
-00:00:28,400 --> 00:00:31,700
-Four products, four design systems: Material 3, shadcn/ui, GOV.UK, Polaris.
+00:00:01,200 --> 00:00:01,600
+Please contact support.
 
 5
-00:00:32,800 --> 00:00:38,900
-Screen readers read exactly what agents press.
+00:00:01,600 --> 00:00:02,000
+Try the desktop version.
 
 6
-00:00:39,600 --> 00:00:43,700
-Checked in every design system, light and dark, phone and desktop, before anyone sees it.
+00:00:02,000 --> 00:00:03,000
+…
 
 7
-00:00:44,600 --> 00:00:49,600
-Designers write the rest of the product the same way.
+00:00:03,200 --> 00:00:07,000
+Every product has a screen for what you asked last year.
 
 8
-00:00:50,200 --> 00:00:55,700
-The shell too. Authored once, never touched by a generator.
+00:00:05,400 --> 00:00:07,000
+Nothing for what you're asking now.
 
 9
-00:00:57,200 --> 00:01:05,600
-Open spec. Any model, or none. Your design system. Your code: React, Web Components, or your own renderer.
+00:00:09,300 --> 00:00:12,000
+send £40 to priya for dinner
 
 10
-00:01:07,200 --> 00:01:11,800
-polyxd.com. Open source, Apache-2.0.
+00:00:09,600 --> 00:00:12,000
+Halden · a current account · Material 3
+
+11
+00:00:13,700 --> 00:00:18,000
+Drawn the moment you ask.
+
+12
+00:00:15,100 --> 00:00:18,000
+In the product's own design system.
+
+13
+00:00:16,900 --> 00:00:18,000
+Checked before you see it.
+
+14
+00:00:19,800 --> 00:00:22,200
+The interface is a document. Meaning only. No pixels, no colours, no fonts.
+
+15
+00:00:27,600 --> 00:00:30,000
+Thirteen design systems' real tokens. Twelve templates to make your own.
+
+16
+00:00:33,200 --> 00:00:36,900
+Verified in every design system, light and dark, phone and desktop. Before anyone sees it.
+
+17
+00:00:41,400 --> 00:00:45,000
+Screen readers read exactly what agents press.
+
+18
+00:00:46,000 --> 00:00:48,000
+If an agent can't finish by name alone, the surface fails.
+
+19
+00:00:48,500 --> 00:00:52,000
+And the rest of the product?
+
+20
+00:00:53,400 --> 00:00:57,500
+Designers write screens in the same format. Same renderer. Same checks.
+
+21
+00:00:59,800 --> 00:01:03,900
+The shell too. Authored once. A generated screen can never draw it.
+
+22
+00:01:04,600 --> 00:01:11,800
+Open spec. Any model, or none. Your design system. Your stack.
+
+23
+00:01:05,700 --> 00:01:06,100
+React
+
+24
+00:01:07,800 --> 00:01:08,200
+Web Components
+
+25
+00:01:09,900 --> 00:01:10,300
+your renderer
+
+26
+00:01:17,000 --> 00:01:21,600
+polyxd.com
+
+27
+00:01:17,600 --> 00:01:21,600
+Open source · Apache-2.0
