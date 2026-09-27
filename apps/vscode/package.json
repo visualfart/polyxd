@@ -1,6 +1,7 @@
 {
   "name": "polyxd-vscode",
   "displayName": "Polyxd",
+  "icon": "icon.png",
   "description": "Polyxd documents in your editor: schema completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away.",
   "version": "0.2.2",
   "publisher": "polyxd",

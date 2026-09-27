@@ -1,3 +1,5 @@
+<img src="brand/mark.svg" alt="" width="56" align="left">
+
 # Polyxd
 
 **An open spec, renderer and verifier for interfaces generated on demand** — rendered natively in your design system, operable by people and agents alike, and checked before anyone sees them.

@@ -162,6 +162,9 @@ a {
   gap: 10px;
   text-decoration: none;
 }
+.brand svg + .brand-word {
+  margin-left: -6px;
+}
 .brand-word {
   font-family: var(--display);
   font-weight: 800;
