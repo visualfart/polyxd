@@ -1,7 +1,7 @@
 import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import { Checkbox, DropdownMenu } from "radix-ui";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
-import { asList, absolute, childPointer, get, type Scope } from "../data.ts";
+import { asList, absolute, childPointer, get, resolve, type Scope } from "../data.ts";
 import { formatValue, safeColor } from "../format.ts";
 import { Render, useA11y } from "../surface.tsx";
 import { Avatar, Icon } from "./avatar.tsx";
@@ -106,7 +106,10 @@ export function Table({ node }: { node: Node }) {
 
   const rowMenu = (scope: Scope, name: string) => {
     const bar = s.byId.get(node.rowActions);
-    const actions = (bar?.children ?? []).map((id: string) => s.byId.get(id)).filter(Boolean);
+    // A row's menu honours each Action's `visible` against that row, so a stage shows only its own moves.
+    const actions = (bar?.children ?? [])
+      .map((id: string) => s.byId.get(id))
+      .filter((a: Node | undefined): a is Node => Boolean(a) && (a!.visible === undefined || resolve(a!.visible, s.data, scope) !== false));
     if (!actions.length) return null;
     return (
       <DropdownMenu.Root>

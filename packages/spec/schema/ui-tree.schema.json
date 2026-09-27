@@ -44,8 +44,8 @@
           "description": "Id of the journey this surface is a step of, when one applies"
         },
         "subtitle": {
-          "type": "string",
-          "description": "One line under the title: what this record or page is"
+          "$ref": "#/$defs/DynamicString",
+          "description": "One line under the title: what this record or page is; may be bound to data"
         },
         "breadcrumbs": {
           "type": "array",

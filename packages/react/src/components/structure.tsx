@@ -36,8 +36,11 @@ export function Group({ node }: { node: Node }) {
   // A group of numbers reads as one strip of tiles, not a stack of blocks.
   const children = (node.children ?? []).map((id: string) => s.byId.get(id));
   const metrics = children.length > 1 && children.every((c: Node | undefined) => c?.component === "Metric");
+  // 'inline' and 'grid' are the author's call; 'auto' (the default) stacks, except a row of numbers.
+  const arrangement: string = node.arrangement ?? "auto";
+  const cls = arrangement === "inline" ? " pxd-group-inline" : arrangement === "grid" ? " pxd-group-grid" : metrics ? " pxd-metric-row" : "";
   return (
-    <div className={`pxd-group pxd-stack${metrics ? " pxd-metric-row" : ""}`} {...useA11y(node)}>
+    <div className={`pxd-group pxd-stack${cls}`} {...useA11y(node)}>
       <Children ids={node.children} />
     </div>
   );

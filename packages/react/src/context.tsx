@@ -13,7 +13,7 @@ export interface UIDocument {
     pattern?: string;
     journey?: string;
     dismissible?: boolean;
-    subtitle?: string;
+    subtitle?: unknown;
     breadcrumbs?: { label: unknown; action?: any }[];
     badge?: { text: unknown; tone?: string };
     avatar?: unknown;

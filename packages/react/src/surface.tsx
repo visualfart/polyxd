@@ -123,7 +123,7 @@ function SurfaceHeader() {
             {title}
             {badge && <span className={`pxd-badge pxd-tone-${badge.tone ?? "neutral"}`}>{text(badge.text)}</span>}
           </h1>
-          {subtitle && <p className="pxd-surface-subtitle">{subtitle}</p>}
+          {subtitle !== undefined && <p className="pxd-surface-subtitle">{text(subtitle)}</p>}
         </div>
         {actions && (
           <div className="pxd-page-header-actions">

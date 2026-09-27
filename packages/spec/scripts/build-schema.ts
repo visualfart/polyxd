@@ -74,7 +74,7 @@ export function buildUiSchema(common: Record<string, unknown>, components: Compo
           intent: { $ref: "#/$defs/Key", description: "What the user is trying to do, as a stable key (e.g. 'money.send'); memory is organised by intent" },
           pattern: { type: "string", description: "Id of the pattern this surface follows, when one applies" },
           journey: { type: "string", description: "Id of the journey this surface is a step of, when one applies" },
-          subtitle: { type: "string", description: "One line under the title: what this record or page is" },
+          subtitle: { $ref: "#/$defs/DynamicString", description: "One line under the title: what this record or page is; may be bound to data" },
           breadcrumbs: {
             type: "array",
             maxItems: 4,
