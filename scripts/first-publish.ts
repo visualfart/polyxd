@@ -27,6 +27,15 @@ const onNpm = (name: string) => {
   return r.status === 0;
 };
 
+// A first publish needs a signed-in person. An expired token shows up later as a misleading 404
+// on PUT ("not found or you do not have permission"), so check it before doing anything.
+const who = spawnSync("npm", ["whoami"], { encoding: "utf8" });
+if (who.status !== 0) {
+  console.error("You're not signed in to npm (npm whoami failed). Run `npm login`, then `npm whoami`, then try again.");
+  process.exit(1);
+}
+console.log(`Signed in to npm as ${who.stdout.trim()}.`);
+
 console.log("Checking every package first (release:check)…");
 execFileSync("npm", ["run", "release:check"], { cwd: ROOT, stdio: "inherit" });
 
