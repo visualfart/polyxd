@@ -1,0 +1,203 @@
+{
+  "id": "renewal.won.confirm",
+  "title": "Mark a renewal won",
+  "ask": [],
+  "capabilities": [
+    "renewal.markWon"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "win": "view:renewalWin"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "renewal-won-confirm",
+      "title": "Mark this renewal won?",
+      "intent": "renewal.win",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "win_confirm",
+        "title": {
+          "path": "/win/title"
+        },
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/win/amount"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "USD",
+            "precision": 0
+          }
+        },
+        "subject": {
+          "title": {
+            "path": "/win/account/name"
+          },
+          "subtitle": {
+            "path": "/win/account/detail"
+          },
+          "avatar": {
+            "path": "/win/account/initials"
+          }
+        },
+        "consequences": [
+          {
+            "title": {
+              "path": "/win/planText"
+            },
+            "icon": "tag"
+          },
+          {
+            "title": {
+              "path": "/win/priceText"
+            },
+            "icon": "info"
+          },
+          {
+            "title": {
+              "path": "/win/nextText"
+            },
+            "icon": "clock"
+          }
+        ],
+        "summary": "summary",
+        "consequence": {
+          "path": "/win/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/win/label"
+          },
+          "action": {
+            "event": {
+              "name": "renewal.markWon",
+              "context": {
+                "id": {
+                  "path": "/win/id"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Not yet",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "win_summary",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "plan",
+            "label": "Plan",
+            "value": {
+              "path": "/win/planName"
+            }
+          },
+          {
+            "key": "seats",
+            "label": "Seats",
+            "value": {
+              "path": "/win/seats"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "per_seat",
+            "label": "Per seat a year",
+            "value": {
+              "path": "/win/perSeat"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD",
+              "precision": 0
+            }
+          },
+          {
+            "key": "term",
+            "label": "Term",
+            "value": {
+              "path": "/win/termLabel"
+            }
+          },
+          {
+            "key": "renews",
+            "label": "Renews",
+            "value": {
+              "path": "/win/dueAt"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "next",
+            "label": "Next renewal",
+            "value": {
+              "path": "/win/nextRenewalAt"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "total",
+            "label": "A year",
+            "value": {
+              "path": "/win/amount"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD",
+              "precision": 0
+            },
+            "total": true
+          }
+        ]
+      }
+    ],
+    "data": {
+      "win": {
+        "id": "rn_0001",
+        "title": "Mark Ledgerline's renewal won?",
+        "label": "Mark won",
+        "amount": 105300,
+        "account": {
+          "id": "acc_0001",
+          "name": "Ledgerline",
+          "initials": "Le",
+          "detail": "Scale · 117 seats · due Oct 2"
+        },
+        "planName": "Scale",
+        "seats": 117,
+        "perSeat": 900,
+        "termLabel": "1 year",
+        "dueAt": "2026-10-02T02:00:00.000Z",
+        "nextRenewalAt": "2027-10-02T02:00:00.000Z",
+        "planText": "Ledgerline stays on Scale with 117 seats",
+        "priceText": "$105,300 a year from October 2, 2026",
+        "nextText": "Next renewal October 2, 2027",
+        "consequence": "Ledgerline's plan, seats and price update today, and the next renewal moves to October 2, 2027. Nobody at the customer is emailed. You can undo this from the notice that follows."
+      }
+    }
+  }
+}

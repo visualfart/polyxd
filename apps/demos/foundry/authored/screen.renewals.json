@@ -1,0 +1,1011 @@
+{
+  "id": "screen.renewals",
+  "title": "Renewals",
+  "ask": [],
+  "capabilities": [
+    "accounts.renewingWithTickets",
+    "account.open",
+    "renewal.quote",
+    "renewal.requote",
+    "renewal.win"
+  ],
+  "data": {
+    "pipeline": "view:renewalPipeline"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "renewals",
+      "title": "Renewals",
+      "intent": "screen.renewals",
+      "subtitle": "The year ahead, by stage. Quotes go out from here; wins update the account.",
+      "actions": "page_actions",
+      "presentation": "page",
+      "origin": "authored"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page_actions",
+        "component": "ActionBar",
+        "children": [
+          "with_tickets"
+        ]
+      },
+      {
+        "id": "with_tickets",
+        "component": "Action",
+        "key": "renewing_with_tickets",
+        "label": "Renewing with tickets",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "accounts.renewingWithTickets",
+            "context": {
+              "days": 60
+            }
+          }
+        }
+      },
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "figures",
+          "stages",
+          "how"
+        ]
+      },
+      {
+        "id": "figures",
+        "component": "Group",
+        "children": [
+          "figures_ahead",
+          "figures_settled"
+        ]
+      },
+      {
+        "id": "figures_ahead",
+        "component": "Group",
+        "label": "Ahead",
+        "arrangement": "inline",
+        "children": [
+          "due90",
+          "quoted_total"
+        ]
+      },
+      {
+        "id": "figures_settled",
+        "component": "Group",
+        "label": "Settled",
+        "arrangement": "inline",
+        "children": [
+          "won_total",
+          "churned_total"
+        ]
+      },
+      {
+        "id": "due90",
+        "component": "Metric",
+        "key": "due_90_days",
+        "label": "Due in 90 days",
+        "value": {
+          "path": "/pipeline/totals/due90/amount"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "USD",
+          "precision": 0
+        },
+        "caption": {
+          "path": "/pipeline/totals/due90/caption"
+        }
+      },
+      {
+        "id": "quoted_total",
+        "component": "Metric",
+        "key": "quoted",
+        "label": "Quoted",
+        "value": {
+          "path": "/pipeline/totals/quoted/amount"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "USD",
+          "precision": 0
+        },
+        "caption": {
+          "path": "/pipeline/totals/quoted/caption"
+        }
+      },
+      {
+        "id": "won_total",
+        "component": "Metric",
+        "key": "won_this_quarter",
+        "label": "Won this quarter",
+        "value": {
+          "path": "/pipeline/totals/won/amount"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "USD",
+          "precision": 0
+        },
+        "caption": {
+          "path": "/pipeline/totals/won/caption"
+        }
+      },
+      {
+        "id": "churned_total",
+        "component": "Metric",
+        "key": "churned",
+        "label": "Churned",
+        "value": {
+          "path": "/pipeline/totals/churned/amount"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "USD",
+          "precision": 0
+        },
+        "caption": {
+          "path": "/pipeline/totals/churned/caption"
+        }
+      },
+      {
+        "id": "stages",
+        "component": "Views",
+        "key": "stage",
+        "variant": "tabs",
+        "selected": {
+          "path": "/pipeline/stage"
+        },
+        "views": [
+          {
+            "key": "upcoming",
+            "label": "Upcoming",
+            "count": {
+              "path": "/pipeline/counts/upcoming"
+            },
+            "content": "upcoming_table"
+          },
+          {
+            "key": "quoted",
+            "label": "Quoted",
+            "count": {
+              "path": "/pipeline/counts/quoted"
+            },
+            "content": "quoted_table"
+          },
+          {
+            "key": "won",
+            "label": "Won",
+            "count": {
+              "path": "/pipeline/counts/won"
+            },
+            "content": "won_table"
+          },
+          {
+            "key": "churned",
+            "label": "Churned",
+            "count": {
+              "path": "/pipeline/counts/churned"
+            },
+            "content": "churned_table"
+          }
+        ]
+      },
+      {
+        "id": "upcoming_table",
+        "component": "Table",
+        "key": "upcoming",
+        "rows": {
+          "path": "/pipeline/rows/upcoming"
+        },
+        "caption": "Renewals due in the next 120 days, not yet quoted",
+        "rowValuePath": "id",
+        "columns": [
+          {
+            "key": "account",
+            "label": "Account",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "initials",
+            "secondaryPath": "planLine"
+          },
+          {
+            "key": "amount",
+            "label": "A year",
+            "path": "amount",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD",
+              "precision": 0
+            }
+          },
+          {
+            "key": "due",
+            "label": "Due",
+            "path": "dueAt",
+            "kind": "date",
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "path": "owner"
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "account.open",
+            "context": {
+              "id": {
+                "path": "accountId"
+              }
+            }
+          }
+        },
+        "rowActions": "upcoming_actions",
+        "empty": "upcoming_empty"
+      },
+      {
+        "id": "upcoming_actions",
+        "component": "ActionBar",
+        "children": [
+          "quote"
+        ]
+      },
+      {
+        "id": "quote",
+        "component": "Action",
+        "key": "quote",
+        "label": "Quote",
+        "action": {
+          "event": {
+            "name": "renewal.quote",
+            "context": {
+              "accountId": {
+                "path": "accountId"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "upcoming_empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "clock",
+        "title": "Nothing upcoming",
+        "message": "An account shows here 120 days before its renewal date, until it's quoted."
+      },
+      {
+        "id": "quoted_table",
+        "component": "Table",
+        "key": "quoted",
+        "rows": {
+          "path": "/pipeline/rows/quoted"
+        },
+        "caption": "Renewals with a quote out to the customer",
+        "rowValuePath": "id",
+        "columns": [
+          {
+            "key": "account",
+            "label": "Account",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "initials",
+            "secondaryPath": "planLine"
+          },
+          {
+            "key": "amount",
+            "label": "A year",
+            "path": "amount",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD",
+              "precision": 0
+            }
+          },
+          {
+            "key": "due",
+            "label": "Due",
+            "path": "dueAt",
+            "kind": "date",
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "path": "owner"
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "account.open",
+            "context": {
+              "id": {
+                "path": "accountId"
+              }
+            }
+          }
+        },
+        "rowActions": "quoted_actions",
+        "empty": "quoted_empty"
+      },
+      {
+        "id": "quoted_actions",
+        "component": "ActionBar",
+        "children": [
+          "requote",
+          "win"
+        ]
+      },
+      {
+        "id": "requote",
+        "component": "Action",
+        "key": "requote",
+        "label": "Requote",
+        "action": {
+          "event": {
+            "name": "renewal.requote",
+            "context": {
+              "accountId": {
+                "path": "accountId"
+              },
+              "seats": {
+                "path": "seats"
+              },
+              "plan": {
+                "path": "plan"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "win",
+        "component": "Action",
+        "key": "mark_won",
+        "label": "Mark won",
+        "action": {
+          "event": {
+            "name": "renewal.win",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "quoted_empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "mail",
+        "title": "Nothing quoted",
+        "message": "Quote an upcoming renewal and it moves here once the quote is sent."
+      },
+      {
+        "id": "won_table",
+        "component": "Table",
+        "key": "won",
+        "rows": {
+          "path": "/pipeline/rows/won"
+        },
+        "caption": "Renewals won this quarter",
+        "rowValuePath": "id",
+        "columns": [
+          {
+            "key": "account",
+            "label": "Account",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "initials",
+            "secondaryPath": "planLine"
+          },
+          {
+            "key": "amount",
+            "label": "A year",
+            "path": "amount",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD",
+              "precision": 0
+            }
+          },
+          {
+            "key": "renewed",
+            "label": "Renewed",
+            "path": "movedAt",
+            "kind": "date",
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "path": "owner"
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "account.open",
+            "context": {
+              "id": {
+                "path": "accountId"
+              }
+            }
+          }
+        },
+        "empty": "won_empty"
+      },
+      {
+        "id": "won_empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "check",
+        "title": "Nothing won this quarter",
+        "message": "Mark a quoted renewal won when the customer accepts, and it lands here."
+      },
+      {
+        "id": "churned_table",
+        "component": "Table",
+        "key": "churned",
+        "rows": {
+          "path": "/pipeline/rows/churned"
+        },
+        "caption": "Renewals lost to a cancellation",
+        "rowValuePath": "id",
+        "columns": [
+          {
+            "key": "account",
+            "label": "Account",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "initials",
+            "secondaryPath": "planLine"
+          },
+          {
+            "key": "amount",
+            "label": "A year",
+            "path": "amount",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD",
+              "precision": 0
+            }
+          },
+          {
+            "key": "ended",
+            "label": "Ended",
+            "path": "movedAt",
+            "kind": "date",
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "owner",
+            "label": "Owner",
+            "path": "owner"
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "account.open",
+            "context": {
+              "id": {
+                "path": "accountId"
+              }
+            }
+          }
+        },
+        "empty": "churned_empty"
+      },
+      {
+        "id": "churned_empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "inbox",
+        "title": "Nothing churned",
+        "message": "A cancellation moves a renewal here. None this year."
+      },
+      {
+        "id": "how",
+        "component": "Section",
+        "title": "How a renewal moves",
+        "children": [
+          "how_text"
+        ]
+      },
+      {
+        "id": "how_text",
+        "component": "Text",
+        "key": "how_it_moves",
+        "variant": "supporting",
+        "text": "An account shows here 120 days before its renewal date. Quote it (the ask box does this too: “quote Ledgerline's renewal at 120 seats”) and it moves to Quoted once the quote is sent. Mark it won when the customer accepts: the account's plan, seats and price update and the next renewal is a year out. A cancellation moves it to Churned."
+      }
+    ],
+    "data": {
+      "pipeline": {
+        "stage": "upcoming",
+        "counts": {
+          "upcoming": 18,
+          "quoted": 6,
+          "won": 5,
+          "churned": 4
+        },
+        "totals": {
+          "due90": {
+            "amount": 779520,
+            "caption": "20 renewals · 6 quoted"
+          },
+          "quoted": {
+            "amount": 163860,
+            "caption": "6 quotes"
+          },
+          "won": {
+            "amount": 204120,
+            "caption": "5 renewals"
+          },
+          "churned": {
+            "amount": 194460,
+            "caption": "4 accounts"
+          }
+        },
+        "rows": {
+          "upcoming": [
+            {
+              "id": "rn_0020",
+              "accountId": "acc_0037",
+              "name": "Riverwatch Trust",
+              "initials": "RT",
+              "plan": "growth",
+              "seats": 45,
+              "planLine": "Growth · 45 seats · due in 9 days",
+              "amount": 21600,
+              "dueAt": "2026-10-06T01:00:00.000Z",
+              "movedAt": "2026-08-28T23:00:00.000Z",
+              "owner": "Sam"
+            },
+            {
+              "id": "rn_0002",
+              "accountId": "acc_0002",
+              "name": "Marrowbank",
+              "initials": "Ma",
+              "plan": "starter",
+              "seats": 24,
+              "planLine": "Starter · 24 seats · due in 10 days",
+              "amount": 5760,
+              "dueAt": "2026-10-07T01:00:00.000Z",
+              "movedAt": "2026-09-02T23:00:00.000Z",
+              "owner": "Sam"
+            },
+            {
+              "id": "rn_0003",
+              "accountId": "acc_0003",
+              "name": "Quillpay",
+              "initials": "Qu",
+              "plan": "growth",
+              "seats": 71,
+              "planLine": "Growth · 71 seats · due in 13 days",
+              "amount": 34080,
+              "dueAt": "2026-10-10T01:00:00.000Z",
+              "movedAt": "2026-09-14T23:00:00.000Z",
+              "owner": "Lena"
+            },
+            {
+              "id": "rn_0004",
+              "accountId": "acc_0004",
+              "name": "Northbeam Health",
+              "initials": "NH",
+              "plan": "starter",
+              "seats": 21,
+              "planLine": "Starter · 21 seats · due in 18 days",
+              "amount": 5040,
+              "dueAt": "2026-10-15T01:00:00.000Z",
+              "movedAt": "2026-09-20T23:00:00.000Z",
+              "owner": "Priya"
+            },
+            {
+              "id": "rn_0005",
+              "accountId": "acc_0005",
+              "name": "Calloway Clinics",
+              "initials": "CC",
+              "plan": "growth",
+              "seats": 73,
+              "planLine": "Growth · 73 seats · due in 22 days",
+              "amount": 35040,
+              "dueAt": "2026-10-19T01:00:00.000Z",
+              "movedAt": "2026-09-11T23:00:00.000Z",
+              "owner": "Marcus"
+            },
+            {
+              "id": "rn_0006",
+              "accountId": "acc_0006",
+              "name": "Vitalis Labs",
+              "initials": "VL",
+              "plan": "scale",
+              "seats": 139,
+              "planLine": "Scale · 139 seats · due in 27 days",
+              "amount": 125100,
+              "dueAt": "2026-10-24T01:00:00.000Z",
+              "movedAt": "2026-09-16T23:00:00.000Z",
+              "owner": "Aiko"
+            },
+            {
+              "id": "rn_0008",
+              "accountId": "acc_0008",
+              "name": "Redroute Logistics",
+              "initials": "RL",
+              "plan": "scale",
+              "seats": 77,
+              "planLine": "Scale · 77 seats · due in 34 days",
+              "amount": 69300,
+              "dueAt": "2026-10-31T01:00:00.000Z",
+              "movedAt": "2026-09-15T23:00:00.000Z",
+              "owner": "Noor"
+            },
+            {
+              "id": "rn_0011",
+              "accountId": "acc_0011",
+              "name": "Tessellate Goods",
+              "initials": "TG",
+              "plan": "scale",
+              "seats": 53,
+              "planLine": "Scale · 53 seats · due in 52 days",
+              "amount": 47700,
+              "dueAt": "2026-11-18T01:00:00.000Z",
+              "movedAt": "2026-08-29T23:00:00.000Z",
+              "owner": "Priya"
+            },
+            {
+              "id": "rn_0012",
+              "accountId": "acc_0012",
+              "name": "Brightloom",
+              "initials": "Br",
+              "plan": "starter",
+              "seats": 16,
+              "planLine": "Starter · 16 seats · due in 58 days",
+              "amount": 3840,
+              "dueAt": "2026-11-24T01:00:00.000Z",
+              "movedAt": "2026-08-27T23:00:00.000Z",
+              "owner": "Marcus"
+            },
+            {
+              "id": "rn_0013",
+              "accountId": "acc_0013",
+              "name": "Signalwood Media",
+              "initials": "SM",
+              "plan": "growth",
+              "seats": 75,
+              "planLine": "Growth · 75 seats · due in 64 days",
+              "amount": 36000,
+              "dueAt": "2026-11-30T01:00:00.000Z",
+              "movedAt": "2026-08-20T23:00:00.000Z",
+              "owner": "Aiko"
+            },
+            {
+              "id": "rn_0023",
+              "accountId": "acc_0040",
+              "name": "Lanternhouse Hotels",
+              "initials": "LH",
+              "plan": "starter",
+              "seats": 11,
+              "planLine": "Starter · 11 seats · due in 67 days",
+              "amount": 2640,
+              "dueAt": "2026-12-03T01:00:00.000Z",
+              "movedAt": "2026-08-21T23:00:00.000Z",
+              "owner": "Marcus"
+            },
+            {
+              "id": "rn_0014",
+              "accountId": "acc_0014",
+              "name": "Halfmoon Studios",
+              "initials": "HS",
+              "plan": "starter",
+              "seats": 19,
+              "planLine": "Starter · 19 seats · due in 72 days",
+              "amount": 4560,
+              "dueAt": "2026-12-08T01:00:00.000Z",
+              "movedAt": "2026-09-02T23:00:00.000Z",
+              "owner": "Jonah"
+            },
+            {
+              "id": "rn_0015",
+              "accountId": "acc_0015",
+              "name": "Pennywhistle Press",
+              "initials": "PP",
+              "plan": "scale",
+              "seats": 158,
+              "planLine": "Scale · 158 seats · due in 79 days",
+              "amount": 142200,
+              "dueAt": "2026-12-15T01:00:00.000Z",
+              "movedAt": "2026-09-21T23:00:00.000Z",
+              "owner": "Noor"
+            },
+            {
+              "id": "rn_0016",
+              "accountId": "acc_0016",
+              "name": "Larkspur Academy",
+              "initials": "LA",
+              "plan": "scale",
+              "seats": 92,
+              "planLine": "Scale · 92 seats · due in 87 days",
+              "amount": 82800,
+              "dueAt": "2026-12-23T01:00:00.000Z",
+              "movedAt": "2026-08-19T23:00:00.000Z",
+              "owner": "Sam"
+            },
+            {
+              "id": "rn_0024",
+              "accountId": "acc_0041",
+              "name": "Copperkettle Cafés",
+              "initials": "CC",
+              "plan": "scale",
+              "seats": 174,
+              "planLine": "Scale · 174 seats · due in 91 days",
+              "amount": 156600,
+              "dueAt": "2026-12-27T01:00:00.000Z",
+              "movedAt": "2026-09-05T23:00:00.000Z",
+              "owner": "Aiko"
+            },
+            {
+              "id": "rn_0017",
+              "accountId": "acc_0017",
+              "name": "Fieldnote Learning",
+              "initials": "FL",
+              "plan": "growth",
+              "seats": 18,
+              "planLine": "Growth · 18 seats · due in 95 days",
+              "amount": 8640,
+              "dueAt": "2026-12-31T01:00:00.000Z",
+              "movedAt": "2026-08-19T23:00:00.000Z",
+              "owner": "Lena"
+            },
+            {
+              "id": "rn_0018",
+              "accountId": "acc_0018",
+              "name": "Oakhaven University",
+              "initials": "OU",
+              "plan": "starter",
+              "seats": 21,
+              "planLine": "Starter · 21 seats · due in 104 days",
+              "amount": 5040,
+              "dueAt": "2027-01-09T01:00:00.000Z",
+              "movedAt": "2026-08-22T23:00:00.000Z",
+              "owner": "Priya"
+            },
+            {
+              "id": "rn_0019",
+              "accountId": "acc_0019",
+              "name": "Ironvale Works",
+              "initials": "IW",
+              "plan": "growth",
+              "seats": 61,
+              "planLine": "Growth · 61 seats · due in 116 days",
+              "amount": 29280,
+              "dueAt": "2027-01-21T01:00:00.000Z",
+              "movedAt": "2026-09-22T23:00:00.000Z",
+              "owner": "Marcus"
+            }
+          ],
+          "quoted": [
+            {
+              "id": "rn_0001",
+              "accountId": "acc_0001",
+              "name": "Ledgerline",
+              "initials": "Le",
+              "plan": "scale",
+              "seats": 117,
+              "planLine": "Scale · 117 seats · due in 5 days",
+              "amount": 105300,
+              "dueAt": "2026-10-02T02:00:00.000Z",
+              "movedAt": "2026-08-25T23:00:00.000Z",
+              "owner": "Noor"
+            },
+            {
+              "id": "rn_0021",
+              "accountId": "acc_0038",
+              "name": "Fallowfield Farms",
+              "initials": "FF",
+              "plan": "starter",
+              "seats": 15,
+              "planLine": "Starter · 15 seats · due in 25 days",
+              "amount": 3600,
+              "dueAt": "2026-10-22T01:00:00.000Z",
+              "movedAt": "2026-09-22T23:00:00.000Z",
+              "owner": "Lena"
+            },
+            {
+              "id": "rn_0007",
+              "accountId": "acc_0007",
+              "name": "Harborlane Freight",
+              "initials": "HF",
+              "plan": "growth",
+              "seats": 24,
+              "planLine": "Growth · 24 seats · due in 30 days",
+              "amount": 11520,
+              "dueAt": "2026-10-27T01:00:00.000Z",
+              "movedAt": "2026-08-31T23:00:00.000Z",
+              "owner": "Jonah"
+            },
+            {
+              "id": "rn_0009",
+              "accountId": "acc_0009",
+              "name": "Cinderpath",
+              "initials": "Ci",
+              "plan": "growth",
+              "seats": 51,
+              "planLine": "Growth · 51 seats · due in 39 days",
+              "amount": 24480,
+              "dueAt": "2026-11-05T01:00:00.000Z",
+              "movedAt": "2026-09-19T23:00:00.000Z",
+              "owner": "Sam"
+            },
+            {
+              "id": "rn_0010",
+              "accountId": "acc_0010",
+              "name": "Ashgrove Market",
+              "initials": "AM",
+              "plan": "starter",
+              "seats": 19,
+              "planLine": "Starter · 19 seats · due in 45 days",
+              "amount": 4560,
+              "dueAt": "2026-11-11T01:00:00.000Z",
+              "movedAt": "2026-08-31T23:00:00.000Z",
+              "owner": "Lena"
+            },
+            {
+              "id": "rn_0022",
+              "accountId": "acc_0039",
+              "name": "Clearwater Dairy",
+              "initials": "CD",
+              "plan": "growth",
+              "seats": 30,
+              "planLine": "Growth · 30 seats · due in 48 days",
+              "amount": 14400,
+              "dueAt": "2026-11-14T01:00:00.000Z",
+              "movedAt": "2026-08-27T23:00:00.000Z",
+              "owner": "Priya"
+            }
+          ],
+          "won": [
+            {
+              "id": "rn_0029",
+              "accountId": "acc_0005",
+              "name": "Calloway Clinics",
+              "initials": "CC",
+              "plan": "growth",
+              "seats": 73,
+              "planLine": "Growth · 73 seats",
+              "amount": 35040,
+              "dueAt": "2026-09-13T06:00:00.000Z",
+              "movedAt": "2026-09-13T06:00:00.000Z",
+              "owner": "Marcus"
+            },
+            {
+              "id": "rn_0032",
+              "accountId": "acc_0032",
+              "name": "Saltmarsh Mutual",
+              "initials": "SM",
+              "plan": "starter",
+              "seats": 5,
+              "planLine": "Starter · 5 seats",
+              "amount": 1200,
+              "dueAt": "2026-08-28T06:00:00.000Z",
+              "movedAt": "2026-08-28T06:00:00.000Z",
+              "owner": "Priya"
+            },
+            {
+              "id": "rn_0031",
+              "accountId": "acc_0023",
+              "name": "Tidemark Power",
+              "initials": "TP",
+              "plan": "growth",
+              "seats": 14,
+              "planLine": "Growth · 14 seats",
+              "amount": 6720,
+              "dueAt": "2026-08-23T06:00:00.000Z",
+              "movedAt": "2026-08-23T06:00:00.000Z",
+              "owner": "Sam"
+            },
+            {
+              "id": "rn_0030",
+              "accountId": "acc_0014",
+              "name": "Halfmoon Studios",
+              "initials": "HS",
+              "plan": "starter",
+              "seats": 19,
+              "planLine": "Starter · 19 seats",
+              "amount": 4560,
+              "dueAt": "2026-08-07T06:00:00.000Z",
+              "movedAt": "2026-08-07T06:00:00.000Z",
+              "owner": "Jonah"
+            },
+            {
+              "id": "rn_0033",
+              "accountId": "acc_0041",
+              "name": "Copperkettle Cafés",
+              "initials": "CC",
+              "plan": "scale",
+              "seats": 174,
+              "planLine": "Scale · 174 seats",
+              "amount": 156600,
+              "dueAt": "2026-08-06T06:00:00.000Z",
+              "movedAt": "2026-08-06T06:00:00.000Z",
+              "owner": "Aiko"
+            }
+          ],
+          "churned": [
+            {
+              "id": "rn_0028",
+              "accountId": "acc_0050",
+              "name": "Ironclad Security",
+              "initials": "IS",
+              "plan": "scale",
+              "seats": 151,
+              "planLine": "Scale · 151 seats",
+              "amount": 135900,
+              "dueAt": "2026-10-22T01:00:00.000Z",
+              "movedAt": "2026-09-22T05:00:00.000Z",
+              "owner": "Noor"
+            },
+            {
+              "id": "rn_0027",
+              "accountId": "acc_0049",
+              "name": "Pixelmoor Games",
+              "initials": "PG",
+              "plan": "growth",
+              "seats": 46,
+              "planLine": "Growth · 46 seats",
+              "amount": 22080,
+              "dueAt": "2026-10-09T01:00:00.000Z",
+              "movedAt": "2026-09-09T05:00:00.000Z",
+              "owner": "Jonah"
+            },
+            {
+              "id": "rn_0026",
+              "accountId": "acc_0048",
+              "name": "Fairweather Legal",
+              "initials": "FL",
+              "plan": "starter",
+              "seats": 12,
+              "planLine": "Starter · 12 seats",
+              "amount": 2880,
+              "dueAt": "2026-09-27T02:00:00.000Z",
+              "movedAt": "2026-08-28T05:00:00.000Z",
+              "owner": "Aiko"
+            },
+            {
+              "id": "rn_0025",
+              "accountId": "acc_0047",
+              "name": "Axlewood Motors",
+              "initials": "AM",
+              "plan": "growth",
+              "seats": 70,
+              "planLine": "Growth · 70 seats",
+              "amount": 33600,
+              "dueAt": "2026-09-10T02:00:00.000Z",
+              "movedAt": "2026-08-11T05:00:00.000Z",
+              "owner": "Marcus"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

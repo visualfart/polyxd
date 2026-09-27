@@ -101,12 +101,58 @@ test("the live bridge re-derives results from the store as inputs change", () =>
   assert.ok(more.receipt.total > qd.receipt.total);
 });
 
+const walk = (v: unknown, at: string) => {
+  if (v === undefined) assert.fail(`${at} is undefined`);
+  if (Array.isArray(v)) v.forEach((x, i) => walk(x, `${at}/${i}`));
+  else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) walk(x, `${at}/${k}`);
+};
+
 test("every intent's sample builds data with no undefined leaves", () => {
   const h = seed();
-  const walk = (v: unknown, at: string) => {
-    if (v === undefined) assert.fail(`${at} is undefined`);
-    if (Array.isArray(v)) v.forEach((x, i) => walk(x, `${at}/${i}`));
-    else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) walk(x, `${at}/${k}`);
-  };
   for (const intent of all) walk(surfaceData(h, intent, intent.sample ?? {}), intent.id);
+});
+
+/* The authored screens (Renewals, Team, an account's Overview tab) are documents too: same shape, same views. */
+const authoredDir = new URL("../foundry/authored/", import.meta.url);
+const authored = readdirSync(authoredDir)
+  .filter((f) => f.endsWith(".json"))
+  .map((f) => JSON.parse(readFileSync(new URL(f, authoredDir), "utf8")) as { id: string; ask: string[]; data: Record<string, unknown>; sample?: Record<string, unknown>; document: { surface: { origin?: string; presentation?: string }; data: Record<string, unknown> } });
+
+test("every authored screen's snapshot builds data with no undefined leaves and covers its data map", () => {
+  const h = seed();
+  assert.deepEqual(
+    authored.map((a) => a.id).sort(),
+    ["screen.account.overview", "screen.renewals", "screen.team"],
+  );
+  for (const screen of authored) {
+    assert.equal(screen.document.surface.origin, "authored", `${screen.id} is authored`);
+    assert.equal(screen.document.surface.presentation, "page", `${screen.id} is a page`);
+    assert.equal(screen.ask.length, 0, `${screen.id} has a route, not an ask`);
+    const data = surfaceData(h, screen, screen.sample ?? {});
+    walk(data, screen.id);
+    for (const key of Object.keys(screen.data)) assert.ok(key in screen.document.data, `${screen.id}: snapshot has ${key}`);
+    walk(screen.document.data, `${screen.id} (snapshot)`);
+  }
+});
+
+test("the authored screens show the same figures as the store", () => {
+  const h = seed();
+  const renewals = surfaceData(h, authored.find((a) => a.id === "screen.renewals")!, {}) as { pipeline: { counts: Record<string, number>; totals: Record<string, { amount: number }>; rows: Record<string, { amount: number }[]> } };
+  for (const stage of ["upcoming", "quoted", "won", "churned"]) {
+    assert.equal(renewals.pipeline.counts[stage], h.renewals.filter((r) => r.stage === stage).length, stage);
+    assert.equal(renewals.pipeline.rows[stage].length, renewals.pipeline.counts[stage], stage);
+  }
+  assert.equal(renewals.pipeline.totals.won.amount, h.renewals.filter((r) => r.stage === "won").reduce((s, r) => s + r.amount, 0));
+
+  const team = surfaceData(h, authored.find((a) => a.id === "screen.team")!, {}) as { team: { members: { id: string; open: number; capacity: number; canHandover: boolean; invited: boolean }[] } };
+  assert.equal(team.team.members.length, h.team.length);
+  const sam = team.team.members.find((m) => m.id === "m_sam")!;
+  assert.equal(sam.open, h.tickets.filter((t) => t.assigneeId === "m_sam" && (t.status === "open" || t.status === "pending")).length);
+  assert.ok(sam.canHandover, "Sam has tickets to hand over");
+
+  const overview = surfaceData(h, authored.find((a) => a.id === "screen.account.overview")!, { account: h.accounts[3].id }) as { account: { id: string; arr: number; recent: unknown[]; weekly: { active: number }[] } };
+  assert.equal(overview.account.id, h.accounts[3].id);
+  assert.equal(overview.account.arr, h.accounts[3].arr);
+  assert.equal(overview.account.weekly.length, 12);
+  assert.ok(overview.account.recent.length <= 6);
 });

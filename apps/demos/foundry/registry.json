@@ -169,6 +169,108 @@
       "sideEffects": ["The billing contact is emailed a quote they can accept", "The renewal moves to Quoted"],
       "preconditions": ["A quote from renewal.review"],
       "agentMayInvoke": false
+    },
+    "account.timeline": {
+      "description": "Open an account's full timeline",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "account.contacts": {
+      "description": "Open an account's contacts",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "accounts.renewingWithTickets": {
+      "description": "List the accounts renewing inside a window that also have open tickets",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "days": { "type": "number" } },
+        "required": ["days"],
+        "additionalProperties": false
+      }
+    },
+    "renewal.quote": {
+      "description": "Start a renewal quote for an account: seats, plan, discount and term, priced before anything is sent",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "accountId": { "type": "string" } },
+        "required": ["accountId"],
+        "additionalProperties": false
+      }
+    },
+    "renewal.requote": {
+      "description": "Start a revised quote for a renewal that already has one, from the seats and plan quoted",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "accountId": { "type": "string" },
+          "seats": { "type": "number" },
+          "plan": { "enum": ["starter", "growth", "scale"] }
+        },
+        "required": ["accountId", "seats", "plan"],
+        "additionalProperties": false
+      }
+    },
+    "renewal.win": {
+      "description": "Review what marking a renewal won changes on the account before it's recorded",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "renewal.markWon": {
+      "description": "Record a renewal as won: the account's plan, seats and price update and the next renewal is a year out",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      },
+      "sideEffects": ["The account's plan, seats and annual price change", "The next renewal date moves a year out"],
+      "preconditions": ["A review from renewal.win"],
+      "agentMayInvoke": false
+    },
+    "team.invite": {
+      "description": "Start inviting people to the desk",
+      "risk": "none"
+    },
+    "member.handover": {
+      "description": "Start handing someone's open tickets to another person on the desk",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "invite.withdraw": {
+      "description": "Withdraw an invitation that hasn't been accepted",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      },
+      "undo": "member.invite"
     }
   }
 }

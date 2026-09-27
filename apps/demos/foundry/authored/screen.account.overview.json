@@ -1,0 +1,476 @@
+{
+  "id": "screen.account.overview",
+  "title": "Account overview",
+  "ask": [],
+  "capabilities": [
+    "ticket.open",
+    "account.timeline",
+    "account.contacts"
+  ],
+  "data": {
+    "account": "view:accountOverview"
+  },
+  "sample": {
+    "account": "acc_0001"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "account-overview",
+      "title": "Overview",
+      "intent": "screen.account_overview",
+      "presentation": "page",
+      "origin": "authored"
+    },
+    "root": "overview",
+    "components": [
+      {
+        "id": "overview",
+        "component": "Group",
+        "children": [
+          "main",
+          "side"
+        ]
+      },
+      {
+        "id": "main",
+        "component": "Group",
+        "children": [
+          "health",
+          "activity"
+        ]
+      },
+      {
+        "id": "health",
+        "component": "Section",
+        "title": "Health",
+        "description": {
+          "path": "/account/healthCaption"
+        },
+        "children": [
+          "seats_chart",
+          "seats_line",
+          "reasons"
+        ]
+      },
+      {
+        "id": "seats_chart",
+        "component": "Chart",
+        "key": "active_seats",
+        "intent": "trend",
+        "data": {
+          "path": "/account/weekly"
+        },
+        "title": "Weekly active seats, 12 weeks",
+        "summary": {
+          "path": "/account/chartSummary"
+        },
+        "x": {
+          "path": "week",
+          "label": "Week"
+        },
+        "series": [
+          {
+            "key": "active",
+            "path": "active",
+            "label": "Active seats",
+            "format": {
+              "type": "number"
+            }
+          }
+        ]
+      },
+      {
+        "id": "seats_line",
+        "component": "Text",
+        "key": "seats_line",
+        "variant": "caption",
+        "text": {
+          "path": "/account/seatsLine"
+        }
+      },
+      {
+        "id": "reasons",
+        "component": "Text",
+        "key": "reasons",
+        "variant": "list",
+        "text": {
+          "path": "/account/reasonsTitle"
+        },
+        "items": {
+          "path": "/account/reasons"
+        }
+      },
+      {
+        "id": "activity",
+        "component": "Section",
+        "title": "Recent activity",
+        "children": [
+          "events",
+          "activity_actions"
+        ]
+      },
+      {
+        "id": "events",
+        "component": "Collection",
+        "key": "recent_activity",
+        "label": "Newest first",
+        "layout": "timeline",
+        "items": {
+          "path": "/account/recent",
+          "componentId": "event"
+        },
+        "empty": "events_empty"
+      },
+      {
+        "id": "events_empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "clock",
+        "title": "Nothing yet",
+        "message": "Renewals, plan changes, tickets and notes land here as they happen."
+      },
+      {
+        "id": "event",
+        "component": "Group",
+        "label": {
+          "path": "text"
+        },
+        "children": [
+          "event_text",
+          "event_when",
+          "event_open"
+        ]
+      },
+      {
+        "id": "event_text",
+        "component": "Text",
+        "variant": "body",
+        "text": {
+          "path": "text"
+        }
+      },
+      {
+        "id": "event_when",
+        "component": "Text",
+        "variant": "caption",
+        "text": {
+          "path": "at"
+        },
+        "format": {
+          "type": "date"
+        }
+      },
+      {
+        "id": "event_open",
+        "component": "Action",
+        "key": "open_ticket",
+        "label": "Open ticket",
+        "emphasis": "tertiary",
+        "visible": {
+          "path": "hasRef"
+        },
+        "action": {
+          "event": {
+            "name": "ticket.open",
+            "context": {
+              "id": {
+                "path": "ref"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "activity_actions",
+        "component": "ActionBar",
+        "children": [
+          "timeline"
+        ]
+      },
+      {
+        "id": "timeline",
+        "component": "Action",
+        "key": "full_timeline",
+        "label": "See full timeline",
+        "emphasis": "tertiary",
+        "action": {
+          "event": {
+            "name": "account.timeline",
+            "context": {
+              "id": {
+                "path": "/account/id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "side",
+        "component": "Group",
+        "children": [
+          "plan",
+          "contact"
+        ]
+      },
+      {
+        "id": "plan",
+        "component": "Section",
+        "title": "Plan",
+        "children": [
+          "plan_details"
+        ]
+      },
+      {
+        "id": "plan_details",
+        "component": "DetailList",
+        "key": "plan",
+        "layout": "grid",
+        "items": [
+          {
+            "key": "plan",
+            "label": "Plan",
+            "value": {
+              "path": "/account/planName"
+            }
+          },
+          {
+            "key": "seats",
+            "label": "Seats",
+            "value": {
+              "path": "/account/seatsText"
+            }
+          },
+          {
+            "key": "arr",
+            "label": "ARR",
+            "value": {
+              "path": "/account/arr"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD",
+              "precision": 0
+            }
+          },
+          {
+            "key": "first_response",
+            "label": "First response",
+            "value": {
+              "path": "/account/sla"
+            }
+          },
+          {
+            "key": "support",
+            "label": "Support",
+            "value": {
+              "path": "/account/support"
+            }
+          },
+          {
+            "key": "started",
+            "label": "Started",
+            "value": {
+              "path": "/account/startedAt"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "renews",
+            "label": {
+              "path": "/account/renewLabel"
+            },
+            "value": {
+              "path": "/account/renewalAt"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "region",
+            "label": "Region",
+            "value": {
+              "path": "/account/region"
+            }
+          }
+        ]
+      },
+      {
+        "id": "contact",
+        "component": "Section",
+        "title": "Primary contact",
+        "children": [
+          "contact_identity",
+          "contact_actions"
+        ]
+      },
+      {
+        "id": "contact_identity",
+        "component": "Identity",
+        "kind": "person",
+        "name": {
+          "path": "/account/contact/name"
+        },
+        "detail": {
+          "path": "/account/contact/detail"
+        },
+        "visible": {
+          "path": "/account/hasContact"
+        }
+      },
+      {
+        "id": "contact_actions",
+        "component": "ActionBar",
+        "children": [
+          "contacts"
+        ]
+      },
+      {
+        "id": "contacts",
+        "component": "Action",
+        "key": "all_contacts",
+        "label": {
+          "path": "/account/contactsLabel"
+        },
+        "emphasis": "tertiary",
+        "action": {
+          "event": {
+            "name": "account.contacts",
+            "context": {
+              "id": {
+                "path": "/account/id"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "account": {
+        "id": "acc_0001",
+        "name": "Ledgerline",
+        "healthCaption": "Score 45 of 100, from seats in use, the support load and the renewal date",
+        "weekly": [
+          {
+            "week": "Jul 12",
+            "active": 50
+          },
+          {
+            "week": "Jul 19",
+            "active": 51
+          },
+          {
+            "week": "Jul 26",
+            "active": 52
+          },
+          {
+            "week": "Aug 2",
+            "active": 50
+          },
+          {
+            "week": "Aug 9",
+            "active": 50
+          },
+          {
+            "week": "Aug 16",
+            "active": 45
+          },
+          {
+            "week": "Aug 23",
+            "active": 43
+          },
+          {
+            "week": "Aug 30",
+            "active": 42
+          },
+          {
+            "week": "Sep 6",
+            "active": 42
+          },
+          {
+            "week": "Sep 13",
+            "active": 39
+          },
+          {
+            "week": "Sep 20",
+            "active": 42
+          },
+          {
+            "week": "Sep 27",
+            "active": 39
+          }
+        ],
+        "chartSummary": "Active seats fell from 50 to 39 over twelve weeks.",
+        "seatsLine": "50 → 39 of 117 seats",
+        "reasonsTitle": "What's pulling the score down",
+        "reasons": [
+          "Only 33% of 117 seats are in use",
+          "1 high-priority ticket open",
+          "Renews in 5 days"
+        ],
+        "recent": [
+          {
+            "id": "ev_0263",
+            "text": "Ticket #4216 opened: Query results differ between two workspaces",
+            "at": "2026-09-27T04:52:00.000Z",
+            "hasRef": true,
+            "ref": "tk_0020"
+          },
+          {
+            "id": "ev_0004",
+            "text": "Check-in call with Jade",
+            "at": "2026-09-16T04:00:00.000Z",
+            "hasRef": false,
+            "ref": null
+          },
+          {
+            "id": "ev_0248",
+            "text": "Ticket #4177 closed: Query results differ between two workspaces",
+            "at": "2026-09-12T12:34:40.050Z",
+            "hasRef": true,
+            "ref": "tk_0056"
+          },
+          {
+            "id": "ev_0246",
+            "text": "Ticket #4175 closed: Where do audit logs live?",
+            "at": "2026-09-08T23:46:09.702Z",
+            "hasRef": true,
+            "ref": "tk_0092"
+          },
+          {
+            "id": "ev_0003",
+            "text": "Seats changed to 117",
+            "at": "2026-08-28T00:00:00.000Z",
+            "hasRef": false,
+            "ref": null
+          },
+          {
+            "id": "ev_0267",
+            "text": "Renewal quote sent: 117 seats on Scale, 5% off",
+            "at": "2026-08-25T23:00:00.000Z",
+            "hasRef": false,
+            "ref": null
+          }
+        ],
+        "planName": "Scale, annual",
+        "seatsText": "117 at $900 each",
+        "arr": 105300,
+        "sla": "1 hour",
+        "support": "Named CSM, 24/7",
+        "startedAt": "2024-10-02T02:00:00.000Z",
+        "renewLabel": "Renews",
+        "renewalAt": "2026-10-02T02:00:00.000Z",
+        "region": "US East",
+        "hasContact": true,
+        "contact": {
+          "name": "Jade Roux",
+          "detail": "Admin · jade@ledgerline.com"
+        },
+        "contactsLabel": "See all 2 contacts"
+      }
+    }
+  }
+}

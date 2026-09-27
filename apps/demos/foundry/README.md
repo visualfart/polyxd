@@ -8,19 +8,47 @@ Foundry is the B2B case for just-in-time interfaces: a desk whose screens (accou
 
 ## Screens the product has
 
-| Route | Screen | Notes |
-|---|---|---|
-| `/signin` | Sign in | Any email and password; you are Noor Haddad, the desk's lead |
-| `/` | Overview | Renewals in 30/60/90 days, tickets by priority, accounts by health, a "needs attention" list |
-| `/accounts` | Accounts | Dense table; search; plan, health and owner filters; saved views (All, Renewing soon, At risk, Mine, Canceled) |
-| `/accounts/:id` | Account | Plan, health and ARR up top; tabs Overview / Tickets / Contacts / Timeline / Notes; notes you can add |
-| `/tickets` | Tickets | Mine / Unassigned / All; priority and status filters; first-response target per plan |
-| `/tickets/:id` | Ticket | The thread, a reply box, assignee, priority, status changes with undo |
-| `/renewals` | Renewals | A pipeline: upcoming, quoted, won, churned; quote from here, mark won |
-| `/team` | Team | Members, roles, load against capacity, hand-overs |
-| `/settings` | Settings | Name, appearance, reset the demo |
+| Route | Screen | Made of | Notes |
+|---|---|---|---|
+| `/signin` | Sign in | React | Any email and password; you are Noor Haddad, the desk's lead |
+| `/` | Overview | React | Renewals in 30/60/90 days, tickets by priority, accounts by health, a "needs attention" list |
+| `/accounts` | Accounts | React | Dense table; search; plan, health and owner filters; saved views (All, Renewing soon, At risk, Mine, Canceled) |
+| `/accounts/:id` | Account | React header and tabs; the **Overview tab is an authored document** | Plan, health and ARR up top; tabs Overview / Tickets / Contacts / Timeline / Notes; notes you can add |
+| `/tickets` | Tickets | React | Mine / Unassigned / All; priority and status filters; first-response target per plan |
+| `/tickets/:id` | Ticket | React | The thread, a reply box, assignee, priority, status changes with undo |
+| `/renewals` | Renewals | **Authored document** | A pipeline: upcoming, quoted, won, churned; quote from here, mark won (with a confirmation) |
+| `/team` | Team | **Authored document** | Members, roles, load against capacity, hand-overs, withdrawing an invite |
+| `/settings` | Settings | React | Name, appearance, reset the demo |
 
 `⌘K` (`Ctrl+K`) opens the command palette: the ask box, the screens, and accounts by name. The same box sits in the top bar.
+
+## Screens that are authored documents
+
+Polyxd is for surfaces, generated or authored; the product's shell stays the product's. Three of
+Foundry's screens are Polyxd documents a person wrote rather than React: `authored/<id>.json`, in
+the same shape as an intent file (a `data` map of views, a `sample` for the snapshot, the
+`document`), with `surface.origin: "authored"` and `presentation: "page"`. `authored.tsx` looks a
+document up by id, builds its data with `surfaceData`, and renders it through the kit's
+`JitSurface` inside the normal shell (sidebar, top bar and palette are React), in shadcn, at the
+product's mode and `compact` density, with the product's `onAction`. The mark under each reads
+"Authored · Checked in 13 design systems": the verifier holds them to the same checks as the
+generated ones, and their reports live in `reports/<id>.json` beside the intents'.
+
+| Document | Route | Views it binds to | Capabilities it uses |
+|---|---|---|---|
+| `screen.renewals` | `/renewals` | `renewalPipeline` | `accounts.renewingWithTickets`, `account.open`, `renewal.quote`, `renewal.requote`, `renewal.win` → `renewal.won.confirm` → `renewal.markWon` |
+| `screen.team` | `/team` | `teamPage`, `roles` | `team.invite`, `member.handover` (opens `tickets.reassign` pre-filled), `invite.withdraw` (undo in the toast) |
+| `screen.account.overview` | `/accounts/:id` (Overview tab) | `accountOverview` | `ticket.open`, `account.timeline`, `account.contacts` |
+
+Every figure on these pages comes from a view in `views.ts`; every button is a capability in
+`registry.json` that `actions.ts` handles, opening an intent (`next`) or committing to the store
+with undo. Marking a renewal won changes the account's plan, seats and price, so it is
+consequential and goes through `intents/renewal.won.confirm.json`, like a quote or a plan change.
+
+Two things the renderer doesn't do that the product does in `foundry.css`, by component id: lay a
+team member out as one row (the renderer stacks a `Group`, whatever its `arrangement`), and put
+the overview's two halves side by side. The verifier's renders don't have that CSS and pass
+without it.
 
 ## What people ask for that has no screen
 

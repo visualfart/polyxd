@@ -14,32 +14,11 @@ import { SignIn } from "./screens/signin.tsx";
 import { Overview } from "./screens/overview.tsx";
 import { Accounts, Account } from "./screens/accounts.tsx";
 import { Tickets, Ticket } from "./screens/tickets.tsx";
-import { Renewals } from "./screens/renewals.tsx";
-import { Team } from "./screens/team.tsx";
 import { Settings } from "./screens/settings.tsx";
+import { AuthoredScreen } from "./authored.tsx";
+import { PACKS, loadPack } from "./packs.ts";
 
 export { store, useFoundry } from "./session.ts";
-
-const PACKS = [
-  ["shadcn", "shadcn/ui"],
-  ["material3", "Material 3"],
-  ["carbon", "Carbon"],
-  ["polaris", "Polaris"],
-  ["antd", "Ant Design"],
-  ["govuk", "GOV.UK"],
-  ["fluent", "Fluent 2"],
-  ["primer", "Primer"],
-  ["spectrum", "Spectrum 2"],
-  ["chakra", "Chakra"],
-  ["mantine", "Mantine"],
-  ["radix", "Radix Themes"],
-  ["bootstrap", "Bootstrap"],
-].map(([id, name]) => ({ id, name }));
-const themeFiles = import.meta.glob("../../../packages/react/themes/*.css");
-const loadPack = async (id: string) => {
-  const load = themeFiles[`../../../packages/react/themes/${id}.css`];
-  if (load) await load();
-};
 
 const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 export const MOD = isMac ? "⌘" : "Ctrl";
@@ -124,8 +103,10 @@ export function App() {
                   <Route path="accounts/:id/:tab" element={<Account />} />
                   <Route path="tickets" element={<Tickets />} />
                   <Route path="tickets/:id" element={<Ticket />} />
-                  <Route path="renewals" element={<Renewals />} />
-                  <Route path="team" element={<Team />} />
+                  {/* Renewals and Team are authored Polyxd documents (authored/*.json), rendered in the same shell. */}
+                  <Route path="renewals" element={<AuthoredScreen id="screen.renewals" />} />
+                  <Route path="team" element={<AuthoredScreen id="screen.team" />} />
+
                   <Route path="settings" element={<Settings />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>

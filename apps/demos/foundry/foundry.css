@@ -1687,3 +1687,78 @@ th[aria-sort="none"]:hover .fd-sort-idle {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* ---- Authored screens: a Polyxd document inside the product's shell ----
+   Renewals, Team and an account's Overview tab are documents in authored/*.json, rendered by the
+   same renderer as a generated surface. The shell around them stays the product's; these rules
+   only place the document where a React screen used to sit. */
+
+.fd-authored {
+  max-width: 1400px;
+}
+.fd-authored .pxd-surface {
+  padding: 0;
+  background: transparent;
+}
+.fd-authored .pxd-surface-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+/* On an account record the React header already names the account and the tab; the document's
+   own title stays for assistive tech and leaves the page. */
+.fd-authored-tab .pxd-surface-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+/* The overview's two halves side by side, as the React tab laid them out. */
+@media (min-width: 721px) {
+  .fd-authored [data-pxd-id="overview"] {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    align-items: start;
+  }
+}
+/* A member of the team on one line: who, their tags, their load, their menu. The renderer stacks
+   a Group; the product lays this one out as the dense row its people are used to. */
+.fd-authored [data-pxd-id="member"] {
+  display: grid;
+  grid-template-columns: minmax(200px, 1.4fr) minmax(0, 1fr) minmax(160px, 0.8fr) auto;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--pxd-color-border-default);
+}
+.fd-authored [data-pxd-id="member_tags"] {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.fd-authored [data-pxd-id="member_load"] {
+  grid-column: 3;
+}
+.fd-authored [data-pxd-id="member_menu"] {
+  grid-column: 4;
+  justify-self: end;
+}
+.fd-authored .pxd-collection-list {
+  gap: 0;
+}
+@media (max-width: 720px) {
+  .fd-authored [data-pxd-id="member"] {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .fd-authored [data-pxd-id="member_tags"],
+  .fd-authored [data-pxd-id="member_load"] {
+    grid-column: 1 / -1;
+  }
+  .fd-authored [data-pxd-id="member_menu"] {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}

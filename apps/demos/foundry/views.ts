@@ -1,5 +1,5 @@
 import type { IntentFile } from "../kit/types.ts";
-import { ME, PLANS, ROLES, account, annualPrice, breached, daysUntil, health, initials, isOpen, member, openTickets, plan, proration, type Account, type Foundry, type PlanId, type Ticket } from "./seed.ts";
+import { ME, PLANS, ROLES, account, annualPrice, breached, daysUntil, health, initials, isOpen, member, openTickets, plan, proration, type Account, type Foundry, type PlanId, type Stage, type Ticket } from "./seed.ts";
 import { dateOnly, daysWord, isoDay, money, plural, relative, shortDate } from "./format.ts";
 
 /**
@@ -54,6 +54,18 @@ export function view(h: Foundry, name: string, slots: Record<string, unknown>): 
       return quoteReceipt(h, view(h, "quoteDraft", slots) as QuoteDraft);
     case "quoteReview":
       return quoteReview(h, slots);
+
+    // The authored screens: the same views feed the product's own pages.
+    case "renewalPipeline":
+      return renewalPipeline(h);
+    case "renewalWin":
+      return renewalWin(h, slots);
+    case "teamPage":
+      return teamPage(h);
+    case "roles":
+      return Object.fromEntries(ROLES.map((r) => [r.id, { name: r.name, description: r.description }]));
+    case "accountOverview":
+      return accountOverview(h, slots);
     default:
       throw new Error(`Unknown view ${name}`);
   }
@@ -330,6 +342,161 @@ function quoteReview(h: Foundry, slots: Record<string, unknown>) {
     validText: `Valid until ${dateOnly(validUntil)}`,
     stageText: "Renewal moves to Quoted",
     consequence: `${contact.name} gets the quote by email with a link to accept. ${money(total)} for ${q ? (q.termMonths === 12 ? "a year" : `${q.termMonths / 12} years`) : r.termLabel === "1 year" ? "a year" : r.termLabel} is ${perYear - a.arr >= 0 ? `${money(Math.abs(perYear - a.arr))} a year more` : `${money(Math.abs(perYear - a.arr))} a year less`} than today. You can send a revised quote later, but this one can't be recalled.`,
+  };
+}
+
+/* ---- Authored screens ---- */
+
+const STAGES: Stage[] = ["upcoming", "quoted", "won", "churned"];
+
+/** The renewals page: four stages, each a list of renewals with the account beside it, and the money in each. */
+function renewalPipeline(h: Foundry) {
+  const all = h.renewals.map((r) => ({ r, a: account(h, r.accountId)! })).filter((x) => x.a);
+  const by = (s: Stage) => all.filter((x) => x.r.stage === s).sort((x, y) => (s === "won" || s === "churned" ? y.r.movedAt.localeCompare(x.r.movedAt) : x.r.dueAt.localeCompare(y.r.dueAt)));
+  const sum = (xs: { r: { amount: number } }[]) => xs.reduce((s, x) => s + x.r.amount, 0);
+  const due90 = all.filter((x) => (x.r.stage === "upcoming" || x.r.stage === "quoted") && daysUntil(x.r.dueAt) >= 0 && daysUntil(x.r.dueAt) <= 90);
+  // Four columns fit every pack at 1100px; the timing rides on the entity line and the owner is a first name, as the cards had it.
+  const row = ({ r, a }: (typeof all)[number]) => ({
+    id: r.id,
+    accountId: a.id,
+    name: a.name,
+    initials: initials(a.name),
+    plan: r.plan,
+    seats: r.seats,
+    planLine: `${plan(h, r.plan).name} · ${plural(r.seats, "seat")}${r.stage === "upcoming" || r.stage === "quoted" ? ` · due ${daysWord(daysUntil(r.dueAt))}` : ""}`,
+    amount: r.amount,
+    dueAt: r.dueAt,
+    movedAt: r.movedAt,
+    owner: member(h, a.ownerId)?.name.split(" ")[0] ?? "Unassigned",
+  });
+  const stages = Object.fromEntries(STAGES.map((s) => [s, by(s)])) as Record<Stage, typeof all>;
+  return {
+    stage: "upcoming",
+    counts: Object.fromEntries(STAGES.map((s) => [s, stages[s].length])),
+    totals: {
+      due90: { amount: sum(due90), caption: `${plural(due90.length, "renewal")} · ${due90.filter((x) => x.r.stage === "quoted").length} quoted` },
+      quoted: { amount: sum(stages.quoted), caption: plural(stages.quoted.length, "quote") },
+      won: { amount: sum(stages.won), caption: plural(stages.won.length, "renewal") },
+      churned: { amount: sum(stages.churned), caption: plural(stages.churned.length, "account") },
+    },
+    rows: Object.fromEntries(STAGES.map((s) => [s, stages[s].map(row)])),
+  };
+}
+
+/** What marking a renewal won does to the account, before it's recorded. */
+function renewalWin(h: Foundry, slots: Record<string, unknown>) {
+  const r = h.renewals.find((x) => x.id === slots.renewal) ?? h.renewals.find((x) => x.stage === "quoted") ?? h.renewals.find((x) => x.stage === "upcoming") ?? h.renewals[0];
+  const a = account(h, r.accountId) ?? h.accounts[0];
+  const p = plan(h, r.plan);
+  const next = new Date(r.dueAt);
+  next.setFullYear(next.getFullYear() + 1);
+  return {
+    id: r.id,
+    title: `Mark ${a.name}'s renewal won?`,
+    label: "Mark won",
+    amount: r.amount,
+    account: { id: a.id, name: a.name, initials: initials(a.name), detail: `${p.name} · ${plural(r.seats, "seat")} · due ${shortDate(r.dueAt)}` },
+    planName: p.name,
+    seats: r.seats,
+    perSeat: p.perSeat,
+    termLabel: "1 year",
+    dueAt: r.dueAt,
+    nextRenewalAt: next.toISOString(),
+    planText: `${a.name} stays on ${p.name} with ${plural(r.seats, "seat")}`,
+    priceText: `${money(r.amount)} a year from ${dateOnly(r.dueAt)}`,
+    nextText: `Next renewal ${dateOnly(next.toISOString())}`,
+    consequence: `${a.name}'s plan, seats and price update today, and the next renewal moves to ${dateOnly(next.toISOString())}. Nobody at the customer is emailed. You can undo this from the notice that follows.`,
+  };
+}
+
+const ROLE_RANK: Record<string, number> = { admin: 0, manager: 1, agent: 2, viewer: 3 };
+
+/** The team page: everyone on the desk, their load against capacity, and who's away or still invited. */
+function teamPage(h: Foundry) {
+  const load = (id: string) => h.tickets.filter((t) => t.assigneeId === id && isOpen(t)).length;
+  const members = [...h.team]
+    .sort((x, y) => ROLE_RANK[x.role] - ROLE_RANK[y.role] || x.joinedAt.localeCompare(y.joinedAt))
+    .map((m) => {
+      const open = load(m.id);
+      const owned = h.accounts.filter((a) => a.ownerId === m.id && a.status === "active").length;
+      const canHandover = open > 0 && m.status !== "invited";
+      return {
+        id: m.id,
+        name: m.name,
+        initials: initials(m.name),
+        email: m.email,
+        role: ROLES.find((r) => r.id === m.role)!.name,
+        title: m.title,
+        detail: `${m.title} · ${m.email}`,
+        active: m.status === "active",
+        away: m.status === "away",
+        invited: m.status === "invited",
+        awayLabel: m.status === "away" ? `Away${m.awayUntil ? ` until ${shortDate(m.awayUntil)}` : ""}` : "Away",
+        invitedLabel: m.status === "invited" ? `Invited${m.invitedAt ? ` ${shortDate(m.invitedAt)}` : ""}` : "Invited",
+        open,
+        capacity: m.capacity,
+        hasCapacity: m.capacity > 0,
+        loadCaption: `${open} of ${m.capacity}`,
+        owned,
+        hasOwned: owned > 0,
+        ownedText: plural(owned, "account"),
+        canHandover,
+        hasActions: canHandover || m.status === "invited",
+        menuLabel: `Actions for ${m.name}`,
+      };
+    });
+  const invited = members.filter((m) => m.invited).length;
+  const onDesk = members.length - invited;
+  return {
+    summary: `${plural(onDesk, "person", "people")} on the desk${invited ? `, ${invited} invited` : ""} · ${plural(h.tickets.filter(isOpen).length, "open ticket")} between them`,
+    count: members.length,
+    members,
+  };
+}
+
+/** The Overview tab of an account record: health, recent activity, the plan and the primary contact. */
+function accountOverview(h: Foundry, slots: Record<string, unknown>) {
+  const a = account(h, String(slots.account)) ?? h.accounts[0];
+  const hs = health(h, a);
+  const p = plan(h, a.plan);
+  const weekly = a.weeklyActive.map((active, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - d.getDay() - 7 * (11 - i));
+    return { week: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }), active };
+  });
+  const first = weekly[0].active;
+  const last = weekly[11].active;
+  const chartSummary = last < first * 0.85 ? `Active seats fell from ${first} to ${last} over twelve weeks.` : last > first * 1.15 ? `Active seats rose from ${first} to ${last} over twelve weeks.` : `Active seats held steady around ${last} over twelve weeks.`;
+  const recent = h.events
+    .filter((e) => e.accountId === a.id)
+    .sort((x, y) => y.at.localeCompare(x.at))
+    .slice(0, 6)
+    .map((e) => ({ id: e.id, text: e.text, at: e.at, hasRef: Boolean(e.ref), ref: e.ref ?? null }));
+  const contacts = h.contacts.filter((c) => c.accountId === a.id);
+  const primary = contacts.find((c) => c.primary) ?? contacts[0];
+  const canceled = a.status === "canceled";
+  return {
+    id: a.id,
+    name: a.name,
+    healthCaption: `Score ${hs.score} of 100, from seats in use, the support load and the renewal date`,
+    weekly,
+    chartSummary,
+    seatsLine: `${first} → ${last} of ${a.seats} seats`,
+    reasonsTitle: hs.positive ? "What's keeping the score up" : hs.label === "Healthy" ? "Worth watching, even so" : "What's pulling the score down",
+    reasons: hs.reasons,
+    recent,
+    planName: `${p.name}, annual`,
+    seatsText: `${a.seats} at ${money(p.perSeat)} each`,
+    arr: a.arr,
+    sla: p.sla,
+    support: p.support,
+    startedAt: a.startedAt,
+    renewLabel: canceled ? "Access ends" : "Renews",
+    renewalAt: a.renewalAt,
+    region: a.region,
+    hasContact: Boolean(primary),
+    contact: primary ? { name: primary.name, detail: `${primary.role} · ${primary.email}` } : { name: "No contact yet", detail: "Added when someone at the customer writes in" },
+    contactsLabel: `See all ${contacts.length} contacts`,
   };
 }
 

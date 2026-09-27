@@ -33,6 +33,67 @@ export function runAction(store: Store<Foundry>, e: ActionEvent): Outcome {
       return { go: `/accounts/${c.id}/tickets`, close: true };
     case "ticket.open":
       return { go: `/tickets/${c.id}`, close: true };
+    case "account.timeline":
+      return { go: `/accounts/${c.id}/timeline`, close: true };
+    case "account.contacts":
+      return { go: `/accounts/${c.id}/contacts`, close: true };
+
+    // Buttons on the authored screens that are an ask in disguise: they open an intent.
+    case "accounts.renewingWithTickets":
+      return { next: { intent: "accounts.renewing-with-tickets", slots: { days: Number(c.days) || 30 } } };
+    case "renewal.quote": {
+      const a = account(h, c.accountId);
+      if (!a || a.status === "canceled") return { say: "That account isn't on a plan." };
+      return { next: { intent: "renewal.quote", slots: { account: a.id } } };
+    }
+    case "renewal.requote": {
+      const a = account(h, c.accountId);
+      if (!a || a.status === "canceled") return { say: "That account isn't on a plan." };
+      return { next: { intent: "renewal.quote", slots: { account: a.id, seats: Number(c.seats) || a.seats, plan: PLANS.some((p) => p.id === c.plan) ? c.plan : a.plan } } };
+    }
+    case "team.invite":
+      return { next: { intent: "team.invite", slots: {} } };
+    case "member.handover": {
+      const m = member(h, c.id);
+      if (!m) return { say: "Choose who's handing over first." };
+      return { next: { intent: "tickets.reassign", slots: { from: m.id } } };
+    }
+
+    case "renewal.win": {
+      const r = h.renewals.find((x) => x.id === c.id);
+      if (!r) return { say: "That renewal isn't here any more." };
+      if (r.stage === "won") return { say: `${account(h, r.accountId)?.name ?? "That account"} already renewed.` };
+      if (r.stage === "churned") return { say: `${account(h, r.accountId)?.name ?? "That account"} canceled; there's nothing to win.` };
+      return { next: { intent: "renewal.won.confirm", slots: { renewal: r.id } } };
+    }
+    case "renewal.markWon": {
+      const r = h.renewals.find((x) => x.id === c.id);
+      const a = r && account(h, r.accountId);
+      if (!r || !a || r.stage === "won" || r.stage === "churned") return { say: "That renewal can't be marked won." };
+      const next = new Date(r.dueAt);
+      next.setFullYear(next.getFullYear() + 1);
+      const undo = store.commit(`Won ${a.name}`, (d) => {
+        const rn = d.renewals.find((x) => x.id === r.id)!;
+        rn.stage = "won";
+        rn.movedAt = now();
+        const acc = d.accounts.find((x) => x.id === a.id)!;
+        acc.renewalAt = next.toISOString();
+        acc.seats = rn.seats;
+        acc.plan = rn.plan;
+        acc.arr = rn.amount;
+        d.events.push({ id: uid("ev"), accountId: acc.id, at: now(), kind: "renewal", text: `Renewed for a year on ${plan(d, rn.plan).name}: ${money(rn.amount)}` });
+      });
+      return { say: `${a.name} renewed: ${money(r.amount)} a year. Next renewal ${dateOnly(next.toISOString())}.`, undo, close: true, go: "/renewals" };
+    }
+    case "invite.withdraw": {
+      const m = member(h, c.id);
+      if (!m) return {};
+      if (m.status !== "invited") return { say: `${m.name} is already on the desk; invitations are withdrawn, not people.` };
+      const undo = store.commit(`Withdraw ${m.name}`, (d) => {
+        d.team = d.team.filter((x) => x.id !== m.id);
+      });
+      return { say: `${m.name}'s invitation withdrawn.`, undo };
+    }
 
     case "cancellation.review": {
       const a = account(h, c.accountId);

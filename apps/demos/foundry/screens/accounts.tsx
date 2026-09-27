@@ -2,6 +2,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { PLANS, daysUntil, health, isOpen, member, openTickets, plan, type Account as Acc, type Event } from "../seed.ts";
 import { useFoundry } from "../session.ts";
+import { AuthoredScreen } from "../authored.tsx";
 import { Avatar, Badge, Button, Card, DataTable, Empty, Field, Icon, Meter, Person, Select, SearchBox, Stat, Tabs, dateOnly, daysWord, longDate, money, percent, plural, relative, shortDate, time, type Column } from "../ui.tsx";
 import { PRIORITY, STATUS } from "../views.ts";
 
@@ -219,7 +220,8 @@ export function Account() {
 
       <Tabs label="Account sections" items={TABS.map((t) => ({ ...t, count: counts[t.id] }))} value={tab} onChange={(t) => navigate(`/accounts/${a.id}${t === "overview" ? "" : `/${t}`}`)} />
 
-      {tab === "overview" && <OverviewTab a={a} hs={hs} events={events.slice(0, 6)} contacts={contacts} />}
+      {/* The Overview tab is an authored Polyxd document (authored/screen.account.overview.json); the header and the other tabs stay React. */}
+      {tab === "overview" && <AuthoredScreen id="screen.account.overview" slots={{ account: a.id }} className="fd-authored-tab" />}
       {tab === "tickets" && (
         <Card padded={false}>
           <TicketsTable tickets={tickets} accountName={a.name} />
@@ -247,77 +249,6 @@ export function Account() {
         </Card>
       )}
       {tab === "notes" && <NotesTab a={a} notes={notes} />}
-    </div>
-  );
-}
-
-function OverviewTab({ a, hs, events, contacts }: { a: Acc; hs: ReturnType<typeof health>; events: Event[]; contacts: { name: string; email: string; role: string; primary: boolean }[] }) {
-  const { h } = useFoundry();
-  const p = plan(h, a.plan);
-  const max = Math.max(...a.weeklyActive, 1);
-  const primary = contacts.find((c) => c.primary) ?? contacts[0];
-  return (
-    <div className="fd-grid fd-grid-main">
-      <div className="fd-stack" style={{ gap: 16 }}>
-        <Card title="Health" description={`Score ${hs.score} of 100, from seats in use, the support load and the renewal date`}>
-          <div className="fd-grid fd-grid-2">
-            <div className="fd-stack">
-              <span className="fd-small fd-muted">Weekly active seats, 12 weeks</span>
-              <div className="fd-bars" role="img" aria-label={`Weekly active seats from ${a.weeklyActive[0]} to ${a.weeklyActive[11]}`}>
-                {a.weeklyActive.map((n, i) => (
-                  <span key={i} style={{ height: `${Math.max(4, (n / max) * 100)}%` }} title={`${n} active`} />
-                ))}
-              </div>
-              <span className="fd-small fd-muted">
-                {a.weeklyActive[0]} → {a.weeklyActive[11]} of {a.seats} seats
-              </span>
-            </div>
-            <div className="fd-stack">
-              <span className="fd-small fd-muted">{hs.positive ? "What's keeping the score up" : hs.label === "Healthy" ? "Worth watching, even so" : "What's pulling the score down"}</span>
-              <ul className="fd-stack" style={{ gap: 4 }}>
-                {hs.reasons.map((r) => (
-                  <li key={r} className="fd-row" style={{ gap: 6, flexWrap: "nowrap", alignItems: "flex-start" }}>
-                    <Icon name={hs.positive ? "check" : "alert"} size={13} className={hs.positive ? "fd-tone-success" : "fd-tone-warning"} />
-                    <span>{r}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </Card>
-        <Card title="Recent activity" actions={<Button variant="ghost" size="sm" to={`/accounts/${a.id}/timeline`}>Full timeline</Button>}>
-          <Timeline events={events} />
-        </Card>
-      </div>
-      <div className="fd-stack" style={{ gap: 16 }}>
-        <Card title="Plan">
-          <dl className="fd-kv">
-            <dt>Plan</dt>
-            <dd>{p.name}, annual</dd>
-            <dt>Seats</dt>
-            <dd>
-              {a.seats} at {money(p.perSeat)} each
-            </dd>
-            <dt>ARR</dt>
-            <dd className="fd-tabular">{money(a.arr)}</dd>
-            <dt>First response</dt>
-            <dd>{p.sla}</dd>
-            <dt>Support</dt>
-            <dd>{p.support}</dd>
-            <dt>Started</dt>
-            <dd>{dateOnly(a.startedAt)}</dd>
-            <dt>{a.status === "canceled" ? "Access ends" : "Renews"}</dt>
-            <dd>{dateOnly(a.renewalAt)}</dd>
-            <dt>Region</dt>
-            <dd>{a.region}</dd>
-          </dl>
-        </Card>
-        {primary && (
-          <Card title="Primary contact" actions={<Button variant="ghost" size="sm" to={`/accounts/${a.id}/contacts`}>All {contacts.length}</Button>}>
-            <Person name={primary.name} detail={`${primary.role} · ${primary.email}`} size={32} />
-          </Card>
-        )}
-      </div>
     </div>
   );
 }

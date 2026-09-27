@@ -1,0 +1,516 @@
+{
+  "id": "screen.team",
+  "title": "Team",
+  "ask": [],
+  "capabilities": [
+    "team.invite",
+    "member.handover",
+    "invite.withdraw"
+  ],
+  "data": {
+    "team": "view:teamPage",
+    "roles": "view:roles"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "team",
+      "title": "Team",
+      "intent": "screen.team",
+      "subtitle": "Who's on the desk, their load against capacity, and who's away.",
+      "actions": "page_actions",
+      "presentation": "page",
+      "origin": "authored"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page_actions",
+        "component": "ActionBar",
+        "children": [
+          "invite"
+        ]
+      },
+      {
+        "id": "invite",
+        "component": "Action",
+        "key": "invite",
+        "label": "Invite",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "team.invite"
+          }
+        }
+      },
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "summary",
+          "members",
+          "roles"
+        ]
+      },
+      {
+        "id": "summary",
+        "component": "Text",
+        "key": "team_summary",
+        "variant": "supporting",
+        "text": {
+          "path": "/team/summary"
+        }
+      },
+      {
+        "id": "members",
+        "component": "Collection",
+        "key": "members",
+        "label": "Members",
+        "layout": "list",
+        "items": {
+          "path": "/team/members",
+          "componentId": "member"
+        },
+        "empty": "members_empty"
+      },
+      {
+        "id": "members_empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "inbox",
+        "title": "Nobody on the desk",
+        "message": "Invite someone and they appear here."
+      },
+      {
+        "id": "member",
+        "component": "Group",
+        "label": {
+          "path": "name"
+        },
+        "children": [
+          "member_identity",
+          "member_tags",
+          "member_load",
+          "member_menu"
+        ]
+      },
+      {
+        "id": "member_identity",
+        "component": "Identity",
+        "kind": "person",
+        "name": {
+          "path": "name"
+        },
+        "detail": {
+          "path": "detail"
+        }
+      },
+      {
+        "id": "member_tags",
+        "component": "Group",
+        "arrangement": "inline",
+        "children": [
+          "member_role",
+          "member_active",
+          "member_away",
+          "member_invited",
+          "member_owned"
+        ]
+      },
+      {
+        "id": "member_role",
+        "component": "Tag",
+        "kind": "label",
+        "label": {
+          "path": "role"
+        }
+      },
+      {
+        "id": "member_active",
+        "component": "Tag",
+        "kind": "status",
+        "tone": "success",
+        "label": "Active",
+        "visible": {
+          "path": "active"
+        }
+      },
+      {
+        "id": "member_away",
+        "component": "Tag",
+        "kind": "status",
+        "tone": "warning",
+        "label": {
+          "path": "awayLabel"
+        },
+        "visible": {
+          "path": "away"
+        }
+      },
+      {
+        "id": "member_invited",
+        "component": "Tag",
+        "kind": "status",
+        "tone": "info",
+        "label": {
+          "path": "invitedLabel"
+        },
+        "visible": {
+          "path": "invited"
+        }
+      },
+      {
+        "id": "member_owned",
+        "component": "Tag",
+        "kind": "label",
+        "label": {
+          "path": "ownedText"
+        },
+        "visible": {
+          "path": "hasOwned"
+        }
+      },
+      {
+        "id": "member_load",
+        "component": "Progress",
+        "kind": "meter",
+        "label": "Open tickets",
+        "value": {
+          "path": "open"
+        },
+        "max": {
+          "path": "capacity"
+        },
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "loadCaption"
+        },
+        "thresholds": {
+          "warning": 0.8,
+          "danger": 1
+        },
+        "visible": {
+          "path": "hasCapacity"
+        }
+      },
+      {
+        "id": "member_menu",
+        "component": "ActionMenu",
+        "kind": "overflow",
+        "label": {
+          "path": "menuLabel"
+        },
+        "children": [
+          "handover",
+          "withdraw"
+        ],
+        "visible": {
+          "path": "hasActions"
+        }
+      },
+      {
+        "id": "handover",
+        "component": "Action",
+        "key": "hand_over",
+        "label": "Hand over tickets",
+        "visible": {
+          "path": "canHandover"
+        },
+        "action": {
+          "event": {
+            "name": "member.handover",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "withdraw",
+        "component": "Action",
+        "key": "withdraw_invite",
+        "label": "Withdraw invite",
+        "visible": {
+          "path": "invited"
+        },
+        "action": {
+          "event": {
+            "name": "invite.withdraw",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "roles",
+        "component": "Section",
+        "title": "Roles",
+        "description": "What each role can do on the desk",
+        "children": [
+          "roles_list"
+        ]
+      },
+      {
+        "id": "roles_list",
+        "component": "DetailList",
+        "key": "roles",
+        "items": [
+          {
+            "key": "viewer",
+            "label": "Viewer",
+            "value": {
+              "path": "/roles/viewer/description"
+            }
+          },
+          {
+            "key": "agent",
+            "label": "Agent",
+            "value": {
+              "path": "/roles/agent/description"
+            }
+          },
+          {
+            "key": "manager",
+            "label": "Manager",
+            "value": {
+              "path": "/roles/manager/description"
+            }
+          },
+          {
+            "key": "admin",
+            "label": "Admin",
+            "value": {
+              "path": "/roles/admin/description"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "team": {
+        "summary": "8 people on the desk · 38 open tickets between them",
+        "count": 8,
+        "members": [
+          {
+            "id": "m_noor",
+            "name": "Noor Haddad",
+            "initials": "NH",
+            "email": "noor@basalt.io",
+            "role": "Admin",
+            "title": "Customer success lead",
+            "detail": "Customer success lead · noor@basalt.io",
+            "active": true,
+            "away": false,
+            "invited": false,
+            "awayLabel": "Away",
+            "invitedLabel": "Invited",
+            "open": 3,
+            "capacity": 8,
+            "hasCapacity": true,
+            "loadCaption": "3 of 8",
+            "owned": 7,
+            "hasOwned": true,
+            "ownedText": "7 accounts",
+            "canHandover": true,
+            "hasActions": true,
+            "menuLabel": "Actions for Noor Haddad"
+          },
+          {
+            "id": "m_priya",
+            "name": "Priya Natarajan",
+            "initials": "PN",
+            "email": "priya@basalt.io",
+            "role": "Manager",
+            "title": "Renewals manager",
+            "detail": "Renewals manager · priya@basalt.io",
+            "active": true,
+            "away": false,
+            "invited": false,
+            "awayLabel": "Away",
+            "invitedLabel": "Invited",
+            "open": 5,
+            "capacity": 10,
+            "hasCapacity": true,
+            "loadCaption": "5 of 10",
+            "owned": 7,
+            "hasOwned": true,
+            "ownedText": "7 accounts",
+            "canHandover": true,
+            "hasActions": true,
+            "menuLabel": "Actions for Priya Natarajan"
+          },
+          {
+            "id": "m_sam",
+            "name": "Sam Whitlock",
+            "initials": "SW",
+            "email": "sam@basalt.io",
+            "role": "Agent",
+            "title": "Customer success manager",
+            "detail": "Customer success manager · sam@basalt.io",
+            "active": false,
+            "away": true,
+            "invited": false,
+            "awayLabel": "Away until Oct 14",
+            "invitedLabel": "Invited",
+            "open": 14,
+            "capacity": 14,
+            "hasCapacity": true,
+            "loadCaption": "14 of 14",
+            "owned": 7,
+            "hasOwned": true,
+            "ownedText": "7 accounts",
+            "canHandover": true,
+            "hasActions": true,
+            "menuLabel": "Actions for Sam Whitlock"
+          },
+          {
+            "id": "m_lena",
+            "name": "Lena Ortiz",
+            "initials": "LO",
+            "email": "lena@basalt.io",
+            "role": "Agent",
+            "title": "Customer success manager",
+            "detail": "Customer success manager · lena@basalt.io",
+            "active": true,
+            "away": false,
+            "invited": false,
+            "awayLabel": "Away",
+            "invitedLabel": "Invited",
+            "open": 2,
+            "capacity": 14,
+            "hasCapacity": true,
+            "loadCaption": "2 of 14",
+            "owned": 7,
+            "hasOwned": true,
+            "ownedText": "7 accounts",
+            "canHandover": true,
+            "hasActions": true,
+            "menuLabel": "Actions for Lena Ortiz"
+          },
+          {
+            "id": "m_marcus",
+            "name": "Marcus Bell",
+            "initials": "MB",
+            "email": "marcus@basalt.io",
+            "role": "Agent",
+            "title": "Support engineer",
+            "detail": "Support engineer · marcus@basalt.io",
+            "active": true,
+            "away": false,
+            "invited": false,
+            "awayLabel": "Away",
+            "invitedLabel": "Invited",
+            "open": 2,
+            "capacity": 16,
+            "hasCapacity": true,
+            "loadCaption": "2 of 16",
+            "owned": 6,
+            "hasOwned": true,
+            "ownedText": "6 accounts",
+            "canHandover": true,
+            "hasActions": true,
+            "menuLabel": "Actions for Marcus Bell"
+          },
+          {
+            "id": "m_aiko",
+            "name": "Aiko Tanaka",
+            "initials": "AT",
+            "email": "aiko@basalt.io",
+            "role": "Agent",
+            "title": "Support engineer",
+            "detail": "Support engineer · aiko@basalt.io",
+            "active": true,
+            "away": false,
+            "invited": false,
+            "awayLabel": "Away",
+            "invitedLabel": "Invited",
+            "open": 7,
+            "capacity": 16,
+            "hasCapacity": true,
+            "loadCaption": "7 of 16",
+            "owned": 6,
+            "hasOwned": true,
+            "ownedText": "6 accounts",
+            "canHandover": true,
+            "hasActions": true,
+            "menuLabel": "Actions for Aiko Tanaka"
+          },
+          {
+            "id": "m_jonah",
+            "name": "Jonah Reyes",
+            "initials": "JR",
+            "email": "jonah@basalt.io",
+            "role": "Agent",
+            "title": "Onboarding specialist",
+            "detail": "Onboarding specialist · jonah@basalt.io",
+            "active": true,
+            "away": false,
+            "invited": false,
+            "awayLabel": "Away",
+            "invitedLabel": "Invited",
+            "open": 4,
+            "capacity": 10,
+            "hasCapacity": true,
+            "loadCaption": "4 of 10",
+            "owned": 6,
+            "hasOwned": true,
+            "ownedText": "6 accounts",
+            "canHandover": true,
+            "hasActions": true,
+            "menuLabel": "Actions for Jonah Reyes"
+          },
+          {
+            "id": "m_ingrid",
+            "name": "Ingrid Solberg",
+            "initials": "IS",
+            "email": "ingrid@basalt.io",
+            "role": "Viewer",
+            "title": "Finance",
+            "detail": "Finance · ingrid@basalt.io",
+            "active": true,
+            "away": false,
+            "invited": false,
+            "awayLabel": "Away",
+            "invitedLabel": "Invited",
+            "open": 0,
+            "capacity": 0,
+            "hasCapacity": false,
+            "loadCaption": "0 of 0",
+            "owned": 0,
+            "hasOwned": false,
+            "ownedText": "0 accounts",
+            "canHandover": false,
+            "hasActions": false,
+            "menuLabel": "Actions for Ingrid Solberg"
+          }
+        ]
+      },
+      "roles": {
+        "viewer": {
+          "name": "Viewer",
+          "description": "Sees accounts, tickets and renewals; changes nothing"
+        },
+        "agent": {
+          "name": "Agent",
+          "description": "Works tickets and updates accounts they own"
+        },
+        "manager": {
+          "name": "Manager",
+          "description": "Everything an agent can, plus quotes, plan changes and hand-overs"
+        },
+        "admin": {
+          "name": "Admin",
+          "description": "Everything, including the team and cancellations"
+        }
+      }
+    }
+  }
+}
