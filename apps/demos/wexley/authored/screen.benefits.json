@@ -1,0 +1,330 @@
+{
+  "id": "screen.benefits",
+  "title": "Housing benefit",
+  "ask": [],
+  "capabilities": [
+    "benefit.evidence"
+  ],
+  "data": {
+    "claim": "view:benefitScreen"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "screen-benefits",
+      "title": "Housing benefit",
+      "intent": "screen.benefits",
+      "origin": "authored",
+      "presentation": "page"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "deadline",
+          "all_sent",
+          "claim",
+          "documents",
+          "how_long"
+        ]
+      },
+      {
+        "id": "deadline",
+        "component": "Status",
+        "key": "deadline",
+        "kind": "warning",
+        "visible": {
+          "path": "/claim/anyMissing"
+        },
+        "title": {
+          "path": "/claim/deadlineTitle"
+        },
+        "message": {
+          "path": "/claim/deadlineMessage"
+        }
+      },
+      {
+        "id": "all_sent",
+        "component": "Status",
+        "key": "all_sent",
+        "kind": "success",
+        "visible": {
+          "path": "/claim/allSent"
+        },
+        "title": {
+          "path": "/claim/deadlineTitle"
+        },
+        "message": {
+          "path": "/claim/deadlineMessage"
+        }
+      },
+      {
+        "id": "claim",
+        "component": "DetailList",
+        "key": "claim",
+        "title": "Your claim",
+        "items": [
+          {
+            "key": "reference",
+            "label": "Reference",
+            "value": {
+              "path": "/claim/reference"
+            }
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "value": {
+              "path": "/claim/statusLabel"
+            }
+          },
+          {
+            "key": "submitted",
+            "label": "Sent",
+            "value": {
+              "path": "/claim/submitted"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "estimate",
+            "label": "What you may get",
+            "value": {
+              "path": "/claim/estimateText"
+            }
+          },
+          {
+            "key": "paid_to",
+            "label": "Paid to",
+            "value": {
+              "path": "/claim/paidTo"
+            }
+          }
+        ]
+      },
+      {
+        "id": "documents",
+        "component": "Section",
+        "key": "documents",
+        "title": "What we need from you",
+        "children": [
+          "tasks"
+        ]
+      },
+      {
+        "id": "tasks",
+        "component": "Steps",
+        "key": "documents_tasks",
+        "kind": "tasklist",
+        "steps": [
+          {
+            "key": "identity",
+            "title": {
+              "path": "/claim/evidence/identity/what"
+            },
+            "status": {
+              "path": "/claim/evidence/identity/taskStatus"
+            },
+            "content": "identity_detail"
+          },
+          {
+            "key": "tenancy",
+            "title": {
+              "path": "/claim/evidence/tenancy/what"
+            },
+            "status": {
+              "path": "/claim/evidence/tenancy/taskStatus"
+            },
+            "content": "tenancy_detail"
+          },
+          {
+            "key": "payslips",
+            "title": {
+              "path": "/claim/evidence/payslips/what"
+            },
+            "status": {
+              "path": "/claim/evidence/payslips/taskStatus"
+            },
+            "content": "payslips_detail"
+          },
+          {
+            "key": "bank",
+            "title": {
+              "path": "/claim/evidence/bank/what"
+            },
+            "status": {
+              "path": "/claim/evidence/bank/taskStatus"
+            },
+            "content": "bank_detail"
+          }
+        ],
+        "finish": {
+          "label": {
+            "path": "/claim/sendLabel"
+          },
+          "action": {
+            "event": {
+              "name": "benefit.evidence"
+            }
+          }
+        }
+      },
+      {
+        "id": "identity_detail",
+        "component": "Text",
+        "key": "identity_detail",
+        "text": {
+          "path": "/claim/evidence/identity/text"
+        }
+      },
+      {
+        "id": "tenancy_detail",
+        "component": "Text",
+        "key": "tenancy_detail",
+        "text": {
+          "path": "/claim/evidence/tenancy/text"
+        }
+      },
+      {
+        "id": "payslips_detail",
+        "component": "Text",
+        "key": "payslips_detail",
+        "text": {
+          "path": "/claim/evidence/payslips/text"
+        }
+      },
+      {
+        "id": "bank_detail",
+        "component": "Text",
+        "key": "bank_detail",
+        "text": {
+          "path": "/claim/evidence/bank/text"
+        }
+      },
+      {
+        "id": "how_long",
+        "component": "Section",
+        "key": "how_long",
+        "title": "How long it takes",
+        "children": [
+          "how_long_text"
+        ]
+      },
+      {
+        "id": "how_long_text",
+        "component": "Text",
+        "key": "how_long_text",
+        "text": "We decide most claims within 14 days of getting everything we need. If we need to ask you something, we write to you through this account."
+      }
+    ],
+    "data": {
+      "claim": {
+        "reference": "HB 2026 018274",
+        "type": "Housing benefit",
+        "submitted": "2026-09-12",
+        "statusLabel": "Waiting for your documents",
+        "weeklyEstimate": 96.4,
+        "deadline": "2026-10-09",
+        "todoCount": 2,
+        "deadlineTitle": "Send the 2 missing documents by Friday 9 October",
+        "deadlineMessage": "If we do not get them by then, we decide your claim on what we have, and it may be refused. Photos of paper documents are fine.",
+        "anyMissing": true,
+        "rows": [
+          {
+            "id": "identity",
+            "what": "Proof of who you are",
+            "status": "Received",
+            "detail": "passport.jpg, received 12 September 2026"
+          },
+          {
+            "id": "tenancy",
+            "what": "Your tenancy agreement",
+            "status": "Received",
+            "detail": "tenancy-agreement.pdf, received 12 September 2026"
+          },
+          {
+            "id": "payslips",
+            "what": "Your last 2 payslips",
+            "status": "Needed",
+            "detail": "So we can work out your weekly income."
+          },
+          {
+            "id": "bank",
+            "what": "Bank statements for the last 2 months",
+            "status": "Needed",
+            "detail": "For every account in your name, showing your savings."
+          }
+        ],
+        "evidence": {
+          "identity": {
+            "id": "identity",
+            "what": "Proof of who you are",
+            "why": "Your passport or driving licence.",
+            "status": "done",
+            "missing": false,
+            "text": "We have this. Received 12 September 2026.",
+            "files": [
+              {
+                "name": "passport.jpg",
+                "size": 1843200
+              }
+            ],
+            "fileNames": "passport.jpg",
+            "taskStatus": "done"
+          },
+          "tenancy": {
+            "id": "tenancy",
+            "what": "Your tenancy agreement",
+            "why": "The signed agreement showing your rent.",
+            "status": "done",
+            "missing": false,
+            "text": "We have this. Received 12 September 2026.",
+            "files": [
+              {
+                "name": "tenancy-agreement.pdf",
+                "size": 402100
+              }
+            ],
+            "fileNames": "tenancy-agreement.pdf",
+            "taskStatus": "done"
+          },
+          "payslips": {
+            "id": "payslips",
+            "what": "Your last 2 payslips",
+            "why": "So we can work out your weekly income.",
+            "status": "todo",
+            "missing": true,
+            "text": "So we can work out your weekly income.",
+            "files": [],
+            "fileNames": "None yet",
+            "taskStatus": "todo"
+          },
+          "bank": {
+            "id": "bank",
+            "what": "Bank statements for the last 2 months",
+            "why": "For every account in your name, showing your savings.",
+            "status": "todo",
+            "missing": true,
+            "text": "For every account in your name, showing your savings.",
+            "files": [],
+            "fileNames": "None yet",
+            "taskStatus": "todo"
+          }
+        },
+        "upload": {
+          "payslips": [],
+          "bank": []
+        },
+        "allSent": false,
+        "estimateText": "About £96.40 a week, once we have checked your income",
+        "paidTo": "Your rent account with Wexley Homes, every 4 weeks",
+        "sendLabel": "Send documents"
+      }
+    }
+  }
+}

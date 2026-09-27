@@ -120,7 +120,9 @@
           "permit.update",
           "permit.renew",
           "appeal.submit",
-          "instalments.set"
+          "instalments.set",
+          "garden.subscribe",
+          "garden.cancel"
         ],
         "container": [
           "Confirm"

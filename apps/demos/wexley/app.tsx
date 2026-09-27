@@ -9,13 +9,12 @@ import { ASKABLE, REPORTS, intentById, intentBySlug, resolveSlots, slug, surface
 import { runAction, type Outcome } from "./actions.ts";
 import { Ctx, store, type Session } from "./session.ts";
 import { Banner, BackLink, Breadcrumbs, Button, Footer, Header, Heading, LinkButton, PhaseBanner, TextField } from "./ui.tsx";
+import { AuthoredScreen } from "./authored.tsx";
 import { SignIn } from "./screens/signin.tsx";
 import { Account } from "./screens/account.tsx";
 import { Permits, PayFine } from "./screens/permits.tsx";
-import { CouncilTax } from "./screens/counciltax.tsx";
 import { Repairs, Repair, ReportRepair } from "./screens/repairs.tsx";
-import { Bins, RequestBin } from "./screens/bins.tsx";
-import { Benefits } from "./screens/benefits.tsx";
+import { RequestBin } from "./screens/request-bin.tsx";
 import { Messages, Message } from "./screens/messages.tsx";
 import { Settings } from "./screens/settings.tsx";
 
@@ -111,6 +110,14 @@ export function App() {
     else if (out.go) navigate(out.go);
     else if (out.undo) open(opened.intent.id, opened.slots, true);
   };
+  // An authored screen's actions: the same handlers, but the screen stays where it is; the store
+  // changing is what refreshes it, so "close" means nothing here and Undo needs no reopening.
+  const onScreenAction = (e: ActionEvent) => {
+    const out: Outcome = runAction(store, e);
+    if (out.say) say(out.say, out.undo, out.title);
+    if (out.next) open(out.next.intent, out.next.slots, out.next.replace);
+    else if (out.go) navigate(out.go);
+  };
   const undo = () => {
     if (!notice?.undo) return;
     store.undo(notice.undo);
@@ -148,13 +155,13 @@ export function App() {
           <Route index element={<Account />} />
           <Route path="permits" element={<Permits />} />
           <Route path="permits/fine/pay" element={<PayFine />} />
-          <Route path="council-tax" element={<CouncilTax />} />
+          <Route path="council-tax" element={<AuthoredScreen id="screen.council_tax" crumb="Council tax" onAction={onScreenAction} packs={PACKS} loadPack={loadPack} />} />
           <Route path="repairs" element={<Repairs />} />
           <Route path="repairs/new" element={<ReportRepair />} />
           <Route path="repairs/:id" element={<Repair />} />
-          <Route path="bins" element={<Bins />} />
+          <Route path="bins" element={<AuthoredScreen id="screen.bins" crumb="Bins" onAction={onScreenAction} packs={PACKS} loadPack={loadPack} />} />
           <Route path="bins/request" element={<RequestBin />} />
-          <Route path="benefits" element={<Benefits />} />
+          <Route path="benefits" element={<AuthoredScreen id="screen.benefits" crumb="Benefits" onAction={onScreenAction} packs={PACKS} loadPack={loadPack} />} />
           <Route path="messages" element={<Messages />} />
           <Route path="messages/:id" element={<Message />} />
           <Route path="settings" element={<Settings />} />

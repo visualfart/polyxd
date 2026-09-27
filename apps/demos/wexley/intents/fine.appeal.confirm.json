@@ -141,14 +141,14 @@
         "fineId": "pcn_1",
         "pcn": "WX76369765",
         "location": "Mill Street, outside number 22",
-        "issued": "2026-09-21",
+        "issued": "2026-09-22",
         "amount": 70,
         "discountAmount": 35,
         "reasonLabel": "The signs were unclear",
         "explanation": "The permit zone sign on Mill Street is behind a tree and cannot be read from the road.",
         "evidenceText": "sign-photo.jpg",
         "evidenceCount": 1,
-        "decideBy": "2026-10-11"
+        "decideBy": "2026-10-12"
       }
     }
   }

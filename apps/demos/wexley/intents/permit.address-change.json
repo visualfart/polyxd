@@ -346,8 +346,8 @@
         "registration": "WX21 TFR",
         "vehicleLine": "Blue Toyota Yaris, WX21 TFR",
         "vehicleSentence": "Your permit is for a blue Toyota Yaris, WX21 TFR.",
-        "start": "2025-11-13",
-        "expiry": "2026-11-13",
+        "start": "2025-11-14",
+        "expiry": "2026-11-14",
         "daysLeft": 48,
         "price": 85,
         "address": "14 Larch Close, Wexley, WX2 4QR",
@@ -362,7 +362,7 @@
         "moveDate": null,
         "vehicleUnchanged": true,
         "step": 0,
-        "today": "2026-09-27"
+        "today": "2026-09-28"
       }
     }
   }

@@ -7,11 +7,20 @@ import type { IntentFile, ReportSummary } from "../kit/types.ts";
 type Raw = Omit<IntentFile, "slots"> & { slots?: Record<string, string> };
 
 const files = import.meta.glob<{ default: Raw }>("./intents/*.json", { eager: true });
+const authoredFiles = import.meta.glob<{ default: Raw }>("./authored/*.json", { eager: true });
 const reportFiles = import.meta.glob<{ default: ReportSummary }>("./reports/*.json", { eager: true });
 
 export const INTENTS: IntentFile[] = Object.values(files)
   .map((m) => m.default)
   .map((raw) => ({ ...raw, slots: raw.slots ? Object.fromEntries(Object.entries(raw.slots).map(([k, v]) => [k, new RegExp(v, "i")])) : undefined }))
+  .sort((a, b) => a.id.localeCompare(b.id));
+
+/**
+ * The product's own screens written as documents: the same shape as an intent (a data map, a
+ * document, a report), but nobody asks for them; a route renders one. Verified like the rest.
+ */
+export const AUTHORED: IntentFile[] = Object.values(authoredFiles)
+  .map((m) => ({ ...m.default, slots: undefined }))
   .sort((a, b) => a.id.localeCompare(b.id));
 
 /** Intents people can ask for by name; the confirmations only follow from another surface. */
@@ -20,6 +29,7 @@ export const ASKABLE = INTENTS.filter((i) => i.ask.length > 0);
 export const REPORTS: Record<string, ReportSummary> = Object.fromEntries(Object.entries(reportFiles).map(([path, m]) => [path.replace(/.*\/(.+)\.json$/, "$1"), m.default]));
 
 export const intentById = (id: string) => INTENTS.find((i) => i.id === id);
+export const authoredById = (id: string) => AUTHORED.find((i) => i.id === id);
 
 /** The id as a path segment: "permit.address-change" → "permit-address-change", so a dev server that maps dotted paths to files still serves the page. */
 export const slug = (id: string) => id.replace(/\./g, "-");

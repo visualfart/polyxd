@@ -283,7 +283,7 @@ function weekdayFromNow(days: number): string {
 }
 
 /** Next 31 March: garden waste runs April to March. */
-function nextMarch(): string {
+export function nextMarch(): string {
   const d = new Date();
   d.setHours(9, 0, 0, 0);
   const year = d.getMonth() > 2 ? d.getFullYear() + 1 : d.getFullYear();

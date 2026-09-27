@@ -136,11 +136,11 @@
         "zoneName": "Zone C, Northfield",
         "registration": "WX21 TFR",
         "vehicleLine": "Blue Toyota Yaris, WX21 TFR",
-        "currentExpiry": "2026-11-13",
-        "newExpiry": "2027-11-13",
+        "currentExpiry": "2026-11-14",
+        "newExpiry": "2027-11-14",
         "price": 85,
         "label": "Pay £85.00",
-        "consequence": "We take £85.00 from the card you paid with last time. The new permit starts when this one ends, on 13 November 2026. You can cancel within 14 days for a full refund."
+        "consequence": "We take £85.00 from the card you paid with last time. The new permit starts when this one ends, on 14 November 2026. You can cancel within 14 days for a full refund."
       }
     }
   }

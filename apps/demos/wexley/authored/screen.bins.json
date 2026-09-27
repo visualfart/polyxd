@@ -1,0 +1,345 @@
+{
+  "id": "screen.bins",
+  "title": "Bins and collections",
+  "ask": [],
+  "capabilities": [
+    "bin.missed",
+    "bin.requestNew",
+    "bin.missed.withdraw",
+    "garden.change"
+  ],
+  "data": {
+    "bins": "view:binsScreen"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "screen-bins",
+      "title": "Bins and collections",
+      "intent": "screen.bins",
+      "origin": "authored",
+      "presentation": "page"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "next",
+          "put_out",
+          "actions",
+          "missed",
+          "requests",
+          "garden",
+          "what_goes"
+        ]
+      },
+      {
+        "id": "next",
+        "component": "Table",
+        "key": "next_collections",
+        "caption": "Next collections",
+        "rows": {
+          "path": "/bins/next"
+        },
+        "columns": [
+          {
+            "key": "bin",
+            "label": "Bin",
+            "path": "bin",
+            "kind": "entity"
+          },
+          {
+            "key": "next",
+            "label": "Next collection",
+            "path": "next"
+          },
+          {
+            "key": "usually",
+            "label": "Usually",
+            "path": "usually"
+          }
+        ]
+      },
+      {
+        "id": "put_out",
+        "component": "Text",
+        "key": "put_out",
+        "text": "Put bins out by 6am on collection day, at the edge of your property."
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "report_missed",
+          "request_bin"
+        ]
+      },
+      {
+        "id": "report_missed",
+        "component": "Action",
+        "key": "report_missed",
+        "label": "Report a missed collection",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "bin.missed"
+          }
+        }
+      },
+      {
+        "id": "request_bin",
+        "component": "Action",
+        "key": "request_bin",
+        "label": "Request a bin",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "bin.requestNew"
+          }
+        }
+      },
+      {
+        "id": "missed",
+        "component": "Section",
+        "key": "missed",
+        "title": "Missed collections you reported",
+        "visible": {
+          "path": "/bins/hasMissed"
+        },
+        "children": [
+          "missed_list"
+        ]
+      },
+      {
+        "id": "missed_list",
+        "component": "Collection",
+        "key": "missed_list",
+        "label": "Missed collection reports",
+        "layout": "list",
+        "items": {
+          "path": "/bins/missed",
+          "componentId": "missed_item"
+        }
+      },
+      {
+        "id": "missed_item",
+        "component": "Card",
+        "key": "missed_item",
+        "title": {
+          "path": "bin"
+        },
+        "subtitle": {
+          "path": "what"
+        },
+        "badge": {
+          "text": {
+            "path": "status"
+          },
+          "tone": "info"
+        },
+        "children": [
+          "withdraw"
+        ]
+      },
+      {
+        "id": "withdraw",
+        "component": "Action",
+        "key": "withdraw",
+        "label": "Withdraw report",
+        "emphasis": "tertiary",
+        "visible": {
+          "path": "open"
+        },
+        "action": {
+          "event": {
+            "name": "bin.missed.withdraw",
+            "context": {
+              "reportId": {
+                "path": "id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "requests",
+        "component": "Section",
+        "key": "requests",
+        "title": "Bins you asked for",
+        "description": "A bin is delivered within 10 working days.",
+        "visible": {
+          "path": "/bins/hasRequests"
+        },
+        "children": [
+          "requests_table"
+        ]
+      },
+      {
+        "id": "requests_table",
+        "component": "Table",
+        "key": "requests_table",
+        "caption": "Bins you asked for",
+        "rows": {
+          "path": "/bins/requests"
+        },
+        "columns": [
+          {
+            "key": "bin",
+            "label": "Bin",
+            "path": "bin",
+            "kind": "entity"
+          },
+          {
+            "key": "reason",
+            "label": "Why",
+            "path": "reason"
+          },
+          {
+            "key": "asked",
+            "label": "Asked for",
+            "path": "asked",
+            "kind": "date",
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "path": "status",
+            "kind": "status",
+            "tones": {
+              "Requested": "info",
+              "Delivered": "success"
+            }
+          }
+        ]
+      },
+      {
+        "id": "garden",
+        "component": "Section",
+        "key": "garden",
+        "title": "Garden waste",
+        "children": [
+          "garden_text",
+          "garden_cancel",
+          "garden_subscribe"
+        ]
+      },
+      {
+        "id": "garden_text",
+        "component": "Text",
+        "key": "garden_text",
+        "text": {
+          "path": "/bins/gardenText"
+        }
+      },
+      {
+        "id": "garden_cancel",
+        "component": "Action",
+        "key": "garden_cancel",
+        "label": "Cancel garden waste",
+        "emphasis": "secondary",
+        "visible": {
+          "path": "/bins/gardenSubscribed"
+        },
+        "action": {
+          "event": {
+            "name": "garden.change",
+            "context": {
+              "subscribed": {
+                "path": "/bins/gardenSubscribed"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "garden_subscribe",
+        "component": "Action",
+        "key": "garden_subscribe",
+        "label": "Get a green bin",
+        "emphasis": "secondary",
+        "visible": {
+          "path": "/bins/gardenNotSubscribed"
+        },
+        "action": {
+          "event": {
+            "name": "garden.change",
+            "context": {
+              "subscribed": {
+                "path": "/bins/gardenSubscribed"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "what_goes",
+        "component": "Section",
+        "key": "what_goes",
+        "title": "What goes where",
+        "children": [
+          "what_goes_list"
+        ]
+      },
+      {
+        "id": "what_goes_list",
+        "component": "Text",
+        "key": "what_goes_list",
+        "variant": "list",
+        "text": "Each bin takes different things.",
+        "items": {
+          "path": "/bins/whatGoesWhere"
+        }
+      }
+    ],
+    "data": {
+      "bins": {
+        "address": "14 Larch Close",
+        "next": [
+          {
+            "id": "refuse",
+            "bin": "Refuse (black bin)",
+            "next": "Tuesday 29 September",
+            "usually": "Every Tuesday"
+          },
+          {
+            "id": "food",
+            "bin": "Food waste (small caddy)",
+            "next": "Tuesday 29 September",
+            "usually": "Every Tuesday"
+          },
+          {
+            "id": "garden",
+            "bin": "Garden waste (green bin)",
+            "next": "Wednesday 30 September",
+            "usually": "Wednesday, every other week"
+          },
+          {
+            "id": "recycling",
+            "bin": "Recycling (blue bin)",
+            "next": "Tuesday 6 October",
+            "usually": "Tuesday, every other week"
+          }
+        ],
+        "hasMissed": false,
+        "missed": [],
+        "hasRequests": false,
+        "requests": [],
+        "gardenSubscribed": true,
+        "gardenNotSubscribed": false,
+        "gardenText": "Your green bin subscription runs until 31 March 2027. It costs £48 a year and we collect it on Wednesday, every other week.",
+        "whatGoesWhere": [
+          "Blue bin: paper, card, tins, plastic bottles and pots, glass",
+          "Black bin: everything that cannot be recycled",
+          "Food caddy: all food, cooked or raw",
+          "Green bin: grass, leaves, small branches"
+        ]
+      }
+    }
+  }
+}

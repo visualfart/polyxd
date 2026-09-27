@@ -225,7 +225,7 @@
       "claim": {
         "reference": "HB 2026 018274",
         "type": "Housing benefit",
-        "submitted": "2026-09-11",
+        "submitted": "2026-09-12",
         "statusLabel": "Waiting for your documents",
         "weeklyEstimate": 96.4,
         "deadline": "2026-10-09",
@@ -238,13 +238,13 @@
             "id": "identity",
             "what": "Proof of who you are",
             "status": "Received",
-            "detail": "passport.jpg, received 11 September 2026"
+            "detail": "passport.jpg, received 12 September 2026"
           },
           {
             "id": "tenancy",
             "what": "Your tenancy agreement",
             "status": "Received",
-            "detail": "tenancy-agreement.pdf, received 11 September 2026"
+            "detail": "tenancy-agreement.pdf, received 12 September 2026"
           },
           {
             "id": "payslips",
@@ -266,7 +266,7 @@
             "why": "Your passport or driving licence.",
             "status": "done",
             "missing": false,
-            "text": "We have this. Received 11 September 2026.",
+            "text": "We have this. Received 12 September 2026.",
             "files": [
               {
                 "name": "passport.jpg",
@@ -281,7 +281,7 @@
             "why": "The signed agreement showing your rent.",
             "status": "done",
             "missing": false,
-            "text": "We have this. Received 11 September 2026.",
+            "text": "We have this. Received 12 September 2026.",
             "files": [
               {
                 "name": "tenancy-agreement.pdf",

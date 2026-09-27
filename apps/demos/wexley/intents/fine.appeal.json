@@ -207,13 +207,13 @@
       "fine": {
         "id": "pcn_1",
         "number": "WX76369765",
-        "issued": "2026-09-21",
+        "issued": "2026-09-22",
         "location": "Mill Street, outside number 22",
         "contravention": "Parked in a permit zone without a valid permit",
         "amount": 70,
         "discountAmount": 35,
-        "discountUntil": "2026-10-05T12:59:00.000Z",
-        "chargeText": "£70.00, or £35.00 if you pay by 5 October 2026",
+        "discountUntil": "2026-10-06T12:59:00.000Z",
+        "chargeText": "£70.00, or £35.00 if you pay by 6 October 2026",
         "registration": "WX21 TFR",
         "statusLabel": "To pay"
       },

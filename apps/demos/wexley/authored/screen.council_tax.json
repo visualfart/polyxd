@@ -1,0 +1,278 @@
+{
+  "id": "screen.council_tax",
+  "title": "Council tax",
+  "ask": [],
+  "capabilities": [
+    "counciltax.instalments"
+  ],
+  "data": {
+    "tax": "view:councilTaxScreen"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "screen-council-tax",
+      "title": "Council tax",
+      "intent": "screen.council_tax",
+      "origin": "authored",
+      "presentation": "page"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "figures",
+          "account",
+          "payments",
+          "change_plan",
+          "statements",
+          "band",
+          "help"
+        ]
+      },
+      {
+        "id": "figures",
+        "component": "Group",
+        "key": "figures",
+        "label": "This year",
+        "arrangement": "inline",
+        "children": [
+          "paid",
+          "remaining"
+        ]
+      },
+      {
+        "id": "paid",
+        "component": "Metric",
+        "key": "paid",
+        "label": "Paid so far",
+        "value": {
+          "path": "/tax/paid"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "caption": {
+          "path": "/tax/paidCaption"
+        }
+      },
+      {
+        "id": "remaining",
+        "component": "Metric",
+        "key": "remaining",
+        "label": "Still to pay",
+        "value": {
+          "path": "/tax/remaining"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "caption": {
+          "path": "/tax/remainingCaption"
+        }
+      },
+      {
+        "id": "account",
+        "component": "DetailList",
+        "key": "account",
+        "title": "Your account",
+        "items": [
+          {
+            "key": "account",
+            "label": "Account number",
+            "value": {
+              "path": "/tax/account"
+            }
+          },
+          {
+            "key": "property",
+            "label": "Property",
+            "value": {
+              "path": "/tax/property"
+            }
+          },
+          {
+            "key": "band",
+            "label": "Band",
+            "value": {
+              "path": "/tax/band"
+            }
+          },
+          {
+            "key": "annual",
+            "label": "Charge for the year",
+            "value": {
+              "path": "/tax/annual"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ]
+      },
+      {
+        "id": "payments",
+        "component": "DetailList",
+        "key": "payments",
+        "title": "How you pay",
+        "items": [
+          {
+            "key": "plan",
+            "label": "Instalments",
+            "value": {
+              "path": "/tax/planText"
+            }
+          },
+          {
+            "key": "next",
+            "label": "Next payment",
+            "value": {
+              "path": "/tax/nextPaymentText"
+            }
+          }
+        ]
+      },
+      {
+        "id": "change_plan",
+        "component": "Action",
+        "key": "change_plan",
+        "label": "Change how you pay",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "counciltax.instalments"
+          }
+        }
+      },
+      {
+        "id": "statements",
+        "component": "Section",
+        "key": "statements",
+        "title": "Bills and payments",
+        "children": [
+          "statements_table"
+        ]
+      },
+      {
+        "id": "statements_table",
+        "component": "Table",
+        "key": "statements_table",
+        "caption": "Bills and payments this year",
+        "rows": {
+          "path": "/tax/statements"
+        },
+        "columns": [
+          {
+            "key": "date",
+            "label": "Date",
+            "path": "date",
+            "kind": "date",
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "what",
+            "label": "What",
+            "path": "description"
+          },
+          {
+            "key": "amount",
+            "label": "Amount",
+            "path": "amount",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ]
+      },
+      {
+        "id": "band",
+        "component": "Section",
+        "key": "band",
+        "title": {
+          "path": "/tax/bandTitle"
+        },
+        "children": [
+          "band_text"
+        ]
+      },
+      {
+        "id": "band_text",
+        "component": "Text",
+        "key": "band_text",
+        "text": "Your band comes from what your home was worth in 1991. If you think it is wrong, you can ask for it to be checked."
+      },
+      {
+        "id": "help",
+        "component": "Section",
+        "key": "help",
+        "title": "Help paying",
+        "children": [
+          "help_text"
+        ]
+      },
+      {
+        "id": "help_text",
+        "component": "Text",
+        "key": "help_text",
+        "text": "If you live alone you can get 25% off. If you are on a low income you may get council tax support."
+      }
+    ],
+    "data": {
+      "tax": {
+        "account": "70 4412 9083",
+        "property": "14 Larch Close, WX2 4QR",
+        "band": "C",
+        "bandTitle": "About band C",
+        "annual": 1932.48,
+        "paid": 773,
+        "paidCaption": "40% of the charge for the year",
+        "remaining": 1159.48,
+        "remainingCaption": "Next payment £193.25 on 1 November 2026",
+        "planText": "10 instalments of £193.25 by Direct Debit on the 1st",
+        "nextPaymentText": "£193.25 on 1 November 2026",
+        "statements": [
+          {
+            "id": "st_4",
+            "date": "2026-09-01",
+            "description": "Payment received",
+            "amount": -193.25
+          },
+          {
+            "id": "st_3",
+            "date": "2026-08-01",
+            "description": "Payment received",
+            "amount": -193.25
+          },
+          {
+            "id": "st_2",
+            "date": "2026-07-01",
+            "description": "Payment received",
+            "amount": -193.25
+          },
+          {
+            "id": "st_1",
+            "date": "2026-05-31",
+            "description": "Payment received",
+            "amount": -193.25
+          },
+          {
+            "id": "st_0",
+            "date": "2026-04-03",
+            "description": "Annual bill, band C",
+            "amount": 1932.48
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "id": "garden.cancel.confirm",
+  "title": "Cancel garden waste collection",
+  "ask": [],
+  "capabilities": [
+    "garden.cancel"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "garden": "view:gardenCancel"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "garden-cancel-confirm",
+      "title": "Cancel garden waste collection",
+      "intent": "garden.cancel",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "garden_cancel_confirm",
+        "title": "Cancel your garden waste subscription?",
+        "severity": "consequential",
+        "message": "Your green bin is no longer collected.",
+        "summary": "summary",
+        "consequences": [
+          {
+            "title": "We take the green bin away",
+            "icon": "trash"
+          },
+          {
+            "title": "No refund for the rest of the year",
+            "icon": "clock"
+          }
+        ],
+        "consequence": {
+          "path": "/garden/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/garden/label"
+          },
+          "action": {
+            "event": {
+              "name": "garden.cancel"
+            }
+          }
+        },
+        "cancel": {
+          "label": "Keep the subscription",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "garden_summary",
+        "items": [
+          {
+            "key": "runs_until",
+            "label": "Paid until",
+            "value": {
+              "path": "/garden/runsUntil"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "day",
+            "label": "Collected",
+            "value": {
+              "path": "/garden/day"
+            }
+          },
+          {
+            "key": "next",
+            "label": "Next collection",
+            "value": {
+              "path": "/garden/nextCollection"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "price",
+            "label": "Price for the year",
+            "value": {
+              "path": "/garden/price"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "garden": {
+        "price": 48,
+        "runsUntil": "2027-03-31",
+        "day": "Wednesday, every other week",
+        "nextCollection": "2026-09-30",
+        "label": "Cancel garden waste",
+        "consequence": "We stop collecting your green bin from today and take it away on Wednesday 30 September. There is no refund for the rest of the year. You can subscribe again at any time for £48."
+      }
+    }
+  }
+}

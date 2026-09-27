@@ -1063,6 +1063,15 @@ legend.wx-label {
   outline: none;
 }
 
+/* ---- Authored screens: a document as the page's content, in the product's furniture ----
+   They take the full width so a table stays a table on a desktop; GOV.UK buttons fill the width
+   on a phone and fit their label on anything wider. */
+@media (min-width: 641px) {
+  .wx-authored .pxd-stack > .pxd-button {
+    align-self: flex-start;
+  }
+}
+
 /* ---- Sign in ---- */
 
 .wx-signin-note {

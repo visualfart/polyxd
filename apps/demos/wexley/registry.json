@@ -319,6 +319,20 @@
       ],
       "agentMayInvoke": false
     },
+    "counciltax.instalments": {
+      "description": "Open the form to change how council tax is paid: the number of instalments, the day and the method",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
     "bin.reportMissed": {
       "description": "Report that a bin was not collected, so the crew comes back for it",
       "risk": "low",
@@ -364,6 +378,81 @@
         "additionalProperties": false
       }
     },
+    "bin.missed": {
+      "description": "Open the form to report a bin that was not collected",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "bin": {
+            "enum": [
+              "refuse",
+              "recycling",
+              "garden",
+              "food"
+            ]
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "bin.requestNew": {
+      "description": "Open the form to ask for a new or replacement bin",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "garden.change": {
+      "description": "Open the confirmation to start or stop garden waste collection, depending on whether there is a subscription",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "subscribed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "subscribed"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "garden.subscribe": {
+      "description": "Subscribe to garden waste collection for the year and take the payment",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "The year's price is taken from the card on file",
+        "A green bin is delivered within 10 working days"
+      ],
+      "agentMayInvoke": false
+    },
+    "garden.cancel": {
+      "description": "Cancel the garden waste subscription. Collections stop and there is no refund",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "Green bin collections stop",
+        "No refund for the rest of the year"
+      ],
+      "agentMayInvoke": false
+    },
     "evidence.upload": {
       "description": "Send documents for a benefit claim; they are attached to the claim straight away",
       "risk": "low",
@@ -403,6 +492,16 @@
         "required": [
           "itemId"
         ],
+        "additionalProperties": false
+      }
+    },
+    "benefit.evidence": {
+      "description": "Open the page that lists what we need for the benefit claim, with a way to send it",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {},
+        "required": [],
         "additionalProperties": false
       }
     },

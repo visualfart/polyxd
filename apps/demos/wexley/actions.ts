@@ -1,6 +1,6 @@
 import type { ActionEvent } from "@polyxd/react";
 import { daysFromNow, type Store, type Undo } from "../kit/store.ts";
-import { BIN_NAMES, SLOT_NAMES, nextPaymentDay, planMonthly, repair, zone, zoneForPostcode, type Address, type AppealReason, type BinKind, type Wexley } from "./seed.ts";
+import { BIN_NAMES, SLOT_NAMES, nextMarch, nextPaymentDay, nextWeekday, planMonthly, repair, zone, zoneForPostcode, type Address, type AppealReason, type BinKind, type Wexley } from "./seed.ts";
 import { feeDifferenceFor, lastPaymentFrom, METHODS } from "./views.ts";
 import { date, dayDate, money } from "./format.ts";
 
@@ -38,6 +38,37 @@ export function runAction(store: Store<Wexley>, e: ActionEvent): Outcome {
       return { go: `/repairs/${c.repairId}?problem=1`, close: true };
     case "appointment.change":
       return { next: { intent: "appointment.rebook", slots: { repair: c.repairId } } };
+
+    // The authored screens' ways in: each opens the page the ask box would have written.
+    case "counciltax.instalments":
+      return { next: { intent: "counciltax.instalments" } };
+    case "bin.missed":
+      return { next: { intent: "bin.missed", slots: c.bin ? { bin: c.bin } : {} } };
+    case "bin.requestNew":
+      return { go: "/bins/request" };
+    case "benefit.evidence":
+      return { next: { intent: "benefit.evidence" } };
+    case "garden.change":
+      return { next: { intent: c.subscribed ? "garden.cancel.confirm" : "garden.subscribe.confirm" } };
+    case "garden.subscribe": {
+      const price = w.bins.garden.price;
+      const first = nextWeekday(3, 2);
+      const until = nextMarch();
+      store.commit("Subscribe to garden waste", (d) => {
+        d.bins.garden = { ...d.bins.garden, subscribed: true, next: first, renewsOn: until };
+        d.messages.unshift({ id: id("msg"), at: new Date().toISOString(), subject: "Your garden waste subscription", from: "Waste services", about: "/bins", read: false, body: [`Thank you. We have taken ${money(price, { whole: true })} and your green bin subscription runs until ${date(until)}.`, `Your green bin is delivered within 10 working days. The first collection is ${dayDate(first)}, then every other Wednesday.`, "You can cancel within 14 days for a full refund."] });
+      });
+      return { say: `We have taken ${money(price, { whole: true })}. Your green bin is delivered within 10 working days and the first collection is ${dayDate(first)}.`, close: true, go: "/bins" };
+    }
+    case "garden.cancel": {
+      const g = w.bins.garden;
+      if (!g.subscribed) return { say: "You do not have a garden waste subscription to cancel.", title: "Important" };
+      store.commit("Cancel garden waste", (d) => {
+        d.bins.garden.subscribed = false;
+        d.messages.unshift({ id: id("msg"), at: new Date().toISOString(), subject: "Your garden waste subscription has ended", from: "Waste services", about: "/bins", read: false, body: [`We have cancelled your green bin subscription. We take the bin away on ${dayDate(g.next)}; leave it at the edge of your property.`, "There is no refund for the rest of the year. You can subscribe again at any time through your account."] });
+      });
+      return { say: `Your garden waste subscription has ended. We take the green bin away on ${dayDate(g.next)}.`, close: true, go: "/bins" };
+    }
 
     case "answer.change": {
       // Back to the step that asked, with every answer kept.
@@ -178,6 +209,9 @@ export function runAction(store: Store<Wexley>, e: ActionEvent): Outcome {
       return { say: c.wasOut === false ? `We have your report. The ${BIN_NAMES[bin].toLowerCase()} is collected on the next normal day.` : `We have your report. We come back for the ${BIN_NAMES[bin].toLowerCase()} by ${dayDate(collectBy)}. Leave it out.`, undo, close: true, go: "/bins" };
     }
     case "bin.missed.withdraw": {
+      const report = w.bins.missed.find((m) => m.id === c.reportId);
+      if (!report) return { say: "That report has already been withdrawn.", title: "Important" };
+      if (report.status !== "open") return { say: `We have collected the ${BIN_NAMES[report.bin].toLowerCase()}, so there is nothing to withdraw.`, title: "Important" };
       const undo = store.commit("Withdraw report", (d) => {
         d.bins.missed = d.bins.missed.filter((m) => m.id !== c.reportId);
       });

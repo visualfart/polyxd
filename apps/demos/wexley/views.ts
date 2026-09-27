@@ -1,6 +1,6 @@
 import type { IntentFile } from "../kit/types.ts";
 import { daysFromNow } from "../kit/store.ts";
-import { BIN_NAMES, SLOT_NAMES, STAGE_NAMES, daysUntil, nextPaymentDay, oneLine, openFine, planMonthly, repair, vehicleLine, zone, zoneForPostcode, zoneName, type Address, type AppealReason, type BinKind, type Wexley } from "./seed.ts";
+import { BIN_NAMES, SLOT_NAMES, STAGE_NAMES, daysUntil, nextMarch, nextPaymentDay, nextWeekday, oneLine, openFine, planMonthly, repair, vehicleLine, zone, zoneForPostcode, zoneName, type Address, type AppealReason, type BinKind, type Wexley } from "./seed.ts";
 import { date, dayDate, isoDay, money, ordinal, today } from "./format.ts";
 
 /**
@@ -153,6 +153,100 @@ export function view(w: Wexley, name: string, slots: Record<string, unknown>): u
         rows: c.evidence.map((e) => ({ id: e.id, what: e.what, status: e.status === "done" ? "Received" : "Needed", detail: e.status === "done" ? `${e.files.map((f) => f.name).join(", ")}, received ${date(e.receivedAt ?? c.submitted)}` : e.why })),
         evidence: { identity: ev("identity"), tenancy: ev("tenancy"), payslips: ev("payslips"), bank: ev("bank") },
         upload: { payslips: [], bank: [] },
+      };
+    }
+
+    /* ---- The authored screens: the same views, for pages a person wrote rather than asked for ---- */
+
+    case "councilTaxScreen": {
+      const t = w.councilTax;
+      const remaining = Math.round((t.annual - t.paid) * 100) / 100;
+      const pct = Math.round((t.paid / t.annual) * 100);
+      const next = nextPaymentDay(t.plan.day);
+      const nextAmount = Math.min(t.plan.monthly, remaining);
+      return {
+        account: t.account,
+        property: `${w.resident.address.line1}, ${w.resident.address.postcode}`,
+        band: t.band,
+        bandTitle: `About band ${t.band}`,
+        annual: t.annual,
+        paid: t.paid,
+        paidCaption: `${pct}% of the charge for the year`,
+        remaining,
+        remainingCaption: `Next payment ${money(nextAmount)} on ${date(next)}`,
+        planText: `${t.plan.count} instalments of ${money(t.plan.monthly)} by ${METHODS[t.plan.method]} on the ${ordinal(t.plan.day)}`,
+        nextPaymentText: `${money(nextAmount)} on ${date(next)}`,
+        statements: t.statements.map((s) => ({ id: s.id, date: isoDay(s.date), description: s.description, amount: s.amount })),
+      };
+    }
+    case "binsScreen": {
+      const b = w.bins;
+      const usually = (k: BinKind) => (k === "refuse" || k === "food" ? `Every ${b.refuse.day}` : k === "recycling" ? b.recycling.day : b.garden.day);
+      const next = [
+        { kind: "refuse" as BinKind, when: b.refuse.next },
+        { kind: "recycling" as BinKind, when: b.recycling.next },
+        ...(b.garden.subscribed ? [{ kind: "garden" as BinKind, when: b.garden.next }] : []),
+        { kind: "food" as BinKind, when: b.refuse.next },
+      ]
+        .sort((x, y) => x.when.localeCompare(y.when))
+        .map((n) => ({ id: n.kind, bin: BIN_NAMES[n.kind], next: dayDate(n.when), usually: usually(n.kind) }));
+      const missed = b.missed.map((m) => ({
+        id: m.id,
+        bin: BIN_NAMES[m.bin],
+        what: m.wasOut ? `We come back by ${dayDate(m.collectBy)}. Leave the bin out.` : "It is collected on the next normal day.",
+        status: m.status === "open" ? "Reported" : "Collected",
+        open: m.status === "open",
+      }));
+      const requests = b.requests.map((r) => ({ id: r.id, bin: BIN_NAMES[r.bin], reason: r.reason, asked: isoDay(r.at), status: r.status === "requested" ? "Requested" : "Delivered" }));
+      return {
+        address: w.resident.address.line1,
+        next,
+        hasMissed: missed.length > 0,
+        missed,
+        hasRequests: requests.length > 0,
+        requests,
+        gardenSubscribed: b.garden.subscribed,
+        gardenNotSubscribed: !b.garden.subscribed,
+        gardenText: b.garden.subscribed
+          ? `Your green bin subscription runs until ${date(b.garden.renewsOn)}. It costs ${money(b.garden.price, { whole: true })} a year and we collect it on ${b.garden.day}.`
+          : `You do not have a garden waste subscription. It costs ${money(b.garden.price, { whole: true })} a year for a green bin collected every other week.`,
+        whatGoesWhere: ["Blue bin: paper, card, tins, plastic bottles and pots, glass", "Black bin: everything that cannot be recycled", "Food caddy: all food, cooked or raw", "Green bin: grass, leaves, small branches"],
+      };
+    }
+    case "gardenCancel": {
+      const g = w.bins.garden;
+      return {
+        price: g.price,
+        runsUntil: isoDay(g.renewsOn),
+        day: g.day,
+        nextCollection: isoDay(g.next),
+        label: "Cancel garden waste",
+        consequence: `We stop collecting your green bin from today and take it away on ${dayDate(g.next)}. There is no refund for the rest of the year. You can subscribe again at any time for ${money(g.price, { whole: true })}.`,
+      };
+    }
+    case "gardenSubscribe": {
+      const g = w.bins.garden;
+      const first = nextWeekday(3, 2);
+      return {
+        price: g.price,
+        day: "Wednesday, every other week",
+        firstCollection: isoDay(first),
+        runsUntil: isoDay(nextMarch()),
+        label: `Pay ${money(g.price, { whole: true })} and subscribe`,
+        consequence: `We take ${money(g.price, { whole: true })} from the card you paid with last time and deliver a green bin within 10 working days. The first collection is ${dayDate(first)}, and the subscription runs until ${date(nextMarch())}. You can cancel within 14 days for a full refund.`,
+      };
+    }
+    case "benefitScreen": {
+      const claim = view(w, "benefitClaim", slots) as Record<string, any>;
+      const c = w.benefit;
+      const evidence = Object.fromEntries(Object.entries(claim.evidence as Record<string, { status: string }>).map(([k, e]) => [k, { ...e, taskStatus: e.status === "done" ? "done" : "todo" }]));
+      return {
+        ...claim,
+        evidence,
+        allSent: !claim.anyMissing,
+        estimateText: `About ${money(c.weeklyEstimate)} a week, once we have checked your income`,
+        paidTo: "Your rent account with Wexley Homes, every 4 weeks",
+        sendLabel: claim.anyMissing ? "Send documents" : "See what we have",
       };
     }
     default:

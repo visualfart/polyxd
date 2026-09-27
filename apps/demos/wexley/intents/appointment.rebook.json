@@ -148,17 +148,17 @@
         "reference": "REP 4821",
         "problem": "Leaking kitchen tap",
         "where": "Kitchen",
-        "reported": "2026-09-18",
+        "reported": "2026-09-19",
         "stage": 2,
         "stageLabel": "Appointment booked",
         "priorityLabel": "Routine",
-        "headline": "A plumber from Wexley Homes is coming on Friday 2 October, between 8am and 1pm",
+        "headline": "A plumber from Wexley Homes is coming on Saturday 3 October, between 8am and 1pm",
         "headlineDetail": "Someone over 18 needs to be at home to let them in. If the time does not suit you, rebook the visit.",
         "progress": [
           {
             "stage": "Reported",
             "status": "Completed",
-            "detail": "You reported this on 18 September 2026."
+            "detail": "You reported this on 19 September 2026."
           },
           {
             "stage": "Assessed",
@@ -168,7 +168,7 @@
           {
             "stage": "Appointment booked",
             "status": "In progress",
-            "detail": "Booked for Friday 2 October, 8am to 1pm."
+            "detail": "Booked for Saturday 3 October, 8am to 1pm."
           },
           {
             "stage": "Fixed",
@@ -178,19 +178,19 @@
         ],
         "hasAppointment": true,
         "appointment": {
-          "date": "2026-10-02",
+          "date": "2026-10-03",
           "slotLabel": "8am to 1pm",
           "who": "A plumber from Wexley Homes",
-          "line": "Friday 2 October, 8am to 1pm"
+          "line": "Saturday 3 October, 8am to 1pm"
         }
       },
       "rebook": {
         "repairId": "rep_1",
         "date": null,
         "slot": null,
-        "minDate": "2026-09-29",
-        "maxDate": "2026-10-25",
-        "help": "Pick a weekday in the next 4 weeks. The visit is currently Friday 2 October, 8am to 1pm."
+        "minDate": "2026-09-30",
+        "maxDate": "2026-10-26",
+        "help": "Pick a weekday in the next 4 weeks. The visit is currently Saturday 3 October, 8am to 1pm."
       }
     }
   }

@@ -126,9 +126,11 @@ export function Tag({ tone = "info", children }: { tone?: keyof typeof TONES; ch
 
 export function Banner({ kind, title, children, action, onDismiss }: { kind: "success" | "important" | "error"; title?: string; children: ReactNode; action?: ReactNode; onDismiss?: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Focus the banner when it appears and when its message changes on the same page (an action on
+  // an authored screen redraws the screen under it); on a new page the heading takes focus after.
   useEffect(() => {
     ref.current?.focus();
-  }, []);
+  }, [children]);
   return (
     <div ref={ref} className={`wx-banner wx-banner-${kind}`} role={kind === "important" ? "region" : "alert"} aria-labelledby="wx-banner-title" tabIndex={-1}>
       <div className="wx-banner-head">

@@ -126,7 +126,7 @@
         "permitId": "perm_1",
         "addressLine": "3 Mill Street, Wexley, WX1 2HD",
         "postcode": "WX1 2HD",
-        "moveDate": "2026-10-11",
+        "moveDate": "2026-10-12",
         "vehicleUnchanged": true,
         "vehicleLine": "Blue Toyota Yaris, WX21 TFR",
         "vehicleText": "Blue Toyota Yaris, WX21 TFR",
@@ -137,7 +137,7 @@
         "zoneChanged": true,
         "feeDifference": 1.97,
         "label": "Pay £1.97 and update",
-        "consequence": "Your permit moves to zone B from 11 October 2026, and no longer covers zone C. We take £1.97 from the card you paid with last time. You can change it back within 14 days."
+        "consequence": "Your permit moves to zone B from 12 October 2026, and no longer covers zone C. We take £1.97 from the card you paid with last time. You can change it back within 14 days."
       }
     }
   }
