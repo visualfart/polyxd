@@ -33,6 +33,8 @@ function MyStatus({ node }: { node: Node }) {
 
 Everything you don't override keeps the default renderer. The default map is exported as `registry` if you want to wrap an existing renderer rather than replace it.
 
+The same map carries the host's **own components** that a shell or an authored screen names through `Custom`: keys are namespaced (`"brand.logo"`, `"store.map"`), the component receives the document's `props` resolved against data, and when the map has no such name the document's `fallback` renders instead. See [Rendering a shell](/docs/shell/).
+
 ## Helpers for renderers
 
 | Export | What it gives you |

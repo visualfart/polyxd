@@ -18,6 +18,19 @@ import "@polyxd/react/themes/material3.css"; // one file per pack: carbon.css, p
 />
 ```
 
+## Exports
+
+| Export | What it is |
+|---|---|
+| `PolyxdSurface` | Renders one document: a screen, panel or dialog. Props above, plus `derive` (derived data after each input change), `density`, `disclosure`, `locale`, `components`. |
+| `PolyxdFrame` | Renders a **shell document** (the product's frame: AppBar, Navigation, Outlet, aside, Footer) with your screens as children in the Outlet; `current={{ key, title }}` marks the navigation and titles the page. |
+| `PolyxdSkeleton` | A loading state shaped by a pattern or a shape, for a document that has not arrived. |
+| `useFrame()` | The layout the frame chose (`side`, `rail`, `bar`, `drawer`; `compact`) for a host's own screens. |
+| `useBindings()`, `useSurface()`, `Render` | For custom renderers. |
+| `registry` | The default renderer map, to wrap or replace per component; also where a `Custom`'s host components go, by namespaced name. |
+| `formatValue`, `getPointer`, `setPointer` | Formatting and JSON Pointer helpers. |
+| `preview/polyxd.js` | A self-contained browser bundle (`window.Polyxd.mount`) used by `polyxd dev` and the editor extension. |
+
 ## What the renderer decides (not the model)
 
 - **Controls from semantics.** A `Choice` with 2–4 short options renders as a segmented control, 5–10 as radios, more than 10 as a filterable list; a `Toggle` with an action is a switch, without one a checkbox.
@@ -36,4 +49,4 @@ Pass `components={{ Status: MyStatus }}` to replace any component renderer. The 
 
 ## Tests
 
-`npm test -w @polyxd/react` builds, server-renders all 20 spec examples, checks formatting, table, chart and heading semantics, and verifies every pack compiles and the stylesheet only uses contract tokens. The gallery (`apps/gallery`, `npm run dev -w @polyxd/gallery`) is for looking at and clicking through every example in every pack, mode and width.
+`npm test -w @polyxd/react` builds, server-renders every spec example, checks formatting, table, chart and heading semantics, and verifies every pack compiles and the stylesheet only uses contract tokens. The gallery (`apps/gallery`, `npm run dev -w @polyxd/gallery`) is for looking at and clicking through every example in every pack, mode and width.

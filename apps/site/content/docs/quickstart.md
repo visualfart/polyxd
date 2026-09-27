@@ -54,12 +54,20 @@ export function SendConfirm({ quote, close }) {
 | `onAction` | `(event) => void` | Called for every capability action. `event` is `{ name, context, source }`: the capability name, the resolved context values, and the id of the component that sent it. |
 | `onDismiss` | `() => void` | Called for `ui.dismiss`, for example Cancel on a confirmation dialog. |
 | `onDataChange` | `(data) => void` | Called with the new data whenever an input changes it. |
+| `derive` | `(data) => data \| void` | Derived data: called after each input change and may return a replacement, so a receipt or a filtered list follows what the person types without a remount. Pure. |
+| `density` | `"compact" \| "comfortable" \| "spacious"` | Row heights and spacing; compact is for pointer-first tools. |
 | `resolveMedia` | `(ref: string) => string \| undefined` | Turns a media reference from host data into a URL. Documents never contain URLs. |
 | `components` | `Partial<Record<string, ComponentRenderer>>` | Replace the renderer for any component. See [Custom renderers](/docs/custom-renderers). |
 | `locale` | `string` | Locale for number, currency and date formatting. Defaults to `"en-GB"`. |
 | `className` | `string` | Extra class on the surface element. |
 
-The renderer handles `ui.back` and `ui.next` itself inside `Steps`. Every other action name goes to `onAction`, and your app decides what it does.
+The renderer handles `ui.back` and `ui.next` itself inside `Steps`, and `ui.copy`. Every other action name goes to `onAction`, and your app decides what it does.
+
+Two more exports: `PolyxdSkeleton` shows a loading state shaped by the coming document's pattern (`<PolyxdSkeleton pattern="multi-step-form" title="Send money" theme="material3" />`) while a document is on its way; `PolyxdFrame` renders a **shell document**, the product's frame, with your screens in its Outlet (see [Rendering a shell](/docs/shell/)).
+
+### Write documents with help
+
+Add `"$schema": "https://polyxd.com/schema/0.3/ui.schema.json"` to a document and VS Code, Cursor, Zed and JetBrains validate and complete it. `npx polyxd dev ./screens` previews a folder of documents in every pack as you edit (see [Your design system](/docs/your-design-system/#preview-documents-as-you-write-them)); the [Polyxd extension](/docs/your-design-system/#in-your-editor) adds a preview panel and diagnostics inside the editor.
 
 ### Try it without writing code
 
@@ -123,3 +131,5 @@ See [Verifier](/docs/verifier) for every flag and check.
 - [UI documents](/docs/ui-documents): what goes in a document.
 - [Design systems](/docs/design-systems): switching and building packs.
 - [Verifier](/docs/verifier): what the score means.
+- [Generated or authored](/docs/authored-screens/): screens a person writes in the same format, and the shell.
+- [Studio](/docs/studio/): where a team brings its design system and authors screens.

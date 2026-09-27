@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.ts",
+    "build": "node scripts/check-docs.ts && node scripts/build.ts",
     "dev": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy"
   },
