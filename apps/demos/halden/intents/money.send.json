@@ -1,0 +1,192 @@
+{
+  "id": "money.send",
+  "title": "Send money",
+  "ask": [
+    "send £40 to Priya for dinner",
+    "pay Tom £12",
+    "send money to Amara",
+    "transfer £250 to my landlord"
+  ],
+  "keywords": [
+    "send",
+    "pay",
+    "transfer"
+  ],
+  "slots": {
+    "amount": "£\\s?(?<amount>\\d+(?:\\.\\d{1,2})?)|(?<amount2>\\d+(?:\\.\\d{1,2})?)\\s?(?:pounds|quid)",
+    "payee": "\\b(?:to|pay) (?<payee>[A-Z][a-z]+|my landlord)\\b",
+    "reference": "\\bfor (?<reference>[a-z][a-z ]{1,17})$"
+  },
+  "capabilities": [
+    "transfer.review"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "payees": "view:payees",
+    "draft": "view:sendDraft"
+  },
+  "fill": {
+    "payee": "/draft/payeeId",
+    "amount": "/draft/amount",
+    "reference": "/draft/reference"
+  },
+  "sample": {
+    "payee": "p_priya",
+    "amount": 40,
+    "reference": "Dinner"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "send",
+      "title": "Send money",
+      "intent": "money.send",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": [
+          "recipient",
+          "amount",
+          "reference",
+          "timing"
+        ],
+        "submit": {
+          "label": "Continue",
+          "action": {
+            "event": {
+              "name": "transfer.review",
+              "context": {
+                "payeeId": {
+                  "path": "/draft/payeeId"
+                },
+                "amount": {
+                  "path": "/draft/amount"
+                },
+                "reference": {
+                  "path": "/draft/reference"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Cancel",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "recipient",
+        "component": "Choice",
+        "key": "recipient",
+        "label": "Who are you sending to?",
+        "options": {
+          "path": "/payees",
+          "valuePath": "id",
+          "labelPath": "name",
+          "avatarPath": "initials",
+          "recentPath": "recent",
+          "descriptionPath": "bank"
+        },
+        "value": {
+          "path": "/draft/payeeId"
+        },
+        "required": true
+      },
+      {
+        "id": "amount",
+        "component": "TextInput",
+        "key": "amount",
+        "label": "Amount",
+        "kind": "currency",
+        "currency": "GBP",
+        "value": {
+          "path": "/draft/amount"
+        },
+        "required": true,
+        "validation": {
+          "min": 0.01,
+          "max": 5000,
+          "message": "Enter an amount between £0.01 and £5,000"
+        },
+        "size": "hero"
+      },
+      {
+        "id": "reference",
+        "component": "TextInput",
+        "key": "reference",
+        "label": "Reference",
+        "help": "Shows on their statement. Optional.",
+        "value": {
+          "path": "/draft/reference"
+        },
+        "validation": {
+          "maxLength": 18
+        }
+      },
+      {
+        "id": "timing",
+        "component": "Text",
+        "key": "timing",
+        "variant": "supporting",
+        "text": "No fee. Payments usually arrive within two hours, and by 5pm at the latest."
+      }
+    ],
+    "data": {
+      "payees": [
+        {
+          "id": "p_priya",
+          "name": "Priya Raman",
+          "initials": "PR",
+          "bank": "04-00-04 ··04",
+          "recent": true,
+          "lastPaid": "2026-09-04T11:12:00.000Z"
+        },
+        {
+          "id": "p_tom",
+          "name": "Tom Ashby",
+          "initials": "TA",
+          "bank": "20-45-77 ··45",
+          "recent": false,
+          "lastPaid": "2026-08-22T11:12:00.000Z"
+        },
+        {
+          "id": "p_amara",
+          "name": "Amara Osei",
+          "initials": "AO",
+          "bank": "60-83-71 ··86",
+          "recent": true,
+          "lastPaid": "2026-09-25T11:12:00.000Z"
+        },
+        {
+          "id": "p_landlord",
+          "name": "Redcliffe Lettings",
+          "initials": "RL",
+          "bank": "30-96-26 ··63",
+          "recent": true,
+          "lastPaid": "2026-08-31T21:30:00.000Z"
+        },
+        {
+          "id": "p_dan",
+          "name": "Dan Whitfield",
+          "initials": "DW",
+          "bank": "11-22-33 ··22",
+          "recent": false,
+          "lastPaid": null
+        }
+      ],
+      "draft": {
+        "payeeId": "p_priya",
+        "amount": 40,
+        "reference": "Dinner"
+      }
+    }
+  }
+}

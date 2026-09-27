@@ -37,6 +37,17 @@
         "8787"
       ],
       "port": 8787
+    },
+    {
+      "name": "demos",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "-w",
+        "@polyxd/demos"
+      ],
+      "port": 5174
     }
   ]
 }

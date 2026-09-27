@@ -1,0 +1,171 @@
+{
+  "id": "payment.dispute",
+  "title": "Report a payment",
+  "ask": [
+    "I was charged twice by Ryde",
+    "there's a payment I don't recognise",
+    "report a payment",
+    "I got charged the wrong amount"
+  ],
+  "keywords": [
+    "charged",
+    "dispute",
+    "refund",
+    "recognise",
+    "recognize"
+  ],
+  "slots": {
+    "merchant": "\\b(?:by|from|at) (?<merchant>[A-Z][\\w&' ]+?)(?:[.,?]|$| twice| again)",
+    "reason": "(?<reason>twice|don't recognise|don't recognize|wrong amount|didn't (?:get|receive|arrive))"
+  },
+  "capabilities": [
+    "dispute.review"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "suspects": "view:suspectPayments",
+    "report": "view:disputeDraft"
+  },
+  "sample": {
+    "merchant": "m_ryde"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "payment-dispute",
+      "title": "Report a payment",
+      "intent": "payment.dispute",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": [
+          "intro",
+          "payment",
+          "reason",
+          "note"
+        ],
+        "submit": {
+          "label": "Continue",
+          "action": {
+            "event": {
+              "name": "dispute.review",
+              "context": {
+                "paymentId": {
+                  "path": "/report/paymentId"
+                },
+                "reason": {
+                  "path": "/report/reason"
+                },
+                "note": {
+                  "path": "/report/note"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Cancel",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "intro",
+        "component": "Text",
+        "key": "intro",
+        "variant": "supporting",
+        "text": "Pick the payment and say what's wrong. Halden asks the merchant's bank for the money back; you don't have to contact them."
+      },
+      {
+        "id": "payment",
+        "component": "Choice",
+        "key": "payment",
+        "label": "Which payment?",
+        "options": {
+          "path": "/suspects",
+          "valuePath": "id",
+          "labelPath": "label",
+          "descriptionPath": "detail"
+        },
+        "value": {
+          "path": "/report/paymentId"
+        },
+        "required": true
+      },
+      {
+        "id": "reason",
+        "component": "Choice",
+        "key": "reason",
+        "label": "What's wrong?",
+        "options": [
+          {
+            "value": "duplicate",
+            "label": "Charged twice"
+          },
+          {
+            "value": "unrecognised",
+            "label": "I don't recognise it"
+          },
+          {
+            "value": "wrong-amount",
+            "label": "Wrong amount"
+          },
+          {
+            "value": "not-received",
+            "label": "I didn't get what I paid for"
+          }
+        ],
+        "value": {
+          "path": "/report/reason"
+        },
+        "required": true
+      },
+      {
+        "id": "note",
+        "component": "TextInput",
+        "key": "note",
+        "label": "Anything else",
+        "kind": "multiline",
+        "help": "Optional. Passed on to the merchant's bank as written.",
+        "value": {
+          "path": "/report/note"
+        },
+        "validation": {
+          "maxLength": 400
+        }
+      }
+    ],
+    "data": {
+      "suspects": [
+        {
+          "id": "pay_0202",
+          "at": "2026-09-24T13:45:00.000Z",
+          "amount": -14.6,
+          "name": "Ryde",
+          "where": "App",
+          "category": "Transport",
+          "categoryId": "transport",
+          "status": "settled",
+          "merchantId": "m_ryde",
+          "card": true,
+          "duplicateOf": "pay_0201",
+          "firstAt": "2026-09-24T13:41:00.000Z",
+          "label": "Ryde · £14.60",
+          "detail": "Thursday at 23:45 · charged twice"
+        }
+      ],
+      "report": {
+        "paymentId": "pay_0202",
+        "reason": "duplicate",
+        "note": ""
+      }
+    }
+  }
+}

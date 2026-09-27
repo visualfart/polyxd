@@ -213,7 +213,19 @@ export function runCheck(check: Check, doc: Doc): CheckResult {
     }
     case "labelMatches": {
       const re = new RegExp(check.pattern, check.flags);
-      const texts = (c: Component) => (check.prop ? [check.prop.split(".").reduce((v: any, k) => v?.[k], c)].filter((v) => typeof v === "string") : labels(c));
+      // A bound prop is read from the document's data snapshot, so a reusable confirm document whose
+      // label comes from the host ("Send £40.00") can still be held to the rule.
+      const bound = (v: unknown): string | undefined => {
+        if (typeof v === "string") return v;
+        const path = v && typeof v === "object" ? (v as { path?: unknown }).path : undefined;
+        if (typeof path !== "string" || !path.startsWith("/") || !(doc as { data?: unknown }).data) return undefined;
+        const r = path
+          .split("/")
+          .slice(1)
+          .reduce((o: any, k) => o?.[k.replace(/~1/g, "/").replace(/~0/g, "~")], (doc as { data?: unknown }).data);
+        return typeof r === "string" ? r : typeof r === "number" ? String(r) : undefined;
+      };
+      const texts = (c: Component) => (check.prop ? [bound(check.prop.split(".").reduce((v: any, k) => v?.[k], c))].filter((v): v is string => typeof v === "string") : labels(c));
       const bad = order.filter((c) => matches(c, check.component, check.where)).filter((c) => !texts(c).some((l) => re.test(l)));
       return bad.length ? fail(`${bad.map((c) => c.id).join(", ")}: no label matches /${check.pattern}/`) : ok(`labels match /${check.pattern}/`);
     }

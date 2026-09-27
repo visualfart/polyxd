@@ -1,0 +1,207 @@
+{
+  "id": "budget.set",
+  "title": "Set a budget",
+  "ask": [
+    "set a £150 budget for coffee",
+    "budget £200 a month for eating out",
+    "change my groceries budget to £300",
+    "set a budget for shopping"
+  ],
+  "keywords": [
+    "budget"
+  ],
+  "slots": {
+    "amount": "£\\s?(?<amount>\\d+(?:\\.\\d{1,2})?)",
+    "category": "(?:for|on|my) (?<category>[a-z][a-z -]*?)(?: budget| to| this|$)"
+  },
+  "capabilities": [
+    "budget.setLimit"
+  ],
+  "data": {
+    "budget": "view:budgetDraft",
+    "categories": "view:budgets"
+  },
+  "fill": {
+    "amount": "/budget/limit",
+    "category": "/budget/category"
+  },
+  "sample": {
+    "category": "coffee",
+    "amount": 150
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "budget-set",
+      "title": "Set a budget",
+      "intent": "budget.set"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": [
+          "category",
+          "limit",
+          "context"
+        ],
+        "submit": {
+          "label": "Set budget",
+          "action": {
+            "event": {
+              "name": "budget.setLimit",
+              "context": {
+                "category": {
+                  "path": "/budget/category"
+                },
+                "limit": {
+                  "path": "/budget/limit"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Cancel",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "category",
+        "component": "Choice",
+        "key": "category",
+        "label": "Category",
+        "options": {
+          "path": "/categories",
+          "valuePath": "category",
+          "labelPath": "name"
+        },
+        "value": {
+          "path": "/budget/category"
+        },
+        "required": true
+      },
+      {
+        "id": "limit",
+        "component": "TextInput",
+        "key": "limit",
+        "label": "Monthly budget",
+        "kind": "currency",
+        "currency": "GBP",
+        "value": {
+          "path": "/budget/limit"
+        },
+        "required": true,
+        "validation": {
+          "min": 1,
+          "max": 10000,
+          "message": "Enter an amount between £1 and £10,000"
+        },
+        "size": "hero",
+        "help": "You'll hear when 80% of it is used, and if it's passed."
+      },
+      {
+        "id": "context",
+        "component": "DetailList",
+        "key": "budget_context",
+        "items": [
+          {
+            "key": "so_far",
+            "label": "Spent so far this month",
+            "value": {
+              "path": "/budget/spentThisMonth"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          },
+          {
+            "key": "last_month",
+            "label": "Last month",
+            "value": {
+              "path": "/budget/lastMonth"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "budget": {
+        "category": "coffee",
+        "name": "Coffee",
+        "current": null,
+        "limit": 150,
+        "spentThisMonth": 49.24,
+        "lastMonth": 68.49,
+        "month": "September",
+        "previousMonth": "August"
+      },
+      "categories": [
+        {
+          "category": "groceries",
+          "name": "Groceries",
+          "limit": 260,
+          "spent": 199.47
+        },
+        {
+          "category": "eating-out",
+          "name": "Eating out",
+          "limit": 150,
+          "spent": 74.9
+        },
+        {
+          "category": "coffee",
+          "name": "Coffee",
+          "limit": null,
+          "spent": 49.24
+        },
+        {
+          "category": "transport",
+          "name": "Transport",
+          "limit": 90,
+          "spent": 103.76
+        },
+        {
+          "category": "shopping",
+          "name": "Shopping",
+          "limit": null,
+          "spent": 109.99
+        },
+        {
+          "category": "bills",
+          "name": "Bills",
+          "limit": null,
+          "spent": 273.6
+        },
+        {
+          "category": "subscriptions",
+          "name": "Subscriptions",
+          "limit": null,
+          "spent": 61.97
+        },
+        {
+          "category": "entertainment",
+          "name": "Entertainment",
+          "limit": null,
+          "spent": 0
+        },
+        {
+          "category": "health",
+          "name": "Health",
+          "limit": null,
+          "spent": 34.34
+        }
+      ]
+    }
+  }
+}

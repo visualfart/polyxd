@@ -1,0 +1,311 @@
+{
+  "$schema": "../../../packages/spec/schema/capabilities.schema.json",
+  "name": "halden",
+  "capabilities": {
+    "budget.restore": {
+      "description": "Put a budget back to what it was",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "budget.setLimit": {
+      "description": "Set or change a monthly budget for a category",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "category",
+          "limit"
+        ],
+        "additionalProperties": false
+      },
+      "undo": "budget.restore"
+    },
+    "card.freeze": {
+      "description": "Freeze the debit card: no new payments until unfrozen. Subscriptions already set up keep going",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "cardId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cardId"
+        ],
+        "additionalProperties": false
+      },
+      "undo": "card.unfreeze"
+    },
+    "card.unfreeze": {
+      "description": "Unfreeze the debit card",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "cardId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cardId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "dispute.raise": {
+      "description": "Report a payment: duplicate, not recognised, wrong amount, or goods not received. Halden asks the merchant's bank for the money back",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "duplicate",
+              "unrecognised",
+              "wrong-amount",
+              "not-received"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "paymentId",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "The merchant is contacted",
+        "The amount shows as pending refund until the merchant answers, up to 15 days"
+      ]
+    },
+    "dispute.review": {
+      "description": "Check a report before it's sent: which payment, why, and what happens next",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "duplicate",
+              "unrecognised",
+              "wrong-amount",
+              "not-received"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "paymentId",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "payee.create": {
+      "description": "Add someone you can send money to",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "sortCode": {
+            "type": "string"
+          },
+          "accountNumber": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "sortCode",
+          "accountNumber"
+        ],
+        "additionalProperties": false
+      },
+      "undo": "payee.delete"
+    },
+    "payee.delete": {
+      "description": "Remove a payee",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "payee.open": {
+      "description": "Open a payee",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "payment.open": {
+      "description": "Open a payment",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "subscription.cancel": {
+      "description": "Stop a recurring payment at Halden's end: the next attempt is declined and the merchant is told",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "The merchant may end the service"
+      ],
+      "undo": "subscription.restore"
+    },
+    "subscription.open": {
+      "description": "Open a recurring payment: what it is, when it next goes out, and the option to stop it",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "subscription.restore": {
+      "description": "Allow a cancelled recurring payment again",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "transfer.confirm": {
+      "description": "Send the money",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "quoteId"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "Money leaves the account",
+        "The payee is notified by their bank"
+      ],
+      "preconditions": [
+        "A quote from transfer.review"
+      ],
+      "agentMayInvoke": false
+    },
+    "transfer.review": {
+      "description": "Quote a payment: fee, arrival time, the balance after",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "payeeId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "reference": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "payeeId",
+          "amount"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@polyxd/demos",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Three products built on Polyxd, each in a different design system: Halden (personal money, Material 3), Foundry (customer success, shadcn) and Wexley (council services, GOV.UK).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "build:prompt": "node scripts/build-prompt.ts",
+    "verify": "node scripts/verify.ts",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@polyxd/react": "^0.2.0",
+    "@polyxd/spec": "^0.2.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^7.0.0"
+  },
+  "devDependencies": {
+    "@polyxd/verifier": "^0.2.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0"
+  }
+}

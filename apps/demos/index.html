@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demos · Polyxd</title>
+    <meta name="description" content="Three products built on Polyxd, each in a different design system: Halden, Foundry and Wexley." />
+    <meta name="theme-color" content="#f4f1ea" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/site.css" />
+    <style>
+      .demos {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        margin-top: 40px;
+      }
+      .demo {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: var(--paper);
+        color: inherit;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .demo:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgb(0 0 0 / 0.08);
+      }
+      .demo-mark {
+        display: inline-flex;
+        width: 48px;
+        height: 48px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        color: #fff;
+        font: 700 24px var(--display);
+      }
+      .demo h2 {
+        margin: 8px 0 0;
+        font: 700 26px/1.1 var(--display);
+        letter-spacing: -0.02em;
+      }
+      .demo p {
+        margin: 0;
+        color: var(--ink-2);
+      }
+      .demo .ds {
+        font-size: 13px;
+        color: var(--ink-2);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+      .demo .soon {
+        display: inline-block;
+        margin-top: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--line);
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/" aria-label="Polyxd home"><span class="brand-word">polyxd</span></a>
+        <nav class="site-nav" aria-label="Main"><a href="/gallery/">Gallery</a><a href="/docs/">Docs</a></nav>
+      </div>
+    </header>
+    <main class="section">
+      <div class="wrap">
+        <p class="eyebrow">Demos</p>
+        <h1 class="display" style="font-size: clamp(36px, 5vw, 64px); margin: 12px 0 16px">Three products. Three design systems. One spec.</h1>
+        <p style="max-width: 60ch; color: var(--ink-2)">Each is a working product with its own screens, data that changes when you act, and an ask box for everything the product has no screen for. Those screens are generated as Polyxd documents, rendered in the product's design system, and verified before they show. Everything stays in your browser.</p>
+        <div class="demos">
+          <a class="demo" href="/demos/halden/">
+            <span class="demo-mark" style="background: #65558f">h</span>
+            <span class="ds">Material 3 · phone first</span>
+            <h2>Halden</h2>
+            <p>A current account. Ask it to send money, explain a charge, set a budget or freeze the card.</p>
+          </a>
+          <a class="demo" href="/demos/foundry/">
+            <span class="demo-mark" style="background: #18181b">f</span>
+            <span class="ds">shadcn/ui · dense desktop</span>
+            <h2>Foundry</h2>
+            <p>A customer-success desk for a SaaS. Renewals, tickets, plan changes and hand-overs, keyboard first.</p>
+            <span class="soon">In progress</span>
+          </a>
+          <a class="demo" href="/demos/wexley/">
+            <span class="demo-mark" style="background: #1d70b8">w</span>
+            <span class="ds">GOV.UK · forms and plain words</span>
+            <h2>Wexley Borough Council</h2>
+            <p>A resident's account: permits, council tax, repairs and appeals, as services rather than screens.</p>
+            <span class="soon">In progress</span>
+          </a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

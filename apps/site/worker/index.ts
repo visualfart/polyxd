@@ -35,6 +35,10 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === "/api/waitlist") return waitlist(request, env);
     if (url.hostname === "www.polyxd.com") return Response.redirect(`https://polyxd.com${url.pathname}${url.search}`, 301);
-    return env.ASSETS.fetch(request);
+    const response = await env.ASSETS.fetch(request);
+    // The demo products route on the client: any path under /demos/<name>/ is that product's page.
+    const demo = response.status === 404 && /^\/demos\/([a-z]+)\/./.exec(url.pathname);
+    if (demo) return env.ASSETS.fetch(new Request(new URL(`/demos/${demo[1]}/`, url), request));
+    return response;
   },
 } satisfies ExportedHandler<Env>;

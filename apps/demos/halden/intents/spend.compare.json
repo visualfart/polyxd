@@ -1,0 +1,317 @@
+{
+  "id": "spend.compare",
+  "title": "This month against last",
+  "ask": [
+    "how does this month compare with last",
+    "am I spending more than last month",
+    "compare this month to August",
+    "where did the money go this month"
+  ],
+  "keywords": [
+    "compare",
+    "comparison",
+    "versus",
+    "more than last"
+  ],
+  "capabilities": [],
+  "data": {
+    "compare": "view:monthCompare"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "spend-compare",
+      "title": "This month against last",
+      "intent": "spend.compare"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "figures",
+          "chart",
+          "table"
+        ]
+      },
+      {
+        "id": "figures",
+        "component": "Group",
+        "arrangement": "inline",
+        "children": [
+          "this_month",
+          "last_month"
+        ]
+      },
+      {
+        "id": "this_month",
+        "component": "Metric",
+        "key": "this_month",
+        "label": {
+          "path": "/compare/month"
+        },
+        "value": {
+          "path": "/compare/thisMonth"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "change": {
+          "value": {
+            "path": "/compare/change"
+          },
+          "format": {
+            "type": "percent"
+          },
+          "favorable": "decrease"
+        },
+        "caption": "So far this month"
+      },
+      {
+        "id": "last_month",
+        "component": "Metric",
+        "key": "last_month",
+        "label": {
+          "path": "/compare/previous"
+        },
+        "value": {
+          "path": "/compare/lastMonthToDay"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "caption": "By the same day"
+      },
+      {
+        "id": "chart",
+        "component": "Chart",
+        "key": "by_category",
+        "intent": "comparison",
+        "data": {
+          "path": "/compare/top"
+        },
+        "title": "Biggest categories",
+        "summary": {
+          "path": "/compare/summary"
+        },
+        "x": {
+          "path": "name",
+          "label": "Category"
+        },
+        "series": [
+          {
+            "key": "this_month",
+            "path": "thisMonth",
+            "label": {
+              "path": "/compare/month"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          },
+          {
+            "key": "last_month",
+            "path": "lastMonth",
+            "label": {
+              "path": "/compare/previous"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ]
+      },
+      {
+        "id": "table",
+        "component": "Table",
+        "key": "change_by_category",
+        "rows": {
+          "path": "/compare/rows"
+        },
+        "caption": "Change by category",
+        "columns": [
+          {
+            "key": "name",
+            "label": "Category",
+            "path": "name"
+          },
+          {
+            "key": "this_month",
+            "label": {
+              "path": "/compare/month"
+            },
+            "path": "thisMonth",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          },
+          {
+            "key": "last_month",
+            "label": {
+              "path": "/compare/previous"
+            },
+            "path": "lastMonth",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          },
+          {
+            "key": "change",
+            "label": "Change",
+            "path": "change",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "compare": {
+        "month": "September",
+        "previous": "August",
+        "thisMonth": 2092.01,
+        "lastMonthToDay": 2123.1,
+        "lastMonthFull": 2261.1,
+        "change": -0.015,
+        "dayOfMonth": 27,
+        "rows": [
+          {
+            "category": "eating-out",
+            "name": "Eating out",
+            "thisMonth": 74.9,
+            "lastMonth": 107.44,
+            "change": -32.54
+          },
+          {
+            "category": "health",
+            "name": "Health",
+            "thisMonth": 34.34,
+            "lastMonth": 8.13,
+            "change": 26.21
+          },
+          {
+            "category": "groceries",
+            "name": "Groceries",
+            "thisMonth": 199.47,
+            "lastMonth": 221.37,
+            "change": -21.9
+          },
+          {
+            "category": "shopping",
+            "name": "Shopping",
+            "thisMonth": 109.99,
+            "lastMonth": 88.98,
+            "change": 21.01
+          },
+          {
+            "category": "transfers",
+            "name": "Sent to people",
+            "thisMonth": 34.74,
+            "lastMonth": 50.7,
+            "change": -15.96
+          },
+          {
+            "category": "coffee",
+            "name": "Coffee",
+            "thisMonth": 49.24,
+            "lastMonth": 61.36,
+            "change": -12.12
+          },
+          {
+            "category": "transport",
+            "name": "Transport",
+            "thisMonth": 103.76,
+            "lastMonth": 99.55,
+            "change": 4.21
+          },
+          {
+            "category": "rent",
+            "name": "Rent",
+            "thisMonth": 1150,
+            "lastMonth": 1150,
+            "change": 0
+          },
+          {
+            "category": "bills",
+            "name": "Bills",
+            "thisMonth": 273.6,
+            "lastMonth": 273.6,
+            "change": 0
+          },
+          {
+            "category": "subscriptions",
+            "name": "Subscriptions",
+            "thisMonth": 61.97,
+            "lastMonth": 61.97,
+            "change": 0
+          },
+          {
+            "category": "entertainment",
+            "name": "Entertainment",
+            "thisMonth": 0,
+            "lastMonth": 0,
+            "change": 0
+          }
+        ],
+        "top": [
+          {
+            "category": "rent",
+            "name": "Rent",
+            "thisMonth": 1150,
+            "lastMonth": 1150,
+            "change": 0
+          },
+          {
+            "category": "bills",
+            "name": "Bills",
+            "thisMonth": 273.6,
+            "lastMonth": 273.6,
+            "change": 0
+          },
+          {
+            "category": "groceries",
+            "name": "Groceries",
+            "thisMonth": 199.47,
+            "lastMonth": 221.37,
+            "change": -21.9
+          },
+          {
+            "category": "transport",
+            "name": "Transport",
+            "thisMonth": 103.76,
+            "lastMonth": 99.55,
+            "change": 4.21
+          },
+          {
+            "category": "shopping",
+            "name": "Shopping",
+            "thisMonth": 109.99,
+            "lastMonth": 88.98,
+            "change": 21.01
+          },
+          {
+            "category": "eating-out",
+            "name": "Eating out",
+            "thisMonth": 74.9,
+            "lastMonth": 107.44,
+            "change": -32.54
+          }
+        ],
+        "summary": "By day 27, you've spent £31.09 less than in August. Eating out is down £32.54. Health is up £26.21."
+      }
+    }
+  }
+}

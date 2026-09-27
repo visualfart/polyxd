@@ -1,0 +1,136 @@
+{
+  "id": "subscription.cancel.confirm",
+  "title": "Stop a recurring payment",
+  "ask": [],
+  "capabilities": [
+    "subscription.cancel",
+    "subscription.restore"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "sub": "view:subscription"
+  },
+  "sample": {
+    "subscription": "sub_northwave"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "subscription-stop",
+      "title": "Stop this payment?",
+      "intent": "subscriptions.list",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "subscription_stop",
+        "title": "Stop this payment?",
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/sub/amount"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        "subject": {
+          "title": {
+            "path": "/sub/name"
+          },
+          "subtitle": {
+            "path": "/sub/detail"
+          }
+        },
+        "summary": "summary",
+        "consequence": "Halden declines the next attempt and tells the merchant. They may end the service; check with them if you're not sure.",
+        "confirm": {
+          "label": "Stop payment",
+          "action": {
+            "event": {
+              "name": "subscription.cancel",
+              "context": {
+                "id": {
+                  "path": "/sub/id"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Keep it",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "subscription_summary",
+        "items": [
+          {
+            "key": "every",
+            "label": "Taken",
+            "value": {
+              "path": "/sub/every"
+            }
+          },
+          {
+            "key": "next",
+            "label": "Next payment",
+            "value": {
+              "path": "/sub/nextOn"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "since",
+            "label": "Paying since",
+            "value": {
+              "path": "/sub/since"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "paid",
+            "label": "Paid so far",
+            "value": {
+              "path": "/sub/paidSoFar"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "sub": {
+        "id": "sub_northwave",
+        "name": "Northwave Gym",
+        "detail": "Membership",
+        "amount": 34,
+        "cadence": "monthly",
+        "every": "Every month",
+        "monthly": 34,
+        "nextOn": "2026-10-17T16:00:00.000Z",
+        "active": true,
+        "status": "Active",
+        "since": "2026-06-23T23:00:00.000Z",
+        "paidSoFar": 102
+      }
+    }
+  }
+}

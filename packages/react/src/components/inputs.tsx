@@ -530,6 +530,8 @@ export function Choice({ node }: { node: Node }) {
   const multiple = node.mode === "multiple";
   const value = b.value<unknown>(node.value);
   const key = (v: unknown) => JSON.stringify(v);
+  // Element ids from a value: JSON is exact but not id-safe ("p_tom" has quotes), so encode it.
+  const idOf = (v: unknown) => `${labelId}-${encodeURIComponent(key(v)).replace(/%/g, "_")}`;
   const help = node.help !== undefined ? b.text(node.help) : undefined;
   const withFaces = options.some((o) => o.avatar !== undefined);
   const searchable = options.length > 10 || (withFaces && options.length > 6);
@@ -603,7 +605,7 @@ export function Choice({ node }: { node: Node }) {
             )}
             <div className="pxd-people-list">
               {rest.map((o) => {
-                const cid = `${labelId}-${key(o.value)}`;
+                const cid = idOf(o.value);
                 return (
                   <Checkbox.Root
                     key={key(o.value)}
@@ -643,7 +645,7 @@ export function Choice({ node }: { node: Node }) {
         {search}
         <div className={`pxd-choice-list${searchable ? " pxd-choice-scroll" : ""}`}>
           {options.filter(matches).map((o) => {
-            const cid = `${labelId}-${key(o.value)}`;
+            const cid = idOf(o.value);
             return (
               <div className="pxd-choice-option" key={key(o.value)}>
                 {o.avatar !== undefined && <Avatar value={o.avatar} name={o.label} size={32} />}
@@ -712,7 +714,7 @@ export function Choice({ node }: { node: Node }) {
           )}
           <div className="pxd-people-list" role="presentation">
             {rest.map((o) => {
-              const cid = `${labelId}-${key(o.value)}`;
+              const cid = idOf(o.value);
               return (
                 <RadioGroup.Item key={key(o.value)} id={cid} value={key(o.value)} className="pxd-person-row" aria-labelledby={`${cid}-name`} aria-describedby={o.description ? `${cid}-desc` : undefined}>
                   <Avatar value={o.avatar} name={o.label} />
@@ -751,7 +753,7 @@ export function Choice({ node }: { node: Node }) {
         orientation="vertical"
       >
         {options.filter(matches).map((o) => {
-          const cid = `${labelId}-${key(o.value)}`;
+          const cid = idOf(o.value);
           return (
             <div className="pxd-choice-option" key={key(o.value)}>
               <RadioGroup.Item id={cid} value={key(o.value)} className="pxd-radio" aria-describedby={o.description ? `${cid}-desc` : undefined}>

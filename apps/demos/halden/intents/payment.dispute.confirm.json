@@ -1,0 +1,144 @@
+{
+  "id": "payment.dispute.confirm",
+  "title": "Confirm a report",
+  "ask": [],
+  "capabilities": [
+    "dispute.raise"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "review": "view:disputeReview"
+  },
+  "sample": {
+    "reason": "duplicate",
+    "note": "Only took one ride."
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "dispute-confirm",
+      "title": "Report this payment?",
+      "intent": "payment.dispute",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "dispute_confirm",
+        "title": "Report this payment?",
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/review/amount"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        "subject": {
+          "title": {
+            "path": "/review/payment/name"
+          },
+          "subtitle": {
+            "path": "/review/payment/where"
+          }
+        },
+        "summary": "summary",
+        "consequences": [
+          {
+            "title": "The merchant's bank is asked to explain",
+            "icon": "mail"
+          },
+          {
+            "title": "Pending refund for up to 15 days",
+            "icon": "clock"
+          }
+        ],
+        "confirm": {
+          "label": "Report payment",
+          "action": {
+            "event": {
+              "name": "dispute.raise",
+              "context": {
+                "paymentId": {
+                  "path": "/review/paymentId"
+                },
+                "reason": {
+                  "path": "/review/reason"
+                },
+                "note": {
+                  "path": "/review/note"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Back",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        },
+        "consequence": "The merchant's bank is asked to explain, and the amount shows as pending refund for up to 15 days. If they don't answer, it comes back to you."
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "dispute_summary",
+        "items": [
+          {
+            "key": "when",
+            "label": "When",
+            "value": {
+              "path": "/review/payment/at"
+            },
+            "format": {
+              "type": "datetime"
+            }
+          },
+          {
+            "key": "reason",
+            "label": "Reason",
+            "value": {
+              "path": "/review/reasonLabel"
+            }
+          },
+          {
+            "key": "note",
+            "label": "Your note",
+            "value": {
+              "path": "/review/note"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "review": {
+        "paymentId": "pay_0211",
+        "reason": "duplicate",
+        "reasonLabel": "Charged twice",
+        "note": "Only took one ride.",
+        "hasNote": true,
+        "amount": 3.4,
+        "payment": {
+          "id": "pay_0211",
+          "at": "2026-09-26T22:31:00.000Z",
+          "amount": -3.4,
+          "name": "Kettle & Co",
+          "where": "Stokes Croft",
+          "category": "Coffee",
+          "categoryId": "coffee",
+          "status": "pending",
+          "merchantId": "m_kettle",
+          "card": true
+        }
+      }
+    }
+  }
+}

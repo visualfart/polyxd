@@ -1,0 +1,144 @@
+{
+  "id": "payee.add",
+  "title": "Add a payee",
+  "ask": [
+    "add my landlord as a payee",
+    "add a new payee",
+    "add someone to pay",
+    "add Sam as a payee"
+  ],
+  "keywords": [
+    "payee",
+    "add"
+  ],
+  "slots": {
+    "payee": "\\badd (?<payee>[A-Z][a-z]+(?: [A-Z][a-z]+)?|my [a-z]+)\\b"
+  },
+  "capabilities": [
+    "payee.create"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "draft": "view:payeeDraft"
+  },
+  "fill": {
+    "payeeName": "/draft/name"
+  },
+  "sample": {
+    "payeeName": "Sam Okafor"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "payee-add",
+      "title": "Add a payee",
+      "intent": "payee.add",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": [
+          "name",
+          "sort_code",
+          "account_number",
+          "reference"
+        ],
+        "submit": {
+          "label": "Add payee",
+          "action": {
+            "event": {
+              "name": "payee.create",
+              "context": {
+                "name": {
+                  "path": "/draft/name"
+                },
+                "sortCode": {
+                  "path": "/draft/sortCode"
+                },
+                "accountNumber": {
+                  "path": "/draft/accountNumber"
+                },
+                "reference": {
+                  "path": "/draft/reference"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Cancel",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "name",
+        "component": "TextInput",
+        "key": "name",
+        "label": "Name",
+        "help": "As it appears on their account.",
+        "value": {
+          "path": "/draft/name"
+        },
+        "required": true,
+        "autocomplete": "name",
+        "validation": {
+          "maxLength": 40
+        }
+      },
+      {
+        "id": "sort_code",
+        "component": "TextInput",
+        "key": "sort_code",
+        "label": "Sort code",
+        "kind": "masked",
+        "mask": "##-##-##",
+        "value": {
+          "path": "/draft/sortCode"
+        },
+        "required": true,
+        "help": "Six digits, on their card or statement."
+      },
+      {
+        "id": "account_number",
+        "component": "TextInput",
+        "key": "account_number",
+        "label": "Account number",
+        "kind": "masked",
+        "mask": "########",
+        "value": {
+          "path": "/draft/accountNumber"
+        },
+        "required": true,
+        "help": "Eight digits."
+      },
+      {
+        "id": "reference",
+        "component": "TextInput",
+        "key": "reference",
+        "label": "Reference",
+        "help": "Optional. Shows on their statement every time you pay them.",
+        "value": {
+          "path": "/draft/reference"
+        },
+        "validation": {
+          "maxLength": 18
+        }
+      }
+    ],
+    "data": {
+      "draft": {
+        "name": "Sam Okafor",
+        "sortCode": "",
+        "accountNumber": "",
+        "reference": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "id": "spend.category",
+  "title": "What you spent on a category",
+  "ask": [
+    "what did I spend on eating out this month",
+    "how much have I spent on coffee",
+    "spending on groceries this month",
+    "how much did I spend on transport"
+  ],
+  "keywords": [
+    "spent",
+    "spend",
+    "spending"
+  ],
+  "slots": {
+    "category": "(?:on|for) (?<category>[a-z][a-z -]*?)(?: this| last| in |\\?|$)"
+  },
+  "capabilities": [
+    "payment.open"
+  ],
+  "data": {
+    "category": "view:categorySpend"
+  },
+  "sample": {
+    "category": "eating-out"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "spend-category",
+      "title": "What you spent",
+      "intent": "spend.category"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "figures",
+          "budget",
+          "payments"
+        ]
+      },
+      {
+        "id": "figures",
+        "component": "Group",
+        "arrangement": "inline",
+        "children": [
+          "total",
+          "count"
+        ]
+      },
+      {
+        "id": "total",
+        "component": "Metric",
+        "key": "category_total",
+        "label": {
+          "path": "/category/spentLabel"
+        },
+        "value": {
+          "path": "/category/total"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "change": {
+          "value": {
+            "path": "/category/changeVsPrevious"
+          },
+          "format": {
+            "type": "percent"
+          },
+          "favorable": "decrease"
+        },
+        "caption": {
+          "path": "/category/previousLabel"
+        }
+      },
+      {
+        "id": "count",
+        "component": "Metric",
+        "key": "category_count",
+        "label": "Payments",
+        "value": {
+          "path": "/category/count"
+        },
+        "format": {
+          "type": "number"
+        }
+      },
+      {
+        "id": "budget",
+        "component": "Progress",
+        "key": "category_budget",
+        "visible": {
+          "path": "/category/hasBudget"
+        },
+        "label": "Budget for the month",
+        "value": {
+          "path": "/category/total"
+        },
+        "max": {
+          "path": "/category/budget"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "kind": "bar"
+      },
+      {
+        "id": "payments",
+        "component": "Table",
+        "key": "category_payments",
+        "rows": {
+          "path": "/category/payments"
+        },
+        "caption": {
+          "path": "/category/heading"
+        },
+        "columns": [
+          {
+            "key": "name",
+            "label": "Where",
+            "path": "name",
+            "kind": "entity",
+            "secondaryPath": "where"
+          },
+          {
+            "key": "at",
+            "label": "When",
+            "path": "at",
+            "kind": "date",
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "amount",
+            "label": "Amount",
+            "path": "amount",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "payment.open",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        },
+        "empty": "empty"
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "title": "Nothing in this category yet this month",
+        "message": "Payments show here as soon as they happen."
+      }
+    ],
+    "data": {
+      "category": {
+        "id": "eating-out",
+        "name": "Eating out",
+        "heading": "Eating out in September",
+        "spentLabel": "Spent in September",
+        "previousLabel": "By this day in August",
+        "total": 74.9,
+        "previous": 107.44,
+        "changeVsPrevious": -0.303,
+        "count": 2,
+        "payments": [
+          {
+            "id": "pay_0209",
+            "at": "2026-09-26T09:59:00.000Z",
+            "amount": -41.09,
+            "name": "Pizzeria Nonna",
+            "where": "Clifton",
+            "category": "Eating out",
+            "categoryId": "eating-out",
+            "status": "settled",
+            "merchantId": "m_nonna",
+            "card": true
+          },
+          {
+            "id": "pay_0159",
+            "at": "2026-09-04T09:55:00.000Z",
+            "amount": -33.81,
+            "name": "Tidal Fish Bar",
+            "where": "Harbourside",
+            "category": "Eating out",
+            "categoryId": "eating-out",
+            "status": "settled",
+            "merchantId": "m_tidal",
+            "card": true
+          }
+        ],
+        "hasBudget": true,
+        "budget": 150,
+        "left": 75.1
+      }
+    }
+  }
+}

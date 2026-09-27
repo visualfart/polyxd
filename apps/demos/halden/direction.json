@@ -1,0 +1,114 @@
+{
+  "$schema": "../../../packages/spec/schema/direction.schema.json",
+  "name": "halden",
+  "version": "1.0.0",
+  "designSystem": "material3",
+  "profile": {
+    "density": "comfortable",
+    "emphasisBudget": 1,
+    "dataDisplay": "prefer-metrics",
+    "motion": "subtle",
+    "disclosure": "progressive",
+    "freedom": "strict"
+  },
+  "voice": {
+    "guidelines": [
+      "Plain, calm and specific. Say what happens to the person's money and when.",
+      "Money is never a joke. Numbers are exact; time is concrete (\"by 5pm today\", not \"soon\")."
+    ],
+    "tone": {
+      "formality": "neutral",
+      "energy": "calm",
+      "warmth": "warm",
+      "humor": "none"
+    },
+    "person": "you",
+    "readingLevel": {
+      "maxGrade": 7
+    },
+    "casing": "sentence",
+    "spelling": "en-GB",
+    "punctuation": {
+      "exclamation": "never",
+      "emoji": "never"
+    },
+    "labels": {
+      "maxWords": 4,
+      "verbFirst": true
+    },
+    "glossary": [
+      {
+        "use": "payment",
+        "insteadOf": [
+          "transaction",
+          "txn"
+        ]
+      },
+      {
+        "use": "send",
+        "insteadOf": [
+          "transfer",
+          "wire"
+        ]
+      },
+      {
+        "use": "payee",
+        "insteadOf": [
+          "beneficiary",
+          "recipient"
+        ]
+      },
+      {
+        "use": "frozen",
+        "insteadOf": [
+          "locked",
+          "blocked"
+        ]
+      }
+    ],
+    "avoid": [
+      "simply",
+      "just",
+      "oops",
+      "invalid",
+      "failed",
+      "error",
+      "please note"
+    ],
+    "situations": {
+      "empty": "Say what would appear here and the one thing to do to make it appear.",
+      "error": "Say what did not happen, that no money moved, and what to try.",
+      "success": "Say what happened, with the amount and who to."
+    }
+  },
+  "rules": [
+    {
+      "id": "amount-on-confirm",
+      "description": "The button that sends money states the amount",
+      "severity": "error",
+      "rule": {
+        "check": "labelMatches",
+        "component": "Confirm",
+        "pattern": "£[0-9]",
+        "prop": "confirm.label",
+        "where": {
+          "key": "send_confirm"
+        }
+      }
+    },
+    {
+      "id": "money-only-from-confirm",
+      "description": "Money only moves from a confirmation",
+      "severity": "error",
+      "rule": {
+        "check": "actionInside",
+        "capabilities": [
+          "transfer.confirm"
+        ],
+        "container": [
+          "Confirm"
+        ]
+      }
+    }
+  ]
+}

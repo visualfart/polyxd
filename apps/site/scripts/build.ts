@@ -79,7 +79,7 @@ function header(current: "home" | "docs") {
 
 const footer = `<footer class="site-footer"><div class="wrap">
 <a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">polyxd</span></a>
-<nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/docs/reference/components/">Components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
+<nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/docs/reference/coverage/">All components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
 <span>© 2026 Polyxd · Apache-2.0 code, CC-BY-4.0 spec</span>
 </div></footer>`;
 
@@ -191,7 +191,7 @@ async function componentsPage(): Promise<Page> {
 <p><strong>A2UI:</strong> ${esc(c.a2ui)}</p></section>`;
     }),
   ].join("\n");
-  return { slug: "reference/components", title: "Components reference", description: "All 26 semantic components: props, when to use them, accessibility, rendering rules and platform mappings.", section: "Reference", order: 30, html, toc };
+  return { slug: "reference/components", title: "Components reference", description: `All ${comps.length} semantic components: props, when to use them, accessibility, rendering rules and platform mappings.`, section: "Reference", order: 30, html, toc };
 }
 
 /**
@@ -286,7 +286,7 @@ async function coveragePage(): Promise<Page> {
   render();
 })();</script>`,
   ].join("\n");
-  return { slug: "reference/coverage", title: "Design-system coverage", description: `Every component in ${N} design systems, and what Polyxd calls it: ${data.components.length} semantic components, foundations, patterns, and what the renderer does itself.`, section: "Reference", order: 32, html, toc };
+  return { slug: "reference/coverage", title: "All components", description: `The complete list: ${data.components.length} semantic components with what each of ${N} design systems calls them, plus the foundations, patterns and renderer behaviours that are not components.`, section: "Reference", order: 29, html, toc };
 }
 
 async function tokensPage(): Promise<Page> {
@@ -514,7 +514,14 @@ execFileSync("npx", ["vite", "build", "--base", "/gallery/", "--outDir", join(DI
   stdio: "inherit",
 });
 
-const urls = ["/", "/gallery/", ...pages.map((p) => href(p.slug))];
+// The demo products, served under /demos/<name>/ (one Vite build, several entry pages).
+execFileSync("npx", ["vite", "build", "--outDir", join(DIST, "demos"), "--emptyOutDir", "--logLevel", "warn"], {
+  cwd: join(REPO, "apps/demos"),
+  stdio: "inherit",
+});
+const demos = ["halden", "foundry", "wexley"];
+
+const urls = ["/", "/gallery/", "/demos/", ...demos.map((d) => `/demos/${d}/`), ...pages.map((p) => href(p.slug))];
 await write(join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${ORIGIN}${u}</loc></url>`).join("\n")}\n</urlset>\n`);
 await write(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${ORIGIN}/sitemap.xml\n`);
 

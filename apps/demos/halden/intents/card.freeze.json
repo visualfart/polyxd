@@ -1,0 +1,160 @@
+{
+  "id": "card.freeze",
+  "title": "Freeze or unfreeze the card",
+  "ask": [
+    "freeze my card",
+    "I've lost my card",
+    "unfreeze my card",
+    "block my card"
+  ],
+  "keywords": [
+    "freeze",
+    "frozen",
+    "unfreeze",
+    "lost",
+    "stolen",
+    "block"
+  ],
+  "capabilities": [
+    "card.freeze",
+    "card.unfreeze"
+  ],
+  "data": {
+    "card": "view:card"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "card-freeze",
+      "title": "Your card",
+      "intent": "card.freeze"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "details",
+          "note",
+          "actions"
+        ]
+      },
+      {
+        "id": "details",
+        "component": "DetailList",
+        "key": "card_details",
+        "items": [
+          {
+            "key": "card",
+            "label": "Card",
+            "value": {
+              "path": "/card/number"
+            }
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "value": {
+              "path": "/card/statusLabel"
+            }
+          },
+          {
+            "key": "last_used",
+            "label": "Last used",
+            "value": {
+              "path": "/card/lastUsed"
+            },
+            "format": {
+              "type": "relativeTime"
+            }
+          },
+          {
+            "key": "subscriptions",
+            "label": "Subscriptions on it",
+            "value": {
+              "path": "/card/subscriptions"
+            },
+            "format": {
+              "type": "number"
+            }
+          }
+        ]
+      },
+      {
+        "id": "note",
+        "component": "Text",
+        "key": "freeze_note",
+        "variant": "supporting",
+        "text": "Freezing stops new card payments straight away, and you can undo it any time. Subscriptions you've already set up keep going, and bank payments aren't affected."
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "freeze",
+          "unfreeze"
+        ]
+      },
+      {
+        "id": "freeze",
+        "component": "Action",
+        "key": "freeze",
+        "visible": {
+          "path": "/card/active"
+        },
+        "label": "Freeze card",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "card.freeze",
+            "context": {
+              "cardId": {
+                "path": "/card/id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "unfreeze",
+        "component": "Action",
+        "key": "unfreeze",
+        "visible": {
+          "path": "/card/frozen"
+        },
+        "label": "Unfreeze card",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "card.unfreeze",
+            "context": {
+              "cardId": {
+                "path": "/card/id"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "card": {
+        "id": "card_1",
+        "last4": "4471",
+        "expiry": "09/28",
+        "network": "Visa",
+        "frozen": false,
+        "frozenAt": null,
+        "contactlessLimit": 100,
+        "onlinePayments": true,
+        "number": "Visa ··4471",
+        "active": true,
+        "statusLabel": "Active",
+        "subscriptions": 4,
+        "lastUsed": "2026-09-26T22:31:00.000Z",
+        "lastUsedAt": "Kettle & Co, £3.40"
+      }
+    }
+  }
+}

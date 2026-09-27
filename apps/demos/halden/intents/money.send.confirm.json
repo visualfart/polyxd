@@ -1,0 +1,160 @@
+{
+  "id": "money.send.confirm",
+  "title": "Confirm a payment",
+  "ask": [],
+  "capabilities": [
+    "transfer.confirm"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "quote": "view:quote"
+  },
+  "sample": {
+    "payee": "p_priya",
+    "amount": 40,
+    "reference": "Dinner"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "send-confirm",
+      "title": "Confirm payment",
+      "intent": "money.send",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "send_confirm",
+        "title": "Send this payment?",
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/quote/amount"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        "subject": {
+          "title": {
+            "path": "/quote/payee/name"
+          },
+          "subtitle": {
+            "path": "/quote/payee/bank"
+          },
+          "avatar": {
+            "path": "/quote/payee/initials"
+          }
+        },
+        "summary": "summary",
+        "consequence": "The money leaves your account straight away and can't be recalled.",
+        "confirm": {
+          "label": {
+            "path": "/quote/label"
+          },
+          "action": {
+            "event": {
+              "name": "transfer.confirm",
+              "context": {
+                "quoteId": {
+                  "path": "/quote/id"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Cancel",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "send_summary",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "amount",
+            "label": "Amount",
+            "value": {
+              "path": "/quote/amount"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          },
+          {
+            "key": "fee",
+            "label": "Fee",
+            "value": {
+              "path": "/quote/fee"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          },
+          {
+            "key": "arrives",
+            "label": "Arrives by",
+            "value": {
+              "path": "/quote/arrives"
+            },
+            "format": {
+              "type": "time"
+            }
+          },
+          {
+            "key": "reference",
+            "label": "Reference",
+            "value": {
+              "path": "/quote/reference"
+            }
+          },
+          {
+            "key": "balance",
+            "label": "Balance after",
+            "value": {
+              "path": "/quote/balanceAfter"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            },
+            "total": true
+          }
+        ]
+      }
+    ],
+    "data": {
+      "quote": {
+        "id": "q_sample",
+        "payeeId": "p_priya",
+        "amount": 40,
+        "reference": "Dinner",
+        "fee": 0,
+        "arrives": "2026-09-27T11:26:46.016Z",
+        "balanceAfter": 6548.15,
+        "label": "Send £40.00",
+        "payee": {
+          "id": "p_priya",
+          "name": "Priya Raman",
+          "initials": "PR",
+          "bank": "04-00-04 ··04",
+          "recent": true,
+          "lastPaid": "2026-09-04T11:12:00.000Z"
+        }
+      }
+    }
+  }
+}

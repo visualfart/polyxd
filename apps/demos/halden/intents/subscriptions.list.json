@@ -1,0 +1,221 @@
+{
+  "id": "subscriptions.list",
+  "title": "What you pay for every month",
+  "ask": [
+    "what am I paying for every month",
+    "show my subscriptions",
+    "cancel a subscription",
+    "what recurring payments do I have"
+  ],
+  "keywords": [
+    "subscription",
+    "subscriptions",
+    "recurring",
+    "monthly"
+  ],
+  "capabilities": [
+    "subscription.open"
+  ],
+  "data": {
+    "total": "view:subscriptionsTotal",
+    "subscriptions": "view:subscriptions"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "subscriptions",
+      "title": "Every month",
+      "intent": "subscriptions.list"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "figures",
+          "hint",
+          "list"
+        ]
+      },
+      {
+        "id": "figures",
+        "component": "Group",
+        "arrangement": "inline",
+        "children": [
+          "monthly",
+          "yearly"
+        ]
+      },
+      {
+        "id": "monthly",
+        "component": "Metric",
+        "key": "subscriptions_monthly",
+        "label": "A month",
+        "value": {
+          "path": "/total/monthly"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        }
+      },
+      {
+        "id": "yearly",
+        "component": "Metric",
+        "key": "subscriptions_yearly",
+        "label": "A year",
+        "value": {
+          "path": "/total/yearly"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        }
+      },
+      {
+        "id": "hint",
+        "component": "Text",
+        "key": "hint",
+        "variant": "supporting",
+        "text": "Choose one to see when it next goes out, or to stop it."
+      },
+      {
+        "id": "list",
+        "component": "Table",
+        "key": "subscriptions",
+        "rows": {
+          "path": "/subscriptions"
+        },
+        "caption": "Recurring payments",
+        "columns": [
+          {
+            "key": "name",
+            "label": "Service",
+            "path": "name",
+            "kind": "entity",
+            "secondaryPath": "detail"
+          },
+          {
+            "key": "amount",
+            "label": "Amount",
+            "path": "amount",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          },
+          {
+            "key": "every",
+            "label": "Every",
+            "path": "every"
+          },
+          {
+            "key": "next",
+            "label": "Next",
+            "path": "nextOn",
+            "kind": "date",
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "path": "status",
+            "kind": "status",
+            "tones": {
+              "Active": "success",
+              "Stopped": "neutral"
+            }
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "subscription.open",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        },
+        "empty": "empty"
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "title": "No recurring payments",
+        "message": "When a merchant takes the same payment each month, it shows here."
+      }
+    ],
+    "data": {
+      "total": {
+        "monthly": 61.97,
+        "yearly": 743.64,
+        "count": 4
+      },
+      "subscriptions": [
+        {
+          "id": "sub_northwave",
+          "name": "Northwave Gym",
+          "detail": "Membership",
+          "amount": 34,
+          "cadence": "monthly",
+          "every": "Every month",
+          "monthly": 34,
+          "nextOn": "2026-10-17T16:00:00.000Z",
+          "active": true,
+          "status": "Active",
+          "since": "2026-06-23T23:00:00.000Z",
+          "paidSoFar": 102
+        },
+        {
+          "id": "sub_wavelength",
+          "name": "Wavelength",
+          "detail": "Music",
+          "amount": 10.99,
+          "cadence": "monthly",
+          "every": "Every month",
+          "monthly": 10.99,
+          "nextOn": "2026-10-04T16:00:00.000Z",
+          "active": true,
+          "status": "Active",
+          "since": "2025-09-11T23:00:00.000Z",
+          "paidSoFar": 32.97
+        },
+        {
+          "id": "sub_streamline",
+          "name": "Streamline",
+          "detail": "TV",
+          "amount": 8.99,
+          "cadence": "monthly",
+          "every": "Every month",
+          "monthly": 8.99,
+          "nextOn": "2026-10-11T16:00:00.000Z",
+          "active": true,
+          "status": "Active",
+          "since": "2026-03-10T22:00:00.000Z",
+          "paidSoFar": 26.97
+        },
+        {
+          "id": "sub_cloudloft",
+          "name": "Cloudloft",
+          "detail": "Storage, 2 TB",
+          "amount": 7.99,
+          "cadence": "monthly",
+          "every": "Every month",
+          "monthly": 7.99,
+          "nextOn": "2026-10-21T16:00:00.000Z",
+          "active": true,
+          "status": "Active",
+          "since": "2025-11-30T22:00:00.000Z",
+          "paidSoFar": 23.97
+        }
+      ]
+    }
+  }
+}
