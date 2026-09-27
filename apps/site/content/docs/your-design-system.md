@@ -66,6 +66,16 @@ npx polyxd check ./ds-acme/manifest.json
 
 Every token present and correctly typed, all 34 contrast pairs measured with alpha compositing, every constraint met. This is the same check the thirteen shipped packs pass, and it's the thing that tells you a generated interface in your design system will be readable before anyone sees it.
 
+## Preview documents as you write them
+
+```sh
+npx polyxd dev ./screens
+```
+
+`polyxd dev` watches a folder for Polyxd documents (a JSON file with `specVersion` and `components`, or an intent file with a `document` inside) and opens a page that renders the one you pick with the real renderer. Switch it between every built-in design system, or your own pack with `--pack ./ds-acme/manifest.json`; light and dark; phone, tablet and desktop, or drag the edge to any width; compact to spacious. Beside the surface sit the static check (schema, structure, and every binding against the data, so a path that reads nothing shows up before anyone sees a blank), the document, its data, and a log of the actions the surface dispatches with their context resolved. Save the file and the surface reloads in place; your selection and controls stay.
+
+Data comes from the document's own `data`, from a `<name>.data.json` beside it, or from `--data sample.json` for every document that has none. With `--verify`, a button runs the full verifier (13 packs, light and dark, phone and desktop, with axe and the layout check) and streams the result into the panel (`npm install -D @polyxd/verifier` first). Documents that name `"$schema": "https://polyxd.com/schema/0.3/ui.schema.json"` also get completion and hover text in VS Code, Cursor, Zed and JetBrains without anything installed.
+
 ## Keep Studio in step
 
 If your team uses [Studio](https://studio.polyxd.com), the same tokens can go there from the build that produces them, with an API key from the workspace's Team page:

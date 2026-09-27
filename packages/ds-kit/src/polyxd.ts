@@ -34,6 +34,13 @@ switch (command) {
     const { main } = await import("./studio.ts");
     process.exit(await main(rest));
   }
+  case "dev": {
+    // Stays up once it has started: the server and the watcher keep the process alive.
+    const { main } = await import("./dev.ts");
+    const code = await main(rest);
+    if (code || rest.includes("--help") || rest.includes("-h")) process.exit(code);
+    break;
+  }
   default:
     console.log(`polyxd <command>
 
@@ -47,6 +54,11 @@ switch (command) {
 
   studio push <package dir | tarball | token file> --to <studio>/api/w/<workspace>
       Sends your tokens to Polyxd Studio as a new version of your design system, using an
-      API key from POLYXD_STUDIO_KEY. Made for a CI step on every release.`);
+      API key from POLYXD_STUDIO_KEY. Made for a CI step on every release.
+
+  dev [dir] [--port 4310] [--theme material3] [--data <file.json>] [--pack <manifest.json|theme.css>] [--verify] [--open]
+      Previews the documents in a folder as you edit them: rendered with the real renderer in
+      any built-in pack or one of yours, light or dark, phone to desktop, with the static check,
+      the document, its data and the actions it dispatches beside it. Reloads on save.`);
     process.exit(command ? 1 : 0);
 }
