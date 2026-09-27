@@ -91,11 +91,14 @@ npm run test:all                        # every workspace's tests, with one tota
 npm run verify:packs -w @polyxd/verifier   # the 1,248 renders
 ```
 
+Polyxd is for **surfaces**, generated or authored. A designer can write the same document on purpose, as a screen of the product; it renders in the same design system and is verified by the same rules. The product's shell (navigation, app bars, brand) stays in code. See the [demos](https://polyxd.com/demos/): three products in three design systems, with generated and authored screens side by side.
+
 ## Who it's for
 
 - **Products with an assistant** that can answer in text but can't show the confirmation dialog, because building a screen per intent is unbounded work. Especially where generated UI has to be safe and accessible, not just plausible.
 - **Server-driven UI, with no AI at all.** The document format is the product; anything that emits JSON can drive it.
 - **Internal tools** — the long tail of admin screens nobody will fund as code.
+- **Design teams** who want to author screens once, in meaning, and have them render in every design system they ship and be checked before release. [Studio](https://studio.polyxd.com) has a Screens editor for exactly that.
 - **Anyone whose product someone else's agent will operate.** Every surface is operable through its accessibility tree by construction.
 
 Not for: a handful of intents in one design system (hand-build them), or the flagship flow that *is* your product.

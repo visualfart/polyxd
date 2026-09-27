@@ -9,6 +9,8 @@ section: Start
 
 Polyxd is an open spec and runtime for **just-in-time interfaces**: UI that is generated when someone needs it, used, and then thrown away. Any generator that emits spec-valid JSON can write those interfaces: Claude, GPT, Gemini, or a model or program of your own. Polyxd ships no model.
 
+A document doesn't have to be generated, either. Designers author screens in the same format, and they render and verify the same way; only the product's shell (navigation, app bars, brand) stays in code. See [Generated or authored](/docs/authored-screens/), and the [demos](/demos/): three products in three design systems, with generated and authored screens side by side.
+
 A just-in-time interface is not code. It is a **UI document**, a small JSON file that lists semantic components ("a choice", "a confirmation", "a table") bound to data your app provides. A renderer turns that document into native components in your design system, and a verifier checks it before anyone sees it.
 
 ```
@@ -74,7 +76,7 @@ Polyxd is an **early preview**. The spec is at `specVersion` 0.1 and may still c
 | 2: Web renderer and theming | Done |
 | 3: Verifier and benchmark | In progress. The verifier is done; the benchmark is in progress |
 | 4–6: Generator experiments | Paused |
-| 7: Demo and release | Planned |
+| 7: Demo and release | Done: [three demo products](/demos/), packages at 0.2 |
 
 **There is no bundled model.** Today you write or generate UI documents with any generator, validate them, render them in thirteen design systems, and verify them. See the [roadmap](/docs/roadmap).
 

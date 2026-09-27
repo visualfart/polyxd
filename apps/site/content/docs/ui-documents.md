@@ -80,6 +80,7 @@ This is `packages/spec/examples/money-send-confirm.json`, the confirmation step 
 | `pattern` | No | Id of the [pattern](/docs/patterns) the surface follows. The validator runs that pattern's checks. |
 | `journey` | No | Id of the [journey](/docs/product) this surface is a step of. |
 | `dismissible` | No | Whether the surface can be dismissed. Defaults to `true`. |
+| `origin` | No | `generated` or `authored`: whether a generator wrote it for a request, or a person authored it as a screen of the product. Validation and rendering are the same either way; see [Generated or authored](/docs/authored-screens/). |
 
 ### A flat list of components
 
