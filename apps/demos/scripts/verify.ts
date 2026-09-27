@@ -21,12 +21,16 @@ const browser = await launch();
 let failed = 0;
 try {
   for (const demo of demos) {
-    const dir = new URL(`${demo}/intents/`, here);
     const registry = await read(new URL(`${demo}/registry.json`, here)).catch(() => undefined);
     const direction = await read(new URL(`${demo}/direction.json`, here)).catch(() => undefined);
-    const files = (await readdir(dir).catch(() => [] as string[])).filter((f) => f.endsWith(".json") && (!onlyIntent || f === `${onlyIntent}.json`)).sort();
+    // Generated documents (intents/) and authored screens (authored/) are held to the same checks.
+    const files: { dir: URL; file: string }[] = [];
+    for (const kind of ["intents", "authored"]) {
+      const dir = new URL(`${demo}/${kind}/`, here);
+      for (const file of (await readdir(dir).catch(() => [] as string[])).filter((f) => f.endsWith(".json") && (!onlyIntent || f === `${onlyIntent}.json`)).sort()) files.push({ dir, file });
+    }
     await mkdir(new URL(`${demo}/reports/`, here), { recursive: true });
-    for (const file of files) {
+    for (const { dir, file } of files) {
       const intent = await read(new URL(file, dir));
       const doc = intent.document;
       const report: Report = await verifyDocument(doc, { ...DEFAULTS, themes: THEMES, browser, registry, rules: direction?.rules });

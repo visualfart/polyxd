@@ -20,6 +20,7 @@ export interface UIDocument {
     /** ActionBar id: what you can do to this record */
     actions?: string;
     presentation?: "page" | "panel";
+    origin?: "generated" | "authored";
   };
   root: string;
   components: Node[];

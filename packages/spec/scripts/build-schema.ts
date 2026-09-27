@@ -96,6 +96,10 @@ export function buildUiSchema(common: Record<string, unknown>, components: Compo
             description: "'panel' opens beside what it came from (a side sheet over a list) and is full screen on compact surfaces",
           },
           dismissible: { type: "boolean", default: true },
+          origin: {
+            enum: ["generated", "authored"],
+            description: "How the document came to be: written by a generator for a request, or authored by a person as a screen of the product. Both are verified the same way; the mark a renderer shows can say which",
+          },
         },
         additionalProperties: false,
       },

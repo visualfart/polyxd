@@ -103,6 +103,13 @@
         "dismissible": {
           "type": "boolean",
           "default": true
+        },
+        "origin": {
+          "enum": [
+            "generated",
+            "authored"
+          ],
+          "description": "How the document came to be: written by a generator for a request, or authored by a person as a screen of the product. Both are verified the same way; the mark a renderer shows can say which"
         }
       },
       "additionalProperties": false

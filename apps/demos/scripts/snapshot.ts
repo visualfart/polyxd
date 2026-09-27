@@ -19,12 +19,15 @@ const products: Record<string, () => Promise<{ seed: () => unknown; surfaceData:
 for (const [name, load] of Object.entries(products)) {
   if (only && only !== name) continue;
   const { seed, surfaceData } = await load();
-  const dir = new URL(`${name}/intents/`, here);
-  for (const file of (await readdir(dir)).filter((f) => f.endsWith(".json") && (!onlyIntent || f === `${onlyIntent}.json`)).sort()) {
-    const path = new URL(file, dir);
-    const intent = JSON.parse(await readFile(path, "utf8"));
-    intent.document.data = surfaceData(seed(), intent, intent.sample ?? {});
-    await writeFile(path, JSON.stringify(intent, null, 2) + "\n");
-    console.log(`${name}/${file}: data keys ${Object.keys(intent.document.data).join(", ")}`);
+  // Generated documents live in intents/, authored screens in authored/; both get a snapshot.
+  for (const kind of ["intents", "authored"]) {
+    const dir = new URL(`${name}/${kind}/`, here);
+    for (const file of (await readdir(dir).catch(() => [] as string[])).filter((f) => f.endsWith(".json") && (!onlyIntent || f === `${onlyIntent}.json`)).sort()) {
+      const path = new URL(file, dir);
+      const intent = JSON.parse(await readFile(path, "utf8"));
+      intent.document.data = surfaceData(seed(), intent, intent.sample ?? {});
+      await writeFile(path, JSON.stringify(intent, null, 2) + "\n");
+      console.log(`${name}/${kind}/${file}: data keys ${Object.keys(intent.document.data).join(", ")}`);
+    }
   }
 }

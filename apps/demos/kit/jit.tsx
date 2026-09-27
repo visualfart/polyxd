@@ -26,8 +26,11 @@ export interface JitProps {
   /** Renderer overrides for this product. */
   components?: Partial<Record<string, ComponentRenderer>>;
   resolveMedia?: (ref: string) => string | undefined;
-  /** How this document came to be, for the mark. */
-  origin: "library" | "live";
+  /**
+   * How this document came to be, for the mark: generated ahead of time and kept in the product's
+   * library, generated just now, or authored by a person as a screen of the product.
+   */
+  origin: "library" | "live" | "authored";
   /** Other packs the drawer can show the surface in. */
   packs?: { id: string; name: string }[];
   /** Loads a pack's theme CSS on demand (the product only ships its own). */
@@ -58,15 +61,16 @@ export function JitPending({ title, pattern, theme, mode }: { title?: string; pa
   );
 }
 
-function Checked({ report, origin, onOpen }: { report?: ReportSummary; origin: "library" | "live"; onOpen: () => void }) {
+function Checked({ report, origin, onOpen }: { report?: ReportSummary; origin: "library" | "live" | "authored"; onOpen: () => void }) {
   const packs = report ? new Set(report.targets.map((t) => t.theme)).size : 0;
+  const who = origin === "authored" ? "Authored · " : "";
   const text = !report
     ? origin === "live"
       ? "Generated just now · checked against the spec"
-      : "Not yet verified"
+      : `${who}Not yet verified`
     : report.errors === 0 && report.warnings === 0
-      ? `Checked in ${packs} design systems · no issues`
-      : `Checked in ${packs} design systems · ${report.errors} error${report.errors === 1 ? "" : "s"}, ${report.warnings} warning${report.warnings === 1 ? "" : "s"}`;
+      ? `${who}Checked in ${packs} design systems · no issues`
+      : `${who}Checked in ${packs} design systems · ${report.errors} error${report.errors === 1 ? "" : "s"}, ${report.warnings} warning${report.warnings === 1 ? "" : "s"}`;
   return (
     <button type="button" className={`jit-mark${report && report.errors ? " jit-mark-issues" : ""}`} onClick={onOpen} aria-haspopup="dialog">
       <span className="jit-mark-dot" aria-hidden="true" />
