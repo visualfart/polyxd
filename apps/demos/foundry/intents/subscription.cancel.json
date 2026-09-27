@@ -1,0 +1,478 @@
+{
+  "id": "subscription.cancel",
+  "title": "Cancel a customer's plan",
+  "ask": [
+    "cancel Ledgerline's plan with a prorated refund",
+    "cancel a customer's plan",
+    "Marrowbank wants to cancel",
+    "end Quillpay's subscription and refund the rest"
+  ],
+  "keywords": [
+    "cancel",
+    "cancellation"
+  ],
+  "slots": {
+    "account": "(?:cancel |end |for )?(?<account>[A-Z][A-Za-z0-9&' ]+?)(?:'s\\b| wants| plan| subscription|$)",
+    "refund": "(?<refund>prorated refund|pro-rated refund|account credit|as credit|no refund)"
+  },
+  "capabilities": [
+    "cancellation.review"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "accounts": "view:accountOptions",
+    "draft": "view:cancelDraft"
+  },
+  "fill": {
+    "account": "/draft/accountId",
+    "refund": "/draft/refundMethod"
+  },
+  "sample": {
+    "account": "acc_0001",
+    "refund": "original"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "cancel-plan",
+      "title": "Cancel a plan",
+      "intent": "subscription.cancel",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": [
+          "account",
+          "effective",
+          "refund",
+          "note"
+        ],
+        "submit": {
+          "label": "Review cancellation",
+          "action": {
+            "event": {
+              "name": "cancellation.review",
+              "context": {
+                "accountId": {
+                  "path": "/draft/accountId"
+                },
+                "effectiveAt": {
+                  "path": "/draft/effectiveAt"
+                },
+                "refundMethod": {
+                  "path": "/draft/refundMethod"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Close",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "account",
+        "component": "Choice",
+        "key": "account",
+        "label": "Customer",
+        "options": {
+          "path": "/accounts",
+          "valuePath": "id",
+          "labelPath": "name",
+          "descriptionPath": "detail",
+          "avatarPath": "initials"
+        },
+        "value": {
+          "path": "/draft/accountId"
+        },
+        "required": true,
+        "help": "Customers on an active plan, by name."
+      },
+      {
+        "id": "effective",
+        "component": "DateInput",
+        "key": "effective_date",
+        "label": "Effective date",
+        "kind": "date",
+        "value": {
+          "path": "/draft/effectiveAt"
+        },
+        "required": true,
+        "help": "Access ends at the end of that day. Today at the earliest."
+      },
+      {
+        "id": "refund",
+        "component": "Choice",
+        "key": "refund_method",
+        "label": "Refund",
+        "options": [
+          {
+            "value": "original",
+            "label": "Original payment method",
+            "description": "The unused months go back to the card or account on file"
+          },
+          {
+            "value": "credit",
+            "label": "Account credit",
+            "description": "Held against a future plan with Basalt"
+          },
+          {
+            "value": "none",
+            "label": "No refund",
+            "description": "The unused months are forfeited"
+          }
+        ],
+        "value": {
+          "path": "/draft/refundMethod"
+        },
+        "required": true
+      },
+      {
+        "id": "note",
+        "component": "Text",
+        "key": "proration_note",
+        "variant": "supporting",
+        "text": "The refund is worked out pro rata from the unused whole months of the annual term. You see the exact amount, and what ends, before anything is canceled."
+      }
+    ],
+    "data": {
+      "accounts": [
+        {
+          "id": "acc_0044",
+          "name": "Alder & Vance",
+          "initials": "AV",
+          "detail": "Starter · 26 seats · renews Mar 26, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0010",
+          "name": "Ashgrove Market",
+          "initials": "AM",
+          "detail": "Starter · 19 seats · renews Nov 10",
+          "recent": true
+        },
+        {
+          "id": "acc_0042",
+          "name": "Beaconline Telecom",
+          "initials": "BT",
+          "detail": "Starter · 9 seats · renews Jan 25, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0027",
+          "name": "Bluefern Software",
+          "initials": "BS",
+          "detail": "Growth · 31 seats · renews May 13, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0012",
+          "name": "Brightloom",
+          "initials": "Br",
+          "detail": "Starter · 16 seats · renews Nov 23",
+          "recent": false
+        },
+        {
+          "id": "acc_0005",
+          "name": "Calloway Clinics",
+          "initials": "CC",
+          "detail": "Growth · 73 seats · renews Oct 18",
+          "recent": true
+        },
+        {
+          "id": "acc_0009",
+          "name": "Cinderpath",
+          "initials": "Ci",
+          "detail": "Growth · 51 seats · renews Nov 4",
+          "recent": true
+        },
+        {
+          "id": "acc_0039",
+          "name": "Clearwater Dairy",
+          "initials": "CD",
+          "detail": "Growth · 30 seats · renews Nov 13",
+          "recent": false
+        },
+        {
+          "id": "acc_0028",
+          "name": "Cobaltix",
+          "initials": "Co",
+          "detail": "Starter · 19 seats · renews May 28, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0041",
+          "name": "Copperkettle Cafés",
+          "initials": "CC",
+          "detail": "Scale · 174 seats · renews Dec 26",
+          "recent": false
+        },
+        {
+          "id": "acc_0020",
+          "name": "Coppermill Industries",
+          "initials": "CI",
+          "detail": "Starter · 19 seats · renews Feb 2, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0038",
+          "name": "Fallowfield Farms",
+          "initials": "FF",
+          "detail": "Starter · 15 seats · renews Oct 21",
+          "recent": true
+        },
+        {
+          "id": "acc_0035",
+          "name": "Ferrybrook Tours",
+          "initials": "FT",
+          "detail": "Growth · 33 seats · renews Sep 5, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0017",
+          "name": "Fieldnote Learning",
+          "initials": "FL",
+          "detail": "Growth · 18 seats · renews Dec 30",
+          "recent": false
+        },
+        {
+          "id": "acc_0046",
+          "name": "Granite Row Builders",
+          "initials": "GR",
+          "detail": "Scale · 148 seats · renews Aug 23, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0024",
+          "name": "Greyhawk Utilities",
+          "initials": "GU",
+          "detail": "Starter · 5 seats · renews Mar 30, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0014",
+          "name": "Halfmoon Studios",
+          "initials": "HS",
+          "detail": "Starter · 19 seats · renews Dec 7",
+          "recent": false
+        },
+        {
+          "id": "acc_0007",
+          "name": "Harborlane Freight",
+          "initials": "HF",
+          "detail": "Growth · 24 seats · renews Oct 26",
+          "recent": true
+        },
+        {
+          "id": "acc_0033",
+          "name": "Harrowgate Assurance",
+          "initials": "HA",
+          "detail": "Growth · 47 seats · renews Aug 7, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0045",
+          "name": "Helixera",
+          "initials": "He",
+          "detail": "Growth · 58 seats · renews May 25, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0019",
+          "name": "Ironvale Works",
+          "initials": "IW",
+          "detail": "Growth · 61 seats · renews Jan 20, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0025",
+          "name": "Kestrel Property",
+          "initials": "KP",
+          "detail": "Growth · 44 seats · renews Apr 14, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0040",
+          "name": "Lanternhouse Hotels",
+          "initials": "LH",
+          "detail": "Starter · 11 seats · renews Dec 2",
+          "recent": false
+        },
+        {
+          "id": "acc_0016",
+          "name": "Larkspur Academy",
+          "initials": "LA",
+          "detail": "Scale · 92 seats · renews Dec 22",
+          "recent": false
+        },
+        {
+          "id": "acc_0001",
+          "name": "Ledgerline",
+          "initials": "Le",
+          "detail": "Scale · 117 seats · renews Oct 1",
+          "recent": true
+        },
+        {
+          "id": "acc_0002",
+          "name": "Marrowbank",
+          "initials": "Ma",
+          "detail": "Starter · 24 seats · renews Oct 6",
+          "recent": true
+        },
+        {
+          "id": "acc_0026",
+          "name": "Meridian Estates",
+          "initials": "ME",
+          "detail": "Scale · 35 seats · renews Apr 29, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0030",
+          "name": "Nimbus Forge",
+          "initials": "NF",
+          "detail": "Starter · 23 seats · renews Jun 25, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0004",
+          "name": "Northbeam Health",
+          "initials": "NH",
+          "detail": "Starter · 21 seats · renews Oct 14",
+          "recent": true
+        },
+        {
+          "id": "acc_0018",
+          "name": "Oakhaven University",
+          "initials": "OU",
+          "detail": "Starter · 21 seats · renews Jan 8, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0036",
+          "name": "Open Meadow Foundation",
+          "initials": "OM",
+          "detail": "Scale · 175 seats · renews Sep 20, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0029",
+          "name": "Parallax Systems",
+          "initials": "PS",
+          "detail": "Scale · 76 seats · renews Jun 11, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0015",
+          "name": "Pennywhistle Press",
+          "initials": "PP",
+          "detail": "Scale · 158 seats · renews Dec 14",
+          "recent": false
+        },
+        {
+          "id": "acc_0003",
+          "name": "Quillpay",
+          "initials": "Qu",
+          "detail": "Growth · 71 seats · renews Oct 9",
+          "recent": true
+        },
+        {
+          "id": "acc_0008",
+          "name": "Redroute Logistics",
+          "initials": "RL",
+          "detail": "Scale · 77 seats · renews Oct 30",
+          "recent": true
+        },
+        {
+          "id": "acc_0037",
+          "name": "Riverwatch Trust",
+          "initials": "RT",
+          "detail": "Growth · 45 seats · renews Oct 5",
+          "recent": true
+        },
+        {
+          "id": "acc_0032",
+          "name": "Saltmarsh Mutual",
+          "initials": "SM",
+          "detail": "Starter · 5 seats · renews Jul 24, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0013",
+          "name": "Signalwood Media",
+          "initials": "SM",
+          "detail": "Growth · 75 seats · renews Nov 29",
+          "recent": false
+        },
+        {
+          "id": "acc_0034",
+          "name": "Skylark Travel",
+          "initials": "ST",
+          "detail": "Starter · 20 seats · renews Aug 22, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0021",
+          "name": "Stonebridge Fabrication",
+          "initials": "SF",
+          "detail": "Scale · 113 seats · renews Feb 15, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0022",
+          "name": "Sunward Energy",
+          "initials": "SE",
+          "detail": "Scale · 139 seats · renews Mar 2, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0011",
+          "name": "Tessellate Goods",
+          "initials": "TG",
+          "detail": "Scale · 53 seats · renews Nov 17",
+          "recent": false
+        },
+        {
+          "id": "acc_0043",
+          "name": "Thornbury Advisory",
+          "initials": "TA",
+          "detail": "Scale · 163 seats · renews Feb 24, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0023",
+          "name": "Tidemark Power",
+          "initials": "TP",
+          "detail": "Growth · 14 seats · renews Mar 16, 2027",
+          "recent": false
+        },
+        {
+          "id": "acc_0006",
+          "name": "Vitalis Labs",
+          "initials": "VL",
+          "detail": "Scale · 139 seats · renews Oct 23",
+          "recent": true
+        },
+        {
+          "id": "acc_0031",
+          "name": "Wren & Field",
+          "initials": "WF",
+          "detail": "Scale · 142 seats · renews Jul 10, 2027",
+          "recent": false
+        }
+      ],
+      "draft": {
+        "accountId": "acc_0001",
+        "effectiveAt": "2026-09-27",
+        "refundMethod": "original"
+      }
+    }
+  }
+}

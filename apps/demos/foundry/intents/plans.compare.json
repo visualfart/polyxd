@@ -1,0 +1,183 @@
+{
+  "id": "plans.compare",
+  "title": "Compare plans for a customer",
+  "ask": [
+    "compare Growth and Scale for Ledgerline",
+    "which plan should Northbeam Health be on",
+    "compare plans for Cobaltix",
+    "should Harborlane Freight upgrade to Scale"
+  ],
+  "keywords": [
+    "compare",
+    "upgrade",
+    "downgrade"
+  ],
+  "slots": {
+    "plans": "(?<plans>(?:starter|growth|scale)(?:,? (?:and|vs\\.?|versus|or|with) (?:starter|growth|scale))+)",
+    "account": "\\b(?:for|should|is) (?<account>[A-Z][A-Za-z0-9&' ]+?)(?: be| upgrade| downgrade| move| go|\\?|$)"
+  },
+  "capabilities": [
+    "plan.review"
+  ],
+  "pattern": "compare-and-choose",
+  "data": {
+    "compare": "view:planCompare"
+  },
+  "sample": {
+    "account": "acc_0001",
+    "plans": [
+      "growth",
+      "scale"
+    ]
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "plans-compare",
+      "title": "Compare plans",
+      "intent": "plans.compare",
+      "pattern": "compare-and-choose"
+    },
+    "root": "comparison",
+    "components": [
+      {
+        "id": "comparison",
+        "component": "Comparison",
+        "key": "plans",
+        "items": {
+          "path": "/compare/plans"
+        },
+        "itemTitle": "name",
+        "summary": {
+          "path": "/compare/summary"
+        },
+        "recommended": {
+          "path": "/compare/recommendation/plan"
+        },
+        "recommendedReason": {
+          "path": "/compare/recommendation/reason"
+        },
+        "attributes": [
+          {
+            "key": "annual",
+            "label": {
+              "path": "/compare/annualLabel"
+            },
+            "path": "annual",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "better": "lower",
+            "group": "Price"
+          },
+          {
+            "key": "per_seat",
+            "label": "Per seat a year",
+            "path": "perSeat",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "better": "lower",
+            "group": "Price"
+          },
+          {
+            "key": "min_seats",
+            "label": "Minimum seats",
+            "path": "minSeats",
+            "format": {
+              "type": "number"
+            },
+            "better": "lower",
+            "group": "Price"
+          },
+          {
+            "key": "sla",
+            "label": "First response",
+            "path": "sla",
+            "group": "Support"
+          },
+          {
+            "key": "support",
+            "label": "Support channel",
+            "path": "support",
+            "group": "Support"
+          },
+          {
+            "key": "sso",
+            "label": "Single sign-on",
+            "path": "sso",
+            "group": "Security and data"
+          },
+          {
+            "key": "retention",
+            "label": "Data retention",
+            "path": "retention",
+            "group": "Security and data"
+          }
+        ],
+        "choose": {
+          "label": "Choose",
+          "action": {
+            "event": {
+              "name": "plan.review",
+              "context": {
+                "accountId": {
+                  "path": "/compare/account/id"
+                },
+                "plan": {
+                  "path": "id"
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "compare": {
+        "account": {
+          "id": "acc_0001",
+          "name": "Ledgerline",
+          "seats": 117,
+          "seatsUsed": 39,
+          "planName": "Scale",
+          "renewalAt": "2026-10-01T02:00:00.000Z"
+        },
+        "summary": "Ledgerline has 117 seats on Scale, 33% in use, renewing October 1, 2026. Prices are for a year at 117 seats.",
+        "annualLabel": "A year at 117 seats",
+        "plans": [
+          {
+            "id": "growth",
+            "name": "Growth",
+            "minSeats": 10,
+            "perSeat": 480,
+            "annual": 56160,
+            "sla": "8 hours",
+            "sso": true,
+            "retention": "1 year",
+            "support": "Email and chat",
+            "current": false
+          },
+          {
+            "id": "scale",
+            "name": "Scale",
+            "minSeats": 25,
+            "perSeat": 900,
+            "annual": 105300,
+            "sla": "1 hour",
+            "sso": true,
+            "retention": "7 years",
+            "support": "Named CSM, 24/7",
+            "current": true
+          }
+        ],
+        "recommendation": {
+          "plan": "Growth",
+          "reason": "Only 33% of seats are in use; Growth keeps the price in line with what they use"
+        }
+      }
+    }
+  }
+}

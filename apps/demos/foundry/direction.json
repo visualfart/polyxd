@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../packages/spec/schema/direction.schema.json",
+  "name": "foundry",
+  "version": "1.0.0",
+  "designSystem": "shadcn",
+  "profile": {
+    "density": "compact",
+    "emphasisBudget": 1,
+    "dataDisplay": "prefer-tables",
+    "motion": "subtle",
+    "disclosure": "progressive",
+    "freedom": "strict"
+  },
+  "voice": {
+    "guidelines": [
+      "Precise and neutral. Name the customer, the number and the date; a CS lead reads this between two calls.",
+      "Say what a change does to the customer's access and bill, and whether it can be undone."
+    ],
+    "tone": {
+      "formality": "neutral",
+      "energy": "calm",
+      "warmth": "neutral",
+      "humor": "none"
+    },
+    "person": "you",
+    "casing": "sentence",
+    "spelling": "en-US",
+    "punctuation": {
+      "exclamation": "never",
+      "emoji": "never"
+    },
+    "labels": {
+      "maxWords": 4,
+      "verbFirst": true
+    },
+    "glossary": [
+      { "use": "customer", "insteadOf": ["client", "tenant", "org"] },
+      { "use": "seat", "insteadOf": ["license", "user slot"] },
+      { "use": "plan", "insteadOf": ["tier", "package", "SKU"] },
+      { "use": "ticket", "insteadOf": ["case", "issue", "request"] },
+      { "use": "renewal", "insteadOf": ["renewal opportunity", "opp"] }
+    ],
+    "avoid": ["simply", "just", "please note", "oops", "kindly", "leverage"],
+    "situations": {
+      "empty": "Say what would be listed here and the one change that would fill it.",
+      "error": "Say what did not happen, that nothing changed for the customer, and what to try.",
+      "success": "Say what changed, for which customer, and from when.",
+      "confirm": "Lead with the customer's name and the money or access that changes; say what can't be undone.",
+      "destructive": "Ask them to type the customer's name; list what ends, who is told, and when data goes."
+    }
+  },
+  "rules": [
+    {
+      "id": "cancel-names-account",
+      "description": "The button that cancels a plan names the customer",
+      "severity": "error",
+      "rule": {
+        "check": "labelMatches",
+        "component": "Confirm",
+        "pattern": "^Cancel [A-Z].+'s plan$",
+        "prop": "confirm.label",
+        "where": { "key": "cancel_confirm" }
+      }
+    },
+    {
+      "id": "money-only-from-confirm",
+      "description": "Cancellations, plan changes and quotes only go out from a confirmation",
+      "severity": "error",
+      "rule": {
+        "check": "actionInside",
+        "capabilities": ["subscription.cancel", "plan.change", "renewal.quote.send"],
+        "container": ["Confirm"]
+      }
+    },
+    {
+      "id": "short-labels",
+      "description": "Button labels are four words or fewer",
+      "severity": "warning",
+      "rule": { "check": "maxWords", "max": 4 }
+    },
+    {
+      "id": "no-filler",
+      "description": "No softeners or filler",
+      "severity": "warning",
+      "rule": { "check": "avoidTerms", "terms": ["simply", "just", "please note", "kindly", "leverage"] }
+    },
+    {
+      "id": "us-spelling",
+      "description": "US spelling throughout",
+      "severity": "warning",
+      "rule": { "check": "spelling", "variant": "en-US" }
+    }
+  ]
+}

@@ -1,0 +1,305 @@
+{
+  "id": "renewal.quote",
+  "title": "Quote a renewal",
+  "ask": [
+    "quote Ledgerline's renewal at 120 seats",
+    "quote a renewal for Cobaltix",
+    "renewal quote for Sunward Energy with 10% off",
+    "price Northbeam Health's renewal on Scale"
+  ],
+  "keywords": [
+    "quote",
+    "price"
+  ],
+  "slots": {
+    "account": "\\b(?:quote|price|for) (?<account>[A-Z][A-Za-z0-9&' ]+?)(?:'s\\b|\\s+(?:renewal|with|at|on)|$)",
+    "seats": "\\b(?<seats>\\d+) seats\\b",
+    "plan": "\\bon (?<plan>starter|growth|scale)\\b",
+    "discount": "\\b(?<discount>\\d+)% ?(?:off|discount)"
+  },
+  "capabilities": [
+    "renewal.review"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "quote": "view:quoteDraft",
+    "plans": "view:quotePlans",
+    "receipt": "view:quoteReceipt"
+  },
+  "sample": {
+    "account": "acc_0001",
+    "seats": 120
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "renewal-quote",
+      "title": "Quote a renewal",
+      "intent": "renewal.quote",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": [
+          "seats",
+          "plan",
+          "discount",
+          "term"
+        ],
+        "aside": "aside",
+        "submit": {
+          "label": "Review quote",
+          "action": {
+            "event": {
+              "name": "renewal.review",
+              "context": {
+                "accountId": {
+                  "path": "/quote/accountId"
+                },
+                "seats": {
+                  "path": "/quote/seats"
+                },
+                "plan": {
+                  "path": "/quote/plan"
+                },
+                "discount": {
+                  "path": "/quote/discount"
+                },
+                "termMonths": {
+                  "path": "/quote/termMonths"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Cancel",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "seats",
+        "component": "TextInput",
+        "key": "seats",
+        "label": "Seats",
+        "kind": "number",
+        "value": {
+          "path": "/quote/seats"
+        },
+        "required": true,
+        "validation": {
+          "min": 1,
+          "max": 5000,
+          "message": "Enter a seat count between 1 and 5,000"
+        },
+        "help": {
+          "path": "/receipt/seatsNote"
+        }
+      },
+      {
+        "id": "plan",
+        "component": "Choice",
+        "key": "plan",
+        "label": "Plan",
+        "options": {
+          "path": "/plans",
+          "valuePath": "id",
+          "labelPath": "name",
+          "descriptionPath": "detail"
+        },
+        "value": {
+          "path": "/quote/plan"
+        },
+        "required": true
+      },
+      {
+        "id": "discount",
+        "component": "TextInput",
+        "key": "discount",
+        "label": "Discount, percent",
+        "kind": "number",
+        "value": {
+          "path": "/quote/discount"
+        },
+        "validation": {
+          "min": 0,
+          "max": 30,
+          "message": "Discounts above 30% need finance approval"
+        },
+        "help": "Up to 30% without approval."
+      },
+      {
+        "id": "term",
+        "component": "Choice",
+        "key": "term",
+        "label": "Term",
+        "options": [
+          {
+            "value": 12,
+            "label": "1 year"
+          },
+          {
+            "value": 24,
+            "label": "2 years"
+          },
+          {
+            "value": 36,
+            "label": "3 years"
+          }
+        ],
+        "value": {
+          "path": "/quote/termMonths"
+        },
+        "required": true
+      },
+      {
+        "id": "aside",
+        "component": "Group",
+        "label": "Quote so far",
+        "children": [
+          "receipt",
+          "change_note"
+        ]
+      },
+      {
+        "id": "receipt",
+        "component": "DetailList",
+        "key": "receipt",
+        "title": {
+          "path": "/receipt/accountName"
+        },
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "plan",
+            "label": "Plan",
+            "value": {
+              "path": "/receipt/planName"
+            }
+          },
+          {
+            "key": "seats",
+            "label": "Seats",
+            "value": {
+              "path": "/receipt/seats"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "per_seat",
+            "label": "Per seat a year",
+            "value": {
+              "path": "/receipt/perSeat"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "term",
+            "label": "Term",
+            "value": {
+              "path": "/receipt/termLabel"
+            }
+          },
+          {
+            "key": "subtotal",
+            "label": "Subtotal",
+            "value": {
+              "path": "/receipt/subtotal"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "discount",
+            "label": "Discount",
+            "value": {
+              "path": "/receipt/discountAmount"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "total",
+            "label": "Total",
+            "value": {
+              "path": "/receipt/total"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "total": true
+          }
+        ]
+      },
+      {
+        "id": "change_note",
+        "component": "Text",
+        "key": "change_note",
+        "variant": "supporting",
+        "text": {
+          "path": "/receipt/changeText"
+        }
+      }
+    ],
+    "data": {
+      "quote": {
+        "accountId": "acc_0001",
+        "seats": 120,
+        "plan": "scale",
+        "discount": 0,
+        "termMonths": 12
+      },
+      "plans": [
+        {
+          "id": "starter",
+          "name": "Starter",
+          "detail": "$240 per seat a year, 5 seats minimum"
+        },
+        {
+          "id": "growth",
+          "name": "Growth",
+          "detail": "$480 per seat a year, 10 seats minimum"
+        },
+        {
+          "id": "scale",
+          "name": "Scale",
+          "detail": "$900 per seat a year, 25 seats minimum"
+        }
+      ],
+      "receipt": {
+        "accountName": "Ledgerline",
+        "planName": "Scale",
+        "seats": 120,
+        "seatsNote": "117 seats today",
+        "perSeat": 900,
+        "termLabel": "1 year",
+        "subtotal": 108000,
+        "discount": 0,
+        "discountAmount": 0,
+        "total": 108000,
+        "perYear": 108000,
+        "currentArr": 105300,
+        "change": 2700,
+        "changeText": "$2,700 a year more than today's $105,300.",
+        "renewalAt": "2026-10-01T02:00:00.000Z"
+      }
+    }
+  }
+}

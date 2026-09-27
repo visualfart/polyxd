@@ -1,0 +1,211 @@
+{
+  "id": "plan.change.confirm",
+  "title": "Confirm a plan change",
+  "ask": [],
+  "capabilities": [
+    "plan.change"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "change": "view:planChange"
+  },
+  "sample": {
+    "account": "acc_0001",
+    "plan": "scale"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "plan-change-confirm",
+      "title": "Change plan?",
+      "intent": "plans.compare",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "plan_confirm",
+        "title": {
+          "path": "/change/title"
+        },
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/change/toAnnual"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "USD"
+          }
+        },
+        "subject": {
+          "title": {
+            "path": "/change/account/name"
+          },
+          "subtitle": {
+            "path": "/change/account/detail"
+          },
+          "avatar": {
+            "path": "/change/account/initials"
+          }
+        },
+        "consequences": [
+          {
+            "title": {
+              "path": "/change/changeText"
+            },
+            "icon": "shield"
+          },
+          {
+            "title": {
+              "path": "/change/proratedText"
+            },
+            "icon": "tag"
+          },
+          {
+            "title": {
+              "path": "/change/contactText"
+            },
+            "icon": "mail"
+          }
+        ],
+        "summary": "summary",
+        "consequence": {
+          "path": "/change/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/change/label"
+          },
+          "action": {
+            "event": {
+              "name": "plan.change",
+              "context": {
+                "accountId": {
+                  "path": "/change/account/id"
+                },
+                "plan": {
+                  "path": "/change/plan"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Keep current plan",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "plan_change_summary",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "from",
+            "label": "Plan today",
+            "value": {
+              "path": "/change/fromPlan"
+            }
+          },
+          {
+            "key": "to",
+            "label": "Plan from today",
+            "value": {
+              "path": "/change/toPlan"
+            }
+          },
+          {
+            "key": "seats",
+            "label": "Seats",
+            "value": {
+              "path": "/change/seats"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "per_seat",
+            "label": "Per seat a year",
+            "value": {
+              "path": "/change/perSeat"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "from_annual",
+            "label": "A year today",
+            "value": {
+              "path": "/change/fromAnnual"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "renews",
+            "label": "Renews",
+            "value": {
+              "path": "/change/renewalAt"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "to_annual",
+            "label": "A year from renewal",
+            "value": {
+              "path": "/change/toAnnual"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "total": true
+          }
+        ]
+      }
+    ],
+    "data": {
+      "change": {
+        "account": {
+          "id": "acc_0001",
+          "name": "Ledgerline",
+          "initials": "Le",
+          "detail": "Scale · 117 seats · renews Oct 1"
+        },
+        "title": "Move Ledgerline to Scale?",
+        "label": "Move to Scale",
+        "plan": "scale",
+        "fromPlan": "Scale",
+        "toPlan": "Scale",
+        "seats": 117,
+        "seatsNote": "Same 117 seats as today",
+        "perSeat": 900,
+        "fromAnnual": 105300,
+        "toAnnual": 105300,
+        "difference": 0,
+        "prorated": 0,
+        "proratedText": "Nothing charged or credited now: the term ends October 1, 2026",
+        "monthsLeft": 0,
+        "renewalAt": "2026-10-01T02:00:00.000Z",
+        "changeText": "1 hour first response and named csm, 24/7 from today",
+        "contactText": "Jade Roux is emailed the new terms",
+        "consequence": "Ledgerline moves to Scale today. Nothing is charged or credited for the days left on the term, and the renewal on October 1, 2026 becomes $105,300 a year. The billing contact is emailed; moving back is a new plan change."
+      }
+    }
+  }
+}

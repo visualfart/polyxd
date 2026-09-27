@@ -1,0 +1,416 @@
+{
+  "id": "tickets.reassign",
+  "title": "Hand tickets to someone else",
+  "ask": [
+    "hand Sam's open tickets to Lena",
+    "reassign Sam's tickets",
+    "give Marcus's open tickets to Aiko while he's away",
+    "who can take over Jonah's queue"
+  ],
+  "keywords": [
+    "reassign",
+    "hand",
+    "handover",
+    "take over"
+  ],
+  "slots": {
+    "from": "\\b(?<from>[A-Z][a-z]+)'s (?:open )?(?:tickets|queue)",
+    "to": "\\bto (?<to>[A-Z][a-z]+)\\b"
+  },
+  "capabilities": [
+    "tickets.assign",
+    "ticket.open"
+  ],
+  "data": {
+    "handover": "view:handover"
+  },
+  "sample": {
+    "from": "m_sam",
+    "to": "m_lena"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "tickets-handover",
+      "title": "Hand over tickets",
+      "intent": "tickets.reassign"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "intro",
+          "table",
+          "assignee",
+          "actions"
+        ]
+      },
+      {
+        "id": "intro",
+        "component": "Text",
+        "key": "intro",
+        "variant": "supporting",
+        "text": {
+          "path": "/handover/intro"
+        }
+      },
+      {
+        "id": "table",
+        "component": "Table",
+        "key": "tickets",
+        "rows": {
+          "path": "/handover/tickets"
+        },
+        "caption": {
+          "path": "/handover/caption"
+        },
+        "rowValuePath": "id",
+        "selection": "multiple",
+        "selected": {
+          "path": "/handover/selection/ids"
+        },
+        "columns": [
+          {
+            "key": "subject",
+            "label": "Ticket",
+            "path": "subject",
+            "kind": "entity",
+            "secondaryPath": "account"
+          },
+          {
+            "key": "priority",
+            "label": "Priority",
+            "path": "priority",
+            "kind": "status",
+            "tones": {
+              "Urgent": "danger",
+              "High": "warning",
+              "Normal": "neutral",
+              "Low": "neutral"
+            }
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "path": "status",
+            "kind": "status",
+            "tones": {
+              "Open": "info",
+              "Pending": "warning"
+            }
+          },
+          {
+            "key": "sla",
+            "label": "First response",
+            "path": "sla"
+          },
+          {
+            "key": "updated",
+            "label": "Updated",
+            "path": "updatedAt",
+            "kind": "date",
+            "format": {
+              "type": "relativeTime"
+            }
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "ticket.open",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        },
+        "empty": "empty"
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "inbox",
+        "title": "Nothing to hand over",
+        "message": "No open or pending tickets are assigned to them."
+      },
+      {
+        "id": "assignee",
+        "component": "Choice",
+        "key": "assignee",
+        "label": "Hand them to",
+        "options": {
+          "path": "/handover/team",
+          "valuePath": "id",
+          "labelPath": "name",
+          "descriptionPath": "detail",
+          "avatarPath": "initials"
+        },
+        "value": {
+          "path": "/handover/selection/assigneeId"
+        },
+        "required": true,
+        "help": "Their open tickets and capacity are shown so the load stays fair."
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "assign"
+        ]
+      },
+      {
+        "id": "assign",
+        "component": "Action",
+        "key": "assign",
+        "label": "Reassign selected tickets",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "tickets.assign",
+            "context": {
+              "ticketIds": {
+                "path": "/handover/selection/ids"
+              },
+              "assigneeId": {
+                "path": "/handover/selection/assigneeId"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "handover": {
+        "from": {
+          "id": "m_sam",
+          "name": "Sam Whitlock",
+          "firstName": "Sam"
+        },
+        "caption": "Sam Whitlock's open tickets",
+        "intro": "Sam Whitlock is away until October 13, 2026. Everything here is open or waiting on a reply.",
+        "tickets": [
+          {
+            "id": "tk_0008",
+            "number": "#4187",
+            "subject": "Sync from the warehouse is three hours behind",
+            "account": "Riverwatch Trust",
+            "priority": "High",
+            "status": "Open",
+            "updatedAt": "2026-09-20T07:43:00.000Z",
+            "sla": "Past target",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0116",
+            "number": "#4189",
+            "subject": "Invoice shows the wrong seat count",
+            "account": "Granite Row Builders",
+            "priority": "High",
+            "status": "Pending",
+            "updatedAt": "2026-09-21T04:58:43.336Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0018",
+            "number": "#4209",
+            "subject": "API returning 429 on the ingest endpoint",
+            "account": "Tessellate Goods",
+            "priority": "High",
+            "status": "Open",
+            "updatedAt": "2026-09-24T23:30:24.237Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0046",
+            "number": "#4211",
+            "subject": "Query results differ between two workspaces",
+            "account": "Vitalis Labs",
+            "priority": "High",
+            "status": "Open",
+            "updatedAt": "2026-09-25T04:42:50.285Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0066",
+            "number": "#4208",
+            "subject": "Scheduled exports stopped overnight",
+            "account": "Oakhaven University",
+            "priority": "High",
+            "status": "Pending",
+            "updatedAt": "2026-09-25T16:08:37.797Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0030",
+            "number": "#4213",
+            "subject": "Sync from the warehouse is three hours behind",
+            "account": "Pennywhistle Press",
+            "priority": "High",
+            "status": "Pending",
+            "updatedAt": "2026-09-25T17:34:13.518Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0019",
+            "number": "#4214",
+            "subject": "Can't remove a deactivated user from a workspace",
+            "account": "Harborlane Freight",
+            "priority": "High",
+            "status": "Open",
+            "updatedAt": "2026-09-26T00:52:00.000Z",
+            "sla": "Past target",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0073",
+            "number": "#4194",
+            "subject": "Scheduled report arrives with an empty attachment",
+            "account": "Cobaltix",
+            "priority": "Normal",
+            "status": "Open",
+            "updatedAt": "2026-09-24T16:32:32.038Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0027",
+            "number": "#4205",
+            "subject": "Role permissions for viewers on shared boards",
+            "account": "Pennywhistle Press",
+            "priority": "Normal",
+            "status": "Open",
+            "updatedAt": "2026-09-23T23:42:48.291Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0036",
+            "number": "#4210",
+            "subject": "Request for a data retention extension",
+            "account": "Parallax Systems",
+            "priority": "Normal",
+            "status": "Open",
+            "updatedAt": "2026-09-25T00:03:42.864Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0028",
+            "number": "#4212",
+            "subject": "Rename a workspace without losing links",
+            "account": "Tidemark Power",
+            "priority": "Normal",
+            "status": "Pending",
+            "updatedAt": "2026-09-26T01:47:58.598Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0002",
+            "number": "#4215",
+            "subject": "CSV export drops the timezone column",
+            "account": "Kestrel Property",
+            "priority": "Normal",
+            "status": "Pending",
+            "updatedAt": "2026-09-26T08:15:42.242Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0012",
+            "number": "#4219",
+            "subject": "Scheduled report arrives with an empty attachment",
+            "account": "Alder & Vance",
+            "priority": "Normal",
+            "status": "Open",
+            "updatedAt": "2026-09-28T02:17:48.240Z",
+            "sla": "Answered",
+            "assignee": "Sam Whitlock"
+          },
+          {
+            "id": "tk_0006",
+            "number": "#4196",
+            "subject": "CSV export drops the timezone column",
+            "account": "Marrowbank",
+            "priority": "Low",
+            "status": "Open",
+            "updatedAt": "2026-09-22T01:00:00.000Z",
+            "sla": "Due in 13h",
+            "assignee": "Sam Whitlock"
+          }
+        ],
+        "selection": {
+          "ids": [
+            "tk_0008",
+            "tk_0116",
+            "tk_0018",
+            "tk_0046",
+            "tk_0066",
+            "tk_0030",
+            "tk_0019",
+            "tk_0073",
+            "tk_0027",
+            "tk_0036",
+            "tk_0028",
+            "tk_0002",
+            "tk_0012",
+            "tk_0006"
+          ],
+          "assigneeId": "m_lena"
+        },
+        "team": [
+          {
+            "id": "m_noor",
+            "name": "Noor Haddad",
+            "initials": "NH",
+            "detail": "Customer success lead · 3 open tickets of 8",
+            "recent": true
+          },
+          {
+            "id": "m_lena",
+            "name": "Lena Ortiz",
+            "initials": "LO",
+            "detail": "Customer success manager · 2 open tickets of 14",
+            "recent": true
+          },
+          {
+            "id": "m_priya",
+            "name": "Priya Natarajan",
+            "initials": "PN",
+            "detail": "Renewals manager · 5 open tickets of 10",
+            "recent": true
+          },
+          {
+            "id": "m_marcus",
+            "name": "Marcus Bell",
+            "initials": "MB",
+            "detail": "Support engineer · 2 open tickets of 16",
+            "recent": true
+          },
+          {
+            "id": "m_aiko",
+            "name": "Aiko Tanaka",
+            "initials": "AT",
+            "detail": "Support engineer · 7 open tickets of 16",
+            "recent": true
+          },
+          {
+            "id": "m_jonah",
+            "name": "Jonah Reyes",
+            "initials": "JR",
+            "detail": "Onboarding specialist · 4 open tickets of 10",
+            "recent": true
+          }
+        ]
+      }
+    }
+  }
+}

@@ -12,6 +12,12 @@ export interface PolyxdSurfaceProps {
   onAction?: (event: ActionEvent) => void;
   /** Called with the new data whenever an input changes it. */
   onDataChange?: (data: Data) => void;
+  /**
+   * Derived data: called after every input change with the new data and may return a replacement,
+   * so a receipt, a total or a filtered list can follow what the person types without the host
+   * remounting the surface. Pure: same data in, same data out.
+   */
+  derive?: (data: Data) => Data | void;
   /** Called for ui.dismiss (Cancel on a dialog, closing the surface). */
   onDismiss?: () => void;
   /** Design-system pack name, e.g. "material3" (matching a loaded theme CSS file). */
@@ -30,7 +36,7 @@ export interface PolyxdSurfaceProps {
 }
 
 /** Renders one Polyxd UI document. */
-export function PolyxdSurface({ document: doc, data: initial, onAction, onDataChange, onDismiss, theme, mode, density, disclosure = "progressive", locale = "en-GB", resolveMedia, components: overrides, className }: PolyxdSurfaceProps) {
+export function PolyxdSurface({ document: doc, data: initial, onAction, onDataChange, derive, onDismiss, theme, mode, density, disclosure = "progressive", locale = "en-GB", resolveMedia, components: overrides, className }: PolyxdSurfaceProps) {
   const [data, setData] = useState<Data>(() => initial ?? doc.data ?? {});
   const [portal, setPortal] = useState<HTMLElement | null>(null);
   const [root, setRoot] = useState<HTMLElement | null>(null);
@@ -40,11 +46,12 @@ export function PolyxdSurface({ document: doc, data: initial, onAction, onDataCh
   const setValue = useCallback(
     (pointer: string, value: unknown) =>
       setData((d) => {
-        const next = set(d, pointer, value);
+        const written = set(d, pointer, value);
+        const next = derive?.(written) ?? written;
         onDataChange?.(next);
         return next;
       }),
-    [onDataChange],
+    [onDataChange, derive],
   );
 
   const dispatch = useCallback<SurfaceContextValue["dispatch"]>(

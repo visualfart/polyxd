@@ -1,0 +1,353 @@
+{
+  "id": "accounts.renewing-with-tickets",
+  "title": "Accounts renewing soon with open tickets",
+  "ask": [
+    "accounts renewing in 30 days with open tickets",
+    "who's renewing in the next 60 days with open tickets",
+    "at risk accounts renewing this quarter",
+    "renewals with open tickets"
+  ],
+  "keywords": [
+    "renewing"
+  ],
+  "slots": {
+    "days": "\\b(?<days>30|60|90|quarter|month)\\b",
+    "health": "\\b(?<health>at risk|healthy|watch)\\b",
+    "plan": "\\bon (?<plan>starter|growth|scale)\\b"
+  },
+  "capabilities": [
+    "account.open"
+  ],
+  "pattern": "filter-and-browse",
+  "data": {
+    "filters": "view:renewingFilters",
+    "results": "view:renewingResults"
+  },
+  "sample": {
+    "days": 60
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "renewing-with-tickets",
+      "title": "Renewing with open tickets",
+      "intent": "accounts.renewing_with_tickets",
+      "pattern": "filter-and-browse"
+    },
+    "root": "panel",
+    "components": [
+      {
+        "id": "panel",
+        "component": "FilterPanel",
+        "label": "Narrow the list",
+        "children": [
+          "window",
+          "health",
+          "plans"
+        ],
+        "results": "table",
+        "resultCount": {
+          "path": "/results/count"
+        }
+      },
+      {
+        "id": "window",
+        "component": "Choice",
+        "key": "window",
+        "label": "Renewing within",
+        "options": [
+          {
+            "value": 30,
+            "label": "30 days"
+          },
+          {
+            "value": 60,
+            "label": "60 days"
+          },
+          {
+            "value": 90,
+            "label": "90 days"
+          }
+        ],
+        "value": {
+          "path": "/filters/days"
+        },
+        "required": true
+      },
+      {
+        "id": "health",
+        "component": "Choice",
+        "key": "health",
+        "label": "Health",
+        "mode": "multiple",
+        "options": [
+          {
+            "value": "Healthy",
+            "label": "Healthy"
+          },
+          {
+            "value": "Watch",
+            "label": "Watch"
+          },
+          {
+            "value": "At risk",
+            "label": "At risk"
+          }
+        ],
+        "value": {
+          "path": "/filters/health"
+        }
+      },
+      {
+        "id": "plans",
+        "component": "Choice",
+        "key": "plans",
+        "label": "Plan",
+        "mode": "multiple",
+        "options": [
+          {
+            "value": "starter",
+            "label": "Starter"
+          },
+          {
+            "value": "growth",
+            "label": "Growth"
+          },
+          {
+            "value": "scale",
+            "label": "Scale"
+          }
+        ],
+        "value": {
+          "path": "/filters/plans"
+        }
+      },
+      {
+        "id": "table",
+        "component": "Table",
+        "key": "accounts",
+        "rows": {
+          "path": "/results/rows"
+        },
+        "caption": {
+          "path": "/results/caption"
+        },
+        "rowValuePath": "id",
+        "columns": [
+          {
+            "key": "name",
+            "label": "Account",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "initials",
+            "secondaryPath": "planLine"
+          },
+          {
+            "key": "health",
+            "label": "Health",
+            "path": "health",
+            "kind": "status",
+            "tones": {
+              "Healthy": "success",
+              "Watch": "warning",
+              "At risk": "danger"
+            }
+          },
+          {
+            "key": "renews",
+            "label": "Renews",
+            "path": "renewalAt",
+            "kind": "date",
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "tickets",
+            "label": "Open tickets",
+            "path": "openTickets",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "arr",
+            "label": "ARR",
+            "path": "arr",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "account.open",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        },
+        "empty": "empty"
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "search",
+        "title": "No accounts match",
+        "message": "Widen the window or clear a filter. Accounts with no open tickets never show here."
+      }
+    ],
+    "data": {
+      "filters": {
+        "days": 60,
+        "health": [],
+        "plans": []
+      },
+      "results": {
+        "rows": [
+          {
+            "id": "acc_0001",
+            "name": "Ledgerline",
+            "industry": "Financial services",
+            "initials": "Le",
+            "plan": "Scale",
+            "planId": "scale",
+            "planLine": "Scale · Financial services",
+            "seats": 117,
+            "seatsUsed": 39,
+            "arr": 105300,
+            "health": "Watch",
+            "healthScore": 45,
+            "renewalAt": "2026-10-01T02:00:00.000Z",
+            "daysToRenewal": 4,
+            "openTickets": 1,
+            "urgent": 0,
+            "owner": "Noor Haddad"
+          },
+          {
+            "id": "acc_0037",
+            "name": "Riverwatch Trust",
+            "industry": "Nonprofit",
+            "initials": "RT",
+            "plan": "Growth",
+            "planId": "growth",
+            "planLine": "Growth · Nonprofit",
+            "seats": 45,
+            "seatsUsed": 18,
+            "arr": 21600,
+            "health": "At risk",
+            "healthScore": 39,
+            "renewalAt": "2026-10-05T01:00:00.000Z",
+            "daysToRenewal": 8,
+            "openTickets": 1,
+            "urgent": 0,
+            "owner": "Sam Whitlock"
+          },
+          {
+            "id": "acc_0002",
+            "name": "Marrowbank",
+            "industry": "Financial services",
+            "initials": "Ma",
+            "plan": "Starter",
+            "planId": "starter",
+            "planLine": "Starter · Financial services",
+            "seats": 24,
+            "seatsUsed": 19,
+            "arr": 5760,
+            "health": "Healthy",
+            "healthScore": 88,
+            "renewalAt": "2026-10-06T01:00:00.000Z",
+            "daysToRenewal": 9,
+            "openTickets": 1,
+            "urgent": 0,
+            "owner": "Sam Whitlock"
+          },
+          {
+            "id": "acc_0038",
+            "name": "Fallowfield Farms",
+            "industry": "Agriculture",
+            "initials": "FF",
+            "plan": "Starter",
+            "planId": "starter",
+            "planLine": "Starter · Agriculture",
+            "seats": 15,
+            "seatsUsed": 14,
+            "arr": 3600,
+            "health": "Healthy",
+            "healthScore": 75,
+            "renewalAt": "2026-10-21T01:00:00.000Z",
+            "daysToRenewal": 24,
+            "openTickets": 2,
+            "urgent": 0,
+            "owner": "Lena Ortiz"
+          },
+          {
+            "id": "acc_0006",
+            "name": "Vitalis Labs",
+            "industry": "Healthcare",
+            "initials": "VL",
+            "plan": "Scale",
+            "planId": "scale",
+            "planLine": "Scale · Healthcare",
+            "seats": 139,
+            "seatsUsed": 126,
+            "arr": 125100,
+            "health": "Healthy",
+            "healthScore": 75,
+            "renewalAt": "2026-10-23T01:00:00.000Z",
+            "daysToRenewal": 26,
+            "openTickets": 2,
+            "urgent": 0,
+            "owner": "Aiko Tanaka"
+          },
+          {
+            "id": "acc_0007",
+            "name": "Harborlane Freight",
+            "industry": "Logistics",
+            "initials": "HF",
+            "plan": "Growth",
+            "planId": "growth",
+            "planLine": "Growth · Logistics",
+            "seats": 24,
+            "seatsUsed": 9,
+            "arr": 11520,
+            "health": "At risk",
+            "healthScore": 27,
+            "renewalAt": "2026-10-26T01:00:00.000Z",
+            "daysToRenewal": 29,
+            "openTickets": 2,
+            "urgent": 0,
+            "owner": "Jonah Reyes"
+          },
+          {
+            "id": "acc_0011",
+            "name": "Tessellate Goods",
+            "industry": "Retail",
+            "initials": "TG",
+            "plan": "Scale",
+            "planId": "scale",
+            "planLine": "Scale · Retail",
+            "seats": 53,
+            "seatsUsed": 48,
+            "arr": 47700,
+            "health": "Healthy",
+            "healthScore": 87,
+            "renewalAt": "2026-11-17T01:00:00.000Z",
+            "daysToRenewal": 51,
+            "openTickets": 2,
+            "urgent": 0,
+            "owner": "Priya Natarajan"
+          }
+        ],
+        "count": 7,
+        "caption": "Renewing in the next 60 days with open tickets"
+      }
+    }
+  }
+}

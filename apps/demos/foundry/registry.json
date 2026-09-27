@@ -1,0 +1,174 @@
+{
+  "$schema": "../../../packages/spec/schema/capabilities.schema.json",
+  "name": "foundry",
+  "capabilities": {
+    "account.open": {
+      "description": "Open an account's record",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "account.tickets": {
+      "description": "Open an account's tickets",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "ticket.open": {
+      "description": "Open a ticket",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "cancellation.review": {
+      "description": "Work out a cancellation before it happens: the end date, the unused months and the refund",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "accountId": { "type": "string" },
+          "effectiveAt": { "type": "string" },
+          "refundMethod": { "enum": ["original", "credit", "none"] }
+        },
+        "required": ["accountId", "effectiveAt", "refundMethod"],
+        "additionalProperties": false
+      }
+    },
+    "subscription.cancel": {
+      "description": "Cancel a customer's plan from a date, refund the unused part of the term, and tell their billing contact",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "accountId": { "type": "string" },
+          "effectiveAt": { "type": "string" },
+          "refundMethod": { "enum": ["original", "credit", "none"] }
+        },
+        "required": ["accountId", "effectiveAt", "refundMethod"],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "Everyone at the customer loses access on the effective date",
+        "A refund is issued",
+        "The billing contact is emailed",
+        "The customer's data is erased 90 days after the end date"
+      ],
+      "preconditions": ["A review from cancellation.review"],
+      "agentMayInvoke": false
+    },
+    "plan.review": {
+      "description": "Work out what moving an account to another plan costs today and at renewal",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "accountId": { "type": "string" },
+          "plan": { "enum": ["starter", "growth", "scale"] }
+        },
+        "required": ["accountId", "plan"],
+        "additionalProperties": false
+      }
+    },
+    "plan.change": {
+      "description": "Move an account to another plan from today, charging or crediting the difference for the rest of the term",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "accountId": { "type": "string" },
+          "plan": { "enum": ["starter", "growth", "scale"] }
+        },
+        "required": ["accountId", "plan"],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "The customer is charged or credited today",
+        "Their renewal price changes",
+        "The billing contact is emailed the new terms"
+      ],
+      "preconditions": ["A review from plan.review"],
+      "agentMayInvoke": false
+    },
+    "tickets.assign": {
+      "description": "Give tickets to someone on the desk",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "ticketIds": { "type": "array", "items": { "type": "string" } },
+          "assigneeId": { "type": "string" }
+        },
+        "required": ["ticketIds", "assigneeId"],
+        "additionalProperties": false
+      },
+      "undo": "tickets.assign"
+    },
+    "member.invite": {
+      "description": "Invite people to the desk by email, with a role",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "emails": { "type": "array", "items": { "type": "string" } },
+          "role": { "enum": ["viewer", "agent", "manager", "admin"] },
+          "sendWelcome": { "type": "boolean" }
+        },
+        "required": ["emails", "role"],
+        "additionalProperties": false
+      },
+      "sideEffects": ["Each person is emailed a sign-in link"],
+      "undo": "member.remove"
+    },
+    "member.remove": {
+      "description": "Take someone off the desk",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "renewal.review": {
+      "description": "Price a renewal: seats, plan, discount and term, with the total before anything is sent",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "accountId": { "type": "string" },
+          "seats": { "type": "number" },
+          "plan": { "enum": ["starter", "growth", "scale"] },
+          "discount": { "type": "number" },
+          "termMonths": { "type": "number" }
+        },
+        "required": ["accountId", "seats", "plan"],
+        "additionalProperties": false
+      }
+    },
+    "renewal.quote.send": {
+      "description": "Email a renewal quote to the customer's billing contact and move the renewal to Quoted",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": { "quoteId": { "type": "string" } },
+        "required": ["quoteId"],
+        "additionalProperties": false
+      },
+      "sideEffects": ["The billing contact is emailed a quote they can accept", "The renewal moves to Quoted"],
+      "preconditions": ["A quote from renewal.review"],
+      "agentMayInvoke": false
+    }
+  }
+}

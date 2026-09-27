@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { PolyxdSkeleton, PolyxdSurface, type ActionEvent, type Data, type UIDocument } from "@polyxd/react";
+import { PolyxdSkeleton, PolyxdSurface, type ActionEvent, type ComponentRenderer, type Data, type UIDocument } from "@polyxd/react";
 import type { IntentFile, ReportSummary } from "./types.ts";
 
 /**
@@ -18,6 +18,13 @@ export interface JitProps {
   disclosure?: "progressive" | "show-everything";
   onAction: (e: ActionEvent) => void;
   onDismiss: () => void;
+  /** Hears every input change (the renderer's own prop, passed through). */
+  onDataChange?: (data: Data) => void;
+  /** Derived data after each change: a receipt or a filtered list that follows the inputs. */
+  derive?: (data: Data) => Data | void;
+  locale?: string;
+  /** Renderer overrides for this product. */
+  components?: Partial<Record<string, ComponentRenderer>>;
   resolveMedia?: (ref: string) => string | undefined;
   /** How this document came to be, for the mark. */
   origin: "library" | "live";
@@ -28,15 +35,15 @@ export interface JitProps {
   className?: string;
 }
 
-export function JitSurface({ intent, report, data, theme, mode, density, disclosure, onAction, onDismiss, resolveMedia, origin, packs = [], loadPack, className }: JitProps) {
+export function JitSurface({ intent, report, data, theme, mode, density, disclosure, onAction, onDismiss, onDataChange, derive, locale, components, resolveMedia, origin, packs = [], loadPack, className }: JitProps) {
   const [hood, setHood] = useState(false);
   // Remount on new data so the surface starts from the host's copy (it keeps its own while inputs change).
   const key = useMemo(() => JSON.stringify(data).length + ":" + intent.id, [data, intent.id]);
   return (
     <div className={["jit", className].filter(Boolean).join(" ")}>
-      <PolyxdSurface key={key} document={intent.document} data={data} theme={theme} mode={mode} density={density} disclosure={disclosure} onAction={onAction} onDismiss={onDismiss} resolveMedia={resolveMedia} />
+      <PolyxdSurface key={key} document={intent.document} data={data} theme={theme} mode={mode} density={density} disclosure={disclosure} locale={locale} components={components} onAction={onAction} onDismiss={onDismiss} onDataChange={onDataChange} derive={derive} resolveMedia={resolveMedia} />
       <Checked report={report} origin={origin} onOpen={() => setHood(true)} />
-      {hood && <Hood intent={intent} report={report} data={data} theme={theme} mode={mode} packs={packs} loadPack={loadPack} resolveMedia={resolveMedia} onClose={() => setHood(false)} />}
+      {hood && <Hood intent={intent} report={report} data={data} theme={theme} mode={mode} locale={locale} packs={packs} loadPack={loadPack} resolveMedia={resolveMedia} onClose={() => setHood(false)} />}
     </div>
   );
 }
@@ -75,7 +82,7 @@ const TABS = [
   ["packs", "In another design system"],
 ] as const;
 
-function Hood({ intent, report, data, theme, mode, packs, loadPack, resolveMedia, onClose }: { intent: IntentFile; report?: ReportSummary; data: Data; theme: string; mode: "light" | "dark"; packs: { id: string; name: string }[]; loadPack?: (id: string) => Promise<void>; resolveMedia?: (ref: string) => string | undefined; onClose: () => void }) {
+function Hood({ intent, report, data, theme, mode, locale, packs, loadPack, resolveMedia, onClose }: { intent: IntentFile; report?: ReportSummary; data: Data; theme: string; mode: "light" | "dark"; locale?: string; packs: { id: string; name: string }[]; loadPack?: (id: string) => Promise<void>; resolveMedia?: (ref: string) => string | undefined; onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [tab, setTab] = useState<(typeof TABS)[number][0]>("document");
   const [pack, setPack] = useState(packs.find((p) => p.id !== theme)?.id ?? theme);
@@ -185,7 +192,7 @@ function Hood({ intent, report, data, theme, mode, packs, loadPack, resolveMedia
                 ))}
               </select>
             </label>
-            <div className="jit-preview">{ready[pack] ? <PolyxdSurface key={pack} document={doc} data={data} theme={pack} mode={mode} onAction={() => undefined} onDismiss={() => undefined} resolveMedia={resolveMedia} /> : <PolyxdSkeleton title={doc.surface.title} pattern={doc.surface.pattern} theme={theme} mode={mode} />}</div>
+            <div className="jit-preview">{ready[pack] ? <PolyxdSurface key={pack} document={doc} data={data} theme={pack} mode={mode} locale={locale} onAction={() => undefined} onDismiss={() => undefined} resolveMedia={resolveMedia} /> : <PolyxdSkeleton title={doc.surface.title} pattern={doc.surface.pattern} theme={theme} mode={mode} />}</div>
           </Panel>
         )}
       </div>

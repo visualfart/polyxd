@@ -1,0 +1,154 @@
+{
+  "id": "team.invite",
+  "title": "Invite people to the desk",
+  "ask": [
+    "invite these three as viewers",
+    "invite someone to the team",
+    "add a new agent to the desk",
+    "invite dana@basalt.io as a manager"
+  ],
+  "keywords": [
+    "invite"
+  ],
+  "slots": {
+    "role": "\\bas (?:an? )?(?<role>viewers?|agents?|managers?|admins?)\\b",
+    "emails": "(?<emails>[\\w.+-]+@[\\w-]+\\.[\\w.-]+(?:[,\\s]+(?:and )?[\\w.+-]+@[\\w-]+\\.[\\w.-]+)*)"
+  },
+  "capabilities": [
+    "member.invite"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "invite": "view:inviteDraft",
+    "team": "view:teamSummary"
+  },
+  "fill": {
+    "role": "/invite/role",
+    "emails": "/invite/emails"
+  },
+  "sample": {
+    "role": "viewer"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "team-invite",
+      "title": "Invite to the desk",
+      "intent": "team.invite",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": [
+          "context",
+          "emails",
+          "role",
+          "welcome"
+        ],
+        "submit": {
+          "label": "Send invites",
+          "action": {
+            "event": {
+              "name": "member.invite",
+              "context": {
+                "emails": {
+                  "path": "/invite/emails"
+                },
+                "role": {
+                  "path": "/invite/role"
+                },
+                "sendWelcome": {
+                  "path": "/invite/sendWelcome"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Cancel",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "context",
+        "component": "Text",
+        "key": "team_note",
+        "variant": "supporting",
+        "text": {
+          "path": "/team/text"
+        }
+      },
+      {
+        "id": "emails",
+        "component": "TextInput",
+        "key": "emails",
+        "label": "Email addresses",
+        "kind": "tags",
+        "value": {
+          "path": "/invite/emails"
+        },
+        "help": "Press Enter after each address. At least one is needed."
+      },
+      {
+        "id": "role",
+        "component": "Choice",
+        "key": "role",
+        "label": "Role",
+        "options": [
+          {
+            "value": "viewer",
+            "label": "Viewer",
+            "description": "Sees accounts, tickets and renewals; changes nothing"
+          },
+          {
+            "value": "agent",
+            "label": "Agent",
+            "description": "Works tickets and updates the accounts they own"
+          },
+          {
+            "value": "manager",
+            "label": "Manager",
+            "description": "Everything an agent can, plus quotes, plan changes and hand-overs"
+          },
+          {
+            "value": "admin",
+            "label": "Admin",
+            "description": "Everything, including the team and cancellations"
+          }
+        ],
+        "value": {
+          "path": "/invite/role"
+        },
+        "required": true
+      },
+      {
+        "id": "welcome",
+        "component": "Toggle",
+        "key": "send_welcome",
+        "label": "Send a welcome email",
+        "description": "A sign-in link and a two-minute tour of the desk. Without it, an admin shares the link later.",
+        "value": {
+          "path": "/invite/sendWelcome"
+        }
+      }
+    ],
+    "data": {
+      "invite": {
+        "emails": [],
+        "role": "viewer",
+        "sendWelcome": true
+      },
+      "team": {
+        "count": 8,
+        "text": "8 people on the desk. New members get an email with a sign-in link."
+      }
+    }
+  }
+}

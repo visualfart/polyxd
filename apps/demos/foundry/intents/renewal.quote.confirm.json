@@ -1,0 +1,224 @@
+{
+  "id": "renewal.quote.confirm",
+  "title": "Send a renewal quote",
+  "ask": [],
+  "capabilities": [
+    "renewal.quote.send"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "quote": "view:quoteReview"
+  },
+  "sample": {
+    "account": "acc_0001",
+    "seats": 120
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "renewal-quote-confirm",
+      "title": "Send this quote?",
+      "intent": "renewal.quote",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "quote_confirm",
+        "title": {
+          "path": "/quote/title"
+        },
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/quote/total"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "USD"
+          }
+        },
+        "subject": {
+          "title": {
+            "path": "/quote/account/name"
+          },
+          "subtitle": {
+            "path": "/quote/account/detail"
+          },
+          "avatar": {
+            "path": "/quote/account/initials"
+          }
+        },
+        "consequences": [
+          {
+            "title": {
+              "path": "/quote/sentText"
+            },
+            "detail": "With a link to accept and pay",
+            "icon": "mail"
+          },
+          {
+            "title": {
+              "path": "/quote/validText"
+            },
+            "icon": "clock"
+          },
+          {
+            "title": {
+              "path": "/quote/stageText"
+            },
+            "icon": "tag"
+          }
+        ],
+        "summary": "summary",
+        "consequence": {
+          "path": "/quote/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/quote/label"
+          },
+          "action": {
+            "event": {
+              "name": "renewal.quote.send",
+              "context": {
+                "quoteId": {
+                  "path": "/quote/id"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Don't send",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "quote_summary",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "plan",
+            "label": "Plan",
+            "value": {
+              "path": "/quote/planName"
+            }
+          },
+          {
+            "key": "seats",
+            "label": "Seats",
+            "value": {
+              "path": "/quote/seats"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "per_seat",
+            "label": "Per seat a year",
+            "value": {
+              "path": "/quote/perSeat"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "term",
+            "label": "Term",
+            "value": {
+              "path": "/quote/termLabel"
+            }
+          },
+          {
+            "key": "subtotal",
+            "label": "Subtotal",
+            "value": {
+              "path": "/quote/subtotal"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "discount",
+            "label": {
+              "path": "/quote/discountLabel"
+            },
+            "value": {
+              "path": "/quote/discountAmount"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "renews",
+            "label": "Renews",
+            "value": {
+              "path": "/quote/renewalAt"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "total",
+            "label": "Total",
+            "value": {
+              "path": "/quote/total"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "total": true
+          }
+        ]
+      }
+    ],
+    "data": {
+      "quote": {
+        "id": "q_0006",
+        "title": "Send this quote to Clearwater Dairy?",
+        "label": "Send quote",
+        "account": {
+          "id": "acc_0039",
+          "name": "Clearwater Dairy",
+          "initials": "CD",
+          "detail": "Amara Byrne · amara@clearwaterdairy.com"
+        },
+        "planName": "Growth",
+        "seats": 30,
+        "perSeat": 480,
+        "termLabel": "1 year",
+        "subtotal": 14400,
+        "discount": 5,
+        "discountLabel": "Discount (5%)",
+        "discountAmount": 720,
+        "total": 13680,
+        "perYear": 13680,
+        "change": -720,
+        "renewalAt": "2026-11-13T01:00:00.000Z",
+        "validUntil": "2026-10-22T22:00:00.000Z",
+        "sentText": "Emailed to Amara Byrne",
+        "validText": "Valid until October 23, 2026",
+        "stageText": "Renewal moves to Quoted",
+        "consequence": "Amara Byrne gets the quote by email with a link to accept. $13,680 for a year is $720 a year less than today. You can send a revised quote later, but this one can't be recalled."
+      }
+    }
+  }
+}

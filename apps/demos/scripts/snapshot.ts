@@ -12,6 +12,8 @@ const [only, onlyIntent] = process.argv.slice(2);
 
 const products: Record<string, () => Promise<{ seed: () => unknown; surfaceData: (h: any, intent: any, slots: Record<string, unknown>) => Record<string, unknown> }>> = {
   halden: async () => ({ seed: (await import("../halden/seed.ts")).seed, surfaceData: (await import("../halden/views.ts")).surfaceData }),
+  foundry: async () => ({ seed: (await import("../foundry/seed.ts")).seed, surfaceData: (await import("../foundry/views.ts")).surfaceData }),
+  wexley: async () => ({ seed: (await import("../wexley/seed.ts")).seed, surfaceData: (await import("../wexley/views.ts")).surfaceData }),
 };
 
 for (const [name, load] of Object.entries(products)) {

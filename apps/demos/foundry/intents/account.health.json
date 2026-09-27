@@ -1,0 +1,281 @@
+{
+  "id": "account.health",
+  "title": "Why an account is at risk",
+  "ask": [
+    "why is Ledgerline at risk",
+    "how healthy is Cobaltix",
+    "what's going on with Vitalis Labs",
+    "is Ashgrove Market at risk"
+  ],
+  "keywords": [
+    "risk",
+    "healthy",
+    "health"
+  ],
+  "slots": {
+    "account": "\\b(?:is|with|about|on) (?<account>[A-Z][A-Za-z0-9&' ]+?)(?: at risk| healthy| doing| going|\\?|$)"
+  },
+  "capabilities": [
+    "account.open",
+    "account.tickets"
+  ],
+  "data": {
+    "health": "view:accountHealth"
+  },
+  "sample": {
+    "account": "acc_0001"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "account-health",
+      "title": "Account health",
+      "intent": "account.health"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "figures",
+          "chart",
+          "reasons",
+          "actions"
+        ]
+      },
+      {
+        "id": "figures",
+        "component": "Group",
+        "arrangement": "inline",
+        "children": [
+          "score",
+          "usage",
+          "tickets",
+          "renewal"
+        ]
+      },
+      {
+        "id": "score",
+        "component": "Metric",
+        "key": "health_score",
+        "label": "Health score",
+        "value": {
+          "path": "/health/score"
+        },
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "/health/scoreCaption"
+        }
+      },
+      {
+        "id": "usage",
+        "component": "Metric",
+        "key": "seats_in_use",
+        "label": "Seats in use",
+        "value": {
+          "path": "/health/usage"
+        },
+        "format": {
+          "type": "percent"
+        },
+        "change": {
+          "value": {
+            "path": "/health/usageChange"
+          },
+          "format": {
+            "type": "percent"
+          },
+          "favorable": "increase"
+        },
+        "caption": "Active seats against four weeks ago"
+      },
+      {
+        "id": "tickets",
+        "component": "Metric",
+        "key": "open_tickets",
+        "label": "Open tickets",
+        "value": {
+          "path": "/health/open"
+        },
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "/health/ticketsCaption"
+        }
+      },
+      {
+        "id": "renewal",
+        "component": "Metric",
+        "key": "days_to_renewal",
+        "label": "Days to renewal",
+        "value": {
+          "path": "/health/daysToRenewal"
+        },
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "/health/renewalCaption"
+        }
+      },
+      {
+        "id": "chart",
+        "component": "Chart",
+        "key": "active_seats",
+        "intent": "trend",
+        "data": {
+          "path": "/health/weekly"
+        },
+        "title": "Weekly active seats",
+        "summary": {
+          "path": "/health/chartSummary"
+        },
+        "x": {
+          "path": "week",
+          "label": "Week"
+        },
+        "series": [
+          {
+            "key": "active",
+            "path": "active",
+            "label": "Active seats",
+            "format": {
+              "type": "number"
+            }
+          }
+        ]
+      },
+      {
+        "id": "reasons",
+        "component": "Text",
+        "key": "reasons",
+        "variant": "list",
+        "text": {
+          "path": "/health/reasonsTitle"
+        },
+        "items": {
+          "path": "/health/reasons"
+        }
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "open_account",
+          "open_tickets"
+        ]
+      },
+      {
+        "id": "open_account",
+        "component": "Action",
+        "key": "open_account",
+        "label": "Open account",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "account.open",
+            "context": {
+              "id": {
+                "path": "/health/id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "open_tickets",
+        "component": "Action",
+        "key": "see_tickets",
+        "label": "See tickets",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "account.tickets",
+            "context": {
+              "id": {
+                "path": "/health/id"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "health": {
+        "id": "acc_0001",
+        "name": "Ledgerline",
+        "title": "Ledgerline: watch",
+        "score": 45,
+        "label": "Watch",
+        "scoreCaption": "Watch · Scale, 117 seats",
+        "usage": 0.33,
+        "usageChange": -0.07,
+        "open": 1,
+        "ticketsCaption": "None urgent",
+        "daysToRenewal": 4,
+        "renewalCaption": "October 1, 2026",
+        "weekly": [
+          {
+            "week": "Jul 12",
+            "active": 50
+          },
+          {
+            "week": "Jul 19",
+            "active": 51
+          },
+          {
+            "week": "Jul 26",
+            "active": 52
+          },
+          {
+            "week": "Aug 2",
+            "active": 50
+          },
+          {
+            "week": "Aug 9",
+            "active": 50
+          },
+          {
+            "week": "Aug 16",
+            "active": 45
+          },
+          {
+            "week": "Aug 23",
+            "active": 43
+          },
+          {
+            "week": "Aug 30",
+            "active": 42
+          },
+          {
+            "week": "Sep 6",
+            "active": 42
+          },
+          {
+            "week": "Sep 13",
+            "active": 39
+          },
+          {
+            "week": "Sep 20",
+            "active": 42
+          },
+          {
+            "week": "Sep 27",
+            "active": 39
+          }
+        ],
+        "chartSummary": "Active seats fell from 50 to 39 over twelve weeks.",
+        "reasons": [
+          "Only 33% of 117 seats are in use",
+          "1 high-priority ticket open",
+          "Renews in 4 days"
+        ],
+        "reasonsTitle": "What's pulling the score down"
+      }
+    }
+  }
+}

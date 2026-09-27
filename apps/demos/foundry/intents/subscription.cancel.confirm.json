@@ -1,0 +1,215 @@
+{
+  "id": "subscription.cancel.confirm",
+  "title": "Confirm a cancellation",
+  "ask": [],
+  "capabilities": [
+    "subscription.cancel"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "cancel": "view:cancelReview"
+  },
+  "sample": {
+    "account": "acc_0001",
+    "refundMethod": "original"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "cancel-confirm",
+      "title": "Cancel this plan?",
+      "intent": "subscription.cancel",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "cancel_confirm",
+        "title": {
+          "path": "/cancel/title"
+        },
+        "severity": "destructive",
+        "amount": {
+          "value": {
+            "path": "/cancel/refund"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "USD"
+          }
+        },
+        "subject": {
+          "title": {
+            "path": "/cancel/account/name"
+          },
+          "subtitle": {
+            "path": "/cancel/account/planLabel"
+          },
+          "avatar": {
+            "path": "/cancel/account/initials"
+          }
+        },
+        "consequences": [
+          {
+            "title": {
+              "path": "/cancel/accessText"
+            },
+            "detail": "Sign-in stops at midnight in their time zone",
+            "icon": "clock"
+          },
+          {
+            "title": {
+              "path": "/cancel/peopleText"
+            },
+            "detail": "Their work stays for 90 days, then it's erased",
+            "icon": "lock"
+          },
+          {
+            "title": {
+              "path": "/cancel/contactText"
+            },
+            "detail": "With the end date and the refund",
+            "icon": "mail"
+          }
+        ],
+        "summary": "summary",
+        "consequence": {
+          "path": "/cancel/consequence"
+        },
+        "typeToConfirm": {
+          "path": "/cancel/account/name"
+        },
+        "confirm": {
+          "label": {
+            "path": "/cancel/label"
+          },
+          "action": {
+            "event": {
+              "name": "subscription.cancel",
+              "context": {
+                "accountId": {
+                  "path": "/cancel/account/id"
+                },
+                "effectiveAt": {
+                  "path": "/cancel/effectiveAt"
+                },
+                "refundMethod": {
+                  "path": "/cancel/refundMethod"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Keep the plan",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "cancel_summary",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "plan",
+            "label": "Plan",
+            "value": {
+              "path": "/cancel/account/planLabel"
+            }
+          },
+          {
+            "key": "effective",
+            "label": "Effective",
+            "value": {
+              "path": "/cancel/effectiveAt"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "term_end",
+            "label": "Term paid to",
+            "value": {
+              "path": "/cancel/termEnd"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "term_paid",
+            "label": "Paid for the term",
+            "value": {
+              "path": "/cancel/termPaid"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "months_left",
+            "label": "Unused months",
+            "value": {
+              "path": "/cancel/monthsLeft"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "refund_to",
+            "label": "Refund to",
+            "value": {
+              "path": "/cancel/refundLabel"
+            }
+          },
+          {
+            "key": "refund",
+            "label": "Refund",
+            "value": {
+              "path": "/cancel/refund"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "total": true
+          }
+        ]
+      }
+    ],
+    "data": {
+      "cancel": {
+        "account": {
+          "id": "acc_0001",
+          "name": "Ledgerline",
+          "initials": "Le",
+          "planLabel": "Scale, 117 seats, annual"
+        },
+        "title": "Cancel Ledgerline's plan?",
+        "label": "Cancel Ledgerline's plan",
+        "effectiveAt": "2026-09-27T02:00:00.000Z",
+        "refundMethod": "original",
+        "refundLabel": "Original payment method",
+        "refund": 0,
+        "monthsLeft": 0,
+        "termPaid": 105300,
+        "termEnd": "2026-10-01T02:00:00.000Z",
+        "seats": 117,
+        "accessText": "Access ends September 27, 2026",
+        "peopleText": "39 people lose access",
+        "contactText": "Jade Roux is emailed",
+        "consequence": "Ends $105,300 of annual revenue. No refund is due: the paid term ends October 1, 2026. This can't be undone from here."
+      }
+    }
+  }
+}

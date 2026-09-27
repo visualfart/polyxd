@@ -1,0 +1,322 @@
+{
+  "score": 100,
+  "errors": 0,
+  "warnings": 0,
+  "targets": [
+    {
+      "theme": "material3",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "material3",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "material3",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "material3",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "shadcn",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "shadcn",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "shadcn",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "shadcn",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "govuk",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "govuk",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "govuk",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "govuk",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "carbon",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "carbon",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "carbon",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "carbon",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "polaris",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "polaris",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "polaris",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "polaris",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "antd",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "antd",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "antd",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "antd",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "fluent",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "fluent",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "fluent",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "fluent",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "primer",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "primer",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "primer",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "primer",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "spectrum",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "spectrum",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "spectrum",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "spectrum",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "chakra",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "chakra",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "chakra",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "chakra",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "mantine",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "mantine",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "mantine",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "mantine",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "radix",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "radix",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "radix",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "radix",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "bootstrap",
+      "mode": "light",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "bootstrap",
+      "mode": "light",
+      "width": 1100,
+      "findings": 0
+    },
+    {
+      "theme": "bootstrap",
+      "mode": "dark",
+      "width": 390,
+      "findings": 0
+    },
+    {
+      "theme": "bootstrap",
+      "mode": "dark",
+      "width": 1100,
+      "findings": 0
+    }
+  ],
+  "checkedAt": "2026-09-27T12:15:34.860Z",
+  "verifier": "0.2.1",
+  "findings": []
+}
