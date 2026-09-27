@@ -250,11 +250,12 @@ function Gallery() {
   );
 }
 
+/** The Polyxd mark, as drawn in brand/build.ts. */
 const LOGO = (
-  <svg width="30" height="25" viewBox="0 0 34 28" fill="none" aria-hidden="true">
-    <rect x="1" y="1" width="18" height="18" rx="9" stroke="currentColor" strokeWidth="2" />
-    <rect x="8" y="5" width="18" height="18" stroke="currentColor" strokeWidth="2" />
-    <rect x="15" y="9" width="18" height="18" rx="4" fill="#FF5A1F" stroke="currentColor" strokeWidth="2" />
+  <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+    <path fillRule="evenodd" d="M13 6h6a7 7 0 0 1 7 7v6a7 7 0 0 1-7 7h-6a7 7 0 0 1-7-7v-6a7 7 0 0 1 7-7zM13.6 16a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0 -4.8 0z" fill="currentColor" />
+    <rect x="6" y="14" width="5" height="14" rx="2.5" fill="currentColor" />
+    <path fillRule="evenodd" d="M16 11.2C19.504 11.2 20.8 12.496 20.8 16S19.504 20.8 16 20.8 11.2 19.504 11.2 16 12.496 11.2 16 11.2zM13.6 16a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0 -4.8 0z" fill="#ff5a1f" />
   </svg>
 );
 

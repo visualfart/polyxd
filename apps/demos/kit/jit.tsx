@@ -80,7 +80,15 @@ function Checked({ report, origin, onOpen }: { report?: ReportSummary; origin: "
       : `${who}Checked in ${packs} design systems · ${report.errors} error${report.errors === 1 ? "" : "s"}, ${report.warnings} warning${report.warnings === 1 ? "" : "s"}`;
   return (
     <button type="button" className={`jit-mark${report && report.errors ? " jit-mark-issues" : ""}`} onClick={onOpen} aria-haspopup="dialog">
-      <span className="jit-mark-dot" aria-hidden="true" />
+      <span className="jit-mark-dot" aria-hidden="true">
+        {/* The Polyxd mark in its "checked" state: the pupil is the verifier's tick. brand/mark-states.svg */}
+        <svg width="16" height="16" viewBox="0 0 32 32" focusable="false">
+          <path d="M13 6h6a7 7 0 0 1 7 7v6a7 7 0 0 1-7 7h-6a7 7 0 0 1-7-7v-6a7 7 0 0 1 7-7z" fill="currentColor" />
+          <rect x="6" y="14" width="5" height="14" rx="2.5" fill="currentColor" />
+          <path d="M16 11.2C19.504 11.2 20.8 12.496 20.8 16S19.504 20.8 16 20.8 11.2 19.504 11.2 16 12.496 11.2 16 11.2z" fill="var(--pxd-color-status-success-emphasis)" />
+          <path d="M13.9 16.3l1.5 1.5 2.8-3.1" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
       {text}
       <span className="jit-mark-more">Under the hood</span>
     </button>

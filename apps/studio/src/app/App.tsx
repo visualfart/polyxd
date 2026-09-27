@@ -13,6 +13,7 @@ import { Components } from "./pages/Components.tsx";
 import { Rules } from "./pages/Rules.tsx";
 import { Team } from "./pages/Team.tsx";
 import { Invite } from "./pages/Invite.tsx";
+import { Mark } from "./mark.tsx";
 // The screen pages carry the renderer, the schema and the spec's examples; they load when opened.
 const Screens = lazy(() => import("./pages/Screens.tsx").then((m) => ({ default: m.Screens })));
 const Screen = lazy(() => import("./pages/Screen.tsx").then((m) => ({ default: m.Screen })));
@@ -80,7 +81,7 @@ function Shell() {
     <div className="shell">
       <aside className="sidebar">
         <div className="brand">
-          <span className="mark" aria-hidden="true">p</span>
+          <Mark />
           <div>
             <div className="name">Polyxd Studio</div>
             <div className="ws">{ws.name}</div>

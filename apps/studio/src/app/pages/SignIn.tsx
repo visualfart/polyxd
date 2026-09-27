@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api.ts";
 import { useSession } from "../App.tsx";
+import { Mark } from "../mark.tsx";
 
 type Mode = "signin" | "signup" | "forgot" | "reset";
 
@@ -72,7 +73,7 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
     <div className="auth">
       <main>
         <div style={{ height: 72, padding: "0 48px", display: "flex", alignItems: "center", gap: 10 }}>
-          <span className="brand"><span className="mark" aria-hidden="true">p</span><span className="name">Polyxd Studio</span></span>
+          <span className="brand"><Mark /><span className="name">Polyxd Studio</span></span>
         </div>
         <form className="form" onSubmit={submit}>
           <div>

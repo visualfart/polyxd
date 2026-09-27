@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api.ts";
 import { useSession } from "../App.tsx";
+import { Mark } from "../mark.tsx";
 
 export function Workspaces() {
   const { me, refresh } = useSession();
@@ -25,7 +26,7 @@ export function Workspaces() {
     <div className="auth">
       <main>
         <div style={{ height: 72, padding: "0 48px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span className="brand"><span className="mark" aria-hidden="true">p</span><span className="name">Polyxd Studio</span></span>
+          <span className="brand"><Mark /><span className="name">Polyxd Studio</span></span>
           <span className="small muted">{me.user?.email}</span>
         </div>
         <div className="form" style={{ width: 560 }}>

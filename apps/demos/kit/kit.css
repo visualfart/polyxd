@@ -33,14 +33,12 @@
   border-radius: var(--pxd-radius-small);
 }
 .jit-mark-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--pxd-color-status-success-emphasis);
+  display: inline-flex;
+  color: var(--pxd-color-text-default);
   flex: none;
 }
-.jit-mark-issues .jit-mark-dot {
-  background: var(--pxd-color-status-warning-emphasis);
+.jit-mark-issues .jit-mark-dot svg path:nth-child(3) {
+  fill: var(--pxd-color-status-warning-emphasis);
 }
 .jit-mark-pending {
   margin: 0;
