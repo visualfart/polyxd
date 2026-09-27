@@ -11,6 +11,9 @@ import { mapRoles, candidatesFor, scalar, type Contract, type Override } from ".
 import { checkRegistryUrl, fetchPackage, findTokenFiles, untar } from "../import/package.ts";
 import { decrypt, encrypt, newApiKey, sha256 } from "./crypto.ts";
 import { isLocal, makeAuth, now, sendEmail, userFromRequest, type Ctx, type Env, type User } from "./auth.ts";
+import { checkDocument, type Rule } from "../screens/validate.ts";
+import { blankDocument } from "../screens/tree.ts";
+import type { Doc } from "../screens/schema.ts";
 
 type Vars = { user: User | null; apiWorkspace: string | null };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -18,6 +21,7 @@ const CONTRACT = contract as unknown as Contract;
 const ROLES = ["owner", "design-system", "designer", "product", "engineer", "viewer"] as const;
 const CAN_EDIT_TOKENS = new Set(["owner", "design-system", "engineer"]);
 const CAN_EDIT_RULES = new Set(["owner", "design-system", "designer"]);
+const CAN_EDIT_SCREENS = new Set(["owner", "design-system", "designer", "product"]);
 const secretsKey = (env: Env) => env.SECRETS_KEY ?? (isLocal(env) ? "dev-only-not-a-secret" : "");
 
 class Fail extends Error {
@@ -88,15 +92,16 @@ async function ws(c: Ctx, allowed?: ReadonlySet<string>): Promise<Workspace> {
     "SELECT w.id, w.slug, w.name, m.role FROM workspaces w JOIN memberships m ON m.workspace_id = w.id WHERE w.slug = ? AND m.user_id = ?",
   ).bind(slug, user.id).first<Workspace>();
   if (!row) throw new Fail(404, "No such workspace, or you're not in it");
-  // An API key is scoped to one workspace, and to importing: whatever its creator can do in the
-  // app, a key kept in CI can push token packages and read design systems, nothing else.
+  // An API key is scoped to one workspace, and to what a machine does: whatever its creator can
+  // do in the app, a key kept in CI can push token packages and read design systems, and a key
+  // in a product can fetch its published screens, nothing else.
   const api = c.get("apiWorkspace");
   if (api) {
     if (api !== row.id) throw new Fail(403, "This key belongs to another workspace");
     const path = new URL(c.req.url).pathname;
     const importing = c.req.method === "POST" && path.endsWith("/design-systems/import");
-    const reading = c.req.method === "GET" && path.includes("/design-systems");
-    if (!importing && !reading) throw new Fail(403, "An API key can import and read design systems only");
+    const reading = c.req.method === "GET" && (path.includes("/design-systems") || path.includes("/screens"));
+    if (!importing && !reading) throw new Fail(403, "An API key can import and read design systems, and read screens, only");
   }
   if (allowed && !allowed.has(row.role)) throw new Fail(403, `Your role (${row.role}) can't do that`);
   return row;
@@ -629,6 +634,196 @@ app.put("/api/w/:slug/rules/:id", async (c) => {
 app.delete("/api/w/:slug/rules/:id", async (c) => {
   const w = await ws(c as Ctx, CAN_EDIT_RULES);
   await c.env.DB.prepare("DELETE FROM rules WHERE id = ? AND workspace_id = ?").bind(c.req.param("id"), w.id).run();
+  return c.json({ ok: true });
+});
+
+// ---------------------------------------------------------------- screens
+
+interface Screen {
+  id: string;
+  key: string;
+  name: string;
+  intent: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+interface ScreenVersion {
+  id: string;
+  number: number;
+  document_json: string;
+  notes: string;
+  status: string;
+  issues_json: string;
+  created_at: string;
+  author: string;
+}
+
+const MAX_DOCUMENT = 1_000_000;
+const SCREEN_KEY = /^[a-z0-9][a-z0-9-]{0,79}$/;
+const INTENT = /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$/;
+const slugOf = (s: string) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
+
+/** The document from a request body: an object of plausible size. What it says is the checker's business. */
+function parseDocument(raw: unknown): Doc {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Fail(400, "document: a Polyxd UI document (an object with surface, root and components)");
+  if (JSON.stringify(raw).length > MAX_DOCUMENT) throw new Fail(413, "That document is over 1 MB; sample data is a snapshot, not a database");
+  return raw as Doc;
+}
+
+/** The workspace's rules that are on, as the verifier would run them. */
+async function workspaceRules(env: Env, workspaceId: string): Promise<Rule[]> {
+  const rows = await env.DB.prepare("SELECT name, severity, check_json FROM rules WHERE workspace_id = ? AND enabled = 1").bind(workspaceId).all<{ name: string; severity: "error" | "warning"; check_json: string }>();
+  return rows.results.map((r) => ({ name: r.name, severity: r.severity, check: JSON.parse(r.check_json) }));
+}
+
+async function screenByKey(c: Ctx, w: Workspace): Promise<Screen> {
+  const s = await c.env.DB.prepare("SELECT id, key, name, intent, status, created_at, updated_at FROM screens WHERE workspace_id = ? AND key = ?").bind(w.id, c.req.param("key")).first<Screen>();
+  if (!s) throw new Fail(404, "No such screen here");
+  return s;
+}
+
+const VERSION_COLS = "v.id, v.number, v.document_json, v.notes, v.status, v.issues_json, v.created_at, COALESCE(NULLIF(u.name, ''), u.email) AS author";
+const versionSummary = (v: ScreenVersion) => {
+  const issues = JSON.parse(v.issues_json) as { issues: { severity: string }[] };
+  return { id: v.id, number: v.number, status: v.status, notes: v.notes, created_at: v.created_at, author: v.author, errors: issues.issues.filter((i) => i.severity === "error").length, warnings: issues.issues.filter((i) => i.severity === "warning").length };
+};
+
+app.get("/api/w/:slug/screens", async (c) => {
+  const w = await ws(c as Ctx);
+  const rows = await c.env.DB.prepare(
+    `SELECT s.id, s.key, s.name, s.intent, s.status, s.created_at, s.updated_at,
+       (SELECT COUNT(*) FROM screen_versions v WHERE v.screen_id = s.id) AS versions,
+       (SELECT v.number FROM screen_versions v WHERE v.screen_id = s.id AND v.status = 'published') AS published,
+       (SELECT v.issues_json FROM screen_versions v WHERE v.screen_id = s.id ORDER BY v.number DESC LIMIT 1) AS issues_json
+     FROM screens s WHERE s.workspace_id = ? ORDER BY s.updated_at DESC`,
+  ).bind(w.id).all<Screen & { versions: number; published: number | null; issues_json: string | null }>();
+  return c.json({
+    screens: rows.results.map((r) => {
+      const issues = r.issues_json ? (JSON.parse(r.issues_json) as { issues: { severity: string }[] }).issues : [];
+      return { ...r, issues_json: undefined, errors: issues.filter((i) => i.severity === "error").length, warnings: issues.filter((i) => i.severity === "warning").length };
+    }),
+  });
+});
+
+app.post("/api/w/:slug/screens", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_SCREENS);
+  const user = need(c as Ctx);
+  const b = await body<{ name?: string; key?: string; intent?: string; document?: unknown; notes?: string }>(c as Ctx);
+  if (!b.name?.trim()) throw new Fail(400, "A screen needs a name");
+  text(b.name, 120, "Name");
+  const key = slugOf(b.key ?? b.name);
+  if (!SCREEN_KEY.test(key)) throw new Fail(400, "A key is letters, digits and dashes, like send-money");
+  const intent = (b.intent ?? "").trim();
+  if (intent && !INTENT.test(intent)) throw new Fail(400, "An intent is dotted lower-case words, like money.send");
+  if (b.notes !== undefined) text(b.notes, 500, "Notes");
+  const taken = await c.env.DB.prepare("SELECT 1 FROM screens WHERE workspace_id = ? AND key = ?").bind(w.id, key).first();
+  if (taken) throw new Fail(409, `A screen with the key ${key} already exists`);
+  const document = b.document === undefined ? blankDocument(b.name.trim(), intent) : parseDocument(b.document);
+  const result = checkDocument(document, { rules: await workspaceRules(c.env, w.id) });
+  const id = crypto.randomUUID();
+  await c.env.DB.batch([
+    c.env.DB.prepare("INSERT INTO screens (id, workspace_id, key, name, intent, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 'draft', ?, ?, ?)").bind(id, w.id, key, b.name.trim(), intent, user.id, now(), now()),
+    c.env.DB.prepare("INSERT INTO screen_versions (id, screen_id, number, document_json, notes, status, issues_json, created_by, created_at) VALUES (?, ?, 1, ?, ?, 'draft', ?, ?, ?)").bind(crypto.randomUUID(), id, JSON.stringify(document), b.notes ?? "", JSON.stringify(result), user.id, now()),
+  ]);
+  return c.json({ id, key, number: 1, ...result }, 201);
+});
+
+/** The delivery path: a product fetches its published screen by key, ready to render. */
+app.get("/api/w/:slug/screens/:key", async (c) => {
+  const w = await ws(c as Ctx);
+  const s = await screenByKey(c as Ctx, w);
+  const v = await c.env.DB.prepare("SELECT document_json, number FROM screen_versions WHERE screen_id = ? AND status = 'published'").bind(s.id).first<{ document_json: string; number: number }>();
+  if (!v) throw new Fail(404, `${s.name} has no published version yet`);
+  const doc = JSON.parse(v.document_json) as Doc;
+  // A screen a person made says so, so the mark a product shows can too.
+  doc.surface.origin ??= "authored";
+  c.header("X-Polyxd-Screen-Version", String(v.number));
+  return c.json(doc);
+});
+
+app.put("/api/w/:slug/screens/:key", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_SCREENS);
+  const s = await screenByKey(c as Ctx, w);
+  const b = await body<{ name?: string; key?: string; intent?: string }>(c as Ctx);
+  if (b.name !== undefined) text(b.name, 120, "Name");
+  const key = b.key !== undefined ? slugOf(b.key) : s.key;
+  if (!SCREEN_KEY.test(key)) throw new Fail(400, "A key is letters, digits and dashes, like send-money");
+  const intent = b.intent !== undefined ? b.intent.trim() : s.intent;
+  if (intent && !INTENT.test(intent)) throw new Fail(400, "An intent is dotted lower-case words, like money.send");
+  if (key !== s.key) {
+    const taken = await c.env.DB.prepare("SELECT 1 FROM screens WHERE workspace_id = ? AND key = ?").bind(w.id, key).first();
+    if (taken) throw new Fail(409, `A screen with the key ${key} already exists`);
+  }
+  await c.env.DB.prepare("UPDATE screens SET name = ?, key = ?, intent = ?, updated_at = ? WHERE id = ?").bind(b.name?.trim() || s.name, key, intent, now(), s.id).run();
+  return c.json({ ok: true, key });
+});
+
+app.delete("/api/w/:slug/screens/:key", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_SCREENS);
+  const s = await screenByKey(c as Ctx, w);
+  await c.env.DB.prepare("DELETE FROM screens WHERE id = ?").bind(s.id).run();
+  return c.json({ ok: true });
+});
+
+app.get("/api/w/:slug/screens/:key/versions", async (c) => {
+  const w = await ws(c as Ctx);
+  const s = await screenByKey(c as Ctx, w);
+  const rows = await c.env.DB.prepare(`SELECT ${VERSION_COLS} FROM screen_versions v JOIN user u ON u.id = v.created_by WHERE v.screen_id = ? ORDER BY v.number DESC`).bind(s.id).all<ScreenVersion>();
+  return c.json({ screen: s, versions: rows.results.map(versionSummary) });
+});
+
+app.get("/api/w/:slug/screens/:key/versions/:n", async (c) => {
+  const w = await ws(c as Ctx);
+  const s = await screenByKey(c as Ctx, w);
+  const v = await c.env.DB.prepare(`SELECT ${VERSION_COLS} FROM screen_versions v JOIN user u ON u.id = v.created_by WHERE v.screen_id = ? AND v.number = ?`).bind(s.id, Number(c.req.param("n"))).first<ScreenVersion>();
+  if (!v) throw new Fail(404, "No such version");
+  return c.json({ ...versionSummary(v), document: JSON.parse(v.document_json), issues: JSON.parse(v.issues_json).issues });
+});
+
+/** Saves a version. An invalid document can be saved as a draft; it is the publish that refuses. */
+app.post("/api/w/:slug/screens/:key/versions", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_SCREENS);
+  const user = need(c as Ctx);
+  const s = await screenByKey(c as Ctx, w);
+  const b = await body<{ document?: unknown; notes?: string }>(c as Ctx);
+  const document = parseDocument(b.document);
+  if (b.notes !== undefined) text(b.notes, 500, "Notes");
+  const result = checkDocument(document, { rules: await workspaceRules(c.env, w.id) });
+  const last = await c.env.DB.prepare("SELECT MAX(number) AS n FROM screen_versions WHERE screen_id = ?").bind(s.id).first<{ n: number | null }>();
+  const number = (last?.n ?? 0) + 1;
+  const intent = typeof document.surface?.intent === "string" && INTENT.test(document.surface.intent) ? document.surface.intent : s.intent;
+  await c.env.DB.batch([
+    c.env.DB.prepare("INSERT INTO screen_versions (id, screen_id, number, document_json, notes, status, issues_json, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'draft', ?, ?, ?)").bind(crypto.randomUUID(), s.id, number, JSON.stringify(document), b.notes ?? "", JSON.stringify(result), user.id, now()),
+    c.env.DB.prepare("UPDATE screens SET intent = ?, updated_at = ? WHERE id = ?").bind(intent, now(), s.id),
+  ]);
+  return c.json({ number, ...result }, 201);
+});
+
+app.post("/api/w/:slug/screens/:key/versions/:n/publish", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_SCREENS);
+  const s = await screenByKey(c as Ctx, w);
+  const v = await c.env.DB.prepare("SELECT id, number, document_json FROM screen_versions WHERE screen_id = ? AND number = ?").bind(s.id, Number(c.req.param("n"))).first<{ id: string; number: number; document_json: string }>();
+  if (!v) throw new Fail(404, "No such version");
+  // Checked again now, not at save: the rules may have changed since.
+  const result = checkDocument(JSON.parse(v.document_json), { rules: await workspaceRules(c.env, w.id) });
+  const errors = result.issues.filter((i) => i.severity === "error");
+  if (errors.length) throw new Fail(409, `v${v.number} has ${errors.length} error${errors.length === 1 ? "" : "s"}: ${errors.slice(0, 3).map((e) => e.message).join("; ")}${errors.length > 3 ? "; …" : ""}. Fix them before publishing.`);
+  await c.env.DB.batch([
+    c.env.DB.prepare("UPDATE screen_versions SET status = 'draft', issues_json = ? WHERE screen_id = ? AND status = 'published'").bind(JSON.stringify(result), s.id),
+    c.env.DB.prepare("UPDATE screen_versions SET status = 'published', issues_json = ? WHERE id = ?").bind(JSON.stringify(result), v.id),
+    c.env.DB.prepare("UPDATE screens SET status = 'published', updated_at = ? WHERE id = ?").bind(now(), s.id),
+  ]);
+  return c.json({ ok: true, published: v.number, url: `${c.env.APP_URL}/api/w/${w.slug}/screens/${s.key}` });
+});
+
+app.post("/api/w/:slug/screens/:key/unpublish", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_SCREENS);
+  const s = await screenByKey(c as Ctx, w);
+  await c.env.DB.batch([
+    c.env.DB.prepare("UPDATE screen_versions SET status = 'draft' WHERE screen_id = ?").bind(s.id),
+    c.env.DB.prepare("UPDATE screens SET status = 'draft', updated_at = ? WHERE id = ?").bind(now(), s.id),
+  ]);
   return c.json({ ok: true });
 });
 

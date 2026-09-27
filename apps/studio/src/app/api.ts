@@ -49,6 +49,31 @@ export interface RoleRow {
   contrast: { against: string; mode: string; ratio: number; min: number; passes: boolean }[];
 }
 
+export interface ScreenRow {
+  id: string;
+  key: string;
+  name: string;
+  intent: string;
+  status: "draft" | "published";
+  created_at: string;
+  updated_at: string;
+  versions: number;
+  published: number | null;
+  errors: number;
+  warnings: number;
+}
+
+export interface ScreenVersionRow {
+  id: string;
+  number: number;
+  status: "draft" | "published";
+  notes: string;
+  created_at: string;
+  author: string;
+  errors: number;
+  warnings: number;
+}
+
 export interface Candidate {
   token: string;
   chain: string[];

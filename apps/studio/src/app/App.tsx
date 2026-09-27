@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, lazy, Suspense, useContext, useEffect, useState, type ReactNode } from "react";
 import { Navigate, NavLink, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { api, type Me } from "./api.ts";
 import { SignIn } from "./pages/SignIn.tsx";
@@ -13,6 +13,9 @@ import { Components } from "./pages/Components.tsx";
 import { Rules } from "./pages/Rules.tsx";
 import { Team } from "./pages/Team.tsx";
 import { Invite } from "./pages/Invite.tsx";
+// The screen pages carry the renderer, the schema and the spec's examples; they load when opened.
+const Screens = lazy(() => import("./pages/Screens.tsx").then((m) => ({ default: m.Screens })));
+const Screen = lazy(() => import("./pages/Screen.tsx").then((m) => ({ default: m.Screen })));
 
 interface Session {
   me: Me;
@@ -58,6 +61,7 @@ const NAV: { group?: string; items: { to: string; label: string }[] }[] = [
   { items: [{ to: "", label: "Home" }] },
   { group: "Foundations", items: [{ to: "design-systems", label: "Design systems" }, { to: "components", label: "Components" }] },
   { group: "Direction", items: [{ to: "rules", label: "Rules" }] },
+  { group: "Product", items: [{ to: "screens", label: "Screens" }] },
   { group: "Workspace", items: [{ to: "team", label: "Team" }] },
 ];
 
@@ -117,6 +121,8 @@ function Shell() {
           <Route path="design-systems/:id/*" element={<DesignSystem ws={ws} />} />
           <Route path="components" element={<Components ws={ws} />} />
           <Route path="rules" element={<Rules ws={ws} />} />
+          <Route path="screens" element={<Suspense fallback={null}><Screens ws={ws} /></Suspense>} />
+          <Route path="screens/:key" element={<Suspense fallback={null}><Screen ws={ws} /></Suspense>} />
           <Route path="team" element={<Team ws={ws} />} />
           <Route path="*" element={<div className="empty"><h2>That page isn't here</h2><p>The link may be from another workspace.</p></div>} />
         </Routes>

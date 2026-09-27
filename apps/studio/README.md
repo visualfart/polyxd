@@ -13,8 +13,24 @@ Run it yourself on your own Cloudflare account, or use the hosted one at studio.
 - Browse your own tokens by tier and group, with what each resolves to and what references it.
 - Components: which are on for generators, guidance the generator reads, and your own implementation per component.
 - Rules: yours, as verifier checks, with severity and an on/off switch.
+- Screens: surfaces a designer authors rather than generates. A screen is a Polyxd document edited as a tree of components (all 37, with the spec's guidance), drawn live with `@polyxd/react` in your published design system (or any built-in theme; light and dark; phone, tablet and desktop; three densities), with a property panel made from the schema, a sample-data tab for bindings, and the JSON always within reach. It is checked as you edit, the way a generated screen is: schema, references, bindings against the sample data, and your rules. Save keeps versions with notes; Publish makes one the document your product fetches by key. Start from one of the spec's 28 examples, blank, or pasted JSON.
 
 Reviews, releases, insights and the flow map come once screens flow in through the SDK.
+
+## Deliver a screen to your product
+
+A published screen is fetched by key with an API key from Team → API keys (a key reads published screens and design systems; it can't change anything). The answer is the document itself, with `surface.origin: "authored"` set, ready for `PolyxdSurface`:
+
+```sh
+curl -H "Authorization: Bearer $POLYXD_STUDIO_KEY" https://studio.polyxd.com/api/w/<workspace>/screens/send-money
+```
+
+```ts
+const doc = await fetch(`${STUDIO}/api/w/acme/screens/send-money`, { headers: { authorization: `Bearer ${key}` } }).then((r) => r.json());
+<PolyxdSurface document={doc} data={liveData} theme="acme" onAction={handle} />
+```
+
+The response carries `X-Polyxd-Screen-Version`; an unpublished screen answers 404. `GET …/screens` lists the workspace's screens with their published version, and `GET …/screens/<key>/versions` the history. Fetch on the server or at build time and keep the document with your bundle: a screen changes when someone publishes, not on every request.
 
 ## Push from your own build
 
@@ -55,7 +71,8 @@ The hosted one at studio.polyxd.com is this same configuration.
 | `src/import/scan.ts` | What was found, by tier and type |
 | `src/import/map.ts` | Roles onto the semantic tier, contrast in every mode, candidates |
 | `src/import/package.ts` | npm packages: registry fetch, untar, find the token files |
-| `src/worker/` | The API on Workers: auth, workspaces, design systems, components, rules |
-| `src/app/` | The React app |
+| `src/worker/` | The API on Workers: auth, workspaces, design systems, components, rules, screens |
+| `src/screens/` | Screens, shared by the Worker and the app: the schema read without ajv (Workers refuse generated code), the checker, the tree edits |
+| `src/app/` | The React app; `src/app/screen/` is the editor's tree, preview, property panel and themes |
 | `migrations/` | D1 schema |
 | `../../design/studio` | The design every screen here follows |
