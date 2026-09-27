@@ -13,10 +13,10 @@ import { api, type ScreenVersionRow } from "../api.ts";
 import { useSession, type Ws } from "../App.tsx";
 import { checkDocument, issueIndex, type Issue, type Rule } from "../../screens/validate.ts";
 import { addChild, duplicateNode, makeNodes, moveNode, pointers, removeNode, visibleOrder } from "../../screens/tree.ts";
-import type { Doc } from "../../screens/schema.ts";
+import { isShell, type Doc } from "../../screens/schema.ts";
 import { Tree, Picker, targetFor, type Target } from "../screen/Tree.tsx";
 import { Preview, WIDTHS, type PreviewTheme } from "../screen/Preview.tsx";
-import { Props } from "../screen/Props.tsx";
+import { Props, SURFACE, SurfaceProps } from "../screen/Props.tsx";
 import type { Ctx } from "../screen/Fields.tsx";
 import { BUILTIN, loadTheme, workspaceTheme, type WorkspaceTheme } from "../screen/theme.ts";
 
@@ -62,6 +62,10 @@ export function Screen({ ws }: { ws: Ws }) {
   const [saving, setSaving] = useState<{ notes: string; publish: boolean } | null>(null);
   const [details, setDetails] = useState<{ name: string; key: string; intent: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  // A shell's Outlet shows a stand-in: the placeholder, or a published screen of this workspace.
+  const [published, setPublished] = useState<{ key: string; name: string }[]>([]);
+  const [standInKey, setStandInKey] = useState("");
+  const [standIn, setStandIn] = useState<Doc | null>(null);
 
   const base = `/api/w/${ws.slug}/screens/${key}`;
   const loadMeta = useCallback(() => api<Meta>("GET", `${base}/versions`).then((m) => (setMeta(m), m)), [base]);
@@ -81,7 +85,14 @@ export function Screen({ ws }: { ws: Ws }) {
       setWsTheme(t);
       if (t) setThemeId("workspace");
     }).catch(() => setWsTheme(null));
+    api<{ screens: { key: string; name: string; status: string; kind: string }[] }>("GET", `/api/w/${ws.slug}/screens`).then((r) => setPublished(r.screens.filter((s) => s.status === "published" && s.kind !== "shell" && s.key !== key).map((s) => ({ key: s.key, name: s.name }))));
   }, [base]);
+  useEffect(() => {
+    if (!standInKey) return void setStandIn(null);
+    let live = true;
+    api<Doc>("GET", `/api/w/${ws.slug}/screens/${standInKey}`).then((d) => live && setStandIn(d)).catch((e) => { toast((e as Error).message, "bad"); setStandInKey(""); });
+    return () => { live = false; };
+  }, [standInKey, ws.slug]);
   // The built-in theme's CSS, loaded when first needed; the workspace theme draws over shadcn's.
   const builtin = themeId === "workspace" ? "shadcn" : themeId;
   useEffect(() => {
@@ -130,12 +141,12 @@ export function Screen({ ws }: { ws: Ws }) {
 
   // Selection stays valid as components come and go.
   useEffect(() => {
-    if (doc && selected && !doc.components.some((c) => c.id === selected)) setSelected(doc.root);
+    if (doc && selected && selected !== SURFACE && !doc.components.some((c) => c.id === selected)) setSelected(doc.root);
   }, [doc, selected]);
 
   const node = doc?.components.find((c) => c.id === selected) ?? null;
   const remove = (id: string) => {
-    if (!doc || id === doc.root) return;
+    if (!doc || id === doc.root || id === SURFACE) return;
     const order = visibleOrder(doc);
     const i = order.indexOf(id);
     apply((d) => removeNode(d, id));
@@ -204,7 +215,7 @@ export function Screen({ ws }: { ws: Ws }) {
       setLoadedFrom(r.number);
       if (publish) {
         await api("POST", `${base}/versions/${r.number}/publish`);
-        toast(`v${r.number} is published. Your product fetches it at /api/w/${ws.slug}/screens/${key}.`);
+        toast(`v${r.number} is published. Your product fetches it at /api/w/${ws.slug}/screens/${key}${isShell(doc) ? " and renders it with PolyxdFrame" : ""}.`);
       } else toast(`Saved v${r.number}`);
       setSaving(null);
       await loadMeta();
@@ -253,7 +264,8 @@ export function Screen({ ws }: { ws: Ws }) {
   const onAction = (e: ActionEvent) => toast(`Would send ${e.name}${Object.keys(e.context).length ? ` with ${JSON.stringify(e.context)}` : ""}`);
 
   if (!meta || !doc || !check) return null;
-  const published = meta.versions.find((v) => v.status === "published");
+  const shell = isShell(doc);
+  const publishedVersion = meta.versions.find((v) => v.status === "published");
   const theme: PreviewTheme = themeId === "workspace" && wsTheme ? { base: "shadcn", vars: mode === "dark" && wsTheme.dark ? wsTheme.dark : wsTheme.light } : { base: builtin };
   const ctx: Ctx | null = node
     ? {
@@ -280,7 +292,8 @@ export function Screen({ ws }: { ws: Ws }) {
         <h1 title={`${meta.screen.name} · ${meta.screen.key}${meta.screen.intent ? ` · ${meta.screen.intent}` : ""}`}>{meta.screen.name}</h1>
         {canEdit && <button type="button" className="btn ghost sm" onClick={() => setDetails({ name: meta.screen.name, key: meta.screen.key, intent: meta.screen.intent })}>Details</button>}
         <div className="tags">
-          {published ? <span className="tag ok">v{published.number} published</span> : <span className="tag signal">Not published</span>}
+          {shell && <span className="tag ink">Shell</span>}
+          {publishedVersion ? <span className="tag ok">v{publishedVersion.number} published</span> : <span className="tag signal">Not published</span>}
           {dirty ? <span className="tag warn">Unsaved changes</span> : <span className="tag">v{loadedFrom}</span>}
           {errors.length ? <button type="button" className="tag bad" style={{ border: 0, cursor: "pointer" }} onClick={() => setDock("issues")}>{errors.length} error{errors.length === 1 ? "" : "s"}</button> : warnings.length ? <button type="button" className="tag warn" style={{ border: 0, cursor: "pointer" }} onClick={() => setDock("issues")}>{warnings.length} warning{warnings.length === 1 ? "" : "s"}</button> : <span className="tag ok">Checked · no issues</span>}
         </div>
@@ -293,7 +306,7 @@ export function Screen({ ws }: { ws: Ws }) {
           {canEdit && (
             dirty ? (
               <button type="button" className="btn primary sm" onClick={() => setSaving({ notes: "", publish: true })} disabled={!!publishWhy || busy} title={publishWhy || "Save a version and publish it"}>Publish</button>
-            ) : published?.number === loadedFrom ? (
+            ) : publishedVersion?.number === loadedFrom ? (
               <button type="button" className="btn sm" onClick={unpublish} disabled={busy}>Unpublish</button>
             ) : (
               <button type="button" className="btn primary sm" onClick={publishLoaded} disabled={!!publishWhy || busy} title={publishWhy || `Publish v${loadedFrom}`}>Publish v{loadedFrom}</button>
@@ -303,7 +316,11 @@ export function Screen({ ws }: { ws: Ws }) {
       </header>
       <div className="scr-body" data-pane={pane}>
         <aside className="scr-tree" aria-label="Component tree">
-          <div className="scr-panel-head"><span style={{ flexGrow: 1 }}>Components <span className="n">{doc.components.length}</span></span>{canEdit && <button type="button" className="btn sm" onClick={() => openPicker(targetFor(doc, selected))} title="Add a component (Enter)">Add</button>}</div>
+          <div className="scr-panel-head"><span style={{ flexGrow: 1 }}>Components <span className="n">{doc.components.length}</span></span>{canEdit && <button type="button" className="btn sm" onClick={() => openPicker(targetFor(doc, selected === SURFACE ? null : selected))} title="Add a component (Enter)">Add</button>}</div>
+          <div className="scr-node scr-node-surface" role="button" tabIndex={0} aria-pressed={selected === SURFACE} data-selected={selected === SURFACE} onClick={() => setSelected(SURFACE)} onKeyDown={(e) => e.key === "Enter" && setSelected(SURFACE)} title="The document's surface: title, kind, origin">
+            <span className="scr-caret-gap" />
+            <span className="scr-node-main"><span className="scr-node-type">Surface</span><span className="scr-node-text">{shell ? "shell" : "surface"} · {doc.surface.title}</span></span>
+          </div>
           <Tree doc={doc} selected={selected} issues={issueTone} onSelect={setSelected} onAdd={setPicker} onRemove={remove} onMove={(id, by) => apply((d) => moveNode(d, id, by))} onDuplicate={duplicate} />
         </aside>
         <section className="scr-center" aria-label="Preview">
@@ -316,10 +333,17 @@ export function Screen({ ws }: { ws: Ws }) {
             <div className="segmented" role="group" aria-label="Mode"><button type="button" aria-pressed={mode === "light"} onClick={() => setMode("light")}>Light</button><button type="button" aria-pressed={mode === "dark"} onClick={() => setMode("dark")}>Dark</button></div>
             <div className="segmented" role="group" aria-label="Width">{WIDTHS.map((w) => <button key={w.id} type="button" aria-pressed={widthId === w.id} onClick={() => setWidthId(w.id)}>{w.label}</button>)}</div>
             <select className="select" value={density} onChange={(e) => setDensity(e.target.value as typeof density)} aria-label="Density"><option value="compact">Compact</option><option value="comfortable">Comfortable</option><option value="spacious">Spacious</option></select>
+            {shell && (
+              <select className="select" value={standInKey} onChange={(e) => setStandInKey(e.target.value)} aria-label="Screen in the Outlet" title="What the Outlet shows: a placeholder, or a published screen of this workspace">
+                <option value="">Outlet: placeholder</option>
+                {published.map((p) => <option key={p.key} value={p.key}>Outlet: {p.name}</option>)}
+                {!published.length && <option value="" disabled>No published screens yet</option>}
+              </select>
+            )}
             <div className="segmented" role="group" aria-label="Pointer" style={{ marginLeft: "auto" }}><button type="button" aria-pressed={!interact} onClick={() => setInteract(false)} title="Clicking picks the component">Select</button><button type="button" aria-pressed={interact} onClick={() => setInteract(true)} title="Clicking works the screen; actions are reported, not sent">Interact</button></div>
           </div>
           {themeReady[builtin] ? (
-            <Preview doc={doc} dataKey={dataKey} selected={selected} hovered={hovered} onSelect={(id) => id && setSelected(id)} onHover={setHovered} theme={theme} mode={mode} width={width} density={density} interact={interact} onAction={onAction} />
+            <Preview doc={doc} dataKey={dataKey} selected={selected} hovered={hovered} onSelect={(id) => id && setSelected(id)} onHover={setHovered} theme={theme} mode={mode} width={width} density={density} interact={interact} onAction={onAction} standIn={standInKey ? standIn : null} />
           ) : (
             <div className="scr-canvas"><p className="muted small">Loading the theme…</p></div>
           )}
@@ -338,8 +362,9 @@ export function Screen({ ws }: { ws: Ws }) {
                 {check.issues.map((i, n) => {
                   const idx = issueIndex(i.at);
                   const id = idx === null ? null : doc.components[idx]?.id;
+                  const atSurface = i.at.startsWith("/surface") || i.at === "/root";
                   return (
-                    <button type="button" key={n} className="scr-issue" onClick={() => id && (setSelected(id), setPane("props"))} title={id ? `Select ${id}` : undefined}>
+                    <button type="button" key={n} className="scr-issue" onClick={() => (id ? (setSelected(id), setPane("props")) : atSurface ? (setSelected(SURFACE), setPane("props")) : undefined)} title={id ? `Select ${id}` : atSurface ? "Open the surface" : undefined}>
                       <span className={`dot ${i.severity === "error" ? "bad" : "warn"}`} aria-hidden="true" />
                       <span style={{ flexGrow: 1 }}>
                         <span>{i.message}</span>
@@ -355,8 +380,14 @@ export function Screen({ ws }: { ws: Ws }) {
           </div>
         </section>
         <aside className="scr-props" aria-label="Properties">
-          <div className="scr-panel-head"><span style={{ flexGrow: 1 }}>{node ? <><span className="mono">{node.id}</span></> : "Properties"}</span>{node && node.id !== doc.root && canEdit && <button type="button" className="btn ghost sm" onClick={() => remove(node.id)}>Delete</button>}</div>
-          {ctx ? <fieldset disabled={!canEdit} style={{ border: 0, padding: 0, margin: 0, minWidth: 0, display: "contents" }}><Props ctx={ctx} /></fieldset> : <div className="scr-props-empty"><p className="muted small">Select a component in the tree or the preview.</p></div>}
+          <div className="scr-panel-head"><span style={{ flexGrow: 1 }}>{node ? <><span className="mono">{node.id}</span></> : selected === SURFACE ? "Surface" : "Properties"}</span>{node && node.id !== doc.root && canEdit && <button type="button" className="btn ghost sm" onClick={() => remove(node.id)}>Delete</button>}</div>
+          {ctx ? (
+            <fieldset disabled={!canEdit} style={{ border: 0, padding: 0, margin: 0, minWidth: 0, display: "contents" }}><Props ctx={ctx} /></fieldset>
+          ) : selected === SURFACE ? (
+            <fieldset disabled={!canEdit} style={{ border: 0, padding: 0, margin: 0, minWidth: 0, display: "contents" }}><SurfaceProps doc={doc} apply={apply} base={{ apply, select: setSelected, pointersList: "scr-pointers", openPicker: () => undefined, createNode: (type) => { const nodes = makeNodes(doc, type); apply((d) => ({ ...d, components: [...d.components, ...nodes] })); return nodes[0].id; } }} /></fieldset>
+          ) : (
+            <div className="scr-props-empty"><p className="muted small">Select a component in the tree or the preview.</p></div>
+          )}
         </aside>
       </div>
 

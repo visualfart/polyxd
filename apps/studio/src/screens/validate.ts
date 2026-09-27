@@ -5,14 +5,15 @@
  * primary-action budget, bindings against the sample data, and the workspace's own rules.
  */
 import { readingOrder, runCheck, type Check } from "@polyxd/spec/checks";
-import { REFERENCE_TYPES, componentDef, deref, refName, uiSchema, type Doc, type Node, type S } from "./schema.ts";
+import { REFERENCE_TYPES, SHELL_COMPONENTS, belongsInShell, componentDef, deref, refName, uiSchema, type Doc, type Node, type S } from "./schema.ts";
 
 export interface Issue {
   severity: "error" | "warning";
   /** JSON Pointer into the document */
   at: string;
   message: string;
-  code?: "data:missing-path" | "rule";
+  /** As the spec's: a binding that reads nothing, the shell's structure; plus a workspace rule. */
+  code?: "data:missing-path" | "shell:structure" | "rule";
 }
 export interface CheckResult {
   valid: boolean;
@@ -304,6 +305,42 @@ export function checkDocument(doc: Json, opts: CheckOptions = {}): CheckResult {
   if (surfaceActions && byId.has(surfaceActions)) visit(surfaceActions, [], false, []);
   for (const [id, { c }] of byId) if (c.component === "Navigation" && !reached.has(id)) visit(id, [], false, []);
   for (const [id, { index }] of byId) if (!reached.has(id)) warn(`/components/${index}`, `"${id}" is not reachable from root "${d.root}"`);
+
+  // The shell, as the spec's validate.ts checks it. Frame, AppBar, Footer, Outlet and Custom are
+  // the product's frame around its screens: they live only in a shell document (surface.kind
+  // "shell"), and a shell is always authored. A shell is one Frame at the root with exactly one
+  // Outlet under its main; a surface has none.
+  const shell = (severity: "error" | "warning", at: string, message: string) => issues.push({ severity, at, message, code: "shell:structure" });
+  const isShellDoc = d.surface.kind === "shell";
+  const shellParts = [...byId].filter(([, { c }]) => SHELL_COMPONENTS.includes(c.component));
+  if (!isShellDoc) {
+    for (const [, { c, index }] of shellParts) shell("error", `/components/${index}`, belongsInShell(c.component));
+  } else {
+    if (d.surface.origin !== "authored") shell("error", "/surface/origin", 'a shell is authored; set surface.origin to "authored"');
+    const rootComponent = byId.get(d.root)?.c.component;
+    if (rootComponent && rootComponent !== "Frame") shell("error", "/root", `a shell's root is a Frame, not ${rootComponent}`);
+    const outlets = [...byId].filter(([, { c }]) => c.component === "Outlet");
+    if (outlets.length === 0) shell("error", "/components", "a shell has exactly one Outlet, reachable from the Frame's main; this one has none");
+    for (const [, { index }] of outlets.slice(1)) shell("error", `/components/${index}`, "a shell has exactly one Outlet; this is another");
+    // The Outlet is where screens render: it sits under the Frame's main, not in a bar or an aside.
+    const underMain = new Set<string>();
+    const main = rootComponent === "Frame" ? byId.get(d.root)!.c.main : undefined;
+    const walkMain = (id: string) => {
+      if (typeof id !== "string" || underMain.has(id) || !byId.has(id)) return;
+      underMain.add(id);
+      for (const r of refs.get(id)!.ids) walkMain(r.id);
+    };
+    if (typeof main === "string") walkMain(main);
+    for (const [id, { index }] of outlets.slice(0, 1)) {
+      if (typeof main === "string" && !underMain.has(id)) shell("error", `/components/${index}`, `the Outlet "${id}" is not reachable from the Frame's main "${main}"`);
+    }
+  }
+  // Navigation.placement is where a Frame puts its main navigation; outside a Frame nothing reads it.
+  for (const [id, { c, index }] of byId) {
+    if (c.component !== "Navigation" || c.placement === undefined) continue;
+    const owner = parent.get(id);
+    if (!owner || byId.get(owner)?.c.component !== "Frame") shell("warning", `/components/${index}/placement`, "Navigation.placement only applies to a Frame's navigation; here nothing reads it");
+  }
 
   const budget = Math.max(1, opts.emphasisBudget ?? 1);
   const isPrefix = (a: string[], b: string[]) => a.every((x, i) => b[i] === x);

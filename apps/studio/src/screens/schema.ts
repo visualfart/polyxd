@@ -5,6 +5,7 @@
  * the checking. Everything the editor knows about a component comes from this file.
  */
 import schema from "@polyxd/spec/schema/ui.schema.json" with { type: "json" };
+import catalog from "@polyxd/spec/catalog/catalog.json" with { type: "json" };
 
 export type S = Record<string, any>;
 export type Node = Record<string, any> & { id: string; component: string };
@@ -63,7 +64,54 @@ export const REFERENCE_TYPES: Record<string, string[]> = {
   "Panel.actions": ["ActionBar"],
   "ActionMenu.children": ["Action"],
   "ActionMenu.primary": ["Action"],
+  // The shell (spec 0.3): a Frame's regions, and what the bars hold.
+  "Frame.header": ["AppBar"],
+  "Frame.navigation": ["Navigation"],
+  "Frame.main": ["Outlet", "Group"],
+  "Frame.aside": ["Group", "Section", "Card", "Status", "Text", "DetailList", "Collection", "Disclosure", "Navigation", "Custom"],
+  "Frame.footer": ["Footer"],
+  "Frame.banner": ["Status"],
+  "AppBar.leading": ["Action"],
+  "AppBar.search": ["TextInput", "Action"],
+  "AppBar.actions": ["ActionBar"],
+  "AppBar.account": ["Identity", "ActionMenu"],
+  "Footer.aside": ["Choice", "Tag", "Text"],
+  "Outlet.loading": ["Status", "Progress", "Text", "Group"],
+  // A Custom's fallback is what renders when the host has no such component: something the renderer draws itself, never another shell part.
+  "Custom.fallback": ["Text", "Media", "Status", "Metric", "Tag", "Identity", "Code", "Progress", "Group", "Card"],
+  "Columns.children": ["Section", "Group", "Card", "Text", "Metric", "DetailList", "Media", "Status", "Form", "Collection", "Table", "Tree", "Chart", "Disclosure", "Views", "Steps", "Comparison", "FilterPanel", "Navigation", "Tag", "Identity", "Progress", "Code", "Custom"],
+  "Split.primary": ["Collection", "Table", "Tree"],
+  "Split.detail": ["Group", "Section", "Card", "DetailList", "Text", "Form", "Views", "Table", "Collection", "Media", "Code"],
+  "Split.empty": ["Status"],
 };
+
+/**
+ * The shell components: the product's frame around its screens. They live only in a shell
+ * document (surface.kind "shell"). The spec marks them `shell: true` in components/*.json and
+ * the catalog carries that as their category; both say the same five.
+ */
+export const SHELL_COMPONENTS: readonly string[] = Object.entries((catalog as { components: Record<string, { category: string }> }).components)
+  .filter(([, e]) => e.category === "shell")
+  .map(([name]) => name)
+  .sort();
+
+/** A Frame's regions, in reading order: what the tree shows as labelled slots. */
+export const FRAME_REGIONS: readonly { prop: string; label: string }[] = [
+  { prop: "banner", label: "Banner" },
+  { prop: "header", label: "Header" },
+  { prop: "navigation", label: "Navigation" },
+  { prop: "main", label: "Main" },
+  { prop: "aside", label: "Aside" },
+  { prop: "footer", label: "Footer" },
+];
+
+export const isShell = (doc: { surface?: Record<string, unknown> }): boolean => doc.surface?.kind === "shell";
+
+/** The message the checker gives a shell component in a surface; the picker says the same before it happens. */
+export const belongsInShell = (component: string) => `${component} belongs in a shell document: set surface.kind to "shell"`;
+
+/** The types a slot may take in this document: a surface can't take a shell component. */
+export const pickableIn = (doc: { surface?: Record<string, unknown> }, allowed: string[]): string[] => (isShell(doc) ? allowed : allowed.filter((c) => !SHELL_COMPONENTS.includes(c)));
 
 /** What a slot may hold: the reference table's list, or any component. */
 export const allowedIn = (component: string, prop: string): string[] => REFERENCE_TYPES[`${component}.${prop}`] ?? COMPONENTS;
@@ -84,6 +132,7 @@ export function refProps(component: string): RefProp[] {
   const d = componentDef(component);
   const out: RefProp[] = [];
   for (const [prop, s] of Object.entries<S>(d?.properties ?? {})) {
+    if (prop === "id" || prop === "component") continue; // the component's own id is not a reference
     const required = (d!.required as string[]).includes(prop);
     const name = refName(s);
     if (name === "ChildList") out.push({ prop, kind: "list", required });

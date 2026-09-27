@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type ScreenRow } from "../api.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
-import { TEMPLATES, fromTemplate } from "../screen/templates.ts";
+import { SHELL_TEMPLATE, TEMPLATES, fromTemplate, shellFromTemplate } from "../screen/templates.ts";
 import { checkDocument } from "../../screens/validate.ts";
 
 const CAN_EDIT = new Set(["owner", "design-system", "designer", "product"]);
@@ -18,7 +18,7 @@ export function Screens({ ws }: { ws: Ws }) {
   const [key, setKey] = useState("");
   const [keyEdited, setKeyEdited] = useState(false);
   const [intent, setIntent] = useState("");
-  const [start, setStart] = useState<"blank" | "template" | "paste">("template");
+  const [start, setStart] = useState<"blank" | "template" | "shell" | "paste">("template");
   const [template, setTemplate] = useState(TEMPLATES.find((t) => t.id === "money-send-form")?.id ?? TEMPLATES[0]?.id ?? "");
   const [pasted, setPasted] = useState("");
   const [q, setQ] = useState("");
@@ -55,10 +55,11 @@ export function Screens({ ws }: { ws: Ws }) {
   };
   const create = async () => {
     const t = TEMPLATES.find((x) => x.id === template);
-    const title = name.trim() || (start === "template" ? t?.title : pastedCheck?.title) || "";
-    const finalIntent = intent.trim() || (start === "template" ? t?.intent : pastedCheck?.intent) || "";
+    const title = name.trim() || (start === "template" ? t?.title : start === "shell" ? "Shell" : pastedCheck?.title) || "";
+    const finalIntent = start === "shell" ? "product.shell" : intent.trim() || (start === "template" ? t?.intent : pastedCheck?.intent) || "";
     let document: unknown;
     if (start === "template" && t) document = fromTemplate(t, title, finalIntent);
+    if (start === "shell") document = shellFromTemplate(name.trim() || "Your product");
     if (start === "paste") {
       if (!pastedCheck?.doc) return toast("Paste a document first", "bad");
       document = { ...pastedCheck.doc, surface: { ...pastedCheck.doc.surface, title: title || pastedCheck.doc.surface?.title, origin: "authored" } };
@@ -85,7 +86,7 @@ export function Screens({ ws }: { ws: Ws }) {
   const shown = TEMPLATES.filter((t) => !q || `${t.title} ${t.intent} ${t.shape}`.toLowerCase().includes(q.toLowerCase()));
   const selectedTemplate = TEMPLATES.find((t) => t.id === template);
   return (
-    <Page crumbs={[ws.name, "Product", "Screens"]} title="Screens" lede="Surfaces designed here rather than generated: written as Polyxd documents, drawn in your design system, checked like any generated screen, and fetched by your product by key." actions={canEdit && <button type="button" className="btn primary" onClick={open}>New screen</button>}>
+    <Page crumbs={[ws.name, "Product", "Screens"]} title="Screens" lede="Surfaces designed here rather than generated, and the shell they sit in: written as Polyxd documents, drawn in your design system, checked like any generated screen, and fetched by your product by key." actions={canEdit && <button type="button" className="btn primary" onClick={open}>New screen</button>}>
       {!list.length && (
         <div className="empty" style={{ maxWidth: 560 }}>
           <h2>No screens yet</h2>
@@ -99,7 +100,7 @@ export function Screens({ ws }: { ws: Ws }) {
           <tbody>
             {list.map((s) => (
               <tr key={s.id} className="row-link" onClick={() => navigate(`/w/${ws.slug}/screens/${s.key}`)}>
-                <td><b>{s.name}</b></td>
+                <td><b>{s.name}</b>{s.kind === "shell" && <span className="tag" style={{ marginLeft: 8 }}>shell</span>}</td>
                 <td className="mono small">{s.key}</td>
                 <td className="mono small">{s.intent || <span className="muted">—</span>}</td>
                 <td>{s.status === "published" ? <span className="tag ok">v{s.published} published</span> : <span className="tag signal">draft</span>}</td>
@@ -122,7 +123,7 @@ export function Screens({ ws }: { ws: Ws }) {
             <header><h2>New screen</h2><button type="button" className="btn ghost sm" onClick={() => setCreating(false)}>Close</button></header>
             <div className="body">
               <div className="segmented" role="tablist" aria-label="Start from">
-                {(["template", "blank", "paste"] as const).map((s) => <button key={s} type="button" role="tab" aria-pressed={start === s} onClick={() => setStart(s)}>{s === "template" ? "An example" : s === "blank" ? "Blank" : "Paste JSON"}</button>)}
+                {(["template", "shell", "blank", "paste"] as const).map((s) => <button key={s} type="button" role="tab" aria-pressed={start === s} onClick={() => setStart(s)}>{s === "template" ? "An example" : s === "shell" ? "Shell" : s === "blank" ? "Blank" : "Paste JSON"}</button>)}
               </div>
               {start === "template" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -138,6 +139,9 @@ export function Screens({ ws }: { ws: Ws }) {
                 </div>
               )}
               {start === "blank" && <p className="small muted">A Group with one line of text. Add components from the tree; the sample data starts empty.</p>}
+              {start === "shell" && (
+                <div className="notice gray"><div className="body"><b>The product's frame, from the spec's shell example</b>A Frame with an AppBar (search, notifications, help, the account), a main Navigation of five sections, the Outlet your screens render in, an aside with your logo as a Custom slot, and a Footer. Named after your product; {SHELL_TEMPLATE ? SHELL_TEMPLATE.components - 2 : 0} components. Your product renders it with <span className="mono">PolyxdFrame</span> and fetches it by key like any screen.</div></div>
+              )}
               {start === "paste" && (
                 <div className="field">
                   <label htmlFor="paste">Document</label>
@@ -146,10 +150,10 @@ export function Screens({ ws }: { ws: Ws }) {
                 </div>
               )}
               <div style={{ display: "flex", gap: 12 }}>
-                <div className="field" style={{ flex: 2 }}><label htmlFor="sn">Name</label><input id="sn" className="input" value={name} placeholder={start === "template" ? selectedTemplate?.title : start === "paste" ? pastedCheck?.title : "Send money"} onChange={(e) => { setName(e.target.value); if (!keyEdited) setKey(slugOf(e.target.value)); }} /></div>
-                <div className="field" style={{ flex: 1 }}><label htmlFor="sk">Key</label><input id="sk" className="input mono" value={key} placeholder={slugOf(name || (start === "template" ? selectedTemplate?.title ?? "" : pastedCheck?.title ?? ""))} onChange={(e) => { setKey(slugOf(e.target.value)); setKeyEdited(true); }} /><span className="help">Your product fetches it by this.</span></div>
+                <div className="field" style={{ flex: 2 }}><label htmlFor="sn">Name</label><input id="sn" className="input" value={name} placeholder={start === "template" ? selectedTemplate?.title : start === "shell" ? "Your product's name" : start === "paste" ? pastedCheck?.title : "Send money"} onChange={(e) => { setName(e.target.value); if (!keyEdited) setKey(slugOf(e.target.value)); }} /></div>
+                <div className="field" style={{ flex: 1 }}><label htmlFor="sk">Key</label><input id="sk" className="input mono" value={key} placeholder={slugOf(name || (start === "template" ? selectedTemplate?.title ?? "" : start === "shell" ? "shell" : pastedCheck?.title ?? ""))} onChange={(e) => { setKey(slugOf(e.target.value)); setKeyEdited(true); }} /><span className="help">Your product fetches it by this.</span></div>
               </div>
-              <div className="field"><label htmlFor="si">Intent</label><input id="si" className="input mono" value={intent} placeholder={start === "template" ? selectedTemplate?.intent : start === "paste" ? pastedCheck?.intent : "money.send"} onChange={(e) => setIntent(e.target.value)} /><span className="help">What the person is trying to do, as a stable key. Memory and insights are organised by it.</span></div>
+              {start !== "shell" && <div className="field"><label htmlFor="si">Intent</label><input id="si" className="input mono" value={intent} placeholder={start === "template" ? selectedTemplate?.intent : start === "paste" ? pastedCheck?.intent : "money.send"} onChange={(e) => setIntent(e.target.value)} /><span className="help">What the person is trying to do, as a stable key. Memory and insights are organised by it.</span></div>}
             </div>
             <footer><button type="button" className="btn" onClick={() => setCreating(false)}>Cancel</button><button type="button" className="btn primary" onClick={create} disabled={busy}>Create screen</button></footer>
           </div>

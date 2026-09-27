@@ -5,7 +5,8 @@
  */
 import { inferMapping } from "@polyxd/ds-kit/infer";
 import { contrastRatio } from "@polyxd/spec/color";
-import { index, resolve, type Graph, type Mode, type Token } from "./read.ts";
+import { index, resolve, resolveDeep, type Graph, type Mode, type Token } from "./read.ts";
+import { display } from "../tokens/value.ts";
 
 export interface Contract {
   tokens: Record<string, { type: string; description: string }>;
@@ -31,6 +32,8 @@ export interface RoleRow {
   /** The alias chain from that token down to the primitive that holds the value */
   chain: string[];
   values: Record<string, string | null>;
+  /** The value itself per mode, aliases inside composites followed: what the theme and the exports read */
+  raw: Record<string, unknown>;
   how: "named" | "measured" | "derived" | "manual" | "none";
   why: string;
   status: RoleStatus;
@@ -43,12 +46,8 @@ export interface Override {
   token: string | null;
 }
 
-/** A value as text the mapper and the renderer can use; composites (typography objects) are not. */
-export function scalar(v: unknown): string | null {
-  if (typeof v === "string") return v.trim();
-  if (typeof v === "number") return String(v);
-  return null;
-}
+/** A value as one line the mapper matches on and the table shows: "8px", "#1849a9", a shadow or a typography shorthand. */
+export const scalar = (v: unknown): string | null => display(v);
 
 /** `color.brand.600` as the kind of name ds-kit's patterns know: `color-brand-600`. */
 const asVar = (path: string) => path.replace(/[./]/g, "-").toLowerCase();
@@ -84,10 +83,18 @@ export function mapRoles(graph: Graph, contract: Contract, overrides: Override[]
   // has said what it is more plainly than any pattern can; ds-kit's patterns don't cover that.
   const isColor = (v: string) => /^(#|rgb|hsl|oklch|oklab|color\()/i.test(v);
   for (const [role, spec] of Object.entries(contract.tokens)) {
-    if (guessed.has(role)) continue;
     const full = asVar(role);
     const short = full.split("-").slice(1).join("-");
-    const hit = Object.keys(vars).find((n) => (n === full || n === short || n.endsWith(`-${short}`)) && (spec.type === "color") === isColor(vars[n]));
+    const fits = (n: string) => (spec.type === "color") === isColor(vars[n]);
+    // A token named exactly like the role (a pack's semantic tier, a team that adopted the
+    // contract's names) beats any pattern: radius.default must not be read as radius.control.
+    const exact = full in vars && fits(full) ? full : undefined;
+    if (exact) {
+      guessed.set(role, { token: role, from: exact, why: `"${pathOfVar.get(exact)}" is named like the role`, how: "named" });
+      continue;
+    }
+    if (guessed.has(role)) continue;
+    const hit = Object.keys(vars).find((n) => (n === short || n.endsWith(`-${short}`)) && fits(n));
     if (hit) guessed.set(role, { token: role, from: hit, why: `"${pathOfVar.get(hit)}" is named like the role`, how: "named" });
   }
   const over = new Map(overrides.map((o) => [o.role, o]));
@@ -109,12 +116,14 @@ export function mapRoles(graph: Graph, contract: Contract, overrides: Override[]
       why = g.why;
     }
     const values: Record<string, string | null> = {};
+    const raw: Record<string, unknown> = {};
     let chain: string[] = [];
     let leaf: Token | undefined;
     if (token) {
       for (const m of modes) {
         const r = resolve(graph, token, m, byPath);
-        values[m.name] = scalar(r.value);
+        if (r.leaf) raw[m.name] = resolveDeep(graph, r.value, m, byPath);
+        values[m.name] = scalar(raw[m.name]);
         if (m === first) {
           chain = r.chain;
           leaf = r.leaf;
@@ -123,7 +132,7 @@ export function mapRoles(graph: Graph, contract: Contract, overrides: Override[]
     }
     let status: RoleStatus = !token ? (o ? "off" : "missing") : how === "named" || how === "manual" ? "exact" : "guessed";
     if (token && byPath.get(token)?.[0]?.tier === "primitive" && semantic.length >= 5) status = "primitive";
-    rows.push({ role, type: spec.type, description: spec.description, token, chain, values, how, why, status, contrast: [] });
+    rows.push({ role, type: spec.type, description: spec.description, token, chain, values, raw, how, why, status, contrast: [] });
   }
 
   // Contrast, measured, in every mode. A failing pair marks the foreground role.

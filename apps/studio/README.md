@@ -8,12 +8,16 @@ Run it yourself on your own Cloudflare account, or use the hosted one at studio.
 
 - Sign up and sign in through [better-auth](https://www.better-auth.com), open source and running inside the Worker: email and password with verification, password reset, Google when a client is configured; two-step verification and SAML/OIDC single sign-on are its plugins, to add when a customer needs them. Workspaces, invites with roles, API keys.
 - Import a design system as it is, from an npm package (public, or private through a read-only registry token kept encrypted, an uploaded `npm pack` tarball, or `polyxd studio push` from inside your network), a Tokens Studio file, a W3C DTCG file, or CSS custom properties.
+- Or **start from a template**: one of the twelve original template packs (`packages/ds-{mono,civic,sketch,wireframe,editorial,pastel,health,finance,glass,terminal,brutalist,neon}`, bundled into the Worker as JSON), or a blank one (Mono's structure with a grey ramp). Each is shown with one line of character and a strip of swatches from its own tokens. It becomes a design system of the workspace with its tokens copied, scanned, and every role mapped to the pack's semantic token of the same name (exact matches accepted), ready to tune and publish.
 - A scan of what was found: tokens by tier and type, modes, broken and circular references, deprecated tokens.
 - Mapping Polyxd's 87 roles onto your semantic tier, with alias chains, contrast measured in every mode, candidates to point a role at instead, bulk accept for exact matches, and publish (blocked while any pair fails contrast).
+- **Tune** a version in the tokens editor: primitives by group, colour ramps as swatches (each with the roles that read it and whether their contrast pairs pass), spacing, radius and type scales as lists. Edit a value (hex, a colour picker, a `{reference}`, or the JSON of a composite) and every alias that resolves through it follows, with the mapping's contrast pairs measured again as you type, by the same code the mapping page uses. Save keeps the edits as a new draft version with a note, the mapping carried over; a live version is never changed in place. **Rebrand**, for the Mono and Blank templates: turn the brand ramp's hue with one slider (and its chroma with another). It keeps each step's lightness and chroma and rotates the hue, in every mode; the other ramps keep theirs, and contrast is re-measured rather than assumed.
+- **Export** a version for code, in six shapes (below), from the Export button or `GET /api/w/<workspace>/design-systems/<id>/versions/<version>/export?format=…` with a session or an API key. A published version exports as is; a draft carries a banner at the top of every file.
 - Browse your own tokens by tier and group, with what each resolves to and what references it.
 - Components: which are on for generators, guidance the generator reads, and your own implementation per component.
 - Rules: yours, as verifier checks, with severity and an on/off switch.
-- Screens: surfaces a designer authors rather than generates. A screen is a Polyxd document edited as a tree of components (all 37, with the spec's guidance), drawn live with `@polyxd/react` in your published design system (or any built-in theme; light and dark; phone, tablet and desktop; three densities), with a property panel made from the schema, a sample-data tab for bindings, and the JSON always within reach. It is checked as you edit, the way a generated screen is: schema, references, bindings against the sample data, and your rules. Save keeps versions with notes; Publish makes one the document your product fetches by key. Start from one of the spec's 28 examples, blank, or pasted JSON.
+- Screens: surfaces a designer authors rather than generates, and the **shell** they sit in. A screen is a Polyxd document edited as a tree of components (all 44, with the spec's guidance), drawn live with `@polyxd/react` in your published design system (or any built-in theme; light and dark; phone, tablet and desktop; three densities), with a property panel made from the schema, a sample-data tab for bindings, and the JSON always within reach. It is checked as you edit, the way a generated screen is: schema, references, bindings against the sample data, the spec's shell rules, and your rules. Save keeps versions with notes; Publish makes one the document your product fetches by key. Start from one of the spec's examples, blank, pasted JSON, or the Shell template.
+- Shells: New screen → Shell starts from the spec's `shell-product.json`, named after your product: a Frame with an AppBar, a main Navigation, the Outlet, an aside with a `Custom` logo slot, and a Footer. The tree shows the Frame's regions as labelled slots (banner, header, navigation, main, aside, footer; empty ones can be filled). The preview draws it with `PolyxdFrame`, as your product will, with a stand-in in the Outlet (a placeholder, or any published screen of the workspace, from the toolbar), at phone, tablet and desktop, so the navigation's bar, rail and side forms show. The surface's `kind` and `origin` are edited from the Surface row at the top of the tree. The checker applies the spec's shell rules exactly as `@polyxd/spec` does: shell components (Frame, AppBar, Footer, Outlet, Custom) only in a shell, which is authored, with a Frame at the root and exactly one Outlet reachable from its main; a `Custom`'s fallback is never a shell part; `Navigation.placement` outside a Frame is a warning. The picker and the reference fields refuse shell components in a surface with the same message.
 
 Reviews, releases, insights and the flow map come once screens flow in through the SDK.
 
@@ -30,7 +34,31 @@ const doc = await fetch(`${STUDIO}/api/w/acme/screens/send-money`, { headers: { 
 <PolyxdSurface document={doc} data={liveData} theme="acme" onAction={handle} />
 ```
 
-The response carries `X-Polyxd-Screen-Version`; an unpublished screen answers 404. `GET …/screens` lists the workspace's screens with their published version, and `GET …/screens/<key>/versions` the history. Fetch on the server or at build time and keep the document with your bundle: a screen changes when someone publishes, not on every request.
+A shell is fetched the same way: the document comes back with `surface.kind: "shell"`, and your product renders it with `PolyxdFrame`, its screens as children in the Outlet:
+
+```ts
+const shell = await fetch(`${STUDIO}/api/w/acme/screens/shell`, { headers: { authorization: `Bearer ${key}` } }).then((r) => r.json());
+<PolyxdFrame document={shell} data={shellData} theme="acme" current={{ key: "shipments", title: "Shipments" }} onAction={route}>
+  <PolyxdSurface document={doc} data={liveData} theme="acme" onAction={handle} />
+</PolyxdFrame>
+```
+
+The response carries `X-Polyxd-Screen-Version`; an unpublished screen answers 404. `GET …/screens` lists the workspace's screens with their published version and `kind`, and `GET …/screens/<key>/versions` the history. Fetch on the server or at build time and keep the document with your bundle: a screen changes when someone publishes, not on every request.
+
+## Deliver a design system to your code
+
+`GET /api/w/<workspace>/design-systems/<id>/versions/<version>/export?format=<format>` returns one file; the Export button in Studio downloads the same. The response carries `X-Polyxd-Design-System-Version` and `X-Polyxd-Design-System-Status` (`live` or `draft`); a draft's file starts with a banner saying so (a comment, or a `$draft` key in the JSON formats). Every format starts from the same thing: the 87 roles, each resolved through the version's mapping to a value per mode.
+
+| `format` | File | Shape |
+|---|---|---|
+| `css` | `<name>.css` | `[data-pxd-theme="<name>"][data-pxd-mode="<mode>"] { --pxd-<role>: …; }` per mode, the default mode also without a mode attribute, exactly what `packages/react/scripts/build-themes.ts` emits for a pack (typography as `-family`, `-size`, `-weight`, `-line-height`, `-letter-spacing`), plus shadcn/ui's variable names (`--background`, `--primary`, `--radius`, `--chart-1`…) set from the roles and `color-scheme`. A version started from a template with an extras stylesheet (Sketch, Wireframe) gets it appended, rescoped to the design system's name. An unmapped role is a comment, never a guess. Use it with `@polyxd/react/styles.css` and `theme="<name>"`. |
+| `dtcg` | `<name>.pack.json` | The design system as a Polyxd pack, in one JSON bundle: `manifest` (name, modes → files, `defaultMode`, `contractVersion`, provenance) and `files`, one DTCG tree per token set (`tokens/<set>.json`, with `$value`, `$type`, `$description`, `$deprecated`), plus `tokens/extras.css` when there is one. Write each file to its path beside the manifest and it checks with `polyxd check`. |
+| `tailwind` | `<name>.tailwind.config.js` | `module.exports = { theme: { extend: { colors, spacing, borderRadius, borderWidth, fontFamily, fontSize, boxShadow, transitionDuration, transitionTimingFunction, outlineWidth, outlineOffset, opacity, maxWidth } } }`, every value a `var(--pxd-…)` from the CSS export so modes follow `data-pxd-mode`, with the default mode's value in a comment after each. Colours nest by role (`colors.surface.DEFAULT`, `colors.action.primary.background`); type gives `fontFamily` and a `fontSize` tuple with line height, letter spacing and weight. |
+| `style-dictionary` | `<name>.tokens.json` | A Style Dictionary v4 source in the DTCG format: one tree per mode (`light`, `dark`, …), the roles nested by their path, each `{ "$type", "$value" }` with aliases inside composites resolved. Point a platform at its mode's tree. |
+| `swift` | `<Name>Tokens.swift` | `public enum <Name>Tokens { public enum Light { public static let colorSurfaceDefault: Color = Color(red:green:blue:) … } public enum Dark { … } }` with `CGFloat` lengths (1px = 1pt), `TimeInterval` durations, `[Double]` easings, and `Typography` and `Shadow` structs defined in the file. |
+| `compose` | `<Name>Tokens.kt` | `object <Name>Tokens { object Light { val colorSurfaceDefault = Color(0xFFFBF7EE) … } object Dark { … } }` with `.dp` lengths, `.sp` type sizes, millisecond durations, `CubicBezierEasing`, and `Typography` and `Shadow` data classes. Add your package line. |
+
+Values a format can't express (a colour it can't read, a gradient) become a comment naming the role, so nothing is silently dropped.
 
 ## Push from your own build
 
@@ -71,8 +99,11 @@ The hosted one at studio.polyxd.com is this same configuration.
 | `src/import/scan.ts` | What was found, by tier and type |
 | `src/import/map.ts` | Roles onto the semantic tier, contrast in every mode, candidates |
 | `src/import/package.ts` | npm packages: registry fetch, untar, find the token files |
-| `src/worker/` | The API on Workers: auth, workspaces, design systems, components, rules, screens |
-| `src/screens/` | Screens, shared by the Worker and the app: the schema read without ajv (Workers refuse generated code), the checker, the tree edits |
-| `src/app/` | The React app; `src/app/screen/` is the editor's tree, preview, property panel and themes |
+| `src/templates/` | The twelve template packs bundled as JSON (`packs.ts`), their extras stylesheets as text (`extras.ts`), and each as a graph with a swatch summary |
+| `src/tokens/` | Editing: a pack as a graph, edits applied with aliases re-checked, the OKLCH ramp and rebrand, values as CSS and as one line |
+| `src/export/` | The six export formats |
+| `src/worker/` | The API on Workers: auth, workspaces, design systems, templates, editing, export, components, rules, screens |
+| `src/screens/` | Screens, shared by the Worker and the app: the schema read without ajv (Workers refuse generated code), the checker with the spec's shell rules, the tree edits |
+| `src/app/` | The React app; `src/app/screen/` is the editor's tree, preview, property panel and themes; `pages/TokensEditor.tsx` the tokens editor |
 | `migrations/` | D1 schema |
 | `../../design/studio` | The design every screen here follows |

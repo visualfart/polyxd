@@ -4,6 +4,7 @@
  * built-in themes, loaded the first time it is picked.
  */
 import { api, type RoleRow } from "../api.ts";
+import { declarations } from "../../tokens/value.ts";
 
 export const BUILTIN: { id: string; name: string }[] = [
   { id: "shadcn", name: "shadcn" }, { id: "material3", name: "Material 3" }, { id: "govuk", name: "GOV.UK" }, { id: "antd", name: "Ant Design" }, { id: "bootstrap", name: "Bootstrap" },
@@ -54,8 +55,8 @@ export async function workspaceTheme(slug: string): Promise<WorkspaceTheme | nul
   const vars = (mode: string) => {
     const out: Record<string, string> = {};
     for (const r of rows) {
-      const v = r.values[mode];
-      if (r.token && v) out[`--pxd-${r.role.replace(/\./g, "-")}`] = v;
+      const v = r.raw[mode];
+      if (r.token && v !== undefined) for (const [k, val] of declarations(r.role, r.type, v)) out[k] = val;
     }
     return out;
   };

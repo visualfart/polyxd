@@ -18,8 +18,11 @@ order: 23
   ```
 
   The same package name lands as a new version of the same design system every time, so a release step can run it.
+- **Start from a template** instead: one of twelve original templates (Mono, Civic, Sketch, Wireframe, Editorial, Pastel, Health, Finance, Glass, Terminal, Brutalist, Neon; the same packs as `@polyxd/ds-*`) or a blank one, each shown with a line of character and a strip of swatches from its own tokens. It becomes a design system of your workspace: tokens copied, scanned, every role mapped to the pack's token of the same name.
 - **Scan**: tokens by tier and type, modes, aliases, broken and circular references, deprecated tokens.
 - **Map** Polyxd's 87 roles onto your semantic tier, with alias chains, contrast measured in every mode, candidates for each role, bulk accept for exact matches, and publish, blocked while any pair fails contrast.
+- **Tune** in the tokens editor: primitives by group, colour ramps as swatches with the roles that read each and whether their contrast pairs pass, scales as lists. Change a value and every alias through it follows, with contrast measured again as you type; save the edits as a new draft version. Mono and Blank have a **Rebrand** slider: one hue turns the whole brand ramp, keeping each step's lightness (contrast is re-measured, not assumed).
+- **Export** a version for code: CSS variables (exactly the `--pxd-*` theme `@polyxd/react` builds for a pack, plus shadcn/ui's names), a DTCG pack bundle, a Tailwind theme extension, a Style Dictionary v4 source, a Swift enum, a Kotlin object. From the Export button, or `GET /api/w/<workspace>/design-systems/<id>/versions/<version>/export?format=css|dtcg|tailwind|style-dictionary|swift|compose` with an API key. A published version exports as is; a draft's file starts with a banner saying so.
 - **Browse** your tokens by tier and group, with what each resolves to and what references it.
 
 ## Direction
@@ -37,7 +40,7 @@ Where designers author a product's surfaces, in the same format a generator writ
 - **Issues** as you edit, from the same checks the verifier runs statically; Publish stays disabled while an error remains.
 - **Versions** with notes and restore; **Publish** marks the one products get.
 
-A shell document can be authored the same way, with the Outlet shown as a placeholder.
+**Shells** are authored the same way. New screen → Shell starts from the spec's shell example, named after your product: a Frame with an AppBar, a main Navigation, the Outlet, an aside and a Footer. The tree shows the Frame's regions as labelled slots; the preview draws the shell with `PolyxdFrame` and a stand-in in the Outlet (a placeholder, or any published screen of the workspace), at phone, tablet and desktop, so the navigation's bar, rail and side forms show. The surface's `kind` and `origin` are edited from the Surface row; the checker applies the spec's shell rules (shell components only in a shell, which is authored, with a Frame at the root and exactly one Outlet under its main), and the picker refuses a shell component in a surface with the same message.
 
 ## Delivering a screen to a product
 

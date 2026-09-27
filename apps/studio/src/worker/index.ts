@@ -14,6 +14,10 @@ import { isLocal, makeAuth, now, sendEmail, userFromRequest, type Ctx, type Env,
 import { checkDocument, type Rule } from "../screens/validate.ts";
 import { blankDocument } from "../screens/tree.ts";
 import type { Doc } from "../screens/schema.ts";
+import { BLANK, TEMPLATE_NAMES, TEMPLATE_PACKS, allTemplates, isStartName, templateGraph } from "../templates/index.ts";
+import { TEMPLATE_EXTRAS } from "../templates/extras.ts";
+import { applyChanges, checkChanges } from "../tokens/edit.ts";
+import { FORMATS, exportDesignSystem, isFormat } from "../export/index.ts";
 
 type Vars = { user: User | null; apiWorkspace: string | null };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -273,11 +277,15 @@ interface Version {
   scan_json: string;
   package_name: string | null;
   package_version: string | null;
+  notes: string;
+  template: string | null;
   created_at: string;
   published_at: string | null;
 }
 
 const graphKey = (versionId: string) => `versions/${versionId}/graph.json`;
+/** A template pack's extras stylesheet, kept with the version so a CSS export is the whole pack. */
+const extrasKey = (versionId: string) => `versions/${versionId}/extras.css`;
 
 async function loadGraph(env: Env, versionId: string): Promise<Graph> {
   const obj = await env.FILES.get(graphKey(versionId));
@@ -397,7 +405,7 @@ async function version(c: Ctx, w: Workspace): Promise<{ ds: DS; v: Version }> {
 app.get("/api/w/:slug/design-systems/:id", async (c) => {
   const w = await ws(c as Ctx);
   const { ds } = await version(c as Ctx, w);
-  const versions = await c.env.DB.prepare("SELECT id, number, status, file_name, package_name, package_version, created_at, published_at, scan_json FROM ds_versions WHERE design_system_id = ? ORDER BY number DESC").bind(ds.id).all<Version>();
+  const versions = await c.env.DB.prepare("SELECT id, number, status, file_name, package_name, package_version, notes, template, created_at, published_at, scan_json FROM ds_versions WHERE design_system_id = ? ORDER BY number DESC").bind(ds.id).all<Version>();
   return c.json({ ...ds, versions: versions.results.map((v) => ({ ...v, scan: JSON.parse(v.scan_json), scan_json: undefined })) });
 });
 
@@ -449,18 +457,131 @@ app.put("/api/w/:slug/design-systems/:id/versions/:v/mapping", async (c) => {
   return c.json({ ok: true });
 });
 
-/** Accepts every guess that came from a name at once: the 70-odd a person shouldn't have to click. */
+/** The statements that accept every guess that came from a name: the 70-odd a person shouldn't have to click. */
+function acceptExact(env: Env, versionId: string, userId: string, graph: Graph, existing: Override[] = []): { statements: D1PreparedStatement[]; accepted: number; fails: number } {
+  const rows = mapRoles(graph, CONTRACT, existing);
+  const exact = rows.filter((r) => r.how === "named" && r.token && r.status === "exact");
+  return {
+    statements: exact.map((r) => env.DB.prepare("INSERT OR REPLACE INTO role_overrides (version_id, role, token_path, decided_by, decided_at) VALUES (?, ?, ?, ?, ?)").bind(versionId, r.role, r.token, userId, now())),
+    accepted: exact.length,
+    fails: rows.filter((r) => r.status === "fails").length,
+  };
+}
+
 app.post("/api/w/:slug/design-systems/:id/versions/:v/accept-exact", async (c) => {
   const w = await ws(c as Ctx, CAN_EDIT_TOKENS);
   const user = need(c as Ctx);
   const { v } = await version(c as Ctx, w);
   const graph = await loadGraph(c.env, v.id);
-  const rows = mapRoles(graph, CONTRACT, await overrides(c.env, v.id));
-  const exact = rows.filter((r) => r.how === "named" && r.token && r.status === "exact");
-  if (exact.length) {
-    await c.env.DB.batch(exact.map((r) => c.env.DB.prepare("INSERT OR REPLACE INTO role_overrides (version_id, role, token_path, decided_by, decided_at) VALUES (?, ?, ?, ?, ?)").bind(v.id, r.role, r.token, user.id, now())));
+  const { statements, accepted } = acceptExact(c.env, v.id, user.id, graph, await overrides(c.env, v.id));
+  if (statements.length) await c.env.DB.batch(statements);
+  return c.json({ accepted });
+});
+
+// ---------------------------------------------------------------- design systems: templates, editing, export
+
+/** The twelve template packs and a blank, with a swatch strip from each one's own tokens. */
+app.get("/api/design-system-templates", (c) => {
+  need(c as Ctx);
+  return c.json({ templates: allTemplates() });
+});
+
+/**
+ * A template becomes a design system of the workspace's own: its tokens copied, scanned, and every
+ * role mapped to the pack's semantic token of the same name (exact matches accepted, as the
+ * mapping page's bulk accept would). From here on the team edits its copy; the pack is not read again.
+ */
+app.post("/api/w/:slug/design-systems/from-template", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_TOKENS);
+  const user = need(c as Ctx);
+  const { template, name } = await body<{ template?: string; name?: string }>(c as Ctx);
+  if (!isStartName(template)) throw new Fail(400, `Which template? One of ${[BLANK, ...TEMPLATE_NAMES].join(", ")}`);
+  if (name !== undefined) text(name, 80, "Name");
+  const graph = templateGraph(template);
+  const summary = scan(graph);
+  const display = template === BLANK ? "Blank" : (TEMPLATE_PACKS[template].manifest.displayName ?? template);
+  const dsName = name?.trim() || display;
+  const first = await c.env.DB.prepare("SELECT COUNT(*) AS n FROM design_systems WHERE workspace_id = ?").bind(w.id).first<{ n: number }>();
+  const dsId = crypto.randomUUID();
+  const versionId = crypto.randomUUID();
+  const files = template === BLANK ? Object.keys(TEMPLATE_PACKS.mono.files) : Object.keys(TEMPLATE_PACKS[template].files);
+  await c.env.FILES.put(graphKey(versionId), JSON.stringify(graph), { httpMetadata: { contentType: "application/json" } });
+  const extras = template === BLANK ? undefined : TEMPLATE_EXTRAS[template];
+  if (extras) await c.env.FILES.put(extrasKey(versionId), extras, { httpMetadata: { contentType: "text/css" } });
+  const { statements, accepted, fails } = acceptExact(c.env, versionId, user.id, graph);
+  await c.env.DB.batch([
+    c.env.DB.prepare("INSERT INTO design_systems (id, workspace_id, name, source, is_default, created_at) VALUES (?, ?, ?, 'template', ?, ?)").bind(dsId, w.id, dsName, first?.n ? 0 : 1, now()),
+    c.env.DB.prepare("INSERT INTO ds_versions (id, design_system_id, number, status, file_name, scan_json, notes, template, created_by, created_at) VALUES (?, ?, 1, 'draft', ?, ?, ?, ?, ?, ?)")
+      .bind(versionId, dsId, `${template} template`, JSON.stringify({ ...summary, picked: files }), `Started from the ${display} template`, template, user.id, now()),
+    ...statements,
+  ]);
+  return c.json({ designSystemId: dsId, versionId, number: 1, mapped: accepted, fails, scan: { ...summary, picked: files }, url: `${c.env.APP_URL}/w/${w.slug}/design-systems/${dsId}/versions/${versionId}/edit` }, 201);
+});
+
+/** The whole graph, for the tokens editor: it resolves, maps and measures contrast as the person edits. */
+app.get("/api/w/:slug/design-systems/:id/versions/:v/graph", async (c) => {
+  const w = await ws(c as Ctx);
+  const { ds, v } = await version(c as Ctx, w);
+  const graph = await loadGraph(c.env, v.id);
+  const extras = await c.env.FILES.head(extrasKey(v.id));
+  return c.json({ name: ds.name, number: v.number, status: v.status, template: v.template, graph, overrides: await overrides(c.env, v.id), extras: !!extras });
+});
+
+/**
+ * Edits saved as a new draft version, the way an import makes one: the changed values applied to
+ * the graph, its alias checks run again, a fresh scan, and the mapping carried over so nothing
+ * has to be decided twice. A live version is never changed in place.
+ */
+app.post("/api/w/:slug/design-systems/:id/versions/:v/edit", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_TOKENS);
+  const user = need(c as Ctx);
+  const { ds, v } = await version(c as Ctx, w);
+  const b = await body<{ changes?: unknown; notes?: string }>(c as Ctx);
+  if (b.notes !== undefined) text(b.notes, 500, "Notes");
+  const graph = await loadGraph(c.env, v.id);
+  let changes;
+  try {
+    changes = checkChanges(b.changes, graph);
+  } catch (e) {
+    throw new Fail(400, (e as Error).message);
   }
-  return c.json({ accepted: exact.length });
+  const next = applyChanges(graph, changes);
+  const summary = scan(next);
+  const last = await c.env.DB.prepare("SELECT MAX(number) AS n FROM ds_versions WHERE design_system_id = ?").bind(ds.id).first<{ n: number | null }>();
+  const number = (last?.n ?? 0) + 1;
+  const versionId = crypto.randomUUID();
+  await c.env.FILES.put(graphKey(versionId), JSON.stringify(next), { httpMetadata: { contentType: "application/json" } });
+  const extras = await c.env.FILES.get(extrasKey(v.id));
+  if (extras) await c.env.FILES.put(extrasKey(versionId), await extras.text(), { httpMetadata: { contentType: "text/css" } });
+  const carried = await overrides(c.env, v.id);
+  await c.env.DB.batch([
+    c.env.DB.prepare("INSERT INTO ds_versions (id, design_system_id, number, status, file_name, scan_json, package_name, package_version, notes, template, created_by, created_at) VALUES (?, ?, ?, 'draft', ?, ?, ?, ?, ?, ?, ?, ?)")
+      .bind(versionId, ds.id, number, `edited in Studio from v${v.number}`, JSON.stringify({ ...summary, picked: [], edited: changes.length, from: v.number }), v.package_name, v.package_version, b.notes?.trim() || `${changes.length} token${changes.length === 1 ? "" : "s"} changed`, v.template, user.id, now()),
+    ...carried.map((o) => c.env.DB.prepare("INSERT INTO role_overrides (version_id, role, token_path, decided_by, decided_at) VALUES (?, ?, ?, ?, ?)").bind(versionId, o.role, o.token, user.id, now())),
+  ]);
+  const rows = mapRoles(next, CONTRACT, carried);
+  return c.json({ versionId, number, changes: changes.length, fails: rows.filter((r) => r.status === "fails").length, scan: summary, url: `${c.env.APP_URL}/w/${w.slug}/design-systems/${ds.id}/versions/${versionId}/edit` }, 201);
+});
+
+/**
+ * The version for code, in one of six shapes (see src/export). A session or an API key reads it;
+ * a published version as is, a draft with a banner at the top of the file.
+ */
+app.get("/api/w/:slug/design-systems/:id/versions/:v/export", async (c) => {
+  const w = await ws(c as Ctx);
+  const { ds, v } = await version(c as Ctx, w);
+  const format = c.req.query("format");
+  if (!isFormat(format)) throw new Fail(400, `format: one of ${FORMATS.join(", ")}`);
+  const graph = await loadGraph(c.env, v.id);
+  const rows = mapRoles(graph, CONTRACT, await overrides(c.env, v.id));
+  const mapping = Object.fromEntries(rows.map((r) => [r.role, r.status === "off" ? null : r.token]));
+  const extras = await c.env.FILES.get(extrasKey(v.id));
+  const file = exportDesignSystem(format, { name: ds.name, version: v.number, status: v.status, graph, mapping, contract: CONTRACT, extras: extras ? await extras.text() : undefined });
+  c.header("Content-Type", file.contentType);
+  c.header("Content-Disposition", `${c.req.query("download") === "1" ? "attachment" : "inline"}; filename="${file.fileName}"`);
+  c.header("X-Polyxd-Design-System-Version", String(v.number));
+  c.header("X-Polyxd-Design-System-Status", v.status);
+  return c.body(file.body);
 });
 
 app.get("/api/w/:slug/design-systems/:id/versions/:v/tokens", async (c) => {
@@ -695,13 +816,14 @@ app.get("/api/w/:slug/screens", async (c) => {
     `SELECT s.id, s.key, s.name, s.intent, s.status, s.created_at, s.updated_at,
        (SELECT COUNT(*) FROM screen_versions v WHERE v.screen_id = s.id) AS versions,
        (SELECT v.number FROM screen_versions v WHERE v.screen_id = s.id AND v.status = 'published') AS published,
-       (SELECT v.issues_json FROM screen_versions v WHERE v.screen_id = s.id ORDER BY v.number DESC LIMIT 1) AS issues_json
+       (SELECT v.issues_json FROM screen_versions v WHERE v.screen_id = s.id ORDER BY v.number DESC LIMIT 1) AS issues_json,
+       (SELECT json_extract(v.document_json, '$.surface.kind') FROM screen_versions v WHERE v.screen_id = s.id ORDER BY v.number DESC LIMIT 1) AS kind
      FROM screens s WHERE s.workspace_id = ? ORDER BY s.updated_at DESC`,
-  ).bind(w.id).all<Screen & { versions: number; published: number | null; issues_json: string | null }>();
+  ).bind(w.id).all<Screen & { versions: number; published: number | null; issues_json: string | null; kind: string | null }>();
   return c.json({
     screens: rows.results.map((r) => {
       const issues = r.issues_json ? (JSON.parse(r.issues_json) as { issues: { severity: string }[] }).issues : [];
-      return { ...r, issues_json: undefined, errors: issues.filter((i) => i.severity === "error").length, warnings: issues.filter((i) => i.severity === "warning").length };
+      return { ...r, kind: r.kind === "shell" ? "shell" : "surface", issues_json: undefined, errors: issues.filter((i) => i.severity === "error").length, warnings: issues.filter((i) => i.severity === "warning").length };
     }),
   });
 });

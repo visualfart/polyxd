@@ -18,7 +18,7 @@ export function Home({ ws }: { ws: Ws }) {
   }, [ws.slug]);
   const live = ds?.find((d) => d.status === "live");
   const steps = [
-    { done: !!ds?.length, title: "Connect your design system", sub: ds?.length ? `${ds[0].name} · ${ds[0].scan?.total.toLocaleString()} tokens${live ? " · live" : " · draft"}` : "Import tokens from a package, Figma, Tokens Studio or CSS", to: ds?.length ? "design-systems" : "design-systems/import", cta: "Import" },
+    { done: !!ds?.length, title: "Connect your design system", sub: ds?.length ? `${ds[0].name} · ${ds[0].scan?.total.toLocaleString()} tokens${live ? " · live" : " · draft"}` : "Import tokens from a package, Tokens Studio or CSS, or start from a template", to: "design-systems", cta: "Design systems" },
     { done: !!components?.connected, title: "Map your components", sub: components ? `${components.connected} of ${components.total} connected to your own` : "", to: "components", cta: "Components" },
     { done: !!rules, title: "Write your rules", sub: rules ? `${rules} of yours, plus Polyxd's built-in checks` : "What every generated screen has to follow", to: "rules", cta: "Rules" },
     { done: !!screens?.total, title: "Design a screen", sub: screens?.total ? `${screens.total} screen${screens.total === 1 ? "" : "s"} · ${screens.published} published` : "Author a surface by hand, in your design system, checked like a generated one", to: "screens", cta: "Screens" },

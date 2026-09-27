@@ -3,14 +3,18 @@ import { Link, NavLink, Route, Routes, useParams } from "react-router-dom";
 import { api, type RoleRow, type Scan } from "../api.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 import { Chain, Swatch } from "./Mapping.tsx";
+import { ExportMenu } from "./Export.tsx";
 
-interface Version { id: string; number: number; status: string; file_name: string; package_name: string | null; package_version: string | null; created_at: string; published_at: string | null; scan: Scan }
+interface Version { id: string; number: number; status: string; file_name: string; package_name: string | null; package_version: string | null; notes: string; template: string | null; created_at: string; published_at: string | null; scan: Scan }
+const CAN_EDIT = new Set(["owner", "design-system", "engineer"]);
 interface DS { id: string; name: string; source: string; is_default: number; versions: Version[] }
 
 export function DesignSystem({ ws }: { ws: Ws }) {
   const { id } = useParams();
   const { toast } = useSession();
   const [ds, setDs] = useState<DS | null>(null);
+  const [exporting, setExporting] = useState<Version | null>(null);
+  const canEdit = CAN_EDIT.has(ws.role);
   const load = () => api<DS>("GET", `/api/w/${ws.slug}/design-systems/${id}`).then(setDs);
   useEffect(() => {
     load();
@@ -27,9 +31,9 @@ export function DesignSystem({ ws }: { ws: Ws }) {
   };
   return (
     <Page crumbs={[ws.name, "Design systems", ds.name]} title={ds.name}
-      lede={`${shown.package_name ? `${shown.package_name}@${shown.package_version}` : shown.file_name} · ${shown.scan.total.toLocaleString()} tokens · ${shown.scan.modes.map((m) => m.name).join(", ")}. Changes reach screens only when a version is published.`}
+      lede={`${shown.package_name ? `${shown.package_name}@${shown.package_version}` : shown.template ? `started from the ${shown.template} template` : shown.file_name} · ${shown.scan.total.toLocaleString()} tokens · ${shown.scan.modes.map((m) => m.name).join(", ")}. Changes reach screens only when a version is published; exports of a draft say so.`}
       meta={<>{ds.is_default ? <span className="tag ink">Default</span> : <button type="button" className="btn sm" onClick={makeDefault}>Make default</button>}{live ? <span className="tag ok">v{live.number} live</span> : <span className="tag signal">No live version yet</span>}{latest.status === "draft" && <span className="tag signal">v{latest.number} draft</span>}</>}
-      actions={<><Link className="btn" to={`/w/${ws.slug}/design-systems/import`}>Import a new version</Link>{latest.status === "draft" && <Link className="btn primary" to={`${base}/versions/${latest.id}/map`}>Continue mapping</Link>}</>}>
+      actions={<><button type="button" className="btn" onClick={() => setExporting(shown)}>Export{live && shown.id !== live.id ? "" : ""}</button>{canEdit && <Link className="btn" to={`${base}/versions/${latest.id}/edit`}>Tune tokens</Link>}<Link className="btn" to={`/w/${ws.slug}/design-systems/import`}>Import a new version</Link>{latest.status === "draft" && <Link className="btn primary" to={`${base}/versions/${latest.id}/map`}>Continue mapping</Link>}</>}>
       <nav className="tabs" aria-label="Sections">
         <NavLink to={base} end>Polyxd roles <span className="n">87</span></NavLink>
         <NavLink to={`${base}/tokens`}>Your tokens <span className="n">{shown.scan.total.toLocaleString()}</span></NavLink>
@@ -38,8 +42,9 @@ export function DesignSystem({ ws }: { ws: Ws }) {
       <Routes>
         <Route index element={<Roles ws={ws} dsId={ds.id} versionId={shown.id} />} />
         <Route path="tokens" element={<Tokens ws={ws} dsId={ds.id} versionId={shown.id} />} />
-        <Route path="versions" element={<Versions ds={ds} base={base} />} />
+        <Route path="versions" element={<Versions ds={ds} base={base} onExport={setExporting} />} />
       </Routes>
+      {exporting && <ExportMenu ws={ws} dsId={ds.id} version={exporting} onClose={() => setExporting(null)} />}
     </Page>
   );
 }
@@ -134,19 +139,20 @@ function Tokens({ ws, dsId, versionId }: { ws: Ws; dsId: string; versionId: stri
   );
 }
 
-function Versions({ ds, base }: { ds: DS; base: string }) {
+function Versions({ ds, base, onExport }: { ds: DS; base: string; onExport: (v: Version) => void }) {
   return (
     <table>
-      <thead><tr><th>Version</th><th>Status</th><th>From</th><th>Tokens</th><th>Imported</th><th></th></tr></thead>
+      <thead><tr><th>Version</th><th>Status</th><th>From</th><th>Notes</th><th>Tokens</th><th>Made</th><th></th></tr></thead>
       <tbody>
         {ds.versions.map((v) => (
           <tr key={v.id}>
             <td><b>v{v.number}</b></td>
             <td><span className={`tag ${v.status === "live" ? "ok" : v.status === "draft" ? "signal" : ""}`}>{v.status}</span></td>
             <td className="mono small">{v.package_name ? `${v.package_name}@${v.package_version}` : v.file_name}</td>
+            <td className="small">{v.notes || <span className="muted">—</span>}</td>
             <td className="num">{v.scan.total.toLocaleString()}</td>
             <td className="small muted">{new Date(v.created_at).toLocaleString("en-GB")}</td>
-            <td style={{ textAlign: "right" }}><Link className="small" to={`${base}/versions/${v.id}/${v.status === "draft" ? "map" : "scan"}`}>{v.status === "draft" ? "Continue mapping" : "Scan"}</Link></td>
+            <td style={{ textAlign: "right", whiteSpace: "nowrap" }}><Link className="small" to={`${base}/versions/${v.id}/edit`}>Tokens</Link> · <Link className="small" to={`${base}/versions/${v.id}/${v.status === "draft" ? "map" : "scan"}`}>{v.status === "draft" ? "Mapping" : "Scan"}</Link> · <button type="button" className="tok-link" style={{ fontFamily: "inherit" }} onClick={() => onExport(v)}>Export</button></td>
           </tr>
         ))}
       </tbody>

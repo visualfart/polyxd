@@ -17,6 +17,8 @@ import { Mark } from "./mark.tsx";
 // The screen pages carry the renderer, the schema and the spec's examples; they load when opened.
 const Screens = lazy(() => import("./pages/Screens.tsx").then((m) => ({ default: m.Screens })));
 const Screen = lazy(() => import("./pages/Screen.tsx").then((m) => ({ default: m.Screen })));
+// The tokens editor carries the mapper and the contract; it loads when opened.
+const TokensEditor = lazy(() => import("./pages/TokensEditor.tsx").then((m) => ({ default: m.TokensEditor })));
 
 interface Session {
   me: Me;
@@ -119,6 +121,7 @@ function Shell() {
           <Route path="design-systems/import" element={<Import ws={ws} />} />
           <Route path="design-systems/:id/versions/:v/scan" element={<ScanPage ws={ws} />} />
           <Route path="design-systems/:id/versions/:v/map" element={<Mapping ws={ws} />} />
+          <Route path="design-systems/:id/versions/:v/edit" element={<Suspense fallback={null}><TokensEditor ws={ws} /></Suspense>} />
           <Route path="design-systems/:id/*" element={<DesignSystem ws={ws} />} />
           <Route path="components" element={<Components ws={ws} />} />
           <Route path="rules" element={<Rules ws={ws} />} />

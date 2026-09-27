@@ -89,7 +89,7 @@ function tierOf(set: string, path: string, alias: string | null): Tier {
   return alias ? "semantic" : "primitive";
 }
 
-function walk(node: Record<string, unknown>, at: string[], set: string, inherited: string | null, pathIncludesSet: boolean, out: Token[]) {
+function walk(node: Record<string, unknown>, at: string[], set: string, inherited: string | null, pathIncludesSet: boolean, out: Token[], tier?: Tier) {
   const groupType = (node.$type ?? node.type) as string | undefined;
   const type = typeof groupType === "string" && !isTokenNode(node) ? groupType : inherited;
   for (const [key, child] of Object.entries(node)) {
@@ -104,7 +104,7 @@ function walk(node: Record<string, unknown>, at: string[], set: string, inherite
       out.push({
         path,
         set,
-        tier: tierOf(set, here.join("."), alias),
+        tier: tier ?? tierOf(set, here.join("."), alias),
         type: typeof own === "string" ? own : type,
         value,
         alias,
@@ -112,9 +112,19 @@ function walk(node: Record<string, unknown>, at: string[], set: string, inherite
         deprecated: child.$deprecated === true || child.deprecated === true || /\bdeprecated\b/i.test(description),
       });
     } else {
-      walk(child, here, set, type, pathIncludesSet, out);
+      walk(child, here, set, type, pathIncludesSet, out, tier);
     }
   }
+}
+
+/**
+ * The tokens of one DTCG tree, with paths from its top (no set prefix) and the tier given: how a
+ * design-system pack's files are read, where the file says which tier it is.
+ */
+export function readTree(tree: Record<string, unknown>, set: string, tier: Tier): Token[] {
+  const out: Token[] = [];
+  walk(tree, [], set, null, false, out, tier);
+  return out;
 }
 
 /** Tokens Studio's `$themes`: which sets each theme turns on, in the order the file lists them. */
@@ -187,9 +197,11 @@ export function read(text: string, fileName = ""): Graph {
   return readJson(text);
 }
 
-/** Alias checks and the deprecated count, once the tokens are in. */
-function finish(graph: Graph): Graph {
-  const { tokens, issues } = graph;
+/** Alias checks and the deprecated count, once the tokens are in. Issues are recomputed from scratch, so it can run again after an edit. */
+export function finish(graph: Graph): Graph {
+  const { tokens } = graph;
+  const issues: Issue[] = [];
+  graph.issues = issues;
   const byPath = index(graph);
   for (const t of tokens) {
     if (t.deprecated) issues.push({ kind: "deprecated", path: t.path, message: `${t.path} is marked deprecated` });
@@ -251,4 +263,21 @@ export function resolve(graph: Graph, path: string, mode?: Mode, byPath = index(
     cur = pick(cur.alias);
   }
   return { value: undefined, chain };
+}
+
+/**
+ * A value with every `{alias}` inside it resolved, in a mode: a composite typography token's
+ * fontFamily and fontSize point at primitives, and an export needs what they hold. A string
+ * that is itself an alias resolves to its leaf's value; anything unresolvable stays as written.
+ */
+export function resolveDeep(graph: Graph, value: unknown, mode?: Mode, byPath = index(graph), depth = 0): unknown {
+  if (depth > 8) return value;
+  const alias = aliasOf(value);
+  if (alias) {
+    const r = resolve(graph, alias, mode, byPath);
+    return r.leaf ? resolveDeep(graph, r.value, mode, byPath, depth + 1) : value;
+  }
+  if (Array.isArray(value)) return value.map((v) => resolveDeep(graph, v, mode, byPath, depth + 1));
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolveDeep(graph, v, mode, byPath, depth + 1)]));
+  return value;
 }

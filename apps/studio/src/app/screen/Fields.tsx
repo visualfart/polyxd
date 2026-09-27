@@ -5,7 +5,7 @@
  * no prop is out of reach.
  */
 import { useId, useState, type ReactNode } from "react";
-import { COMPONENTS, allowedIn, defaultFor, deref, refName, type Doc, type Node, type S } from "../../screens/schema.ts";
+import { COMPONENTS, allowedIn, defaultFor, deref, pickableIn, refName, type Doc, type Node, type S } from "../../screens/schema.ts";
 import { resolvePointer } from "../../screens/validate.ts";
 
 export interface Ctx {
@@ -215,7 +215,8 @@ function OptionsField(props: FieldProps) {
 
 /** A component reference: an existing component of an allowed type, or a new one. */
 function RefField({ name, value, onChange, ctx }: FieldProps) {
-  const allowed = allowedIn(ctx.node.component, name === "componentId" ? "items" : name);
+  // What the slot takes, less the shell parts when this is a surface: the checker would refuse them.
+  const allowed = pickableIn(ctx.doc, allowedIn(ctx.node.component, name === "componentId" ? "items" : name));
   const id = typeof value === "string" ? value : "";
   const target = ctx.doc.components.find((c) => c.id === id);
   const candidates = ctx.doc.components.filter((c) => c.id !== ctx.node.id && (allowed === COMPONENTS || allowed.includes(c.component)));

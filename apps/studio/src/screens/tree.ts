@@ -3,7 +3,7 @@
  * id; the editor shows and edits it as the tree those references make. Every function here takes
  * a document and returns a new one, so the editor can keep history by holding on to old ones.
  */
-import { COMPONENTS, allowedIn, refProps, skeleton, type Doc, type Node } from "./schema.ts";
+import { COMPONENTS, FRAME_REGIONS, allowedIn, refProps, skeleton, type Doc, type Node, type RefProp } from "./schema.ts";
 
 export interface Slot {
   prop: string;
@@ -22,10 +22,17 @@ export interface TreeItem {
 
 export const byId = (doc: Doc) => new Map(doc.components.map((c) => [c.id, c]));
 
+/** A node's reference props in the order the tree shows them: a Frame's regions in reading order, the rest as the schema lists them. */
+export function slotProps(component: string): RefProp[] {
+  const props = refProps(component);
+  if (component !== "Frame") return props;
+  return [...props].sort((a, b) => FRAME_REGIONS.findIndex((r) => r.prop === a.prop) - FRAME_REGIONS.findIndex((r) => r.prop === b.prop));
+}
+
 /** The ids a node references, each with the slot it sits in, in the order the tree shows them. */
 export function childSlots(node: Node): { id: string; slot: Slot }[] {
   const out: { id: string; slot: Slot }[] = [];
-  for (const r of refProps(node.component)) {
+  for (const r of slotProps(node.component)) {
     const v = node[r.prop];
     if (r.kind === "list" && Array.isArray(v)) v.forEach((id: unknown, index: number) => typeof id === "string" && out.push({ id, slot: { prop: r.prop, kind: "list", index } }));
     else if (r.kind === "single" && typeof v === "string") out.push({ id: v, slot: { prop: r.prop, kind: "single" } });

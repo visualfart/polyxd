@@ -4,6 +4,8 @@
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat"],
+  // A template pack's extras stylesheet is bundled as text (src/templates/extras.ts).
+  "rules": [{ "type": "Text", "globs": ["**/*.css"], "fallthrough": true }],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

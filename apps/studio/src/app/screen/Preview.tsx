@@ -2,10 +2,15 @@
  * The document drawn for real with @polyxd/react, in the workspace's design system or a built-in
  * theme, at a chosen width. A click picks the component under the pointer; in "interact" mode
  * clicks reach the surface instead and actions are reported rather than sent anywhere.
+ *
+ * A shell document (surface.kind "shell") is drawn with PolyxdFrame, the way a product renders
+ * it, with a stand-in screen in its Outlet: a placeholder, or one of the workspace's published
+ * screens. The Frame measures its own width, so the phone, tablet and desktop widths show the
+ * navigation as a bar, a rail or a side column.
  */
-import { useMemo, useState, type CSSProperties } from "react";
-import { PolyxdSurface, type ActionEvent, type UIDocument } from "@polyxd/react";
-import type { Doc } from "../../screens/schema.ts";
+import { Component, useMemo, useState, type CSSProperties, type ErrorInfo, type ReactNode } from "react";
+import { PolyxdFrame, PolyxdSurface, type ActionEvent, type UIDocument } from "@polyxd/react";
+import { isShell, type Doc } from "../../screens/schema.ts";
 
 export interface PreviewTheme {
   /** Built-in theme whose CSS is loaded: drawn as is, or as the base under the workspace's variables. */
@@ -20,18 +25,41 @@ export const WIDTHS: { id: string; label: string; width: number | null }[] = [
   { id: "desktop", label: "Desktop", width: null },
 ];
 
-export function Preview({ doc, dataKey, selected, hovered, onSelect, onHover, theme, mode, width, density, interact, onAction }: { doc: Doc; dataKey: string; selected: string | null; hovered: string | null; onSelect: (id: string | null) => void; onHover: (id: string | null) => void; theme: PreviewTheme; mode: "light" | "dark"; width: number | null; density: "compact" | "comfortable" | "spacious"; interact: boolean; onAction: (e: ActionEvent) => void }) {
+/** What a shell's Outlet shows when no published screen is chosen: a Group with one line of text. */
+export const STAND_IN: Doc = {
+  specVersion: "0.3.0",
+  surface: { id: "stand-in", title: "Your screens render here", origin: "authored" },
+  root: "stand-in",
+  components: [
+    { id: "stand-in", component: "Group", children: ["stand-in-text"] },
+    { id: "stand-in-text", component: "Text", text: "Your screens render here: a published screen of this workspace, or whatever your product puts in the Outlet." },
+  ],
+  data: {},
+};
+
+export function Preview({ doc, dataKey, selected, hovered, onSelect, onHover, theme, mode, width, density, interact, onAction, standIn }: { doc: Doc; dataKey: string; selected: string | null; hovered: string | null; onSelect: (id: string | null) => void; onHover: (id: string | null) => void; theme: PreviewTheme; mode: "light" | "dark"; width: number | null; density: "compact" | "comfortable" | "spacious"; interact: boolean; onAction: (e: ActionEvent) => void; standIn?: Doc | null }) {
   const [crashed, setCrashed] = useState<string | null>(null);
-  const idAt = (t: EventTarget | null) => (t instanceof Element ? t.closest("[data-pxd-id]")?.getAttribute("data-pxd-id") ?? null : null);
+  const ids = useMemo(() => new Set(doc.components.map((c) => c.id)), [doc]);
+  // The stand-in screen's own components are not this document's; a click on them selects nothing.
+  const idAt = (t: EventTarget | null) => {
+    const id = t instanceof Element ? t.closest("[data-pxd-id]")?.getAttribute("data-pxd-id") ?? null : null;
+    return id && ids.has(id) ? id : null;
+  };
+  const shell = isShell(doc);
+  const inOutlet = standIn ?? STAND_IN;
   // Remount when the data changes, so the surface starts again from the document's copy.
-  const key = `${dataKey}:${theme.base}:${!!theme.vars}:${mode}`;
-  const style = useMemo(() => ({ ...(theme.vars ?? {}), width: width ?? "100%" }) as CSSProperties, [theme.vars, width]);
+  const key = `${dataKey}:${theme.base}:${!!theme.vars}:${mode}:${shell ? inOutlet.surface.id : ""}`;
+  // A shell at desktop width gets at least the width a Frame needs for its side navigation (1024px),
+  // so the canvas scrolls sideways in a narrow window rather than showing a rail and calling it desktop.
+  const style = useMemo(() => ({ ...(theme.vars ?? {}), width: width ?? "100%", ...(shell && width === null ? { minWidth: 1100, maxWidth: "none" } : {}) }) as CSSProperties, [theme.vars, width, shell]);
+  const themeProp = theme.vars ? undefined : theme.base;
   return (
     <div className="scr-canvas" data-mode={mode} data-interact={interact} onMouseLeave={() => onHover(null)}>
       <div
         className="scr-frame"
         data-pxd-theme={theme.base}
         data-pxd-mode={mode}
+        data-shell={shell || undefined}
         style={style}
         onClickCapture={(e) => {
           if (interact) return;
@@ -47,7 +75,13 @@ export function Preview({ doc, dataKey, selected, hovered, onSelect, onHover, th
           <div className="notice bad" style={{ margin: 16 }}><div className="body"><b>The renderer couldn't draw this</b>{crashed}. Fix the document (see Issues) and the preview comes back.</div></div>
         ) : (
           <Boundary key={key} onError={(m) => setCrashed(m)} reset={() => setCrashed(null)} docKey={JSON.stringify(doc.components).length}>
-            <PolyxdSurface key={key} document={doc as unknown as UIDocument} theme={theme.vars ? undefined : theme.base} mode={mode} density={density} onAction={onAction} onDismiss={() => onAction({ name: "ui.dismiss", context: {}, source: doc.surface.id })} />
+            {shell ? (
+              <PolyxdFrame key={key} document={doc as unknown as UIDocument} theme={themeProp} mode={mode} density={density} onAction={onAction} current={{ key: currentNav(doc), title: inOutlet.surface.title }}>
+                <PolyxdSurface document={inOutlet as unknown as UIDocument} theme={themeProp} mode={mode} density={density} onAction={onAction} onDismiss={() => onAction({ name: "ui.dismiss", context: {}, source: inOutlet.surface.id })} />
+              </PolyxdFrame>
+            ) : (
+              <PolyxdSurface key={key} document={doc as unknown as UIDocument} theme={themeProp} mode={mode} density={density} onAction={onAction} onDismiss={() => onAction({ name: "ui.dismiss", context: {}, source: doc.surface.id })} />
+            )}
           </Boundary>
         )}
       </div>
@@ -55,9 +89,20 @@ export function Preview({ doc, dataKey, selected, hovered, onSelect, onHover, th
   );
 }
 
-const cssEscape = (s: string) => s.replace(/["\\]/g, "\\$&");
+/** The navigation item the shell's sample data says is current, so the preview marks it. */
+function currentNav(doc: Doc): string | undefined {
+  const nav = doc.components.find((c) => c.component === "Navigation" && c.kind === "main") ?? doc.components.find((c) => c.component === "Navigation");
+  const cur = nav?.current;
+  if (typeof cur === "string") return cur;
+  if (cur && typeof cur === "object" && typeof cur.path === "string" && cur.path.startsWith("/")) {
+    let v: any = doc.data;
+    for (const part of cur.path.slice(1).split("/")) v = v && typeof v === "object" ? v[part] : undefined;
+    return typeof v === "string" ? v : undefined;
+  }
+  return undefined;
+}
 
-import { Component, type ErrorInfo, type ReactNode } from "react";
+const cssEscape = (s: string) => s.replace(/["\\]/g, "\\$&");
 
 /** Catches a renderer error for one document state and lets the next change try again. */
 class Boundary extends Component<{ children: ReactNode; onError: (m: string) => void; reset: () => void; docKey: number }, { failed: boolean }> {

@@ -91,8 +91,9 @@ test("a skeleton of every component is schema-valid once it has its children", (
     const withNodes: Doc = { ...doc, components: [...doc.components, ...nodes] };
     withNodes.components[0].children = ["intro", nodes[0].id];
     const r = checkDocument(withNodes);
-    // Missing sample data is expected (there is none); structure and schema must hold.
-    const hard = r.issues.filter((i) => i.severity === "error" && !/primary action/.test(i.message));
+    // Missing sample data is expected (there is none), and a shell part in a surface is the shell
+    // rule's business (shell.test.ts); the skeleton's shape and schema must hold.
+    const hard = r.issues.filter((i) => i.severity === "error" && !/primary action/.test(i.message) && i.code !== "shell:structure");
     assert.deepEqual(hard, [], `${component}: ${hard.map((i) => `${i.at} ${i.message}`).join("; ")}`);
   }
   assert.equal(skeleton("Metric", "m").value.path, "/m");

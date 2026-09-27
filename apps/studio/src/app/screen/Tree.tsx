@@ -4,11 +4,11 @@
  */
 import { useMemo, useState } from "react";
 import catalog from "@polyxd/spec/catalog/catalog.json" with { type: "json" };
-import { COMPONENTS, allowedIn, refProps, type Doc, type Node } from "../../screens/schema.ts";
+import { COMPONENTS, FRAME_REGIONS, SHELL_COMPONENTS, allowedIn, belongsInShell, isShell, pickableIn, refProps, type Doc, type Node } from "../../screens/schema.ts";
 import { buildTree, parentOf, type TreeItem } from "../../screens/tree.ts";
 
 const CATALOG = (catalog as { components: Record<string, { summary: string; category: string }> }).components;
-const CATEGORIES = ["structure", "layout", "content", "input", "action", "feedback", "flow"];
+const CATEGORIES = ["shell", "structure", "layout", "content", "input", "action", "feedback", "flow"];
 
 /** What a row says after the component's name: its label, title, text or caption. */
 export function summaryOf(node: Node): string {
@@ -55,9 +55,9 @@ export function Tree({ doc, selected, issues, onSelect, onAdd, onRemove, onMove,
     return (
       <div key={item.id}>
         <div className="scr-node" role="treeitem" tabIndex={isSel ? 0 : -1} aria-selected={isSel} aria-expanded={item.children.length ? !collapsed.has(item.id) : undefined} aria-label={`${item.node.component} ${item.id}`} data-selected={isSel} style={{ paddingLeft: 8 + depth * 14 }} onClick={() => onSelect(item.id)} onFocus={() => !isSel && onSelect(item.id)}>
-          {item.children.length ? <button type="button" className="scr-caret-btn" aria-label={collapsed.has(item.id) ? "Expand" : "Collapse"} onClick={(e) => { e.stopPropagation(); toggle(item.id); }}><span className="scr-caret" data-open={!collapsed.has(item.id)} aria-hidden="true" /></button> : <span className="scr-caret-gap" />}
+          {item.children.length || item.node.component === "Frame" ? <button type="button" className="scr-caret-btn" aria-label={collapsed.has(item.id) ? "Expand" : "Collapse"} onClick={(e) => { e.stopPropagation(); toggle(item.id); }}><span className="scr-caret" data-open={!collapsed.has(item.id)} aria-hidden="true" /></button> : <span className="scr-caret-gap" />}
           <span className="scr-node-main">
-            {item.slot && item.slot.prop !== "children" && <span className="scr-slot" title={`In ${item.slot.prop}`}>{item.slot.kind === "panels" && item.slot.label ? item.slot.label : item.slot.prop}</span>}
+            {item.slot && item.slot.prop !== "children" && <span className="scr-slot" title={`In ${item.slot.prop}`}>{item.slot.kind === "panels" && item.slot.label ? item.slot.label : (at?.parent.component === "Frame" && FRAME_REGIONS.find((r) => r.prop === item.slot!.prop)?.label) || item.slot.prop}</span>}
             <span className="scr-node-type">{item.node.component}</span>
             <span className="scr-node-text">{summaryOf(item.node)}</span>
           </span>
@@ -70,7 +70,18 @@ export function Tree({ doc, selected, issues, onSelect, onAdd, onRemove, onMove,
             {item.id !== doc.root && <button type="button" className="scr-x" title="Delete (⌫)" aria-label={`Delete ${item.id}`} onClick={() => onRemove(item.id)}>×</button>}
           </span>
         </div>
-        {!collapsed.has(item.id) && item.children.length > 0 && <div role="group">{item.children.map((c) => row(c, depth + 1))}</div>}
+        {!collapsed.has(item.id) && (item.children.length > 0 || item.node.component === "Frame") && (
+          <div role="group">
+            {item.children.map((c) => row(c, depth + 1))}
+            {item.node.component === "Frame" && FRAME_REGIONS.filter((r) => typeof item.node[r.prop] !== "string").map((r) => (
+              <div key={r.prop} className="scr-node scr-node-empty" role="treeitem" aria-selected={false} aria-label={`${r.label}: empty`} style={{ paddingLeft: 8 + (depth + 1) * 14 }}>
+                <span className="scr-caret-gap" />
+                <span className="scr-node-main"><span className="scr-slot" title={`The Frame's ${r.prop}`}>{r.label}</span><span className="scr-node-text">{r.prop === "main" ? "nothing: a shell needs its Outlet here" : "empty"}</span></span>
+                <span className="scr-node-actions" style={{ display: "inline-flex" }}><button type="button" className="scr-x" title={`Add the ${r.label.toLowerCase()}`} aria-label={`Add the ${r.label.toLowerCase()}`} onClick={() => onAdd({ parentId: item.id, prop: r.prop })}>+</button></span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -91,8 +102,13 @@ export function Tree({ doc, selected, issues, onSelect, onAdd, onRemove, onMove,
 export function Picker({ doc, target, onPick, onClose }: { doc: Doc; target: Target; onPick: (component: string) => void; onClose: () => void }) {
   const [q, setQ] = useState("");
   const parent = doc.components.find((c) => c.id === target.parentId);
-  const allowed = parent ? allowedIn(parent.component, target.prop) : COMPONENTS;
-  const shown = COMPONENTS.filter((c) => allowed.includes(c) && (!q || `${c} ${CATALOG[c]?.summary ?? ""} ${CATALOG[c]?.category ?? ""}`.toLowerCase().includes(q.toLowerCase())));
+  const slot = parent ? allowedIn(parent.component, target.prop) : COMPONENTS;
+  // A surface never takes a shell part; the validator would refuse it, so the picker says so first.
+  const allowed = pickableIn(doc, slot);
+  const refused = isShell(doc) ? [] : slot.filter((c) => SHELL_COMPONENTS.includes(c));
+  const matches = (c: string) => !q || `${c} ${CATALOG[c]?.summary ?? ""} ${CATALOG[c]?.category ?? ""}`.toLowerCase().includes(q.toLowerCase());
+  const shown = COMPONENTS.filter((c) => allowed.includes(c) && matches(c));
+  const shownRefused = refused.filter(matches);
   // Enter takes the name that matches, before a summary that happens to contain the letters.
   const needle = q.trim().toLowerCase();
   const best = shown.find((c) => c.toLowerCase() === needle) ?? shown.find((c) => c.toLowerCase().startsWith(needle)) ?? shown.find((c) => c.toLowerCase().includes(needle)) ?? shown[0];
@@ -119,7 +135,15 @@ export function Picker({ doc, target, onPick, onClose }: { doc: Doc; target: Tar
               </div>
             );
           })}
-          {!shown.length && <p className="muted small" style={{ padding: 12 }}>Nothing matches.</p>}
+          {shownRefused.length > 0 && (
+            <div>
+              <div className="scr-tree-group">shell · not in a surface</div>
+              {shownRefused.map((c) => (
+                <button type="button" key={c} className="scr-pick" disabled aria-disabled="true" title={belongsInShell(c)} style={{ opacity: 0.55, cursor: "not-allowed" }}><b>{c}</b><span>{belongsInShell(c)}</span></button>
+              ))}
+            </div>
+          )}
+          {!shown.length && !shownRefused.length && <p className="muted small" style={{ padding: 12 }}>Nothing matches.</p>}
         </div>
       </div>
     </>

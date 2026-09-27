@@ -110,3 +110,11 @@
   .scr-head h1 { font-size: 15px; }
   .scr-dock { height: 200px; }
 }
+
+/* the surface row above the tree, and a Frame's empty regions */
+.scr-node-surface { margin: 6px 6px 2px; border-bottom: 1px solid var(--soft); border-radius: 6px 6px 0 0; }
+.scr-node-empty { cursor: default; }
+.scr-node-empty .scr-node-text { font-style: italic; }
+.scr-node-empty:hover { background: transparent; }
+/* a shell fills its frame edge to edge, like a product's page */
+.scr-frame[data-shell="true"] { min-height: 480px; }

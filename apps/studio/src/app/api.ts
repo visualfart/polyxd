@@ -43,6 +43,7 @@ export interface RoleRow {
   token: string | null;
   chain: string[];
   values: Record<string, string | null>;
+  raw: Record<string, unknown>;
   how: string;
   why: string;
   status: "exact" | "guessed" | "missing" | "fails" | "primitive" | "off";
@@ -54,6 +55,8 @@ export interface ScreenRow {
   key: string;
   name: string;
   intent: string;
+  /** From the latest version's document: a shell is the product's frame, a surface a screen in it. */
+  kind: "surface" | "shell";
   status: "draft" | "published";
   created_at: string;
   updated_at: string;
@@ -80,4 +83,16 @@ export interface Candidate {
   value: string | null;
   tier: string;
   contrast: RoleRow["contrast"];
+}
+
+export interface TemplateSummary {
+  name: string;
+  displayName: string;
+  character: string;
+  modes: string[];
+  tokens: number;
+  swatches: { role: string; value: string }[];
+  radius: string;
+  font: string;
+  extras: boolean;
 }
