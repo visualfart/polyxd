@@ -71,6 +71,7 @@ function header(current: "home" | "docs") {
 <nav class="site-nav" aria-label="Main">
 <a class="nav-optional" href="/#how">How it works</a>
 <a class="nav-optional" href="/docs/designers/">For design teams</a>
+<a class="nav-wide" href="/demos/">Demos</a>
 <a class="nav-wide" href="/gallery/">Gallery</a>
 <a href="/docs/"${cur("docs")}>Docs</a>
 <a class="btn btn-ink btn-small" href="/#access">Early access</a>
@@ -79,7 +80,7 @@ function header(current: "home" | "docs") {
 
 const footer = `<footer class="site-footer"><div class="wrap">
 <a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">polyxd</span></a>
-<nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/docs/reference/coverage/">All components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
+<nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/demos/">Demos</a><a href="/docs/reference/coverage/">All components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
 <span>© 2026 Polyxd · Apache-2.0 code, CC-BY-4.0 spec</span>
 </div></footer>`;
 
