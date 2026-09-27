@@ -320,11 +320,13 @@ function refundReceipt(h: Quay, o: (typeof h.orders)[number], itemIds: string[])
   const items = o.items.filter((it) => itemIds.includes(it.id) && it.refunded < it.qty);
   const subtotal = round2(items.reduce((s, it) => s + (it.qty - it.refunded) * it.price, 0));
   const orderNet = round2(o.subtotal - o.discountAmount);
-  const share = orderNet ? subtotal / orderNet : 0;
-  const discount = round2(o.discountAmount * share);
-  const tax = round2(o.tax * share);
   // Shipping comes back only when everything does.
   const all = items.length === o.items.filter((it) => it.refunded < it.qty).length && items.length > 0;
+  // A full refund returns the order's own discount and tax exactly; a partial one gets its share
+  // (pro rata of the net), so pennies never drift through rounding on a full refund.
+  const share = orderNet ? subtotal / orderNet : 0;
+  const discount = all ? o.discountAmount : round2(o.discountAmount * share);
+  const tax = all ? o.tax : round2(o.tax * share);
   const shipping = all ? o.shipping : 0;
   const already = refundedTotal(o);
   const total = round2(Math.min(o.total - already, subtotal - discount + tax + shipping));
