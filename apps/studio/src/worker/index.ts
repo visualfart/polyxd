@@ -304,7 +304,11 @@ async function graphFrom(c: Ctx, w: Workspace, body: Record<string, string | Fil
     const files = findTokenFiles(await untar(bytes));
     if (!files.length) throw new Fail(422, `${name} has no token files Studio recognises`);
     const best = files[0];
-    return { graph: read(best.text, best.path), source: "tarball", fileName: `${name}/${best.path}`, picked: files.slice(0, 6).map((f) => f.path), original: { name, bytes } };
+    // The push command says which package it packed, so later pushes land on the same design system.
+    const packageName = typeof body.packageName === "string" && /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(body.packageName) ? body.packageName : undefined;
+    const packageVersion = typeof body.packageVersion === "string" ? body.packageVersion.slice(0, 64) : undefined;
+    const pkg = packageName ? { name: packageName, version: packageVersion ?? "" } : undefined;
+    return { graph: read(best.text, best.path), source: pkg ? "package" : "tarball", fileName: `${name}/${best.path}`, pkg, picked: files.slice(0, 6).map((f) => f.path), original: { name, bytes } };
   }
   const text = await file.text();
   return { graph: read(text, name), source: /\.css$/i.test(name) ? "css" : "file", fileName: name, picked: [name], original: { name, bytes: new TextEncoder().encode(text).buffer as ArrayBuffer } };
@@ -315,7 +319,7 @@ app.post("/api/w/:slug/design-systems/import", async (c) => {
   const user = need(c as Ctx);
   const body = await c.req.parseBody();
   const name = typeof body.name === "string" && body.name.trim() ? body.name.trim() : null;
-  const into = typeof body.designSystemId === "string" ? body.designSystemId : null;
+  const intoRequested = typeof body.designSystemId === "string" ? body.designSystemId : null;
   let got;
   try {
     got = await graphFrom(c as Ctx, w, body);
@@ -330,6 +334,9 @@ app.post("/api/w/:slug/design-systems/import", async (c) => {
   }
   const { graph, source, fileName, pkg, picked, original } = got;
   const summary = scan(graph);
+  // A push names its package; the same package is the same design system, version after version.
+  const matched = !intoRequested && pkg?.name ? await c.env.DB.prepare("SELECT d.id FROM design_systems d JOIN ds_versions v ON v.design_system_id = d.id WHERE d.workspace_id = ? AND v.package_name = ? ORDER BY v.created_at DESC LIMIT 1").bind(w.id, pkg.name).first<{ id: string }>() : null;
+  const into = intoRequested ?? matched?.id ?? null;
   const dsId = into ?? crypto.randomUUID();
   const versionId = crypto.randomUUID();
   const statements = [];
@@ -353,7 +360,7 @@ app.post("/api/w/:slug/design-systems/import", async (c) => {
   await c.env.FILES.put(graphKey(versionId), JSON.stringify(graph), { httpMetadata: { contentType: "application/json" } });
   if (original) await c.env.FILES.put(`versions/${versionId}/original`, original.bytes, { customMetadata: { name: original.name } });
   await c.env.DB.batch(statements);
-  return c.json({ designSystemId: dsId, versionId, number, scan: { ...summary, picked } }, 201);
+  return c.json({ designSystemId: dsId, versionId, number, scan: { ...summary, picked }, url: `${c.env.APP_URL}/w/${w.slug}/design-systems/${dsId}/versions/${versionId}/scan` }, 201);
 });
 
 // ---------------------------------------------------------------- design systems: read, map, publish, delete

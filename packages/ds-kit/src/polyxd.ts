@@ -2,11 +2,12 @@
 /**
  * The `polyxd` command.
  *
- *   polyxd pack ./tokens.css     make a design-system pack out of your own tokens
- *   polyxd check ./manifest.json check a pack against the semantic token contract
+ *   polyxd pack ./tokens.css       make a design-system pack out of your own tokens
+ *   polyxd check ./manifest.json   check a pack against the semantic token contract
+ *   polyxd studio push ./ --to …   send your tokens to Polyxd Studio (from CI, with an API key)
  *
- * Two commands, because those are the two things a team does before anything else works: point
- * Polyxd at their design system, and find out what it still needs.
+ * Three commands, because those are the things a team does before anything else works: point
+ * Polyxd at their design system, find out what it still needs, and keep Studio in step with it.
  */
 const [command, ...rest] = process.argv.slice(2);
 process.argv = [process.argv[0], process.argv[1], ...rest];
@@ -29,6 +30,10 @@ switch (command) {
     console.log(issues.length ? `\n${issues.length} issue(s)` : "Design system satisfies the semantic token contract.");
     process.exit(issues.length ? 1 : 0);
   }
+  case "studio": {
+    const { main } = await import("./studio.ts");
+    process.exit(await main(rest));
+  }
   default:
     console.log(`polyxd <command>
 
@@ -38,6 +43,10 @@ switch (command) {
 
   check <manifest.json>
       Checks a pack against the semantic token contract: every token present and correctly
-      typed, every contrast pair measured, every constraint met.`);
+      typed, every contrast pair measured, every constraint met.
+
+  studio push <package dir | tarball | token file> --to <studio>/api/w/<workspace>
+      Sends your tokens to Polyxd Studio as a new version of your design system, using an
+      API key from POLYXD_STUDIO_KEY. Made for a CI step on every release.`);
     process.exit(command ? 1 : 0);
 }

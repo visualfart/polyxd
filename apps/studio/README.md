@@ -16,6 +16,16 @@ Run it yourself on your own Cloudflare account, or use the hosted one at studio.
 
 Reviews, releases, insights and the flow map come once screens flow in through the SDK.
 
+## Push from your own build
+
+Studio can fetch a public package, or a private one through a read-only registry token. When neither suits (the registry is inside your network, or the tokens are built rather than published), push from where the tokens are:
+
+```sh
+POLYXD_STUDIO_KEY=<key from Team → API keys> npx polyxd studio push ./ --to https://studio.polyxd.com/api/w/<workspace>
+```
+
+A directory is packed with `npm pack` (so it is exactly what a release would be); a `.tgz` or a single token file is sent as is. The same package name lands as a new version of the same design system every time, and the command prints the scan and a link to review the mapping. Keys can import and read design systems, nothing else.
+
 ## Run it locally
 
 ```sh

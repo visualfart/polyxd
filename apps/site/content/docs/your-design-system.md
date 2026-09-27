@@ -66,6 +66,16 @@ npx polyxd check ./ds-acme/manifest.json
 
 Every token present and correctly typed, all 34 contrast pairs measured with alpha compositing, every constraint met. This is the same check the thirteen shipped packs pass, and it's the thing that tells you a generated interface in your design system will be readable before anyone sees it.
 
+## Keep Studio in step
+
+If your team uses [Studio](https://studio.polyxd.com), the same tokens can go there from the build that produces them, with an API key from the workspace's Team page:
+
+```sh
+POLYXD_STUDIO_KEY=… npx polyxd studio push ./ --to https://studio.polyxd.com/api/w/<workspace>
+```
+
+A directory is packed with `npm pack`; a tarball or a token file is sent as is. Each push with the same package name becomes a new version of the same design system, scanned and ready to map, so a release step can run it every time.
+
 ## The contrast failures are worth reading
 
 Every pack in this repository needed adjustments, including ones built by very large teams: Ant's primary blue is 4.10:1 with white text, Chakra's focus ring is 1.48:1 on the page, Carbon's light warning colour is 1.68:1. Yours will have some too. Where a role fails, move it to the nearest passing step of your own ramp rather than inventing a colour, and write down why — that's what [every pack here does](/docs/design-systems).
