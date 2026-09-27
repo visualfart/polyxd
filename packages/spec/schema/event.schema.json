@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polyxd.com/schema/0.1/event.schema.json",
+  "$id": "https://polyxd.com/schema/0.3/event.schema.json",
   "title": "Polyxd semantic analytics event",
   "description": "Emitted by the runtime automatically for every generated UI. Carries keys and semantics, never field values or personal data. Sent to the host's own analytics; Polyxd collects nothing.",
   "type": "object",

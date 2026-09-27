@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polyxd.com/schema/0.1/ui-tree.schema.json",
+  "$id": "https://polyxd.com/schema/0.3/ui-tree.schema.json",
   "title": "Polyxd UI document (tree authoring form)",
   "description": "The same document as ui.schema.json, with child components written inline. Generated; compile with flattenTree().",
   "type": "object",

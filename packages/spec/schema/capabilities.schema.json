@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polyxd.com/schema/0.1/capabilities.schema.json",
+  "$id": "https://polyxd.com/schema/0.3/capabilities.schema.json",
   "title": "Polyxd capability registry",
   "description": "What the product can do. Generated UIs may only trigger registered capabilities; risk levels drive required patterns. Owned by PM + engineering.",
   "type": "object",

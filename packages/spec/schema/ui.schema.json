@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polyxd.com/schema/0.1/ui.schema.json",
+  "$id": "https://polyxd.com/schema/0.3/ui.schema.json",
   "title": "Polyxd UI document",
   "description": "A just-in-time interface: a flat list of semantic components (A2UI-style adjacency list) plus the surface it belongs to. Data comes from the host via bindings; actions are declared capability intents. Generated file: edit components/*.json and schema/common.defs.json instead.",
   "type": "object",

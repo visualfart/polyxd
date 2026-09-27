@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polyxd.com/schema/0.1/token-contract.schema.json",
+  "$id": "https://polyxd.com/schema/0.3/token-contract.schema.json",
   "title": "Polyxd semantic token contract",
   "type": "object",
   "required": ["contractVersion", "tokens", "contrast", "constraints"],

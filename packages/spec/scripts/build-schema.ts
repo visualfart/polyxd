@@ -61,7 +61,7 @@ export function buildUiSchema(common: Record<string, unknown>, components: Compo
   };
   return {
     $schema: "https://json-schema.org/draft/2020-12/schema",
-    $id: "https://polyxd.com/schema/0.1/ui.schema.json",
+    $id: "https://polyxd.com/schema/0.3/ui.schema.json",
     title: "Polyxd UI document",
     description:
       "A just-in-time interface: a flat list of semantic components (A2UI-style adjacency list) plus the surface it belongs to. Data comes from the host via bindings; actions are declared capability intents. Generated file: edit components/*.json and schema/common.defs.json instead.",
@@ -217,7 +217,7 @@ export function buildTreeSchema(flat: any) {
   const { Component, ...rest } = defs;
   return {
     $schema: flat.$schema,
-    $id: "https://polyxd.com/schema/0.1/ui-tree.schema.json",
+    $id: "https://polyxd.com/schema/0.3/ui-tree.schema.json",
     title: "Polyxd UI document (tree authoring form)",
     description: "The same document as ui.schema.json, with child components written inline. Generated; compile with flattenTree().",
     type: "object",

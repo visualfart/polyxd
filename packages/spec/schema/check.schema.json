@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://polyxd.com/schema/0.1/check.schema.json",
+  "$id": "https://polyxd.com/schema/0.3/check.schema.json",
   "title": "Polyxd check",
   "description": "Declarative rule evaluated against a UI document. Shared by patterns, Design Direction rules, journey checkpoints and acceptance criteria. Implemented in src/checks.ts.",
   "$ref": "#/$defs/Check",
