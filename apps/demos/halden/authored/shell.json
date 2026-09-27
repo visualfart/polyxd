@@ -1,0 +1,227 @@
+{
+  "id": "shell",
+  "title": "Halden",
+  "ask": [],
+  "capabilities": [
+    "nav.go",
+    "ask.open"
+  ],
+  "data": {
+    "person": "/person",
+    "shell": "view:shellData"
+  },
+  "sample": {},
+  "document": {
+    "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+    "specVersion": "0.3.0",
+    "surface": {
+      "id": "halden_shell",
+      "title": "Halden",
+      "intent": "shell",
+      "kind": "shell",
+      "origin": "authored"
+    },
+    "root": "frame",
+    "components": [
+      {
+        "id": "frame",
+        "component": "Frame",
+        "key": "frame",
+        "header": "bar",
+        "navigation": "nav",
+        "main": "body",
+        "width": "contained"
+      },
+      {
+        "id": "bar",
+        "component": "AppBar",
+        "key": "bar",
+        "title": "Halden",
+        "brand": "H",
+        "actions": "bar_actions",
+        "account": "account"
+      },
+      {
+        "id": "bar_actions",
+        "component": "ActionBar",
+        "key": "bar_actions",
+        "children": [
+          "ask"
+        ]
+      },
+      {
+        "id": "ask",
+        "component": "Action",
+        "key": "ask",
+        "label": "Ask",
+        "emphasis": "secondary",
+        "shortcut": "mod+k",
+        "action": {
+          "event": {
+            "name": "ask.open"
+          }
+        }
+      },
+      {
+        "id": "account",
+        "component": "Identity",
+        "key": "account",
+        "kind": "person",
+        "size": "small",
+        "name": {
+          "path": "/person/name"
+        },
+        "detail": "Settings",
+        "action": {
+          "event": {
+            "name": "nav.go",
+            "context": {
+              "to": "/settings"
+            }
+          }
+        }
+      },
+      {
+        "id": "nav",
+        "component": "Navigation",
+        "key": "nav",
+        "kind": "main",
+        "placement": "rail",
+        "label": "Halden",
+        "current": {
+          "path": "/shell/current"
+        },
+        "items": [
+          {
+            "key": "home",
+            "label": "Home",
+            "icon": "home",
+            "action": {
+              "event": {
+                "name": "nav.go",
+                "context": {
+                  "to": "/"
+                }
+              }
+            }
+          },
+          {
+            "key": "payments",
+            "label": "Payments",
+            "icon": "orders",
+            "badge": {
+              "path": "/shell/badges/payments"
+            },
+            "action": {
+              "event": {
+                "name": "nav.go",
+                "context": {
+                  "to": "/payments"
+                }
+              }
+            }
+          },
+          {
+            "key": "payees",
+            "label": "Payees",
+            "icon": "people",
+            "action": {
+              "event": {
+                "name": "nav.go",
+                "context": {
+                  "to": "/payees"
+                }
+              }
+            }
+          },
+          {
+            "key": "budgets",
+            "label": "Budgets",
+            "icon": "tag",
+            "action": {
+              "event": {
+                "name": "nav.go",
+                "context": {
+                  "to": "/budgets"
+                }
+              }
+            }
+          },
+          {
+            "key": "insights",
+            "label": "Insights",
+            "icon": "chart",
+            "action": {
+              "event": {
+                "name": "nav.go",
+                "context": {
+                  "to": "/insights"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "body",
+        "component": "Group",
+        "key": "body",
+        "children": [
+          "outlet",
+          "fab"
+        ]
+      },
+      {
+        "id": "outlet",
+        "component": "Outlet",
+        "key": "outlet"
+      },
+      {
+        "id": "fab",
+        "component": "Custom",
+        "key": "fab",
+        "name": "halden.fab",
+        "props": {
+          "label": "Ask Halden"
+        },
+        "fallback": "fab_fallback"
+      },
+      {
+        "id": "fab_fallback",
+        "component": "Group",
+        "key": "fab_fallback",
+        "children": [
+          "fab_action"
+        ]
+      },
+      {
+        "id": "fab_action",
+        "component": "Action",
+        "key": "ask_fab",
+        "label": "Ask Halden",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "ask.open"
+          }
+        }
+      }
+    ],
+    "data": {
+      "person": {
+        "id": "u_maya",
+        "name": "Maya Okafor",
+        "firstName": "Maya",
+        "email": "maya@okafor.me",
+        "city": "Bristol",
+        "memberSince": "2025-08-11T23:00:00.000Z"
+      },
+      "shell": {
+        "current": "home",
+        "badges": {
+          "payments": 1
+        }
+      }
+    }
+  }
+}

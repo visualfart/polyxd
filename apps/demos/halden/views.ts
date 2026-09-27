@@ -136,6 +136,12 @@ export function view(h: Halden, name: string, slots: Record<string, unknown>): u
       return { month: monthName(month), previous: monthName(prev), thisMonth: total, lastMonthToDay: prevToDay, lastMonthFull: spent(h, prev), change: prevToDay ? Math.round(((total - prevToDay) / prevToDay) * 1000) / 1000 : null, dayOfMonth: today, rows, top, summary };
     }
 
+    /* ---- The shell (authored/shell.json): the frame's own data ---- */
+
+    case "shellData":
+      // Which section is current (the app overrides it from the route) and what needs attention.
+      return { current: String(slots.section ?? "home"), badges: { payments: h.payments.filter((p) => p.status === "pending").length } };
+
     /* ---- The authored screens (authored/*.json): the same views the React screens computed ---- */
 
     case "budgetsScreen": {

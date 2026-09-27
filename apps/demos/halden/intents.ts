@@ -23,7 +23,11 @@ export const INTENTS: IntentFile[] = load(files);
  * shape as an intent, with no ask phrases, rendered inside the product's own shell. Verified the
  * same way as the generated ones; their reports live in reports/ beside the others.
  */
-export const AUTHORED: IntentFile[] = load(authoredFiles);
+const authored = load(authoredFiles);
+export const AUTHORED: IntentFile[] = authored.filter((d) => d.document.surface.kind !== "shell");
+
+/** The product's frame, authored as a shell document (authored/shell.json) and rendered by PolyxdFrame around every screen. */
+export const SHELL: IntentFile = authored.find((d) => d.document.surface.kind === "shell")!;
 
 /** Intents people can ask for by name; the confirmations only follow from another surface. */
 export const ASKABLE = INTENTS.filter((i) => i.ask.length > 0);

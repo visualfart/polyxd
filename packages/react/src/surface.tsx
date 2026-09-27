@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState, type ComponentType } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState, type ComponentType } from "react";
 import { SurfaceContext, ScopeContext, StepsContext, useSurface, type ActionEvent, type Node, type UIDocument, type SurfaceContextValue } from "./context.tsx";
 import { ROOT_SCOPE, resolve, resolveContext, set, type Data, type Scope } from "./data.ts";
 import { registry, type ComponentRenderer } from "./components/index.ts";
@@ -6,7 +6,7 @@ import { Avatar } from "./components/avatar.tsx";
 
 export interface PolyxdSurfaceProps {
   document: UIDocument;
-  /** Host data. Defaults to document.data. The surface keeps its own copy as inputs change. */
+  /** Host data. Defaults to document.data. The surface keeps its own copy as inputs change; a shell adopts each new copy the host passes. */
   data?: Data;
   /** Called for every capability action the user triggers. */
   onAction?: (event: ActionEvent) => void;
@@ -30,8 +30,11 @@ export interface PolyxdSurfaceProps {
   locale?: string;
   /** Turns a host media reference into a URL. Generated UIs never contain URLs. */
   resolveMedia?: (ref: string) => string | undefined;
-  /** Renderer adapter overrides: replace any component's renderer (e.g. with Astryx or your own). */
-  components?: Partial<Record<string, ComponentRenderer>>;
+  /**
+   * Renderer adapter overrides: replace any component's renderer (e.g. with Astryx or your own).
+   * Namespaced keys ("brand.logo") are the host's own components, which a Custom renders by name.
+   */
+  components?: Partial<Record<string, ComponentRenderer | ComponentType<any>>>;
   className?: string;
 }
 
@@ -66,13 +69,20 @@ export function PolyxdSurface({ document: doc, data: initial, onAction, onDataCh
 
   const value: SurfaceContextValue = { doc, byId, data, setValue, dispatch, locale, resolveMedia, portal, root, components, disclosure };
   const rootIsDialog = byId.get(doc.root)?.component === "Confirm";
-  const nav = doc.components.find((c) => c.component === "Navigation" && (!c.kind || c.kind === "main"));
+  // A shell has no surface header and places its own navigation: the Frame draws the regions.
+  const shell = doc.surface.kind === "shell";
+  // A shell lives as long as the product does, and its host data moves under it (a badge count,
+  // the signed-in person), so each new copy the host passes is adopted rather than remounted.
+  useEffect(() => {
+    if (shell && initial) setData(initial);
+  }, [shell, initial]);
+  const nav = shell ? undefined : doc.components.find((c) => c.component === "Navigation" && (!c.kind || c.kind === "main"));
 
   return (
     <SurfaceContext.Provider value={value}>
       <div
         ref={setRoot}
-        className={["pxd-surface", doc.surface.presentation === "panel" ? "pxd-surface-panel" : null, nav ? "pxd-surface-with-nav" : null, className].filter(Boolean).join(" ")}
+        className={["pxd-surface", shell ? "pxd-surface-shell" : null, doc.surface.presentation === "panel" ? "pxd-surface-panel" : null, nav ? "pxd-surface-with-nav" : null, className].filter(Boolean).join(" ")}
         data-pxd-theme={theme}
         data-pxd-mode={mode}
         data-pxd-density={density}
@@ -80,10 +90,14 @@ export function PolyxdSurface({ document: doc, data: initial, onAction, onDataCh
         lang={locale}
       >
         {nav && <Render id={nav.id} />}
-        <div className="pxd-surface-main">
-          {!rootIsDialog && <SurfaceHeader />}
+        {shell ? (
           <Render id={doc.root} />
-        </div>
+        ) : (
+          <div className="pxd-surface-main">
+            {!rootIsDialog && <SurfaceHeader />}
+            <Render id={doc.root} />
+          </div>
+        )}
         <div ref={setPortal} className="pxd-portal" />
       </div>
     </SurfaceContext.Provider>

@@ -10,9 +10,13 @@ import { surfaceData } from "../halden/views.ts";
  * document reaches data, and the data has no holes.
  */
 const dir = new URL("../halden/authored/", import.meta.url);
-const docs = readdirSync(dir)
+type Authored = { file: string; id: string; ask: string[]; capabilities: string[]; data: Record<string, unknown>; sample?: Record<string, unknown>; document: { surface: { origin?: string; intent?: string; kind?: string }; root: string; components: Record<string, any>[]; data: Record<string, unknown> } };
+const all = readdirSync(dir)
   .filter((f) => f.endsWith(".json"))
-  .map((f) => ({ file: f, ...JSON.parse(readFileSync(new URL(f, dir), "utf8")) })) as { file: string; id: string; ask: string[]; data: Record<string, unknown>; sample?: Record<string, unknown>; document: { surface: { origin?: string; intent?: string }; components: Record<string, unknown>[]; data: Record<string, unknown> } }[];
+  .map((f) => ({ file: f, ...JSON.parse(readFileSync(new URL(f, dir), "utf8")) })) as Authored[];
+// The shell (the frame around the screens) sits beside the screens and is held to the same checks.
+const shell = all.find((d) => d.document.surface.kind === "shell")!;
+const docs = all.filter((d) => d !== shell);
 
 /** Every leaf under a value, as JSON Pointers, with undefined leaves kept so a hole can be named. */
 function leaves(v: unknown, at = ""): [string, unknown][] {
@@ -47,7 +51,7 @@ test("the three authored screens resolve by id, as authored, with no ask phrases
 
 test("each authored document's snapshot has no undefined leaves", () => {
   const h = seed();
-  for (const d of docs) {
+  for (const d of all) {
     const data = surfaceData(h, d, d.sample ?? {});
     for (const [at, v] of leaves(data)) assert.notEqual(v, undefined, `${d.id}: ${at} is undefined`);
     for (const key of Object.keys(d.data)) assert.ok(key in data, `${d.id}: data map names "${key}"`);
@@ -58,7 +62,7 @@ test("each authored document's snapshot has no undefined leaves", () => {
 
 test("every absolute binding in an authored document reaches a value", () => {
   const h = seed();
-  for (const d of docs) {
+  for (const d of all) {
     const data = surfaceData(h, d, d.sample ?? {});
     const at = (pointer: string) => pointer.split("/").slice(1).reduce<any>((o, k) => (o == null ? undefined : o[k]), data);
     for (const p of bindings(d.document.components)) assert.notEqual(at(p), undefined, `${d.id}: ${p}`);
@@ -104,4 +108,43 @@ test("the card screen shows frozen state and follows the switch", () => {
   assert.match(frozen.card.statusDetail, /^Frozen today at \d\d:\d\d$/);
   assert.match(frozen.card.frozenSince, /^Since today at /);
   assert.equal(frozen.card.onlinePayments, false);
+});
+
+test("the shell is a shell document: a Frame with one Outlet, the five sections, and a snapshot the frame can bind to", () => {
+  assert.equal(shell.file, "shell.json");
+  assert.equal(shell.document.surface.kind, "shell");
+  assert.equal(shell.document.surface.origin, "authored");
+  const byId = new Map(shell.document.components.map((c) => [c.id, c]));
+  const frame = byId.get(shell.document.root)!;
+  assert.equal(frame.component, "Frame");
+  assert.equal(shell.document.components.filter((c) => c.component === "Outlet").length, 1);
+  const nav = byId.get(frame.navigation)!;
+  assert.deepEqual(
+    nav.items.map((i: any) => [i.key, i.action.event.context.to]),
+    [
+      ["home", "/"],
+      ["payments", "/payments"],
+      ["payees", "/payees"],
+      ["budgets", "/budgets"],
+      ["insights", "/insights"],
+    ],
+  );
+  // Everything the frame dispatches is a capability the product declares.
+  const events: string[] = [];
+  const walk = (v: unknown) => {
+    if (Array.isArray(v)) return v.forEach(walk);
+    if (!v || typeof v !== "object") return;
+    const o = v as Record<string, unknown>;
+    if (o.event && typeof (o.event as any).name === "string") events.push((o.event as any).name);
+    Object.values(o).forEach(walk);
+  };
+  walk(shell.document.components);
+  assert.deepEqual([...new Set(events)].sort(), ["ask.open", "nav.go"]);
+  assert.deepEqual(shell.capabilities.sort(), ["ask.open", "nav.go"]);
+  // The snapshot: the signed-in person and the frame's own data, the same shape the app builds at runtime.
+  const data = surfaceData(seed(), shell, {}) as { person: { name: string }; shell: { current: string; badges: { payments: number } } };
+  assert.equal(data.person.name, "Maya Okafor");
+  assert.equal(data.shell.current, "home");
+  assert.equal(typeof data.shell.badges.payments, "number");
+  assert.deepEqual(Object.keys(shell.document.data).sort(), ["person", "shell"]);
 });

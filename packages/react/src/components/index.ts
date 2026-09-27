@@ -1,6 +1,8 @@
 import type { ComponentType } from "react";
 import type { Node } from "../context.tsx";
-import { Card, Disclosure, Group, Section, Views } from "./structure.tsx";
+import { Card, Columns, Disclosure, Group, Section, Views } from "./structure.tsx";
+import { Split } from "./split.tsx";
+import { AppBar, Custom, Footer, Frame, Outlet } from "./shell.tsx";
 import { Collection, DetailList, Media, Metric, Status, Text } from "./content.tsx";
 import { Table } from "./table.tsx";
 import { Chart } from "./chart.tsx";
@@ -26,4 +28,7 @@ export const registry: Record<string, ComponentRenderer> = {
   TextInput, Choice, Toggle, DateInput, RangeInput, Form,
   Action, ActionBar, Steps, Confirm, Comparison, FilterPanel,
   Tag, Identity, Progress, Rating, Code, Tree, ActionMenu, Panel, FileInput, ColorInput, CodeInput,
+  Columns, Split,
+  // The shell (spec 0.3): the product's frame around its screens.
+  Frame, AppBar, Footer, Outlet, Custom,
 };

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useFrame } from "@polyxd/react";
 
 import { money } from "./format.ts";
 export { money, dayLabel, time, longDate, shortDate, greeting } from "./format.ts";
@@ -49,61 +50,42 @@ export function Icon({ name, size = 24, className }: { name: string; size?: numb
   );
 }
 
-/* ---- Material 3 chrome ---- */
+/* ---- Screen headers. The frame around the screens is a Polyxd document (authored/shell.json). ---- */
 
-export function TopBar({ title, back, trailing, large }: { title: ReactNode; back?: string | (() => void); trailing?: ReactNode; large?: boolean }) {
+/**
+ * A screen's own header: its h1, a back control, trailing actions. On a phone the frame's bar
+ * shows the screen's title, so the h1 is there for reading order and focus but not drawn twice
+ * (halden.css hides it on compact layouts).
+ */
+export function TopBar({ title, back, trailing, large, hidden }: { title: ReactNode; back?: string | (() => void); trailing?: ReactNode; large?: boolean; hidden?: boolean }) {
+  const row = back !== undefined || trailing;
   return (
     <header className={`hal-top${large ? " hal-top-large" : ""}`}>
-      <div className="hal-top-row">
-        {back !== undefined && (typeof back === "string" ? (
-          <Link className="hal-icon-button" to={back} aria-label="Back">
-            <Icon name="back" />
-          </Link>
-        ) : (
-          <button type="button" className="hal-icon-button" onClick={back} aria-label="Back">
-            <Icon name="back" />
-          </button>
-        ))}
-        {!large && <h1 className="hal-top-title">{title}</h1>}
-        <div className="hal-top-trailing">{trailing}</div>
-      </div>
-      {large && <h1 className="hal-top-headline">{title}</h1>}
+      {row && (
+        <div className="hal-top-row">
+          {back !== undefined &&
+            (typeof back === "string" ? (
+              <Link className="hal-icon-button" to={back} aria-label="Back">
+                <Icon name="back" />
+              </Link>
+            ) : (
+              <button type="button" className="hal-icon-button" onClick={back} aria-label="Back">
+                <Icon name="back" />
+              </button>
+            ))}
+          <div className="hal-top-trailing">{trailing}</div>
+        </div>
+      )}
+      {/* A detail screen's hero already shows the name; its h1 is read and focused but not drawn. */}
+      <h1 className={hidden ? "hal-sr-only" : large ? "hal-top-headline" : "hal-top-title"}>{title}</h1>
     </header>
   );
 }
 
-const NAV = [
-  { to: "/", label: "Home", icon: "home" },
-  { to: "/payments", label: "Payments", icon: "payments" },
-  { to: "/payees", label: "Payees", icon: "people" },
-  { to: "/budgets", label: "Budgets", icon: "wallet" },
-  { to: "/insights", label: "Insights", icon: "insights" },
-];
-
-export function Nav({ onAsk }: { onAsk: () => void }) {
-  return (
-    <nav className="hal-nav" aria-label="Halden">
-      <button type="button" className="hal-fab hal-fab-rail" onClick={onAsk}>
-        <Icon name="spark" />
-        <span>Ask</span>
-      </button>
-      <ul>
-        {NAV.map((n) => (
-          <li key={n.to}>
-            <NavLink to={n.to} end={n.to === "/"} className={({ isActive }) => `hal-nav-item${isActive ? " is-active" : ""}`}>
-              <span className="hal-nav-pill">
-                <Icon name={n.icon} />
-              </span>
-              <span className="hal-nav-label">{n.label}</span>
-            </NavLink>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
-
+/** The floating "Ask Halden" button: the frame's Custom slot (halden.fab) renders it, on phones only; the bar's Ask action covers the rest. */
 export function Fab({ onClick, label = "Ask Halden" }: { onClick: () => void; label?: string }) {
+  const { compact } = useFrame();
+  if (!compact) return null;
   return (
     <button type="button" className="hal-fab hal-fab-floating" onClick={onClick}>
       <Icon name="spark" />

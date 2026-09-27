@@ -59,69 +59,68 @@ a {
   white-space: nowrap;
 }
 
-/* ---- Layout: bottom bar on phones, rail from 840px ---- */
+/* ---- Layout. The frame (bar, navigation, outlet) is a Polyxd document: authored/shell.json,
+   rendered by PolyxdFrame. What is left here is the screens' column inside its outlet. ---- */
 
-.hal {
-  min-height: 100dvh;
-  display: grid;
-  grid-template-rows: 1fr auto;
-}
 .hal-main {
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
-  padding: 0 var(--pxd-space-inset-default) calc(var(--pxd-space-stack-section) + 96px);
   display: flex;
   flex-direction: column;
   gap: var(--pxd-space-stack-loose);
 }
-@media (min-width: 840px) {
-  .hal {
-    grid-template-rows: 1fr;
-    grid-template-columns: 96px 1fr;
-  }
-  .hal-main {
-    padding: 0 var(--pxd-space-inset-comfortable) var(--pxd-space-stack-section);
-    max-width: 840px;
-  }
+/* Room under the last thing for the floating Ask button. */
+[data-pxd-layout="compact"] .hal-main {
+  padding-bottom: 80px;
+}
+[data-pxd-layout="wide"] .hal-main {
+  max-width: 840px;
 }
 
-/* ---- Top app bar ---- */
+/* ---- A screen's header: its h1, a back control, its actions. On a phone the frame's bar
+   names the screen, so the h1 stays for reading order and focus but is not drawn twice. ---- */
 
 .hal-top {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  margin: 0 calc(-1 * var(--pxd-space-inset-default));
-  padding: 0 var(--pxd-space-inset-default);
-  background: var(--pxd-color-surface-default);
+  display: flex;
+  flex-direction: column;
 }
 .hal-top-row {
   display: flex;
   align-items: center;
   gap: var(--pxd-space-inline-tight);
-  min-height: 64px;
+  min-height: var(--pxd-size-target-min);
+  margin-left: calc(-1 * var(--pxd-space-inset-compact));
 }
 .hal-top-title {
-  flex: 1 1 auto;
   font-family: var(--pxd-type-title-section-family);
   font-size: var(--pxd-type-title-section-size);
   font-weight: var(--pxd-type-title-section-weight);
   line-height: var(--pxd-type-title-section-line-height);
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.hal-top-row:has(.hal-icon-button:first-child) .hal-top-title {
-  margin-left: var(--pxd-space-inline-tight);
+.hal-top-title:empty {
+  display: none;
+}
+[data-pxd-layout="compact"] .hal-top-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 .hal-top-trailing {
   margin-left: auto;
   display: flex;
   gap: var(--pxd-space-inline-tight);
 }
+.hal-top-greeting {
+  padding-top: var(--pxd-space-stack-default);
+}
 .hal-top-headline {
-  padding: 0 0 var(--pxd-space-stack-loose);
+  padding: 0 0 var(--pxd-space-stack-default);
   font-family: var(--pxd-type-title-page-family);
   font-size: var(--pxd-type-title-page-size);
   font-weight: var(--pxd-type-title-page-weight);
@@ -143,104 +142,7 @@ a {
   background: color-mix(in srgb, currentColor calc(var(--pxd-opacity-state-hover) * 100%), transparent);
 }
 
-/* ---- Navigation ---- */
-
-.hal-nav {
-  position: fixed;
-  inset: auto 0 0 0;
-  z-index: 3;
-  background: var(--pxd-color-surface-subtle);
-  padding-bottom: env(safe-area-inset-bottom);
-}
-.hal-nav ul {
-  display: flex;
-  justify-content: space-around;
-  height: 80px;
-}
-.hal-nav li {
-  flex: 1 1 0;
-  min-width: 0;
-}
-.hal-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  height: 100%;
-  color: var(--pxd-color-text-muted);
-  font-family: var(--pxd-type-label-small-family);
-  font-size: var(--pxd-type-label-small-size);
-  font-weight: var(--pxd-type-label-small-weight);
-  letter-spacing: var(--pxd-type-label-small-letter-spacing);
-}
-.hal-nav-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 32px;
-  border-radius: var(--pxd-radius-full);
-  transition: background var(--pxd-motion-duration-short) var(--pxd-motion-easing-standard);
-}
-.hal-nav-item:hover .hal-nav-pill {
-  background: color-mix(in srgb, var(--pxd-color-text-default) calc(var(--pxd-opacity-state-hover) * 100%), transparent);
-}
-.hal-nav-item.is-active {
-  color: var(--pxd-color-text-default);
-}
-.hal-nav-item.is-active .hal-nav-pill {
-  background: var(--pxd-color-selection-background);
-  color: var(--pxd-color-selection-foreground);
-}
-.hal-nav .hal-fab-rail {
-  display: none;
-}
-@media (min-width: 840px) {
-  .hal-nav {
-    position: sticky;
-    top: 0;
-    inset: auto;
-    height: 100dvh;
-    width: 96px;
-    padding: var(--pxd-space-stack-loose) 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--pxd-space-stack-section);
-    background: var(--pxd-color-surface-default);
-  }
-  .hal-nav ul {
-    flex-direction: column;
-    justify-content: flex-start;
-    height: auto;
-    width: 100%;
-    gap: var(--pxd-space-stack-tight);
-  }
-  .hal-nav li {
-    flex: none;
-  }
-  .hal-nav-item {
-    height: 56px;
-  }
-  .hal-nav .hal-fab-rail {
-    display: inline-flex;
-    flex-direction: column;
-    width: 56px;
-    height: 56px;
-    padding: 0;
-    gap: 0;
-    font-size: 10px;
-  }
-  .hal-fab-rail span {
-    display: none;
-  }
-  .hal .hal-fab-floating {
-    display: none;
-  }
-}
-
-/* ---- FAB ---- */
+/* ---- FAB: the frame's Custom slot (halden.fab), on phones, above the bottom bar ---- */
 
 .hal-fab {
   display: inline-flex;
@@ -818,7 +720,7 @@ body:has(.hal-snackbar) .hal-fab-floating {
 .hal-snackbar .hal-button-text {
   color: var(--pxd-color-selection-background);
 }
-@media (min-width: 840px) {
+@media (min-width: 640px) {
   .hal-snackbar {
     left: auto;
     right: var(--pxd-space-inset-comfortable);

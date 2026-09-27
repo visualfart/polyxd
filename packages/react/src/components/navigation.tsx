@@ -1,31 +1,39 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useContext, useLayoutEffect, useRef, useState } from "react";
 import { Dialog } from "radix-ui";
-import { useBindings, useSurface, type Node } from "../context.tsx";
+import { FrameContext, useBindings, useSurface, type Node } from "../context.tsx";
 import { useA11y } from "../surface.tsx";
 import { Icon } from "./avatar.tsx";
 
 /** Below this width the navigation moves behind a menu button. */
 const COMPACT_PX = 900;
+/** A bottom bar shows this many items at most; the Frame sends longer navigations to a drawer. */
+const BAR_MAX = 5;
 
 /**
  * Navigation: the product's sections. A side navigation on wide surfaces (grouped, with the
  * current item marked), a menu button that opens them on compact ones. The other kinds sit in
  * the page: a breadcrumb trail, expandable groups, a table of contents, or section tabs.
+ * Inside a Frame, the frame's own main navigation takes the placement the frame decided: a
+ * side column, a rail, a bottom bar, or a drawer behind the AppBar's menu button.
  */
 export function Navigation({ node }: { node: Node }) {
   const b = useBindings();
   const s = useSurface();
+  const frame = useContext(FrameContext);
   const ref = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
   const [open, setOpen] = useState(false);
   const [toggled, setToggled] = useState<Record<string, boolean>>({});
-  const current = b.value<string>(node.current);
   const kind: string = node.kind ?? "main";
+  const placed = frame && frame.navigationId === node.id && kind === "main" ? frame.navigation : undefined;
+  // The host marks the current item through PolyxdFrame; otherwise the binding says.
+  const bound = b.value<string>(node.current);
+  const current = placed && frame?.current?.key !== undefined ? frame.current.key : bound;
   const label = node.label !== undefined ? b.text(node.label) : kind === "breadcrumb" ? "Breadcrumb" : kind === "toc" ? "On this page" : "Main";
   const a11y = useA11y(node);
 
   useLayoutEffect(() => {
-    if (kind !== "main") return;
+    if (kind !== "main" || placed) return;
     const el = ref.current?.closest(".pxd-surface") ?? ref.current;
     if (!el || typeof ResizeObserver === "undefined") return;
     const measure = () => setCompact(el.getBoundingClientRect().width < COMPACT_PX);
@@ -33,10 +41,11 @@ export function Navigation({ node }: { node: Node }) {
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [kind]);
+  }, [kind, placed]);
 
   const activate = (item: any) => {
     setOpen(false);
+    frame?.setDrawerOpen(false);
     s.dispatch(item.action, b.scope, node.id);
   };
   const badgeOf = (item: any) => {
@@ -150,7 +159,7 @@ export function Navigation({ node }: { node: Node }) {
   );
 
   const list = (
-    <nav className={`pxd-nav${nested ? " pxd-nav-nested" : ""}`} aria-label={label}>
+    <nav className={`pxd-nav${nested ? " pxd-nav-nested" : ""}${placed === "side" ? " pxd-nav-side" : ""}`} aria-label={label} {...(placed === "side" ? a11y : {})}>
       {groups.map((g, gi) => (
         <div className="pxd-nav-group" key={gi}>
           {g.label &&
@@ -167,6 +176,60 @@ export function Navigation({ node }: { node: Node }) {
       ))}
     </nav>
   );
+
+  if (placed === "side") return list;
+
+  if (placed === "rail" || placed === "bar") {
+    // Icon over label, the current item marked, the badge on the icon. Groups don't fit; a bar shows five at most.
+    const shown = placed === "bar" ? node.items.slice(0, BAR_MAX) : node.items;
+    return (
+      <nav className={`pxd-nav-${placed}`} aria-label={label} {...a11y}>
+        <ul>
+          {shown.map((item: any) => {
+            const on = item.key === current;
+            const text = b.text(item.label);
+            return (
+              <li key={item.key}>
+                <button type="button" className={`pxd-nav-${placed}-item${on ? " pxd-nav-current" : ""}`} aria-current={on ? "page" : undefined} onClick={() => activate(item)}>
+                  <span className={`pxd-nav-${placed}-icon`}>
+                    {item.icon ? (
+                      <Icon name={item.icon} size={24} />
+                    ) : (
+                      <span className="pxd-nav-glyph" aria-hidden="true">
+                        {text.slice(0, 1)}
+                      </span>
+                    )}
+                    {badgeOf(item)}
+                  </span>
+                  <span className="pxd-nav-label">{text}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    );
+  }
+
+  if (placed === "drawer" && frame) {
+    // The AppBar's menu button opens it; the Frame holds the state so the button can report it.
+    return (
+      <Dialog.Root open={frame.drawerOpen} onOpenChange={frame.setDrawerOpen}>
+        <Dialog.Portal container={s.portal}>
+          <Dialog.Overlay className="pxd-overlay" />
+          <Dialog.Content className="pxd-nav-drawer" aria-describedby={undefined} {...a11y}>
+            <div className="pxd-sheet-header">
+              <Dialog.Title className="pxd-sheet-title">{label}</Dialog.Title>
+              <Dialog.Close className="pxd-icon-button" aria-label="Close">
+                <Icon name="close" />
+              </Dialog.Close>
+            </div>
+            {list}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+    );
+  }
 
   return (
     <div ref={ref} className="pxd-nav-wrap" {...a11y}>

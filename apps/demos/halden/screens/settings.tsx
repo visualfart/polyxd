@@ -1,5 +1,15 @@
+import { REPORTS } from "../intents.ts";
 import { useHalden } from "../session.ts";
 import { Avatar, Button, Card, SectionTitle, TopBar, longDate } from "../ui.tsx";
+
+/** What the verifier said about the shell (reports/shell.json), the way the Checked mark would put it. */
+function shellChecked(): string {
+  const r = REPORTS.shell;
+  if (!r) return "not yet verified";
+  const packs = new Set(r.targets.map((t) => t.theme)).size;
+  const issues = r.errors === 0 && r.warnings === 0 ? "no issues" : `${r.errors} error${r.errors === 1 ? "" : "s"}, ${r.warnings} warning${r.warnings === 1 ? "" : "s"}`;
+  return `checked in ${packs} design systems, ${issues}`;
+}
 
 export function Settings() {
   const { h, store, say } = useHalden();
@@ -54,6 +64,7 @@ export function Settings() {
       <p className="hal-small hal-muted">
         Halden is a demonstration of <a href="https://polyxd.com" style={{ textDecoration: "underline" }}>Polyxd</a>: the screens you ask for are generated as data, rendered in Material 3 through Polyxd's semantic tokens, and verified before they show. Everything you do here stays in this browser.
       </p>
+      <p className="hal-small hal-muted">The frame you're looking at is a Polyxd document too — authored, {shellChecked()}.</p>
       <div className="hal-actions">
         <Button
           tone="outlined"

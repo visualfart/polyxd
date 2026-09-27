@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import type { ActionEvent } from "@polyxd/react";
+import { PolyxdFrame, type ActionEvent } from "@polyxd/react";
 import type { Undo } from "../kit/store.ts";
 import { matchAsk, suggestions } from "../kit/ask.ts";
 import { JitSurface } from "../kit/jit.tsx";
 import type { IntentFile } from "../kit/types.ts";
-import { ASKABLE, REPORTS, intentById, resolveSlots, surfaceData } from "./intents.ts";
+import { ASKABLE, REPORTS, SHELL, intentById, resolveSlots, surfaceData } from "./intents.ts";
 import { useHalden } from "./session.ts";
 import { runAction, type Outcome } from "./actions.ts";
-import { Button, Fab, Icon, Nav } from "./ui.tsx";
+import { Button, Fab, Icon } from "./ui.tsx";
 import { AuthoredScreen } from "./authored.tsx";
 import { PACKS, loadPack } from "./packs.ts";
 import { Home } from "./screens/home.tsx";
@@ -65,6 +65,14 @@ export function App() {
   };
 
   const session: Session = { h, store, mode, ask, open, say };
+  // The shell is a Polyxd document (authored/shell.json): its navigation and bar actions arrive here like any action.
+  const shellData = useMemo(() => surfaceData(h, SHELL, {}), [h]);
+  const current = useMemo(() => currentFor(location.pathname), [location.pathname]);
+  const components = useMemo(() => ({ "halden.fab": ({ label }: { label?: string }) => <Fab label={label} onClick={() => ask()} /> }), [ask]);
+  const onShellAction = (e: ActionEvent) => {
+    if (e.name === "nav.go") navigate(String(e.context.to));
+    else if (e.name === "ask.open") ask();
+  };
   if (!h.settings.onboarded && location.pathname !== "/welcome") return <Navigate to="/welcome" replace />;
   return (
     <Ctx.Provider value={session}>
@@ -73,9 +81,8 @@ export function App() {
         <Route
           path="*"
           element={
-            <div className="hal">
-              <Nav onAsk={() => ask()} />
-              <main className="hal-main" id="main">
+            <PolyxdFrame document={SHELL.document} data={shellData} theme="material3" mode={mode} density="comfortable" onAction={onShellAction} components={components} current={current}>
+              <div className="hal-main">
                 <Routes>
                   <Route index element={<Home />} />
                   <Route path="payments" element={<Payments />} />
@@ -101,9 +108,8 @@ export function App() {
                   <Route path="settings" element={<Settings />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
-              </main>
-              <Fab onClick={() => ask()} />
-            </div>
+              </div>
+            </PolyxdFrame>
           }
         />
       </Routes>
@@ -128,6 +134,29 @@ export function App() {
       )}
     </Ctx.Provider>
   );
+}
+
+/** Which navigation item a route belongs to, and what the frame's bar calls the screen on a phone (Home keeps the product's name). */
+function currentFor(pathname: string): { key?: string; title?: string } {
+  const [section, id] = pathname.split("/").filter(Boolean);
+  switch (section) {
+    case undefined:
+      return { key: "home" };
+    case "payments":
+      return { key: "payments", title: id ? "Payment" : "Payments" };
+    case "payees":
+      return { key: "payees", title: id ? "Payee" : "Payees" };
+    case "budgets":
+      return { key: "budgets", title: "Budgets" };
+    case "insights":
+      return { key: "insights", title: "Insights" };
+    case "cards":
+      return { key: "home", title: "Card" };
+    case "settings":
+      return { title: "Settings" };
+    default:
+      return {};
+  }
 }
 
 function useMode(pref: "system" | "light" | "dark"): "light" | "dark" {

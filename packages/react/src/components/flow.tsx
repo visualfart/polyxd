@@ -96,11 +96,13 @@ export function Action({ node }: { node: Node }) {
   const click = useRef(onClick);
   click.current = onClick;
   const root = s.root;
+  // A shell is the page: its shortcuts work wherever focus is, even nowhere yet.
+  const shell = s.doc.surface.kind === "shell";
   useEffect(() => {
     if (!shortcut || disabled || !root) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || e.repeat) return;
-      if (!root.contains(document.activeElement) && !(e.target instanceof HTMLElement && root.contains(e.target))) return;
+      if (!shell && !root.contains(document.activeElement) && !(e.target instanceof HTMLElement && root.contains(e.target))) return;
       if (!MODIFIER_FLAGS.every((f) => e[f] === shortcut.flags.has(f))) return;
       if (!shortcut.flags.has("metaKey") && !shortcut.flags.has("ctrlKey") && !shortcut.flags.has("altKey") && isEditable(e.target)) return;
       // Alt on a Mac rewrites e.key to a symbol, so letters and digits also match by physical key.
@@ -111,7 +113,7 @@ export function Action({ node }: { node: Node }) {
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [node.shortcut, apple, disabled, root]);
+  }, [node.shortcut, apple, disabled, root, shell]);
   return (
     <button
       type="button"

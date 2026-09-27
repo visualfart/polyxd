@@ -112,7 +112,7 @@ export function Payment() {
   const twin = m && h.payments.find((x) => x.id !== p.id && x.merchantId === m.id && x.amount === p.amount && Math.abs(new Date(x.at).getTime() - new Date(p.at).getTime()) < 3600000);
   return (
     <>
-      <TopBar title="" back="/payments" />
+      <TopBar title="Payment" back="/payments" hidden />
       <div className="hal-hero">
         <Avatar name={name} size={64} icon={m ? cat.icon : undefined} />
         <span className="hal-hero-amount">{money(p.amount, { sign: p.amount > 0 })}</span>

@@ -64,7 +64,7 @@ export function Payee() {
   };
   return (
     <>
-      <TopBar title="" back="/payees" />
+      <TopBar title="Payee" back="/payees" hidden />
       <div className="hal-hero">
         <Avatar name={p.name} size={72} />
         <span className="hal-hero-title">{p.name}</span>

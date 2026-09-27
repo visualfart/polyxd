@@ -4415,3 +4415,579 @@ video.pxd-media {
   opacity: var(--pxd-opacity-state-disabled);
   cursor: not-allowed;
 }
+
+/* ==== The shell (spec 0.3): Frame, AppBar, Navigation placements, Outlet, Footer, Custom ==== */
+
+/* ---- Frame ---- */
+/* A shell is the product around its screens, so the surface's own padding and stack go: the
+   Frame lays out its regions on its own width (data-pxd-layout) and the screens keep theirs.
+   The frame fills the viewport unless the host says otherwise. */
+.pxd-surface-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: 0;
+  gap: 0;
+}
+.pxd-frame {
+  /* How much of the top a sticky AppBar keeps, so a sticky navigation starts below it. */
+  --polyxd-appbar-height: 0px;
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pxd-frame[data-pxd-appbar="standard"],
+.pxd-frame[data-pxd-appbar="large"] {
+  --polyxd-appbar-height: 64px;
+}
+.pxd-frame[data-pxd-appbar="compact"] {
+  --polyxd-appbar-height: 48px;
+}
+.pxd-frame:not([data-pxd-layout="compact"])[data-pxd-appbar="large"] {
+  --polyxd-appbar-height: 120px;
+}
+/* The first focusable thing: off the top until it has focus, then a button over the header. */
+.pxd-skip-link {
+  position: absolute;
+  top: var(--pxd-space-inset-compact);
+  inset-inline-start: var(--pxd-space-inset-compact);
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--pxd-size-target-min);
+  padding: 0 var(--pxd-space-inset-default);
+  border-radius: var(--pxd-radius-control);
+  background: var(--pxd-color-action-primary-background);
+  color: var(--pxd-color-action-primary-foreground);
+  font-family: var(--pxd-type-label-default-family);
+  font-size: var(--pxd-type-label-default-size);
+  font-weight: var(--pxd-type-label-default-weight);
+  text-decoration: none;
+  white-space: nowrap;
+  transform: translateY(calc(-100% - var(--pxd-space-inset-comfortable) * 2));
+}
+.pxd-skip-link:focus-visible {
+  transform: none;
+}
+.pxd-frame-banner .pxd-status {
+  border-radius: 0;
+}
+/* Regions: navigation at the start, main beside it, an aside after; the footer below all.
+   Wide keeps the three in one row; medium stacks the aside under main; compact stacks
+   everything, with the navigation last on screen (a bottom bar) but still before main in
+   reading order. */
+.pxd-frame-body {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-areas: "nav main";
+  align-items: stretch;
+}
+.pxd-frame-body:has(> .pxd-frame-aside) {
+  grid-template-columns: auto minmax(0, 1fr) minmax(16rem, 20rem);
+  grid-template-areas: "nav main aside";
+}
+.pxd-frame[data-pxd-layout="medium"] .pxd-frame-body:has(> .pxd-frame-aside) {
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: "nav main" "nav aside";
+}
+.pxd-frame[data-pxd-layout="compact"] .pxd-frame-body,
+.pxd-frame[data-pxd-layout="compact"] .pxd-frame-body:has(> .pxd-frame-aside) {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  grid-template-areas: "main" "aside" "nav";
+}
+.pxd-frame-nav {
+  grid-area: nav;
+  min-width: 0;
+  background: var(--pxd-color-surface-subtle);
+  border-inline-end: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+}
+/* A drawer lives in the portal; its slot takes no room (an empty slot is a closed drawer). */
+.pxd-frame[data-pxd-nav="drawer"] .pxd-frame-nav {
+  border: 0;
+  background: transparent;
+}
+.pxd-frame[data-pxd-nav="drawer"] .pxd-frame-nav:empty {
+  display: none;
+}
+.pxd-frame-main {
+  grid-area: main;
+  min-width: 0;
+  width: 100%;
+  background: var(--pxd-color-surface-default);
+}
+/* 'contained' centres main at measure.max × 1.6 (about 104 characters); 'full' uses everything. */
+.pxd-frame-width-contained .pxd-frame-main {
+  max-width: calc(var(--pxd-measure-max) * 1.6ch);
+  justify-self: center;
+}
+.pxd-frame-aside {
+  grid-area: aside;
+  min-width: 0;
+  padding: var(--pxd-space-inset-comfortable);
+  border-inline-start: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  background: var(--pxd-color-surface-subtle);
+}
+.pxd-frame[data-pxd-layout="medium"] .pxd-frame-aside,
+.pxd-frame[data-pxd-layout="compact"] .pxd-frame-aside {
+  border-inline-start: 0;
+  border-top: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+}
+.pxd-frame[data-pxd-layout="compact"] .pxd-frame-aside {
+  padding: var(--pxd-space-inset-default);
+}
+
+/* ---- Navigation placements ---- */
+/* Side (240px) and rail (80px) stay in view while the screen scrolls, below a sticky AppBar. */
+.pxd-nav-side,
+.pxd-nav-rail {
+  position: sticky;
+  top: var(--polyxd-appbar-height);
+  max-height: calc(100dvh - var(--polyxd-appbar-height));
+  overflow-y: auto;
+}
+.pxd-nav-side {
+  width: 240px;
+  padding: var(--pxd-space-inset-default) var(--pxd-space-inset-compact);
+}
+.pxd-nav-rail {
+  width: 80px;
+  padding: var(--pxd-space-stack-loose) 0;
+}
+.pxd-nav-rail ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-tight);
+}
+.pxd-nav-rail-item,
+.pxd-nav-bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pxd-space-stack-tight);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--pxd-space-stack-tight) 0;
+  border: 0;
+  background: transparent;
+  color: var(--pxd-color-text-muted);
+  font-family: var(--pxd-type-label-small-family);
+  font-size: var(--pxd-type-label-small-size);
+  font-weight: var(--pxd-type-label-small-weight);
+  line-height: var(--pxd-type-label-small-line-height);
+  letter-spacing: var(--pxd-type-label-small-letter-spacing);
+  cursor: pointer;
+}
+.pxd-nav-rail-icon,
+.pxd-nav-bar-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 32px;
+  border-radius: var(--pxd-radius-full);
+  transition: background var(--pxd-motion-duration-short) var(--pxd-motion-easing-standard);
+}
+.pxd-nav-rail-item:hover .pxd-nav-rail-icon,
+.pxd-nav-bar-item:hover .pxd-nav-bar-icon {
+  background: color-mix(in srgb, var(--pxd-color-text-default) calc(var(--pxd-opacity-state-hover) * 100%), transparent);
+}
+/* The current item: the icon in a selection pill, the label in the default text colour. */
+.pxd-nav-rail-item.pxd-nav-current,
+.pxd-nav-bar-item.pxd-nav-current {
+  background: transparent;
+  color: var(--pxd-color-text-default);
+  font-weight: var(--pxd-type-label-small-weight);
+}
+.pxd-nav-rail-item.pxd-nav-current .pxd-nav-rail-icon,
+.pxd-nav-bar-item.pxd-nav-current .pxd-nav-bar-icon {
+  background: var(--pxd-color-selection-background);
+  color: var(--pxd-color-selection-foreground);
+}
+.pxd-nav-rail .pxd-nav-label,
+.pxd-nav-bar .pxd-nav-label {
+  flex: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+.pxd-nav-glyph {
+  font-family: var(--pxd-type-label-default-family);
+  font-size: var(--pxd-type-label-default-size);
+  font-weight: var(--pxd-type-label-default-weight);
+}
+.pxd-nav-rail-icon .pxd-nav-badge,
+.pxd-nav-bar-icon .pxd-nav-badge {
+  position: absolute;
+  top: 0;
+  inset-inline-start: calc(50% + 4px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--pxd-space-inline-tight);
+  line-height: 16px;
+}
+/* Bar: 80px along the bottom, above the safe area; the slot sticks to the bottom of the view. */
+.pxd-frame[data-pxd-nav="bar"] .pxd-frame-nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  border-inline-end: 0;
+  border-top: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+}
+.pxd-nav-bar {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.pxd-nav-bar ul {
+  display: flex;
+  height: 80px;
+}
+.pxd-nav-bar li {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.pxd-nav-bar-item {
+  height: 100%;
+  padding-inline: var(--pxd-space-inline-tight);
+}
+
+/* ---- AppBar ---- */
+.pxd-appbar-sentinel {
+  height: 0;
+}
+.pxd-appbar {
+  display: flex;
+  flex-direction: column;
+  z-index: 6;
+  background: var(--pxd-color-surface-default);
+  border-bottom: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  transition: box-shadow var(--pxd-motion-duration-short) var(--pxd-motion-easing-standard);
+}
+.pxd-appbar-sticky {
+  position: sticky;
+  top: 0;
+}
+.pxd-appbar[data-pxd-scrolled] {
+  box-shadow: var(--pxd-shadow-raised);
+}
+.pxd-appbar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  min-height: 64px;
+  padding: 0 var(--pxd-space-inset-default);
+}
+.pxd-appbar-compact .pxd-appbar-row {
+  min-height: 48px;
+}
+.pxd-appbar-headline {
+  display: flex;
+  align-items: flex-end;
+  min-height: 56px;
+  padding: 0 var(--pxd-space-inset-comfortable) var(--pxd-space-stack-default);
+  font-family: var(--pxd-type-title-page-family);
+  font-size: var(--pxd-type-title-page-size);
+  font-weight: var(--pxd-type-title-page-weight);
+  line-height: var(--pxd-type-title-page-line-height);
+  letter-spacing: var(--pxd-type-title-page-letter-spacing);
+}
+.pxd-appbar-leading,
+.pxd-appbar-menu {
+  flex: none;
+}
+.pxd-appbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  min-width: 0;
+}
+.pxd-appbar-title {
+  font-family: var(--pxd-type-title-section-family);
+  font-size: var(--pxd-type-title-section-size);
+  font-weight: var(--pxd-type-title-section-weight);
+  line-height: var(--pxd-type-title-section-line-height);
+  letter-spacing: var(--pxd-type-title-section-letter-spacing);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pxd-appbar-logo {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+.pxd-appbar-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--pxd-radius-small);
+  background: var(--pxd-color-action-primary-background);
+  color: var(--pxd-color-action-primary-foreground);
+  font-family: var(--pxd-type-label-small-family);
+  font-size: var(--pxd-type-label-small-size);
+  font-weight: var(--pxd-type-label-small-weight);
+}
+/* Search grows in the middle on wide layouts; on compact it opens from an icon on its own row. */
+.pxd-appbar-search {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 40rem;
+  margin-inline: auto;
+}
+.pxd-appbar-search .pxd-field-label,
+.pxd-appbar-search .pxd-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.pxd-appbar-search-toggle {
+  flex: none;
+  margin-inline-start: auto;
+}
+.pxd-appbar-search-row {
+  flex: none;
+  width: 100%;
+  max-width: none;
+  padding: 0 var(--pxd-space-inset-default) var(--pxd-space-inset-compact);
+}
+.pxd-appbar-end {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+  flex: none;
+  margin-inline-start: auto;
+}
+.pxd-appbar-search + .pxd-appbar-end,
+.pxd-appbar-search-toggle + .pxd-appbar-end {
+  margin-inline-start: 0;
+}
+/* The bar's actions stay in one row whatever the width; the ActionBar folds the rest away. */
+.pxd-appbar .pxd-action-bar {
+  flex-direction: row-reverse;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.pxd-appbar-account {
+  display: flex;
+  align-items: center;
+}
+.pxd-appbar-account .pxd-identity-name,
+.pxd-appbar-account .pxd-identity-detail {
+  display: none;
+}
+.pxd-appbar-account .pxd-identity-button {
+  margin: 0;
+  min-width: var(--pxd-size-target-min);
+  justify-content: center;
+}
+
+/* ---- Outlet ---- */
+.pxd-outlet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-loose);
+  min-width: 0;
+  padding: var(--pxd-space-inset-comfortable);
+  outline: none;
+}
+.pxd-frame[data-pxd-layout="compact"] .pxd-outlet {
+  padding: var(--pxd-space-inset-default);
+}
+.pxd-outlet:focus-visible {
+  outline: var(--pxd-focus-ring-width) solid var(--pxd-color-border-focus);
+  outline-offset: calc(-1 * var(--pxd-focus-ring-width));
+}
+/* A screen document inside the outlet is a screen, not a second frame: no padding of its own. */
+.pxd-outlet > .pxd-surface {
+  padding: 0;
+}
+.pxd-outlet-skeleton {
+  padding: 0;
+}
+
+/* ---- Footer ---- */
+.pxd-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-loose);
+  padding: var(--pxd-space-inset-comfortable);
+  border-top: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  background: var(--pxd-color-surface-subtle);
+}
+.pxd-footer-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--pxd-space-stack-loose) var(--pxd-space-inline-loose);
+}
+.pxd-frame[data-pxd-layout="compact"] .pxd-footer {
+  padding: var(--pxd-space-inset-default);
+}
+.pxd-frame[data-pxd-layout="compact"] .pxd-footer-groups {
+  grid-template-columns: minmax(0, 1fr);
+}
+.pxd-footer-group ul {
+  display: flex;
+  flex-direction: column;
+}
+.pxd-footer-heading {
+  margin: 0 0 var(--pxd-space-stack-default);
+  font-family: var(--pxd-type-label-default-family);
+  font-size: var(--pxd-type-label-default-size);
+  font-weight: var(--pxd-type-label-default-weight);
+  line-height: var(--pxd-type-label-default-line-height);
+  letter-spacing: var(--pxd-type-label-default-letter-spacing);
+}
+/* Links in the default text colour: the link colour is only guaranteed on surface.default and the
+   footer sits on surface.subtle. Each is a full target tall, so a thumb reaches one at a time. */
+.pxd-footer-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: var(--polyxd-control);
+  min-height: var(--polyxd-control);
+  color: var(--pxd-color-text-default);
+}
+.pxd-footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pxd-space-stack-default) var(--pxd-space-inline-loose);
+  color: var(--pxd-color-text-muted);
+  font-family: var(--pxd-type-body-small-family);
+  font-size: var(--pxd-type-body-small-size);
+  line-height: var(--pxd-type-body-small-line-height);
+}
+.pxd-footer-legal-text {
+  margin: 0;
+}
+.pxd-footer-aside {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+}
+
+/* ---- Custom ---- */
+/* A named slot only wraps when it has a label to give; otherwise the host's element stands alone. */
+.pxd-custom {
+  display: contents;
+}
+
+/* ---- Columns ---- */
+/* Side-by-side on the surface's width, a stack below the collapse point; the children's order
+   is the reading order either way. */
+.pxd-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--pxd-space-stack-loose) var(--pxd-space-inline-loose);
+  align-items: stretch;
+}
+.pxd-columns-one-third { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+.pxd-columns-halves { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pxd-columns-thirds { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pxd-columns-sidebar-start { grid-template-columns: minmax(16rem, 18rem) minmax(0, 1fr); }
+.pxd-columns-sidebar-end { grid-template-columns: minmax(0, 1fr) minmax(16rem, 18rem); }
+.pxd-columns-align-start { align-items: start; }
+.pxd-columns-align-center { align-items: center; }
+.pxd-columns > * {
+  min-width: 0;
+}
+@container pxd (width < 40rem) {
+  .pxd-columns-collapse-compact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@container pxd (width < 64rem) {
+  .pxd-columns-collapse-medium {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- Split ---- */
+/* Two panes with a border between; the list scrolls on its own. The list's share follows the
+   ratio, or the handle when the split is resizable. Compact shows one pane at a time. */
+.pxd-split {
+  --polyxd-split-share: 33.333%;
+  display: grid;
+  grid-template-columns: minmax(16rem, 1fr) minmax(0, 2fr);
+  align-items: stretch;
+  min-height: 0;
+  border: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+  border-radius: var(--pxd-radius-default);
+  overflow: hidden;
+}
+.pxd-split-balanced { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pxd-split-wide { grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr); }
+.pxd-split-resizable {
+  grid-template-columns: var(--polyxd-split-share) var(--pxd-size-target-min) minmax(0, 1fr);
+}
+.pxd-split-primary {
+  min-width: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: var(--pxd-space-inset-default);
+  border-inline-end: var(--pxd-border-width-default) solid var(--pxd-color-border-default);
+}
+.pxd-split-resizable .pxd-split-primary {
+  border-inline-end: 0;
+}
+.pxd-split-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pxd-space-stack-loose);
+  min-width: 0;
+  padding: var(--pxd-space-inset-comfortable);
+  outline: none;
+}
+.pxd-split-detail:focus-visible {
+  outline: var(--pxd-focus-ring-width) solid var(--pxd-color-border-focus);
+  outline-offset: calc(-1 * var(--pxd-focus-ring-width));
+}
+/* The handle is a full target wide, the line it draws is one border wide. */
+.pxd-split-handle {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  cursor: col-resize;
+  touch-action: none;
+}
+.pxd-split-handle-line {
+  width: var(--pxd-border-width-default);
+  background: var(--pxd-color-border-default);
+  transition: background var(--pxd-motion-duration-short) var(--pxd-motion-easing-standard);
+}
+.pxd-split-handle:hover .pxd-split-handle-line {
+  width: var(--pxd-border-width-strong);
+  background: var(--pxd-color-border-strong);
+}
+.pxd-split-handle:focus-visible {
+  outline: var(--pxd-focus-ring-width) solid var(--pxd-color-border-focus);
+  outline-offset: calc(-1 * var(--pxd-focus-ring-width));
+}
+.pxd-split-compact {
+  grid-template-columns: minmax(0, 1fr);
+}
+.pxd-split-compact .pxd-split-primary {
+  border-inline-end: 0;
+  max-height: none;
+}
+.pxd-split-compact .pxd-split-detail {
+  padding: var(--pxd-space-inset-default);
+}
+.pxd-split-back {
+  align-self: flex-start;
+}

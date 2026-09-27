@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
-import { PolyxdSurface, PolyxdSkeleton } from "../dist/index.js";
+import { PolyxdSurface, PolyxdSkeleton, PolyxdFrame } from "../dist/index.js";
 
 const dir = new URL("../../spec/examples/", import.meta.url);
 const examples = readdirSync(dir).filter((f) => f.endsWith(".json"));
@@ -134,4 +134,105 @@ test("gallery pictures that resolve open a viewer; ones that do not stay placeho
   assert.doesNotMatch(out, /Open Attic/);
   assert.match(out, /pxd-media-placeholder[^"]*"[^>]*aria-label="Attic"/);
   assert.doesNotMatch(out, /pxd-viewer/); // closed until a picture is chosen
+});
+
+/* ---- The shell (spec 0.3) ---- */
+
+
+/** A shell document: a Frame with a bar, a five-item navigation, an outlet, a footer and a custom slot. */
+const shell = (extra: Record<string, unknown> = {}) => ({
+  specVersion: "0.3.0",
+  surface: { id: "shell", title: "Acme", kind: "shell", origin: "authored" },
+  root: "frame",
+  data: { nav: { current: "home" }, person: { name: "Maya Okafor" } },
+  components: [
+    { id: "frame", component: "Frame", header: "bar", navigation: "nav", main: "body", footer: "foot", ...extra },
+    { id: "bar", component: "AppBar", title: "Acme", brand: "AC", account: "me", actions: "acts" },
+    { id: "acts", component: "ActionBar", children: ["ask"] },
+    { id: "ask", component: "Action", label: "Ask", shortcut: "mod+k", action: { event: { name: "ask.open" } } },
+    { id: "me", component: "Identity", name: { path: "/person/name" }, size: "small", action: { event: { name: "nav.go", context: { to: "/settings" } } } },
+    {
+      id: "nav",
+      component: "Navigation",
+      kind: "main",
+      label: "Acme",
+      current: { path: "/nav/current" },
+      items: [
+        { key: "home", label: "Home", icon: "home", action: { event: { name: "nav.go", context: { to: "/" } } } },
+        { key: "orders", label: "Orders", icon: "orders", action: { event: { name: "nav.go", context: { to: "/orders" } } } },
+      ],
+    },
+    { id: "body", component: "Group", children: ["outlet", "logo"] },
+    { id: "outlet", component: "Outlet" },
+    { id: "logo", component: "Custom", name: "brand.logo", props: { who: { path: "/person/name" } }, fallback: "logo_text" },
+    { id: "logo_text", component: "Text", text: "Acme (fallback)" },
+    { id: "foot", component: "Footer", legal: "© Acme", groups: [{ key: "help", label: "Help", items: [{ key: "contact", label: "Contact", action: { event: { name: "help.contact" } } }] }] },
+  ],
+});
+const frame = (doc: any, props: Record<string, unknown> = {}, screen = createElement("h1", null, "Orders")) => renderToString(createElement(PolyxdFrame, { document: doc, theme: "material3", ...props }, screen));
+
+test("a shell document renders its landmarks in reading order, one main, a skip link first", () => {
+  const out = frame(shell(), { current: { key: "orders", title: "Orders" } });
+  assert.match(out, /class="pxd-surface pxd-surface-shell/);
+  const order = ["pxd-skip-link", "<header", "<nav", "<main", "<footer"].map((m) => out.indexOf(m));
+  assert.ok(order.every((i) => i >= 0), `all landmarks present: ${order}`);
+  assert.deepEqual(order, [...order].sort((a, b) => a - b), "skip link, header, nav, main, footer in that order");
+  assert.equal((out.match(/<main\b/g) ?? []).length, 1);
+  assert.match(out, /<a class="pxd-skip-link" href="#[^"]+">Skip to main content<\/a>/);
+  // The screen sits in the outlet; the shell draws no surface header of its own.
+  assert.match(out, /<main[^>]*class="pxd-outlet"[^>]*><h1>Orders<\/h1>/);
+  assert.doesNotMatch(out, /pxd-surface-title/);
+  // The host's current item is marked; the bar names the product; the footer's group is a labelled nav.
+  assert.match(out, /aria-current="page"[^>]*>(?:(?!<\/button>).)*Orders/);
+  assert.match(out, /<span class="pxd-appbar-title">Acme<\/span>/);
+  assert.match(out, /<nav class="pxd-footer-group" aria-labelledby="[^"]+"><h2[^>]*>Help<\/h2>/);
+  assert.match(out, /© Acme/);
+});
+
+test("a custom slot renders the host's component when registered, and its fallback when not", () => {
+  const doc = shell();
+  assert.match(frame(doc), /Acme \(fallback\)/);
+  const out = frame(doc, { components: { "brand.logo": ({ who }: { who: string }) => createElement("b", { className: "host-logo" }, `Logo for ${who}`) } });
+  assert.match(out, /<b class="host-logo">Logo for Maya Okafor<\/b>/);
+  assert.doesNotMatch(out, /Acme \(fallback\)/);
+});
+
+test("columns render their children in order; a split renders primary and detail", () => {
+  const columns = html(doc([{ id: "cols", component: "Columns", layout: "halves", collapse: "medium", children: ["a", "b"] }, { id: "a", component: "Text", text: "First" }, { id: "b", component: "Text", text: "Second" }]));
+  assert.match(columns, /class="pxd-columns pxd-columns-halves pxd-columns-collapse-medium pxd-columns-align-stretch"/);
+  assert.ok(columns.indexOf("First") < columns.indexOf("Second"));
+  const split = html(
+    doc(
+      [
+        { id: "split", component: "Split", primary: "list", detail: "detail", selected: { path: "/selected" }, empty: "none", resizable: true },
+        { id: "list", component: "Collection", label: "Tickets", items: { path: "/tickets", componentId: "row" }, selection: "single", selected: { path: "/selected" } },
+        { id: "row", component: "Card", title: { path: "title" } },
+        { id: "detail", component: "Text", text: { path: "body" } },
+        { id: "none", component: "Status", kind: "empty", title: "Nothing selected" },
+      ],
+      { tickets: [{ id: "t1", title: "Login broken", body: "Since Tuesday." }], selected: "t1" },
+    ),
+  );
+  assert.match(split, /class="pxd-split-primary"/);
+  assert.match(split, /Login broken/);
+  // The detail reads the selected item's scope, and is named for it.
+  assert.match(split, /class="pxd-split-detail"[^>]*aria-label="Login broken"[^>]*>(?:(?!<\/div>).)*Since Tuesday\./);
+  assert.match(split, /role="separator"[^>]*aria-orientation="vertical"/);
+  assert.doesNotMatch(split, /Nothing selected/);
+});
+
+test("a surface document is unchanged by the shell: title h1, no landmarks of the frame", () => {
+  const out = html(load("settings-notifications.json"));
+  assert.match(out, /<h1 class="pxd-surface-title">Notifications<\/h1>/);
+  assert.doesNotMatch(out, /pxd-frame|pxd-skip-link|pxd-outlet/);
+});
+
+test("a drawer navigation puts its menu button in the app bar, named for the navigation", () => {
+  const doc = shell();
+  doc.components.find((c: any) => c.id === "nav")!.placement = "drawer";
+  const out = frame(doc);
+  assert.match(out, /<button[^>]*class="pxd-icon-button pxd-appbar-menu"[^>]*aria-label="Acme menu"[^>]*aria-expanded="false"/);
+  assert.match(out, /data-pxd-nav="drawer"/);
+  // A rail or side column would draw the items inline; a closed drawer draws none.
+  assert.doesNotMatch(out, /pxd-nav-item/);
 });

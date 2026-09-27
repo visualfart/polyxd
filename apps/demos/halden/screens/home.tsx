@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
 import { balance, income, lastMonth, monthName, spent, spentToDay, thisMonth } from "../seed.ts";
 import { useHalden } from "../session.ts";
-import { Avatar, Button, Card, Icon, SectionTitle, greeting, money } from "../ui.tsx";
+import { Button, Card, Icon, SectionTitle, greeting, money } from "../ui.tsx";
 import { PaymentItem } from "./payments.tsx";
 
 export function Home() {
@@ -15,14 +14,7 @@ export function Home() {
   return (
     <>
       <header className="hal-top hal-top-large">
-        <div className="hal-top-row">
-          <span className="hal-top-title hal-muted hal-small">{greeting()}</span>
-          <div className="hal-top-trailing">
-            <Link className="hal-icon-button" to="/settings" aria-label="Settings">
-              <Avatar name={h.person.name} size={32} />
-            </Link>
-          </div>
-        </div>
+        <p className="hal-top-greeting hal-muted hal-small">{greeting()}</p>
         <h1 className="hal-top-headline">{h.person.firstName}</h1>
       </header>
 

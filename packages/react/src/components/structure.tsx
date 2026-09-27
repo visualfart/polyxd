@@ -46,6 +46,19 @@ export function Group({ node }: { node: Node }) {
   );
 }
 
+/**
+ * Side-by-side columns, one child each, that stack below the collapse width. The stylesheet
+ * does the collapsing on the surface's own width, so reading order is the children's order
+ * at every width and nothing moves.
+ */
+export function Columns({ node }: { node: Node }) {
+  return (
+    <div className={`pxd-columns pxd-columns-${node.layout ?? "two-thirds"} pxd-columns-collapse-${node.collapse ?? "compact"} pxd-columns-align-${node.align ?? "stretch"}`} {...useA11y(node)}>
+      <Children ids={node.children} />
+    </div>
+  );
+}
+
 export function Card({ node }: { node: Node }) {
   const b = useBindings();
   const s = useSurface();

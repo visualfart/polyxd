@@ -2,6 +2,16 @@
   "$schema": "../../../packages/spec/schema/capabilities.schema.json",
   "name": "halden",
   "capabilities": {
+    "ask.open": {
+      "description": "Open the ask screen, where a question becomes a surface",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "agentMayInvoke": true
+    },
     "budget.open": {
       "description": "Open the set-a-budget screen, for one category when given",
       "risk": "none",
@@ -181,6 +191,24 @@
         ],
         "additionalProperties": false
       }
+    },
+    "nav.go": {
+      "description": "Go to a section of the product",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "The section's path, e.g. /payments"
+          }
+        },
+        "required": [
+          "to"
+        ],
+        "additionalProperties": false
+      },
+      "agentMayInvoke": true
     },
     "payee.create": {
       "description": "Add someone you can send money to",
