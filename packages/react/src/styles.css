@@ -2257,8 +2257,16 @@ textarea.pxd-input {
 .pxd-detail-row-action {
   text-align: end;
 }
+/* A link-styled button still needs a full-size target; padding keeps the text on the baseline. */
 .pxd-detail-change {
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--pxd-size-target-min);
+  margin: calc((var(--pxd-size-target-min) - 1.5em) / -2) 0;
+}
+.pxd-detail-actions .pxd-detail-row {
+  align-items: center;
 }
 
 /* Collection: carousel */
