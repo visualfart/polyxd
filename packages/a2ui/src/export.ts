@@ -25,7 +25,7 @@ export interface PolyxdComponent {
 export interface PolyxdDocument {
   $schema?: string;
   specVersion: string;
-  surface: { id: string; title: string; intent?: string; pattern?: string; journey?: string; dismissible?: boolean };
+  surface: { id: string; title: string; intent?: string; pattern?: string; journey?: string; dismissible?: boolean; kind?: "surface" | "shell"; origin?: "generated" | "authored" };
   root: string;
   components: PolyxdComponent[];
   data?: Json;
@@ -88,7 +88,7 @@ const pointer = (...parts: (string | number)[]) => "/" + parts.map((p) => String
 const clone = <T>(v: T): T => structuredClone(v);
 
 /** Fields of the Polyxd envelope that A2UI has no place for. */
-const SURFACE_ONLY = ["title", "intent", "pattern", "journey", "dismissible"] as const;
+const SURFACE_ONLY = ["title", "intent", "pattern", "journey", "dismissible", "kind", "origin"] as const;
 
 export function exportToA2UI(doc: PolyxdDocument, options: ExportOptions = {}): ExportResult {
   const { mode = "inline", extensions = true } = options;

@@ -20,7 +20,7 @@ request ──► generator (any model or program that emits spec-valid JSON)
 
 | | |
 |---|---|
-| **Spec** | 37 semantic components, 6 patterns with self-checking rules, capability registry with risk levels, Design Direction for a designer's taste, JSON Schema, A2UI export |
+| **Spec** | 44 semantic components (five of them the product's shell, authored only), 6 patterns with self-checking rules, capability registry with risk levels, Design Direction for a designer's taste, JSON Schema, A2UI export |
 | **Renderer** | `@polyxd/react` on Radix primitives: token-only CSS, container queries, dense B2B tables and navigation, density scale with a touch floor |
 | **Design systems** | 13 packs on one token contract: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend, Chakra UI. Bring your own tokens with `npx polyxd pack` and it builds a pack from them |
 | **Verifier** | Schema, structure, pattern, capability and copy checks; axe-core, contrast and target-size audits in every pack, mode and width; scripted agents completing tasks through the accessibility tree alone |
@@ -91,7 +91,7 @@ npm run test:all                        # every workspace's tests, with one tota
 npm run verify:packs -w @polyxd/verifier   # the 1,248 renders
 ```
 
-Polyxd is for **surfaces**, generated or authored. A designer can write the same document on purpose, as a screen of the product; it renders in the same design system and is verified by the same rules. The product's shell (navigation, app bars, brand) stays in code. See the [demos](https://polyxd.com/demos/): three products in three design systems, with generated and authored screens side by side.
+Polyxd is for **surfaces**, generated or authored. A designer can write the same document on purpose, as a screen of the product; it renders in the same design system and is verified by the same rules. Since spec 0.3 the product's shell (the frame, app bar, navigation and footer around every screen) can be a document too: authored once per product, never generated, with the validator refusing shell components anywhere else. See the [demos](https://polyxd.com/demos/): three products in three design systems, with generated and authored screens side by side.
 
 ## Who it's for
 

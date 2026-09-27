@@ -71,6 +71,8 @@ interface ComponentSource {
   agent: string;
   rendering: string[];
   a2ui: string;
+  /** A shell component: allowed only in an authored shell document, so never offered to a generator. */
+  shell?: boolean;
 }
 
 const specRoot = new URL("./", import.meta.resolve("@polyxd/spec/package.json"));
@@ -107,6 +109,9 @@ function convert(schema: unknown, common: Record<string, Json>): any {
 const bullets = (items: string[]) => items.map((x) => `  - ${x}`).join("\n");
 
 export function buildInstructions(components: ComponentSource[]): string {
+  // The shell components stay in the catalog (an authored shell exports faithfully) and out of the
+  // instructions: a generator writes surfaces, never the frame around them.
+  const shell = components.filter((c) => c.shell);
   const head = `# Polyxd catalog for A2UI
 
 Semantic components for just-in-time interfaces. The renderer maps each one onto its own native, design-system components and tokens. Pick components by meaning, not by look. Never send colours, sizes or fonts.
@@ -120,10 +125,11 @@ Semantic components for just-in-time interfaces. The renderer maps each one onto
 5. At most one primary action is visible at a time. A Form's submit and a Steps finish count as primary.
 6. Destructive or consequential actions go through \`Confirm\`.
 7. Components carry their own roles and names. Use \`accessibility\` only to add to them.
+8. Never use ${shell.map((c) => c.name).join(", ").replace(/, ([^,]*)$/, " or $1")}: the product's shell is authored, and a surface renders inside it.
 
 ## Components
 `;
-  const body = components.map((c) =>
+  const body = components.filter((c) => !c.shell).map((c) =>
     [
       `### ${c.name}`,
       "",

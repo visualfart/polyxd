@@ -44,7 +44,19 @@
               "chart",
               "people",
               "card",
-              "file"
+              "file",
+              "orders",
+              "products",
+              "customers",
+              "discounts",
+              "analytics",
+              "calendar",
+              "bell",
+              "help",
+              "folder",
+              "star",
+              "grid",
+              "layers"
             ]
           },
           "badge": {
@@ -72,6 +84,17 @@
       ],
       "default": "main",
       "description": "'main' is the product's sections; 'breadcrumb' the ordered trail to here; 'nested' groups that expand; 'toc' the sections of this page (items link to anchors named by their keys); 'local' the sections of one area, as tabs"
+    },
+    "placement": {
+      "enum": [
+        "auto",
+        "side",
+        "rail",
+        "bar",
+        "drawer"
+      ],
+      "default": "auto",
+      "description": "For kind 'main' inside a Frame: where it lives. 'auto' is a side column on wide layouts, a rail on medium and a bottom bar (≤ 5 items) or a drawer on compact; the others fix it"
     }
   },
   "required": [
@@ -102,7 +125,8 @@
     "'breadcrumb' is an ordered trail ending with the current item (aria-current=\"page\"), never behind a menu button",
     "'nested' shows each group as an expandable section; the group holding the current item starts open",
     "'toc' lists the page's sections as anchors, the section in view highlighted",
-    "'local' lays the items out as tabs, the current one marked"
+    "'local' lays the items out as tabs, the current one marked",
+    "'placement' fixes the layout a Frame gives the main navigation: side (240px column), rail (80px, icons with labels), bar (bottom, up to 5 items), drawer (behind the AppBar's menu button)"
   ],
   "mappings": {
     "web": "Sidebar navigation (shadcn Sidebar)",

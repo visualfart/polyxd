@@ -9,7 +9,7 @@ section: Start
 
 Polyxd is an open spec and runtime for **just-in-time interfaces**: UI that is generated when someone needs it, used, and then thrown away. Any generator that emits spec-valid JSON can write those interfaces: Claude, GPT, Gemini, or a model or program of your own. Polyxd ships no model.
 
-A document doesn't have to be generated, either. Designers author screens in the same format, and they render and verify the same way; only the product's shell (navigation, app bars, brand) stays in code. See [Generated or authored](/docs/authored-screens/), and the [demos](/demos/): three products in three design systems, with generated and authored screens side by side.
+A document doesn't have to be generated, either. Designers author screens in the same format, and they render and verify the same way. Since spec 0.3 the product's shell (the frame, app bar, navigation and footer around every screen) can be a document too, authored once per product and never generated: a generator's surfaces render inside it. See [Generated or authored](/docs/authored-screens/), and the [demos](/demos/): three products in three design systems, with generated and authored screens side by side.
 
 A just-in-time interface is not code. It is a **UI document**, a small JSON file that lists semantic components ("a choice", "a confirmation", "a table") bound to data your app provides. A renderer turns that document into native components in your design system, and a verifier checks it before anyone sees it.
 
@@ -56,8 +56,8 @@ Everything is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) sco
 
 | Package | What it does |
 |---|---|
-| `@polyxd/spec` | JSON Schema and TypeScript types for UI documents; 37 semantic components; 6 core patterns and a shared check vocabulary; the semantic token contract; schemas for capabilities, journeys, analytics events and Design Direction; a validator (`polyxd-validate`); example documents across six domains |
-| `@polyxd/react` | React renderer for all 37 components, built on Radix primitives and styled only by token CSS variables, with theme CSS for every pack |
+| `@polyxd/spec` | JSON Schema and TypeScript types for UI documents; 44 semantic components, five of them the authored-only shell; 6 core patterns and a shared check vocabulary; the semantic token contract; schemas for capabilities, journeys, analytics events and Design Direction; a validator (`polyxd-validate`); example documents across six domains |
+| `@polyxd/react` | React renderer for all 44 components, built on Radix primitives and styled only by token CSS variables, with theme CSS for every pack |
 | `@polyxd/ds-*` | Thirteen design-system packs as DTCG tokens: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend and Chakra UI |
 | `polyxd` | The `polyxd pack` command, which makes a pack from your own tokens. See [Your design system](/docs/your-design-system) |
 | `@polyxd/a2ui` | Exports UI documents to A2UI v1.0 (release candidate) messages, with a Polyxd A2UI catalog |
@@ -67,7 +67,7 @@ The repository also holds the benchmark (`bench/`: 50 requests, multi-turn seque
 
 ## Status
 
-Polyxd is an **early preview**. The spec is at `specVersion` 0.1 and may still change in breaking ways before v1.0.
+Polyxd is an **early preview**. The spec is at `specVersion` 0.3 and may still change in breaking ways before v1.0.
 
 | Phase | Status |
 |---|---|

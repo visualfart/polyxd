@@ -45,6 +45,13 @@ const SINGLE_REFS: Record<string, string[]> = {
   FilterPanel: ["results"],
   Panel: ["actions"],
   ActionMenu: ["primary"],
+  Split: ["primary", "detail", "empty"],
+  // The shell: a Frame's regions in reading order (banner, header, navigation, main, aside, footer), and what the bars hold.
+  Frame: ["banner", "header", "navigation", "main", "aside", "footer"],
+  AppBar: ["leading", "search", "actions", "account"],
+  Footer: ["aside"],
+  Outlet: ["loading"],
+  Custom: ["fallback"],
 };
 
 const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput", "Rating", "FileInput", "ColorInput", "CodeInput"]);

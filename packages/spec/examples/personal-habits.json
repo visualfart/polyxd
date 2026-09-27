@@ -1,6 +1,6 @@
 {
-  "$schema": "../schema/ui.schema.json",
-  "specVersion": "0.2.0",
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
   "surface": {
     "id": "habits",
     "title": "Habits",

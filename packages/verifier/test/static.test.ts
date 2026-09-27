@@ -94,3 +94,14 @@ test("money with no currency shows dollars, which is wrong when the data is in p
   assert.doesNotMatch(found(gbp({ type: "currency", currency: "GBP" })), /wrong-currency/);
   assert.doesNotMatch(found(gbp({ type: "currency", currency: { path: "/currency" } })), /wrong-currency/);
 });
+
+test("the shell's structure is its own check: a Frame in a surface, and a shell that isn't authored", () => {
+  const shell = load("shell-product");
+  assert.deepEqual(staticAudit(shell, { registry }), []);
+  const surface = { ...shell, surface: { ...shell.surface, kind: "surface" } };
+  const out = staticAudit(surface, { registry }).map((f) => `${f.severity} ${f.check} ${f.message}`);
+  assert.ok(out.some((l) => /^error shell:structure .*Frame belongs in a shell document/.test(l)), out.join("\n"));
+  assert.ok(!out.some((l) => /^error spec /.test(l)), out.join("\n"));
+  const generated = { ...shell, surface: { ...shell.surface, origin: "generated" } };
+  assert.ok(staticAudit(generated, { registry }).some((f) => f.check === "shell:structure" && /a shell is authored/.test(f.message)));
+});

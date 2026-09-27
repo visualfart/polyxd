@@ -5,7 +5,7 @@
   "title": "Polyxd catalog",
   "description": "Polyxd semantic components as an A2UI v1.0 catalog. Every component is a faithful projection of the Polyxd component with the same name and props. Generated from @polyxd/spec components/*.json by @polyxd/a2ui (npm run build:catalog).",
   "catalogId": "https://polyxd.com/catalog/0.1/a2ui",
-  "instructions": "# Polyxd catalog for A2UI\n\nSemantic components for just-in-time interfaces. The renderer maps each one onto its own native, design-system components and tokens. Pick components by meaning, not by look. Never send colours, sizes or fonts.\n\n## Rules for every surface\n\n1. The top-level component has `\"id\": \"root\"`. Children are referenced by id (flat adjacency list), never nested inline.\n2. Data always comes from the host through JSON Pointer bindings `{\"path\": \"/...\"}`. Never invent data or pre-format numbers and dates into strings. Set `format` instead.\n3. Inside a templated list (`Collection.items`), relative paths such as `{\"path\": \"title\"}` resolve against the current item. Absolute paths start with `/`.\n4. Actions are declared capability intents: `{\"event\": {\"name\": \"transfer.confirm\", \"context\": {...}}}`. Use `{\"functionCall\": {\"call\": \"dismiss\" | \"back\" | \"next\"}}` for navigation the renderer handles itself.\n5. At most one primary action is visible at a time. A Form's submit and a Steps finish count as primary.\n6. Destructive or consequential actions go through `Confirm`.\n7. Components carry their own roles and names. Use `accessibility` only to add to them.\n\n## Components\n\n### Action\n\nA button that triggers a host capability.\n\n- **Use when:**\n  - Anything the user can do that isn't typing or choosing\n- **Don't use when:**\n  - Navigating between views: use Views\n  - Confirming something destructive: wrap in Confirm\n- **Rendering:**\n  - At most one primary action visible at a time\n  - danger tone uses color.action.danger.*\n  - 'description' sits under the label in type.body.small, muted; the button's accessible description\n  - ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely\n  - 'shortcut' shows as a keyboard hint (kbd) beside the label, with mod written as ⌘ or Ctrl for the platform; it fires only while focus is inside the surface, never over the host page, and never on a disabled action\n- **Accessibility** (role: button):\n  - Label describes the outcome\n  - Target at least size.target.min\n  - Disabled actions explain why nearby\n  - A shortcut is a hint, never the only way: the button itself stays clickable and focusable\n- **Agents:** Activate by label.\n\n### ActionBar\n\nThe set of actions for a surface or section; the renderer places it where that platform expects.\n\n- **Use when:**\n  - Two or more actions that apply to the whole surface or section\n- **Don't use when:**\n  - A single action inline with content: use Action directly\n- **Rendering:**\n  - Web: bottom of the section, primary last on desktop and first on mobile stacks\n  - iOS/Android: toolbar or bottom bar on compact screens\n- **Accessibility** (role: toolbar / group):\n  - Order in the accessibility tree is order of importance\n- **Agents:** Actions are listed together.\n\n### ActionMenu\n\nSecondary actions behind one control: an overflow menu, a dropdown, a split button or a context menu.\n\n- **Use when:**\n  - Three or more secondary actions on a row, a card or a page header\n  - One usual action with rarer alternatives (split: 'Save' with 'Save as draft')\n  - Actions that belong to the thing under the pointer (context)\n- **Don't use when:**\n  - One or two actions: use Action or ActionBar, where they are visible\n  - The main thing to do on the surface: never hidden in a menu\n  - Navigation between views: use Views or Navigation\n- **Rendering:**\n  - The menu uses color.surface.overlay with elevation.overlay and radius.default; items are size.control.default tall with space.inset.default\n  - A danger-toned Action shows in color.status.danger.emphasis after a divider\n  - The overflow control is an icon-only button at size.target.min with the label as its accessible name; a dropdown shows the label with a chevron\n  - A split's two parts share one outline; the menu part is at least size.target.min wide\n- **Accessibility** (role: a menu button (aria-haspopup, aria-expanded) opening a menu of menuitems; a split's main part is a plain button):\n  - Every action is reachable by keyboard: arrows move, Enter activates, Escape closes and returns focus\n  - An overflow control is named for what it holds ('More actions for Acme Corp'), never just '…'\n  - A context menu's actions are also reachable another way (an overflow control), since right-click and long-press aren't discoverable\n- **Agents:** Opens the menu by its name and activates an action by its label.\n\n### Card\n\nOne self-contained entity (an account, an order, a place), optionally actionable as a whole.\n\n- **Use when:**\n  - Items in a Collection that each represent an entity\n  - A single entity summary in a larger surface\n- **Don't use when:**\n  - Plain grouping: use Group\n  - Tabular data with many attributes: use Table\n- **Rendering:**\n  - If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own\n  - Uses surface.raised and radius.default\n  - 'progress' renders a progress bar with its label or percentage\n- **Accessibility** (role: article (or link/button when it has an action)):\n  - Title is the accessible name\n  - When actionable, the title is the card's one link; controls inside it (a Toggle, an Action) stay separate targets with their own names\n- **Agents:** Activate the card by its title; use controls inside it by their own labels.\n\n### Chart\n\nA visual summary of data, always paired with a text summary.\n\n- **Use when:**\n  - A trend, comparison, share or spread matters more than exact values\n- **Don't use when:**\n  - Exact values matter most: use Table or Metric\n  - A single number: use Metric\n- **Rendering:**\n  - trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram\n  - relationship → scatter (x is a measure too), flow → stacked flows from each x value to each series, hierarchy → treemap of the first series, matrix → heatmap of x values by series, range → bars from the first series to the second\n  - Series colors use color.data.categorical.N in order; a matrix shades one color by value and prints the value in each cell\n- **Accessibility** (role: img (figure) with the summary as description, plus a data-table alternative):\n  - 'summary' states the takeaway in words\n  - Series are distinguishable without color (labels, markers)\n  - The underlying data is available as a table\n- **Agents:** Reads the summary, and the data through the table alternative.\n\n### Choice\n\nPick one or several options from a known set. The renderer chooses the control.\n\n- **Use when:**\n  - Any choice from a known set of options\n- **Don't use when:**\n  - On/off setting: use Toggle\n  - Picking between rich entities by comparing attributes: use Comparison\n- **Rendering:**\n  - single, 2–4 short options → segmented control or radios\n  - single, 5–10 → radios (or select on compact screens)\n  - single, > 10 → searchable select\n  - multiple, ≤ 10 → checkboxes; > 10 → searchable multi-select\n  - Option order comes from host data or remembers the last order used\n- **Accessibility** (role: radiogroup / group of checkboxes / listbox / combobox (depends on rendering)):\n  - Visible group label\n  - Every option has a text label\n- **Agents:** Select options by label.\n\n### Code\n\nCode, a command or preformatted text, shown as written and copyable.\n\n- **Use when:**\n  - A command to run, a snippet to paste, an identifier to copy\n  - Structured text whose spacing matters\n- **Don't use when:**\n  - Prose: use Text\n  - Something the person types: use TextInput\n- **Rendering:**\n  - type.mono at type.body.small on color.surface.subtle, with radius.control\n  - Overflow scrolls sideways unless wrap is set; never clipped\n  - The copy control sits in the top-right corner and says 'Copied' for two seconds after use\n- **Accessibility** (role: region named by the label, holding a code element; the copy control is a button named 'Copy <label>'):\n  - Text is real text: selectable and read by screen readers line by line\n  - Copying is announced ('Copied')\n  - A secret is masked with the same length, with a 'Show' control\n- **Agents:** Reads the text verbatim; can activate Copy.\n\n### CodeInput\n\nA one-time code or PIN, typed into one box per character.\n\n- **Use when:**\n  - A verification code from email or SMS\n  - A PIN or a short recovery code\n- **Don't use when:**\n  - A password: the host's own sign-in flow, never a generated screen\n  - Any text longer than twelve characters: use TextInput\n- **Rendering:**\n  - Boxes are size.control.large squares with radius.control, type.heading.small, centred, in type.mono\n  - The active box shows color.border.focus; a filled box shows color.border.strong\n  - Boxes are grouped in threes or fours by a wider gap past six characters\n- **Accessibility** (role: a group named by the label; one text input per character, each named 'Digit N of M'):\n  - Typing moves focus forward; Backspace moves it back; pasting the whole code fills every box\n  - The numeric kind opens the numeric keyboard and accepts autofill of one-time codes\n  - Errors are said against the group, not one box\n- **Agents:** Reads the label and length; enters the code.\n\n### Collection\n\nA list of items from host data, each rendered with the same template.\n\n- **Use when:**\n  - Browsing a set of similar entities\n  - Search results\n- **Don't use when:**\n  - Attributes compared across items: use Table or Comparison\n  - Choosing an option in a form: use Choice\n- **Rendering:**\n  - Long lists are virtualized by the renderer\n  - Items keep their order from host data\n  - grid: 2 columns on phones, more as width allows; list: one item per row\n  - auto: grid when the item template is a Card with media, otherwise list\n  - 'timeline' marks each item on a line, newest first, for activity feeds\n  - 'carousel' scrolls horizontally with snap points, Previous and Next buttons and an 'N of M' readout; every item stays reachable by keyboard\n  - 'calendar' is a month grid with the items on their days; Previous and Next move a month at a time\n  - Paging shows items per page, the range and the total, as a Table does\n  - Selection shows the bulk-action bar, naming how many items are selected, while any are\n  - reorderable: a drag handle per item, plus Move up / Move down buttons; the new order is written to 'order'\n- **Accessibility** (role: list / listitem (listbox when selectable)):\n  - Announces the item count\n  - An empty state is provided\n- **Agents:** Items are enumerated with their titles; each item exposes its own actions.\n\n### ColorInput\n\nPick a colour: from swatches the host offers, or any colour.\n\n- **Use when:**\n  - A colour for a label, a tag, a calendar, a theme\n  - Choosing from a set of brand colours\n- **Don't use when:**\n  - A choice that happens to be shown as colours (a plan, a size): use Choice\n- **Rendering:**\n  - Swatches are size.control.default squares with radius.control and a 1px color.border.default ring; the chosen one shows color.border.focus\n  - The free picker is the platform's, with the text value beside it in type.mono\n- **Accessibility** (role: swatches are a radiogroup of radios named by their labels; the free picker is a native color input plus a text field for the value):\n  - Every swatch has a name; colour alone is never the only identification\n  - The value is editable as text, so it can be typed and read\n  - The chosen colour is shown beside its text value\n- **Agents:** Reads the swatch names; picks one by name or types a value.\n\n### Comparison\n\nCompare a few options across the same attributes, and choose one.\n\n- **Use when:**\n  - Choosing between 2–4 plans, products, routes or offers\n- **Don't use when:**\n  - More than ~5 items: use Table with sorting\n  - No decision needed: use Table\n- **Rendering:**\n  - Wide: items as columns; compact: one card per item with the same attribute order\n  - Best values per attribute are marked when 'better' is set\n  - Exactly one item may be recommended; its badge carries recommendedReason\n  - Attributes with the same group sit under one heading\n  - Boolean values render as a check or a dash with text alternatives ('Included' / 'Not included')\n  - On compact surfaces the recommended item comes first\n- **Accessibility** (role: table (items as columns on wide screens) or list of cards):\n  - Attribute names are headers\n  - 'better' is conveyed in text, not only color\n- **Agents:** Reads attributes per item; choose actions are named with the item title.\n\n### Confirm\n\nAsks the user to confirm a consequential or destructive action, showing what will happen.\n\n- **Use when:**\n  - Moving money, deleting data, sending on someone's behalf, anything irreversible\n- **Don't use when:**\n  - Routine reversible actions (prefer undo)\n  - Information only: use Status\n- **Rendering:**\n  - destructive uses color.action.danger.*\n  - Capabilities with high risk level must use Confirm (enforced by the verifier)\n  - the consequence sits directly above the confirm button\n  - amount and subject lead the dialog when set\n  - consequences render as an icon list, two columns on wide surfaces\n- **Accessibility** (role: alertdialog):\n  - Focus starts on the least destructive option\n  - Confirm label repeats the action verb\n  - Escape cancels\n- **Agents:** Reads title and consequence; confirm and cancel are named buttons.\n\n### DateInput\n\nA date, time, date-time or date range.\n\n- **Use when:**\n  - Any date or time entry\n- **Don't use when:**\n  - Relative choices like 'This month / Last month': use Choice\n- **Rendering:**\n  - Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar\n  - 'month' and 'year' take only that part; the year field is typed, four digits\n  - multiple: each chosen date becomes a chip with a remove control; the field adds another\n- **Accessibility** (role: group of spinbuttons or a date picker dialog):\n  - Typing the date is always possible, not only picking from a calendar\n- **Agents:** Fill by label with an ISO date.\n\n### DetailList\n\nLabel/value pairs describing one thing (a summary, a receipt, a review step).\n\n- **Use when:**\n  - Reviewing before submitting\n  - Showing the attributes of one entity\n  - Receipts\n  - Fees, prices and totals before someone commits (variant 'receipt')\n- **Don't use when:**\n  - Many entities with the same attributes: use Table\n  - Comparing entities: use Comparison\n- **Rendering:**\n  - Keeps the item order stable across generations (keys are remembered)\n  - receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right\n  - 'grid' lays fields out in columns by width, label above value\n  - rowAction: each row ends with a 'Change' link whose accessible name includes the row's label; the total row has none\n- **Accessibility** (role: list of term/definition pairs (dl)):\n  - Label and value are programmatically associated\n- **Agents:** Read each label with its value.\n\n### Disclosure\n\nProgressive disclosure: secondary content hidden behind a toggle.\n\n- **Use when:**\n  - Details most people don't need (fees breakdown, advanced options, help text)\n- **Don't use when:**\n  - Content everyone needs to complete the task\n  - Primary navigation\n- **Rendering:**\n  - Never hide required inputs or the primary action inside a closed Disclosure\n- **Accessibility** (role: button (aria-expanded) + region):\n  - Summary is a button with expanded state\n  - Hidden content is not in the tab order while closed\n- **Agents:** Expand by the summary text; state is exposed as expanded/collapsed.\n\n### FileInput\n\nChoose or drop files to attach or upload.\n\n- **Use when:**\n  - Attaching a document, a receipt, a photo\n  - Importing a file the product reads\n- **Don't use when:**\n  - Taking a photo with the camera: the host's own flow\n  - Pasting text: use TextInput\n- **Rendering:**\n  - A dashed drop zone on color.surface.subtle with radius.control, the chooser control inside it\n  - Each chosen file shows name, size and a remove control; a progress bar while the host uploads\n  - Refusals use color.status.danger text under the zone\n- **Accessibility** (role: a native file input, labelled; the drop zone is a large target for the same input):\n  - Keyboard opens the chooser; drag-and-drop is an addition, never the only way\n  - Chosen files are listed as text with a 'Remove <name>' button each\n  - Type and size limits are said before choosing and in any refusal\n- **Agents:** Reads the label and limits; attaches files through the host.\n\n### FilterPanel\n\nFilters for a list of results, with the result count.\n\n- **Use when:**\n  - Browsing results people narrow by several attributes\n  - More than two filters, or filters that take space (ranges, long lists)\n- **Don't use when:**\n  - One or two quick filters: put a Choice (chips) above the results\n  - Filling in information: use Form\n- **Rendering:**\n  - Wide: filters in a sidebar beside the results\n  - Compact: a 'Filters · n' button opens a bottom sheet whose action says 'Show n results'\n  - Active filters show as removable chips above the results\n  - Filters apply as they change (no separate Apply on wide)\n- **Accessibility** (role: region (filters) plus the results):\n  - The result count is announced politely when it changes\n  - Each active filter can be removed with a named button ('Remove filter: Desk')\n- **Agents:** Set filter inputs by label; read the result count; remove filters by their Remove buttons.\n\n### Form\n\nCollects inputs and submits them together.\n\n- **Use when:**\n  - Any set of inputs that are submitted together\n- **Don't use when:**\n  - Settings that apply immediately: use Toggles with actions\n  - Several distinct stages: use Steps\n- **Rendering:**\n  - One column; labels above fields\n  - Submit is the primary action; cancel is secondary\n  - Submit context is built from the form's input bindings\n  - 'horizontal' becomes stacked on compact surfaces\n  - 'aside' sits beside the form on wide surfaces; on compact ones it comes first, before the fields, so people read what they are agreeing to\n- **Accessibility** (role: form):\n  - Submit is a real submit button\n  - On submit errors, focus moves to an error summary that links to each field\n- **Agents:** Fill fields by label, then activate the submit button by its label.\n\n### Group\n\nVisually groups closely related items without a heading (proximity).\n\n- **Use when:**\n  - A few items that belong together (a key figure and its caption, several metrics)\n- **Don't use when:**\n  - The group needs a heading: use Section\n  - Choosing between items: use Choice or Comparison\n- **Rendering:**\n  - 'inline' collapses to a stack below the compact breakpoint\n  - Gap uses space.stack.default or space.inline.default\n- **Accessibility** (role: group):\n  - Has an accessible name when it contains interactive items\n- **Agents:** Treated as one unit when its label is present.\n\n### Identity\n\nA person, team or organisation: picture, name and details, or several of them together.\n\n- **Use when:**\n  - Who something belongs to, was sent by or is assigned to\n  - The recipient on a payment, the owner on a record, the members on a team\n  - A list of people where the face helps recognition\n- **Don't use when:**\n  - Choosing a person from a list: use Choice with avatarPath\n  - A person's full record: use Card or DetailList\n- **Rendering:**\n  - Initials come from the name's first letters, on a neutral surface with color.text.default; a pack may derive a stable colour from the name\n  - Sizes: small 24px, default 40px, large 64px; the name uses type.body.default or type.heading.small for large\n  - A group overlaps pictures by a quarter, with a '+N' tag for the rest\n  - Images are never stretched; missing images fall back to initials, never to a broken image\n- **Accessibility** (role: group named by the name; the picture is decorative and the name is text):\n  - The name is real text, never only an image or initials\n  - A group's accessible name lists the first names and how many more\n  - With an action, the whole element is one button or link named by the name\n- **Agents:** Reads the name and detail; a group exposes every member's name.\n\n### Media\n\nAn image, video, audio clip, gallery or QR code supplied by the host.\n\n- **Use when:**\n  - Photos or illustrations that help identify something (a product, a place, a person)\n  - A recording people play, or a code they scan\n- **Don't use when:**\n  - Decoration with no information\n  - Icons for actions (renderer supplies those)\n- **Rendering:**\n  - Images never convey information that is not also in text\n  - 'video' shows 'poster' until played; 'audio' is a compact player; both put 'transcript' under a disclosure\n  - 'gallery' is a grid of the items' images, each with its own alt text\n  - 'qr' is drawn on a canvas at a size that scans from a phone, with the alt as its accessible name\n- **Accessibility** (role: img (video / audio players, list for a gallery)):\n  - Has alt text unless decorative (then hidden from assistive technology)\n  - Video and audio have native controls and offer a transcript\n  - A QR code's alt says what scanning it does\n- **Agents:** Reads the alt text; a gallery's images by their own alt text; a QR code's value.\n\n### Metric\n\nA key figure with a label, and optionally its change.\n\n- **Use when:**\n  - One to four headline numbers the user asked about\n- **Don't use when:**\n  - Many numbers: use Table or DetailList\n  - Trends over time: use Chart\n- **Rendering:**\n  - Value uses type.numeric.display\n  - Change uses color.data.positive / negative according to 'favorable'\n- **Accessibility** (role: group (label + value)):\n  - Change direction is conveyed in text as well as color\n  - Screen readers read label, value and change as one sentence\n- **Agents:** Read label and value.\n\n### Navigation\n\nThe product's main navigation.\n\n- **Use when:**\n  - Software with sections people move between (B2B apps, dashboards)\n  - Only when the host doesn't already provide navigation\n- **Don't use when:**\n  - Steps of one task: use Steps\n  - Sections of one record: use Views\n  - A surface embedded in a host that has its own navigation\n- **Rendering:**\n  - Wide: a side navigation with grouped items\n  - Compact: a menu button that opens the navigation\n  - Badges sit at the end of their item\n  - 'breadcrumb' is an ordered trail ending with the current item (aria-current=\"page\"), never behind a menu button\n  - 'nested' shows each group as an expandable section; the group holding the current item starts open\n  - 'toc' lists the page's sections as anchors, the section in view highlighted\n  - 'local' lays the items out as tabs, the current one marked\n- **Accessibility** (role: navigation):\n  - The current item carries aria-current=\"page\"\n  - Badges say what they count ('12 overdue')\n- **Agents:** Move between sections by activating items by their labels.\n\n### Panel\n\nContent over the current view: a dialog, a drawer, a bottom sheet or a popover, opened from an action and dismissed to return.\n\n- **Use when:**\n  - A short task on top of the page: edit one thing, pick one thing, see one record\n  - Detail the person asked for that shouldn't replace where they are\n  - A small set of options next to the control that opened them (popover)\n- **Don't use when:**\n  - Confirming a consequential action: use Confirm, which is a dialog with the right words and order\n  - A whole flow of several steps: use Steps on its own surface\n  - Passing feedback: use Status\n- **Rendering:**\n  - A backdrop of color.surface.inverse at opacity.overlay for modal kinds\n  - dialog: max 560px on desktop, full width with space.inset.default on phones; drawer: 420px from the end edge; sheet: from the bottom with radius.large on the top corners; popover: color.surface.overlay with elevation.overlay and an arrow\n  - The title is type.heading.medium with the close control at the end of the header\n  - The action bar sits in a footer; on phones it is fixed to the bottom, full width\n  - Motion uses motion.duration.default and motion.easing.standard; reduced motion fades instead\n- **Accessibility** (role: dialog (aria-modal for dialog, drawer and sheet) named by the title; popover is a non-modal dialog):\n  - Focus moves into the panel on open and back to the opener on close\n  - Tab stays inside a modal panel; Escape dismisses a dismissible one\n  - The page behind a modal panel is inert\n  - A sheet can be dismissed by dragging down as well as by the close control\n- **Agents:** Opens, reads the content and closes it by name; the footer actions are exposed like any ActionBar.\n\n### Progress\n\nHow far along something is, or how much of a bounded amount is used: a bar, a ring or a meter.\n\n- **Use when:**\n  - A task that takes time, with a known share done\n  - How much of a quota, budget or capacity is used\n  - Progress towards a goal (pages read, steps walked)\n- **Don't use when:**\n  - A number the person came to see: use Metric\n  - Steps of a task the person moves through: use Steps\n  - A short wait with nothing to measure: Status 'loading'\n- **Rendering:**\n  - The track uses color.surface.subtle; the fill uses color.action.primary.background, or color.status.<tone>.emphasis for a toned meter\n  - Height is size.control.small / 3 for a bar; a ring is size.control.default across\n  - Readout in tabular figures, type.body.small, after the label\n  - The bar's length means the fraction: never used for an amount with no bound\n- **Accessibility** (role: progressbar (bar, ring) or meter, named by the label, with aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext):\n  - The readout is real text next to the graphic, never only the fill\n  - A meter's tone is also said in text ('nearly full'), not only shown by colour\n  - Indeterminate progress has no value attributes and is announced as busy\n- **Agents:** Reads label, value and max as text.\n\n### RangeInput\n\nA number, or a range between two numbers, within known bounds.\n\n- **Use when:**\n  - Approximate values within a range (budget cap, volume)\n  - A price or date range for filtering (mode 'range')\n- **Don't use when:**\n  - Exact values: use TextInput with kind 'number' or 'currency'\n- **Rendering:**\n  - Shows min, max and the current formatted value\n  - mode 'range' shows two thumbs and min/max fields that stay in sync\n- **Accessibility** (role: slider):\n  - Current value is shown as text\n  - Keyboard arrows change the value by step\n- **Agents:** Set the value directly by label.\n\n### Rating\n\nA score out of N: given by the person, or shown as others gave it.\n\n- **Use when:**\n  - Asking how something went, out of five\n  - Showing a product's or place's rating with the count behind it\n- **Don't use when:**\n  - A number within bounds that isn't a score: use RangeInput\n  - Yes or no: use Toggle or Choice\n- **Rendering:**\n  - Filled shapes use color.status.warning.emphasis; empty ones use color.border.default\n  - The readout ('4.6') is shown after the shapes in tabular figures, with the count in color.text.muted\n  - A rating that can be given shows the label above, like every input\n- **Accessibility** (role: radiogroup of radios named '1 star' to 'N stars' when it can be given; an image named '4.6 out of 5' when read-only):\n  - Every star is a real control at size.target.min when the person can rate\n  - The current value is announced; half values are said as such\n  - Read-only ratings carry the score as text, not only as filled shapes\n- **Agents:** Reads the score and the count; sets a score by choosing '<n> stars'.\n\n### Section\n\nA titled region of the surface that groups related content under a heading.\n\n- **Use when:**\n  - The surface has two or more distinct topics (e.g. 'Recipient' and 'Amount')\n  - Content would otherwise exceed one screen and needs signposting\n- **Don't use when:**\n  - Only one topic: put content directly under the root\n  - Visual grouping without a heading: use Group\n- **Rendering:**\n  - Heading level follows nesting depth, never chosen by the model\n  - Spacing between sections uses space.stack.section\n- **Accessibility** (role: region (with heading)):\n  - Title is rendered as a real heading; nesting depth sets the heading level\n  - Title is the region's accessible name\n- **Agents:** Navigate by heading; the title names the region.\n\n### Status\n\nFeedback about state: info, success, warning, error, empty or loading.\n\n- **Use when:**\n  - Results of an action\n  - Empty collections\n  - Errors with a way to recover\n  - Loading states\n  - 'undo': after a reversible action ran, say what happened and offer Undo instead of asking first\n- **Don't use when:**\n  - Validation errors on a field: inputs show their own errors\n  - Confirmation before acting: use Confirm\n- **Rendering:**\n  - error and warning use color.status.* tokens and an icon\n  - empty states explain why and what to do next\n  - loading shows a skeleton when layout is known, otherwise a progress indicator\n  - 'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action\n  - Empty states may carry an ActionBar: one primary and one secondary action\n  - 'inline' renders a bordered notice with its action on the right\n- **Accessibility** (role: status or alert (live region)):\n  - success/info/loading are polite live regions; error is assertive\n  - Meaning is in text, not only color or icon\n- **Agents:** Reads the title and message; the recovery action is exposed.\n\n### Steps\n\nA task split into ordered steps with visible progress.\n\n- **Use when:**\n  - Tasks with dependent stages or too many inputs for one view (checkout, onboarding)\n- **Don't use when:**\n  - Independent views: use Views\n  - Under ~6 inputs: a single Form\n- **Rendering:**\n  - Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'\n  - Each step validates before moving on\n  - 'tasklist' is a list of tasks with a status tag each (GOV.UK task list); a task opens its content in place, and 'finish' follows the list, saying how many are done\n  - 'guide' shows every step's title and content in a numbered list, with 'finish' after the last\n- **Accessibility** (role: group with step progress (aria-current on the current step)):\n  - Current step and total are announced\n  - Back never loses entered data\n- **Agents:** Reads 'step N of M'; next/back are exposed as buttons.\n\n### Table\n\nTabular data: many items sharing the same attributes.\n\n- **Use when:**\n  - Scanning or comparing many rows by several attributes\n  - Records people scan, sort, select and act on in bulk (B2B lists)\n- **Don't use when:**\n  - One entity: use DetailList\n  - A few entities where the user must choose: use Comparison\n- **Rendering:**\n  - On compact screens, rows become stacked cards with label/value pairs\n  - Alignment follows the column format, never chosen by the model\n  - Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'\n  - On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status\n  - Selection replaces the toolbar with the bulk-action bar while rows are selected\n  - Paging shows rows per page, the range and the total\n  - expandable: each row starts with a toggle (aria-expanded) named after the row; the open row's 'detail' spans the table beneath it\n- **Accessibility** (role: table with caption and column headers):\n  - Has a caption\n  - Column headers are real header cells\n  - Numeric columns are right-aligned by format\n  - Sortable headers carry aria-sort and say what sorting does\n  - The select-all checkbox is mixed when some rows are selected\n  - The bulk-action bar names how many rows are selected, announced politely\n  - Each row's action menu is named after its row\n- **Agents:** Read by row and column headers; rows with rowAction are activatable. Sort by activating a column header; select rows by their checkboxes; act in bulk from the bar that appears.\n\n### Tag\n\nA short label, status or count attached to something else.\n\n- **Use when:**\n  - The state of a record, next to its name: 'Past due', 'Draft', 'Live'\n  - A category or label a thing carries\n  - How many of something, on a navigation item or a section heading\n  - Chosen items a person can take off again\n- **Don't use when:**\n  - A whole sentence of feedback: use Status\n  - Something the person switches on or off: use Toggle\n  - A metric the person came for: use Metric\n- **Rendering:**\n  - status uses color.status.<tone>.background and .foreground; label and count use neutral tokens\n  - count is set in tabular figures\n  - A tag never wraps: long labels are truncated with the full text on hover and in the accessible name\n  - Fits inline with text and in a Card header; radius.small unless the pack sets a pill\n- **Accessibility** (role: text; for 'count', the label is the accessible name of the number; for a removable tag, a button named 'Remove <label>'):\n  - Tone is conveyed by the label, never only by colour\n  - A count reads as '<label>: <count>' to a screen reader\n  - The remove control is at least size.target.min and named for what it removes\n- **Agents:** Reads label, tone and count; can activate the remove control by its name.\n\n### Text\n\nA run of text.\n\n- **Use when:**\n  - Explanations, instructions, messages\n- **Don't use when:**\n  - Headings: use Section title\n  - Label/value pairs: use DetailList\n  - Key figures: use Metric\n- **Rendering:**\n  - 'supporting' uses color.text.muted\n  - No inline styling; emphasis comes from structure\n  - 'rich' renders only the four markup forms, as real elements; anything else, including HTML, is shown as typed, and only http, https, mailto and tel links are live\n  - 'list' renders a ul or ol; entries are shown as text, or by 'itemPath' when they are objects\n  - 'quote' is a blockquote, the cite on its own line after it\n  - format 'color' shows a swatch of the value beside it; 'bytes' shows a size like 1.2 MB\n- **Accessibility** (role: text):\n  - Body text is at least 16px (type.body.default)\n  - Line length is capped by measure.max\n- **Agents:** Read as text.\n\n### TextInput\n\nA single text-like value: text, number, email, phone, currency, search or long text.\n\n- **Use when:**\n  - Free-form values the user types\n- **Don't use when:**\n  - A value from a known set: use Choice\n  - Dates: use DateInput\n  - Secrets (passwords, card numbers): not generated; hosts provide their own secure flows\n- **Rendering:**\n  - Width suggests expected length\n  - Errors appear after the user leaves the field or submits, not while typing\n  - kind 'search' renders as a pill search field with an icon; the label stays as its accessible name\n  - size 'hero' renders a large centred amount with the currency symbol dimmed\n  - 'suggestions' and 'mentions' are comboboxes: the list opens as you type, arrow keys move through it, Enter takes an option, Escape closes it\n  - 'richtext' is an editable area with Bold, Italic and List controls; the value is text with **bold**, *italic* and '- ' items\n  - 'tags' shows each value as a chip with a remove control; Enter or a comma adds what was typed, Backspace in an empty field removes the last chip; the value is a list of strings\n  - 'code' uses type.numeric (monospace) and turns off autocorrect, autocapitalize and spellcheck\n  - 'masked' fills the mask's literal characters as you type and stores the text as shown\n  - 'inline' renders the value as text with an Edit control; Enter saves, Escape restores the previous value\n- **Accessibility** (role: textbox / searchbox / spinbutton):\n  - Visible label, never placeholder-only\n  - Help and errors are associated with the field\n  - Kind sets the right keyboard and autocomplete\n- **Agents:** Fill by label.\n\n### Toggle\n\nAn on/off setting.\n\n- **Use when:**\n  - Settings that take effect immediately\n  - A single yes/no inside a form\n- **Don't use when:**\n  - Choosing between named options: use Choice\n- **Rendering:**\n  - With 'action' it renders as a switch; inside a Form without action, as a checkbox\n- **Accessibility** (role: switch (immediate) / checkbox (in a form)):\n  - Label says what 'on' means\n- **Agents:** Toggle by label; state is exposed as on/off.\n\n### Tree\n\nA hierarchy people expand, browse and pick from: folders, an org chart, nested categories.\n\n- **Use when:**\n  - Things that contain things: folders and files, an organisation, nested categories\n  - Picking a place in a hierarchy (move to folder, choose a category)\n- **Don't use when:**\n  - A flat list, however long: use Collection or Table\n  - Nested navigation of the product itself: use Navigation\n  - Progressive disclosure of one section: use Disclosure\n- **Rendering:**\n  - Indent per level uses space.inline.default; the expander is a chevron at size.target.min\n  - Leaves have no expander and align with siblings' labels\n  - Selection uses color.selection.background; the focused node shows color.border.focus\n  - Beyond 200 nodes the renderer virtualises rows\n- **Accessibility** (role: tree with treeitem nodes; aria-expanded on nodes with children, aria-selected when selectable):\n  - Arrow keys move and expand; Home and End jump; typing jumps to a label\n  - Level and position are exposed (aria-level, aria-setsize, aria-posinset)\n  - Expanded state is announced; selection is announced\n- **Agents:** Reads every node by label and level; expands a node by name and selects or activates one by name.\n\n### Views\n\nSwitch between alternative views of the same subject (tabs).\n\n- **Use when:**\n  - 2–6 peer views of the same data (Overview / Transactions / Settings)\n- **Don't use when:**\n  - Sequential steps: use Steps\n  - Filtering one list: use Choice\n- **Rendering:**\n  - More than 4 views on compact screens become a menu or scrollable tabs\n  - Counts sit beside their labels and are part of the tab's accessible name\n- **Accessibility** (role: tablist / tab / tabpanel):\n  - Each tab has a visible label\n  - Arrow keys move between tabs\n- **Agents:** Select a view by its label.\n",
+  "instructions": "# Polyxd catalog for A2UI\n\nSemantic components for just-in-time interfaces. The renderer maps each one onto its own native, design-system components and tokens. Pick components by meaning, not by look. Never send colours, sizes or fonts.\n\n## Rules for every surface\n\n1. The top-level component has `\"id\": \"root\"`. Children are referenced by id (flat adjacency list), never nested inline.\n2. Data always comes from the host through JSON Pointer bindings `{\"path\": \"/...\"}`. Never invent data or pre-format numbers and dates into strings. Set `format` instead.\n3. Inside a templated list (`Collection.items`), relative paths such as `{\"path\": \"title\"}` resolve against the current item. Absolute paths start with `/`.\n4. Actions are declared capability intents: `{\"event\": {\"name\": \"transfer.confirm\", \"context\": {...}}}`. Use `{\"functionCall\": {\"call\": \"dismiss\" | \"back\" | \"next\"}}` for navigation the renderer handles itself.\n5. At most one primary action is visible at a time. A Form's submit and a Steps finish count as primary.\n6. Destructive or consequential actions go through `Confirm`.\n7. Components carry their own roles and names. Use `accessibility` only to add to them.\n8. Never use AppBar, Custom, Footer, Frame or Outlet: the product's shell is authored, and a surface renders inside it.\n\n## Components\n\n### Action\n\nA button that triggers a host capability.\n\n- **Use when:**\n  - Anything the user can do that isn't typing or choosing\n- **Don't use when:**\n  - Navigating between views: use Views\n  - Confirming something destructive: wrap in Confirm\n- **Rendering:**\n  - At most one primary action visible at a time\n  - danger tone uses color.action.danger.*\n  - 'description' sits under the label in type.body.small, muted; the button's accessible description\n  - ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely\n  - 'shortcut' shows as a keyboard hint (kbd) beside the label, with mod written as ⌘ or Ctrl for the platform; it fires only while focus is inside the surface, never over the host page, and never on a disabled action\n- **Accessibility** (role: button):\n  - Label describes the outcome\n  - Target at least size.target.min\n  - Disabled actions explain why nearby\n  - A shortcut is a hint, never the only way: the button itself stays clickable and focusable\n- **Agents:** Activate by label.\n\n### ActionBar\n\nThe set of actions for a surface or section; the renderer places it where that platform expects.\n\n- **Use when:**\n  - Two or more actions that apply to the whole surface or section\n- **Don't use when:**\n  - A single action inline with content: use Action directly\n- **Rendering:**\n  - Web: bottom of the section, primary last on desktop and first on mobile stacks\n  - iOS/Android: toolbar or bottom bar on compact screens\n- **Accessibility** (role: toolbar / group):\n  - Order in the accessibility tree is order of importance\n- **Agents:** Actions are listed together.\n\n### ActionMenu\n\nSecondary actions behind one control: an overflow menu, a dropdown, a split button or a context menu.\n\n- **Use when:**\n  - Three or more secondary actions on a row, a card or a page header\n  - One usual action with rarer alternatives (split: 'Save' with 'Save as draft')\n  - Actions that belong to the thing under the pointer (context)\n- **Don't use when:**\n  - One or two actions: use Action or ActionBar, where they are visible\n  - The main thing to do on the surface: never hidden in a menu\n  - Navigation between views: use Views or Navigation\n- **Rendering:**\n  - The menu uses color.surface.overlay with elevation.overlay and radius.default; items are size.control.default tall with space.inset.default\n  - A danger-toned Action shows in color.status.danger.emphasis after a divider\n  - The overflow control is an icon-only button at size.target.min with the label as its accessible name; a dropdown shows the label with a chevron\n  - A split's two parts share one outline; the menu part is at least size.target.min wide\n- **Accessibility** (role: a menu button (aria-haspopup, aria-expanded) opening a menu of menuitems; a split's main part is a plain button):\n  - Every action is reachable by keyboard: arrows move, Enter activates, Escape closes and returns focus\n  - An overflow control is named for what it holds ('More actions for Acme Corp'), never just '…'\n  - A context menu's actions are also reachable another way (an overflow control), since right-click and long-press aren't discoverable\n- **Agents:** Opens the menu by its name and activates an action by its label.\n\n### Card\n\nOne self-contained entity (an account, an order, a place), optionally actionable as a whole.\n\n- **Use when:**\n  - Items in a Collection that each represent an entity\n  - A single entity summary in a larger surface\n- **Don't use when:**\n  - Plain grouping: use Group\n  - Tabular data with many attributes: use Table\n- **Rendering:**\n  - If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own\n  - Uses surface.raised and radius.default\n  - 'progress' renders a progress bar with its label or percentage\n- **Accessibility** (role: article (or link/button when it has an action)):\n  - Title is the accessible name\n  - When actionable, the title is the card's one link; controls inside it (a Toggle, an Action) stay separate targets with their own names\n- **Agents:** Activate the card by its title; use controls inside it by their own labels.\n\n### Chart\n\nA visual summary of data, always paired with a text summary.\n\n- **Use when:**\n  - A trend, comparison, share or spread matters more than exact values\n- **Don't use when:**\n  - Exact values matter most: use Table or Metric\n  - A single number: use Metric\n- **Rendering:**\n  - trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram\n  - relationship → scatter (x is a measure too), flow → stacked flows from each x value to each series, hierarchy → treemap of the first series, matrix → heatmap of x values by series, range → bars from the first series to the second\n  - Series colors use color.data.categorical.N in order; a matrix shades one color by value and prints the value in each cell\n- **Accessibility** (role: img (figure) with the summary as description, plus a data-table alternative):\n  - 'summary' states the takeaway in words\n  - Series are distinguishable without color (labels, markers)\n  - The underlying data is available as a table\n- **Agents:** Reads the summary, and the data through the table alternative.\n\n### Choice\n\nPick one or several options from a known set. The renderer chooses the control.\n\n- **Use when:**\n  - Any choice from a known set of options\n- **Don't use when:**\n  - On/off setting: use Toggle\n  - Picking between rich entities by comparing attributes: use Comparison\n- **Rendering:**\n  - single, 2–4 short options → segmented control or radios\n  - single, 5–10 → radios (or select on compact screens)\n  - single, > 10 → searchable select\n  - multiple, ≤ 10 → checkboxes; > 10 → searchable multi-select\n  - Option order comes from host data or remembers the last order used\n- **Accessibility** (role: radiogroup / group of checkboxes / listbox / combobox (depends on rendering)):\n  - Visible group label\n  - Every option has a text label\n- **Agents:** Select options by label.\n\n### Code\n\nCode, a command or preformatted text, shown as written and copyable.\n\n- **Use when:**\n  - A command to run, a snippet to paste, an identifier to copy\n  - Structured text whose spacing matters\n- **Don't use when:**\n  - Prose: use Text\n  - Something the person types: use TextInput\n- **Rendering:**\n  - type.mono at type.body.small on color.surface.subtle, with radius.control\n  - Overflow scrolls sideways unless wrap is set; never clipped\n  - The copy control sits in the top-right corner and says 'Copied' for two seconds after use\n- **Accessibility** (role: region named by the label, holding a code element; the copy control is a button named 'Copy <label>'):\n  - Text is real text: selectable and read by screen readers line by line\n  - Copying is announced ('Copied')\n  - A secret is masked with the same length, with a 'Show' control\n- **Agents:** Reads the text verbatim; can activate Copy.\n\n### CodeInput\n\nA one-time code or PIN, typed into one box per character.\n\n- **Use when:**\n  - A verification code from email or SMS\n  - A PIN or a short recovery code\n- **Don't use when:**\n  - A password: the host's own sign-in flow, never a generated screen\n  - Any text longer than twelve characters: use TextInput\n- **Rendering:**\n  - Boxes are size.control.large squares with radius.control, type.heading.small, centred, in type.mono\n  - The active box shows color.border.focus; a filled box shows color.border.strong\n  - Boxes are grouped in threes or fours by a wider gap past six characters\n- **Accessibility** (role: a group named by the label; one text input per character, each named 'Digit N of M'):\n  - Typing moves focus forward; Backspace moves it back; pasting the whole code fills every box\n  - The numeric kind opens the numeric keyboard and accepts autofill of one-time codes\n  - Errors are said against the group, not one box\n- **Agents:** Reads the label and length; enters the code.\n\n### Collection\n\nA list of items from host data, each rendered with the same template.\n\n- **Use when:**\n  - Browsing a set of similar entities\n  - Search results\n- **Don't use when:**\n  - Attributes compared across items: use Table or Comparison\n  - Choosing an option in a form: use Choice\n- **Rendering:**\n  - Long lists are virtualized by the renderer\n  - Items keep their order from host data\n  - grid: 2 columns on phones, more as width allows; list: one item per row\n  - auto: grid when the item template is a Card with media, otherwise list\n  - 'timeline' marks each item on a line, newest first, for activity feeds\n  - 'carousel' scrolls horizontally with snap points, Previous and Next buttons and an 'N of M' readout; every item stays reachable by keyboard\n  - 'calendar' is a month grid with the items on their days; Previous and Next move a month at a time\n  - Paging shows items per page, the range and the total, as a Table does\n  - Selection shows the bulk-action bar, naming how many items are selected, while any are\n  - reorderable: a drag handle per item, plus Move up / Move down buttons; the new order is written to 'order'\n- **Accessibility** (role: list / listitem (listbox when selectable)):\n  - Announces the item count\n  - An empty state is provided\n- **Agents:** Items are enumerated with their titles; each item exposes its own actions.\n\n### ColorInput\n\nPick a colour: from swatches the host offers, or any colour.\n\n- **Use when:**\n  - A colour for a label, a tag, a calendar, a theme\n  - Choosing from a set of brand colours\n- **Don't use when:**\n  - A choice that happens to be shown as colours (a plan, a size): use Choice\n- **Rendering:**\n  - Swatches are size.control.default squares with radius.control and a 1px color.border.default ring; the chosen one shows color.border.focus\n  - The free picker is the platform's, with the text value beside it in type.mono\n- **Accessibility** (role: swatches are a radiogroup of radios named by their labels; the free picker is a native color input plus a text field for the value):\n  - Every swatch has a name; colour alone is never the only identification\n  - The value is editable as text, so it can be typed and read\n  - The chosen colour is shown beside its text value\n- **Agents:** Reads the swatch names; picks one by name or types a value.\n\n### Columns\n\nSide-by-side columns that collapse to a stack on compact layouts: a main column with a narrower one beside it, or equal halves.\n\n- **Use when:**\n  - A form with help beside it; a record with a summary beside it; a list beside a preview\n  - Anywhere a wide screen should use its width without the compact screen paying for it\n- **Don't use when:**\n  - Metrics in a row: use Group with arrangement 'inline'\n  - A master–detail pair that keeps both alive: use Split\n- **Rendering:**\n  - Gutter space.inline.loose between columns; stacked with space.stack.loose\n  - Column widths follow the layout; 'sidebar-*' columns never shrink below 16rem\n  - Collapses at the surface's width, not the viewport's\n- **Accessibility** (role: none (layout only)):\n  - Reading order is the children's order at every width\n  - Collapsing never reorders content\n- **Agents:** Invisible: reads the children in order.\n\n### Comparison\n\nCompare a few options across the same attributes, and choose one.\n\n- **Use when:**\n  - Choosing between 2–4 plans, products, routes or offers\n- **Don't use when:**\n  - More than ~5 items: use Table with sorting\n  - No decision needed: use Table\n- **Rendering:**\n  - Wide: items as columns; compact: one card per item with the same attribute order\n  - Best values per attribute are marked when 'better' is set\n  - Exactly one item may be recommended; its badge carries recommendedReason\n  - Attributes with the same group sit under one heading\n  - Boolean values render as a check or a dash with text alternatives ('Included' / 'Not included')\n  - On compact surfaces the recommended item comes first\n- **Accessibility** (role: table (items as columns on wide screens) or list of cards):\n  - Attribute names are headers\n  - 'better' is conveyed in text, not only color\n- **Agents:** Reads attributes per item; choose actions are named with the item title.\n\n### Confirm\n\nAsks the user to confirm a consequential or destructive action, showing what will happen.\n\n- **Use when:**\n  - Moving money, deleting data, sending on someone's behalf, anything irreversible\n- **Don't use when:**\n  - Routine reversible actions (prefer undo)\n  - Information only: use Status\n- **Rendering:**\n  - destructive uses color.action.danger.*\n  - Capabilities with high risk level must use Confirm (enforced by the verifier)\n  - the consequence sits directly above the confirm button\n  - amount and subject lead the dialog when set\n  - consequences render as an icon list, two columns on wide surfaces\n- **Accessibility** (role: alertdialog):\n  - Focus starts on the least destructive option\n  - Confirm label repeats the action verb\n  - Escape cancels\n- **Agents:** Reads title and consequence; confirm and cancel are named buttons.\n\n### DateInput\n\nA date, time, date-time or date range.\n\n- **Use when:**\n  - Any date or time entry\n- **Don't use when:**\n  - Relative choices like 'This month / Last month': use Choice\n- **Rendering:**\n  - Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar\n  - 'month' and 'year' take only that part; the year field is typed, four digits\n  - multiple: each chosen date becomes a chip with a remove control; the field adds another\n- **Accessibility** (role: group of spinbuttons or a date picker dialog):\n  - Typing the date is always possible, not only picking from a calendar\n- **Agents:** Fill by label with an ISO date.\n\n### DetailList\n\nLabel/value pairs describing one thing (a summary, a receipt, a review step).\n\n- **Use when:**\n  - Reviewing before submitting\n  - Showing the attributes of one entity\n  - Receipts\n  - Fees, prices and totals before someone commits (variant 'receipt')\n- **Don't use when:**\n  - Many entities with the same attributes: use Table\n  - Comparing entities: use Comparison\n- **Rendering:**\n  - Keeps the item order stable across generations (keys are remembered)\n  - receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right\n  - 'grid' lays fields out in columns by width, label above value\n  - rowAction: each row ends with a 'Change' link whose accessible name includes the row's label; the total row has none\n- **Accessibility** (role: list of term/definition pairs (dl)):\n  - Label and value are programmatically associated\n- **Agents:** Read each label with its value.\n\n### Disclosure\n\nProgressive disclosure: secondary content hidden behind a toggle.\n\n- **Use when:**\n  - Details most people don't need (fees breakdown, advanced options, help text)\n- **Don't use when:**\n  - Content everyone needs to complete the task\n  - Primary navigation\n- **Rendering:**\n  - Never hide required inputs or the primary action inside a closed Disclosure\n- **Accessibility** (role: button (aria-expanded) + region):\n  - Summary is a button with expanded state\n  - Hidden content is not in the tab order while closed\n- **Agents:** Expand by the summary text; state is exposed as expanded/collapsed.\n\n### FileInput\n\nChoose or drop files to attach or upload.\n\n- **Use when:**\n  - Attaching a document, a receipt, a photo\n  - Importing a file the product reads\n- **Don't use when:**\n  - Taking a photo with the camera: the host's own flow\n  - Pasting text: use TextInput\n- **Rendering:**\n  - A dashed drop zone on color.surface.subtle with radius.control, the chooser control inside it\n  - Each chosen file shows name, size and a remove control; a progress bar while the host uploads\n  - Refusals use color.status.danger text under the zone\n- **Accessibility** (role: a native file input, labelled; the drop zone is a large target for the same input):\n  - Keyboard opens the chooser; drag-and-drop is an addition, never the only way\n  - Chosen files are listed as text with a 'Remove <name>' button each\n  - Type and size limits are said before choosing and in any refusal\n- **Agents:** Reads the label and limits; attaches files through the host.\n\n### FilterPanel\n\nFilters for a list of results, with the result count.\n\n- **Use when:**\n  - Browsing results people narrow by several attributes\n  - More than two filters, or filters that take space (ranges, long lists)\n- **Don't use when:**\n  - One or two quick filters: put a Choice (chips) above the results\n  - Filling in information: use Form\n- **Rendering:**\n  - Wide: filters in a sidebar beside the results\n  - Compact: a 'Filters · n' button opens a bottom sheet whose action says 'Show n results'\n  - Active filters show as removable chips above the results\n  - Filters apply as they change (no separate Apply on wide)\n- **Accessibility** (role: region (filters) plus the results):\n  - The result count is announced politely when it changes\n  - Each active filter can be removed with a named button ('Remove filter: Desk')\n- **Agents:** Set filter inputs by label; read the result count; remove filters by their Remove buttons.\n\n### Form\n\nCollects inputs and submits them together.\n\n- **Use when:**\n  - Any set of inputs that are submitted together\n- **Don't use when:**\n  - Settings that apply immediately: use Toggles with actions\n  - Several distinct stages: use Steps\n- **Rendering:**\n  - One column; labels above fields\n  - Submit is the primary action; cancel is secondary\n  - Submit context is built from the form's input bindings\n  - 'horizontal' becomes stacked on compact surfaces\n  - 'aside' sits beside the form on wide surfaces; on compact ones it comes first, before the fields, so people read what they are agreeing to\n- **Accessibility** (role: form):\n  - Submit is a real submit button\n  - On submit errors, focus moves to an error summary that links to each field\n- **Agents:** Fill fields by label, then activate the submit button by its label.\n\n### Group\n\nVisually groups closely related items without a heading (proximity).\n\n- **Use when:**\n  - A few items that belong together (a key figure and its caption, several metrics)\n- **Don't use when:**\n  - The group needs a heading: use Section\n  - Choosing between items: use Choice or Comparison\n- **Rendering:**\n  - 'inline' collapses to a stack below the compact breakpoint\n  - Gap uses space.stack.default or space.inline.default\n- **Accessibility** (role: group):\n  - Has an accessible name when it contains interactive items\n- **Agents:** Treated as one unit when its label is present.\n\n### Identity\n\nA person, team or organisation: picture, name and details, or several of them together.\n\n- **Use when:**\n  - Who something belongs to, was sent by or is assigned to\n  - The recipient on a payment, the owner on a record, the members on a team\n  - A list of people where the face helps recognition\n- **Don't use when:**\n  - Choosing a person from a list: use Choice with avatarPath\n  - A person's full record: use Card or DetailList\n- **Rendering:**\n  - Initials come from the name's first letters, on a neutral surface with color.text.default; a pack may derive a stable colour from the name\n  - Sizes: small 24px, default 40px, large 64px; the name uses type.body.default or type.heading.small for large\n  - A group overlaps pictures by a quarter, with a '+N' tag for the rest\n  - Images are never stretched; missing images fall back to initials, never to a broken image\n- **Accessibility** (role: group named by the name; the picture is decorative and the name is text):\n  - The name is real text, never only an image or initials\n  - A group's accessible name lists the first names and how many more\n  - With an action, the whole element is one button or link named by the name\n- **Agents:** Reads the name and detail; a group exposes every member's name.\n\n### Media\n\nAn image, video, audio clip, gallery or QR code supplied by the host.\n\n- **Use when:**\n  - Photos or illustrations that help identify something (a product, a place, a person)\n  - A recording people play, or a code they scan\n- **Don't use when:**\n  - Decoration with no information\n  - Icons for actions (renderer supplies those)\n- **Rendering:**\n  - Images never convey information that is not also in text\n  - 'video' shows 'poster' until played; 'audio' is a compact player; both put 'transcript' under a disclosure\n  - 'gallery' is a grid of the items' images, each with its own alt text\n  - 'qr' is drawn on a canvas at a size that scans from a phone, with the alt as its accessible name\n- **Accessibility** (role: img (video / audio players, list for a gallery)):\n  - Has alt text unless decorative (then hidden from assistive technology)\n  - Video and audio have native controls and offer a transcript\n  - A QR code's alt says what scanning it does\n- **Agents:** Reads the alt text; a gallery's images by their own alt text; a QR code's value.\n\n### Metric\n\nA key figure with a label, and optionally its change.\n\n- **Use when:**\n  - One to four headline numbers the user asked about\n- **Don't use when:**\n  - Many numbers: use Table or DetailList\n  - Trends over time: use Chart\n- **Rendering:**\n  - Value uses type.numeric.display\n  - Change uses color.data.positive / negative according to 'favorable'\n- **Accessibility** (role: group (label + value)):\n  - Change direction is conveyed in text as well as color\n  - Screen readers read label, value and change as one sentence\n- **Agents:** Read label and value.\n\n### Navigation\n\nThe product's main navigation.\n\n- **Use when:**\n  - Software with sections people move between (B2B apps, dashboards)\n  - Only when the host doesn't already provide navigation\n- **Don't use when:**\n  - Steps of one task: use Steps\n  - Sections of one record: use Views\n  - A surface embedded in a host that has its own navigation\n- **Rendering:**\n  - Wide: a side navigation with grouped items\n  - Compact: a menu button that opens the navigation\n  - Badges sit at the end of their item\n  - 'breadcrumb' is an ordered trail ending with the current item (aria-current=\"page\"), never behind a menu button\n  - 'nested' shows each group as an expandable section; the group holding the current item starts open\n  - 'toc' lists the page's sections as anchors, the section in view highlighted\n  - 'local' lays the items out as tabs, the current one marked\n  - 'placement' fixes the layout a Frame gives the main navigation: side (240px column), rail (80px, icons with labels), bar (bottom, up to 5 items), drawer (behind the AppBar's menu button)\n- **Accessibility** (role: navigation):\n  - The current item carries aria-current=\"page\"\n  - Badges say what they count ('12 overdue')\n- **Agents:** Move between sections by activating items by their labels.\n\n### Panel\n\nContent over the current view: a dialog, a drawer, a bottom sheet or a popover, opened from an action and dismissed to return.\n\n- **Use when:**\n  - A short task on top of the page: edit one thing, pick one thing, see one record\n  - Detail the person asked for that shouldn't replace where they are\n  - A small set of options next to the control that opened them (popover)\n- **Don't use when:**\n  - Confirming a consequential action: use Confirm, which is a dialog with the right words and order\n  - A whole flow of several steps: use Steps on its own surface\n  - Passing feedback: use Status\n- **Rendering:**\n  - A backdrop of color.surface.inverse at opacity.overlay for modal kinds\n  - dialog: max 560px on desktop, full width with space.inset.default on phones; drawer: 420px from the end edge; sheet: from the bottom with radius.large on the top corners; popover: color.surface.overlay with elevation.overlay and an arrow\n  - The title is type.heading.medium with the close control at the end of the header\n  - The action bar sits in a footer; on phones it is fixed to the bottom, full width\n  - Motion uses motion.duration.default and motion.easing.standard; reduced motion fades instead\n- **Accessibility** (role: dialog (aria-modal for dialog, drawer and sheet) named by the title; popover is a non-modal dialog):\n  - Focus moves into the panel on open and back to the opener on close\n  - Tab stays inside a modal panel; Escape dismisses a dismissible one\n  - The page behind a modal panel is inert\n  - A sheet can be dismissed by dragging down as well as by the close control\n- **Agents:** Opens, reads the content and closes it by name; the footer actions are exposed like any ActionBar.\n\n### Progress\n\nHow far along something is, or how much of a bounded amount is used: a bar, a ring or a meter.\n\n- **Use when:**\n  - A task that takes time, with a known share done\n  - How much of a quota, budget or capacity is used\n  - Progress towards a goal (pages read, steps walked)\n- **Don't use when:**\n  - A number the person came to see: use Metric\n  - Steps of a task the person moves through: use Steps\n  - A short wait with nothing to measure: Status 'loading'\n- **Rendering:**\n  - The track uses color.surface.subtle; the fill uses color.action.primary.background, or color.status.<tone>.emphasis for a toned meter\n  - Height is size.control.small / 3 for a bar; a ring is size.control.default across\n  - Readout in tabular figures, type.body.small, after the label\n  - The bar's length means the fraction: never used for an amount with no bound\n- **Accessibility** (role: progressbar (bar, ring) or meter, named by the label, with aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext):\n  - The readout is real text next to the graphic, never only the fill\n  - A meter's tone is also said in text ('nearly full'), not only shown by colour\n  - Indeterminate progress has no value attributes and is announced as busy\n- **Agents:** Reads label, value and max as text.\n\n### RangeInput\n\nA number, or a range between two numbers, within known bounds.\n\n- **Use when:**\n  - Approximate values within a range (budget cap, volume)\n  - A price or date range for filtering (mode 'range')\n- **Don't use when:**\n  - Exact values: use TextInput with kind 'number' or 'currency'\n- **Rendering:**\n  - Shows min, max and the current formatted value\n  - mode 'range' shows two thumbs and min/max fields that stay in sync\n- **Accessibility** (role: slider):\n  - Current value is shown as text\n  - Keyboard arrows change the value by step\n- **Agents:** Set the value directly by label.\n\n### Rating\n\nA score out of N: given by the person, or shown as others gave it.\n\n- **Use when:**\n  - Asking how something went, out of five\n  - Showing a product's or place's rating with the count behind it\n- **Don't use when:**\n  - A number within bounds that isn't a score: use RangeInput\n  - Yes or no: use Toggle or Choice\n- **Rendering:**\n  - Filled shapes use color.status.warning.emphasis; empty ones use color.border.default\n  - The readout ('4.6') is shown after the shapes in tabular figures, with the count in color.text.muted\n  - A rating that can be given shows the label above, like every input\n- **Accessibility** (role: radiogroup of radios named '1 star' to 'N stars' when it can be given; an image named '4.6 out of 5' when read-only):\n  - Every star is a real control at size.target.min when the person can rate\n  - The current value is announced; half values are said as such\n  - Read-only ratings carry the score as text, not only as filled shapes\n- **Agents:** Reads the score and the count; sets a score by choosing '<n> stars'.\n\n### Section\n\nA titled region of the surface that groups related content under a heading.\n\n- **Use when:**\n  - The surface has two or more distinct topics (e.g. 'Recipient' and 'Amount')\n  - Content would otherwise exceed one screen and needs signposting\n- **Don't use when:**\n  - Only one topic: put content directly under the root\n  - Visual grouping without a heading: use Group\n- **Rendering:**\n  - Heading level follows nesting depth, never chosen by the model\n  - Spacing between sections uses space.stack.section\n- **Accessibility** (role: region (with heading)):\n  - Title is rendered as a real heading; nesting depth sets the heading level\n  - Title is the region's accessible name\n- **Agents:** Navigate by heading; the title names the region.\n\n### Split\n\nMaster and detail side by side: a list that stays while the chosen item's detail shows beside it; on compact layouts the detail replaces the list.\n\n- **Use when:**\n  - Mail, tickets, messages, files: a list people move through while reading\n  - Settings with many sections on wide screens\n- **Don't use when:**\n  - Under about 640px of surface width: it becomes a list then a page, so don't use it for a single record\n  - Two unrelated things side by side: use Columns\n- **Rendering:**\n  - Wide: two panes with a border between; the list scrolls independently\n  - Compact: the list, then the detail as a page with a back control when an item is selected\n  - Selection state in the list uses color.selection.*\n  - Resizable splits keep the handle at size.target.min wide with a visible focus ring\n- **Accessibility** (role: none; the primary and detail keep their own roles):\n  - Selection in the list moves focus to the detail on compact layouts and announces the item's name\n  - A Back control returns to the list on compact layouts\n  - The list keeps its scroll position and selection while the detail changes\n- **Agents:** Selects an item in the primary by name and reads the detail; on compact layouts it goes back to choose another.\n\n### Status\n\nFeedback about state: info, success, warning, error, empty or loading.\n\n- **Use when:**\n  - Results of an action\n  - Empty collections\n  - Errors with a way to recover\n  - Loading states\n  - 'undo': after a reversible action ran, say what happened and offer Undo instead of asking first\n- **Don't use when:**\n  - Validation errors on a field: inputs show their own errors\n  - Confirmation before acting: use Confirm\n- **Rendering:**\n  - error and warning use color.status.* tokens and an icon\n  - empty states explain why and what to do next\n  - loading shows a skeleton when layout is known, otherwise a progress indicator\n  - 'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action\n  - Empty states may carry an ActionBar: one primary and one secondary action\n  - 'inline' renders a bordered notice with its action on the right\n- **Accessibility** (role: status or alert (live region)):\n  - success/info/loading are polite live regions; error is assertive\n  - Meaning is in text, not only color or icon\n- **Agents:** Reads the title and message; the recovery action is exposed.\n\n### Steps\n\nA task split into ordered steps with visible progress.\n\n- **Use when:**\n  - Tasks with dependent stages or too many inputs for one view (checkout, onboarding)\n- **Don't use when:**\n  - Independent views: use Views\n  - Under ~6 inputs: a single Form\n- **Rendering:**\n  - Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'\n  - Each step validates before moving on\n  - 'tasklist' is a list of tasks with a status tag each (GOV.UK task list); a task opens its content in place, and 'finish' follows the list, saying how many are done\n  - 'guide' shows every step's title and content in a numbered list, with 'finish' after the last\n- **Accessibility** (role: group with step progress (aria-current on the current step)):\n  - Current step and total are announced\n  - Back never loses entered data\n- **Agents:** Reads 'step N of M'; next/back are exposed as buttons.\n\n### Table\n\nTabular data: many items sharing the same attributes.\n\n- **Use when:**\n  - Scanning or comparing many rows by several attributes\n  - Records people scan, sort, select and act on in bulk (B2B lists)\n- **Don't use when:**\n  - One entity: use DetailList\n  - A few entities where the user must choose: use Comparison\n- **Rendering:**\n  - On compact screens, rows become stacked cards with label/value pairs\n  - Alignment follows the column format, never chosen by the model\n  - Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'\n  - On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status\n  - Selection replaces the toolbar with the bulk-action bar while rows are selected\n  - Paging shows rows per page, the range and the total\n  - expandable: each row starts with a toggle (aria-expanded) named after the row; the open row's 'detail' spans the table beneath it\n- **Accessibility** (role: table with caption and column headers):\n  - Has a caption\n  - Column headers are real header cells\n  - Numeric columns are right-aligned by format\n  - Sortable headers carry aria-sort and say what sorting does\n  - The select-all checkbox is mixed when some rows are selected\n  - The bulk-action bar names how many rows are selected, announced politely\n  - Each row's action menu is named after its row\n- **Agents:** Read by row and column headers; rows with rowAction are activatable. Sort by activating a column header; select rows by their checkboxes; act in bulk from the bar that appears.\n\n### Tag\n\nA short label, status or count attached to something else.\n\n- **Use when:**\n  - The state of a record, next to its name: 'Past due', 'Draft', 'Live'\n  - A category or label a thing carries\n  - How many of something, on a navigation item or a section heading\n  - Chosen items a person can take off again\n- **Don't use when:**\n  - A whole sentence of feedback: use Status\n  - Something the person switches on or off: use Toggle\n  - A metric the person came for: use Metric\n- **Rendering:**\n  - status uses color.status.<tone>.background and .foreground; label and count use neutral tokens\n  - count is set in tabular figures\n  - A tag never wraps: long labels are truncated with the full text on hover and in the accessible name\n  - Fits inline with text and in a Card header; radius.small unless the pack sets a pill\n- **Accessibility** (role: text; for 'count', the label is the accessible name of the number; for a removable tag, a button named 'Remove <label>'):\n  - Tone is conveyed by the label, never only by colour\n  - A count reads as '<label>: <count>' to a screen reader\n  - The remove control is at least size.target.min and named for what it removes\n- **Agents:** Reads label, tone and count; can activate the remove control by its name.\n\n### Text\n\nA run of text.\n\n- **Use when:**\n  - Explanations, instructions, messages\n- **Don't use when:**\n  - Headings: use Section title\n  - Label/value pairs: use DetailList\n  - Key figures: use Metric\n- **Rendering:**\n  - 'supporting' uses color.text.muted\n  - No inline styling; emphasis comes from structure\n  - 'rich' renders only the four markup forms, as real elements; anything else, including HTML, is shown as typed, and only http, https, mailto and tel links are live\n  - 'list' renders a ul or ol; entries are shown as text, or by 'itemPath' when they are objects\n  - 'quote' is a blockquote, the cite on its own line after it\n  - format 'color' shows a swatch of the value beside it; 'bytes' shows a size like 1.2 MB\n- **Accessibility** (role: text):\n  - Body text is at least 16px (type.body.default)\n  - Line length is capped by measure.max\n- **Agents:** Read as text.\n\n### TextInput\n\nA single text-like value: text, number, email, phone, currency, search or long text.\n\n- **Use when:**\n  - Free-form values the user types\n- **Don't use when:**\n  - A value from a known set: use Choice\n  - Dates: use DateInput\n  - Secrets (passwords, card numbers): not generated; hosts provide their own secure flows\n- **Rendering:**\n  - Width suggests expected length\n  - Errors appear after the user leaves the field or submits, not while typing\n  - kind 'search' renders as a pill search field with an icon; the label stays as its accessible name\n  - size 'hero' renders a large centred amount with the currency symbol dimmed\n  - 'suggestions' and 'mentions' are comboboxes: the list opens as you type, arrow keys move through it, Enter takes an option, Escape closes it\n  - 'richtext' is an editable area with Bold, Italic and List controls; the value is text with **bold**, *italic* and '- ' items\n  - 'tags' shows each value as a chip with a remove control; Enter or a comma adds what was typed, Backspace in an empty field removes the last chip; the value is a list of strings\n  - 'code' uses type.numeric (monospace) and turns off autocorrect, autocapitalize and spellcheck\n  - 'masked' fills the mask's literal characters as you type and stores the text as shown\n  - 'inline' renders the value as text with an Edit control; Enter saves, Escape restores the previous value\n- **Accessibility** (role: textbox / searchbox / spinbutton):\n  - Visible label, never placeholder-only\n  - Help and errors are associated with the field\n  - Kind sets the right keyboard and autocomplete\n- **Agents:** Fill by label.\n\n### Toggle\n\nAn on/off setting.\n\n- **Use when:**\n  - Settings that take effect immediately\n  - A single yes/no inside a form\n- **Don't use when:**\n  - Choosing between named options: use Choice\n- **Rendering:**\n  - With 'action' it renders as a switch; inside a Form without action, as a checkbox\n- **Accessibility** (role: switch (immediate) / checkbox (in a form)):\n  - Label says what 'on' means\n- **Agents:** Toggle by label; state is exposed as on/off.\n\n### Tree\n\nA hierarchy people expand, browse and pick from: folders, an org chart, nested categories.\n\n- **Use when:**\n  - Things that contain things: folders and files, an organisation, nested categories\n  - Picking a place in a hierarchy (move to folder, choose a category)\n- **Don't use when:**\n  - A flat list, however long: use Collection or Table\n  - Nested navigation of the product itself: use Navigation\n  - Progressive disclosure of one section: use Disclosure\n- **Rendering:**\n  - Indent per level uses space.inline.default; the expander is a chevron at size.target.min\n  - Leaves have no expander and align with siblings' labels\n  - Selection uses color.selection.background; the focused node shows color.border.focus\n  - Beyond 200 nodes the renderer virtualises rows\n- **Accessibility** (role: tree with treeitem nodes; aria-expanded on nodes with children, aria-selected when selectable):\n  - Arrow keys move and expand; Home and End jump; typing jumps to a label\n  - Level and position are exposed (aria-level, aria-setsize, aria-posinset)\n  - Expanded state is announced; selection is announced\n- **Agents:** Reads every node by label and level; expands a node by name and selects or activates one by name.\n\n### Views\n\nSwitch between alternative views of the same subject (tabs).\n\n- **Use when:**\n  - 2–6 peer views of the same data (Overview / Transactions / Settings)\n- **Don't use when:**\n  - Sequential steps: use Steps\n  - Filtering one list: use Choice\n- **Rendering:**\n  - More than 4 views on compact screens become a menu or scrollable tabs\n  - Counts sit beside their labels and are part of the tab's accessible name\n- **Accessibility** (role: tablist / tab / tabpanel):\n  - Each tab has a visible label\n  - Arrow keys move between tabs\n- **Agents:** Select a view by its label.\n",
   "components": {
     "Action": {
       "type": "object",
@@ -160,6 +160,77 @@
             "target": "custom",
             "basicAnalog": "Column of Button",
             "why": "A column of buttons is not a menu: it loses the single trigger, its accessible name, the split primary and the context kind."
+          }
+        }
+      }
+    },
+    "AppBar": {
+      "type": "object",
+      "description": "The bar at the top of the product: brand or title, a leading action, search, trailing actions and the account.",
+      "properties": {
+        "component": {
+          "const": "AppBar"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "title": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "The product's name, or the current screen's title on compact layouts"
+        },
+        "brand": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "A media reference for the logo, or initials; rendered before the title"
+        },
+        "leading": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "An Action at the start: back, or the menu button the renderer adds itself when the navigation is a drawer"
+        },
+        "search": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "A TextInput of kind 'search' (or a command palette opener: an Action with a shortcut)"
+        },
+        "actions": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "An ActionBar at the end: notifications, help, the primary action of the product"
+        },
+        "account": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "An Identity (the signed-in person) or an ActionMenu opened from it"
+        },
+        "variant": {
+          "enum": [
+            "standard",
+            "large",
+            "compact"
+          ],
+          "default": "standard",
+          "description": "'large' puts the title under the bar on its own line on wide screens; 'compact' is 48px for dense tools"
+        },
+        "sticky": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": [
+        "component",
+        "title"
+      ],
+      "allowedChildren": [
+        "Action",
+        "ActionBar",
+        "ActionMenu",
+        "Identity",
+        "TextInput"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "shell",
+            "target": "custom",
+            "basicAnalog": "Row(Text, TextField, Button, Image)",
+            "why": "Row loses the banner role, the title-not-heading rule, the search landmark and the menu button the frame adds on compact layouts."
           }
         }
       }
@@ -1031,6 +1102,94 @@
         }
       }
     },
+    "Columns": {
+      "type": "object",
+      "description": "Side-by-side columns that collapse to a stack on compact layouts: a main column with a narrower one beside it, or equal halves.",
+      "properties": {
+        "component": {
+          "const": "Columns"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "children": {
+          "$ref": "common_types.json#/$defs/ChildList",
+          "type": "array",
+          "minItems": 1,
+          "description": "One component per column, in reading order"
+        },
+        "layout": {
+          "enum": [
+            "two-thirds",
+            "one-third",
+            "halves",
+            "thirds",
+            "sidebar-start",
+            "sidebar-end"
+          ],
+          "default": "two-thirds",
+          "description": "'two-thirds' is a wide first column (GOV.UK's default); 'one-third' the reverse; 'halves' and 'thirds' equal; 'sidebar-*' a fixed 18rem column at that edge"
+        },
+        "collapse": {
+          "enum": [
+            "compact",
+            "medium",
+            "never"
+          ],
+          "default": "compact",
+          "description": "The width below which the columns stack"
+        },
+        "align": {
+          "enum": [
+            "start",
+            "center",
+            "stretch"
+          ],
+          "default": "stretch"
+        }
+      },
+      "required": [
+        "component",
+        "children"
+      ],
+      "allowedChildren": [
+        "Card",
+        "Chart",
+        "Code",
+        "Collection",
+        "Comparison",
+        "Custom",
+        "DetailList",
+        "Disclosure",
+        "FilterPanel",
+        "Form",
+        "Group",
+        "Identity",
+        "Media",
+        "Metric",
+        "Navigation",
+        "Progress",
+        "Section",
+        "Status",
+        "Steps",
+        "Table",
+        "Tag",
+        "Text",
+        "Tree",
+        "Views"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "structure",
+            "target": "basic",
+            "basicAnalog": "Row",
+            "why": "Nothing: a Row of the children in order says what Columns says. The layout ratio and the collapse width are rendering hints a renderer may ignore."
+          }
+        }
+      }
+    },
     "Comparison": {
       "type": "object",
       "description": "Compare a few options across the same attributes, and choose one.",
@@ -1381,6 +1540,64 @@
             "target": "custom",
             "basicAnalog": "Modal(trigger, content: Column(Text, Button, Button))",
             "why": "Modal needs a trigger component. Severity, consequence, type-to-confirm and the default cancel behaviour have no Basic form."
+          }
+        }
+      }
+    },
+    "Custom": {
+      "type": "object",
+      "description": "A slot for a component the host implements itself: a logo, a brand moment, a bespoke widget. The document names it and gives it props; the product renders it, and a fallback stands in when it can't.",
+      "properties": {
+        "component": {
+          "const": "Custom"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)+$",
+          "description": "The host's name for the component, namespaced: 'brand.logo', 'store.map'"
+        },
+        "props": {
+          "type": "object",
+          "description": "What the host component takes; values may be bindings",
+          "additionalProperties": true
+        },
+        "fallback": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "What renders when the host has no component of that name: a Text, a Media, a Status. Required, so the document stands on its own"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "An accessible name for the slot when the host component is decorative or complex"
+        }
+      },
+      "required": [
+        "component",
+        "name",
+        "fallback"
+      ],
+      "allowedChildren": [
+        "Card",
+        "Code",
+        "Group",
+        "Identity",
+        "Media",
+        "Metric",
+        "Progress",
+        "Status",
+        "Tag",
+        "Text"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "shell",
+            "target": "custom",
+            "basicAnalog": "the fallback component",
+            "why": "Exporting only the fallback drops the host component's name and props; a host with that component would draw the fallback instead."
           }
         }
       }
@@ -1758,6 +1975,98 @@
         }
       }
     },
+    "Footer": {
+      "type": "object",
+      "description": "The bar at the bottom of the product: link groups, the legal line, locale or status.",
+      "properties": {
+        "component": {
+          "const": "Footer"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "groups": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "items"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+                "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+              },
+              "label": {
+                "$ref": "common_types.json#/$defs/DynamicString"
+              },
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "key",
+                    "label",
+                    "action"
+                  ],
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$",
+                      "description": "Stable semantic key (e.g. 'fee', 'recipient.name'). The same thing gets the same key across generations; interface memory uses it to keep placement, order and labels consistent."
+                    },
+                    "label": {
+                      "$ref": "common_types.json#/$defs/DynamicString"
+                    },
+                    "action": {
+                      "$ref": "common_types.json#/$defs/Action"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "Columns of links, each under a heading"
+        },
+        "legal": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "The line at the very bottom: copyright, licence, company details"
+        },
+        "aside": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "Something at the end of the legal row: a locale Choice, a status Tag, a Text"
+        }
+      },
+      "required": [
+        "component",
+        "legal"
+      ],
+      "allowedChildren": [
+        "Choice",
+        "Tag",
+        "Text"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "shell",
+            "target": "custom",
+            "basicAnalog": "Column of Row(Text, Button)",
+            "why": "Basic has no contentinfo landmark or link groups named by their headings; the legal line becomes plain text with no role."
+          }
+        }
+      }
+    },
     "Form": {
       "type": "object",
       "description": "Collects inputs and submits them together.",
@@ -1833,6 +2142,85 @@
             "target": "custom",
             "basicAnalog": "Column + Button",
             "why": "Submit/cancel semantics (Enter submits, cancel defaults to dismiss) and form grouping have no Basic form."
+          }
+        }
+      }
+    },
+    "Frame": {
+      "type": "object",
+      "description": "The product's frame: the regions around its screens (header, navigation, main, aside, footer, banner), with an outlet where screens and generated surfaces appear.",
+      "properties": {
+        "component": {
+          "const": "Frame"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "header": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "An AppBar"
+        },
+        "navigation": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "A Navigation of kind 'main'; its placement decides rail, bar, drawer or side"
+        },
+        "main": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "The outlet: a component the host replaces with the current screen. Usually an Outlet; may be a Group holding a fixed screen"
+        },
+        "aside": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "A secondary column beside main on wide layouts (help, context, activity)"
+        },
+        "footer": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "A Footer"
+        },
+        "banner": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "A Status shown above everything (a phase banner, an outage, a trial ending)"
+        },
+        "skipTarget": {
+          "type": "boolean",
+          "default": true,
+          "description": "The renderer adds a skip link to main"
+        },
+        "width": {
+          "enum": [
+            "full",
+            "contained"
+          ],
+          "default": "contained",
+          "description": "'contained' centres main at measure.max × 1.6; 'full' lets dense tools use the whole viewport"
+        }
+      },
+      "required": [
+        "component",
+        "main"
+      ],
+      "allowedChildren": [
+        "AppBar",
+        "Card",
+        "Collection",
+        "Custom",
+        "DetailList",
+        "Disclosure",
+        "Footer",
+        "Group",
+        "Navigation",
+        "Outlet",
+        "Section",
+        "Status",
+        "Text"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "shell",
+            "target": "custom",
+            "basicAnalog": "Column(Row, Row(Column, Column, Column), Row)",
+            "why": "Columns and Rows are layout. They lose the landmarks (banner, navigation, main, complementary, contentinfo), the skip link and which region is the outlet."
           }
         }
       }
@@ -2286,7 +2674,19 @@
                   "chart",
                   "people",
                   "card",
-                  "file"
+                  "file",
+                  "orders",
+                  "products",
+                  "customers",
+                  "discounts",
+                  "analytics",
+                  "calendar",
+                  "bell",
+                  "help",
+                  "folder",
+                  "star",
+                  "grid",
+                  "layers"
                 ]
               },
               "badge": {
@@ -2336,6 +2736,17 @@
           ],
           "default": "main",
           "description": "'main' is the product's sections; 'breadcrumb' the ordered trail to here; 'nested' groups that expand; 'toc' the sections of this page (items link to anchors named by their keys); 'local' the sections of one area, as tabs"
+        },
+        "placement": {
+          "enum": [
+            "auto",
+            "side",
+            "rail",
+            "bar",
+            "drawer"
+          ],
+          "default": "auto",
+          "description": "For kind 'main' inside a Frame: where it lives. 'auto' is a side column on wide layouts, a rail on medium and a bottom bar (≤ 5 items) or a drawer on compact; the others fix it"
         }
       },
       "required": [
@@ -2350,6 +2761,46 @@
             "target": "custom",
             "basicAnalog": "Column of Button",
             "why": "A column of buttons loses which section you are in, the grouping, the counts needing attention, and the side-navigation-or-menu behaviour."
+          }
+        }
+      }
+    },
+    "Outlet": {
+      "type": "object",
+      "description": "Where the current screen renders inside a Frame: the host fills it with a screen document or a generated surface.",
+      "properties": {
+        "component": {
+          "const": "Outlet"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "common_types.json#/$defs/DynamicString",
+          "description": "Names the region for assistive tech when the screen has no title yet"
+        },
+        "loading": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "What shows while a screen is on its way; the renderer's skeleton when absent"
+        }
+      },
+      "required": [
+        "component"
+      ],
+      "allowedChildren": [
+        "Group",
+        "Progress",
+        "Status",
+        "Text"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "shell",
+            "target": "custom",
+            "basicAnalog": "Column (empty)",
+            "why": "An empty Column is a hole, not an outlet: it loses the main landmark, the label, the loading content and the rule that the host fills it with a screen."
           }
         }
       }
@@ -2781,6 +3232,90 @@
             "target": "custom",
             "basicAnalog": "Column with a Text heading",
             "why": "Basic Text has no heading level, so the section heading and landmark would be lost."
+          }
+        }
+      }
+    },
+    "Split": {
+      "type": "object",
+      "description": "Master and detail side by side: a list that stays while the chosen item's detail shows beside it; on compact layouts the detail replaces the list.",
+      "properties": {
+        "component": {
+          "const": "Split"
+        },
+        "visible": {
+          "$ref": "common_types.json#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "primary": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "The list: a Collection or a Table with selection 'single'"
+        },
+        "detail": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "What shows for the selected item; its bindings resolve against the selected item's scope"
+        },
+        "selected": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(/([^/~]|~[01])*)+$|^[A-Za-z0-9_]([^/~]|~[01])*(/([^/~]|~[01])*)*$",
+              "description": "RFC 6901 JSON Pointer into host-provided data. Absolute ('/account/balance') or, inside a template, relative to the current item ('amount')."
+            }
+          },
+          "additionalProperties": false,
+          "description": "The selected item's value in host data, shared with the primary's 'selected'"
+        },
+        "empty": {
+          "$ref": "common_types.json#/$defs/ComponentId",
+          "description": "A Status shown in the detail pane while nothing is selected"
+        },
+        "ratio": {
+          "enum": [
+            "narrow",
+            "balanced",
+            "wide"
+          ],
+          "default": "narrow",
+          "description": "The list's share: about a third, half, or two thirds"
+        },
+        "resizable": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "component",
+        "primary",
+        "detail",
+        "selected"
+      ],
+      "allowedChildren": [
+        "Card",
+        "Code",
+        "Collection",
+        "DetailList",
+        "Form",
+        "Group",
+        "Media",
+        "Section",
+        "Status",
+        "Table",
+        "Text",
+        "Tree",
+        "Views"
+      ],
+      "metadata": {
+        "extensions": {
+          "com_polyxd": {
+            "category": "structure",
+            "target": "custom",
+            "basicAnalog": "Row(List, Column)",
+            "why": "Row loses the shared selection binding, the detail's item scope, the empty state and the list-then-page behaviour on compact layouts."
           }
         }
       }
@@ -4018,6 +4553,9 @@
           "$ref": "#/components/ActionMenu"
         },
         {
+          "$ref": "#/components/AppBar"
+        },
+        {
           "$ref": "#/components/Card"
         },
         {
@@ -4039,10 +4577,16 @@
           "$ref": "#/components/ColorInput"
         },
         {
+          "$ref": "#/components/Columns"
+        },
+        {
           "$ref": "#/components/Comparison"
         },
         {
           "$ref": "#/components/Confirm"
+        },
+        {
+          "$ref": "#/components/Custom"
         },
         {
           "$ref": "#/components/DateInput"
@@ -4060,7 +4604,13 @@
           "$ref": "#/components/FilterPanel"
         },
         {
+          "$ref": "#/components/Footer"
+        },
+        {
           "$ref": "#/components/Form"
+        },
+        {
+          "$ref": "#/components/Frame"
         },
         {
           "$ref": "#/components/Group"
@@ -4078,6 +4628,9 @@
           "$ref": "#/components/Navigation"
         },
         {
+          "$ref": "#/components/Outlet"
+        },
+        {
           "$ref": "#/components/Panel"
         },
         {
@@ -4091,6 +4644,9 @@
         },
         {
           "$ref": "#/components/Section"
+        },
+        {
+          "$ref": "#/components/Split"
         },
         {
           "$ref": "#/components/Status"

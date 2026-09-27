@@ -24,4 +24,23 @@ export const REFERENCE_TYPES: Record<string, string[]> = {
   "Panel.actions": ["ActionBar"],
   "ActionMenu.children": ["Action"],
   "ActionMenu.primary": ["Action"],
+  // The shell (spec 0.3): a Frame's regions, and what the bars hold.
+  "Frame.header": ["AppBar"],
+  "Frame.navigation": ["Navigation"],
+  "Frame.main": ["Outlet", "Group"],
+  "Frame.aside": ["Group", "Section", "Card", "Status", "Text", "DetailList", "Collection", "Disclosure", "Navigation", "Custom"],
+  "Frame.footer": ["Footer"],
+  "Frame.banner": ["Status"],
+  "AppBar.leading": ["Action"],
+  "AppBar.search": ["TextInput", "Action"],
+  "AppBar.actions": ["ActionBar"],
+  "AppBar.account": ["Identity", "ActionMenu"],
+  "Footer.aside": ["Choice", "Tag", "Text"],
+  "Outlet.loading": ["Status", "Progress", "Text", "Group"],
+  // A Custom's fallback is what renders when the host has no such component: something the renderer draws itself, never another shell part.
+  "Custom.fallback": ["Text", "Media", "Status", "Metric", "Tag", "Identity", "Code", "Progress", "Group", "Card"],
+  "Columns.children": ["Section", "Group", "Card", "Text", "Metric", "DetailList", "Media", "Status", "Form", "Collection", "Table", "Tree", "Chart", "Disclosure", "Views", "Steps", "Comparison", "FilterPanel", "Navigation", "Tag", "Identity", "Progress", "Code", "Custom"],
+  "Split.primary": ["Collection", "Table", "Tree"],
+  "Split.detail": ["Group", "Section", "Card", "DetailList", "Text", "Form", "Views", "Table", "Collection", "Media", "Code"],
+  "Split.empty": ["Status"],
 };

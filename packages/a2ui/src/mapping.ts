@@ -5,8 +5,11 @@
  * equivalent with the same meaning. Otherwise it is exported as a custom component with the same name and
  * props, so the export stays a lossless projection rather than a lossy flattening
  * (docs/decisions/0001 §6: "a faithful export", custom catalogs being the endorsed A2UI path).
- * None of the 37 components currently meets the rule. `basicAnalog` records the nearest Basic
- * construct and `why` records what flattening into it would lose.
+ * Of the 44 components, only Columns meets the rule (a Row of its children, collapsing being the
+ * renderer's business). `basicAnalog` records the nearest Basic construct and `why` records what
+ * flattening into it would lose. The shell components (Frame, AppBar, Footer, Outlet, Custom) are in
+ * the catalog so an authored shell exports faithfully, and out of its generator instructions: a
+ * shell is authored, never generated.
  */
 export interface MappingDecision {
   target: "basic" | "custom";
@@ -157,5 +160,41 @@ export const MAPPING: Record<string, MappingDecision> = {
     target: "custom",
     basicAnalog: "Tabs",
     why: "Tabs has no stable view keys and no binding for the selected view.",
+  },
+  // Spec 0.3: side-by-side layout, and the shell.
+  Columns: {
+    target: "basic",
+    basicAnalog: "Row",
+    why: "Nothing: a Row of the children in order says what Columns says. The layout ratio and the collapse width are rendering hints a renderer may ignore.",
+  },
+  Split: {
+    target: "custom",
+    basicAnalog: "Row(List, Column)",
+    why: "Row loses the shared selection binding, the detail's item scope, the empty state and the list-then-page behaviour on compact layouts.",
+  },
+  Frame: {
+    target: "custom",
+    basicAnalog: "Column(Row, Row(Column, Column, Column), Row)",
+    why: "Columns and Rows are layout. They lose the landmarks (banner, navigation, main, complementary, contentinfo), the skip link and which region is the outlet.",
+  },
+  AppBar: {
+    target: "custom",
+    basicAnalog: "Row(Text, TextField, Button, Image)",
+    why: "Row loses the banner role, the title-not-heading rule, the search landmark and the menu button the frame adds on compact layouts.",
+  },
+  Footer: {
+    target: "custom",
+    basicAnalog: "Column of Row(Text, Button)",
+    why: "Basic has no contentinfo landmark or link groups named by their headings; the legal line becomes plain text with no role.",
+  },
+  Outlet: {
+    target: "custom",
+    basicAnalog: "Column (empty)",
+    why: "An empty Column is a hole, not an outlet: it loses the main landmark, the label, the loading content and the rule that the host fills it with a screen.",
+  },
+  Custom: {
+    target: "custom",
+    basicAnalog: "the fallback component",
+    why: "Exporting only the fallback drops the host component's name and props; a host with that component would draw the fallback instead.",
   },
 };

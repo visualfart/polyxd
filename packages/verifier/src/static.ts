@@ -69,7 +69,12 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
   // A binding that reads nothing renders a blank where the answer should be: against the data the
   // screen is shown with, that's an error, and one worth its own check id.
   const v = validateDocument(doc, { emphasisBudget: opts.emphasisBudget, missingData: "error" });
-  for (const i of v.issues) out.push({ severity: i.severity, check: i.code ?? "spec", message: `${i.at}: ${i.message}` });
+  for (const i of v.issues) {
+    // The shell's structure has a check of its own: shell components only in a shell document, a
+    // shell authored with a Frame at the root and one Outlet under its main, placement under a Frame.
+    if (i.code === "shell:structure") out.push({ severity: i.severity, check: "shell:structure", message: `${i.at}: ${i.message}` });
+    else out.push({ severity: i.severity, check: i.code ?? "spec", message: `${i.at}: ${i.message}` });
+  }
   // Everything below needs a structurally sound document; a blank binding doesn't stop it.
   if (v.issues.some((i) => i.severity === "error" && !i.code)) return out;
   const scopes = itemScopes(doc);

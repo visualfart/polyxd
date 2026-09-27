@@ -1,6 +1,6 @@
 {
   "catalogId": "https://polyxd.com/catalog/0.1",
-  "specVersion": "0.2.0",
+  "specVersion": "0.3.0",
   "description": "Polyxd semantic component catalog: when to use each component, accessibility and agent requirements, rendering rules and platform mappings. Generated file.",
   "components": {
     "Action": {
@@ -107,6 +107,46 @@
       "a2ui": "Custom (no Basic equivalent)",
       "sources": [
         "WAI-ARIA APG menu button pattern"
+      ]
+    },
+    "AppBar": {
+      "category": "shell",
+      "shell": true,
+      "summary": "The bar at the top of the product: brand or title, a leading action, search, trailing actions and the account.",
+      "whenToUse": [
+        "The header region of a Frame",
+        "A product that needs a persistent place for search, notifications and the account"
+      ],
+      "whenNotToUse": [
+        "Inside a generated surface: the frame owns the header",
+        "A page's own title and actions: that is the surface header (surface.title, surface.actions)"
+      ],
+      "accessibility": {
+        "role": "banner",
+        "requirements": [
+          "The title is the product's name, not a heading; the screen's h1 stays in main",
+          "The menu button (when present) names the navigation it opens and reports expanded state",
+          "Search is a labelled search landmark when present",
+          "Trailing icon actions have visible tooltips and accessible names"
+        ]
+      },
+      "agent": "Finds the product's search and account here; opens the navigation on compact layouts through the menu button.",
+      "rendering": [
+        "Height 64px (standard), 48px (compact); large variant adds a 56px title row on wide screens",
+        "Background color.surface.default with a bottom border; elevation.raised once content scrolls under it",
+        "Leading action, brand and title at the start; search grows in the middle on wide layouts and becomes an icon on compact; actions and account at the end",
+        "On compact layouts the title shows the current screen's title when the Frame provides one"
+      ],
+      "mappings": {
+        "web": "Polaris TopBar, Carbon Header, Fluent Nav header, shadcn sidebar header",
+        "ios": "Navigation bar with toolbar items",
+        "android": "TopAppBar"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "Material 3 top app bar",
+        "Polaris TopBar",
+        "Carbon UI Shell header"
       ]
     },
     "Card": {
@@ -361,6 +401,41 @@
         "WCAG 1.4.1 use of color"
       ]
     },
+    "Columns": {
+      "category": "structure",
+      "summary": "Side-by-side columns that collapse to a stack on compact layouts: a main column with a narrower one beside it, or equal halves.",
+      "whenToUse": [
+        "A form with help beside it; a record with a summary beside it; a list beside a preview",
+        "Anywhere a wide screen should use its width without the compact screen paying for it"
+      ],
+      "whenNotToUse": [
+        "Metrics in a row: use Group with arrangement 'inline'",
+        "A master–detail pair that keeps both alive: use Split"
+      ],
+      "accessibility": {
+        "role": "none (layout only)",
+        "requirements": [
+          "Reading order is the children's order at every width",
+          "Collapsing never reorders content"
+        ]
+      },
+      "agent": "Invisible: reads the children in order.",
+      "rendering": [
+        "Gutter space.inline.loose between columns; stacked with space.stack.loose",
+        "Column widths follow the layout; 'sidebar-*' columns never shrink below 16rem",
+        "Collapses at the surface's width, not the viewport's"
+      ],
+      "mappings": {
+        "web": "GOV.UK grid row, Polaris Layout, Carbon Grid, Bootstrap row/col",
+        "ios": "HStack with .layoutPriority",
+        "android": "Row with weights"
+      },
+      "a2ui": "Row",
+      "sources": [
+        "GOV.UK grid",
+        "Polaris Layout"
+      ]
+    },
     "Comparison": {
       "category": "flow",
       "summary": "Compare a few options across the same attributes, and choose one.",
@@ -433,6 +508,41 @@
       "sources": [
         "Nielsen: error prevention",
         "Material 3 dialogs"
+      ]
+    },
+    "Custom": {
+      "category": "shell",
+      "shell": true,
+      "summary": "A slot for a component the host implements itself: a logo, a brand moment, a bespoke widget. The document names it and gives it props; the product renders it, and a fallback stands in when it can't.",
+      "whenToUse": [
+        "The parts of a product that are truly its own: a logo, an illustration system, a map, a chart type the spec doesn't have",
+        "Only in authored documents: a shell or a screen a person wrote for that product"
+      ],
+      "whenNotToUse": [
+        "Anything a spec component can express: a Custom is invisible to the verifier beyond its fallback",
+        "In a generated document: a generator can't know a host's components (the validator refuses it)"
+      ],
+      "accessibility": {
+        "role": "whatever the host component provides; the fallback carries its own",
+        "requirements": [
+          "The host component is responsible for its own accessibility; the verifier audits the rendered result",
+          "A decorative Custom is hidden from assistive tech; a meaningful one has a name"
+        ]
+      },
+      "agent": "Reads the host component if it exposes a role and name; otherwise reads the fallback.",
+      "rendering": [
+        "The renderer looks the name up in the host's registry (the same one that overrides components); found, it renders it with the resolved props",
+        "Not found, it renders the fallback and notes the missing name in development",
+        "Never renders the raw props"
+      ],
+      "mappings": {
+        "web": "the host's own component",
+        "ios": "the host's own view",
+        "android": "the host's own composable"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "Server-driven UI practice: escape hatches with fallbacks"
       ]
     },
     "DateInput": {
@@ -605,6 +715,43 @@
         "NN/g: filters vs facets"
       ]
     },
+    "Footer": {
+      "category": "shell",
+      "shell": true,
+      "summary": "The bar at the bottom of the product: link groups, the legal line, locale or status.",
+      "whenToUse": [
+        "The footer region of a Frame",
+        "Public services and marketing-adjacent products where legal and help links belong at the bottom"
+      ],
+      "whenNotToUse": [
+        "Dense tools where nothing lives below the fold: leave the Frame's footer out",
+        "Inside a generated surface"
+      ],
+      "accessibility": {
+        "role": "contentinfo",
+        "requirements": [
+          "Groups are navigation regions named by their headings",
+          "Links are links, not buttons, when they leave the current screen",
+          "The legal line is readable text, not an image"
+        ]
+      },
+      "agent": "Reads the legal line and reaches help, privacy and terms by name.",
+      "rendering": [
+        "Groups as columns on wide layouts, stacked on compact; headings in type.label.default",
+        "Background color.surface.subtle with a top border; the legal row in type.body.small, color.text.muted",
+        "Never sticky"
+      ],
+      "mappings": {
+        "web": "GOV.UK footer, Polaris FooterHelp, Bootstrap footer",
+        "ios": "n/a (settings screen)",
+        "android": "n/a"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "GOV.UK Design System footer",
+        "WAI-ARIA contentinfo"
+      ]
+    },
     "Form": {
       "category": "input",
       "summary": "Collects inputs and submits them together.",
@@ -639,6 +786,47 @@
       "sources": [
         "GOV.UK question pages and error summary",
         "Nielsen: error prevention"
+      ]
+    },
+    "Frame": {
+      "category": "shell",
+      "shell": true,
+      "summary": "The product's frame: the regions around its screens (header, navigation, main, aside, footer, banner), with an outlet where screens and generated surfaces appear.",
+      "whenToUse": [
+        "The root of a shell document: the product's frame, authored once, that every screen sits in",
+        "A product whose navigation, header and footer should render in its design system like everything else"
+      ],
+      "whenNotToUse": [
+        "In a generated document: a surface lives inside a frame and never draws one (the validator refuses it)",
+        "A dialog or a sheet over a screen: use Panel"
+      ],
+      "accessibility": {
+        "role": "landmarks: banner (header), navigation, main, complementary (aside), contentinfo (footer)",
+        "requirements": [
+          "Exactly one main; a skip link to it is the first focusable thing",
+          "Each landmark is labelled when there is more than one of its kind",
+          "Regions keep their reading order at every width: banner, header, navigation, main, aside, footer",
+          "The navigation's current item is marked; the document title follows the current screen"
+        ]
+      },
+      "agent": "Reads the landmarks to know where it is; moves between screens through the navigation by name; acts on what is in main.",
+      "rendering": [
+        "Wide (≥ 1024px): header on top, navigation at the start edge as a side column or a rail, main and aside as columns, footer below",
+        "Medium (≥ 640px): navigation becomes a rail; aside stacks below main",
+        "Compact: navigation becomes a bottom bar (up to 5 items) or a drawer behind a menu button in the header; the footer's groups collapse",
+        "Region backgrounds use color.surface.default for main and color.surface.subtle for navigation; borders are color.border.default at border.width.default",
+        "The outlet is where PolyxdSurface documents render: they never repeat the frame's regions"
+      ],
+      "mappings": {
+        "web": "Polaris Frame, Carbon UI Shell, Fluent App layout, shadcn Sidebar layout",
+        "ios": "NavigationSplitView / TabView with a NavigationStack",
+        "android": "Scaffold with TopAppBar, NavigationRail or NavigationBar, and content"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "WAI-ARIA landmark regions",
+        "Material 3 navigation rail, bar and drawer",
+        "Polaris Frame"
       ]
     },
     "Group": {
@@ -806,7 +994,8 @@
         "'breadcrumb' is an ordered trail ending with the current item (aria-current=\"page\"), never behind a menu button",
         "'nested' shows each group as an expandable section; the group holding the current item starts open",
         "'toc' lists the page's sections as anchors, the section in view highlighted",
-        "'local' lays the items out as tabs, the current one marked"
+        "'local' lays the items out as tabs, the current one marked",
+        "'placement' fixes the layout a Frame gives the main navigation: side (240px column), rail (80px, icons with labels), bar (bottom, up to 5 items), drawer (behind the AppBar's menu button)"
       ],
       "mappings": {
         "web": "Sidebar navigation (shadcn Sidebar)",
@@ -819,6 +1008,36 @@
         "Material 3 navigation drawer",
         "NN/g: navigation should show where you are"
       ]
+    },
+    "Outlet": {
+      "category": "shell",
+      "shell": true,
+      "summary": "Where the current screen renders inside a Frame: the host fills it with a screen document or a generated surface.",
+      "whenToUse": [
+        "The main region of a Frame"
+      ],
+      "whenNotToUse": [
+        "Anywhere else: an outlet is the frame's, and a document has at most one"
+      ],
+      "accessibility": {
+        "role": "main",
+        "requirements": [
+          "The screen's h1 is the first heading inside it",
+          "Focus moves to the screen's heading when the outlet's content changes on navigation"
+        ]
+      },
+      "agent": "Everything it can act on is here; the frame around it is for getting elsewhere.",
+      "rendering": [
+        "Takes the main region's width; padding space.inset.comfortable (compact: default)",
+        "While loading, a skeleton shaped by the coming screen's pattern"
+      ],
+      "mappings": {
+        "web": "the router's outlet",
+        "ios": "NavigationStack content",
+        "android": "NavHost"
+      },
+      "a2ui": "custom",
+      "sources": []
     },
     "Panel": {
       "category": "structure",
@@ -998,6 +1217,43 @@
         "Gestalt: common region",
         "Material 3 layout guidance",
         "GOV.UK headings"
+      ]
+    },
+    "Split": {
+      "category": "structure",
+      "summary": "Master and detail side by side: a list that stays while the chosen item's detail shows beside it; on compact layouts the detail replaces the list.",
+      "whenToUse": [
+        "Mail, tickets, messages, files: a list people move through while reading",
+        "Settings with many sections on wide screens"
+      ],
+      "whenNotToUse": [
+        "Under about 640px of surface width: it becomes a list then a page, so don't use it for a single record",
+        "Two unrelated things side by side: use Columns"
+      ],
+      "accessibility": {
+        "role": "none; the primary and detail keep their own roles",
+        "requirements": [
+          "Selection in the list moves focus to the detail on compact layouts and announces the item's name",
+          "A Back control returns to the list on compact layouts",
+          "The list keeps its scroll position and selection while the detail changes"
+        ]
+      },
+      "agent": "Selects an item in the primary by name and reads the detail; on compact layouts it goes back to choose another.",
+      "rendering": [
+        "Wide: two panes with a border between; the list scrolls independently",
+        "Compact: the list, then the detail as a page with a back control when an item is selected",
+        "Selection state in the list uses color.selection.*",
+        "Resizable splits keep the handle at size.target.min wide with a visible focus ring"
+      ],
+      "mappings": {
+        "web": "Fluent SplitView, Carbon side panel, shadcn Resizable",
+        "ios": "NavigationSplitView",
+        "android": "ListDetailPaneScaffold"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "Apple HIG split views",
+        "Material 3 canonical layouts: list-detail"
       ]
     },
     "Status": {

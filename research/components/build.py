@@ -15,15 +15,19 @@ for e in E:
     if e["target"] == "TextInput" and e["variant"] == "password":
         # The spec keeps secrets out of generated screens: the host collects them in its own flows.
         e.update(target="out:app-chrome", variant=None, status="non-component")
-# Everything the survey proposed is built as of spec v0.2: the eleven components and the variants.
-# Entries keep "since" so the page can say what v0.2 added; their status is "covered".
+# Everything the survey proposed is built: the eleven components and the variants of spec v0.2, and
+# the shell and side-by-side layout of v0.3 (rows the survey had filed under app chrome and layout,
+# marked "since": "0.3" in mapping.json). Entries keep "since" so the page can say what each version
+# added; their status is "covered".
 for e in E:
     if e["status"] in ("new", "existing-new-variant"):
-        e["since"] = "0.2"
+        e.setdefault("since", "0.2")
         e["status"] = "existing"
 spec = {}
-for f in glob.glob("/Users/neel/Work/Polixd/packages/spec/components/*.json"):
+shell = set()
+for f in glob.glob(os.path.join(HERE, "../../packages/spec/components/*.json")):
     c = json.load(open(f)); spec[c["name"]] = c["summary"]
+    if c.get("shell"): shell.add(c["name"])
 NEW = {
     "ActionMenu": "Secondary actions behind one control: an overflow menu, dropdown, split button or context menu.",
     "FileInput": "Choose or drop files to upload.",
@@ -37,11 +41,15 @@ NEW = {
     "Code": "Code or preformatted text, copyable.",
     "Panel": "Content opened over the current view: a dialog, drawer, sheet or popover.",
 }
+# Spec v0.3: the product's shell as components (authored only), and side-by-side layout.
+SINCE = {n: "0.2" for n in NEW}
+SINCE.update({n: "0.3" for n in ["Frame", "AppBar", "Footer", "Outlet", "Custom", "Columns", "Split"]})
 GROUPS = [
     ("Actions", ["Action", "ActionBar", "ActionMenu", "Confirm"]),
     ("Inputs", ["TextInput", "Choice", "Toggle", "DateInput", "RangeInput", "Form", "FileInput", "ColorInput", "CodeInput", "Rating"]),
     ("Content", ["Text", "Metric", "DetailList", "Table", "Collection", "Chart", "Media", "Status", "Tag", "Identity", "Tree", "Progress", "Code"]),
-    ("Structure and flow", ["Section", "Group", "Card", "Disclosure", "Views", "Steps", "Comparison", "FilterPanel", "Navigation", "Panel"]),
+    ("Structure and flow", ["Section", "Group", "Card", "Columns", "Split", "Disclosure", "Views", "Steps", "Comparison", "FilterPanel", "Navigation", "Panel"]),
+    ("Shell", ["Frame", "AppBar", "Footer", "Outlet", "Custom"]),
 ]
 systems = []
 for e in E:
@@ -54,14 +62,14 @@ for g, names in GROUPS:
         variants = collections.Counter()
         vsys = collections.defaultdict(set)
         for e in rows:
-            if e["variant"] and e.get("since") == "0.2":
+            if e["variant"] and e.get("since") in ("0.2", "0.3"):
                 vsys[e["variant"]].add(e["system"])
         covers = []
         seen = set()
         for e in rows:
             k = e["name"].lower()
             if k not in seen: seen.add(k); covers.append(e["name"])
-        comps.append({"name": n, "group": g, "isNew": n in NEW, "since": "0.2" if n in NEW else "0.1", "summary": NEW.get(n) or spec.get(n, ""), "systems": len(sys_), "entries": len(rows),
+        comps.append({"name": n, "group": g, "isNew": n in SINCE, "since": SINCE.get(n, "0.1"), "authoredOnly": n in shell, "summary": NEW.get(n) or spec.get(n, ""), "systems": len(sys_), "entries": len(rows),
                       "newVariants": sorted(([v, len(s)] for v, s in vsys.items()), key=lambda x: -x[1]), "covers": covers[:14], "more": max(0, len(covers) - 14)})
 NONC = collections.Counter()
 for e in E:
@@ -70,7 +78,7 @@ for e in E:
     elif t.startswith("out:"): NONC[t] += 1
 rows = [[systems.index(e["system"]), e["name"], e["target"], e["variant"] or "", {"existing": 0, "existing-new-variant": 1, "new": 2, "non-component": 3}.get(e["status"], 3)] for e in E]
 # Foundations: the token roles every pack provides, by group.
-contract = json.load(open("/Users/neel/Work/Polixd/packages/spec/tokens/semantic-contract.json"))
+contract = json.load(open(os.path.join(HERE, "../../packages/spec/tokens/semantic-contract.json")))
 fgroups = collections.OrderedDict()
 for role in contract["tokens"]:
     g = role.split(".")[0]; fgroups.setdefault(g, []).append(role)
@@ -81,7 +89,7 @@ foundations = [{"name": g, "count": len(r), "summary": FOUND_DESC.get(g, ""), "c
 # Patterns: the six the spec ships, with the design-system pages that describe the same thing.
 patterns = []
 PAT_MATCH = {"confirm": r"confirm|alert ?dialog|popconfirm", "undo": r"snackbar|toast|undo", "review": r"check.*answers|summary list|review", "multi-step": r"stepper|step by step|question page|task list|wizard|steps", "filter": r"^filter|search|pagination|data ?table|index ?table", "compar": r"compar|pricing|plan"}
-for f in sorted(glob.glob("/Users/neel/Work/Polixd/packages/spec/patterns/*.json")):
+for f in sorted(glob.glob(os.path.join(HERE, "../../packages/spec/patterns/*.json"))):
     p = json.load(open(f)); pid = f.split("/")[-1].replace(".json", "")
     key = next((k for k in PAT_MATCH if k in pid or k in (p.get("name") or "").lower()), None)
     rx = re.compile(PAT_MATCH.get(key, "^$"), re.I)
@@ -103,4 +111,4 @@ renderer = [{"name": k, "summary": REN_DESC.get(k, ""), "covers": v[:10], "more"
 
 data = {"systems": systems, "components": comps, "rows": rows, "counts": dict(NONC), "total": len(E), "foundations": foundations, "patterns": patterns, "renderer": renderer}
 json.dump(data, open(OUT, "w"))
-print(len(comps), "components;", sum(c["isNew"] for c in comps), "new;", len(rows), "rows;", dict(NONC))
+print(len(comps), "components;", sum(c["since"] == "0.2" for c in comps), "added in 0.2;", sum(c["since"] == "0.3" for c in comps), "in 0.3;", len(rows), "rows;", dict(NONC))

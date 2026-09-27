@@ -8,7 +8,7 @@ A generated interface is a **UI document**: a flat list of semantic components (
 
 | Path | What |
 |---|---|
-| `components/*.json` | The 37 semantic components (source of truth): props, when to use, accessibility and agent semantics, rendering rules, platform mappings |
+| `components/*.json` | The 44 semantic components (source of truth): props, when to use, accessibility and agent semantics, rendering rules, platform mappings. Five are the shell (`Frame`, `AppBar`, `Footer`, `Outlet`, `Custom`), marked `"shell": true`: authored only |
 | `schema/ui.schema.json` | JSON Schema for a UI document, generated from the components (validation and constrained decoding) |
 | `catalog/catalog.json` | Usage guidance per component, generated |
 | `docs/components.md` | Readable component reference with the web / iOS / Android / A2UI mapping table, generated |
@@ -20,7 +20,7 @@ A generated interface is a **UI document**: a flat list of semantic components (
 | `schema/journey.schema.json` | Journeys (flows): goal, checkpoints, done event, acceptance criteria, agent task |
 | `schema/event.schema.json` | Semantic analytics events |
 | `schema/direction.schema.json` | Design Direction (a company's taste): profile, voice, patterns, rules, exemplars |
-| `examples/` | 20 UI documents across six domains, a capability registry, journeys, two contrasting directions and an event |
+| `examples/` | 29 UI documents across six domains (one of them a product's shell), a capability registry, journeys, two contrasting directions and an event |
 
 ## Using it
 
@@ -58,6 +58,7 @@ import { checkCapabilities } from "@polyxd/spec/capabilities";
 - Relative data paths only inside repeated items; absolute paths should exist in the data when data is given.
 - Only `ui.dismiss`, `ui.back` and `ui.next` in the reserved `ui.` action namespace.
 - Key figures and images must be bound to host data: the model can't invent a balance or load a URL.
+- The shell components appear only in a shell document (`surface.kind` `"shell"`, `surface.origin` `"authored"`): a shell's root is a `Frame` with exactly one `Outlet` under its `main`, a `Custom` has a `fallback` the renderer can draw, and `Navigation.placement` is read only under a `Frame`. A generator never writes a shell.
 
 With a capability registry, `checkCapabilities` also enforces that destructive capabilities are only triggered from a `Confirm`, and consequential ones from a `Confirm`, a review surface or a `Steps` flow ending in a review.
 

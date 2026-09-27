@@ -173,7 +173,8 @@ async function componentsPage(): Promise<Page> {
   const toc = comps.map((c) => ({ id: slugify(c.name), text: c.name }));
   const list = (xs: string[]) => `<ul>${xs.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
   const html = [
-    `<p>Generated from <code>packages/spec/components/*.json</code>, the same source the schema, validator and renderer use. Every component also accepts <code>id</code>, <code>component</code>, <code>key</code>, <code>accessibility</code> and <code>visible</code>. For how these map onto the components of 13 design systems, and the 11 planned for v0.2, see <a href="/docs/reference/coverage/">design-system coverage</a>.</p>`,
+    `<p>Generated from <code>packages/spec/components/*.json</code>, the same source the schema, validator and renderer use. Every component also accepts <code>id</code>, <code>component</code>, <code>key</code>, <code>accessibility</code> and <code>visible</code>. For how these map onto the components of 13 design systems, see <a href="/docs/reference/coverage/">design-system coverage</a>.</p>`,
+    `<p>The five <strong>shell</strong> components (<code>Frame</code>, <code>AppBar</code>, <code>Footer</code>, <code>Outlet</code>, <code>Custom</code>) are the product's frame around its screens. They belong only in a shell document (<code>surface.kind</code> <code>"shell"</code>, <code>surface.origin</code> <code>"authored"</code>), written once per product; the validator refuses them anywhere else, and a generator is never shown them. See <a href="/docs/authored-screens/#the-shell">Generated or authored</a>.</p>`,
     `<div class="table-wrap"><table><thead><tr><th>Component</th><th>Web</th><th>iOS</th><th>Android</th></tr></thead><tbody>${comps
       .map((c) => `<tr><td><a href="#${slugify(c.name)}"><strong>${c.name}</strong></a></td><td>${esc(c.mappings.web)}</td><td>${esc(c.mappings.ios)}</td><td>${esc(c.mappings.android)}</td></tr>`)
       .join("")}</tbody></table></div>`,
@@ -202,7 +203,7 @@ async function componentsPage(): Promise<Page> {
 async function coveragePage(): Promise<Page> {
   const data = JSON.parse(await readFile(join(SITE, "content/coverage.json"), "utf8")) as {
     systems: string[];
-    components: { name: string; group: string; isNew: boolean; summary: string; systems: number; covers: string[]; more: number; newVariants: [string, number][] }[];
+    components: { name: string; group: string; isNew: boolean; since: string; authoredOnly: boolean; summary: string; systems: number; covers: string[]; more: number; newVariants: [string, number][] }[];
     rows: [number, string, string, string, number][];
     counts: Record<string, number>;
     total: number;
@@ -211,7 +212,7 @@ async function coveragePage(): Promise<Page> {
     renderer: { name: string; summary: string; covers: string[]; more: number; systems: number }[];
   };
   const N = data.systems.length;
-    const planned = data.components.filter((c) => c.isNew).length;
+  const added = (v: string) => data.components.filter((c) => c.since === v).length;
   const covers = (xs: string[], more: number) => (xs.length ? `<p class="covers">Covers <em>${xs.map(esc).join(", ")}</em>${more ? ` and ${more} more` : ""}</p>` : "");
   const dots = (n: number) => `<span class="cov-dots" aria-hidden="true">${Array.from({ length: N }, (_, i) => `<i${i < n ? ' class="on"' : ""}></i>`).join("")}</span><span class="cov-n">${n} of ${N}</span>`;
   const card = (title: string, right: string, summary: string, body: string) =>
@@ -228,17 +229,21 @@ async function coveragePage(): Promise<Page> {
   const outOf = data.counts["out:layout"] + data.counts["out:utility"] + data.counts["out:app-chrome"];
   const html = [
     `<p>Every component the 13 supported design systems document, read from their official documentation in September 2026, and what Polyxd calls it. Polyxd keeps one component per meaning, and each system's variety becomes a variant of it, so a generator picks from ${data.components.length} choices instead of ${data.total.toLocaleString("en-GB")}. Every component renders in every design system, including the ones that don't have it.</p>`,
-    `<p>All ${data.components.length} exist (the <a href="/docs/reference/components/">components reference</a> has their props). <strong>${planned} of them, and the variants marked below, were added in spec v0.2</strong> because this survey found them in the design systems and not in Polyxd. The survey itself, with the inventories and the mapping, is <code>research/components/</code> in the repository.</p>`,
+    `<p>All ${data.components.length} exist (the <a href="/docs/reference/components/">components reference</a> has their props). <strong>${added("0.2")} of them, and variants on the rest, were added in spec v0.2</strong> because this survey found them in the design systems and not in Polyxd. <strong>Spec v0.3 added ${added("0.3")} more</strong>: the product's shell (a frame, an app bar, a footer, an outlet and a slot for the host's own components) and side-by-side layout, which the survey had filed as app chrome and layout. Shell components are authored-only: a generator never writes them. The survey itself, with the inventories and the mapping, is <code>research/components/</code> in the repository.</p>`,
     `<h2 id="components">Components<a class="anchor" href="#components" aria-label="Link to this section">#</a></h2>`,
-    `<p>The bar on each card is how many of the ${N} systems have their own version. Dashed tags are variants v0.2 added.</p>`,
+    `<p>The bar on each card is how many of the ${N} systems have their own version. Dashed tags are variants added in v0.2 and v0.3.</p>`,
     ...groups.map(
       (g) =>
-        `<h3>${esc(g)}</h3><div class="cov-grid">${data.components
+        `<h3>${esc(g)}</h3>${
+          g === "Shell"
+            ? `<p>The frame around a product's screens, in the spec since v0.3 so it renders in the same design system as everything else. These are <strong>authored only</strong>: they live in a shell document (<code>surface.kind</code> <code>"shell"</code>, <code>surface.origin</code> <code>"authored"</code>), one per product, and the validator refuses them in a surface. A generator never sees them; its surfaces render in the shell's <code>Outlet</code>. Command palettes, skip links and phase banners are slots or regions of these rather than components of their own.</p>`
+            : ""
+        }<div class="cov-grid">${data.components
           .filter((c) => c.group === g)
           .map((c) =>
             card(
               c.name,
-              `${c.isNew ? '<span class="tag tag-new">New in v0.2</span>' : ""}<span class="cov-right">${dots(c.systems)}</span>`,
+              `${c.isNew ? `<span class="tag tag-new">New in v${esc(c.since)}</span>` : ""}${c.authoredOnly ? '<span class="tag">Authored only</span>' : ""}<span class="cov-right">${dots(c.systems)}</span>`,
               c.summary,
               covers(c.covers, c.more) + (c.newVariants.length ? `<div class="cov-variants" aria-label="New variants">${c.newVariants.map(([v, n]) => `<span title="${n} system${n > 1 ? "s" : ""}">${esc(v)}</span>`).join("")}</div>` : ""),
             ),
@@ -255,11 +260,11 @@ async function coveragePage(): Promise<Page> {
     `<p>Things a design system ships as components that a generated screen never has to describe: the renderer does them the same way every time, in that design system's style.</p>`,
     `<div class="cov-grid">${data.renderer.map((r) => card(r.name, `<span class="cov-right">${dots(r.systems)}</span>`, r.summary, covers(r.covers, r.more))).join("")}</div>`,
     `<h2 id="out-of-scope">Out of scope<a class="anchor" href="#out-of-scope" aria-label="Link to this section">#</a></h2>`,
-    `<p>${outOf} of the ${data.total.toLocaleString("en-GB")} entries belong to the app around the screen, or to the code that builds it.</p>`,
+    `<p>${outOf} of the ${data.total.toLocaleString("en-GB")} entries are flows the product runs itself, or the code that builds it. The shell around a screen (header, navigation, footer) is no longer here: since v0.3 it is the shell components above, authored once per product.</p>`,
     `<div class="cov-grid cov-grid-3">${[
-      [data.counts["out:layout"], "Layout", "Box, Stack, Grid, Flex, Divider. The renderer lays out; a document only says what belongs together."],
+      [data.counts["out:layout"], "Layout primitives", "Box, Stack, Flex, Center, Divider, aspect ratio. The renderer lays out; a document says what belongs together, and Columns or Split when two things sit side by side."],
       [data.counts["out:utility"], "Utilities", "Portals, theme providers, visually hidden text. Plumbing for developers, not meaning."],
-      [data.counts["out:app-chrome"], "Your app's frame", "Site header and footer, cookie banners, command palettes, chat windows, and password fields: a product collects secrets in its own secure flows, never in a generated screen."],
+      [data.counts["out:app-chrome"], "The product's own flows", "Guided tours and coach marks, chat windows, cookie consent, sign-up, and password or card fields: a product collects secrets and consent in its own flows, never in a generated screen."],
     ]
       .map(([n, t, d]) => `<article class="cov-card"><div class="cov-head"><strong>${t}</strong><span class="cov-right">${n}</span></div><p>${d}</p></article>`)
       .join("")}</div>`,

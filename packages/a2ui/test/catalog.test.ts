@@ -30,7 +30,7 @@ test("catalog id, protocol version and $id", () => {
 
 test("every Polyxd component is in the catalog, with a recorded mapping decision", () => {
   const names = sources.map((c) => c.name);
-  assert.equal(names.length, 37);
+  assert.equal(names.length, 44);
   assert.deepEqual(Object.keys(catalog.components).sort(), [...names].sort());
   assert.deepEqual(Object.keys(MAPPING).sort(), [...names].sort());
   for (const n of names) {
@@ -40,11 +40,23 @@ test("every Polyxd component is in the catalog, with a recorded mapping decision
   }
 });
 
-test("instructions carry whenToUse / whenNotToUse / rendering for every component", () => {
-  for (const c of sources) {
+test("instructions carry whenToUse / whenNotToUse / rendering for every component a generator may use", () => {
+  for (const c of sources.filter((c) => !c.shell)) {
     assert.ok(catalog.instructions.includes(`### ${c.name}`), c.name);
     for (const line of [...c.whenToUse, ...c.whenNotToUse, ...c.rendering]) assert.ok(catalog.instructions.includes(line), `${c.name}: ${line}`);
   }
+});
+
+test("the shell components are in the catalog and out of the generator's instructions", () => {
+  const shell = sources.filter((c) => c.shell).map((c) => c.name);
+  assert.deepEqual(shell.sort(), ["AppBar", "Custom", "Footer", "Frame", "Outlet"]);
+  for (const n of shell) {
+    assert.ok(catalog.components[n], `${n} is in the catalog`);
+    assert.ok(!catalog.instructions.includes(`### ${n}`), `${n} is not described to the generator`);
+  }
+  assert.match(catalog.instructions, /Never use AppBar, Custom, Footer, Frame or Outlet: the product's shell is authored/);
+  assert.equal(MAPPING.Columns.target, "basic");
+  assert.equal(catalog.components.Frame.metadata.extensions.com_polyxd.target, "custom");
 });
 
 test("catalog follows A2UI v1.0 schema rules (keys, $defs, $ref targets, discriminator, UAX #31 names)", () => {

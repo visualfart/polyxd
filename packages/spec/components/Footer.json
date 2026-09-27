@@ -1,0 +1,52 @@
+{
+  "name": "Footer",
+  "category": "shell",
+  "shell": true,
+  "summary": "The bar at the bottom of the product: link groups, the legal line, locale or status.",
+  "props": {
+    "groups": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["key", "label", "items"],
+        "properties": {
+          "key": { "$ref": "#/$defs/Key" },
+          "label": { "$ref": "#/$defs/DynamicString" },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "required": ["key", "label", "action"],
+              "properties": { "key": { "$ref": "#/$defs/Key" }, "label": { "$ref": "#/$defs/DynamicString" }, "action": { "$ref": "#/$defs/Action" } },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Columns of links, each under a heading"
+    },
+    "legal": { "$ref": "#/$defs/DynamicString", "description": "The line at the very bottom: copyright, licence, company details" },
+    "aside": { "$ref": "#/$defs/Id", "description": "Something at the end of the legal row: a locale Choice, a status Tag, a Text" }
+  },
+  "required": ["legal"],
+  "whenToUse": ["The footer region of a Frame", "Public services and marketing-adjacent products where legal and help links belong at the bottom"],
+  "whenNotToUse": ["Dense tools where nothing lives below the fold: leave the Frame's footer out", "Inside a generated surface"],
+  "accessibility": {
+    "role": "contentinfo",
+    "requirements": ["Groups are navigation regions named by their headings", "Links are links, not buttons, when they leave the current screen", "The legal line is readable text, not an image"]
+  },
+  "agent": "Reads the legal line and reaches help, privacy and terms by name.",
+  "rendering": [
+    "Groups as columns on wide layouts, stacked on compact; headings in type.label.default",
+    "Background color.surface.subtle with a top border; the legal row in type.body.small, color.text.muted",
+    "Never sticky"
+  ],
+  "mappings": { "web": "GOV.UK footer, Polaris FooterHelp, Bootstrap footer", "ios": "n/a (settings screen)", "android": "n/a" },
+  "a2ui": "custom",
+  "sources": ["GOV.UK Design System footer", "WAI-ARIA contentinfo"]
+}

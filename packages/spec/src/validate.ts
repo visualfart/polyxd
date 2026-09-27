@@ -1,6 +1,6 @@
 import { Ajv2020, type ErrorObject } from "ajv/dist/2020.js";
 import { REFERENCE_TYPES } from "./references.ts";
-import { UI_SCHEMA } from "./ui-schema.generated.ts";
+import { SHELL_COMPONENTS, UI_SCHEMA } from "./ui-schema.generated.ts";
 
 type Json = unknown;
 type Schema = Record<string, any>;
@@ -10,8 +10,11 @@ export interface Issue {
   /** JSON Pointer into the document */
   at: string;
   message: string;
-  /** Set on issues a caller may want to weigh on their own; see ValidateOptions.missingData */
-  code?: "data:missing-path";
+  /**
+   * Set on issues a caller may want to weigh or report on their own: a binding that reads nothing
+   * (see ValidateOptions.missingData), or the shell's structure (the verifier's `shell:structure` check).
+   */
+  code?: "data:missing-path" | "shell:structure";
 }
 
 export interface ValidationResult {
@@ -279,6 +282,42 @@ export function validateDocument(doc: Json, opts: ValidateOptions = {}): Validat
 
   for (const [id, { index }] of byId) {
     if (!reached.has(id)) warn(`/components/${index}`, `"${id}" is not reachable from root "${d.root}"`);
+  }
+
+  // The shell. Frame, AppBar, Footer, Outlet and Custom are the product's frame around its
+  // screens: they live only in a shell document (surface.kind "shell"), and a shell is always
+  // authored, since a generator can't know the product's sections or its host components. A
+  // shell is one Frame at the root with exactly one Outlet under its main; a surface has none.
+  const shell = (severity: "error" | "warning", at: string, message: string) => issues.push({ severity, at, message, code: "shell:structure" });
+  const isShellDoc = d.surface?.kind === "shell";
+  const shellParts = [...byId].filter(([, { c }]) => SHELL_COMPONENTS.includes(c.component));
+  if (!isShellDoc) {
+    for (const [, { c, index }] of shellParts) shell("error", `/components/${index}`, `${c.component} belongs in a shell document: set surface.kind to "shell"`);
+  } else {
+    if (d.surface?.origin !== "authored") shell("error", "/surface/origin", 'a shell is authored; set surface.origin to "authored"');
+    const rootComponent = byId.get(d.root)?.c.component;
+    if (rootComponent && rootComponent !== "Frame") shell("error", "/root", `a shell's root is a Frame, not ${rootComponent}`);
+    const outlets = [...byId].filter(([, { c }]) => c.component === "Outlet");
+    if (outlets.length === 0) shell("error", "/components", "a shell has exactly one Outlet, reachable from the Frame's main; this one has none");
+    for (const [, { index }] of outlets.slice(1)) shell("error", `/components/${index}`, "a shell has exactly one Outlet; this is another");
+    // The Outlet is where screens render: it sits under the Frame's main, not in a bar or an aside.
+    const underMain = new Set<string>();
+    const main = rootComponent === "Frame" ? byId.get(d.root)!.c.main : undefined;
+    const walkMain = (id: string) => {
+      if (typeof id !== "string" || underMain.has(id) || !byId.has(id)) return;
+      underMain.add(id);
+      for (const r of refs.get(id)!.ids) walkMain(r.id);
+    };
+    if (typeof main === "string") walkMain(main);
+    for (const [id, { index }] of outlets.slice(0, 1)) {
+      if (typeof main === "string" && !underMain.has(id)) shell("error", `/components/${index}`, `the Outlet "${id}" is not reachable from the Frame's main "${main}"`);
+    }
+  }
+  // Navigation.placement is where a Frame puts its main navigation; outside a Frame nothing reads it.
+  for (const [id, { c, index }] of byId) {
+    if (c.component !== "Navigation" || c.placement === undefined) continue;
+    const owner = parent.get(id);
+    if (!owner || byId.get(owner)?.c.component !== "Frame") shell("warning", `/components/${index}/placement`, "Navigation.placement only applies to a Frame's navigation; here nothing reads it");
   }
 
   // How many primary actions may share a view: one by default, more only if the Design Direction

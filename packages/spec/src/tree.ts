@@ -7,8 +7,25 @@
 type Json = any;
 
 /** Props that hold component references, by component (mirrors the reference props in the schema). */
-const LIST_REFS: Record<string, string[]> = { Section: ["children"], Group: ["children"], Card: ["children"], Disclosure: ["children"], Form: ["children"], ActionBar: ["children"], FilterPanel: ["children"], Panel: ["children"], ActionMenu: ["children"] };
-const SINGLE_REFS: Record<string, string[]> = { Card: ["media"], Collection: ["empty", "bulkActions"], Table: ["empty", "toolbar", "bulkActions", "rowActions", "search", "detail"], Status: ["action"], Confirm: ["summary"], Form: ["aside"], FilterPanel: ["results"], Panel: ["actions"], ActionMenu: ["primary"] };
+const LIST_REFS: Record<string, string[]> = { Section: ["children"], Group: ["children"], Card: ["children"], Disclosure: ["children"], Form: ["children"], ActionBar: ["children"], FilterPanel: ["children"], Panel: ["children"], ActionMenu: ["children"], Columns: ["children"] };
+const SINGLE_REFS: Record<string, string[]> = {
+  Card: ["media"],
+  Collection: ["empty", "bulkActions"],
+  Table: ["empty", "toolbar", "bulkActions", "rowActions", "search", "detail"],
+  Status: ["action"],
+  Confirm: ["summary"],
+  Form: ["aside"],
+  FilterPanel: ["results"],
+  Panel: ["actions"],
+  ActionMenu: ["primary"],
+  Split: ["primary", "detail", "empty"],
+  // The shell: a Frame's regions in reading order, and what the bars hold.
+  Frame: ["banner", "header", "navigation", "main", "aside", "footer"],
+  AppBar: ["leading", "search", "actions", "account"],
+  Footer: ["aside"],
+  Outlet: ["loading"],
+  Custom: ["fallback"],
+};
 const PANEL_REFS: Record<string, string> = { Views: "views", Steps: "steps" };
 
 const ID = /^[A-Za-z][A-Za-z0-9_-]*$/;
@@ -60,11 +77,13 @@ export function flattenTree(tree: Json): Json {
 /** The inverse: nests a flat document into tree form (used for round-trip tests and training targets). */
 export function toTree(flat: Json): Json {
   const byId = new Map<string, Json>(flat.components.map((c: Json) => [c.id, c]));
+  const built = new Set<string>();
   const build = (id: string, seen = new Set<string>()): Json => {
     const c = byId.get(id);
     if (!c) throw new Error(`unknown component "${id}"`);
     if (seen.has(id)) throw new Error(`cycle at "${id}"`);
     const next = new Set(seen).add(id);
+    built.add(id);
     const node: Json = { ...c };
     for (const p of LIST_REFS[c.component] ?? []) if (Array.isArray(c[p])) node[p] = c[p].map((x: string) => build(x, next));
     for (const p of SINGLE_REFS[c.component] ?? []) if (typeof c[p] === "string") node[p] = build(c[p], next);
@@ -78,7 +97,8 @@ export function toTree(flat: Json): Json {
   if (surface) {
     out.surface = typeof surface.actions === "string" ? { ...surface, actions: build(surface.actions) } : surface;
   }
-  const nav = flat.components.find((c: Json) => c.component === "Navigation");
+  // A surface's navigation sits outside its root; a shell's is inside the Frame, already built.
+  const nav = flat.components.find((c: Json) => c.component === "Navigation" && !built.has(c.id));
   if (nav) out.navigation = build(nav.id);
   return out;
 }

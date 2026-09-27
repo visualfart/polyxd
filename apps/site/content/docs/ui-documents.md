@@ -7,7 +7,7 @@ section: Concepts
 
 # UI documents
 
-A UI document is one generated interface: a JSON object that lists semantic components, says which one is the root, and binds them to data the host provides. It is validated by `packages/spec/schema/ui.schema.json` (`$id` `https://polyxd.com/schema/0.1/ui.schema.json`).
+A UI document is one interface, generated or authored: a JSON object that lists semantic components, says which one is the root, and binds them to data the host provides. It is validated by `packages/spec/schema/ui.schema.json`, published at `https://polyxd.com/schema/0.3/ui.schema.json`.
 
 ## A real example
 
@@ -15,7 +15,8 @@ This is `packages/spec/examples/money-send-confirm.json`, the confirmation step 
 
 ```json
 {
-  "specVersion": "0.2.0",
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
   "surface": {
     "id": "send-confirm",
     "title": "Confirm payment",
@@ -64,7 +65,8 @@ This is `packages/spec/examples/money-send-confirm.json`, the confirmation step 
 
 | Field | Required | What it is |
 |---|---|---|
-| `specVersion` | Yes | The spec version the document follows. Currently `0.2.x`; `0.1.x` documents still validate. |
+| `$schema` | No | The schema the document follows, `https://polyxd.com/schema/0.3/ui.schema.json`, so editors validate and complete it as you type. |
+| `specVersion` | Yes | The spec version the document follows. Currently `0.3.x`; `0.2.x` and `0.1.x` documents still validate. |
 | `surface` | Yes | What this interface is for (see below). |
 | `root` | Yes | Id of the top-level component. |
 | `components` | Yes | A flat list of components. |
@@ -80,6 +82,7 @@ This is `packages/spec/examples/money-send-confirm.json`, the confirmation step 
 | `pattern` | No | Id of the [pattern](/docs/patterns) the surface follows. The validator runs that pattern's checks. |
 | `journey` | No | Id of the [journey](/docs/product) this surface is a step of. |
 | `dismissible` | No | Whether the surface can be dismissed. Defaults to `true`. |
+| `kind` | No | `surface` (the default: a screen, panel or dialog that lives inside a shell) or `shell` (the product's frame: a `Frame` at the root with an `Outlet` for screens). A shell is always authored, and the shell components are allowed only in one; see [Components](/docs/components/#shell). |
 | `origin` | No | `generated` or `authored`: whether a generator wrote it for a request, or a person authored it as a screen of the product. Validation and rendering are the same either way; see [Generated or authored](/docs/authored-screens/). |
 
 ### A flat list of components
@@ -91,7 +94,7 @@ Every component has these common fields:
 | Field | What it is |
 |---|---|
 | `id` | Unique within the document. Starts with a letter; letters, digits, `_` and `-`. |
-| `component` | One of the 24 [component](/docs/components) names. |
+| `component` | One of the 44 [component](/docs/components) names. |
 | `key` | Optional stable semantic key (see [Keys](#keys-and-memory)). |
 | `visible` | Optional boolean or binding. The component is hidden when it is `false`. |
 | `accessibility` | Optional `{label, description, live, hidden}`, the same fields as A2UI v1.0. Only needed to add to what the component's semantics already provide. |
@@ -102,6 +105,7 @@ The validator checks the tree beyond the schema:
 - References have allowed types. For example, `ActionBar` holds only `Action`s, `Confirm.summary` must be a `DetailList`, and `Collection.empty` must be a `Status`.
 - At most one primary action is visible at a time. A `Form` submit counts as primary. Each `Views` panel, `Steps` step and `Confirm` dialog is its own context.
 - `Media` needs `alt` unless it is `decorative`.
+- The shell components (`Frame`, `AppBar`, `Footer`, `Outlet`, `Custom`) appear only in a document whose `surface.kind` is `shell` and whose `surface.origin` is `authored`; a shell's root is a `Frame` with exactly one `Outlet` under its `main`.
 
 ## Bindings
 

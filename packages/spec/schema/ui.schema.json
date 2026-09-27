@@ -12,11 +12,12 @@
   ],
   "properties": {
     "$schema": {
-      "type": "string"
+      "type": "string",
+      "description": "The schema this document follows, so editors validate and complete it: https://polyxd.com/schema/0.3/ui.schema.json"
     },
     "specVersion": {
       "type": "string",
-      "pattern": "^0\\.[12]\\.[0-9]+$"
+      "pattern": "^0\\.[123]\\.[0-9]+$"
     },
     "surface": {
       "type": "object",
@@ -103,6 +104,14 @@
         "dismissible": {
           "type": "boolean",
           "default": true
+        },
+        "kind": {
+          "enum": [
+            "surface",
+            "shell"
+          ],
+          "default": "surface",
+          "description": "'shell' is the product's frame (a Frame at the root with an Outlet for screens); it is always authored. 'surface' is a screen, panel or dialog that lives inside a shell"
         },
         "origin": {
           "enum": [
@@ -561,6 +570,71 @@
         "primary": {
           "$ref": "#/$defs/Id",
           "description": "For 'split': the Action that runs when the main part is pressed"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentAppBar": {
+      "type": "object",
+      "description": "The bar at the top of the product: brand or title, a leading action, search, trailing actions and the account.",
+      "required": [
+        "id",
+        "component",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "AppBar"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "title": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "The product's name, or the current screen's title on compact layouts"
+        },
+        "brand": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "A media reference for the logo, or initials; rendered before the title"
+        },
+        "leading": {
+          "$ref": "#/$defs/Id",
+          "description": "An Action at the start: back, or the menu button the renderer adds itself when the navigation is a drawer"
+        },
+        "search": {
+          "$ref": "#/$defs/Id",
+          "description": "A TextInput of kind 'search' (or a command palette opener: an Action with a shortcut)"
+        },
+        "actions": {
+          "$ref": "#/$defs/Id",
+          "description": "An ActionBar at the end: notifications, help, the primary action of the product"
+        },
+        "account": {
+          "$ref": "#/$defs/Id",
+          "description": "An Identity (the signed-in person) or an ActionMenu opened from it"
+        },
+        "variant": {
+          "enum": [
+            "standard",
+            "large",
+            "compact"
+          ],
+          "default": "standard",
+          "description": "'large' puts the title under the bar on its own line on wide screens; 'compact' is 48px for dense tools"
+        },
+        "sticky": {
+          "type": "boolean",
+          "default": true
         }
       },
       "additionalProperties": false
@@ -1082,6 +1156,67 @@
       },
       "additionalProperties": false
     },
+    "ComponentColumns": {
+      "type": "object",
+      "description": "Side-by-side columns that collapse to a stack on compact layouts: a main column with a narrower one beside it, or equal halves.",
+      "required": [
+        "id",
+        "component",
+        "children"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Columns"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "children": {
+          "$ref": "#/$defs/ChildList",
+          "description": "One component per column, in reading order"
+        },
+        "layout": {
+          "enum": [
+            "two-thirds",
+            "one-third",
+            "halves",
+            "thirds",
+            "sidebar-start",
+            "sidebar-end"
+          ],
+          "default": "two-thirds",
+          "description": "'two-thirds' is a wide first column (GOV.UK's default); 'one-third' the reverse; 'halves' and 'thirds' equal; 'sidebar-*' a fixed 18rem column at that edge"
+        },
+        "collapse": {
+          "enum": [
+            "compact",
+            "medium",
+            "never"
+          ],
+          "default": "compact",
+          "description": "The width below which the columns stack"
+        },
+        "align": {
+          "enum": [
+            "start",
+            "center",
+            "stretch"
+          ],
+          "default": "stretch"
+        }
+      },
+      "additionalProperties": false
+    },
     "ComponentComparison": {
       "type": "object",
       "description": "Compare a few options across the same attributes, and choose one.",
@@ -1302,6 +1437,53 @@
             "additionalProperties": false
           },
           "description": "What will happen, as a short list (for destructive actions)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentCustom": {
+      "type": "object",
+      "description": "A slot for a component the host implements itself: a logo, a brand moment, a bespoke widget. The document names it and gives it props; the product renders it, and a fallback stands in when it can't.",
+      "required": [
+        "id",
+        "component",
+        "name",
+        "fallback"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Custom"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)+$",
+          "description": "The host's name for the component, namespaced: 'brand.logo', 'store.map'"
+        },
+        "props": {
+          "type": "object",
+          "description": "What the host component takes; values may be bindings",
+          "additionalProperties": true
+        },
+        "fallback": {
+          "$ref": "#/$defs/Id",
+          "description": "What renders when the host has no component of that name: a Text, a Media, a Status. Required, so the document stands on its own"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "An accessible name for the slot when the host component is decorative or complex"
         }
       },
       "additionalProperties": false
@@ -1602,6 +1784,90 @@
       },
       "additionalProperties": false
     },
+    "ComponentFooter": {
+      "type": "object",
+      "description": "The bar at the bottom of the product: link groups, the legal line, locale or status.",
+      "required": [
+        "id",
+        "component",
+        "legal"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Footer"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "groups": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "items"
+            ],
+            "properties": {
+              "key": {
+                "$ref": "#/$defs/Key"
+              },
+              "label": {
+                "$ref": "#/$defs/DynamicString"
+              },
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "key",
+                    "label",
+                    "action"
+                  ],
+                  "properties": {
+                    "key": {
+                      "$ref": "#/$defs/Key"
+                    },
+                    "label": {
+                      "$ref": "#/$defs/DynamicString"
+                    },
+                    "action": {
+                      "$ref": "#/$defs/Action"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "Columns of links, each under a heading"
+        },
+        "legal": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "The line at the very bottom: copyright, licence, company details"
+        },
+        "aside": {
+          "$ref": "#/$defs/Id",
+          "description": "Something at the end of the legal row: a locale Choice, a status Tag, a Text"
+        }
+      },
+      "additionalProperties": false
+    },
     "ComponentForm": {
       "type": "object",
       "description": "Collects inputs and submits them together.",
@@ -1649,6 +1915,71 @@
           ],
           "default": "stacked",
           "description": "'horizontal' puts label and help on the left and the control on the right (settings pages), on wide surfaces"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentFrame": {
+      "type": "object",
+      "description": "The product's frame: the regions around its screens (header, navigation, main, aside, footer, banner), with an outlet where screens and generated surfaces appear.",
+      "required": [
+        "id",
+        "component",
+        "main"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Frame"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "header": {
+          "$ref": "#/$defs/Id",
+          "description": "An AppBar"
+        },
+        "navigation": {
+          "$ref": "#/$defs/Id",
+          "description": "A Navigation of kind 'main'; its placement decides rail, bar, drawer or side"
+        },
+        "main": {
+          "$ref": "#/$defs/Id",
+          "description": "The outlet: a component the host replaces with the current screen. Usually an Outlet; may be a Group holding a fixed screen"
+        },
+        "aside": {
+          "$ref": "#/$defs/Id",
+          "description": "A secondary column beside main on wide layouts (help, context, activity)"
+        },
+        "footer": {
+          "$ref": "#/$defs/Id",
+          "description": "A Footer"
+        },
+        "banner": {
+          "$ref": "#/$defs/Id",
+          "description": "A Status shown above everything (a phase banner, an outage, a trial ending)"
+        },
+        "skipTarget": {
+          "type": "boolean",
+          "default": true,
+          "description": "The renderer adds a skip link to main"
+        },
+        "width": {
+          "enum": [
+            "full",
+            "contained"
+          ],
+          "default": "contained",
+          "description": "'contained' centres main at measure.max × 1.6; 'full' lets dense tools use the whole viewport"
         }
       },
       "additionalProperties": false
@@ -2004,7 +2335,19 @@
                   "chart",
                   "people",
                   "card",
-                  "file"
+                  "file",
+                  "orders",
+                  "products",
+                  "customers",
+                  "discounts",
+                  "analytics",
+                  "calendar",
+                  "bell",
+                  "help",
+                  "folder",
+                  "star",
+                  "grid",
+                  "layers"
                 ]
               },
               "badge": {
@@ -2032,6 +2375,52 @@
           ],
           "default": "main",
           "description": "'main' is the product's sections; 'breadcrumb' the ordered trail to here; 'nested' groups that expand; 'toc' the sections of this page (items link to anchors named by their keys); 'local' the sections of one area, as tabs"
+        },
+        "placement": {
+          "enum": [
+            "auto",
+            "side",
+            "rail",
+            "bar",
+            "drawer"
+          ],
+          "default": "auto",
+          "description": "For kind 'main' inside a Frame: where it lives. 'auto' is a side column on wide layouts, a rail on medium and a bottom bar (≤ 5 items) or a drawer on compact; the others fix it"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentOutlet": {
+      "type": "object",
+      "description": "Where the current screen renders inside a Frame: the host fills it with a screen document or a generated surface.",
+      "required": [
+        "id",
+        "component"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Outlet"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Names the region for assistive tech when the screen has no title yet"
+        },
+        "loading": {
+          "$ref": "#/$defs/Id",
+          "description": "What shows while a screen is on its way; the renderer's skeleton when absent"
         }
       },
       "additionalProperties": false
@@ -2344,6 +2733,65 @@
         },
         "children": {
           "$ref": "#/$defs/ChildList"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentSplit": {
+      "type": "object",
+      "description": "Master and detail side by side: a list that stays while the chosen item's detail shows beside it; on compact layouts the detail replaces the list.",
+      "required": [
+        "id",
+        "component",
+        "primary",
+        "detail",
+        "selected"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "component": {
+          "const": "Split"
+        },
+        "key": {
+          "$ref": "#/$defs/Key"
+        },
+        "accessibility": {
+          "$ref": "#/$defs/Accessibility"
+        },
+        "visible": {
+          "$ref": "#/$defs/DynamicBoolean",
+          "description": "Hide the component when false"
+        },
+        "primary": {
+          "$ref": "#/$defs/Id",
+          "description": "The list: a Collection or a Table with selection 'single'"
+        },
+        "detail": {
+          "$ref": "#/$defs/Id",
+          "description": "What shows for the selected item; its bindings resolve against the selected item's scope"
+        },
+        "selected": {
+          "$ref": "#/$defs/Binding",
+          "description": "The selected item's value in host data, shared with the primary's 'selected'"
+        },
+        "empty": {
+          "$ref": "#/$defs/Id",
+          "description": "A Status shown in the detail pane while nothing is selected"
+        },
+        "ratio": {
+          "enum": [
+            "narrow",
+            "balanced",
+            "wide"
+          ],
+          "default": "narrow",
+          "description": "The list's share: about a third, half, or two thirds"
+        },
+        "resizable": {
+          "type": "boolean",
+          "default": false
         }
       },
       "additionalProperties": false
@@ -3169,6 +3617,9 @@
           "$ref": "#/$defs/ComponentActionMenu"
         },
         {
+          "$ref": "#/$defs/ComponentAppBar"
+        },
+        {
           "$ref": "#/$defs/ComponentCard"
         },
         {
@@ -3190,10 +3641,16 @@
           "$ref": "#/$defs/ComponentColorInput"
         },
         {
+          "$ref": "#/$defs/ComponentColumns"
+        },
+        {
           "$ref": "#/$defs/ComponentComparison"
         },
         {
           "$ref": "#/$defs/ComponentConfirm"
+        },
+        {
+          "$ref": "#/$defs/ComponentCustom"
         },
         {
           "$ref": "#/$defs/ComponentDateInput"
@@ -3211,7 +3668,13 @@
           "$ref": "#/$defs/ComponentFilterPanel"
         },
         {
+          "$ref": "#/$defs/ComponentFooter"
+        },
+        {
           "$ref": "#/$defs/ComponentForm"
+        },
+        {
+          "$ref": "#/$defs/ComponentFrame"
         },
         {
           "$ref": "#/$defs/ComponentGroup"
@@ -3229,6 +3692,9 @@
           "$ref": "#/$defs/ComponentNavigation"
         },
         {
+          "$ref": "#/$defs/ComponentOutlet"
+        },
+        {
           "$ref": "#/$defs/ComponentPanel"
         },
         {
@@ -3242,6 +3708,9 @@
         },
         {
           "$ref": "#/$defs/ComponentSection"
+        },
+        {
+          "$ref": "#/$defs/ComponentSplit"
         },
         {
           "$ref": "#/$defs/ComponentStatus"

@@ -1,6 +1,6 @@
 ---
 title: Components
-description: The 37 semantic components, what "semantic" means, and how the renderer turns meaning into concrete controls.
+description: The 44 semantic components, what "semantic" means, how the renderer turns meaning into concrete controls, and the shell components a person authors.
 order: 11
 section: Concepts
 ---
@@ -9,7 +9,7 @@ section: Concepts
 
 > Looking for how your design system's components map onto these? See [All components](/docs/reference/coverage/): every component in 13 systems, and what Polyxd calls it.
 
-Polyxd has 37 components. Each one describes **what something is for**, not what it looks like. The generator picks components; the renderer and the design-system pack decide how they appear on each platform.
+Polyxd has 44 components. Each one describes **what something is for**, not what it looks like. The generator picks components; the renderer and the design-system pack decide how they appear on each platform. Five of them, the shell components, are picked by a person, never by a generator: see [Shell](#shell).
 
 For every component's props, usage rules, accessibility requirements and platform mappings, see the generated [components reference](/docs/reference/components). This page explains the ideas behind them.
 
@@ -17,16 +17,41 @@ For every component's props, usage rules, accessibility requirements and platfor
 
 | Category | Components |
 |---|---|
-| Structure | `Section`, `Group`, `Card`, `Disclosure`, `Views`, `Navigation`, `Panel` |
+| Shell | `Frame`, `AppBar`, `Footer`, `Outlet`, `Custom`. Authored only: they belong in a shell document, one per product, and a generator never writes them |
+| Structure | `Section`, `Group`, `Card`, `Columns`, `Split`, `Disclosure`, `Views`, `Navigation`, `Panel` |
 | Content | `Text`, `Metric`, `DetailList`, `Collection`, `Table`, `Chart`, `Media`, `Tag`, `Identity`, `Tree`, `Progress`, `Code` |
 | Feedback | `Status` |
 | Input | `TextInput`, `Choice`, `Toggle`, `DateInput`, `RangeInput`, `Form`, `FilterPanel`, `Rating`, `FileInput`, `ColorInput`, `CodeInput` |
 | Action | `Action`, `ActionBar`, `ActionMenu` |
 | Flow | `Steps`, `Confirm`, `Comparison` |
 
-Spec v0.2 added eleven of these (`Tag`, `Identity`, `Tree`, `Progress`, `Rating`, `Code`, `FileInput`, `ColorInput`, `CodeInput`, `Panel`, `ActionMenu`) and variants on the rest, after a survey of every component in 13 design systems: [design-system coverage](/docs/reference/coverage/).
+Spec v0.2 added eleven of these (`Tag`, `Identity`, `Tree`, `Progress`, `Rating`, `Code`, `FileInput`, `ColorInput`, `CodeInput`, `Panel`, `ActionMenu`) and variants on the rest, after a survey of every component in 13 design systems: [design-system coverage](/docs/reference/coverage/). Spec v0.3 added the five shell components, `Columns` and `Split`, and `Navigation.placement`.
 
 The source of truth is `packages/spec/components/*.json`. The UI schema, the A2UI catalog and the reference page are all generated from those files.
+
+## Shell
+
+A product has one frame around all its screens: the app bar, the main navigation, a footer, maybe a banner above everything and a column beside the content. Until v0.3 that frame stayed in code. Now it can be a document too, so it renders in the same design system as the screens inside it and is verified by the same rules.
+
+The shell components are:
+
+- **`Frame`**: the regions, in reading order `banner`, `header`, `navigation`, `main`, `aside`, `footer`. It adds the skip link and the landmarks.
+- **`AppBar`**: the bar at the top: title, a leading action, search (a search `TextInput` or a command-palette `Action`), an `ActionBar` of trailing actions and the account (an `Identity` or an `ActionMenu`).
+- **`Footer`**: link groups under headings, the legal line, and something at the end of it (a locale `Choice`, a `Tag`, a `Text`).
+- **`Outlet`**: where the current screen renders. The host fills it with a screen document or a generated surface.
+- **`Custom`**: a slot for a component the host implements itself, named like `brand.logo`, with props and a `fallback` the renderer can draw when the host has no such component.
+
+`Navigation` is not a shell component (a surface may carry its own), but its `placement` (`auto`, `side`, `rail`, `bar`, `drawer`) is read only when it is a `Frame`'s navigation.
+
+The rule that keeps the shell safe: **shell components appear only in a shell document**, one whose `surface.kind` is `"shell"` and whose `surface.origin` is `"authored"`. A generator never writes a shell, and never sees these components in its prompt or in the A2UI catalog's instructions. The validator enforces it with errors:
+
+- a shell component in a surface: *Frame belongs in a shell document: set surface.kind to "shell"*;
+- a shell that isn't authored: *a shell is authored; set surface.origin to "authored"*;
+- a shell's root is a `Frame`, and it has exactly one `Outlet`, reachable from the `Frame`'s `main`; a surface has none;
+- a `Custom` needs a `fallback`, and the fallback is a component the renderer draws itself, never another shell part;
+- `Navigation.placement` outside a `Frame` is a warning: nothing reads it.
+
+One shell document per product; every screen, authored or generated, renders in its `Outlet`. The example is `packages/spec/examples/shell-product.json`; [Generated or authored](/docs/authored-screens/#the-shell) shows the shape.
 
 ## What "semantic" means
 

@@ -1,6 +1,6 @@
 # Polyxd components
 
-Generated from `components/*.json` (spec 0.2.0). The model chooses these semantic components; each platform renders them with its own native parts.
+Generated from `components/*.json` (spec 0.3.0). The model chooses these semantic components; each platform renders them with its own native parts. The shell components (category `shell`) are the exception: they belong only in a shell document (`surface.kind` "shell", `surface.origin` "authored"), which a person writes once per product; a generator never uses them.
 
 ## Platform mapping
 
@@ -8,11 +8,18 @@ Generated from `components/*.json` (spec 0.2.0). The model chooses these semanti
 |---|---|---|---|---|---|
 | [FilterPanel](#filterpanel) | layout | Sidebar + Sheet (shadcn) | List with a filter sheet | Side sheet / modal bottom sheet | Column |
 | [Navigation](#navigation) | layout | Sidebar navigation (shadcn Sidebar) | TabView or a sidebar on iPad | NavigationRail / NavigationDrawer | Column |
+| [AppBar](#appbar) | shell | Polaris TopBar, Carbon Header, Fluent Nav header, shadcn sidebar header | Navigation bar with toolbar items | TopAppBar | custom |
+| [Custom](#custom) | shell | the host's own component | the host's own view | the host's own composable | custom |
+| [Footer](#footer) | shell | GOV.UK footer, Polaris FooterHelp, Bootstrap footer | n/a (settings screen) | n/a | custom |
+| [Frame](#frame) | shell | Polaris Frame, Carbon UI Shell, Fluent App layout, shadcn Sidebar layout | NavigationSplitView / TabView with a NavigationStack | Scaffold with TopAppBar, NavigationRail or NavigationBar, and content | custom |
+| [Outlet](#outlet) | shell | the router's outlet | NavigationStack content | NavHost | custom |
 | [Card](#card) | structure | shadcn Card (CardHeader/CardTitle/CardContent/CardFooter) | GroupBox, or a Button/NavigationLink with card styling in lists | Card / ElevatedCard / OutlinedCard (onClick variant when actionable) | Card |
+| [Columns](#columns) | structure | GOV.UK grid row, Polaris Layout, Carbon Grid, Bootstrap row/col | HStack with .layoutPriority | Row with weights | Row |
 | [Disclosure](#disclosure) | structure | shadcn Collapsible (or Accordion for several) | DisclosureGroup | Expandable ListItem / AnimatedVisibility with a toggle row | No direct equivalent; exports as Column (content always shown) |
 | [Group](#group) | structure | &lt;div role=group&gt; with flex/grid and semantic spacing tokens | VStack / HStack / Grid (ViewThatFits for inline) | Column / Row / FlowRow | Column or Row |
 | [Panel](#panel) | structure | shadcn Dialog, Sheet, Drawer, Popover | .sheet, .popover, NavigationStack push | ModalBottomSheet, AlertDialog, DropdownMenu | Modal |
 | [Section](#section) | structure | &lt;section&gt; + heading; shadcn has no Section primitive (plain markup with semantic tokens) | Section(header:) inside List/Form, or VStack with .accessibilityAddTraits(.isHeader) on the title | Column with a Text heading marked Modifier.semantics { heading() } | No direct equivalent; exports as Column with a Text(variant: h2) first child |
+| [Split](#split) | structure | Fluent SplitView, Carbon side panel, shadcn Resizable | NavigationSplitView | ListDetailPaneScaffold | custom |
 | [Views](#views) | structure | shadcn Tabs | Picker(.segmented) switching content, or TabView for top-level | PrimaryTabRow + content | Tabs |
 | [Chart](#chart) | content | shadcn Chart (Recharts) | Swift Charts (Chart) | Third-party (e.g. Vico) or Canvas; no built-in M3 chart | No equivalent in the Basic catalog; exports as Text(summary) + List |
 | [Code](#code) | content | pre &gt; code with a Copy button | Text with monospaced design in a rounded rectangle | Text with FontFamily.Monospace in a Surface | Text |
@@ -74,7 +81,7 @@ Filters for a list of results, with the result count.
 
 The product's main navigation.
 
-**Required props:** `items`, `current`. **Optional:** `label`, `kind`.
+**Required props:** `items`, `current`. **Optional:** `label`, `kind`, `placement`.
 
 **Use when**
 - Software with sections people move between (B2B apps, dashboards)
@@ -99,6 +106,137 @@ The product's main navigation.
 - 'nested' shows each group as an expandable section; the group holding the current item starts open
 - 'toc' lists the page's sections as anchors, the section in view highlighted
 - 'local' lays the items out as tabs, the current one marked
+- 'placement' fixes the layout a Frame gives the main navigation: side (240px column), rail (80px, icons with labels), bar (bottom, up to 5 items), drawer (behind the AppBar's menu button)
+
+## AppBar
+
+The bar at the top of the product: brand or title, a leading action, search, trailing actions and the account.
+
+**Required props:** `title`. **Optional:** `brand`, `leading`, `search`, `actions`, `account`, `variant`, `sticky`.
+
+**Use when**
+- The header region of a Frame
+- A product that needs a persistent place for search, notifications and the account
+
+**Don't use when**
+- Inside a generated surface: the frame owns the header
+- A page's own title and actions: that is the surface header (surface.title, surface.actions)
+
+**Accessibility** (role: banner)
+- The title is the product's name, not a heading; the screen's h1 stays in main
+- The menu button (when present) names the navigation it opens and reports expanded state
+- Search is a labelled search landmark when present
+- Trailing icon actions have visible tooltips and accessible names
+
+**Agents:** Finds the product's search and account here; opens the navigation on compact layouts through the menu button.
+
+**Rendering rules**
+- Height 64px (standard), 48px (compact); large variant adds a 56px title row on wide screens
+- Background color.surface.default with a bottom border; elevation.raised once content scrolls under it
+- Leading action, brand and title at the start; search grows in the middle on wide layouts and becomes an icon on compact; actions and account at the end
+- On compact layouts the title shows the current screen's title when the Frame provides one
+
+## Custom
+
+A slot for a component the host implements itself: a logo, a brand moment, a bespoke widget. The document names it and gives it props; the product renders it, and a fallback stands in when it can't.
+
+**Required props:** `name`, `fallback`. **Optional:** `props`, `label`.
+
+**Use when**
+- The parts of a product that are truly its own: a logo, an illustration system, a map, a chart type the spec doesn't have
+- Only in authored documents: a shell or a screen a person wrote for that product
+
+**Don't use when**
+- Anything a spec component can express: a Custom is invisible to the verifier beyond its fallback
+- In a generated document: a generator can't know a host's components (the validator refuses it)
+
+**Accessibility** (role: whatever the host component provides; the fallback carries its own)
+- The host component is responsible for its own accessibility; the verifier audits the rendered result
+- A decorative Custom is hidden from assistive tech; a meaningful one has a name
+
+**Agents:** Reads the host component if it exposes a role and name; otherwise reads the fallback.
+
+**Rendering rules**
+- The renderer looks the name up in the host's registry (the same one that overrides components); found, it renders it with the resolved props
+- Not found, it renders the fallback and notes the missing name in development
+- Never renders the raw props
+
+## Footer
+
+The bar at the bottom of the product: link groups, the legal line, locale or status.
+
+**Required props:** `legal`. **Optional:** `groups`, `aside`.
+
+**Use when**
+- The footer region of a Frame
+- Public services and marketing-adjacent products where legal and help links belong at the bottom
+
+**Don't use when**
+- Dense tools where nothing lives below the fold: leave the Frame's footer out
+- Inside a generated surface
+
+**Accessibility** (role: contentinfo)
+- Groups are navigation regions named by their headings
+- Links are links, not buttons, when they leave the current screen
+- The legal line is readable text, not an image
+
+**Agents:** Reads the legal line and reaches help, privacy and terms by name.
+
+**Rendering rules**
+- Groups as columns on wide layouts, stacked on compact; headings in type.label.default
+- Background color.surface.subtle with a top border; the legal row in type.body.small, color.text.muted
+- Never sticky
+
+## Frame
+
+The product's frame: the regions around its screens (header, navigation, main, aside, footer, banner), with an outlet where screens and generated surfaces appear.
+
+**Required props:** `main`. **Optional:** `header`, `navigation`, `aside`, `footer`, `banner`, `skipTarget`, `width`.
+
+**Use when**
+- The root of a shell document: the product's frame, authored once, that every screen sits in
+- A product whose navigation, header and footer should render in its design system like everything else
+
+**Don't use when**
+- In a generated document: a surface lives inside a frame and never draws one (the validator refuses it)
+- A dialog or a sheet over a screen: use Panel
+
+**Accessibility** (role: landmarks: banner (header), navigation, main, complementary (aside), contentinfo (footer))
+- Exactly one main; a skip link to it is the first focusable thing
+- Each landmark is labelled when there is more than one of its kind
+- Regions keep their reading order at every width: banner, header, navigation, main, aside, footer
+- The navigation's current item is marked; the document title follows the current screen
+
+**Agents:** Reads the landmarks to know where it is; moves between screens through the navigation by name; acts on what is in main.
+
+**Rendering rules**
+- Wide (≥ 1024px): header on top, navigation at the start edge as a side column or a rail, main and aside as columns, footer below
+- Medium (≥ 640px): navigation becomes a rail; aside stacks below main
+- Compact: navigation becomes a bottom bar (up to 5 items) or a drawer behind a menu button in the header; the footer's groups collapse
+- Region backgrounds use color.surface.default for main and color.surface.subtle for navigation; borders are color.border.default at border.width.default
+- The outlet is where PolyxdSurface documents render: they never repeat the frame's regions
+
+## Outlet
+
+Where the current screen renders inside a Frame: the host fills it with a screen document or a generated surface.
+
+**Required props:** . **Optional:** `label`, `loading`.
+
+**Use when**
+- The main region of a Frame
+
+**Don't use when**
+- Anywhere else: an outlet is the frame's, and a document has at most one
+
+**Accessibility** (role: main)
+- The screen's h1 is the first heading inside it
+- Focus moves to the screen's heading when the outlet's content changes on navigation
+
+**Agents:** Everything it can act on is here; the frame around it is for getting elsewhere.
+
+**Rendering rules**
+- Takes the main region's width; padding space.inset.comfortable (compact: default)
+- While loading, a skeleton shaped by the coming screen's pattern
 
 ## Card
 
@@ -124,6 +262,31 @@ One self-contained entity (an account, an order, a place), optionally actionable
 - If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own
 - Uses surface.raised and radius.default
 - 'progress' renders a progress bar with its label or percentage
+
+## Columns
+
+Side-by-side columns that collapse to a stack on compact layouts: a main column with a narrower one beside it, or equal halves.
+
+**Required props:** `children`. **Optional:** `layout`, `collapse`, `align`.
+
+**Use when**
+- A form with help beside it; a record with a summary beside it; a list beside a preview
+- Anywhere a wide screen should use its width without the compact screen paying for it
+
+**Don't use when**
+- Metrics in a row: use Group with arrangement 'inline'
+- A master–detail pair that keeps both alive: use Split
+
+**Accessibility** (role: none (layout only))
+- Reading order is the children's order at every width
+- Collapsing never reorders content
+
+**Agents:** Invisible: reads the children in order.
+
+**Rendering rules**
+- Gutter space.inline.loose between columns; stacked with space.stack.loose
+- Column widths follow the layout; 'sidebar-*' columns never shrink below 16rem
+- Collapses at the surface's width, not the viewport's
 
 ## Disclosure
 
@@ -223,6 +386,33 @@ A titled region of the surface that groups related content under a heading.
 **Rendering rules**
 - Heading level follows nesting depth, never chosen by the model
 - Spacing between sections uses space.stack.section
+
+## Split
+
+Master and detail side by side: a list that stays while the chosen item's detail shows beside it; on compact layouts the detail replaces the list.
+
+**Required props:** `primary`, `detail`, `selected`. **Optional:** `empty`, `ratio`, `resizable`.
+
+**Use when**
+- Mail, tickets, messages, files: a list people move through while reading
+- Settings with many sections on wide screens
+
+**Don't use when**
+- Under about 640px of surface width: it becomes a list then a page, so don't use it for a single record
+- Two unrelated things side by side: use Columns
+
+**Accessibility** (role: none; the primary and detail keep their own roles)
+- Selection in the list moves focus to the detail on compact layouts and announces the item's name
+- A Back control returns to the list on compact layouts
+- The list keeps its scroll position and selection while the detail changes
+
+**Agents:** Selects an item in the primary by name and reads the detail; on compact layouts it goes back to choose another.
+
+**Rendering rules**
+- Wide: two panes with a border between; the list scrolls independently
+- Compact: the list, then the detail as a page with a back control when an item is selected
+- Selection state in the list uses color.selection.*
+- Resizable splits keep the handle at size.target.min wide with a visible focus ring
 
 ## Views
 

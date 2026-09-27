@@ -358,6 +358,22 @@
         "additionalProperties": false
       }
     },
+    "help.open": {
+      "description": "Open help: the documentation, support, service status or a legal page",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "topic"
+        ],
+        "additionalProperties": false
+      }
+    },
     "hotel.book": {
       "description": "Book a hotel and take payment",
       "risk": "consequential",
@@ -508,6 +524,10 @@
         ],
         "additionalProperties": false
       }
+    },
+    "notifications.open": {
+      "description": "Open the notifications panel",
+      "risk": "none"
     },
     "notifications.save": {
       "description": "Save notification settings",

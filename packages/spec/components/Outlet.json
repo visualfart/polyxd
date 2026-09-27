@@ -1,0 +1,22 @@
+{
+  "name": "Outlet",
+  "category": "shell",
+  "shell": true,
+  "summary": "Where the current screen renders inside a Frame: the host fills it with a screen document or a generated surface.",
+  "props": {
+    "label": { "$ref": "#/$defs/DynamicString", "description": "Names the region for assistive tech when the screen has no title yet" },
+    "loading": { "$ref": "#/$defs/Id", "description": "What shows while a screen is on its way; the renderer's skeleton when absent" }
+  },
+  "required": [],
+  "whenToUse": ["The main region of a Frame"],
+  "whenNotToUse": ["Anywhere else: an outlet is the frame's, and a document has at most one"],
+  "accessibility": {
+    "role": "main",
+    "requirements": ["The screen's h1 is the first heading inside it", "Focus moves to the screen's heading when the outlet's content changes on navigation"]
+  },
+  "agent": "Everything it can act on is here; the frame around it is for getting elsewhere.",
+  "rendering": ["Takes the main region's width; padding space.inset.comfortable (compact: default)", "While loading, a skeleton shaped by the coming screen's pattern"],
+  "mappings": { "web": "the router's outlet", "ios": "NavigationStack content", "android": "NavHost" },
+  "a2ui": "custom",
+  "sources": []
+}
