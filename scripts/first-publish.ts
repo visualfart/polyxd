@@ -49,10 +49,29 @@ if (!trustOnly) {
 
 const pkgOf = (name: string) => JSON.parse(readFileSync(join(ROOT, "packages", name, "package.json"), "utf8")) as { name: string; version: string };
 
-/** Whether the release workflow is already a trusted publisher of this package. */
-const trusted = (name: string) => {
+/**
+ * Whether the release workflow is already a trusted publisher of this package. Reading trust is an
+ * account operation too: without a recent approval npm refuses (EOTP), which is "can't tell", not
+ * "untrusted", so the caller gets a fresh approval and asks again.
+ */
+const trustState = (name: string): boolean | "ask" => {
   const r = spawnSync("npm", ["trust", "list", name, "--json"], { encoding: "utf8" });
+  if (/EOTP|one-time password/i.test(`${r.stdout}${r.stderr}`)) return "ask";
   return r.status === 0 && r.stdout.includes(`"file": "release.yml"`) && r.stdout.includes(REPO);
+};
+/** One approval in the browser (npm offers to skip the next ones for five minutes). */
+const approve = (name: string) => {
+  console.log(`\nnpm needs you to approve account changes in the browser. Press Enter when it asks, approve, and tick "skip for 5 minutes" if offered.\n`);
+  spawnSync("npm", ["trust", "list", name], { cwd: ROOT, stdio: "inherit" });
+};
+const trusted = (name: string) => {
+  let t = trustState(name);
+  if (t === "ask") {
+    approve(name);
+    t = trustState(name);
+  }
+  if (t === "ask") throw new Error(`npm still wants approval to read ${name}'s trust settings; run this again and approve in the browser.`);
+  return t;
 };
 
 /**
@@ -79,22 +98,16 @@ const ask = async (q: string) => {
 };
 
 /**
- * Trust needs two-factor authentication: npm answers 400 without a fresh code. Trust right after a
- * first publish can also race the registry. So: try with the current code; on failure ask for a new
- * one (Enter alone retries as is); give up after five tries.
+ * Trust needs two-factor authentication. npm's own approval prompt runs in this terminal first; if
+ * it still refuses, ask for a code from the authenticator app (Enter alone retries); five tries.
  */
 const trust = async (name: string) => {
   for (let i = 0; i < 5; i++) {
     const args = ["trust", "github", name, "--repo", REPO, "--file", "release.yml", "--yes", ...(otp ? [`--otp=${otp}`] : [])];
-    const r = spawnSync("npm", args, { cwd: ROOT, encoding: "utf8" });
+    const r = spawnSync("npm", args, { cwd: ROOT, stdio: "inherit" });
     if (r.status === 0) return console.log(`  trusted`);
-    const why = `${r.stdout}${r.stderr}`;
-    if (/E400|E401|EOTP|two-factor|one-time/i.test(why)) {
-      otp = await ask("  npm wants a two-factor code for this. Enter a code from your authenticator app (Enter alone to retry): ");
-    } else {
-      process.stdout.write(why.split("\n").filter((l) => /error/i.test(l)).slice(0, 3).join("\n") + "\n  trying again in 10 s…\n");
-      execFileSync("sleep", ["10"]);
-    }
+    if (trustState(name) === true) return console.log(`  trusted`);
+    otp = await ask("  npm refused. Enter a code from your authenticator app, or Enter alone to try again: ");
   }
   throw new Error(`Couldn't trust the release workflow for ${name}. Run \`npm run release:first -- --trust-only\` to pick up where this stopped, or add it on npmjs.com: the package's Settings, Trusted publishing, GitHub Actions, ${REPO}, release.yml.`);
 };
