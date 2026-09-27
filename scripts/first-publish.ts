@@ -4,11 +4,16 @@
  * machine (2FA prompt), then told to trust the workflow for every release after. Run by a person:
  *
  *   npm run release:first
+ *   npm run release:first -- --trust-only     only the trust step (everything is already published)
  *
+ * Trusting a package is an account change, so npm wants a fresh two-factor code for it even when
+ * publishing didn't: the script asks for one from your authenticator app, reuses it while npm
+ * accepts it, and asks again when it expires.
  * It builds and checks everything through release.ts first, publishes only what npm doesn't have
  * at all, and prints what it did. Nothing else about releases changes.
  */
 import { execFileSync, spawnSync } from "node:child_process";
+import { createInterface } from "node:readline/promises";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -36,8 +41,11 @@ if (who.status !== 0) {
 }
 console.log(`Signed in to npm as ${who.stdout.trim()}.`);
 
-console.log("Checking every package first (release:check)…");
-execFileSync("npm", ["run", "release:check"], { cwd: ROOT, stdio: "inherit" });
+const trustOnly = process.argv.includes("--trust-only");
+if (!trustOnly) {
+  console.log("Checking every package first (release:check)…");
+  execFileSync("npm", ["run", "release:check"], { cwd: ROOT, stdio: "inherit" });
+}
 
 const pkgOf = (name: string) => JSON.parse(readFileSync(join(ROOT, "packages", name, "package.json"), "utf8")) as { name: string; version: string };
 
@@ -61,19 +69,38 @@ const owned = () => {
 };
 const exists = (name: string) => owned().has(name) || onNpm(name);
 
-/** Trust right after a first publish can race the registry; try a few times. */
-const trust = (name: string) => {
-  for (let i = 0; i < 6; i++) {
-    const r = spawnSync("npm", ["trust", "github", name, "--repo", REPO, "--file", "release.yml", "--yes"], { cwd: ROOT, stdio: "inherit" });
-    if (r.status === 0) return;
-    console.log(`  not yet, trying again in 10 s…`);
-    execFileSync("sleep", ["10"]);
+/** A one-time code from the authenticator app, kept while npm keeps accepting it. */
+let otp = "";
+const ask = async (q: string) => {
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  const a = (await rl.question(q)).trim();
+  rl.close();
+  return a;
+};
+
+/**
+ * Trust needs two-factor authentication: npm answers 400 without a fresh code. Trust right after a
+ * first publish can also race the registry. So: try with the current code; on failure ask for a new
+ * one (Enter alone retries as is); give up after five tries.
+ */
+const trust = async (name: string) => {
+  for (let i = 0; i < 5; i++) {
+    const args = ["trust", "github", name, "--repo", REPO, "--file", "release.yml", "--yes", ...(otp ? [`--otp=${otp}`] : [])];
+    const r = spawnSync("npm", args, { cwd: ROOT, encoding: "utf8" });
+    if (r.status === 0) return console.log(`  trusted`);
+    const why = `${r.stdout}${r.stderr}`;
+    if (/E400|E401|EOTP|two-factor|one-time/i.test(why)) {
+      otp = await ask("  npm wants a two-factor code for this. Enter a code from your authenticator app (Enter alone to retry): ");
+    } else {
+      process.stdout.write(why.split("\n").filter((l) => /error/i.test(l)).slice(0, 3).join("\n") + "\n  trying again in 10 s…\n");
+      execFileSync("sleep", ["10"]);
+    }
   }
-  throw new Error(`Couldn't trust the release workflow for ${name}; run this again in a minute (it picks up where it stopped).`);
+  throw new Error(`Couldn't trust the release workflow for ${name}. Run \`npm run release:first -- --trust-only\` to pick up where this stopped, or add it on npmjs.com: the package's Settings, Trusted publishing, GitHub Actions, ${REPO}, release.yml.`);
 };
 
 const have = owned();
-const missing = ORDER.filter((name) => !have.has(pkgOf(name).name) && !onNpm(pkgOf(name).name));
+const missing = trustOnly ? [] : ORDER.filter((name) => !have.has(pkgOf(name).name) && !onNpm(pkgOf(name).name));
 if (missing.length) console.log(`\n${missing.length} package(s) not on npm yet: ${missing.join(", ")}\nEach publish may ask you to authenticate.\n`);
 for (const name of missing) {
   const dir = join(ROOT, "packages", name);
@@ -90,7 +117,7 @@ const untrusted = ORDER.map((name) => pkgOf(name).name).filter((name) => !truste
 if (untrusted.length) console.log(`\n${untrusted.length} package(s) don't trust the release workflow yet: ${untrusted.join(", ")}\n`);
 for (const name of untrusted) {
   console.log(`\n→ trust ${name}`);
-  trust(name);
+  await trust(name);
 }
 
 if (!missing.length && !untrusted.length) console.log("\nEvery package is on npm and trusts the release workflow.");
