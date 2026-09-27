@@ -19,6 +19,8 @@ const Screens = lazy(() => import("./pages/Screens.tsx").then((m) => ({ default:
 const Screen = lazy(() => import("./pages/Screen.tsx").then((m) => ({ default: m.Screen })));
 // The tokens editor carries the mapper and the contract; it loads when opened.
 const TokensEditor = lazy(() => import("./pages/TokensEditor.tsx").then((m) => ({ default: m.TokensEditor })));
+// The landing carries the renderer, three themes and its own stylesheet; it loads only when shown.
+const Landing = lazy(() => import("./pages/Landing.tsx").then((m) => ({ default: m.Landing })));
 
 interface Session {
   me: Me;
@@ -48,7 +50,8 @@ export function App() {
         <Route path="/signin" element={me.user ? <Navigate to="/" replace /> : <SignIn />} />
         <Route path="/reset-password" element={<SignIn start="reset" />} />
         <Route path="/invite/:id" element={<Invite />} />
-        <Route path="/" element={me.user ? <Workspaces /> : <Navigate to="/signin" replace />} />
+        <Route path="/" element={me.user ? <Workspaces /> : <Suspense fallback={null}><Landing /></Suspense>} />
+        <Route path="/welcome" element={<Suspense fallback={null}><Landing /></Suspense>} />
         <Route path="/w/:slug/*" element={me.user ? <Shell /> : <Navigate to="/signin" replace />} />
       </Routes>
       {toast && (

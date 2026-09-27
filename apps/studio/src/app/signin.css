@@ -1,0 +1,206 @@
+/* Sign in: the form on the left, a quiet paper panel on the right that carries one thing. Phone: the form alone. */
+.signin {
+  min-height: 100%;
+  display: flex;
+}
+.signin-main {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+}
+.signin-top {
+  min-height: 72px;
+  padding: 16px clamp(20px, 5vw, 48px) 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.signin-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 19px;
+  line-height: 1;
+  text-decoration: none;
+}
+.signin-brand:hover {
+  text-decoration: none;
+}
+.signin-brand svg {
+  flex: none;
+}
+.signin-wordmark {
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.signin-product {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-left: -3px;
+}
+.signin-back {
+  font-size: 13px;
+  color: var(--muted);
+}
+.signin-back:hover {
+  color: var(--signal-ink);
+}
+.signin-form {
+  width: 400px;
+  max-width: calc(100% - 40px);
+  margin: auto;
+  padding: 32px 0 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.signin-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.signin-head h1 {
+  font-size: 30px;
+  line-height: 36px;
+  letter-spacing: -0.02em;
+}
+.signin-sub {
+  color: var(--muted);
+}
+.signin-local {
+  font-size: 12px;
+  color: var(--muted);
+}
+.signin-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.signin-or span {
+  flex-grow: 1;
+  height: 1px;
+  background: var(--line);
+}
+.signin-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.signin-password {
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+}
+.signin-password:focus-within {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+.signin-password input {
+  flex-grow: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0 12px;
+  border-radius: 8px;
+}
+.signin-password input:focus-visible {
+  outline: none;
+}
+.signin-show {
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 0 12px;
+  height: 100%;
+  cursor: pointer;
+  border-radius: 0 8px 8px 0;
+}
+.signin-show:hover {
+  color: var(--ink);
+}
+.signin .input {
+  height: 44px;
+  padding: 0 12px;
+}
+.signin-link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: var(--signal-ink);
+  cursor: pointer;
+}
+.signin-link:hover {
+  text-decoration: underline;
+}
+.signin-label-row .signin-link {
+  font-size: 13px;
+}
+.signin-terms {
+  font-size: 12px;
+  color: var(--muted);
+}
+.signin-switch {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* The panel: paper, the mark looking at the form, one sentence, three names. */
+.signin-panel {
+  flex: 1 1 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 64px;
+  background: var(--ground);
+  border-left: 1px solid var(--line);
+  background-image: radial-gradient(color-mix(in srgb, var(--line) 70%, transparent) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  background-position: center;
+}
+.signin-panel-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 420px;
+}
+.signin-panel-inner svg {
+  color: var(--ink);
+}
+.signin-claim {
+  font-family: var(--display);
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.signin-products {
+  display: flex;
+  gap: 18px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+@media (min-width: 900px) {
+  .signin-panel {
+    display: flex;
+  }
+}

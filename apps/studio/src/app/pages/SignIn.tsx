@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { api } from "../api.ts";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useSession } from "../App.tsx";
 import { Mark } from "../mark.tsx";
+import "../signin.css";
 
 type Mode = "signin" | "signup" | "forgot" | "reset";
 
@@ -15,11 +15,17 @@ async function auth(path: string, body: unknown): Promise<any> {
   return data;
 }
 
+/** `?mode=signup` or `?mode=forgot` opens that form; anything else is the sign-in. */
+function startMode(start: Mode, param: string | null): Mode {
+  if (start === "reset") return "reset";
+  return param === "signup" || param === "forgot" ? param : start;
+}
+
 export function SignIn({ start = "signin" }: { start?: Mode }) {
   const { me, refresh } = useSession();
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const [mode, setMode] = useState<Mode>(start);
+  const [mode, setMode] = useState<Mode>(() => startMode(start, params.get("mode")));
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -30,6 +36,11 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
   const google = me.signIn?.google;
   const needsVerification = me.signIn?.emailVerification;
 
+  const switchTo = (m: Mode) => {
+    setMode(m);
+    setError("");
+    setNotice("");
+  };
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
@@ -67,60 +78,90 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
     const r = await auth("sign-in/social", { provider: "google", callbackURL: "/" });
     if (r.url) location.href = r.url;
   };
-  const title = { signin: "Sign in to Studio", signup: "Create your account", forgot: "Reset your password", reset: "Choose a new password" }[mode];
+  const title = { signin: "Sign in to Studio", signup: "Create your workspace", forgot: "Reset your password", reset: "Choose a new password" }[mode];
   const sub = { signin: null, signup: "Free for one workspace. No card needed.", forgot: "Enter your email and we'll send a link to choose a new one.", reset: "At least 12 characters." }[mode];
+  const cta = { signin: "Sign in", signup: "Create account", forgot: "Send reset link", reset: "Save and sign in" }[mode];
   return (
-    <div className="auth">
-      <main>
-        <div style={{ height: 72, padding: "0 48px", display: "flex", alignItems: "center", gap: 10 }}>
-          <span className="brand"><Mark /><span className="name">Polyxd Studio</span></span>
+    <div className="signin">
+      <main className="signin-main">
+        <div className="signin-top">
+          <Link className="signin-brand" to="/welcome" aria-label="Polyxd Studio">
+            <Mark size={28} />
+            <span className="signin-wordmark">Polyxd</span>
+            <span className="signin-product">Studio</span>
+          </Link>
+          <Link className="signin-back" to="/welcome">
+            <span aria-hidden="true">← </span>Back to studio.polyxd.com
+          </Link>
         </div>
-        <form className="form" onSubmit={submit}>
-          <div>
+        <form className="signin-form" onSubmit={submit}>
+          <div className="signin-head">
             <h1>{title}</h1>
-            {sub && <p className="muted" style={{ marginTop: 6 }}>{sub}</p>}
-            {!needsVerification && mode !== "reset" && <p className="muted small" style={{ marginTop: 6 }}>Local development: no email goes out, so an account works as soon as it's created.</p>}
+            {sub && <p className="signin-sub">{sub}</p>}
+            {!needsVerification && mode !== "reset" && <p className="signin-local">Local development: no email goes out, so an account works as soon as it's created.</p>}
           </div>
-          {notice && <div className="notice ok" role="status"><div className="body">{notice}</div></div>}
-          {error && <div className="notice bad" role="alert"><div className="body">{error}</div></div>}
+          <div aria-live="polite">
+            {notice && <div className="notice ok" role="status"><div className="body">{notice}</div></div>}
+          </div>
+          <div aria-live="assertive">
+            {error && <div className="notice bad" role="alert"><div className="body">{error}</div></div>}
+          </div>
           {google && (mode === "signin" || mode === "signup") && (
             <>
               <button type="button" className="btn full" onClick={withGoogle}>Continue with Google</button>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, color: "var(--muted)", fontSize: 12 }}><span style={{ flexGrow: 1, height: 1, background: "var(--line)" }} />or<span style={{ flexGrow: 1, height: 1, background: "var(--line)" }} /></div>
+              <div className="signin-or" aria-hidden="true"><span />or<span /></div>
             </>
           )}
           {mode !== "reset" && (
-            <div className="field"><label htmlFor="email">{mode === "signup" ? "Work email" : "Email"}</label><input id="email" className="input" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus /></div>
+            <div className="field">
+              <label htmlFor="email">{mode === "signup" ? "Work email" : "Email"}</label>
+              <input id="email" className="input" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
+            </div>
           )}
           {mode === "signup" && (
-            <div className="field"><label htmlFor="name">Full name</label><input id="name" className="input" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} required /></div>
+            <div className="field">
+              <label htmlFor="name">Full name</label>
+              <input id="name" className="input" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} required />
+            </div>
           )}
           {mode !== "forgot" && (
             <div className="field">
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div className="signin-label-row">
                 <label htmlFor="password">{mode === "reset" ? "New password" : "Password"}</label>
-                {mode === "signin" && <button type="button" className="btn ghost sm" style={{ height: "auto", padding: 0 }} onClick={() => setMode("forgot")}>Forgot password?</button>}
+                {mode === "signin" && <button type="button" className="signin-link" onClick={() => switchTo("forgot")}>Forgot password?</button>}
               </div>
-              <div style={{ height: 44, boxSizing: "border-box", border: "1px solid var(--line)", borderRadius: 8, display: "flex", alignItems: "center" }}>
-                <input id="password" type={show ? "text" : "password"} autoComplete={mode === "signin" ? "current-password" : "new-password"} minLength={mode === "signin" ? undefined : 12} value={password} onChange={(e) => setPassword(e.target.value)} required style={{ flexGrow: 1, height: "100%", border: 0, background: "transparent", padding: "0 10px", font: "inherit" }} />
-                <button type="button" style={{ border: 0, background: "transparent", font: "inherit", fontSize: 13, color: "var(--muted)", padding: "0 12px" }} onClick={() => setShow((s) => !s)} aria-pressed={show}>{show ? "Hide" : "Show"}</button>
+              <div className="signin-password">
+                <input
+                  id="password"
+                  type={show ? "text" : "password"}
+                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                  minLength={mode === "signin" ? undefined : 12}
+                  aria-describedby={mode === "signin" ? undefined : "password-help"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoFocus={mode === "reset"}
+                />
+                <button type="button" className="signin-show" onClick={() => setShow((s) => !s)} aria-pressed={show} aria-controls="password">{show ? "Hide" : "Show"}</button>
               </div>
-              {mode !== "signin" && <span className="help">At least 12 characters. A sentence you'll remember beats symbols you won't.</span>}
+              {mode !== "signin" && <span className="help" id="password-help">At least 12 characters. A sentence you'll remember beats symbols you won't.</span>}
             </div>
           )}
-          <button className="btn primary full" type="submit" disabled={busy}>{{ signin: "Sign in", signup: "Create account", forgot: "Send reset link", reset: "Save and sign in" }[mode]}</button>
-          {mode === "signup" && <p className="small muted">By creating an account you agree to the <a href="https://polyxd.com/terms">Terms</a> and <a href="https://polyxd.com/privacy">Privacy policy</a>.</p>}
-          <p className="muted" style={{ fontSize: 14 }}>
-            {mode === "signin" && <>New to Studio? <button type="button" className="btn ghost sm" style={{ height: "auto", padding: 0, color: "var(--signal-ink)" }} onClick={() => setMode("signup")}>Create an account</button></>}
-            {mode === "signup" && <>Already have an account? <button type="button" className="btn ghost sm" style={{ height: "auto", padding: 0, color: "var(--signal-ink)" }} onClick={() => setMode("signin")}>Sign in</button></>}
-            {(mode === "forgot" || mode === "reset") && <button type="button" className="btn ghost sm" style={{ height: "auto", padding: 0, color: "var(--signal-ink)" }} onClick={() => setMode("signin")}>Back to sign in</button>}
+          <button className="btn primary full" type="submit" disabled={busy}>{busy ? "One moment…" : cta}</button>
+          {mode === "signup" && <p className="signin-terms">By creating an account you agree to the <a href="https://polyxd.com/terms">Terms</a> and <a href="https://polyxd.com/privacy">Privacy policy</a>.</p>}
+          <p className="signin-switch">
+            {mode === "signin" && <>New to Studio? <button type="button" className="signin-link" onClick={() => switchTo("signup")}>Create a workspace</button></>}
+            {mode === "signup" && <>Already have an account? <button type="button" className="signin-link" onClick={() => switchTo("signin")}>Sign in</button></>}
+            {(mode === "forgot" || mode === "reset") && <button type="button" className="signin-link" onClick={() => switchTo("signin")}>Back to sign in</button>}
           </p>
         </form>
       </main>
-      <aside>
-        <span style={{ fontFamily: "var(--display)", fontSize: 22, fontWeight: 700, color: "var(--signal)" }}>p</span>
-        <p>Screens written on demand, in your design system, checked before anyone sees them.</p>
-        <p>Studio is where your design system team decides what those screens may look like, and reviews what they actually look like.</p>
+      <aside className="signin-panel" aria-label="About Polyxd">
+        <div className="signin-panel-inner">
+          <Mark size={104} state="looking" ink="var(--ink)" title="The Polyxd mark, looking toward the form" />
+          <p className="signin-claim">Screens written on demand, in your design system, checked before anyone sees them.</p>
+          <p className="signin-products"><span>Spec</span><span>Renderer</span><span>Verifier</span></p>
+        </div>
       </aside>
     </div>
   );

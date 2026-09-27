@@ -6,6 +6,7 @@ Run it yourself on your own Cloudflare account, or use the hosted one at studio.
 
 ## What works
 
+- A landing page at `/` for anyone signed out (and at `/welcome` for anyone signed in): what Studio does, in the site's voice, with the spec's send-money example drawn live by `@polyxd/react` and cycled through three design systems, product images captured from Studio itself (`public/landing/`), and the sign-in split beside it (`/signin`, `?mode=signup` or `?mode=forgot` open that form).
 - Sign up and sign in through [better-auth](https://www.better-auth.com), open source and running inside the Worker: email and password with verification, password reset, Google when a client is configured; two-step verification and SAML/OIDC single sign-on are its plugins, to add when a customer needs them. Workspaces, invites with roles, API keys.
 - Import a design system as it is, from an npm package (public, or private through a read-only registry token kept encrypted, an uploaded `npm pack` tarball, or `polyxd studio push` from inside your network), a Tokens Studio file, a W3C DTCG file, or CSS custom properties.
 - Or **start from a template**: one of the twelve original template packs (`packages/ds-{mono,civic,sketch,wireframe,editorial,pastel,health,finance,glass,terminal,brutalist,neon}`, bundled into the Worker as JSON), or a blank one (Mono's structure with a grey ramp). Each is shown with one line of character and a strip of swatches from its own tokens. It becomes a design system of the workspace with its tokens copied, scanned, and every role mapped to the pack's semantic token of the same name (exact matches accepted), ready to tune and publish.
@@ -104,6 +105,6 @@ The hosted one at studio.polyxd.com is this same configuration.
 | `src/export/` | The six export formats |
 | `src/worker/` | The API on Workers: auth, workspaces, design systems, templates, editing, export, components, rules, screens |
 | `src/screens/` | Screens, shared by the Worker and the app: the schema read without ajv (Workers refuse generated code), the checker with the spec's shell rules, the tree edits |
-| `src/app/` | The React app; `src/app/screen/` is the editor's tree, preview, property panel and themes; `pages/TokensEditor.tsx` the tokens editor |
+| `src/app/` | The React app; `src/app/screen/` is the editor's tree, preview, property panel and themes; `pages/TokensEditor.tsx` the tokens editor; `pages/Landing.tsx` and `landing.css` the landing, `pages/SignIn.tsx` and `signin.css` the sign-in |
 | `migrations/` | D1 schema |
 | `../../design/studio` | The design every screen here follows |

@@ -7,7 +7,7 @@ order: 23
 
 # Studio
 
-[Studio](https://studio.polyxd.com) is the team's side of Polyxd: open source (Apache-2.0, in `apps/studio`), running on Cloudflare Workers with D1 and R2, and the same code whether you use the hosted one or your own.
+[Studio](https://studio.polyxd.com) is the team's side of Polyxd: open source (Apache-2.0, in `apps/studio`), running on Cloudflare Workers with D1 and R2, and the same code whether you use the hosted one or your own. The hosted Studio is free for one workspace; a small fee may later cover its storage.
 
 ## Your design system
 
@@ -51,7 +51,7 @@ curl -H "Authorization: Bearer $POLYXD_STUDIO_KEY" \
   https://studio.polyxd.com/api/w/<workspace>/screens/<key>
 ```
 
-It returns the document with `surface.origin: "authored"` and an `X-Polyxd-Screen-Version` header. Render it with `PolyxdSurface` (or `PolyxdFrame` for a shell) exactly like a generated one.
+It returns the document with `surface.origin: "authored"` and an `X-Polyxd-Screen-Version` header. A key reads published screens and design systems and can't change anything; fetch on the server or at build time, since a screen changes when someone publishes, not on every request. Render it with `PolyxdSurface` (or `PolyxdFrame` for a shell) exactly like a generated one.
 
 ## Team
 
