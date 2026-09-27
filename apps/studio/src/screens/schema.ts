@@ -163,5 +163,7 @@ export function skeleton(component: string, id: string, makeChild?: (allowed: st
   }
   // A Media needs alt text unless decorative; a new one says so rather than failing.
   if (component === "Media") node.alt = "What the picture shows";
+  // A Custom names the host's component in dotted lower case; a placeholder that fits the pattern.
+  if (component === "Custom") node.name = "brand.logo";
   return node;
 }
