@@ -1,0 +1,369 @@
+{
+  "id": "permit.address-change",
+  "title": "Update the address on your permit",
+  "ask": [
+    "I've moved, update the address on my permit",
+    "change the address on my parking permit",
+    "I have moved house",
+    "move my permit to my new address"
+  ],
+  "keywords": [
+    "moved",
+    "moving",
+    "address"
+  ],
+  "capabilities": [
+    "permit.review",
+    "answer.change"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "permit": "view:permit",
+    "draft": "view:addressDraft"
+  },
+  "fill": {
+    "line1": "/draft/line1",
+    "line2": "/draft/line2",
+    "town": "/draft/town",
+    "postcode": "/draft/postcode",
+    "moveDate": "/draft/moveDate",
+    "vehicleUnchanged": "/draft/vehicleUnchanged",
+    "step": "/draft/step"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "permit-address-change",
+      "title": "Update the address on your permit",
+      "intent": "permit.address_change",
+      "pattern": "multi-step-form"
+    },
+    "root": "steps",
+    "components": [
+      {
+        "id": "steps",
+        "component": "Steps",
+        "key": "address_steps",
+        "kind": "wizard",
+        "current": {
+          "path": "/draft/step"
+        },
+        "steps": [
+          {
+            "key": "address",
+            "title": "Your new address",
+            "content": "address_fields"
+          },
+          {
+            "key": "move",
+            "title": "When you move",
+            "content": "move_fields"
+          },
+          {
+            "key": "vehicle",
+            "title": "Your vehicle",
+            "content": "vehicle_fields"
+          },
+          {
+            "key": "check",
+            "title": "Check your answers",
+            "content": "check_answers"
+          }
+        ],
+        "finish": {
+          "label": "Save and continue",
+          "action": {
+            "event": {
+              "name": "permit.review",
+              "context": {
+                "line1": {
+                  "path": "/draft/line1"
+                },
+                "line2": {
+                  "path": "/draft/line2"
+                },
+                "town": {
+                  "path": "/draft/town"
+                },
+                "postcode": {
+                  "path": "/draft/postcode"
+                },
+                "moveDate": {
+                  "path": "/draft/moveDate"
+                },
+                "vehicleUnchanged": {
+                  "path": "/draft/vehicleUnchanged"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "address_fields",
+        "component": "Group",
+        "children": [
+          "current_address",
+          "line1",
+          "line2",
+          "town",
+          "postcode"
+        ]
+      },
+      {
+        "id": "current_address",
+        "component": "Text",
+        "key": "current_address",
+        "variant": "supporting",
+        "text": {
+          "path": "/permit/addressSentence"
+        }
+      },
+      {
+        "id": "line1",
+        "component": "TextInput",
+        "key": "line1",
+        "label": "Address line 1",
+        "value": {
+          "path": "/draft/line1"
+        },
+        "required": true,
+        "autocomplete": "address-line1",
+        "validation": {
+          "maxLength": 60
+        }
+      },
+      {
+        "id": "line2",
+        "component": "TextInput",
+        "key": "line2",
+        "label": "Address line 2",
+        "help": "Optional",
+        "value": {
+          "path": "/draft/line2"
+        },
+        "autocomplete": "address-line2",
+        "validation": {
+          "maxLength": 60
+        }
+      },
+      {
+        "id": "town",
+        "component": "TextInput",
+        "key": "town",
+        "label": "Town or city",
+        "value": {
+          "path": "/draft/town"
+        },
+        "required": true,
+        "autocomplete": "address-level2",
+        "validation": {
+          "maxLength": 40
+        }
+      },
+      {
+        "id": "postcode",
+        "component": "TextInput",
+        "key": "postcode",
+        "label": "Postcode",
+        "help": "Your zone comes from the postcode. Permits cover WX1, WX2 and WX3.",
+        "value": {
+          "path": "/draft/postcode"
+        },
+        "required": true,
+        "autocomplete": "postal-code",
+        "validation": {
+          "minLength": 6,
+          "maxLength": 8,
+          "message": "Enter a full postcode, like WX1 2HD"
+        }
+      },
+      {
+        "id": "move_fields",
+        "component": "Group",
+        "children": [
+          "move_date",
+          "move_note"
+        ]
+      },
+      {
+        "id": "move_date",
+        "component": "DateInput",
+        "key": "move_date",
+        "label": "What date do you move in?",
+        "help": "The permit changes on this date. It can be today or a date in the next 3 months.",
+        "value": {
+          "path": "/draft/moveDate"
+        },
+        "min": {
+          "path": "/draft/today"
+        },
+        "required": true
+      },
+      {
+        "id": "move_note",
+        "component": "Text",
+        "key": "move_note",
+        "variant": "supporting",
+        "text": "Until then your permit keeps working at your current address."
+      },
+      {
+        "id": "vehicle_fields",
+        "component": "Group",
+        "children": [
+          "vehicle_now",
+          "vehicle_same"
+        ]
+      },
+      {
+        "id": "vehicle_now",
+        "component": "Text",
+        "key": "vehicle_now",
+        "text": {
+          "path": "/permit/vehicleSentence"
+        }
+      },
+      {
+        "id": "vehicle_same",
+        "component": "Choice",
+        "key": "vehicle_same",
+        "label": "Is the permit still for this vehicle?",
+        "options": [
+          {
+            "value": true,
+            "label": "Yes, the same vehicle"
+          },
+          {
+            "value": false,
+            "label": "No, a different vehicle",
+            "description": "We update the address now and write to you about the vehicle"
+          }
+        ],
+        "value": {
+          "path": "/draft/vehicleUnchanged"
+        },
+        "required": true
+      },
+      {
+        "id": "check_answers",
+        "component": "Group",
+        "children": [
+          "answers",
+          "check_note"
+        ]
+      },
+      {
+        "id": "answers",
+        "component": "DetailList",
+        "key": "answers",
+        "items": [
+          {
+            "key": "line1",
+            "label": "Address line 1",
+            "value": {
+              "path": "/draft/line1"
+            }
+          },
+          {
+            "key": "line2",
+            "label": "Address line 2",
+            "value": {
+              "path": "/draft/line2"
+            }
+          },
+          {
+            "key": "town",
+            "label": "Town or city",
+            "value": {
+              "path": "/draft/town"
+            }
+          },
+          {
+            "key": "postcode",
+            "label": "Postcode",
+            "value": {
+              "path": "/draft/postcode"
+            }
+          },
+          {
+            "key": "move_date",
+            "label": "Date you move in",
+            "value": {
+              "path": "/draft/moveDate"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "vehicle",
+            "label": "Vehicle",
+            "value": {
+              "path": "/permit/vehicleLine"
+            }
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "answer.change",
+            "context": {
+              "line1": {
+                "path": "/draft/line1"
+              },
+              "line2": {
+                "path": "/draft/line2"
+              },
+              "town": {
+                "path": "/draft/town"
+              },
+              "postcode": {
+                "path": "/draft/postcode"
+              },
+              "moveDate": {
+                "path": "/draft/moveDate"
+              },
+              "vehicleUnchanged": {
+                "path": "/draft/vehicleUnchanged"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "check_note",
+        "component": "Text",
+        "key": "check_note",
+        "variant": "supporting",
+        "text": "Next we show you the zone for the new address and anything to pay. Nothing changes until you confirm."
+      }
+    ],
+    "data": {
+      "permit": {
+        "id": "perm_1",
+        "zone": "C",
+        "zoneName": "Zone C, Northfield",
+        "registration": "WX21 TFR",
+        "vehicleLine": "Blue Toyota Yaris, WX21 TFR",
+        "vehicleSentence": "Your permit is for a blue Toyota Yaris, WX21 TFR.",
+        "start": "2025-11-13",
+        "expiry": "2026-11-13",
+        "daysLeft": 48,
+        "price": 85,
+        "address": "14 Larch Close, Wexley, WX2 4QR",
+        "addressSentence": "Your permit is at 14 Larch Close, Wexley, WX2 4QR now.",
+        "postcode": "WX2 4QR"
+      },
+      "draft": {
+        "line1": "",
+        "line2": "",
+        "town": "Wexley",
+        "postcode": "",
+        "moveDate": null,
+        "vehicleUnchanged": true,
+        "step": 0,
+        "today": "2026-09-27"
+      }
+    }
+  }
+}

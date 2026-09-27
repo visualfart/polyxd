@@ -1,0 +1,147 @@
+{
+  "id": "permit.renew",
+  "title": "Renew your parking permit",
+  "ask": [
+    "renew my parking permit",
+    "my permit is expiring",
+    "extend my parking permit for another year",
+    "renew permit"
+  ],
+  "keywords": [
+    "renew",
+    "renewal",
+    "expiring",
+    "expires",
+    "extend"
+  ],
+  "capabilities": [
+    "permit.renew"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "renewal": "view:permitRenewal"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "permit-renew",
+      "title": "Renew your parking permit",
+      "intent": "permit.renew",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "permit_renew_confirm",
+        "title": "Renew your parking permit for a year?",
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/renewal/price"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        "summary": "summary",
+        "consequence": {
+          "path": "/renewal/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/renewal/label"
+          },
+          "action": {
+            "event": {
+              "name": "permit.renew",
+              "context": {
+                "permitId": {
+                  "path": "/renewal/permitId"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Not now",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "renewal_summary",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "zone",
+            "label": "Zone",
+            "value": {
+              "path": "/renewal/zoneName"
+            }
+          },
+          {
+            "key": "vehicle",
+            "label": "Vehicle",
+            "value": {
+              "path": "/renewal/vehicleLine"
+            }
+          },
+          {
+            "key": "from",
+            "label": "New permit starts",
+            "value": {
+              "path": "/renewal/currentExpiry"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "until",
+            "label": "New permit ends",
+            "value": {
+              "path": "/renewal/newExpiry"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "price",
+            "label": "Price for the year",
+            "value": {
+              "path": "/renewal/price"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            },
+            "total": true
+          }
+        ]
+      }
+    ],
+    "data": {
+      "renewal": {
+        "permitId": "perm_1",
+        "zoneName": "Zone C, Northfield",
+        "registration": "WX21 TFR",
+        "vehicleLine": "Blue Toyota Yaris, WX21 TFR",
+        "currentExpiry": "2026-11-13",
+        "newExpiry": "2027-11-13",
+        "price": 85,
+        "label": "Pay £85.00",
+        "consequence": "We take £85.00 from the card you paid with last time. The new permit starts when this one ends, on 13 November 2026. You can cancel within 14 days for a full refund."
+      }
+    }
+  }
+}

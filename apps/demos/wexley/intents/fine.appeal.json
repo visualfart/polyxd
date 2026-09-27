@@ -1,0 +1,229 @@
+{
+  "id": "fine.appeal",
+  "title": "Appeal a parking fine",
+  "ask": [
+    "appeal this parking fine",
+    "challenge my parking ticket",
+    "I want to appeal a penalty charge notice",
+    "dispute a parking fine"
+  ],
+  "keywords": [
+    "appeal",
+    "fine",
+    "ticket",
+    "pcn",
+    "penalty",
+    "challenge",
+    "dispute"
+  ],
+  "slots": {
+    "pcn": "\\b(?<pcn>WX\\s?\\d{8})\\b"
+  },
+  "capabilities": [
+    "appeal.review"
+  ],
+  "pattern": "review-and-submit",
+  "data": {
+    "fine": "view:fine",
+    "appeal": "view:appealDraft"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "fine-appeal",
+      "title": "Appeal a penalty charge notice",
+      "intent": "fine.appeal",
+      "pattern": "review-and-submit"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "key": "appeal_form",
+        "aside": "notice",
+        "children": [
+          "pcn",
+          "reason",
+          "explanation",
+          "evidence"
+        ],
+        "submit": {
+          "label": "Check your appeal",
+          "action": {
+            "event": {
+              "name": "appeal.review",
+              "context": {
+                "pcn": {
+                  "path": "/appeal/pcn"
+                },
+                "reason": {
+                  "path": "/appeal/reason"
+                },
+                "explanation": {
+                  "path": "/appeal/explanation"
+                },
+                "evidence": {
+                  "path": "/appeal/evidence"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Cancel",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "notice",
+        "component": "DetailList",
+        "key": "notice",
+        "title": "The notice",
+        "items": [
+          {
+            "key": "issued",
+            "label": "Issued",
+            "value": {
+              "path": "/fine/issued"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "where",
+            "label": "Where",
+            "value": {
+              "path": "/fine/location"
+            }
+          },
+          {
+            "key": "what",
+            "label": "Reason given",
+            "value": {
+              "path": "/fine/contravention"
+            }
+          },
+          {
+            "key": "charge",
+            "label": "Charge",
+            "value": {
+              "path": "/fine/chargeText"
+            }
+          }
+        ]
+      },
+      {
+        "id": "pcn",
+        "component": "TextInput",
+        "key": "pcn",
+        "label": "Penalty charge notice number",
+        "help": "10 characters, starting WX. It is at the top of the notice.",
+        "kind": "masked",
+        "mask": "WX########",
+        "value": {
+          "path": "/appeal/pcn"
+        },
+        "required": true
+      },
+      {
+        "id": "reason",
+        "component": "Choice",
+        "key": "reason",
+        "label": "Why are you appealing?",
+        "options": [
+          {
+            "value": "signs-unclear",
+            "label": "The signs were unclear",
+            "description": "You could not see or read the restriction from where you parked"
+          },
+          {
+            "value": "permit-valid",
+            "label": "My permit was valid",
+            "description": "You had a permit for that zone on that day"
+          },
+          {
+            "value": "loading",
+            "label": "I was loading or unloading",
+            "description": "You were there for a short time to move heavy goods"
+          },
+          {
+            "value": "vehicle-sold",
+            "label": "The vehicle had been sold",
+            "description": "You no longer owned it when the notice was issued"
+          },
+          {
+            "value": "other",
+            "label": "Something else",
+            "description": "Say what happened in the box below"
+          }
+        ],
+        "value": {
+          "path": "/appeal/reason"
+        },
+        "required": true
+      },
+      {
+        "id": "explanation",
+        "component": "TextInput",
+        "key": "explanation",
+        "label": "Tell us what happened",
+        "help": "Say why you think the notice is wrong. Up to 1,000 characters.",
+        "kind": "multiline",
+        "value": {
+          "path": "/appeal/explanation"
+        },
+        "required": true,
+        "validation": {
+          "minLength": 20,
+          "maxLength": 1000,
+          "message": "Give us at least a sentence or two"
+        }
+      },
+      {
+        "id": "evidence",
+        "component": "FileInput",
+        "key": "evidence",
+        "label": "Evidence",
+        "help": "Photos of the signs, your permit, a sale receipt, or anything else that helps.",
+        "accept": [
+          "image/*",
+          ".pdf"
+        ],
+        "multiple": true,
+        "maxSize": 10485760,
+        "value": {
+          "path": "/appeal/evidence"
+        }
+      }
+    ],
+    "data": {
+      "fine": {
+        "id": "pcn_1",
+        "number": "WX76369765",
+        "issued": "2026-09-21",
+        "location": "Mill Street, outside number 22",
+        "contravention": "Parked in a permit zone without a valid permit",
+        "amount": 70,
+        "discountAmount": 35,
+        "discountUntil": "2026-10-05T12:59:00.000Z",
+        "chargeText": "£70.00, or £35.00 if you pay by 5 October 2026",
+        "registration": "WX21 TFR",
+        "statusLabel": "To pay"
+      },
+      "appeal": {
+        "fineId": "pcn_1",
+        "pcn": "WX76369765",
+        "reason": null,
+        "explanation": "",
+        "evidence": []
+      }
+    }
+  }
+}

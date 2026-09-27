@@ -1,0 +1,219 @@
+{
+  "$schema": "../../../packages/spec/schema/direction.schema.json",
+  "name": "wexley",
+  "version": "1.0.0",
+  "designSystem": "govuk",
+  "profile": {
+    "density": "comfortable",
+    "emphasisBudget": 1,
+    "dataDisplay": "prefer-tables",
+    "motion": "none",
+    "disclosure": "progressive",
+    "freedom": "strict"
+  },
+  "voice": {
+    "guidelines": [
+      "Plain words a 12-year-old can read. One idea per sentence. Say what we do, what you do, and when.",
+      "One question per page when a form is long. Check your answers before anything is sent.",
+      "Dates are written out (Thursday 2 October). Money is exact. Never promise what the council cannot do."
+    ],
+    "tone": {
+      "formality": "neutral",
+      "energy": "calm",
+      "warmth": "friendly",
+      "humor": "none"
+    },
+    "person": "we-and-you",
+    "readingLevel": {
+      "maxGrade": 7
+    },
+    "casing": "sentence",
+    "spelling": "en-GB",
+    "punctuation": {
+      "exclamation": "never",
+      "emoji": "never"
+    },
+    "labels": {
+      "maxWords": 4,
+      "verbFirst": true
+    },
+    "glossary": [
+      {
+        "use": "council tax",
+        "insteadOf": [
+          "CT",
+          "tax bill"
+        ]
+      },
+      {
+        "use": "permit",
+        "insteadOf": [
+          "licence",
+          "license",
+          "pass"
+        ]
+      },
+      {
+        "use": "penalty charge notice",
+        "insteadOf": [
+          "PCN",
+          "ticket"
+        ]
+      },
+      {
+        "use": "instalments",
+        "insteadOf": [
+          "installments",
+          "payments schedule"
+        ]
+      },
+      {
+        "use": "repair",
+        "insteadOf": [
+          "job",
+          "work order",
+          "case"
+        ]
+      },
+      {
+        "use": "documents",
+        "insteadOf": [
+          "docs",
+          "paperwork"
+        ]
+      }
+    ],
+    "avoid": [
+      "please",
+      "simply",
+      "just",
+      "invalid",
+      "error",
+      "kindly",
+      "utilise",
+      "prior to",
+      "in order to"
+    ],
+    "situations": {
+      "empty": "Say what would be here, and the one thing to do to change that.",
+      "error": "Say what is wrong in the words of the question, and how to fix it. Never blame the person.",
+      "success": "Say what we did, what happens next, and by when.",
+      "confirm": "Say exactly what changes, what it costs, and whether it can be undone.",
+      "destructive": "Name the thing being removed and what is lost."
+    }
+  },
+  "patterns": {
+    "prefer": [
+      "multi-step-form",
+      "review-and-submit",
+      "confirm-destructive"
+    ]
+  },
+  "rules": [
+    {
+      "id": "submit-only-from-confirm",
+      "description": "Anything sent to the council goes through a confirmation",
+      "severity": "error",
+      "rule": {
+        "check": "actionInside",
+        "capabilities": [
+          "permit.update",
+          "permit.renew",
+          "appeal.submit",
+          "instalments.set"
+        ],
+        "container": [
+          "Confirm"
+        ]
+      }
+    },
+    {
+      "id": "confirm-says-what-happens",
+      "description": "Every confirmation says what happens and whether it can be undone",
+      "severity": "error",
+      "rule": {
+        "check": "requires",
+        "component": "Confirm",
+        "props": [
+          "consequence"
+        ]
+      }
+    },
+    {
+      "id": "renew-states-price",
+      "description": "The button that renews the permit states the price",
+      "severity": "error",
+      "rule": {
+        "check": "labelMatches",
+        "component": "Confirm",
+        "pattern": "£[0-9]",
+        "prop": "confirm.label",
+        "where": {
+          "key": "permit_renew_confirm"
+        }
+      }
+    },
+    {
+      "id": "plan-states-monthly",
+      "description": "The button that sets up instalments states the monthly amount",
+      "severity": "error",
+      "rule": {
+        "check": "labelMatches",
+        "component": "Confirm",
+        "pattern": "£[0-9].* a month$",
+        "prop": "confirm.label",
+        "where": {
+          "key": "instalments_confirm"
+        }
+      }
+    },
+    {
+      "id": "address-change-names-it",
+      "description": "The button that changes the permit address says so",
+      "severity": "error",
+      "rule": {
+        "check": "labelMatches",
+        "component": "Confirm",
+        "pattern": "update",
+        "flags": "i",
+        "prop": "confirm.label",
+        "where": {
+          "key": "permit_change_confirm"
+        }
+      }
+    },
+    {
+      "id": "no-please",
+      "description": "We never say please, simply or just",
+      "severity": "error",
+      "rule": {
+        "check": "avoidTerms",
+        "terms": [
+          "please",
+          "simply",
+          "just",
+          "invalid",
+          "error"
+        ]
+      }
+    },
+    {
+      "id": "short-verb-labels",
+      "description": "Button labels are four words or fewer",
+      "severity": "error",
+      "rule": {
+        "check": "maxWords",
+        "max": 4
+      }
+    },
+    {
+      "id": "no-exclamation",
+      "description": "No exclamation marks anywhere",
+      "severity": "error",
+      "rule": {
+        "check": "noLabelMatches",
+        "pattern": "!"
+      }
+    }
+  ]
+}

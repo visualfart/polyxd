@@ -1,0 +1,180 @@
+{
+  "id": "bin.missed",
+  "title": "Report a missed bin collection",
+  "ask": [
+    "my bin wasn't collected",
+    "my recycling was missed",
+    "you missed my bin",
+    "report a missed collection"
+  ],
+  "keywords": [
+    "missed",
+    "collected",
+    "collection",
+    "bin",
+    "bins"
+  ],
+  "slots": {
+    "bin": "\\b(?<bin>recycling|refuse|rubbish|garden waste|garden|food waste|food|black bin|blue bin|green bin|caddy)\\b"
+  },
+  "capabilities": [
+    "bin.reportMissed"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "bins": "view:bins",
+    "report": "view:missedDraft",
+    "info": "view:missedInfo"
+  },
+  "fill": {
+    "bin": "/report/bin"
+  },
+  "sample": {
+    "bin": "recycling"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "bin-missed",
+      "title": "Report a missed collection",
+      "intent": "bin.missed",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "key": "missed_form",
+        "children": [
+          "bin",
+          "date",
+          "was_out",
+          "what_next"
+        ],
+        "submit": {
+          "label": "Report missed collection",
+          "action": {
+            "event": {
+              "name": "bin.reportMissed",
+              "context": {
+                "bin": {
+                  "path": "/report/bin"
+                },
+                "date": {
+                  "path": "/report/date"
+                },
+                "wasOut": {
+                  "path": "/report/wasOut"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Cancel",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "bin",
+        "component": "Choice",
+        "key": "bin",
+        "label": "Which bin was missed?",
+        "options": {
+          "path": "/bins/options",
+          "valuePath": "id",
+          "labelPath": "label",
+          "descriptionPath": "description"
+        },
+        "value": {
+          "path": "/report/bin"
+        },
+        "required": true
+      },
+      {
+        "id": "date",
+        "component": "DateInput",
+        "key": "date",
+        "label": "What day should it have been collected?",
+        "help": "In the last 2 weeks.",
+        "value": {
+          "path": "/report/date"
+        },
+        "min": {
+          "path": "/report/minDate"
+        },
+        "max": {
+          "path": "/report/maxDate"
+        },
+        "required": true
+      },
+      {
+        "id": "was_out",
+        "component": "Toggle",
+        "key": "was_out",
+        "label": "The bin was out by 6am",
+        "description": "Crews start at 6am, so a bin put out later can be passed by",
+        "value": {
+          "path": "/report/wasOut"
+        }
+      },
+      {
+        "id": "what_next",
+        "component": "Status",
+        "key": "what_next",
+        "kind": "info",
+        "title": {
+          "path": "/info/title"
+        },
+        "message": {
+          "path": "/info/message"
+        }
+      }
+    ],
+    "data": {
+      "bins": {
+        "options": [
+          {
+            "id": "refuse",
+            "label": "Refuse (black bin)",
+            "description": "Last collected Tuesday 22 September"
+          },
+          {
+            "id": "recycling",
+            "label": "Recycling (blue bin)",
+            "description": "Last collected Tuesday 22 September"
+          },
+          {
+            "id": "garden",
+            "label": "Garden waste (green bin)",
+            "description": "Last collected Wednesday 23 September"
+          },
+          {
+            "id": "food",
+            "label": "Food waste (small caddy)",
+            "description": "Last collected Tuesday 22 September"
+          }
+        ],
+        "refuseNext": "2026-09-28T21:00:00.000Z",
+        "recyclingNext": "2026-10-05T20:00:00.000Z",
+        "gardenNext": "2026-09-29T21:00:00.000Z"
+      },
+      "report": {
+        "bin": "recycling",
+        "date": "2026-09-22",
+        "wasOut": true,
+        "minDate": "2026-09-13",
+        "maxDate": "2026-09-27"
+      },
+      "info": {
+        "title": "We come back within 2 working days",
+        "message": "If the bin was out by 6am on collection day, we collect it again without you needing to do anything else. If it was not, it is collected on the next normal day."
+      }
+    }
+  }
+}

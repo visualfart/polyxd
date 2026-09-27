@@ -1,0 +1,144 @@
+{
+  "id": "permit.address-change.confirm",
+  "title": "Confirm the new address",
+  "ask": [],
+  "capabilities": [
+    "permit.update"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "change": "view:permitChange"
+  },
+  "sample": {
+    "line1": "3 Mill Street",
+    "town": "Wexley",
+    "postcode": "WX1 2HD",
+    "vehicleUnchanged": true
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "permit-address-confirm",
+      "title": "Confirm the new address",
+      "intent": "permit.address_change",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "permit_change_confirm",
+        "title": "Update the address on your permit?",
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/change/feeDifference"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        "summary": "summary",
+        "consequence": {
+          "path": "/change/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/change/label"
+          },
+          "action": {
+            "event": {
+              "name": "permit.update",
+              "context": {
+                "changeId": {
+                  "path": "/change/id"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Go back",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "change_summary",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "from",
+            "label": "Zone now",
+            "value": {
+              "path": "/change/oldZoneName"
+            }
+          },
+          {
+            "key": "to",
+            "label": "Zone from the move date",
+            "value": {
+              "path": "/change/zoneName"
+            }
+          },
+          {
+            "key": "date",
+            "label": "Date it changes",
+            "value": {
+              "path": "/change/moveDate"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "vehicle",
+            "label": "Vehicle",
+            "value": {
+              "path": "/change/vehicleText"
+            }
+          },
+          {
+            "key": "fee",
+            "label": "Fee difference for the rest of the year",
+            "value": {
+              "path": "/change/feeDifference"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            },
+            "total": true
+          }
+        ]
+      }
+    ],
+    "data": {
+      "change": {
+        "id": "chg_sample",
+        "permitId": "perm_1",
+        "addressLine": "3 Mill Street, Wexley, WX1 2HD",
+        "postcode": "WX1 2HD",
+        "moveDate": "2026-10-11",
+        "vehicleUnchanged": true,
+        "vehicleLine": "Blue Toyota Yaris, WX21 TFR",
+        "vehicleText": "Blue Toyota Yaris, WX21 TFR",
+        "oldZone": "C",
+        "newZone": "B",
+        "zoneName": "Zone B, Town centre",
+        "oldZoneName": "Zone C, Northfield",
+        "zoneChanged": true,
+        "feeDifference": 1.97,
+        "label": "Pay £1.97 and update",
+        "consequence": "Your permit moves to zone B from 11 October 2026, and no longer covers zone C. We take £1.97 from the card you paid with last time. You can change it back within 14 days."
+      }
+    }
+  }
+}

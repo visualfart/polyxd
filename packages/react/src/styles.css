@@ -2687,6 +2687,7 @@ video.pxd-media {
 }
 .pxd-task-title {
   flex: 1;
+  min-height: var(--pxd-size-target-min);
   padding: var(--pxd-space-inset-compact) 0;
   border: 0;
   background: none;

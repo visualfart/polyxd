@@ -1,0 +1,163 @@
+{
+  "id": "counciltax.instalments.confirm",
+  "title": "Confirm the payment plan",
+  "ask": [],
+  "capabilities": [
+    "instalments.set"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "quote": "view:instalmentQuote"
+  },
+  "sample": {
+    "count": 12,
+    "day": 15,
+    "method": "direct-debit"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "counciltax-instalments-confirm",
+      "title": "Confirm the payment plan",
+      "intent": "counciltax.instalments",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "instalments_confirm",
+        "title": "Set up this payment plan?",
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/quote/monthly"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        "message": "This is the amount we take each month.",
+        "summary": "summary",
+        "consequences": [
+          {
+            "title": "Your current plan ends today",
+            "icon": "clock"
+          },
+          {
+            "title": "We post a new bill within 5 working days",
+            "icon": "mail"
+          }
+        ],
+        "consequence": {
+          "path": "/quote/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/quote/label"
+          },
+          "action": {
+            "event": {
+              "name": "instalments.set",
+              "context": {
+                "planId": {
+                  "path": "/quote/id"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Go back",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "plan_summary",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "count",
+            "label": "Instalments",
+            "value": {
+              "path": "/quote/count"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "day",
+            "label": "Payment day",
+            "value": {
+              "path": "/quote/dayLabel"
+            }
+          },
+          {
+            "key": "method",
+            "label": "How you pay",
+            "value": {
+              "path": "/quote/methodLabel"
+            }
+          },
+          {
+            "key": "first",
+            "label": "First payment",
+            "value": {
+              "path": "/quote/firstPayment"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "last",
+            "label": "Last payment",
+            "value": {
+              "path": "/quote/lastPayment"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "total",
+            "label": "Total for the rest of the year",
+            "value": {
+              "path": "/quote/total"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            },
+            "total": true
+          }
+        ]
+      }
+    ],
+    "data": {
+      "quote": {
+        "id": "plan_sample",
+        "count": 12,
+        "day": 15,
+        "dayLabel": "The 15th of the month",
+        "method": "direct-debit",
+        "methodLabel": "Direct Debit",
+        "monthly": 96.62,
+        "firstPayment": "2026-10-15",
+        "lastPayment": "2027-09-15",
+        "total": 1159.48,
+        "label": "Pay £96.62 a month",
+        "consequence": "Your current plan ends today and this one starts on 15 October 2026. We post a new bill within 5 working days showing every payment. You can change the plan again at any time."
+      }
+    }
+  }
+}

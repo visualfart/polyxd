@@ -1,0 +1,426 @@
+{
+  "$schema": "../../../packages/spec/schema/capabilities.schema.json",
+  "name": "wexley",
+  "capabilities": {
+    "answer.change": {
+      "description": "Go back to the step that asked a question, from a check-your-answers list",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "string"
+          },
+          "town": {
+            "type": "string"
+          },
+          "postcode": {
+            "type": "string"
+          },
+          "moveDate": {
+            "type": "string"
+          },
+          "vehicleUnchanged": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "permit.review": {
+      "description": "Work out what a new address means for the permit: the zone, the fee difference, the date it changes",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "string"
+          },
+          "town": {
+            "type": "string"
+          },
+          "postcode": {
+            "type": "string"
+          },
+          "moveDate": {
+            "type": "string"
+          },
+          "vehicleUnchanged": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "line1",
+          "postcode",
+          "moveDate"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "permit.update": {
+      "description": "Put the new address on the permit, move it to the new zone and take or refund the fee difference",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "changeId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "changeId"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "The permit covers the new zone only, from the move date",
+        "Money is taken from or refunded to the card on file"
+      ],
+      "preconditions": [
+        "A reviewed change from permit.review"
+      ],
+      "agentMayInvoke": false
+    },
+    "permit.renew": {
+      "description": "Renew the parking permit for another year from the day it ends, and take the payment",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "permitId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "permitId"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "The year's price is taken from the card on file",
+        "The permit's end date moves on a year"
+      ],
+      "agentMayInvoke": false
+    },
+    "appeal.review": {
+      "description": "Check an appeal before it is sent: the notice, the reason, the explanation and the evidence",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "pcn": {
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "signs-unclear",
+              "permit-valid",
+              "loading",
+              "vehicle-sold",
+              "other"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "pcn",
+          "reason",
+          "explanation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "appeal.submit": {
+      "description": "Send the appeal to parking services. The fine is paused until they decide",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "draftId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "draftId"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "Parking services consider the appeal, within 14 days",
+        "The fine and its discount period are paused; if the appeal is refused, the 14-day discount period starts again"
+      ],
+      "preconditions": [
+        "A reviewed appeal from appeal.review"
+      ],
+      "agentMayInvoke": false
+    },
+    "repair.open": {
+      "description": "Open a repair request",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "repair.problem": {
+      "description": "Tell us something has changed with a repair: opens the repair with a box for the note",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "repairId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "repairId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "appointment.change": {
+      "description": "Open the form to pick another date and time for a repair visit",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "repairId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "repairId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "appointment.rebook": {
+      "description": "Move a repair visit to another date and time slot",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "repairId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "slot": {
+            "enum": [
+              "am",
+              "pm"
+            ]
+          }
+        },
+        "required": [
+          "repairId",
+          "date",
+          "slot"
+        ],
+        "additionalProperties": false
+      },
+      "undo": "appointment.restore"
+    },
+    "appointment.restore": {
+      "description": "Put a repair visit back to the date and time it had before",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "repairId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "repairId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "instalments.review": {
+      "description": "Work out a council tax payment plan: the monthly amount, the first and last payments",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "enum": [
+              10,
+              12
+            ]
+          },
+          "day": {
+            "enum": [
+              1,
+              15,
+              28
+            ]
+          },
+          "method": {
+            "enum": [
+              "direct-debit",
+              "card"
+            ]
+          }
+        },
+        "required": [
+          "count",
+          "day",
+          "method"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "instalments.set": {
+      "description": "Replace the council tax payment plan and post a new bill",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "planId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "planId"
+        ],
+        "additionalProperties": false
+      },
+      "sideEffects": [
+        "The current plan ends",
+        "A new bill is posted showing every payment"
+      ],
+      "preconditions": [
+        "A reviewed plan from instalments.review"
+      ],
+      "agentMayInvoke": false
+    },
+    "bin.reportMissed": {
+      "description": "Report that a bin was not collected, so the crew comes back for it",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "bin": {
+            "enum": [
+              "refuse",
+              "recycling",
+              "garden",
+              "food"
+            ]
+          },
+          "date": {
+            "type": "string"
+          },
+          "wasOut": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "bin",
+          "date"
+        ],
+        "additionalProperties": false
+      },
+      "undo": "bin.missed.withdraw"
+    },
+    "bin.missed.withdraw": {
+      "description": "Withdraw a missed collection report",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reportId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "evidence.upload": {
+      "description": "Send documents for a benefit claim; they are attached to the claim straight away",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "enum": [
+              "identity",
+              "tenancy",
+              "payslips",
+              "bank"
+            ]
+          },
+          "files": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "itemId",
+          "files"
+        ],
+        "additionalProperties": false
+      },
+      "undo": "evidence.remove"
+    },
+    "evidence.remove": {
+      "description": "Take back documents sent for a benefit claim before they are looked at",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "message.open": {
+      "description": "Open a letter from the council",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

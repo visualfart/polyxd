@@ -1,0 +1,155 @@
+{
+  "id": "fine.appeal.confirm",
+  "title": "Send your appeal",
+  "ask": [],
+  "capabilities": [
+    "appeal.submit"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "review": "view:appealReview"
+  },
+  "sample": {
+    "reason": "signs-unclear",
+    "explanation": "The permit zone sign on Mill Street is behind a tree and cannot be read from the road.",
+    "evidence": [
+      {
+        "name": "sign-photo.jpg",
+        "size": 1204000
+      }
+    ]
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "fine-appeal-confirm",
+      "title": "Send your appeal",
+      "intent": "fine.appeal",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "appeal_confirm",
+        "title": "Send your appeal?",
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/review/amount"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          }
+        },
+        "summary": "summary",
+        "consequences": [
+          {
+            "title": "The fine is paused while we consider your appeal",
+            "icon": "clock"
+          },
+          {
+            "title": "You get our decision within 14 days",
+            "icon": "mail"
+          },
+          {
+            "title": "If we refuse, you have 14 days to pay the lower amount",
+            "icon": "info"
+          }
+        ],
+        "consequence": "We look at your appeal within 14 days and the fine is paused until then. If we refuse it, the 14-day discount period starts again. You cannot change the appeal once it is sent.",
+        "confirm": {
+          "label": "Send appeal",
+          "action": {
+            "event": {
+              "name": "appeal.submit",
+              "context": {
+                "draftId": {
+                  "path": "/review/id"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Go back",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "appeal_summary",
+        "items": [
+          {
+            "key": "notice",
+            "label": "Notice",
+            "value": {
+              "path": "/review/pcn"
+            }
+          },
+          {
+            "key": "where",
+            "label": "Where",
+            "value": {
+              "path": "/review/location"
+            }
+          },
+          {
+            "key": "reason",
+            "label": "Reason",
+            "value": {
+              "path": "/review/reasonLabel"
+            }
+          },
+          {
+            "key": "explanation",
+            "label": "What happened",
+            "value": {
+              "path": "/review/explanation"
+            }
+          },
+          {
+            "key": "evidence",
+            "label": "Evidence",
+            "value": {
+              "path": "/review/evidenceText"
+            }
+          },
+          {
+            "key": "decide",
+            "label": "Decision by",
+            "value": {
+              "path": "/review/decideBy"
+            },
+            "format": {
+              "type": "date"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "review": {
+        "id": "apl_sample",
+        "fineId": "pcn_1",
+        "pcn": "WX76369765",
+        "location": "Mill Street, outside number 22",
+        "issued": "2026-09-21",
+        "amount": 70,
+        "discountAmount": 35,
+        "reasonLabel": "The signs were unclear",
+        "explanation": "The permit zone sign on Mill Street is behind a tree and cannot be read from the road.",
+        "evidenceText": "sign-photo.jpg",
+        "evidenceCount": 1,
+        "decideBy": "2026-10-11"
+      }
+    }
+  }
+}

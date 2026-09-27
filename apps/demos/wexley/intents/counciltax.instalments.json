@@ -1,0 +1,239 @@
+{
+  "id": "counciltax.instalments",
+  "title": "Pay council tax in instalments",
+  "ask": [
+    "pay my council tax in instalments",
+    "spread my council tax over 12 months",
+    "change my council tax payment plan",
+    "pay council tax monthly"
+  ],
+  "keywords": [
+    "instalments",
+    "instalment",
+    "installments"
+  ],
+  "slots": {
+    "count": "\\b(?<count>10|12)\\s?(?:months|instalments|installments|payments)\\b"
+  },
+  "capabilities": [
+    "instalments.review"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "tax": "view:councilTax",
+    "plan": "view:instalmentDraft"
+  },
+  "fill": {
+    "count": "/plan/count"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "counciltax-instalments",
+      "title": "Change how you pay council tax",
+      "intent": "counciltax.instalments",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "key": "instalments_form",
+        "aside": "figures",
+        "children": [
+          "count",
+          "day",
+          "method"
+        ],
+        "submit": {
+          "label": "Continue",
+          "action": {
+            "event": {
+              "name": "instalments.review",
+              "context": {
+                "count": {
+                  "path": "/plan/count"
+                },
+                "day": {
+                  "path": "/plan/day"
+                },
+                "method": {
+                  "path": "/plan/method"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Keep the current plan",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "figures",
+        "component": "DetailList",
+        "key": "tax_figures",
+        "title": "This year",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "band",
+            "label": "Band",
+            "value": {
+              "path": "/tax/band"
+            }
+          },
+          {
+            "key": "annual",
+            "label": "Charge for the year",
+            "value": {
+              "path": "/tax/annual"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          },
+          {
+            "key": "paid",
+            "label": "Paid so far",
+            "value": {
+              "path": "/tax/paid"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          },
+          {
+            "key": "plan",
+            "label": "Current plan",
+            "value": {
+              "path": "/tax/planText"
+            }
+          },
+          {
+            "key": "remaining",
+            "label": "Still to pay",
+            "value": {
+              "path": "/tax/remaining"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            },
+            "total": true
+          }
+        ]
+      },
+      {
+        "id": "count",
+        "component": "Choice",
+        "key": "count",
+        "label": "How many instalments?",
+        "help": "The amount still to pay this year is split equally.",
+        "options": {
+          "path": "/plan/countOptions",
+          "valuePath": "value",
+          "labelPath": "label",
+          "descriptionPath": "description"
+        },
+        "value": {
+          "path": "/plan/count"
+        },
+        "required": true
+      },
+      {
+        "id": "day",
+        "component": "Choice",
+        "key": "day",
+        "label": "Which day of the month?",
+        "options": {
+          "path": "/plan/dayOptions",
+          "valuePath": "value",
+          "labelPath": "label",
+          "descriptionPath": "description"
+        },
+        "value": {
+          "path": "/plan/day"
+        },
+        "required": true
+      },
+      {
+        "id": "method",
+        "component": "Choice",
+        "key": "method",
+        "label": "How do you want to pay?",
+        "options": [
+          {
+            "value": "direct-debit",
+            "label": "Direct Debit",
+            "description": "Taken from your bank account on the day, with no fee"
+          },
+          {
+            "value": "card",
+            "label": "Card, each month",
+            "description": "We send a reminder and you pay through your account"
+          }
+        ],
+        "value": {
+          "path": "/plan/method"
+        },
+        "required": true
+      }
+    ],
+    "data": {
+      "tax": {
+        "account": "70 4412 9083",
+        "band": "C",
+        "annual": 1932.48,
+        "paid": 773,
+        "remaining": 1159.48,
+        "monthly": 193.25,
+        "planText": "10 instalments by Direct Debit on the 1st",
+        "nextPayment": "2026-11-01",
+        "nextAmount": 193.25
+      },
+      "plan": {
+        "count": 10,
+        "day": 1,
+        "method": "direct-debit",
+        "countOptions": [
+          {
+            "value": 10,
+            "label": "10 instalments",
+            "description": "£115.95 a month, with February and March free"
+          },
+          {
+            "value": 12,
+            "label": "12 instalments",
+            "description": "£96.62 a month, all year round"
+          }
+        ],
+        "dayOptions": [
+          {
+            "value": 1,
+            "label": "The 1st of the month",
+            "description": "First payment 1 November 2026"
+          },
+          {
+            "value": 15,
+            "label": "The 15th of the month",
+            "description": "First payment 15 October 2026"
+          },
+          {
+            "value": 28,
+            "label": "The 28th of the month",
+            "description": "First payment 28 October 2026"
+          }
+        ]
+      }
+    }
+  }
+}

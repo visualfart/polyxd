@@ -1,0 +1,321 @@
+{
+  "id": "benefit.evidence",
+  "title": "What we need for your housing benefit claim",
+  "ask": [
+    "what do you need for my housing benefit claim",
+    "what evidence do you need from me",
+    "send documents for my benefit claim",
+    "where is my housing benefit claim"
+  ],
+  "keywords": [
+    "benefit",
+    "benefits",
+    "evidence",
+    "claim",
+    "payslips",
+    "documents"
+  ],
+  "capabilities": [
+    "evidence.upload"
+  ],
+  "data": {
+    "claim": "view:benefitClaim"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "benefit-evidence",
+      "title": "What we need for your claim",
+      "intent": "benefit.evidence"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "deadline",
+          "claim",
+          "documents",
+          "send"
+        ]
+      },
+      {
+        "id": "deadline",
+        "component": "Status",
+        "key": "deadline",
+        "kind": "warning",
+        "title": {
+          "path": "/claim/deadlineTitle"
+        },
+        "message": {
+          "path": "/claim/deadlineMessage"
+        }
+      },
+      {
+        "id": "claim",
+        "component": "DetailList",
+        "key": "claim_details",
+        "layout": "grid",
+        "items": [
+          {
+            "key": "type",
+            "label": "Claim",
+            "value": {
+              "path": "/claim/type"
+            }
+          },
+          {
+            "key": "reference",
+            "label": "Reference",
+            "value": {
+              "path": "/claim/reference"
+            }
+          },
+          {
+            "key": "submitted",
+            "label": "Submitted",
+            "value": {
+              "path": "/claim/submitted"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "value": {
+              "path": "/claim/statusLabel"
+            }
+          }
+        ]
+      },
+      {
+        "id": "documents",
+        "component": "Table",
+        "key": "documents",
+        "caption": "Documents for your claim",
+        "rows": {
+          "path": "/claim/rows"
+        },
+        "columns": [
+          {
+            "key": "what",
+            "label": "Document",
+            "path": "what",
+            "kind": "entity"
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "path": "status",
+            "kind": "status",
+            "tones": {
+              "Received": "success",
+              "Needed": "warning"
+            }
+          },
+          {
+            "key": "detail",
+            "label": "Detail",
+            "path": "detail"
+          }
+        ]
+      },
+      {
+        "id": "send",
+        "component": "Section",
+        "key": "send",
+        "title": "Send the missing documents",
+        "description": "A photo or PDF of each page. They go on your claim straight away, and you can take them back until we look at them.",
+        "visible": {
+          "path": "/claim/anyMissing"
+        },
+        "children": [
+          "payslips_files",
+          "payslips_send",
+          "bank_files",
+          "bank_send"
+        ]
+      },
+      {
+        "id": "payslips_files",
+        "component": "FileInput",
+        "key": "payslips_files",
+        "label": "Your last 2 payslips",
+        "help": "So we can work out your weekly income.",
+        "accept": [
+          "image/*",
+          ".pdf"
+        ],
+        "multiple": true,
+        "maxSize": 10485760,
+        "visible": {
+          "path": "/claim/evidence/payslips/missing"
+        },
+        "value": {
+          "path": "/claim/upload/payslips"
+        }
+      },
+      {
+        "id": "payslips_send",
+        "component": "Action",
+        "key": "payslips_send",
+        "label": "Send payslips",
+        "emphasis": "primary",
+        "visible": {
+          "path": "/claim/evidence/payslips/missing"
+        },
+        "action": {
+          "event": {
+            "name": "evidence.upload",
+            "context": {
+              "itemId": "payslips",
+              "files": {
+                "path": "/claim/upload/payslips"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "bank_files",
+        "component": "FileInput",
+        "key": "bank_files",
+        "label": "Bank statements for the last 2 months",
+        "help": "For every account in your name, showing your savings.",
+        "accept": [
+          "image/*",
+          ".pdf"
+        ],
+        "multiple": true,
+        "maxSize": 10485760,
+        "visible": {
+          "path": "/claim/evidence/bank/missing"
+        },
+        "value": {
+          "path": "/claim/upload/bank"
+        }
+      },
+      {
+        "id": "bank_send",
+        "component": "Action",
+        "key": "bank_send",
+        "label": "Send bank statements",
+        "emphasis": "secondary",
+        "visible": {
+          "path": "/claim/evidence/bank/missing"
+        },
+        "action": {
+          "event": {
+            "name": "evidence.upload",
+            "context": {
+              "itemId": "bank",
+              "files": {
+                "path": "/claim/upload/bank"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "claim": {
+        "reference": "HB 2026 018274",
+        "type": "Housing benefit",
+        "submitted": "2026-09-11",
+        "statusLabel": "Waiting for your documents",
+        "weeklyEstimate": 96.4,
+        "deadline": "2026-10-09",
+        "todoCount": 2,
+        "deadlineTitle": "Send the 2 missing documents by Friday 9 October",
+        "deadlineMessage": "If we do not get them by then, we decide your claim on what we have, and it may be refused. Photos of paper documents are fine.",
+        "anyMissing": true,
+        "rows": [
+          {
+            "id": "identity",
+            "what": "Proof of who you are",
+            "status": "Received",
+            "detail": "passport.jpg, received 11 September 2026"
+          },
+          {
+            "id": "tenancy",
+            "what": "Your tenancy agreement",
+            "status": "Received",
+            "detail": "tenancy-agreement.pdf, received 11 September 2026"
+          },
+          {
+            "id": "payslips",
+            "what": "Your last 2 payslips",
+            "status": "Needed",
+            "detail": "So we can work out your weekly income."
+          },
+          {
+            "id": "bank",
+            "what": "Bank statements for the last 2 months",
+            "status": "Needed",
+            "detail": "For every account in your name, showing your savings."
+          }
+        ],
+        "evidence": {
+          "identity": {
+            "id": "identity",
+            "what": "Proof of who you are",
+            "why": "Your passport or driving licence.",
+            "status": "done",
+            "missing": false,
+            "text": "We have this. Received 11 September 2026.",
+            "files": [
+              {
+                "name": "passport.jpg",
+                "size": 1843200
+              }
+            ],
+            "fileNames": "passport.jpg"
+          },
+          "tenancy": {
+            "id": "tenancy",
+            "what": "Your tenancy agreement",
+            "why": "The signed agreement showing your rent.",
+            "status": "done",
+            "missing": false,
+            "text": "We have this. Received 11 September 2026.",
+            "files": [
+              {
+                "name": "tenancy-agreement.pdf",
+                "size": 402100
+              }
+            ],
+            "fileNames": "tenancy-agreement.pdf"
+          },
+          "payslips": {
+            "id": "payslips",
+            "what": "Your last 2 payslips",
+            "why": "So we can work out your weekly income.",
+            "status": "todo",
+            "missing": true,
+            "text": "So we can work out your weekly income.",
+            "files": [],
+            "fileNames": "None yet"
+          },
+          "bank": {
+            "id": "bank",
+            "what": "Bank statements for the last 2 months",
+            "why": "For every account in your name, showing your savings.",
+            "status": "todo",
+            "missing": true,
+            "text": "For every account in your name, showing your savings.",
+            "files": [],
+            "fileNames": "None yet"
+          }
+        },
+        "upload": {
+          "payslips": [],
+          "bank": []
+        }
+      }
+    }
+  }
+}

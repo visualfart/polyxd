@@ -1,0 +1,197 @@
+{
+  "id": "appointment.rebook",
+  "title": "Rebook a repair visit",
+  "ask": [
+    "change my repair appointment",
+    "rebook the plumber",
+    "I can't make the repair appointment",
+    "move the repair visit to another day"
+  ],
+  "keywords": [
+    "rebook",
+    "appointment",
+    "reschedule"
+  ],
+  "capabilities": [
+    "appointment.rebook"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "repair": "view:repair",
+    "rebook": "view:rebookDraft"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "appointment-rebook",
+      "title": "Rebook the repair visit",
+      "intent": "appointment.rebook",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "key": "rebook_form",
+        "children": [
+          "current",
+          "date",
+          "slot",
+          "note"
+        ],
+        "submit": {
+          "label": "Rebook the visit",
+          "action": {
+            "event": {
+              "name": "appointment.rebook",
+              "context": {
+                "repairId": {
+                  "path": "/rebook/repairId"
+                },
+                "date": {
+                  "path": "/rebook/date"
+                },
+                "slot": {
+                  "path": "/rebook/slot"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Keep the current visit",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "current",
+        "component": "DetailList",
+        "key": "current_visit",
+        "items": [
+          {
+            "key": "repair",
+            "label": "Repair",
+            "value": {
+              "path": "/repair/problem"
+            }
+          },
+          {
+            "key": "booked",
+            "label": "Booked for",
+            "value": {
+              "path": "/repair/appointment/line"
+            }
+          },
+          {
+            "key": "who",
+            "label": "Who is coming",
+            "value": {
+              "path": "/repair/appointment/who"
+            }
+          }
+        ]
+      },
+      {
+        "id": "date",
+        "component": "DateInput",
+        "key": "date",
+        "label": "New date",
+        "help": "A weekday in the next 4 weeks.",
+        "value": {
+          "path": "/rebook/date"
+        },
+        "min": {
+          "path": "/rebook/minDate"
+        },
+        "max": {
+          "path": "/rebook/maxDate"
+        },
+        "required": true
+      },
+      {
+        "id": "slot",
+        "component": "Choice",
+        "key": "slot",
+        "label": "Morning or afternoon?",
+        "options": [
+          {
+            "value": "am",
+            "label": "Morning, 8am to 1pm"
+          },
+          {
+            "value": "pm",
+            "label": "Afternoon, 1pm to 6pm"
+          }
+        ],
+        "value": {
+          "path": "/rebook/slot"
+        },
+        "required": true
+      },
+      {
+        "id": "note",
+        "component": "Text",
+        "key": "rebook_note",
+        "variant": "supporting",
+        "text": "The change takes effect straight away and you can undo it. Someone over 18 needs to be at home for the visit."
+      }
+    ],
+    "data": {
+      "repair": {
+        "id": "rep_1",
+        "reference": "REP 4821",
+        "problem": "Leaking kitchen tap",
+        "where": "Kitchen",
+        "reported": "2026-09-18",
+        "stage": 2,
+        "stageLabel": "Appointment booked",
+        "priorityLabel": "Routine",
+        "headline": "A plumber from Wexley Homes is coming on Friday 2 October, between 8am and 1pm",
+        "headlineDetail": "Someone over 18 needs to be at home to let them in. If the time does not suit you, rebook the visit.",
+        "progress": [
+          {
+            "stage": "Reported",
+            "status": "Completed",
+            "detail": "You reported this on 18 September 2026."
+          },
+          {
+            "stage": "Assessed",
+            "status": "Completed",
+            "detail": "We looked at it and made it a routine repair."
+          },
+          {
+            "stage": "Appointment booked",
+            "status": "In progress",
+            "detail": "Booked for Friday 2 October, 8am to 1pm."
+          },
+          {
+            "stage": "Fixed",
+            "status": "Not yet",
+            "detail": "We mark the repair fixed after the visit."
+          }
+        ],
+        "hasAppointment": true,
+        "appointment": {
+          "date": "2026-10-02",
+          "slotLabel": "8am to 1pm",
+          "who": "A plumber from Wexley Homes",
+          "line": "Friday 2 October, 8am to 1pm"
+        }
+      },
+      "rebook": {
+        "repairId": "rep_1",
+        "date": null,
+        "slot": null,
+        "minDate": "2026-09-29",
+        "maxDate": "2026-10-25",
+        "help": "Pick a weekday in the next 4 weeks. The visit is currently Friday 2 October, 8am to 1pm."
+      }
+    }
+  }
+}

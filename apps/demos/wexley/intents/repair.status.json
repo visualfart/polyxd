@@ -1,0 +1,258 @@
+{
+  "id": "repair.status",
+  "title": "Where your repair is",
+  "ask": [
+    "where is my repair request",
+    "what's happening with my repair",
+    "when is the plumber coming",
+    "track my repair"
+  ],
+  "keywords": [
+    "repair",
+    "plumber",
+    "tap",
+    "track"
+  ],
+  "capabilities": [
+    "appointment.change",
+    "repair.problem"
+  ],
+  "data": {
+    "repair": "view:repair"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "repair-status",
+      "title": "Where your repair is",
+      "intent": "repair.status"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "headline",
+          "about",
+          "progress",
+          "visit",
+          "problem_note",
+          "actions"
+        ]
+      },
+      {
+        "id": "headline",
+        "component": "Status",
+        "key": "repair_headline",
+        "kind": "info",
+        "title": {
+          "path": "/repair/headline"
+        },
+        "message": {
+          "path": "/repair/headlineDetail"
+        }
+      },
+      {
+        "id": "about",
+        "component": "DetailList",
+        "key": "repair_about",
+        "layout": "grid",
+        "items": [
+          {
+            "key": "problem",
+            "label": "Repair",
+            "value": {
+              "path": "/repair/problem"
+            }
+          },
+          {
+            "key": "reference",
+            "label": "Reference",
+            "value": {
+              "path": "/repair/reference"
+            }
+          },
+          {
+            "key": "reported",
+            "label": "Reported",
+            "value": {
+              "path": "/repair/reported"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "priority",
+            "label": "Priority",
+            "value": {
+              "path": "/repair/priorityLabel"
+            }
+          }
+        ]
+      },
+      {
+        "id": "progress",
+        "component": "Table",
+        "key": "repair_progress",
+        "caption": "Progress",
+        "rows": {
+          "path": "/repair/progress"
+        },
+        "columns": [
+          {
+            "key": "stage",
+            "label": "Stage",
+            "path": "stage",
+            "kind": "entity"
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "path": "status",
+            "kind": "status",
+            "tones": {
+              "Completed": "success",
+              "In progress": "info",
+              "Not yet": "neutral"
+            }
+          },
+          {
+            "key": "detail",
+            "label": "What happened",
+            "path": "detail"
+          }
+        ]
+      },
+      {
+        "id": "visit",
+        "component": "DetailList",
+        "key": "repair_visit",
+        "title": "The visit",
+        "items": [
+          {
+            "key": "date",
+            "label": "Date",
+            "value": {
+              "path": "/repair/appointment/date"
+            },
+            "format": {
+              "type": "date"
+            }
+          },
+          {
+            "key": "time",
+            "label": "Time",
+            "value": {
+              "path": "/repair/appointment/slotLabel"
+            }
+          },
+          {
+            "key": "who",
+            "label": "Who is coming",
+            "value": {
+              "path": "/repair/appointment/who"
+            }
+          }
+        ]
+      },
+      {
+        "id": "problem_note",
+        "component": "Text",
+        "key": "problem_note",
+        "variant": "supporting",
+        "text": "If the leak is worse, or something else has changed, tell us before the visit."
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "rebook",
+          "problem"
+        ]
+      },
+      {
+        "id": "rebook",
+        "component": "Action",
+        "key": "rebook_visit",
+        "label": "Rebook the visit",
+        "emphasis": "primary",
+        "visible": {
+          "path": "/repair/hasAppointment"
+        },
+        "action": {
+          "event": {
+            "name": "appointment.change",
+            "context": {
+              "repairId": {
+                "path": "/repair/id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "problem",
+        "component": "Action",
+        "key": "report_problem",
+        "label": "Report a problem",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "repair.problem",
+            "context": {
+              "repairId": {
+                "path": "/repair/id"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "repair": {
+        "id": "rep_1",
+        "reference": "REP 4821",
+        "problem": "Leaking kitchen tap",
+        "where": "Kitchen",
+        "reported": "2026-09-18",
+        "stage": 2,
+        "stageLabel": "Appointment booked",
+        "priorityLabel": "Routine",
+        "headline": "A plumber from Wexley Homes is coming on Friday 2 October, between 8am and 1pm",
+        "headlineDetail": "Someone over 18 needs to be at home to let them in. If the time does not suit you, rebook the visit.",
+        "progress": [
+          {
+            "stage": "Reported",
+            "status": "Completed",
+            "detail": "You reported this on 18 September 2026."
+          },
+          {
+            "stage": "Assessed",
+            "status": "Completed",
+            "detail": "We looked at it and made it a routine repair."
+          },
+          {
+            "stage": "Appointment booked",
+            "status": "In progress",
+            "detail": "Booked for Friday 2 October, 8am to 1pm."
+          },
+          {
+            "stage": "Fixed",
+            "status": "Not yet",
+            "detail": "We mark the repair fixed after the visit."
+          }
+        ],
+        "hasAppointment": true,
+        "appointment": {
+          "date": "2026-10-02",
+          "slotLabel": "8am to 1pm",
+          "who": "A plumber from Wexley Homes",
+          "line": "Friday 2 October, 8am to 1pm"
+        }
+      }
+    }
+  }
+}
