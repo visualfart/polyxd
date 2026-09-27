@@ -63,7 +63,7 @@ export function view(h: Halden, name: string, slots: Record<string, unknown>): u
     case "disputeReview": {
       const p = h.payments.find((x) => x.id === slots.payment) ?? h.payments.filter((x) => x.amount < 0 && x.card).at(-1)!;
       const reason = String(slots.reason ?? "duplicate");
-      return { paymentId: p.id, reason, reasonLabel: REASONS[reason] ?? reason, note: String(slots.note ?? ""), hasNote: Boolean(slots.note), amount: -p.amount, payment: paymentRow(h, p) };
+      return { paymentId: p.id, reason, reasonLabel: REASONS[reason] ?? reason, note: String(slots.note ?? "").trim() || "None", amount: -p.amount, payment: paymentRow(h, p) };
     }
 
     case "subscriptions":

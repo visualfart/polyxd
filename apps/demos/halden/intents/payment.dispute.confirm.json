@@ -124,7 +124,6 @@
         "reason": "duplicate",
         "reasonLabel": "Charged twice",
         "note": "Only took one ride.",
-        "hasNote": true,
         "amount": 3.4,
         "payment": {
           "id": "pay_0211",

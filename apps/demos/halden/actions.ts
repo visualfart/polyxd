@@ -93,7 +93,7 @@ export function runAction(store: Store<Halden>, e: ActionEvent): Outcome {
         const pay = d.payments.find((x) => x.id === p.id)!;
         pay.status = "refund-pending";
         pay.disputeId = id;
-        d.disputes.push({ id, paymentId: p.id, reason: c.reason, note: String(c.note ?? ""), raisedAt: new Date().toISOString(), status: "open", decideBy: daysFromNow(15, 17) });
+        d.disputes.push({ id, paymentId: p.id, reason: c.reason, note: c.note === "None" ? "" : String(c.note ?? ""), raisedAt: new Date().toISOString(), status: "open", decideBy: daysFromNow(15, 17) });
       });
       return { say: `Reported. ${money(-p.amount)} shows as pending refund; you'll hear within 15 days.`, close: true, go: `/payments/${p.id}` };
     }
