@@ -14,7 +14,7 @@
     "wrangler": "^4.135.0"
   },
   "dependencies": {
-    "@polyxd/spec": "^0.2.2",
+    "@polyxd/spec": "^0.3.0",
     "gsap": "^3.15.0",
     "lenis": "^1.3.26"
   }

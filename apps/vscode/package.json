@@ -3,7 +3,7 @@
   "displayName": "Polyxd",
   "icon": "icon.png",
   "description": "Polyxd documents in your editor: schema completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away.",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "publisher": "polyxd",
   "private": true,
   "license": "Apache-2.0",
@@ -190,8 +190,8 @@
     "vscode:prepublish": "node scripts/build.ts"
   },
   "devDependencies": {
-    "@polyxd/react": "^0.2.2",
-    "@polyxd/spec": "^0.2.2",
+    "@polyxd/react": "^0.3.0",
+    "@polyxd/spec": "^0.3.0",
     "@types/vscode": "^1.96.0",
     "@vscode/vsce": "^4.0.0",
     "esbuild": "^0.28.1"

@@ -15,7 +15,7 @@
     "vite": "^8.3.0"
   },
   "dependencies": {
-    "@polyxd/react": "^0.2.2",
+    "@polyxd/react": "^0.3.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   }
