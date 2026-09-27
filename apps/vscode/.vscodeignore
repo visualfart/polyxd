@@ -1,0 +1,9 @@
+**
+!dist/extension.cjs
+!dist/webview/main.js
+!dist/webview/polyxd.js
+!dist/webview/polyxd.css
+!schema/ui.schema.json
+!README.md
+!LICENSE
+!package.json

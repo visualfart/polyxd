@@ -1,0 +1,198 @@
+{
+  "name": "polyxd-vscode",
+  "displayName": "Polyxd",
+  "description": "Polyxd documents in your editor: schema completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away.",
+  "version": "0.2.2",
+  "publisher": "polyxd",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "vscode": "^1.96.0",
+    "node": ">=22"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Visualization"
+  ],
+  "keywords": [
+    "polyxd",
+    "design system",
+    "json",
+    "preview"
+  ],
+  "main": "./dist/extension.cjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualfart/polyxd.git",
+    "directory": "apps/vscode"
+  },
+  "homepage": "https://polyxd.com",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "activationEvents": [
+    "onLanguage:json",
+    "onLanguage:jsonc",
+    "workspaceContains:**/*.polyxd.json",
+    "workspaceContains:**/authored/*.json",
+    "workspaceContains:**/intents/*.json",
+    "workspaceContains:**/screens/*.json"
+  ],
+  "contributes": {
+    "jsonValidation": [
+      {
+        "fileMatch": [
+          "**/*.polyxd.json",
+          "**/authored/*.json",
+          "**/intents/*.json",
+          "**/screens/*.json"
+        ],
+        "url": "./schema/ui.schema.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "polyxd.openPreview",
+        "title": "Open preview",
+        "category": "Polyxd",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "polyxd.verify",
+        "title": "Verify document",
+        "category": "Polyxd",
+        "icon": "$(verified)"
+      },
+      {
+        "command": "polyxd.insertComponent",
+        "title": "Insert component",
+        "category": "Polyxd"
+      },
+      {
+        "command": "polyxd.openInStudio",
+        "title": "Open in Studio",
+        "category": "Polyxd"
+      },
+      {
+        "command": "polyxd.pushToStudio",
+        "title": "Push to Studio",
+        "category": "Polyxd"
+      },
+      {
+        "command": "polyxd.setStudioKey",
+        "title": "Set Studio API key",
+        "category": "Polyxd"
+      },
+      {
+        "command": "polyxd.refreshDocuments",
+        "title": "Refresh",
+        "category": "Polyxd",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "polyxd.openPreview",
+          "when": "polyxd.isDocument",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "polyxd.verify",
+          "when": "polyxd.isDocument"
+        },
+        {
+          "command": "polyxd.insertComponent",
+          "when": "polyxd.isDocument"
+        },
+        {
+          "command": "polyxd.openInStudio",
+          "when": "polyxd.isDocument"
+        },
+        {
+          "command": "polyxd.pushToStudio",
+          "when": "polyxd.isDocument"
+        },
+        {
+          "command": "polyxd.refreshDocuments",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "polyxd.refreshDocuments",
+          "when": "view == polyxd.documents",
+          "group": "navigation"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "polyxd.documents",
+          "name": "Polyxd documents",
+          "icon": "$(layout)",
+          "contextualTitle": "Polyxd"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "polyxd.documents",
+        "contents": "No Polyxd documents in this workspace yet.\nA document is a JSON file with `specVersion` and `components`, or an intent file with a `document` inside. [Read about authored screens](https://polyxd.com/docs/authored-screens/)."
+      }
+    ],
+    "configuration": {
+      "title": "Polyxd",
+      "properties": {
+        "polyxd.pack": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "A design-system pack of your own for the preview's pack switcher: a `manifest.json` written by `polyxd pack`, compiled here, or an already compiled theme stylesheet. Relative to the workspace folder."
+        },
+        "polyxd.defaultPack": {
+          "type": "string",
+          "default": "material3",
+          "enum": [
+            "material3",
+            "carbon",
+            "antd",
+            "fluent",
+            "shadcn",
+            "bootstrap",
+            "mantine",
+            "radix",
+            "polaris",
+            "primer",
+            "spectrum",
+            "govuk",
+            "chakra"
+          ],
+          "description": "The pack the preview opens with."
+        },
+        "polyxd.studio.workspaceUrl": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Your Studio workspace's API base for **Polyxd: Push to Studio**, e.g. `https://studio.polyxd.com/api/w/acme`. The API key is never kept here: set it with **Polyxd: Set Studio API key** (stored in the editor's secret storage) or export `POLYXD_STUDIO_KEY`."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "watch": "node scripts/build.ts --watch",
+    "test": "node --test \"test/*.test.ts\"",
+    "test:smoke": "node scripts/build.ts && node --test test/smoke/run.ts",
+    "package": "node scripts/build.ts && vsce package --no-dependencies --allow-missing-repository",
+    "vscode:prepublish": "node scripts/build.ts"
+  },
+  "devDependencies": {
+    "@polyxd/react": "^0.2.2",
+    "@polyxd/spec": "^0.2.2",
+    "@types/vscode": "^1.96.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.1"
+  }
+}

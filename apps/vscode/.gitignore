@@ -1,0 +1,5 @@
+dist/
+schema/
+tokens/
+*.vsix
+.vscode-test/

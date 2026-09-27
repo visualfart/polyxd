@@ -48,6 +48,16 @@
         "@polyxd/demos"
       ],
       "port": 5174
+    },
+    {
+      "name": "vscode-webview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "apps/vscode/scripts/serve-webview.ts",
+        "--port",
+        "4320"
+      ],
+      "port": 4320
     }
   ]
 }
