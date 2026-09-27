@@ -1,0 +1,220 @@
+{
+  "id": "screen.card",
+  "title": "Card",
+  "ask": [],
+  "capabilities": [
+    "card.freeze",
+    "card.unfreeze",
+    "card.setOnline",
+    "card.ask"
+  ],
+  "data": {
+    "card": "view:cardScreen"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "card",
+      "title": "Card",
+      "intent": "screen.card",
+      "origin": "authored",
+      "presentation": "page"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "face",
+          "frozen_notice",
+          "details",
+          "actions",
+          "online",
+          "note"
+        ]
+      },
+      {
+        "id": "face",
+        "component": "Card",
+        "key": "card",
+        "title": {
+          "path": "/card/number"
+        },
+        "subtitle": {
+          "path": "/card/holder"
+        }
+      },
+      {
+        "id": "frozen_notice",
+        "component": "Status",
+        "key": "frozen_notice",
+        "kind": "warning",
+        "variant": "inline",
+        "visible": {
+          "path": "/card/frozen"
+        },
+        "title": "Card frozen",
+        "message": {
+          "path": "/card/frozenSince"
+        }
+      },
+      {
+        "id": "details",
+        "component": "DetailList",
+        "key": "card_details",
+        "items": [
+          {
+            "key": "status",
+            "label": "Status",
+            "value": {
+              "path": "/card/statusDetail"
+            }
+          },
+          {
+            "key": "contactless",
+            "label": "Contactless limit",
+            "value": {
+              "path": "/card/contactlessLimit"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "GBP",
+              "precision": 0
+            }
+          },
+          {
+            "key": "last_used",
+            "label": "Last used",
+            "value": {
+              "path": "/card/lastUsedLabel"
+            }
+          },
+          {
+            "key": "subscriptions",
+            "label": "Subscriptions on it",
+            "value": {
+              "path": "/card/subscriptions"
+            },
+            "format": {
+              "type": "number"
+            }
+          }
+        ]
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "freeze",
+          "unfreeze",
+          "ask"
+        ]
+      },
+      {
+        "id": "freeze",
+        "component": "Action",
+        "key": "freeze",
+        "visible": {
+          "path": "/card/active"
+        },
+        "label": "Freeze card",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "card.freeze",
+            "context": {
+              "cardId": {
+                "path": "/card/id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "unfreeze",
+        "component": "Action",
+        "key": "unfreeze",
+        "visible": {
+          "path": "/card/frozen"
+        },
+        "label": "Unfreeze card",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "card.unfreeze",
+            "context": {
+              "cardId": {
+                "path": "/card/id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "ask",
+        "component": "Action",
+        "key": "ask_card",
+        "label": "Ask about the card",
+        "emphasis": "tertiary",
+        "action": {
+          "event": {
+            "name": "card.ask",
+            "context": {
+              "cardId": {
+                "path": "/card/id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "online",
+        "component": "Toggle",
+        "key": "online_payments",
+        "label": "Online payments",
+        "description": "Turn off to stop the card working on websites and in apps.",
+        "value": {
+          "path": "/card/onlinePayments"
+        },
+        "action": {
+          "event": {
+            "name": "card.setOnline",
+            "context": {
+              "cardId": {
+                "path": "/card/id"
+              },
+              "on": {
+                "path": "/card/onlinePayments"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "note",
+        "component": "Text",
+        "key": "freeze_note",
+        "variant": "supporting",
+        "text": "Freezing stops new card payments straight away. Subscriptions you've already set up keep going, so nothing you rely on stops without you."
+      }
+    ],
+    "data": {
+      "card": {
+        "id": "card_1",
+        "number": "Visa ··4471",
+        "holder": "Maya Okafor · expires 09/28",
+        "frozen": false,
+        "active": true,
+        "statusLabel": "Active",
+        "statusDetail": "Active",
+        "frozenSince": "",
+        "contactlessLimit": 100,
+        "onlinePayments": true,
+        "lastUsedLabel": "Today, £17.42",
+        "subscriptions": 4
+      }
+    }
+  }
+}

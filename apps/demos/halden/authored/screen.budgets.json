@@ -1,0 +1,289 @@
+{
+  "id": "screen.budgets",
+  "title": "Budgets",
+  "ask": [],
+  "capabilities": [
+    "budget.open"
+  ],
+  "data": {
+    "budgets": "view:budgetsScreen"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "budgets",
+      "title": "Budgets",
+      "intent": "screen.budgets",
+      "origin": "authored",
+      "presentation": "page"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "summary",
+          "list",
+          "without"
+        ]
+      },
+      {
+        "id": "summary",
+        "component": "Group",
+        "key": "month_summary",
+        "arrangement": "inline",
+        "visible": {
+          "path": "/budgets/any"
+        },
+        "children": [
+          "budgeted",
+          "days_left"
+        ]
+      },
+      {
+        "id": "budgeted",
+        "component": "Metric",
+        "key": "budgeted",
+        "label": {
+          "path": "/budgets/budgetedLabel"
+        },
+        "value": {
+          "path": "/budgets/used"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "caption": {
+          "path": "/budgets/ofLabel"
+        }
+      },
+      {
+        "id": "days_left",
+        "component": "Metric",
+        "key": "days_left",
+        "label": "Days left",
+        "value": {
+          "path": "/budgets/daysLeft"
+        },
+        "format": {
+          "type": "number"
+        },
+        "caption": {
+          "path": "/budgets/toGoLabel"
+        }
+      },
+      {
+        "id": "list",
+        "component": "Collection",
+        "key": "budget_list",
+        "label": "Budgets this month",
+        "layout": "list",
+        "items": {
+          "path": "/budgets/rows",
+          "componentId": "budget"
+        },
+        "empty": "no_budgets"
+      },
+      {
+        "id": "budget",
+        "component": "Card",
+        "key": "budget",
+        "title": {
+          "path": "name"
+        },
+        "subtitle": {
+          "path": "leftLabel"
+        },
+        "action": {
+          "event": {
+            "name": "budget.open",
+            "context": {
+              "category": {
+                "path": "category"
+              }
+            }
+          }
+        },
+        "children": [
+          "budget_bar"
+        ]
+      },
+      {
+        "id": "budget_bar",
+        "component": "Progress",
+        "key": "budget_bar",
+        "kind": "meter",
+        "label": "Spent",
+        "value": {
+          "path": "used"
+        },
+        "max": {
+          "path": "limit"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "caption": {
+          "path": "limitLabel"
+        },
+        "thresholds": {
+          "warning": 0.8
+        }
+      },
+      {
+        "id": "no_budgets",
+        "component": "Status",
+        "key": "no_budgets",
+        "kind": "empty",
+        "title": "No budgets yet",
+        "message": "A budget is a monthly amount for a category. Halden shows how you're doing against it.",
+        "action": "set_first"
+      },
+      {
+        "id": "set_first",
+        "component": "Action",
+        "key": "set_first",
+        "label": "Set a budget",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "budget.open"
+          }
+        }
+      },
+      {
+        "id": "without",
+        "component": "Section",
+        "key": "without",
+        "title": "Without a budget",
+        "description": "Categories you spent on last month. Choose one to set a budget for it.",
+        "visible": {
+          "path": "/budgets/anyWithout"
+        },
+        "children": [
+          "without_list"
+        ]
+      },
+      {
+        "id": "without_list",
+        "component": "Collection",
+        "key": "without_list",
+        "label": "Categories without a budget",
+        "layout": "list",
+        "items": {
+          "path": "/budgets/without",
+          "componentId": "without_item"
+        },
+        "empty": "all_budgeted"
+      },
+      {
+        "id": "without_item",
+        "component": "Card",
+        "key": "without_item",
+        "title": {
+          "path": "name"
+        },
+        "subtitle": {
+          "path": "lastMonthLabel"
+        },
+        "action": {
+          "event": {
+            "name": "budget.open",
+            "context": {
+              "category": {
+                "path": "category"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "all_budgeted",
+        "component": "Status",
+        "key": "all_budgeted",
+        "kind": "empty",
+        "title": "Every category has a budget",
+        "message": "A category you spend on next month shows here."
+      }
+    ],
+    "data": {
+      "budgets": {
+        "month": "September",
+        "budgetedLabel": "Budgeted in September",
+        "used": 378.13,
+        "limit": 500,
+        "ofLabel": "of £500",
+        "daysLeft": 2,
+        "toGoLabel": "£121.87 to go",
+        "any": true,
+        "none": false,
+        "rows": [
+          {
+            "category": "groceries",
+            "name": "Groceries",
+            "limit": 260,
+            "used": 199.47,
+            "left": 60.53,
+            "leftLabel": "£60.53 left",
+            "limitLabel": "of £260"
+          },
+          {
+            "category": "eating-out",
+            "name": "Eating out",
+            "limit": 150,
+            "used": 74.9,
+            "left": 75.1,
+            "leftLabel": "£75.10 left",
+            "limitLabel": "of £150"
+          },
+          {
+            "category": "transport",
+            "name": "Transport",
+            "limit": 90,
+            "used": 103.76,
+            "left": -13.76,
+            "leftLabel": "£13.76 over",
+            "limitLabel": "of £90"
+          }
+        ],
+        "without": [
+          {
+            "category": "coffee",
+            "name": "Coffee",
+            "lastMonth": 55.88,
+            "lastMonthLabel": "£55.88 in August"
+          },
+          {
+            "category": "shopping",
+            "name": "Shopping",
+            "lastMonth": 196.45,
+            "lastMonthLabel": "£196.45 in August"
+          },
+          {
+            "category": "bills",
+            "name": "Bills",
+            "lastMonth": 273.6,
+            "lastMonthLabel": "£273.60 in August"
+          },
+          {
+            "category": "subscriptions",
+            "name": "Subscriptions",
+            "lastMonth": 61.97,
+            "lastMonthLabel": "£61.97 in August"
+          },
+          {
+            "category": "entertainment",
+            "name": "Entertainment",
+            "lastMonth": 16.5,
+            "lastMonthLabel": "£16.50 in August"
+          }
+        ],
+        "anyWithout": true
+      }
+    }
+  }
+}

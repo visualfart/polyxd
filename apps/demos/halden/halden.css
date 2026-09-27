@@ -992,37 +992,6 @@ body:has(.hal-snackbar) .hal-fab-floating {
   color: var(--pxd-color-selection-foreground);
 }
 
-/* ---- Bars for insights ---- */
-
-.hal-bars {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  align-items: end;
-  gap: var(--pxd-space-inline-default);
-  height: 160px;
-}
-.hal-bar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  height: 100%;
-  font-size: var(--pxd-type-label-small-size);
-  color: var(--pxd-color-text-muted);
-}
-.hal-bar > span:first-child {
-  width: 100%;
-  max-width: 48px;
-  border-radius: var(--pxd-radius-small) var(--pxd-radius-small) 2px 2px;
-  background: var(--pxd-color-action-secondary-background);
-  min-height: 2px;
-}
-.hal-bar.is-current > span:first-child {
-  background: var(--pxd-color-action-primary-background);
-}
-
 /* ---- Welcome ---- */
 
 .hal-welcome {
@@ -1072,58 +1041,13 @@ body:has(.hal-snackbar) .hal-fab-floating {
   background: var(--pxd-color-action-primary-background);
 }
 
-/* ---- The card ---- */
+/* ---- Authored screens: a Polyxd document as a screen of the product, inside the same shell ----
+   The top bar names the screen, so the surface's own title stays out of the way; the shell's
+   padding is the page's, and the mark sits with the content. */
 
-.hal-cardface {
-  position: relative;
-  aspect-ratio: 1.586;
-  max-width: 400px;
-  width: 100%;
-  margin: 0 auto;
-  padding: var(--pxd-space-inset-comfortable);
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--pxd-color-action-primary-background), color-mix(in srgb, var(--pxd-color-action-primary-background) 60%, var(--pxd-color-surface-inverse)));
-  color: var(--pxd-color-action-primary-foreground);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: var(--pxd-shadow-raised);
-  transition: filter var(--pxd-motion-duration-medium) var(--pxd-motion-easing-standard);
+.hal-authored > .jit > .pxd-surface {
+  padding: 0;
 }
-.hal-cardface.is-frozen {
-  filter: saturate(0.2) brightness(0.9);
-}
-.hal-cardface-brand {
-  font-family: var(--pxd-type-title-section-family);
-  font-size: var(--pxd-type-title-section-size);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-.hal-cardface-number {
-  font-family: var(--pxd-type-numeric-display-family);
-  font-size: 22px;
-  letter-spacing: 0.08em;
-  font-variant-numeric: tabular-nums;
-}
-.hal-cardface-row {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--pxd-type-label-default-family);
-  font-size: var(--pxd-type-label-default-size);
-  letter-spacing: 0.06em;
-}
-.hal-cardface-frozen {
-  position: absolute;
-  top: var(--pxd-space-inset-default);
-  right: var(--pxd-space-inset-default);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 12px;
-  border-radius: var(--pxd-radius-full);
-  background: color-mix(in srgb, var(--pxd-color-action-primary-foreground) 22%, transparent);
-  font-family: var(--pxd-type-label-default-family);
-  font-size: var(--pxd-type-label-small-size);
-  font-weight: var(--pxd-type-label-small-weight);
+.hal-authored .pxd-surface > .pxd-surface-main > .pxd-surface-title {
+  display: none;
 }

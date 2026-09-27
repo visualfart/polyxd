@@ -2,6 +2,19 @@
   "$schema": "../../../packages/spec/schema/capabilities.schema.json",
   "name": "halden",
   "capabilities": {
+    "budget.open": {
+      "description": "Open the set-a-budget screen, for one category when given",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "budget.restore": {
       "description": "Put a budget back to what it was",
       "risk": "low",
@@ -39,6 +52,22 @@
       },
       "undo": "budget.restore"
     },
+    "card.ask": {
+      "description": "Open the card's ask screen: freeze, unfreeze, what freezing means",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "cardId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cardId"
+        ],
+        "additionalProperties": false
+      }
+    },
     "card.freeze": {
       "description": "Freeze the debit card: no new payments until unfrozen. Subscriptions already set up keep going",
       "risk": "low",
@@ -55,6 +84,27 @@
         "additionalProperties": false
       },
       "undo": "card.unfreeze"
+    },
+    "card.setOnline": {
+      "description": "Allow or stop the card being used on websites and in apps. Takes effect straight away",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "cardId": {
+            "type": "string"
+          },
+          "on": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "cardId",
+          "on"
+        ],
+        "additionalProperties": false
+      },
+      "undo": "card.setOnline"
     },
     "card.unfreeze": {
       "description": "Unfreeze the debit card",
@@ -208,6 +258,31 @@
         "additionalProperties": false
       }
     },
+    "spend.category": {
+      "description": "Open a category's spend this month: the payments behind the figure",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "spend.compare": {
+      "description": "Open this month against last, category by category",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
     "subscription.cancel": {
       "description": "Stop a recurring payment at Halden's end: the next attempt is declined and the merchant is told",
       "risk": "consequential",
@@ -257,6 +332,15 @@
         "required": [
           "id"
         ],
+        "additionalProperties": false
+      }
+    },
+    "subscriptions.open": {
+      "description": "Open the recurring payments: what goes out every month, and the option to stop one",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {},
         "additionalProperties": false
       }
     },

@@ -9,39 +9,17 @@ import { ASKABLE, REPORTS, intentById, resolveSlots, surfaceData } from "./inten
 import { useHalden } from "./session.ts";
 import { runAction, type Outcome } from "./actions.ts";
 import { Button, Fab, Icon, Nav } from "./ui.tsx";
+import { AuthoredScreen } from "./authored.tsx";
+import { PACKS, loadPack } from "./packs.ts";
 import { Home } from "./screens/home.tsx";
 import { Payments, Payment } from "./screens/payments.tsx";
 import { Payees, Payee } from "./screens/payees.tsx";
-import { Budgets } from "./screens/budgets.tsx";
-import { Cards } from "./screens/cards.tsx";
-import { Insights } from "./screens/insights.tsx";
 import { Settings } from "./screens/settings.tsx";
 import { Welcome } from "./screens/welcome.tsx";
 import { Ctx, type Session } from "./session.ts";
 
 export { store, useHalden } from "./session.ts";
 import { store } from "./session.ts";
-
-const PACKS = [
-  ["material3", "Material 3"],
-  ["shadcn", "shadcn/ui"],
-  ["carbon", "Carbon"],
-  ["polaris", "Polaris"],
-  ["antd", "Ant Design"],
-  ["govuk", "GOV.UK"],
-  ["fluent", "Fluent 2"],
-  ["primer", "Primer"],
-  ["spectrum", "Spectrum 2"],
-  ["chakra", "Chakra"],
-  ["mantine", "Mantine"],
-  ["radix", "Radix Themes"],
-  ["bootstrap", "Bootstrap"],
-].map(([id, name]) => ({ id, name }));
-const themeFiles = import.meta.glob("../../../packages/react/themes/*.css");
-const loadPack = async (id: string) => {
-  const load = themeFiles[`../../../packages/react/themes/${id}.css`];
-  if (load) await load();
-};
 
 export function App() {
   const h = store.useState();
@@ -104,9 +82,22 @@ export function App() {
                   <Route path="payments/:id" element={<Payment />} />
                   <Route path="payees" element={<Payees />} />
                   <Route path="payees/:id" element={<Payee />} />
-                  <Route path="budgets" element={<Budgets />} />
-                  <Route path="cards" element={<Cards />} />
-                  <Route path="insights" element={<Insights />} />
+                  {/* Authored Polyxd documents (authored/*.json) inside the same shell; the routes other screens link to are unchanged. */}
+                  <Route
+                    path="budgets"
+                    element={
+                      <AuthoredScreen
+                        id="screen.budgets"
+                        trailing={
+                          <Button tone="text" icon="add" onClick={() => open("budget.set")}>
+                            New
+                          </Button>
+                        }
+                      />
+                    }
+                  />
+                  <Route path="cards" element={<AuthoredScreen id="screen.card" back="/" />} />
+                  <Route path="insights" element={<AuthoredScreen id="screen.insights" />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>

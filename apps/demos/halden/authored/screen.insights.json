@@ -1,0 +1,368 @@
+{
+  "id": "screen.insights",
+  "title": "Insights",
+  "ask": [],
+  "capabilities": [
+    "spend.category",
+    "spend.compare",
+    "subscriptions.open"
+  ],
+  "data": {
+    "insights": "view:insights"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "insights",
+      "title": "Insights",
+      "intent": "screen.insights",
+      "origin": "authored",
+      "presentation": "page"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "spent",
+          "month",
+          "chart",
+          "where",
+          "every_month"
+        ]
+      },
+      {
+        "id": "spent",
+        "component": "Metric",
+        "key": "spent",
+        "label": {
+          "path": "/insights/spentLabel"
+        },
+        "value": {
+          "path": "/insights/total"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        }
+      },
+      {
+        "id": "month",
+        "component": "Choice",
+        "key": "month",
+        "label": "Month",
+        "options": {
+          "path": "/insights/months",
+          "valuePath": "key",
+          "labelPath": "name"
+        },
+        "value": {
+          "path": "/insights/month"
+        }
+      },
+      {
+        "id": "chart",
+        "component": "Chart",
+        "key": "spend_by_month",
+        "intent": "comparison",
+        "data": {
+          "path": "/insights/months"
+        },
+        "title": "Spend by month",
+        "summary": {
+          "path": "/insights/chartSummary"
+        },
+        "x": {
+          "path": "label",
+          "label": "Month"
+        },
+        "series": [
+          {
+            "key": "total",
+            "path": "total",
+            "label": "Spent",
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ]
+      },
+      {
+        "id": "where",
+        "component": "Section",
+        "key": "where",
+        "title": "Where it went",
+        "children": [
+          "categories",
+          "compare_bar"
+        ]
+      },
+      {
+        "id": "categories",
+        "component": "Table",
+        "key": "categories",
+        "rows": {
+          "path": "/insights/rows"
+        },
+        "caption": "Spend by category",
+        "columns": [
+          {
+            "key": "name",
+            "label": "Category",
+            "path": "name",
+            "kind": "entity",
+            "secondaryPath": "detail"
+          },
+          {
+            "key": "total",
+            "label": "Spent",
+            "path": "total",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "GBP"
+            }
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "spend.category",
+            "context": {
+              "category": {
+                "path": "category"
+              }
+            }
+          }
+        },
+        "empty": "no_spend"
+      },
+      {
+        "id": "no_spend",
+        "component": "Status",
+        "key": "no_spend",
+        "kind": "empty",
+        "title": "Nothing spent this month",
+        "message": "Payments show here by category as they happen."
+      },
+      {
+        "id": "compare_bar",
+        "component": "ActionBar",
+        "children": [
+          "compare"
+        ]
+      },
+      {
+        "id": "compare",
+        "component": "Action",
+        "key": "compare_months",
+        "label": "Compare months",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "spend.compare"
+          }
+        }
+      },
+      {
+        "id": "every_month",
+        "component": "Section",
+        "key": "every_month",
+        "title": "Every month",
+        "children": [
+          "regular",
+          "manage_bar"
+        ]
+      },
+      {
+        "id": "regular",
+        "component": "Group",
+        "key": "regular",
+        "arrangement": "inline",
+        "children": [
+          "subscriptions",
+          "rent_and_bills"
+        ]
+      },
+      {
+        "id": "subscriptions",
+        "component": "Metric",
+        "key": "subscriptions",
+        "label": "Subscriptions",
+        "value": {
+          "path": "/insights/subscriptions/monthly"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "caption": {
+          "path": "/insights/subscriptions/countLabel"
+        }
+      },
+      {
+        "id": "rent_and_bills",
+        "component": "Metric",
+        "key": "rent_and_bills",
+        "label": "Rent and bills",
+        "value": {
+          "path": "/insights/fixed/total"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        },
+        "caption": {
+          "path": "/insights/fixed/countLabel"
+        }
+      },
+      {
+        "id": "manage_bar",
+        "component": "ActionBar",
+        "children": [
+          "manage"
+        ]
+      },
+      {
+        "id": "manage",
+        "component": "Action",
+        "key": "manage_subscriptions",
+        "label": "Manage subscriptions",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "subscriptions.open"
+          }
+        }
+      }
+    ],
+    "data": {
+      "insights": {
+        "month": "2026-09",
+        "months": [
+          {
+            "key": "2026-06",
+            "name": "June",
+            "label": "Jun",
+            "total": 215.5
+          },
+          {
+            "key": "2026-07",
+            "name": "July",
+            "label": "Jul",
+            "total": 2569.68
+          },
+          {
+            "key": "2026-08",
+            "name": "August",
+            "label": "Aug",
+            "total": 2363.53
+          },
+          {
+            "key": "2026-09",
+            "name": "September",
+            "label": "Sept",
+            "total": 2109.43
+          }
+        ],
+        "spentLabel": "Spent in September",
+        "total": 2109.43,
+        "rows": [
+          {
+            "category": "rent",
+            "name": "Rent",
+            "total": 1150,
+            "count": 1,
+            "share": 0.55,
+            "detail": "1 payment · 55%"
+          },
+          {
+            "category": "bills",
+            "name": "Bills",
+            "total": 273.6,
+            "count": 3,
+            "share": 0.13,
+            "detail": "3 payments · 13%"
+          },
+          {
+            "category": "groceries",
+            "name": "Groceries",
+            "total": 199.47,
+            "count": 10,
+            "share": 0.09,
+            "detail": "10 payments · 9%"
+          },
+          {
+            "category": "shopping",
+            "name": "Shopping",
+            "total": 127.41,
+            "count": 3,
+            "share": 0.06,
+            "detail": "3 payments · 6%"
+          },
+          {
+            "category": "transport",
+            "name": "Transport",
+            "total": 103.76,
+            "count": 21,
+            "share": 0.05,
+            "detail": "21 payments · 5%"
+          },
+          {
+            "category": "eating-out",
+            "name": "Eating out",
+            "total": 74.9,
+            "count": 2,
+            "share": 0.04,
+            "detail": "2 payments · 4%"
+          },
+          {
+            "category": "subscriptions",
+            "name": "Subscriptions",
+            "total": 61.97,
+            "count": 4,
+            "share": 0.03,
+            "detail": "4 payments · 3%"
+          },
+          {
+            "category": "coffee",
+            "name": "Coffee",
+            "total": 49.24,
+            "count": 13,
+            "share": 0.02,
+            "detail": "13 payments · 2%"
+          },
+          {
+            "category": "transfers",
+            "name": "Sent to people",
+            "total": 34.74,
+            "count": 2,
+            "share": 0.02,
+            "detail": "2 payments · 2%"
+          },
+          {
+            "category": "health",
+            "name": "Health",
+            "total": 34.34,
+            "count": 2,
+            "share": 0.02,
+            "detail": "2 payments · 2%"
+          }
+        ],
+        "chartSummary": "July is the highest at £2,569.68; June the lowest at £215.50.",
+        "subscriptions": {
+          "monthly": 61.97,
+          "count": 4,
+          "countLabel": "4 active"
+        },
+        "fixed": {
+          "total": 1423.6,
+          "count": 4,
+          "countLabel": "4 payments"
+        }
+      }
+    }
+  }
+}

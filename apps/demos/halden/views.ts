@@ -1,5 +1,5 @@
 import type { IntentFile } from "../kit/types.ts";
-import { balance, category, lastMonth, monthName, spendByCategory, spent, spentToDay, thisMonth, type Halden, type Payment } from "./seed.ts";
+import { balance, category, lastMonth, monthKey, monthName, spendByCategory, spent, spentToDay, thisMonth, type Halden, type Payment } from "./seed.ts";
 import { dayLabel, money, time } from "./format.ts";
 
 /**
@@ -134,6 +134,90 @@ export function view(h: Halden, name: string, slots: Record<string, unknown>): u
       // The chart shows the six biggest categories; a phone-width chart can't label eleven.
       const top = [...rows].sort((x, y) => y.thisMonth + y.lastMonth - (x.thisMonth + x.lastMonth)).slice(0, 6);
       return { month: monthName(month), previous: monthName(prev), thisMonth: total, lastMonthToDay: prevToDay, lastMonthFull: spent(h, prev), change: prevToDay ? Math.round(((total - prevToDay) / prevToDay) * 1000) / 1000 : null, dayOfMonth: today, rows, top, summary };
+    }
+
+    /* ---- The authored screens (authored/*.json): the same views the React screens computed ---- */
+
+    case "budgetsScreen": {
+      // Every budget with what's been spent against it this month, then the categories that could have one.
+      const now = new Date();
+      const daysLeft = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() - now.getDate();
+      const rows = h.budgets.map((b) => {
+        const used = spent(h, month, b.category);
+        const left = Math.round((b.limit - used) * 100) / 100;
+        return {
+          category: b.category,
+          name: category(h, b.category).name,
+          limit: b.limit,
+          used,
+          left,
+          leftLabel: left >= 0 ? `${money(left)} left` : `${money(-left)} over`,
+          limitLabel: `of ${money(b.limit, { whole: true })}`,
+        };
+      });
+      const limit = rows.reduce((s, r) => s + r.limit, 0);
+      const used = Math.round(rows.reduce((s, r) => s + r.used, 0) * 100) / 100;
+      const without = h.categories
+        .filter((c) => !["income", "transfers", "rent"].includes(c.id) && !h.budgets.some((b) => b.category === c.id) && spent(h, prev, c.id) > 0)
+        .map((c) => ({ category: c.id, name: c.name, lastMonth: spent(h, prev, c.id), lastMonthLabel: `${money(spent(h, prev, c.id))} in ${monthName(prev)}` }));
+      return {
+        month: monthName(month),
+        budgetedLabel: `Budgeted in ${monthName(month)}`,
+        used,
+        limit,
+        ofLabel: `of ${money(limit, { whole: true })}`,
+        daysLeft,
+        toGoLabel: `${money(Math.max(0, limit - used))} to go`,
+        any: rows.length > 0,
+        none: rows.length === 0,
+        rows,
+        without,
+        anyWithout: without.length > 0,
+      };
+    }
+
+    case "insights": {
+      // Spend for one month (slots.month, "YYYY-MM"; this month by default), with every month for the chooser and the chart.
+      const months = [...new Set(h.payments.map((p) => monthKey(p.at)))].sort().map((key) => ({ key, name: monthName(key), label: monthName(key, "short"), total: spent(h, key) }));
+      const chosen = months.some((m) => m.key === slots.month) ? String(slots.month) : month;
+      const total = spent(h, chosen);
+      const rows = spendByCategory(h, chosen).map((r) => ({ ...r, share: total ? Math.round((r.total / total) * 100) / 100 : 0, detail: `${r.count} payment${r.count === 1 ? "" : "s"} · ${total ? Math.round((r.total / total) * 100) : 0}%` }));
+      const active = h.subscriptions.filter((s) => s.active);
+      const subsMonthly = Math.round(active.reduce((t, s) => t + (s.cadence === "monthly" ? s.amount : s.amount / 12), 0) * 100) / 100;
+      const fixed = h.payments.filter((p) => monthKey(p.at) === chosen && p.amount < 0 && p.status !== "refunded" && (p.category === "rent" || p.category === "bills"));
+      const fixedTotal = Math.round(fixed.reduce((t, p) => t - p.amount, 0) * 100) / 100;
+      const most = [...months].sort((a, b) => b.total - a.total)[0];
+      const least = [...months].sort((a, b) => a.total - b.total)[0];
+      return {
+        month: chosen,
+        months,
+        spentLabel: `Spent in ${monthName(chosen)}`,
+        total,
+        rows,
+        chartSummary: most && least && most.key !== least.key ? `${most.name} is the highest at ${money(most.total)}; ${least.name} the lowest at ${money(least.total)}.` : `${money(total)} spent in ${monthName(chosen)}.`,
+        subscriptions: { monthly: subsMonthly, count: active.length, countLabel: `${active.length} active` },
+        fixed: { total: fixedTotal, count: fixed.length, countLabel: `${fixed.length} payment${fixed.length === 1 ? "" : "s"}` },
+      };
+    }
+
+    case "cardScreen": {
+      const c = h.card;
+      const lastUsed = [...h.payments].reverse().find((p) => p.card);
+      const frozenAt = c.frozen && c.frozenAt ? `${dayLabel(c.frozenAt).toLowerCase()} at ${time(c.frozenAt)}` : "";
+      return {
+        id: c.id,
+        number: `${c.network} ··${c.last4}`,
+        holder: `${h.person.name} · expires ${c.expiry}`,
+        frozen: c.frozen,
+        active: !c.frozen,
+        statusLabel: c.frozen ? "Frozen" : "Active",
+        statusDetail: c.frozen ? `Frozen ${frozenAt}` : "Active",
+        frozenSince: c.frozen ? `Since ${frozenAt}. Nothing new goes through until you unfreeze it.` : "",
+        contactlessLimit: c.contactlessLimit,
+        onlinePayments: c.onlinePayments,
+        lastUsedLabel: lastUsed ? `${dayLabel(lastUsed.at)}, ${money(-lastUsed.amount)}` : "Not yet",
+        subscriptions: h.subscriptions.filter((s) => s.active).length,
+      };
     }
     default:
       throw new Error(`Unknown view ${name}`);

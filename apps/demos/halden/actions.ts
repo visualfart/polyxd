@@ -36,6 +36,25 @@ export function runAction(store: Store<Halden>, e: ActionEvent): Outcome {
     case "payee.open":
       return { go: `/payees/${c.id}`, close: true };
 
+    // The authored screens open an ask surface the way a button on a React screen did.
+    case "budget.open":
+      return { next: { intent: "budget.set", slots: c.category ? { category: String(c.category) } : {} } };
+    case "card.ask":
+      return { next: { intent: "card.freeze" } };
+    case "subscriptions.open":
+      return { next: { intent: "subscriptions.list" } };
+    case "spend.category":
+      return { next: { intent: "spend.category", slots: { category: String(c.category) } } };
+    case "spend.compare":
+      return { next: { intent: "spend.compare" } };
+    case "card.setOnline": {
+      const on = Boolean(c.on);
+      const undo = store.commit(on ? "Online payments on" : "Online payments off", (d) => {
+        d.card.onlinePayments = on;
+      });
+      return { say: on ? "Online payments on." : "Online payments off. The card won't work on websites or in apps.", undo };
+    }
+
     case "transfer.review": {
       const p = payee(h, c.payeeId);
       const amount = Number(c.amount);

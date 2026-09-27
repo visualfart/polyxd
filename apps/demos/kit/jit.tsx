@@ -41,7 +41,7 @@ export interface JitProps {
 export function JitSurface({ intent, report, data, theme, mode, density, disclosure, onAction, onDismiss, onDataChange, derive, locale, components, resolveMedia, origin, packs = [], loadPack, className }: JitProps) {
   const [hood, setHood] = useState(false);
   // Remount on new data so the surface starts from the host's copy (it keeps its own while inputs change).
-  const key = useMemo(() => JSON.stringify(data).length + ":" + intent.id, [data, intent.id]);
+  const key = useMemo(() => intent.id + ":" + fingerprint(JSON.stringify(data)), [data, intent.id]);
   return (
     <div className={["jit", className].filter(Boolean).join(" ")}>
       <PolyxdSurface key={key} document={intent.document} data={data} theme={theme} mode={mode} density={density} disclosure={disclosure} locale={locale} components={components} onAction={onAction} onDismiss={onDismiss} onDataChange={onDataChange} derive={derive} resolveMedia={resolveMedia} />
@@ -49,6 +49,13 @@ export function JitSurface({ intent, report, data, theme, mode, density, disclos
       {hood && <Hood intent={intent} report={report} data={data} theme={theme} mode={mode} locale={locale} packs={packs} loadPack={loadPack} resolveMedia={resolveMedia} onClose={() => setHood(false)} />}
     </div>
   );
+}
+
+/** FNV-1a over the data's JSON: cheap, and unlike its length it changes when a value does. */
+function fingerprint(text: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 0x01000193);
+  return (h >>> 0).toString(36);
 }
 
 /** Shown while a live document is on its way. */

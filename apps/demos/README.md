@@ -30,7 +30,12 @@ halden/
   session.ts                  the store and the context every screen reaches
   app.tsx, ui.tsx, *.css      the product's own chrome, on --pxd-* tokens
   screens/*.tsx               the conventional screens
+  authored/<id>.json          screens that are Polyxd documents a person wrote, in the intent shape
 ```
+
+`authored/` holds the other kind of screen: a document authored by hand rather than generated, bound to
+the same views, verified the same way (its report lands in `reports/` too) and rendered through `JitSurface`
+inside the product's own shell, so the mark reads "Authored · Checked" instead of "Checked".
 
 `kit/` is shared: a store with undo, ask matching with slots, the generator prompt built from the spec,
 `JitSurface` (the surface plus the mark and the drawer), and types.
