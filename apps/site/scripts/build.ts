@@ -533,7 +533,7 @@ async function templateCount(): Promise<string> {
   let n = 0;
   for (const p of (await readdir(join(REPO, "packages"))).filter((p) => p.startsWith("ds-") && p !== "ds-kit")) {
     const m = JSON.parse(await readFile(join(REPO, "packages", p, "manifest.json"), "utf8").catch(() => "{}"));
-    if ((Array.isArray(m.provenance) ? m.provenance : [m.provenance]).some((e: any) => e?.source === "Polyxd" || e?.template === true)) n++;
+    if ((Array.isArray(m.provenance) ? m.provenance : [m.provenance]).some((e: any) => e?.template === true || /^Original template/.test(String(e?.notes ?? "")))) n++;
   }
   return spelled[n - 1] ?? String(n);
 }
