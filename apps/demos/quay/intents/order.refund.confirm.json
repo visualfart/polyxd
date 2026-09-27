@@ -1,0 +1,231 @@
+{
+  "id": "order.refund.confirm",
+  "title": "Confirm a refund",
+  "ask": [],
+  "capabilities": [
+    "order.refund"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "refund": "view:refundConfirm"
+  },
+  "sample": {
+    "order": 1042
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "order-refund-confirm",
+      "title": "Refund this order?",
+      "intent": "order.refund",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "refund_confirm",
+        "title": {
+          "path": "/refund/title"
+        },
+        "severity": "consequential",
+        "amount": {
+          "value": {
+            "path": "/refund/amount"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "USD"
+          }
+        },
+        "subject": {
+          "title": {
+            "path": "/refund/customer/name"
+          },
+          "subtitle": {
+            "path": "/refund/customer/detail"
+          },
+          "avatar": {
+            "path": "/refund/customer/initials"
+          }
+        },
+        "consequences": [
+          {
+            "title": {
+              "path": "/refund/backText"
+            },
+            "detail": "In 5 to 10 business days",
+            "icon": "clock"
+          },
+          {
+            "title": {
+              "path": "/refund/restockText"
+            },
+            "icon": "tag"
+          },
+          {
+            "title": {
+              "path": "/refund/emailText"
+            },
+            "detail": "With the reason left out",
+            "icon": "mail"
+          }
+        ],
+        "summary": "summary",
+        "consequence": {
+          "path": "/refund/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/refund/label"
+          },
+          "action": {
+            "event": {
+              "name": "order.refund",
+              "context": {
+                "orderId": {
+                  "path": "/refund/orderId"
+                },
+                "itemIds": {
+                  "path": "/refund/itemIds"
+                },
+                "reason": {
+                  "path": "/refund/reason"
+                },
+                "restock": {
+                  "path": "/refund/restock"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Don't refund",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "refund_summary",
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "items",
+            "label": "Items",
+            "value": {
+              "path": "/refund/itemsText"
+            }
+          },
+          {
+            "key": "reason",
+            "label": "Reason",
+            "value": {
+              "path": "/refund/reasonText"
+            }
+          },
+          {
+            "key": "subtotal",
+            "label": "Subtotal",
+            "value": {
+              "path": "/refund/subtotal"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "discount",
+            "label": "Discount share",
+            "value": {
+              "path": "/refund/discount"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "tax",
+            "label": "Tax",
+            "value": {
+              "path": "/refund/tax"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "shipping",
+            "label": "Shipping",
+            "value": {
+              "path": "/refund/shipping"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "after",
+            "label": "Afterwards",
+            "value": {
+              "path": "/refund/afterText"
+            }
+          },
+          {
+            "key": "total",
+            "label": "Refund",
+            "value": {
+              "path": "/refund/total"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "total": true
+          }
+        ]
+      }
+    ],
+    "data": {
+      "refund": {
+        "orderId": "ord_0041",
+        "itemIds": [
+          "li_0070",
+          "li_0071",
+          "li_0072"
+        ],
+        "reason": "Damaged in transit",
+        "restock": true,
+        "title": "Refund $162.90 to Amara?",
+        "label": "Refund $162.90",
+        "amount": 162.9,
+        "customer": {
+          "name": "Amara Achebe",
+          "initials": "AA",
+          "detail": "Order #1042 · Visa ending 6742"
+        },
+        "backText": "$162.90 goes back to Visa ending 6742",
+        "restockText": "4 items return to inventory",
+        "emailText": "Amara Achebe is emailed a refund receipt",
+        "reasonText": "Damaged in transit",
+        "itemsText": "4 items of 4 items",
+        "subtotal": 150,
+        "discount": 0,
+        "tax": 12.9,
+        "shipping": 0,
+        "total": 162.9,
+        "afterText": "Payment status becomes Refunded",
+        "consequence": "$162.90 leaves your balance and reaches Visa ending 6742 in 5 to 10 business days. Amara Achebe gets a receipt by email. A refund can't be taken back; charging again means a new order."
+      }
+    }
+  }
+}

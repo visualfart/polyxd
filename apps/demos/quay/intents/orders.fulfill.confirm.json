@@ -1,0 +1,155 @@
+{
+  "id": "orders.fulfill.confirm",
+  "title": "Confirm fulfillment",
+  "ask": [],
+  "capabilities": [
+    "orders.fulfill"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "fulfill": "view:fulfillReview"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "orders-fulfill-confirm",
+      "title": "Fulfill these orders?",
+      "intent": "orders.fulfill",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "fulfill_confirm",
+        "title": {
+          "path": "/fulfill/title"
+        },
+        "severity": "consequential",
+        "consequences": [
+          {
+            "title": {
+              "path": "/fulfill/customersText"
+            },
+            "detail": "With the tracking number",
+            "icon": "mail"
+          },
+          {
+            "title": {
+              "path": "/fulfill/itemsText"
+            },
+            "detail": "Inventory already came off at checkout",
+            "icon": "tag"
+          },
+          {
+            "title": {
+              "path": "/fulfill/statusText"
+            },
+            "detail": "And archive a week after delivery",
+            "icon": "clock"
+          }
+        ],
+        "summary": "summary",
+        "consequence": {
+          "path": "/fulfill/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/fulfill/label"
+          },
+          "action": {
+            "event": {
+              "name": "orders.fulfill",
+              "context": {
+                "orderIds": {
+                  "path": "/fulfill/orderIds"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Not yet",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "fulfill_summary",
+        "items": [
+          {
+            "key": "orders",
+            "label": "Orders",
+            "value": {
+              "path": "/fulfill/ordersText"
+            }
+          },
+          {
+            "key": "items",
+            "label": "Items to ship",
+            "value": {
+              "path": "/fulfill/items"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "oldest",
+            "label": "Oldest promise",
+            "value": {
+              "path": "/fulfill/oldestText"
+            }
+          },
+          {
+            "key": "value",
+            "label": "Order value",
+            "value": {
+              "path": "/fulfill/value"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "fulfill": {
+        "orderIds": [
+          "ord_0166",
+          "ord_0167",
+          "ord_0168",
+          "ord_0169",
+          "ord_0170"
+        ],
+        "title": "Fulfill 5 orders?",
+        "label": "Fulfill 5 orders",
+        "count": 5,
+        "items": 5,
+        "value": 207.09,
+        "customersText": "5 customers get a shipping confirmation email",
+        "itemsText": "5 items marked as shipped from Portland",
+        "statusText": "The orders move to Fulfilled",
+        "ordersText": "#1166, #1167, #1168, #1169, #1170",
+        "customersList": [
+          "Silas Kim · silas.kim@gmail.com",
+          "Jonas Mbeki · jonas.mbeki@hey.com",
+          "Petra Hartigan · petra.hartigan@gmail.com",
+          "Nadia Delgado · nadia.delgado@icloud.com",
+          "June Byrne · june.byrne@gmail.com"
+        ],
+        "oldestText": "September 22, 2026",
+        "consequence": "5 customers are emailed that their order has shipped, with tracking. Fulfillment can't be undone from here; a mistake means a second email."
+      }
+    }
+  }
+}

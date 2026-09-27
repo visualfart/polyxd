@@ -1,0 +1,217 @@
+{
+  "$schema": "../../../packages/spec/schema/capabilities.schema.json",
+  "name": "quay",
+  "capabilities": {
+    "product.open": {
+      "description": "Open a product's page",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "products.open": {
+      "description": "Open the products index, filtered to what's running low",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "ids": { "type": "array", "items": { "type": "string" } } },
+        "additionalProperties": false
+      }
+    },
+    "order.open": {
+      "description": "Open an order's page",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "id": { "type": "string" } },
+        "required": ["id"],
+        "additionalProperties": false
+      }
+    },
+    "restock.open": {
+      "description": "Start recording a delivery for one or more variants",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "variantIds": { "type": "array", "items": { "type": "string" } } },
+        "additionalProperties": false
+      }
+    },
+    "inventory.adjust": {
+      "description": "Record stock on its way in for a variant, or received today",
+      "risk": "low",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "variantId": { "type": "string" },
+          "quantity": { "type": "number" },
+          "expectedAt": { "type": "string" }
+        },
+        "required": ["variantId", "quantity"],
+        "additionalProperties": false
+      },
+      "undo": "inventory.adjust"
+    },
+    "fulfillment.review": {
+      "description": "Gather the orders to fulfill and who will be emailed, before anything ships",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": { "orderIds": { "type": "array", "items": { "type": "string" } } },
+        "required": ["orderIds"],
+        "additionalProperties": false
+      }
+    },
+    "orders.fulfill": {
+      "description": "Mark orders as fulfilled with tracking and email each customer a shipping confirmation",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": { "orderIds": { "type": "array", "items": { "type": "string" } } },
+        "required": ["orderIds"],
+        "additionalProperties": false
+      },
+      "sideEffects": ["Each customer is emailed a shipping confirmation with tracking", "The orders move to Fulfilled"],
+      "preconditions": ["A review from fulfillment.review"],
+      "agentMayInvoke": false
+    },
+    "discount.review": {
+      "description": "Check a discount before it goes live: what it takes off, who can use it, when",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "type": { "enum": ["amount_off_order", "amount_off_products", "free_shipping"] },
+          "valueKind": { "enum": ["percentage", "fixed"] },
+          "value": { "type": "number" },
+          "minOrder": { "type": "number" },
+          "code": { "type": "string" },
+          "method": { "enum": ["code", "automatic"] },
+          "audience": { "enum": ["everyone", "returning", "new", "lapsed"] },
+          "startsAt": { "type": "string" },
+          "endsAt": { "type": "string" }
+        },
+        "required": ["type", "value", "audience", "method", "startsAt"],
+        "additionalProperties": false
+      }
+    },
+    "discount.create": {
+      "description": "Create a discount and put it live on the store",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "type": { "enum": ["amount_off_order", "amount_off_products", "free_shipping"] },
+          "valueKind": { "enum": ["percentage", "fixed"] },
+          "value": { "type": "number" },
+          "minOrder": { "type": "number" },
+          "code": { "type": "string" },
+          "method": { "enum": ["code", "automatic"] },
+          "audience": { "enum": ["everyone", "returning", "new", "lapsed"] },
+          "startsAt": { "type": "string" },
+          "endsAt": { "type": "string" }
+        },
+        "required": ["type", "value", "audience", "method", "startsAt"],
+        "additionalProperties": false
+      },
+      "sideEffects": ["The discount can be used at checkout from its start date", "Automatic discounts apply to every eligible cart"],
+      "preconditions": ["A review from discount.review"],
+      "agentMayInvoke": false
+    },
+    "refund.review": {
+      "description": "Work out a refund before it's issued: the items, the tax and shipping share, the total",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "orderId": { "type": "string" },
+          "itemIds": { "type": "array", "items": { "type": "string" } },
+          "reason": { "type": "string" },
+          "restock": { "type": "boolean" }
+        },
+        "required": ["orderId", "itemIds", "reason"],
+        "additionalProperties": false
+      }
+    },
+    "order.refund": {
+      "description": "Refund part or all of an order to the customer's original payment method and email them a receipt",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "orderId": { "type": "string" },
+          "itemIds": { "type": "array", "items": { "type": "string" } },
+          "reason": { "type": "string" },
+          "restock": { "type": "boolean" }
+        },
+        "required": ["orderId", "itemIds", "reason"],
+        "additionalProperties": false
+      },
+      "sideEffects": ["Money leaves your balance and reaches the customer in 5 to 10 business days", "The customer is emailed a refund receipt", "Returned items go back into inventory when restock is on"],
+      "preconditions": ["A review from refund.review"],
+      "agentMayInvoke": false
+    },
+    "pricing.review": {
+      "description": "Preview a percentage price change across a product type before it's applied",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "percent": { "type": "number" },
+          "type": { "type": "string" }
+        },
+        "required": ["percent", "type"],
+        "additionalProperties": false
+      }
+    },
+    "products.reprice": {
+      "description": "Change every price of a product type by a percentage, rounded to the nearest 50 cents",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "percent": { "type": "number" },
+          "type": { "type": "string" }
+        },
+        "required": ["percent", "type"],
+        "additionalProperties": false
+      },
+      "sideEffects": ["New prices show on the store at once", "Open carts see the new price"],
+      "preconditions": ["A preview from pricing.review"],
+      "undo": "products.reprice",
+      "agentMayInvoke": false
+    },
+    "recovery.review": {
+      "description": "Gather the abandoned checkouts to remind and the discount to include, before any email is sent",
+      "risk": "none",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "checkoutIds": { "type": "array", "items": { "type": "string" } },
+          "discountId": { "type": "string" }
+        },
+        "required": ["checkoutIds"],
+        "additionalProperties": false
+      }
+    },
+    "checkouts.recover": {
+      "description": "Email the people who left a checkout a link back to their cart, with an optional discount",
+      "risk": "consequential",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "checkoutIds": { "type": "array", "items": { "type": "string" } },
+          "discountId": { "type": "string" }
+        },
+        "required": ["checkoutIds"],
+        "additionalProperties": false
+      },
+      "sideEffects": ["Each person is emailed from the store's address", "An email can't be recalled"],
+      "preconditions": ["A review from recovery.review"],
+      "agentMayInvoke": false
+    }
+  }
+}

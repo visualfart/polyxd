@@ -1,0 +1,163 @@
+{
+  "id": "products.reprice.confirm",
+  "title": "Confirm a price change",
+  "ask": [],
+  "capabilities": [
+    "products.reprice"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "reprice": "view:repriceConfirm"
+  },
+  "sample": {
+    "percent": 5,
+    "type": "candle"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "products-reprice-confirm",
+      "title": "Change these prices?",
+      "intent": "products.reprice",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "reprice_confirm",
+        "title": {
+          "path": "/reprice/title"
+        },
+        "severity": "consequential",
+        "consequences": [
+          {
+            "title": {
+              "path": "/reprice/scopeText"
+            },
+            "detail": "Rounded to the nearest 50 cents",
+            "icon": "tag"
+          },
+          {
+            "title": {
+              "path": "/reprice/liveText"
+            },
+            "icon": "clock"
+          },
+          {
+            "title": {
+              "path": "/reprice/cartsText"
+            },
+            "detail": "Orders already placed keep theirs",
+            "icon": "info"
+          }
+        ],
+        "summary": "summary",
+        "consequence": {
+          "path": "/reprice/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/reprice/label"
+          },
+          "action": {
+            "event": {
+              "name": "products.reprice",
+              "context": {
+                "percent": {
+                  "path": "/reprice/percent"
+                },
+                "type": {
+                  "path": "/reprice/type"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Keep current prices",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "reprice_summary",
+        "items": [
+          {
+            "key": "count",
+            "label": "Prices changing",
+            "value": {
+              "path": "/reprice/count"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "change",
+            "label": "Change",
+            "value": {
+              "path": "/reprice/changeText"
+            }
+          },
+          {
+            "key": "avg_before",
+            "label": "Average price now",
+            "value": {
+              "path": "/reprice/avgBefore"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "avg_after",
+            "label": "Average price after",
+            "value": {
+              "path": "/reprice/avgAfter"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "total_delta",
+            "label": "Total change across variants",
+            "value": {
+              "path": "/reprice/totalDelta"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "reprice": {
+        "percent": 5,
+        "type": "candle",
+        "count": 42,
+        "title": "Raise 42 candle prices by 5%?",
+        "label": "Change 42 prices",
+        "scopeText": "Every candle variant",
+        "liveText": "New prices show on the store at once",
+        "cartsText": "Open carts and checkouts see the new price",
+        "changeText": "+5%",
+        "avgBefore": 30,
+        "avgAfter": 31.5,
+        "totalDelta": 63,
+        "consequence": "42 prices change on the store the moment you confirm; anyone with a cart open sees the new price. The change can be undone from the toast for a few seconds, then it's a new price change."
+      }
+    }
+  }
+}

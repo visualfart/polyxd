@@ -1,0 +1,197 @@
+{
+  "id": "discount.create.confirm",
+  "title": "Confirm a new discount",
+  "ask": [],
+  "capabilities": [
+    "discount.create"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "discount": "view:discountConfirm"
+  },
+  "sample": {
+    "percent": 15,
+    "audience": "returning"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "discount-create-confirm",
+      "title": "Create this discount?",
+      "intent": "discount.create",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "discount_confirm",
+        "title": {
+          "path": "/discount/title"
+        },
+        "severity": "consequential",
+        "subject": {
+          "title": {
+            "path": "/discount/name"
+          },
+          "subtitle": {
+            "path": "/discount/detail"
+          },
+          "avatar": {
+            "path": "/discount/initials"
+          }
+        },
+        "consequences": [
+          {
+            "title": {
+              "path": "/discount/liveText"
+            },
+            "icon": "tag"
+          },
+          {
+            "title": {
+              "path": "/discount/reachText"
+            },
+            "detail": "From their order history today",
+            "icon": "info"
+          },
+          {
+            "title": {
+              "path": "/discount/endText"
+            },
+            "icon": "clock"
+          }
+        ],
+        "summary": "summary",
+        "consequence": {
+          "path": "/discount/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/discount/label"
+          },
+          "action": {
+            "event": {
+              "name": "discount.create",
+              "context": {
+                "type": {
+                  "path": "/discount/draft/type"
+                },
+                "valueKind": {
+                  "path": "/discount/draft/valueKind"
+                },
+                "value": {
+                  "path": "/discount/draft/value"
+                },
+                "minOrder": {
+                  "path": "/discount/draft/minOrder"
+                },
+                "code": {
+                  "path": "/discount/draft/code"
+                },
+                "method": {
+                  "path": "/discount/draft/method"
+                },
+                "audience": {
+                  "path": "/discount/draft/audience"
+                },
+                "startsAt": {
+                  "path": "/discount/draft/startsAt"
+                },
+                "endsAt": {
+                  "path": "/discount/draft/endsAt"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Keep editing",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "discount_summary",
+        "items": [
+          {
+            "key": "type",
+            "label": "Type",
+            "value": {
+              "path": "/discount/review/typeText"
+            }
+          },
+          {
+            "key": "value",
+            "label": "Takes off",
+            "value": {
+              "path": "/discount/review/valueText"
+            }
+          },
+          {
+            "key": "minimum",
+            "label": "Minimum",
+            "value": {
+              "path": "/discount/review/minText"
+            }
+          },
+          {
+            "key": "customers",
+            "label": "Customers",
+            "value": {
+              "path": "/discount/review/audienceText"
+            }
+          },
+          {
+            "key": "when",
+            "label": "Runs",
+            "value": {
+              "path": "/discount/review/whenText"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "discount": {
+        "draft": {
+          "step": 0,
+          "type": "amount_off_order",
+          "valueKind": "percentage",
+          "value": 15,
+          "minOrder": 0,
+          "code": "RETURN15",
+          "audience": "returning",
+          "method": "code",
+          "startsAt": "2026-09-28",
+          "endsAt": ""
+        },
+        "title": "Create RETURN15?",
+        "label": "Create discount",
+        "name": "RETURN15",
+        "detail": "15% off the order for returning customers, with code RETURN15.",
+        "initials": "RE",
+        "liveText": "Live on the store as soon as you confirm",
+        "reachText": "43 customers can use it",
+        "endText": "Runs until you end it",
+        "review": {
+          "typeText": "Amount off order",
+          "valueText": "15% off",
+          "minText": "No minimum",
+          "codeText": "RETURN15",
+          "audienceText": "Returning customers",
+          "reachText": "43 customers can use it today",
+          "whenText": "September 28, 2026, no end date",
+          "summary": "15% off the order for returning customers, with code RETURN15."
+        },
+        "consequence": "The discount is live the moment you confirm and 43 customers can use it at checkout. You can end it from Discounts at any time; orders that used it keep their price."
+      }
+    }
+  }
+}

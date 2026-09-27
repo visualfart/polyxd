@@ -1,0 +1,275 @@
+{
+  "id": "order.refund",
+  "title": "Refund an order",
+  "ask": [
+    "refund order #1042",
+    "refund #1042",
+    "give order 1042 a refund",
+    "refund an order"
+  ],
+  "keywords": [
+    "refund"
+  ],
+  "slots": {
+    "order": "#?(?<order>1[0-9]{3})\\b"
+  },
+  "capabilities": [
+    "refund.review"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "refund": "view:refund"
+  },
+  "sample": {
+    "order": 1042
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "order-refund",
+      "title": "Refund an order",
+      "intent": "order.refund",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": [
+          "intro",
+          "items",
+          "reason",
+          "restock"
+        ],
+        "aside": "aside",
+        "submit": {
+          "label": "Review refund",
+          "action": {
+            "event": {
+              "name": "refund.review",
+              "context": {
+                "orderId": {
+                  "path": "/refund/orderId"
+                },
+                "itemIds": {
+                  "path": "/refund/draft/itemIds"
+                },
+                "reason": {
+                  "path": "/refund/draft/reason"
+                },
+                "restock": {
+                  "path": "/refund/draft/restock"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Close",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "intro",
+        "component": "Text",
+        "key": "intro",
+        "variant": "supporting",
+        "text": {
+          "path": "/refund/intro"
+        }
+      },
+      {
+        "id": "items",
+        "component": "Choice",
+        "key": "items",
+        "label": "Items to refund",
+        "mode": "multiple",
+        "options": {
+          "path": "/refund/items",
+          "valuePath": "id",
+          "labelPath": "label"
+        },
+        "value": {
+          "path": "/refund/draft/itemIds"
+        },
+        "required": true,
+        "help": "Ticked items come back; the receipt beside updates."
+      },
+      {
+        "id": "reason",
+        "component": "Choice",
+        "key": "reason",
+        "label": "Reason",
+        "options": [
+          {
+            "value": "Damaged in transit",
+            "label": "Damaged in transit"
+          },
+          {
+            "value": "Wrong item sent",
+            "label": "Wrong item sent"
+          },
+          {
+            "value": "Customer changed their mind",
+            "label": "Customer changed their mind"
+          },
+          {
+            "value": "Other",
+            "label": "Other"
+          }
+        ],
+        "value": {
+          "path": "/refund/draft/reason"
+        },
+        "required": true,
+        "help": "Shown on the order's timeline, not to the customer."
+      },
+      {
+        "id": "restock",
+        "component": "Toggle",
+        "key": "restock",
+        "label": "Restock the items",
+        "description": "Adds them back to available inventory. Turn off for damaged goods.",
+        "value": {
+          "path": "/refund/draft/restock"
+        }
+      },
+      {
+        "id": "aside",
+        "component": "Group",
+        "label": "Refund so far",
+        "children": [
+          "receipt",
+          "shipping_note"
+        ]
+      },
+      {
+        "id": "receipt",
+        "component": "DetailList",
+        "key": "receipt",
+        "title": {
+          "path": "/refund/number"
+        },
+        "variant": "receipt",
+        "items": [
+          {
+            "key": "items",
+            "label": "Items",
+            "value": {
+              "path": "/refund/receipt/itemsText"
+            }
+          },
+          {
+            "key": "subtotal",
+            "label": "Subtotal",
+            "value": {
+              "path": "/refund/receipt/subtotal"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "discount",
+            "label": "Discount share",
+            "value": {
+              "path": "/refund/receipt/discount"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "tax",
+            "label": "Tax",
+            "value": {
+              "path": "/refund/receipt/tax"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "shipping",
+            "label": "Shipping",
+            "value": {
+              "path": "/refund/receipt/shipping"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "total",
+            "label": "Refund",
+            "value": {
+              "path": "/refund/receipt/total"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            },
+            "total": true
+          }
+        ]
+      },
+      {
+        "id": "shipping_note",
+        "component": "Text",
+        "key": "shipping_note",
+        "variant": "supporting",
+        "text": {
+          "path": "/refund/receipt/note"
+        }
+      }
+    ],
+    "data": {
+      "refund": {
+        "orderId": "ord_0041",
+        "number": "#1042",
+        "intro": "Order #1042, placed July 21, 2026 by Amara Achebe. Paid $162.90. Untick what stays.",
+        "items": [
+          {
+            "id": "li_0070",
+            "label": "1 × Housewarming Set, $98.00"
+          },
+          {
+            "id": "li_0071",
+            "label": "1 × Candle Lid (Brass), $8.00"
+          },
+          {
+            "id": "li_0072",
+            "label": "2 × Ceramic Tray (Small), $22.00"
+          }
+        ],
+        "draft": {
+          "itemIds": [
+            "li_0070",
+            "li_0071",
+            "li_0072"
+          ],
+          "reason": "Damaged in transit",
+          "restock": true
+        },
+        "receipt": {
+          "itemsText": "4 items of 4 items",
+          "subtotal": 150,
+          "discount": 0,
+          "tax": 12.9,
+          "shipping": 0,
+          "total": 162.9,
+          "note": "Shipping is refunded with a full refund."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,613 @@
+{
+  "id": "products.reprice",
+  "title": "Change prices by a percentage",
+  "ask": [
+    "raise prices 5% on candles",
+    "increase candle prices by 5%",
+    "lower diffuser prices by 10%",
+    "change prices across a product type"
+  ],
+  "keywords": [
+    "prices",
+    "reprice",
+    "pricing"
+  ],
+  "slots": {
+    "percent": "\\b(?<percent>\\d+(?:\\.\\d+)?)\\s?%",
+    "type": "\\b(?<type>candles?|diffusers?|wax melts?|melts?|gift sets?|accessor(?:y|ies))\\b",
+    "direction": "\\b(?<direction>raise|increase|lift|lower|cut|reduce|drop|decrease)\\b"
+  },
+  "capabilities": [
+    "pricing.review"
+  ],
+  "data": {
+    "reprice": "view:repriceDraft",
+    "types": "view:repriceTypes",
+    "preview": "view:repricePreview"
+  },
+  "sample": {
+    "percent": 5,
+    "type": "candle"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "products-reprice",
+      "title": "Change prices",
+      "intent": "products.reprice"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "inputs",
+          "summary",
+          "table",
+          "actions"
+        ]
+      },
+      {
+        "id": "inputs",
+        "component": "Group",
+        "arrangement": "inline",
+        "label": "What changes",
+        "children": [
+          "percent",
+          "type"
+        ]
+      },
+      {
+        "id": "percent",
+        "component": "TextInput",
+        "key": "percent",
+        "label": "Change, percent",
+        "kind": "number",
+        "value": {
+          "path": "/reprice/percent"
+        },
+        "required": true,
+        "validation": {
+          "min": -50,
+          "max": 100,
+          "message": "Between -50 and 100"
+        },
+        "help": "A negative number lowers prices."
+      },
+      {
+        "id": "type",
+        "component": "Choice",
+        "key": "type",
+        "label": "Products",
+        "options": {
+          "path": "/types",
+          "valuePath": "id",
+          "labelPath": "name"
+        },
+        "value": {
+          "path": "/reprice/type"
+        },
+        "required": true
+      },
+      {
+        "id": "summary",
+        "component": "Text",
+        "key": "summary",
+        "variant": "supporting",
+        "text": {
+          "path": "/preview/summaryText"
+        }
+      },
+      {
+        "id": "table",
+        "component": "Table",
+        "key": "preview",
+        "rows": {
+          "path": "/preview/rows"
+        },
+        "caption": {
+          "path": "/preview/caption"
+        },
+        "rowValuePath": "id",
+        "columns": [
+          {
+            "key": "name",
+            "label": "Variant",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "initials",
+            "secondaryPath": "line"
+          },
+          {
+            "key": "before",
+            "label": "Now",
+            "path": "before",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "after",
+            "label": "After",
+            "path": "after",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "delta",
+            "label": "Change",
+            "path": "delta",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          }
+        ],
+        "empty": "empty"
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "tag",
+        "title": "No products of that type",
+        "message": "Pick another type, or All products."
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "review"
+        ]
+      },
+      {
+        "id": "review",
+        "component": "Action",
+        "key": "review",
+        "label": "Review price change",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "pricing.review",
+            "context": {
+              "percent": {
+                "path": "/reprice/percent"
+              },
+              "type": {
+                "path": "/reprice/type"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "reprice": {
+        "percent": 5,
+        "type": "candle"
+      },
+      "types": [
+        {
+          "id": "all",
+          "name": "All products"
+        },
+        {
+          "id": "candle",
+          "name": "Candles"
+        },
+        {
+          "id": "diffuser",
+          "name": "Diffusers"
+        },
+        {
+          "id": "melt",
+          "name": "Wax melts"
+        },
+        {
+          "id": "gift",
+          "name": "Gift sets"
+        },
+        {
+          "id": "accessory",
+          "name": "Accessorys"
+        }
+      ],
+      "preview": {
+        "rows": [
+          {
+            "id": "var_0001",
+            "name": "Amber & Oak Candle",
+            "initials": "AO",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0002",
+            "name": "Amber & Oak Candle",
+            "initials": "AO",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0003",
+            "name": "Amber & Oak Candle",
+            "initials": "AO",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0004",
+            "name": "Sea Salt & Sage Candle",
+            "initials": "SS",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0005",
+            "name": "Sea Salt & Sage Candle",
+            "initials": "SS",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0006",
+            "name": "Sea Salt & Sage Candle",
+            "initials": "SS",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0007",
+            "name": "Fig & Cassis Candle",
+            "initials": "FC",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0008",
+            "name": "Fig & Cassis Candle",
+            "initials": "FC",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0009",
+            "name": "Fig & Cassis Candle",
+            "initials": "FC",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0010",
+            "name": "Cedar Smoke Candle",
+            "initials": "CS",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0011",
+            "name": "Cedar Smoke Candle",
+            "initials": "CS",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0012",
+            "name": "Cedar Smoke Candle",
+            "initials": "CS",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0013",
+            "name": "Lavender Field Candle",
+            "initials": "LF",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0014",
+            "name": "Lavender Field Candle",
+            "initials": "LF",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0015",
+            "name": "Lavender Field Candle",
+            "initials": "LF",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0016",
+            "name": "Vanilla Bean Candle",
+            "initials": "VB",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0017",
+            "name": "Vanilla Bean Candle",
+            "initials": "VB",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0018",
+            "name": "Vanilla Bean Candle",
+            "initials": "VB",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0019",
+            "name": "Black Currant Candle",
+            "initials": "BC",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0020",
+            "name": "Black Currant Candle",
+            "initials": "BC",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0021",
+            "name": "Black Currant Candle",
+            "initials": "BC",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0022",
+            "name": "Fresh Linen Candle",
+            "initials": "FL",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0023",
+            "name": "Fresh Linen Candle",
+            "initials": "FL",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0024",
+            "name": "Fresh Linen Candle",
+            "initials": "FL",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0025",
+            "name": "Orange Blossom Candle",
+            "initials": "OB",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0026",
+            "name": "Orange Blossom Candle",
+            "initials": "OB",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0027",
+            "name": "Orange Blossom Candle",
+            "initials": "OB",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0028",
+            "name": "Pine & Birch Candle",
+            "initials": "PB",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0029",
+            "name": "Pine & Birch Candle",
+            "initials": "PB",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0030",
+            "name": "Pine & Birch Candle",
+            "initials": "PB",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0031",
+            "name": "Tobacco Leaf Candle",
+            "initials": "TL",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0032",
+            "name": "Tobacco Leaf Candle",
+            "initials": "TL",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0033",
+            "name": "Tobacco Leaf Candle",
+            "initials": "TL",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0034",
+            "name": "Rose Water Candle",
+            "initials": "RW",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0035",
+            "name": "Rose Water Candle",
+            "initials": "RW",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0036",
+            "name": "Rose Water Candle",
+            "initials": "RW",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0037",
+            "name": "Eucalyptus Mint Candle",
+            "initials": "EM",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0038",
+            "name": "Eucalyptus Mint Candle",
+            "initials": "EM",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0039",
+            "name": "Eucalyptus Mint Candle",
+            "initials": "EM",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          },
+          {
+            "id": "var_0040",
+            "name": "Sandalwood Candle",
+            "initials": "SC",
+            "line": "4 oz travel tin · Candle",
+            "before": 14,
+            "after": 14.5,
+            "delta": 0.5
+          },
+          {
+            "id": "var_0041",
+            "name": "Sandalwood Candle",
+            "initials": "SC",
+            "line": "8 oz · Candle",
+            "before": 28,
+            "after": 29.5,
+            "delta": 1.5
+          },
+          {
+            "id": "var_0042",
+            "name": "Sandalwood Candle",
+            "initials": "SC",
+            "line": "14 oz three-wick · Candle",
+            "before": 48,
+            "after": 50.5,
+            "delta": 2.5
+          }
+        ],
+        "count": 42,
+        "caption": "42 variants: prices before and after a 5% change",
+        "summaryText": "Raises 42 candle prices by 5%. The average goes from $30.00 to $31.50. Prices round to the nearest 50 cents.",
+        "totalDelta": 63,
+        "avgBefore": 30,
+        "avgAfter": 31.5,
+        "pct": 5
+      }
+    }
+  }
+}

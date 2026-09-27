@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../packages/spec/schema/direction.schema.json",
+  "name": "quay",
+  "version": "1.0.0",
+  "designSystem": "polaris",
+  "profile": {
+    "density": "compact",
+    "emphasisBudget": 1,
+    "dataDisplay": "prefer-tables",
+    "motion": "subtle",
+    "disclosure": "progressive",
+    "freedom": "strict"
+  },
+  "voice": {
+    "guidelines": [
+      "Clear and friendly, never chatty. A merchant reads this between packing boxes: lead with the number, the order, the customer.",
+      "Say what a change does to the customer and to the money, and whether it can be undone."
+    ],
+    "tone": {
+      "formality": "neutral",
+      "energy": "calm",
+      "warmth": "warm",
+      "humor": "none"
+    },
+    "person": "you",
+    "casing": "sentence",
+    "spelling": "en-US",
+    "punctuation": {
+      "exclamation": "never",
+      "emoji": "never"
+    },
+    "labels": {
+      "maxWords": 4,
+      "verbFirst": true
+    },
+    "glossary": [
+      { "use": "fulfill", "insteadOf": ["ship out", "dispatch", "complete"] },
+      { "use": "customer", "insteadOf": ["buyer", "shopper", "user"] },
+      { "use": "order", "insteadOf": ["purchase", "transaction"] },
+      { "use": "your store", "insteadOf": ["the shop", "the site"] },
+      { "use": "variant", "insteadOf": ["SKU", "option"] },
+      { "use": "discount", "insteadOf": ["promo", "coupon", "voucher"] }
+    ],
+    "avoid": ["simply", "just", "please note", "oops", "kindly", "leverage"],
+    "situations": {
+      "empty": "Say what would be listed here and the one change that would fill it.",
+      "error": "Say what did not happen, that no customer was told and no money moved, and what to try.",
+      "success": "Say what changed, for which order or product, and what the customer sees.",
+      "confirm": "Lead with the amount or the count and the customer; say what they receive and what can't be undone."
+    }
+  },
+  "rules": [
+    {
+      "id": "refund-states-amount",
+      "description": "The button that issues a refund states the amount",
+      "severity": "error",
+      "rule": {
+        "check": "labelMatches",
+        "component": "Confirm",
+        "pattern": "^Refund \\$[0-9]",
+        "prop": "confirm.label",
+        "where": { "key": "refund_confirm" }
+      }
+    },
+    {
+      "id": "money-and-email-only-from-confirm",
+      "description": "Refunds, fulfillments, price changes, new discounts and customer emails only happen from a confirmation",
+      "severity": "error",
+      "rule": {
+        "check": "actionInside",
+        "capabilities": ["order.refund", "orders.fulfill", "products.reprice", "discount.create", "checkouts.recover"],
+        "container": ["Confirm"]
+      }
+    },
+    {
+      "id": "short-labels",
+      "description": "Button labels are four words or fewer",
+      "severity": "warning",
+      "rule": { "check": "maxWords", "max": 4 }
+    },
+    {
+      "id": "no-filler",
+      "description": "No softeners or filler",
+      "severity": "warning",
+      "rule": { "check": "avoidTerms", "terms": ["simply", "just", "please note", "oops", "kindly", "leverage"] }
+    },
+    {
+      "id": "us-spelling",
+      "description": "US spelling throughout",
+      "severity": "warning",
+      "rule": { "check": "spelling", "variant": "en-US" }
+    }
+  ]
+}

@@ -11,6 +11,7 @@ const products = [
   { name: "halden", title: "Halden", tag: "A current account that answers the question you asked.", sub: "A Polyxd demo · Material 3", bg: "#65558f", fg: "#ffffff", mark: "h", font: "Roboto, system-ui, sans-serif" },
   { name: "foundry", title: "Foundry", tag: "Customer success, keyboard first.", sub: "A Polyxd demo · shadcn/ui", bg: "#18181b", fg: "#fafafa", mark: "f", font: "Geist, system-ui, sans-serif" },
   { name: "wexley", title: "Wexley Borough Council", tag: "Council services as services, not screens.", sub: "A Polyxd demo · GOV.UK", bg: "#1d70b8", fg: "#ffffff", mark: "w", font: "Arial, sans-serif" },
+  { name: "quay", title: "Quay", tag: "The store admin that answers the question you asked.", sub: "A Polyxd demo · Polaris", bg: "#303030", fg: "#ffffff", mark: "q", font: "Inter, system-ui, sans-serif" },
 ];
 
 const og = (p: (typeof products)[number]) => `<!doctype html><html><body style="margin:0;width:1200px;height:630px;background:${p.bg};color:${p.fg};font-family:${p.font};display:flex;flex-direction:column;justify-content:space-between;padding:72px;box-sizing:border-box">

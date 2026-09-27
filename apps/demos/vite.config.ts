@@ -14,7 +14,7 @@ function productPages(): Plugin {
     name: "polyxd-demo-pages",
     configureServer(server) {
       server.middlewares.use((req, _res, next) => {
-        const m = /^\/demos\/(halden|foundry|wexley)\/(?!.*\.)(.*)$/.exec(req.url ?? "");
+        const m = /^\/demos\/(halden|foundry|wexley|quay)\/(?!.*\.)(.*)$/.exec(req.url ?? "");
         if (m) req.url = `/demos/${m[1]}/index.html`;
         next();
       });
@@ -32,6 +32,7 @@ export default defineConfig({
         halden: here("halden/index.html"),
         foundry: here("foundry/index.html"),
         wexley: here("wexley/index.html"),
+        quay: here("quay/index.html"),
       },
     },
   },

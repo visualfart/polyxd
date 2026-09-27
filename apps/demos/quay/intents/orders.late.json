@@ -1,0 +1,240 @@
+{
+  "id": "orders.late",
+  "title": "Orders that should have shipped",
+  "ask": [
+    "which orders are stuck",
+    "orders that should have shipped by now",
+    "what hasn't shipped yet",
+    "show me late orders"
+  ],
+  "keywords": [
+    "stuck",
+    "late",
+    "overdue",
+    "shipped"
+  ],
+  "capabilities": [
+    "order.open",
+    "fulfillment.review"
+  ],
+  "data": {
+    "late": "view:late"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "orders-late",
+      "title": "Past their ship date",
+      "intent": "orders.late"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "intro",
+          "table",
+          "actions"
+        ]
+      },
+      {
+        "id": "intro",
+        "component": "Text",
+        "key": "intro",
+        "variant": "supporting",
+        "text": {
+          "path": "/late/intro"
+        }
+      },
+      {
+        "id": "table",
+        "component": "Table",
+        "key": "late_orders",
+        "rows": {
+          "path": "/late/rows"
+        },
+        "caption": {
+          "path": "/late/caption"
+        },
+        "rowValuePath": "id",
+        "selection": "multiple",
+        "selected": {
+          "path": "/late/selection/ids"
+        },
+        "columns": [
+          {
+            "key": "order",
+            "label": "Order",
+            "path": "number",
+            "kind": "entity",
+            "avatarPath": "initials",
+            "secondaryPath": "customer"
+          },
+          {
+            "key": "promised",
+            "label": "Promised by",
+            "path": "promised",
+            "kind": "date",
+            "format": {
+              "type": "relativeTime"
+            }
+          },
+          {
+            "key": "items",
+            "label": "Items",
+            "path": "items",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "payment",
+            "label": "Payment",
+            "path": "payment",
+            "kind": "status",
+            "tones": {
+              "Paid": "success",
+              "Pending": "warning",
+              "Partially refunded": "warning",
+              "Refunded": "neutral"
+            }
+          },
+          {
+            "key": "total",
+            "label": "Total",
+            "path": "total",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "order.open",
+            "context": {
+              "id": {
+                "path": "id"
+              }
+            }
+          }
+        },
+        "empty": "empty"
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "check",
+        "title": "Nothing is late",
+        "message": "Every unfulfilled order is still inside its two-business-day promise. New orders land in Orders › Unfulfilled."
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "review"
+        ]
+      },
+      {
+        "id": "review",
+        "component": "Action",
+        "key": "review",
+        "label": "Fulfill selected",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "fulfillment.review",
+            "context": {
+              "orderIds": {
+                "path": "/late/selection/ids"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "late": {
+        "intro": "5 orders promised to ship by now and still unfulfilled. The oldest, #1166, was promised Sep 22. Untick any that can't go today.",
+        "caption": "Unfulfilled orders past their promised ship date",
+        "rows": [
+          {
+            "id": "ord_0166",
+            "number": "#1166",
+            "customer": "Silas Kim",
+            "initials": "SK",
+            "placed": "2026-09-20T01:59:00.000Z",
+            "promised": "2026-09-22T07:00:00.000Z",
+            "items": 1,
+            "total": 48.51,
+            "payment": "Paid",
+            "city": "Oakland, CA"
+          },
+          {
+            "id": "ord_0167",
+            "number": "#1167",
+            "customer": "Jonas Mbeki",
+            "initials": "JM",
+            "placed": "2026-09-20T04:49:00.000Z",
+            "promised": "2026-09-22T07:00:00.000Z",
+            "items": 1,
+            "total": 46.31,
+            "payment": "Paid",
+            "city": "Chicago, IL"
+          },
+          {
+            "id": "ord_0168",
+            "number": "#1168",
+            "customer": "Petra Hartigan",
+            "initials": "PH",
+            "placed": "2026-09-21T04:02:00.000Z",
+            "promised": "2026-09-23T07:00:00.000Z",
+            "items": 1,
+            "total": 37.37,
+            "payment": "Paid",
+            "city": "San Francisco, CA"
+          },
+          {
+            "id": "ord_0169",
+            "number": "#1169",
+            "customer": "Nadia Delgado",
+            "initials": "ND",
+            "placed": "2026-09-22T06:44:00.000Z",
+            "promised": "2026-09-24T07:00:00.000Z",
+            "items": 1,
+            "total": 37.42,
+            "payment": "Paid",
+            "city": "Denver, CO"
+          },
+          {
+            "id": "ord_0170",
+            "number": "#1170",
+            "customer": "June Byrne",
+            "initials": "JB",
+            "placed": "2026-09-23T06:11:00.000Z",
+            "promised": "2026-09-25T07:00:00.000Z",
+            "items": 1,
+            "total": 37.48,
+            "payment": "Paid",
+            "city": "Minneapolis, MN"
+          }
+        ],
+        "selection": {
+          "ids": [
+            "ord_0166",
+            "ord_0167",
+            "ord_0168",
+            "ord_0169",
+            "ord_0170"
+          ]
+        },
+        "count": 5
+      }
+    }
+  }
+}

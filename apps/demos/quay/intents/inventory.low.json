@@ -1,0 +1,300 @@
+{
+  "id": "inventory.low",
+  "title": "What's about to sell out",
+  "ask": [
+    "what's about to sell out",
+    "which products are running low",
+    "what do I need to reorder",
+    "show me low stock"
+  ],
+  "keywords": [
+    "low",
+    "reorder",
+    "running out",
+    "sell out"
+  ],
+  "slots": {
+    "days": "\\b(?<days>\\d+) days?\\b",
+    "type": "\\b(?<type>candles?|diffusers?|wax melts?|melts?|gift sets?|accessor(?:y|ies))\\b"
+  },
+  "capabilities": [
+    "product.open",
+    "restock.open"
+  ],
+  "pattern": "filter-and-browse",
+  "data": {
+    "filters": "view:lowFilters",
+    "results": "view:lowResults"
+  },
+  "sample": {
+    "days": 30
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "inventory-low",
+      "title": "About to sell out",
+      "intent": "inventory.low",
+      "pattern": "filter-and-browse"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "panel",
+          "actions"
+        ]
+      },
+      {
+        "id": "panel",
+        "component": "FilterPanel",
+        "label": "Narrow the list",
+        "children": [
+          "window",
+          "types"
+        ],
+        "results": "table",
+        "resultCount": {
+          "path": "/results/count"
+        }
+      },
+      {
+        "id": "window",
+        "component": "Choice",
+        "key": "window",
+        "label": "Sells out within",
+        "options": [
+          {
+            "value": 7,
+            "label": "7 days"
+          },
+          {
+            "value": 14,
+            "label": "14 days"
+          },
+          {
+            "value": 30,
+            "label": "30 days"
+          },
+          {
+            "value": 60,
+            "label": "60 days"
+          }
+        ],
+        "value": {
+          "path": "/filters/days"
+        },
+        "required": true
+      },
+      {
+        "id": "types",
+        "component": "Choice",
+        "key": "types",
+        "label": "Product type",
+        "mode": "multiple",
+        "options": [
+          {
+            "value": "candle",
+            "label": "Candles"
+          },
+          {
+            "value": "diffuser",
+            "label": "Diffusers"
+          },
+          {
+            "value": "melt",
+            "label": "Wax melts"
+          },
+          {
+            "value": "gift",
+            "label": "Gift sets"
+          },
+          {
+            "value": "accessory",
+            "label": "Accessories"
+          }
+        ],
+        "value": {
+          "path": "/filters/types"
+        }
+      },
+      {
+        "id": "table",
+        "component": "Table",
+        "key": "variants",
+        "rows": {
+          "path": "/results/rows"
+        },
+        "caption": {
+          "path": "/results/caption"
+        },
+        "rowValuePath": "id",
+        "columns": [
+          {
+            "key": "name",
+            "label": "Product",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "initials",
+            "secondaryPath": "line"
+          },
+          {
+            "key": "status",
+            "label": "Stock",
+            "path": "status",
+            "kind": "status",
+            "tones": {
+              "Out of stock": "danger",
+              "Under a week": "danger",
+              "Under two weeks": "warning",
+              "Under a month": "info"
+            }
+          },
+          {
+            "key": "inventory",
+            "label": "Available",
+            "path": "inventory",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            },
+            "sortable": true
+          },
+          {
+            "key": "per_week",
+            "label": "Sells a week",
+            "path": "perWeek",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            },
+            "sortable": true
+          },
+          {
+            "key": "days",
+            "label": "Days of stock",
+            "path": "days",
+            "kind": "number",
+            "format": {
+              "type": "number"
+            },
+            "sortable": true
+          }
+        ],
+        "rowAction": {
+          "event": {
+            "name": "product.open",
+            "context": {
+              "id": {
+                "path": "productId"
+              }
+            }
+          }
+        },
+        "empty": "empty"
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "check",
+        "title": "Nothing sells out in that window",
+        "message": "Widen the window or clear a type. Days of stock come from the last 30 days' sales."
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "restock"
+        ]
+      },
+      {
+        "id": "restock",
+        "component": "Action",
+        "key": "restock",
+        "label": "Record a delivery",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "restock.open",
+            "context": {}
+          }
+        }
+      }
+    ],
+    "data": {
+      "filters": {
+        "days": 30,
+        "types": []
+      },
+      "results": {
+        "rows": [
+          {
+            "id": "var_0005",
+            "productId": "prd_0002",
+            "name": "Sea Salt & Sage Candle",
+            "initials": "SS",
+            "line": "8 oz · LW-C-SESA-08",
+            "type": "Candle",
+            "inventory": 4,
+            "perWeek": 4.96,
+            "days": 5,
+            "status": "Under a week"
+          },
+          {
+            "id": "var_0002",
+            "productId": "prd_0001",
+            "name": "Amber & Oak Candle",
+            "initials": "AO",
+            "line": "8 oz · LW-C-AMOA-08",
+            "type": "Candle",
+            "inventory": 6,
+            "perWeek": 4.67,
+            "days": 9,
+            "status": "Under two weeks"
+          },
+          {
+            "id": "var_0014",
+            "productId": "prd_0005",
+            "name": "Lavender Field Candle",
+            "initials": "LF",
+            "line": "8 oz · LW-C-LAFI-08",
+            "type": "Candle",
+            "inventory": 3,
+            "perWeek": 0.7,
+            "days": 30,
+            "status": "Under a month"
+          },
+          {
+            "id": "var_0043",
+            "productId": "prd_0015",
+            "name": "Amber & Oak Reed Diffuser",
+            "initials": "AO",
+            "line": "100 ml · LW-D-AMOA-100",
+            "type": "Diffuser",
+            "inventory": 4,
+            "perWeek": 0.93,
+            "days": 30,
+            "status": "Under a month"
+          },
+          {
+            "id": "var_0097",
+            "productId": "prd_0045",
+            "name": "Wick Trimmer",
+            "initials": "WT",
+            "line": "Black · LW-A-01-BL",
+            "type": "Accessory",
+            "inventory": 2,
+            "perWeek": 0.47,
+            "days": 30,
+            "status": "Under a month"
+          }
+        ],
+        "count": 5,
+        "caption": "Variants with 30 days of stock or less, from the last 30 days' sales"
+      }
+    }
+  }
+}

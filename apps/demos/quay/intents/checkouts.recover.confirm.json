@@ -1,0 +1,159 @@
+{
+  "id": "checkouts.recover.confirm",
+  "title": "Confirm the reminders",
+  "ask": [],
+  "capabilities": [
+    "checkouts.recover"
+  ],
+  "pattern": "confirm-destructive",
+  "data": {
+    "recover": "view:recoverConfirm"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "checkouts-recover-confirm",
+      "title": "Send these reminders?",
+      "intent": "checkouts.recover",
+      "pattern": "confirm-destructive"
+    },
+    "root": "confirm",
+    "components": [
+      {
+        "id": "confirm",
+        "component": "Confirm",
+        "key": "recover_confirm",
+        "title": {
+          "path": "/recover/title"
+        },
+        "severity": "consequential",
+        "consequences": [
+          {
+            "title": {
+              "path": "/recover/sendText"
+            },
+            "icon": "mail"
+          },
+          {
+            "title": {
+              "path": "/recover/cartText"
+            },
+            "icon": "tag"
+          },
+          {
+            "title": {
+              "path": "/recover/discountText"
+            },
+            "icon": "info"
+          }
+        ],
+        "summary": "summary",
+        "consequence": {
+          "path": "/recover/consequence"
+        },
+        "confirm": {
+          "label": {
+            "path": "/recover/label"
+          },
+          "action": {
+            "event": {
+              "name": "checkouts.recover",
+              "context": {
+                "checkoutIds": {
+                  "path": "/recover/checkoutIds"
+                },
+                "discountId": {
+                  "path": "/recover/discountId"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Don't send",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "recover_summary",
+        "items": [
+          {
+            "key": "emails",
+            "label": "Emails",
+            "value": {
+              "path": "/recover/count"
+            },
+            "format": {
+              "type": "number"
+            }
+          },
+          {
+            "key": "to",
+            "label": "To",
+            "value": {
+              "path": "/recover/recipientsText"
+            }
+          },
+          {
+            "key": "carts",
+            "label": "Carts worth",
+            "value": {
+              "path": "/recover/value"
+            },
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "discount",
+            "label": "Discount",
+            "value": {
+              "path": "/recover/discountLabel"
+            }
+          },
+          {
+            "key": "from",
+            "label": "From",
+            "value": {
+              "path": "/recover/fromText"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "recover": {
+        "checkoutIds": [
+          "chk_0005",
+          "chk_0006",
+          "chk_0003",
+          "chk_0001",
+          "chk_0007",
+          "chk_0008",
+          "chk_0004",
+          "chk_0002"
+        ],
+        "discountId": "none",
+        "title": "Send 8 reminders?",
+        "label": "Send 8 reminders",
+        "count": 8,
+        "value": 334,
+        "discountText": "No discount included",
+        "sendText": "8 emails go out now, from hello@lanternandwick.com",
+        "cartText": "$334.00 of carts, with a link back to each",
+        "recipientsText": "Esme Solberg, Hana Marsh, Dana Lund and 5 more",
+        "discountLabel": "None",
+        "fromText": "hello@lanternandwick.com",
+        "consequence": "8 people get an email from Lantern & Wick with their cart. An email can't be recalled; a second reminder to the same cart is only sent by hand."
+      }
+    }
+  }
+}

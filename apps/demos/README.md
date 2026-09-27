@@ -1,6 +1,6 @@
 # Demos
 
-Three products built on the published packages, each in a different design system, live under
+Four products built on the published packages, each in a different design system, live under
 [polyxd.com/demos](https://polyxd.com/demos/):
 
 | Product | What it is | Design system | Shape |
@@ -8,6 +8,7 @@ Three products built on the published packages, each in a different design syste
 | [Halden](halden/) | A current account for one person | Material 3 | Phone first, also desktop |
 | [Foundry](foundry/) | A customer-success desk for a B2B SaaS | shadcn/ui | Dense desktop, keyboard first |
 | [Wexley Borough Council](wexley/) | A resident's account with a council | GOV.UK | Forms, one thing per page |
+| [Quay](quay/) | The admin of one online store, in the shape of Shopify's admin | Polaris | Dense desktop, ⌘K |
 
 Each is a working product: its own screens, seeded data that persists in the browser and changes
 when you act (with undo where the capability allows it), and an ask box for what the product has no
@@ -43,7 +44,7 @@ inside the product's own shell, so the mark reads "Authored · Checked" instead 
 ## Scripts
 
 ```sh
-npm run dev -w @polyxd/demos                 # all three at http://localhost:5174/demos/
+npm run dev -w @polyxd/demos                 # all four at http://localhost:5174/demos/
 node scripts/build-prompt.ts                 # regenerate kit/prompt.generated.ts from the spec
 node scripts/snapshot.ts [product] [intent]  # put a data snapshot from the seed into each document
 node scripts/verify.ts [product] [intent]    # verify every document in 13 packs; writes reports/

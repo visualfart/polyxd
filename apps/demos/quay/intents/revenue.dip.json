@@ -1,0 +1,351 @@
+{
+  "id": "revenue.dip",
+  "title": "Why sales dropped last week",
+  "ask": [
+    "why did sales drop last week",
+    "why did revenue dip last week",
+    "what happened to sales last week",
+    "sales are down, what's going on"
+  ],
+  "keywords": [
+    "drop",
+    "dropped",
+    "dip",
+    "dipped",
+    "down",
+    "fell"
+  ],
+  "capabilities": [
+    "restock.open",
+    "products.open"
+  ],
+  "data": {
+    "dip": "view:dip"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "revenue-dip",
+      "title": "Why sales dropped last week",
+      "intent": "revenue.dip"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "figures",
+          "chart",
+          "reasons",
+          "explained",
+          "actions"
+        ]
+      },
+      {
+        "id": "figures",
+        "component": "Group",
+        "arrangement": "inline",
+        "children": [
+          "sales",
+          "orders",
+          "aov",
+          "sessions"
+        ]
+      },
+      {
+        "id": "sales",
+        "component": "Metric",
+        "key": "sales_last_week",
+        "label": "Total sales last week",
+        "value": {
+          "path": "/dip/lastWeek"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "USD"
+        },
+        "change": {
+          "value": {
+            "path": "/dip/change"
+          },
+          "format": {
+            "type": "percent"
+          },
+          "favorable": "increase"
+        },
+        "caption": {
+          "path": "/dip/lastLabel"
+        }
+      },
+      {
+        "id": "orders",
+        "component": "Metric",
+        "key": "orders_last_week",
+        "label": "Orders",
+        "value": {
+          "path": "/dip/ordersLast"
+        },
+        "format": {
+          "type": "number"
+        },
+        "change": {
+          "value": {
+            "path": "/dip/ordersChange"
+          },
+          "format": {
+            "type": "percent"
+          },
+          "favorable": "increase"
+        },
+        "caption": "Against the week before"
+      },
+      {
+        "id": "aov",
+        "component": "Metric",
+        "key": "aov_last_week",
+        "label": "Average order value",
+        "value": {
+          "path": "/dip/aovLast"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "USD"
+        },
+        "change": {
+          "value": {
+            "path": "/dip/aovChange"
+          },
+          "format": {
+            "type": "percent"
+          },
+          "favorable": "increase"
+        },
+        "caption": "Against the week before"
+      },
+      {
+        "id": "sessions",
+        "component": "Metric",
+        "key": "sessions_last_week",
+        "label": "Sessions",
+        "value": {
+          "path": "/dip/sessionsLast"
+        },
+        "format": {
+          "type": "number"
+        },
+        "change": {
+          "value": {
+            "path": "/dip/sessionsChange"
+          },
+          "format": {
+            "type": "percent"
+          },
+          "favorable": "increase"
+        },
+        "caption": "Against the week before"
+      },
+      {
+        "id": "chart",
+        "component": "Chart",
+        "key": "daily_sales",
+        "intent": "trend",
+        "data": {
+          "path": "/dip/series"
+        },
+        "title": "Daily sales, last two weeks",
+        "summary": {
+          "path": "/dip/chartSummary"
+        },
+        "x": {
+          "path": "date",
+          "label": "Day"
+        },
+        "series": [
+          {
+            "key": "revenue",
+            "path": "revenue",
+            "label": "Sales",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          }
+        ]
+      },
+      {
+        "id": "reasons",
+        "component": "Text",
+        "key": "reasons",
+        "variant": "list",
+        "text": {
+          "path": "/dip/reasonsTitle"
+        },
+        "items": {
+          "path": "/dip/reasons"
+        }
+      },
+      {
+        "id": "explained",
+        "component": "Text",
+        "key": "explained",
+        "variant": "supporting",
+        "text": {
+          "path": "/dip/explainedText"
+        }
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "restock",
+          "open_products"
+        ]
+      },
+      {
+        "id": "restock",
+        "component": "Action",
+        "key": "restock",
+        "label": {
+          "path": "/dip/restockLabel"
+        },
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "restock.open",
+            "context": {
+              "variantIds": {
+                "path": "/dip/restockVariantIds"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "open_products",
+        "component": "Action",
+        "key": "open_products",
+        "label": "Open products",
+        "emphasis": "secondary",
+        "action": {
+          "event": {
+            "name": "products.open",
+            "context": {
+              "ids": {
+                "path": "/dip/productIds"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "dip": {
+        "title": "Sales fell 32% last week",
+        "lastLabel": "Sep 21–27",
+        "beforeLabel": "Sep 14–20",
+        "lastWeek": 627.23,
+        "weekBefore": 928.04,
+        "change": -0.32413473557174255,
+        "ordersLast": 12,
+        "ordersChange": -0.2,
+        "aovLast": 52.27,
+        "aovChange": -0.1551640536609018,
+        "sessionsLast": 397,
+        "sessionsChange": -0.3938931297709924,
+        "series": [
+          {
+            "date": "9/14",
+            "revenue": 125.62,
+            "orders": 2
+          },
+          {
+            "date": "9/15",
+            "revenue": 83.75,
+            "orders": 2
+          },
+          {
+            "date": "9/16",
+            "revenue": 86.75,
+            "orders": 2
+          },
+          {
+            "date": "9/17",
+            "revenue": 191.17,
+            "orders": 2
+          },
+          {
+            "date": "9/18",
+            "revenue": 166,
+            "orders": 2
+          },
+          {
+            "date": "9/19",
+            "revenue": 179.93,
+            "orders": 3
+          },
+          {
+            "date": "9/20",
+            "revenue": 94.82,
+            "orders": 2
+          },
+          {
+            "date": "9/21",
+            "revenue": 37.37,
+            "orders": 1
+          },
+          {
+            "date": "9/22",
+            "revenue": 37.42,
+            "orders": 1
+          },
+          {
+            "date": "9/23",
+            "revenue": 37.48,
+            "orders": 1
+          },
+          {
+            "date": "9/24",
+            "revenue": 68.44,
+            "orders": 1
+          },
+          {
+            "date": "9/25",
+            "revenue": 37.12,
+            "orders": 1
+          },
+          {
+            "date": "9/26",
+            "revenue": 264.55,
+            "orders": 4
+          },
+          {
+            "date": "9/27",
+            "revenue": 144.85,
+            "orders": 3
+          }
+        ],
+        "chartSummary": "Daily sales over the two weeks: the best day was 9/26 at $264.55, the worst 9/25 at $37.12. The week of Sep 21–27 came to $627.23 against $928.04 the week before.",
+        "reasonsTitle": "Where the $300.81 went",
+        "reasons": [
+          "Amber & Oak Candle (8 oz) was out of stock Sep 21–25, 5 days. It usually sells 0.8 a day, so about $108.89 didn't happen.",
+          "Sea Salt & Sage Candle (8 oz) was out of stock Sep 21–25, 5 days. It usually sells 0.6 a day, so about $77.78 didn't happen.",
+          "Fall scents launch (Meta ads) was paused Sep 21–25. Sales from ads run about $57.50 a day, so about $287.52 didn't happen. It's running again.",
+          "The rest of the range sold less too: $456.00 against $706.00 the week before (-35%), with 39% fewer sessions while the ads were off.",
+          "Average order value fell from $61.87 to $52.27: with the 8 oz candles gone, baskets were smaller."
+        ],
+        "explainedText": "The estimates come to about $474.19, more than the $300.81 gap: they overlap, since an ad click that landed on an empty shelf counts in both.",
+        "restockVariantIds": [
+          "var_0002",
+          "var_0005"
+        ],
+        "productIds": [
+          "prd_0001",
+          "prd_0002"
+        ],
+        "restockLabel": "Restock 2 variants"
+      }
+    }
+  }
+}

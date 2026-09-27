@@ -1,0 +1,402 @@
+{
+  "id": "discount.create",
+  "title": "Make a discount",
+  "ask": [
+    "make a discount code for returning customers",
+    "make a 15% discount for repeat customers",
+    "create a discount",
+    "set up a $10 off code for new customers"
+  ],
+  "keywords": [
+    "discount",
+    "code",
+    "coupon",
+    "promo"
+  ],
+  "slots": {
+    "percent": "\\b(?<percent>\\d+)\\s?%",
+    "amount": "\\$(?<amount>\\d+(?:\\.\\d+)?)",
+    "audience": "\\b(?<audience>repeat|returning|loyal|existing|new|first-time|lapsed|inactive|all|everyone)\\b",
+    "shipping": "\\b(?<shipping>free shipping)\\b"
+  },
+  "capabilities": [
+    "discount.review"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "draft": "view:discountDraft",
+    "review": "view:discountReview"
+  },
+  "sample": {
+    "percent": 15,
+    "audience": "returning"
+  },
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "discount-create",
+      "title": "Make a discount",
+      "intent": "discount.create",
+      "pattern": "multi-step-form"
+    },
+    "root": "steps",
+    "components": [
+      {
+        "id": "steps",
+        "component": "Steps",
+        "key": "discount_steps",
+        "kind": "wizard",
+        "current": {
+          "path": "/draft/step"
+        },
+        "steps": [
+          {
+            "key": "what",
+            "title": "What it takes off",
+            "content": "what_fields"
+          },
+          {
+            "key": "who",
+            "title": "Who can use it",
+            "content": "who_fields"
+          },
+          {
+            "key": "when",
+            "title": "When it runs",
+            "content": "when_fields"
+          },
+          {
+            "key": "review",
+            "title": "Review",
+            "content": "review_group"
+          }
+        ],
+        "finish": {
+          "label": "Review discount",
+          "action": {
+            "event": {
+              "name": "discount.review",
+              "context": {
+                "type": {
+                  "path": "/draft/type"
+                },
+                "valueKind": {
+                  "path": "/draft/valueKind"
+                },
+                "value": {
+                  "path": "/draft/value"
+                },
+                "minOrder": {
+                  "path": "/draft/minOrder"
+                },
+                "code": {
+                  "path": "/draft/code"
+                },
+                "method": {
+                  "path": "/draft/method"
+                },
+                "audience": {
+                  "path": "/draft/audience"
+                },
+                "startsAt": {
+                  "path": "/draft/startsAt"
+                },
+                "endsAt": {
+                  "path": "/draft/endsAt"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "what_fields",
+        "component": "Group",
+        "children": [
+          "type",
+          "value_kind",
+          "value",
+          "min_order"
+        ]
+      },
+      {
+        "id": "type",
+        "component": "Choice",
+        "key": "type",
+        "label": "Discount type",
+        "options": [
+          {
+            "value": "amount_off_order",
+            "label": "Amount off order",
+            "description": "Off the whole cart"
+          },
+          {
+            "value": "amount_off_products",
+            "label": "Amount off products",
+            "description": "Off each eligible product"
+          },
+          {
+            "value": "free_shipping",
+            "label": "Free shipping",
+            "description": "Shipping comes off at checkout"
+          }
+        ],
+        "value": {
+          "path": "/draft/type"
+        },
+        "required": true
+      },
+      {
+        "id": "value_kind",
+        "component": "Choice",
+        "key": "value_kind",
+        "label": "Value",
+        "options": [
+          {
+            "value": "percentage",
+            "label": "Percentage"
+          },
+          {
+            "value": "fixed",
+            "label": "Fixed amount"
+          }
+        ],
+        "value": {
+          "path": "/draft/valueKind"
+        },
+        "required": true
+      },
+      {
+        "id": "value",
+        "component": "TextInput",
+        "key": "value",
+        "label": "Amount off",
+        "kind": "number",
+        "value": {
+          "path": "/draft/value"
+        },
+        "required": true,
+        "validation": {
+          "min": 1,
+          "max": 100,
+          "message": "Enter a number between 1 and 100"
+        },
+        "help": "A percentage of the price, or dollars off."
+      },
+      {
+        "id": "min_order",
+        "component": "TextInput",
+        "key": "min_order",
+        "label": "Minimum purchase",
+        "kind": "currency",
+        "currency": "USD",
+        "value": {
+          "path": "/draft/minOrder"
+        },
+        "validation": {
+          "min": 0,
+          "max": 10000,
+          "message": "Enter an amount up to $10,000"
+        },
+        "help": "Leave at 0 for no minimum."
+      },
+      {
+        "id": "who_fields",
+        "component": "Group",
+        "children": [
+          "audience",
+          "method",
+          "code"
+        ]
+      },
+      {
+        "id": "audience",
+        "component": "Choice",
+        "key": "audience",
+        "label": "Customers",
+        "options": [
+          {
+            "value": "everyone",
+            "label": "All customers"
+          },
+          {
+            "value": "returning",
+            "label": "Returning customers",
+            "description": "Two or more orders"
+          },
+          {
+            "value": "new",
+            "label": "New customers",
+            "description": "No order yet, or one"
+          },
+          {
+            "value": "lapsed",
+            "label": "Customers who haven't ordered in 60 days"
+          }
+        ],
+        "value": {
+          "path": "/draft/audience"
+        },
+        "required": true
+      },
+      {
+        "id": "method",
+        "component": "Choice",
+        "key": "method",
+        "label": "Method",
+        "options": [
+          {
+            "value": "code",
+            "label": "Discount code",
+            "description": "Customers enter it at checkout"
+          },
+          {
+            "value": "automatic",
+            "label": "Automatic",
+            "description": "Applies to every eligible cart"
+          }
+        ],
+        "value": {
+          "path": "/draft/method"
+        },
+        "required": true
+      },
+      {
+        "id": "code",
+        "component": "TextInput",
+        "key": "code",
+        "label": "Code",
+        "kind": "code",
+        "value": {
+          "path": "/draft/code"
+        },
+        "validation": {
+          "minLength": 3,
+          "maxLength": 20,
+          "message": "3 to 20 letters and numbers"
+        },
+        "help": "Letters and numbers, no spaces. Ignored for an automatic discount."
+      },
+      {
+        "id": "when_fields",
+        "component": "Group",
+        "children": [
+          "starts",
+          "ends"
+        ]
+      },
+      {
+        "id": "starts",
+        "component": "DateInput",
+        "key": "starts",
+        "label": "Starts",
+        "kind": "date",
+        "value": {
+          "path": "/draft/startsAt"
+        },
+        "required": true
+      },
+      {
+        "id": "ends",
+        "component": "DateInput",
+        "key": "ends",
+        "label": "Ends",
+        "kind": "date",
+        "value": {
+          "path": "/draft/endsAt"
+        },
+        "help": "Leave empty and it runs until you end it."
+      },
+      {
+        "id": "review_group",
+        "component": "Group",
+        "children": [
+          "review_list",
+          "reach"
+        ]
+      },
+      {
+        "id": "review_list",
+        "component": "DetailList",
+        "key": "review_list",
+        "items": [
+          {
+            "key": "type",
+            "label": "Type",
+            "value": {
+              "path": "/review/typeText"
+            }
+          },
+          {
+            "key": "value",
+            "label": "Takes off",
+            "value": {
+              "path": "/review/valueText"
+            }
+          },
+          {
+            "key": "minimum",
+            "label": "Minimum",
+            "value": {
+              "path": "/review/minText"
+            }
+          },
+          {
+            "key": "code",
+            "label": "Code",
+            "value": {
+              "path": "/review/codeText"
+            }
+          },
+          {
+            "key": "customers",
+            "label": "Customers",
+            "value": {
+              "path": "/review/audienceText"
+            }
+          },
+          {
+            "key": "when",
+            "label": "Runs",
+            "value": {
+              "path": "/review/whenText"
+            }
+          }
+        ]
+      },
+      {
+        "id": "reach",
+        "component": "Text",
+        "key": "reach",
+        "variant": "supporting",
+        "text": {
+          "path": "/review/reachText"
+        }
+      }
+    ],
+    "data": {
+      "draft": {
+        "step": 0,
+        "type": "amount_off_order",
+        "valueKind": "percentage",
+        "value": 15,
+        "minOrder": 0,
+        "code": "RETURN15",
+        "audience": "returning",
+        "method": "code",
+        "startsAt": "2026-09-28",
+        "endsAt": ""
+      },
+      "review": {
+        "typeText": "Amount off order",
+        "valueText": "15% off",
+        "minText": "No minimum",
+        "codeText": "RETURN15",
+        "audienceText": "Returning customers",
+        "reachText": "43 customers can use it today",
+        "whenText": "September 28, 2026, no end date",
+        "summary": "15% off the order for returning customers, with code RETURN15."
+      }
+    }
+  }
+}

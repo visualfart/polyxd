@@ -1,0 +1,297 @@
+{
+  "id": "checkouts.recover",
+  "title": "Remind people who left a checkout",
+  "ask": [
+    "send reminders for abandoned checkouts",
+    "remind people who left a cart this week",
+    "recover abandoned carts",
+    "email people who didn't finish checking out"
+  ],
+  "keywords": [
+    "abandoned",
+    "cart",
+    "carts",
+    "reminder",
+    "reminders",
+    "recover"
+  ],
+  "capabilities": [
+    "recovery.review"
+  ],
+  "data": {
+    "recover": "view:recover"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "checkouts-recover",
+      "title": "Abandoned checkouts this week",
+      "intent": "checkouts.recover"
+    },
+    "root": "page",
+    "components": [
+      {
+        "id": "page",
+        "component": "Group",
+        "children": [
+          "intro",
+          "table",
+          "discount",
+          "actions"
+        ]
+      },
+      {
+        "id": "intro",
+        "component": "Text",
+        "key": "intro",
+        "variant": "supporting",
+        "text": {
+          "path": "/recover/intro"
+        }
+      },
+      {
+        "id": "table",
+        "component": "Table",
+        "key": "checkouts",
+        "rows": {
+          "path": "/recover/rows"
+        },
+        "caption": {
+          "path": "/recover/caption"
+        },
+        "rowValuePath": "id",
+        "selection": "multiple",
+        "selected": {
+          "path": "/recover/selection/ids"
+        },
+        "columns": [
+          {
+            "key": "customer",
+            "label": "Customer",
+            "path": "name",
+            "kind": "entity",
+            "avatarPath": "initials",
+            "secondaryPath": "email"
+          },
+          {
+            "key": "left",
+            "label": "Left",
+            "path": "left",
+            "kind": "date",
+            "format": {
+              "type": "relativeTime"
+            }
+          },
+          {
+            "key": "items",
+            "label": "In the cart",
+            "path": "itemsText"
+          },
+          {
+            "key": "value",
+            "label": "Value",
+            "path": "value",
+            "kind": "currency",
+            "format": {
+              "type": "currency",
+              "currency": "USD"
+            }
+          },
+          {
+            "key": "email",
+            "label": "Reminder",
+            "path": "emailStatus",
+            "kind": "status",
+            "tones": {
+              "Not sent": "warning",
+              "Sent": "info",
+              "Opened": "success",
+              "Recovered": "success"
+            }
+          }
+        ],
+        "empty": "empty"
+      },
+      {
+        "id": "empty",
+        "component": "Status",
+        "kind": "empty",
+        "icon": "inbox",
+        "title": "No checkouts were left this week",
+        "message": "A checkout lands here when someone enters their email and doesn't pay. Older ones are under Orders › Abandoned checkouts."
+      },
+      {
+        "id": "discount",
+        "component": "Choice",
+        "key": "discount",
+        "label": "Discount to include",
+        "options": {
+          "path": "/recover/discounts",
+          "valuePath": "id",
+          "labelPath": "name",
+          "descriptionPath": "detail"
+        },
+        "value": {
+          "path": "/recover/selection/discountId"
+        },
+        "required": true,
+        "help": "Only active codes are listed. A reminder with no discount still converts about one in ten."
+      },
+      {
+        "id": "actions",
+        "component": "ActionBar",
+        "children": [
+          "review"
+        ]
+      },
+      {
+        "id": "review",
+        "component": "Action",
+        "key": "review",
+        "label": "Review reminders",
+        "emphasis": "primary",
+        "action": {
+          "event": {
+            "name": "recovery.review",
+            "context": {
+              "checkoutIds": {
+                "path": "/recover/selection/ids"
+              },
+              "discountId": {
+                "path": "/recover/selection/discountId"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "data": {
+      "recover": {
+        "intro": "8 checkouts left in the last 7 days, worth $334.00. 8 haven't been reminded; those are ticked.",
+        "caption": "Abandoned checkouts from the last 7 days",
+        "rows": [
+          {
+            "id": "chk_0005",
+            "name": "Esme Solberg",
+            "email": "esme.solberg@gmail.com",
+            "initials": "ES",
+            "left": "2026-09-27T15:22:00.000Z",
+            "items": 2,
+            "itemsText": "Lavender Field Candle, Amber & Oak Reed Diffuser",
+            "value": 66,
+            "emailStatus": "Not sent"
+          },
+          {
+            "id": "chk_0006",
+            "name": "Hana Marsh",
+            "email": "hana.marsh@icloud.com",
+            "initials": "HM",
+            "left": "2026-09-26T23:51:00.000Z",
+            "items": 2,
+            "itemsText": "Vanilla Bean Candle, Tobacco Leaf Candle",
+            "value": 42,
+            "emailStatus": "Not sent"
+          },
+          {
+            "id": "chk_0003",
+            "name": "Dana Lund",
+            "email": "dana.lund@hey.com",
+            "initials": "DL",
+            "left": "2026-09-26T13:51:00.000Z",
+            "items": 1,
+            "itemsText": "Spa Set",
+            "value": 88,
+            "emailStatus": "Not sent"
+          },
+          {
+            "id": "chk_0001",
+            "name": "Priya Lund",
+            "email": "priya.lund@icloud.com",
+            "initials": "PL",
+            "left": "2026-09-26T05:53:00.000Z",
+            "items": 1,
+            "itemsText": "Eucalyptus Mint Candle",
+            "value": 14,
+            "emailStatus": "Not sent"
+          },
+          {
+            "id": "chk_0007",
+            "name": "Jonas Kim",
+            "email": "jonas.kim@gmail.com",
+            "initials": "JK",
+            "left": "2026-09-26T02:36:00.000Z",
+            "items": 1,
+            "itemsText": "Vanilla Bean Wax Melts",
+            "value": 12,
+            "emailStatus": "Not sent"
+          },
+          {
+            "id": "chk_0008",
+            "name": "Milo Tanaka",
+            "email": "milo.tanaka@outlook.com",
+            "initials": "MT",
+            "left": "2026-09-24T00:55:00.000Z",
+            "items": 1,
+            "itemsText": "Tobacco Leaf Wax Melts",
+            "value": 12,
+            "emailStatus": "Not sent"
+          },
+          {
+            "id": "chk_0004",
+            "name": "Rowan Castellano",
+            "email": "rowan.castellano@proton.me",
+            "initials": "RC",
+            "left": "2026-09-23T00:24:00.000Z",
+            "items": 1,
+            "itemsText": "Amber & Oak Reed Diffuser",
+            "value": 38,
+            "emailStatus": "Not sent"
+          },
+          {
+            "id": "chk_0002",
+            "name": "Sofia Ortiz",
+            "email": "sofia.ortiz@gmail.com",
+            "initials": "SO",
+            "left": "2026-09-22T02:16:00.000Z",
+            "items": 2,
+            "itemsText": "Fresh Linen Candle, Amber & Oak Candle",
+            "value": 62,
+            "emailStatus": "Not sent"
+          }
+        ],
+        "selection": {
+          "ids": [
+            "chk_0005",
+            "chk_0006",
+            "chk_0003",
+            "chk_0001",
+            "chk_0007",
+            "chk_0008",
+            "chk_0004",
+            "chk_0002"
+          ],
+          "discountId": "none"
+        },
+        "discounts": [
+          {
+            "id": "none",
+            "name": "No discount",
+            "detail": "A reminder with a link back to the cart"
+          },
+          {
+            "id": "dsc_welcome",
+            "name": "WELCOME10",
+            "detail": "10% off the order · new customers"
+          },
+          {
+            "id": "dsc_fall",
+            "name": "FALL15",
+            "detail": "15% off candles"
+          }
+        ],
+        "count": 8
+      }
+    }
+  }
+}

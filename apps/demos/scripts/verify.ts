@@ -14,7 +14,7 @@ import { launch, verifyDocument, DEFAULTS, type Report } from "@polyxd/verifier"
 const here = new URL("../", import.meta.url);
 const read = async (u: URL) => JSON.parse(await readFile(u, "utf8"));
 const [only, onlyIntent] = process.argv.slice(2);
-const demos = (await readdir(here, { withFileTypes: true })).filter((d) => d.isDirectory() && ["halden", "foundry", "wexley"].includes(d.name) && (!only || d.name === only)).map((d) => d.name);
+const demos = (await readdir(here, { withFileTypes: true })).filter((d) => d.isDirectory() && ["halden", "foundry", "wexley", "quay"].includes(d.name) && (!only || d.name === only)).map((d) => d.name);
 const THEMES = ["material3", "shadcn", "govuk", "carbon", "polaris", "antd", "fluent", "primer", "spectrum", "chakra", "mantine", "radix", "bootstrap"];
 
 const browser = await launch();

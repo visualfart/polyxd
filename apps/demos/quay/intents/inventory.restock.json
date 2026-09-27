@@ -1,0 +1,730 @@
+{
+  "id": "inventory.restock",
+  "title": "Restock a product",
+  "ask": [
+    "restock the lavender candle",
+    "restock amber & oak",
+    "record a delivery of wick trimmers",
+    "add 24 more sea salt candles to inventory"
+  ],
+  "keywords": [
+    "restock",
+    "delivery",
+    "reorder"
+  ],
+  "slots": {
+    "variant": "\\b(?:restock|reorder|delivery of|stock for|more) (?:the )?(?<variant>[A-Za-z&' ]+?)(?: to inventory| stock|$)",
+    "quantity": "\\b(?<quantity>\\d+) (?:more|units|of)\\b"
+  },
+  "capabilities": [
+    "inventory.adjust"
+  ],
+  "pattern": "multi-step-form",
+  "data": {
+    "options": "view:restockOptions",
+    "draft": "view:restockDraft",
+    "note": "view:restockNote"
+  },
+  "sample": {},
+  "document": {
+    "specVersion": "0.2.0",
+    "surface": {
+      "id": "inventory-restock",
+      "title": "Record a delivery",
+      "intent": "inventory.restock",
+      "pattern": "multi-step-form"
+    },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": [
+          "variant",
+          "quantity",
+          "expected",
+          "note"
+        ],
+        "submit": {
+          "label": "Record delivery",
+          "action": {
+            "event": {
+              "name": "inventory.adjust",
+              "context": {
+                "variantId": {
+                  "path": "/draft/variantId"
+                },
+                "quantity": {
+                  "path": "/draft/quantity"
+                },
+                "expectedAt": {
+                  "path": "/draft/expectedAt"
+                }
+              }
+            }
+          }
+        },
+        "cancel": {
+          "label": "Close",
+          "action": {
+            "event": {
+              "name": "ui.dismiss"
+            }
+          }
+        }
+      },
+      {
+        "id": "variant",
+        "component": "Choice",
+        "key": "variant",
+        "label": "Variant",
+        "options": {
+          "path": "/options",
+          "valuePath": "id",
+          "labelPath": "name",
+          "descriptionPath": "detail"
+        },
+        "value": {
+          "path": "/draft/variantId"
+        },
+        "required": true,
+        "help": "Lowest stock first, with how fast each one sells."
+      },
+      {
+        "id": "quantity",
+        "component": "TextInput",
+        "key": "quantity",
+        "label": "Quantity",
+        "kind": "number",
+        "value": {
+          "path": "/draft/quantity"
+        },
+        "required": true,
+        "validation": {
+          "min": 1,
+          "max": 5000,
+          "message": "Enter a quantity between 1 and 5,000"
+        },
+        "help": "Suggested: six weeks of sales, in cases of twelve."
+      },
+      {
+        "id": "expected",
+        "component": "DateInput",
+        "key": "expected_date",
+        "label": "Expected on",
+        "kind": "date",
+        "value": {
+          "path": "/draft/expectedAt"
+        },
+        "required": true,
+        "help": "Today or earlier puts the stock on the shelf now; a later date shows it as incoming."
+      },
+      {
+        "id": "note",
+        "component": "Text",
+        "key": "after_note",
+        "variant": "supporting",
+        "text": {
+          "path": "/note/text"
+        }
+      }
+    ],
+    "data": {
+      "options": [
+        {
+          "id": "var_0005",
+          "name": "Sea Salt & Sage Candle · 8 oz",
+          "detail": "4 in stock · sells 4.96 a week · 5 days left"
+        },
+        {
+          "id": "var_0002",
+          "name": "Amber & Oak Candle · 8 oz",
+          "detail": "6 in stock · sells 4.67 a week · 9 days left"
+        },
+        {
+          "id": "var_0043",
+          "name": "Amber & Oak Reed Diffuser · 100 ml",
+          "detail": "4 in stock · sells 0.93 a week · 30 days left"
+        },
+        {
+          "id": "var_0014",
+          "name": "Lavender Field Candle · 8 oz",
+          "detail": "3 in stock · sells 0.7 a week · 30 days left"
+        },
+        {
+          "id": "var_0097",
+          "name": "Wick Trimmer · Black",
+          "detail": "2 in stock · sells 0.47 a week · 30 days left"
+        },
+        {
+          "id": "var_0087",
+          "name": "Discovery Set · Warm",
+          "detail": "3 in stock · sells 0.47 a week · 45 days left"
+        },
+        {
+          "id": "var_0024",
+          "name": "Fresh Linen Candle · 14 oz three-wick",
+          "detail": "2 in stock · sells 0.23 a week · 60 days left"
+        },
+        {
+          "id": "var_0039",
+          "name": "Eucalyptus Mint Candle · 14 oz three-wick",
+          "detail": "10 in stock · sells 0.7 a week · 100 days left"
+        },
+        {
+          "id": "var_0019",
+          "name": "Black Currant Candle · 4 oz travel tin",
+          "detail": "17 in stock · sells 1.17 a week · 102 days left"
+        },
+        {
+          "id": "var_0008",
+          "name": "Fig & Cassis Candle · 8 oz",
+          "detail": "24 in stock · sells 1.4 a week · 120 days left"
+        },
+        {
+          "id": "var_0089",
+          "name": "Cozy Evening Set",
+          "detail": "5 in stock · sells 0.23 a week · 150 days left"
+        },
+        {
+          "id": "var_0025",
+          "name": "Orange Blossom Candle · 4 oz travel tin",
+          "detail": "15 in stock · sells 0.7 a week · 150 days left"
+        },
+        {
+          "id": "var_0088",
+          "name": "Discovery Set · Fresh",
+          "detail": "11 in stock · sells 0.47 a week · 165 days left"
+        },
+        {
+          "id": "var_0023",
+          "name": "Fresh Linen Candle · 8 oz",
+          "detail": "18 in stock · sells 0.7 a week · 180 days left"
+        },
+        {
+          "id": "var_0081",
+          "name": "Pine & Birch Wax Melts · 6 cubes",
+          "detail": "41 in stock · sells 1.4 a week · 205 days left"
+        },
+        {
+          "id": "var_0011",
+          "name": "Cedar Smoke Candle · 8 oz",
+          "detail": "14 in stock · sells 0.47 a week · 210 days left"
+        },
+        {
+          "id": "var_0114",
+          "name": "Ceramic Tray · Large",
+          "detail": "7 in stock · sells 0.23 a week · 210 days left"
+        },
+        {
+          "id": "var_0101",
+          "name": "Match Striker · Sage",
+          "detail": "7 in stock · sells 0.23 a week · 210 days left"
+        },
+        {
+          "id": "var_0020",
+          "name": "Black Currant Candle · 8 oz",
+          "detail": "32 in stock · sells 0.93 a week · 240 days left"
+        },
+        {
+          "id": "var_0115",
+          "name": "Storage Tin",
+          "detail": "42 in stock · sells 1.17 a week · 252 days left"
+        },
+        {
+          "id": "var_0099",
+          "name": "Candle Snuffer · Black",
+          "detail": "9 in stock · sells 0.23 a week · 270 days left"
+        },
+        {
+          "id": "var_0108",
+          "name": "Wax Melt Warmer · Sage",
+          "detail": "9 in stock · sells 0.23 a week · 270 days left"
+        },
+        {
+          "id": "var_0045",
+          "name": "Sea Salt & Sage Reed Diffuser · 100 ml",
+          "detail": "19 in stock · sells 0.47 a week · 285 days left"
+        },
+        {
+          "id": "var_0037",
+          "name": "Eucalyptus Mint Candle · 4 oz travel tin",
+          "detail": "22 in stock · sells 0.47 a week · 330 days left"
+        },
+        {
+          "id": "var_0003",
+          "name": "Amber & Oak Candle · 14 oz three-wick",
+          "detail": "12 in stock · sells 0.23 a week · 360 days left"
+        },
+        {
+          "id": "var_0112",
+          "name": "Candle Care Kit",
+          "detail": "12 in stock · sells 0.23 a week · 360 days left"
+        },
+        {
+          "id": "var_0034",
+          "name": "Rose Water Candle · 4 oz travel tin",
+          "detail": "24 in stock · sells 0.47 a week · 360 days left"
+        },
+        {
+          "id": "var_0091",
+          "name": "Spa Set",
+          "detail": "12 in stock · sells 0.23 a week · 360 days left"
+        },
+        {
+          "id": "var_0017",
+          "name": "Vanilla Bean Candle · 8 oz",
+          "detail": "48 in stock · sells 0.93 a week · 360 days left"
+        },
+        {
+          "id": "var_0074",
+          "name": "Vanilla Bean Wax Melts · 12 cubes",
+          "detail": "12 in stock · sells 0.23 a week · 360 days left"
+        },
+        {
+          "id": "var_0109",
+          "name": "Wax Melt Warmer · Terracotta",
+          "detail": "12 in stock · sells 0.23 a week · 360 days left"
+        },
+        {
+          "id": "var_0079",
+          "name": "Orange Blossom Wax Melts · 6 cubes",
+          "detail": "37 in stock · sells 0.7 a week · 370 days left"
+        },
+        {
+          "id": "var_0102",
+          "name": "Match Striker · Terracotta",
+          "detail": "13 in stock · sells 0.23 a week · 390 days left"
+        },
+        {
+          "id": "var_0029",
+          "name": "Pine & Birch Candle · 8 oz",
+          "detail": "43 in stock · sells 0.7 a week · 430 days left"
+        },
+        {
+          "id": "var_0055",
+          "name": "Black Currant Reed Diffuser · 100 ml",
+          "detail": "29 in stock · sells 0.47 a week · 435 days left"
+        },
+        {
+          "id": "var_0035",
+          "name": "Rose Water Candle · 8 oz",
+          "detail": "29 in stock · sells 0.47 a week · 435 days left"
+        },
+        {
+          "id": "var_0030",
+          "name": "Pine & Birch Candle · 14 oz three-wick",
+          "detail": "15 in stock · sells 0.23 a week · 450 days left"
+        },
+        {
+          "id": "var_0107",
+          "name": "Wax Melt Warmer · White",
+          "detail": "15 in stock · sells 0.23 a week · 450 days left"
+        },
+        {
+          "id": "var_0046",
+          "name": "Sea Salt & Sage Reed Diffuser · 200 ml refill",
+          "detail": "16 in stock · sells 0.23 a week · 480 days left"
+        },
+        {
+          "id": "var_0093",
+          "name": "Candle & Matches Set",
+          "detail": "18 in stock · sells 0.23 a week · 540 days left"
+        },
+        {
+          "id": "var_0047",
+          "name": "Fig & Cassis Reed Diffuser · 100 ml",
+          "detail": "20 in stock · sells 0.23 a week · 600 days left"
+        },
+        {
+          "id": "var_0028",
+          "name": "Pine & Birch Candle · 4 oz travel tin",
+          "detail": "40 in stock · sells 0.47 a week · 600 days left"
+        },
+        {
+          "id": "var_0104",
+          "name": "Candle Lid · Black",
+          "detail": "22 in stock · sells 0.23 a week · 660 days left"
+        },
+        {
+          "id": "var_0010",
+          "name": "Cedar Smoke Candle · 4 oz travel tin",
+          "detail": "22 in stock · sells 0.23 a week · 660 days left"
+        },
+        {
+          "id": "var_0038",
+          "name": "Eucalyptus Mint Candle · 8 oz",
+          "detail": "23 in stock · sells 0.23 a week · 690 days left"
+        },
+        {
+          "id": "var_0053",
+          "name": "Vanilla Bean Reed Diffuser · 100 ml",
+          "detail": "23 in stock · sells 0.23 a week · 690 days left"
+        },
+        {
+          "id": "var_0077",
+          "name": "Fresh Linen Wax Melts · 6 cubes",
+          "detail": "25 in stock · sells 0.23 a week · 750 days left"
+        },
+        {
+          "id": "var_0031",
+          "name": "Tobacco Leaf Candle · 4 oz travel tin",
+          "detail": "29 in stock · sells 0.23 a week · 870 days left"
+        },
+        {
+          "id": "var_0059",
+          "name": "Orange Blossom Reed Diffuser · 100 ml",
+          "detail": "30 in stock · sells 0.23 a week · 900 days left"
+        },
+        {
+          "id": "var_0001",
+          "name": "Amber & Oak Candle · 4 oz travel tin",
+          "detail": "31 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0044",
+          "name": "Amber & Oak Reed Diffuser · 200 ml refill",
+          "detail": "20 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0063",
+          "name": "Amber & Oak Wax Melts · 6 cubes",
+          "detail": "20 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0064",
+          "name": "Amber & Oak Wax Melts · 12 cubes",
+          "detail": "27 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0021",
+          "name": "Black Currant Candle · 14 oz three-wick",
+          "detail": "21 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0056",
+          "name": "Black Currant Reed Diffuser · 200 ml refill",
+          "detail": "20 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0075",
+          "name": "Black Currant Wax Melts · 6 cubes",
+          "detail": "26 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0076",
+          "name": "Black Currant Wax Melts · 12 cubes",
+          "detail": "28 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0116",
+          "name": "Bulb for Warming Lamp",
+          "detail": "50 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0103",
+          "name": "Candle Lid · Brass",
+          "detail": "30 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0098",
+          "name": "Candle Snuffer · Brass",
+          "detail": "12 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0012",
+          "name": "Cedar Smoke Candle · 14 oz three-wick",
+          "detail": "2 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0049",
+          "name": "Cedar Smoke Reed Diffuser · 100 ml",
+          "detail": "19 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0050",
+          "name": "Cedar Smoke Reed Diffuser · 200 ml refill",
+          "detail": "2 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0069",
+          "name": "Cedar Smoke Wax Melts · 6 cubes",
+          "detail": "47 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0070",
+          "name": "Cedar Smoke Wax Melts · 12 cubes",
+          "detail": "31 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0113",
+          "name": "Ceramic Tray · Small",
+          "detail": "10 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0094",
+          "name": "Diffuser & Candle Pair",
+          "detail": "5 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0007",
+          "name": "Fig & Cassis Candle · 4 oz travel tin",
+          "detail": "28 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0009",
+          "name": "Fig & Cassis Candle · 14 oz three-wick",
+          "detail": "11 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0048",
+          "name": "Fig & Cassis Reed Diffuser · 200 ml refill",
+          "detail": "2 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0068",
+          "name": "Fig & Cassis Wax Melts · 12 cubes",
+          "detail": "21 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0057",
+          "name": "Fresh Linen Reed Diffuser · 100 ml",
+          "detail": "26 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0058",
+          "name": "Fresh Linen Reed Diffuser · 200 ml refill",
+          "detail": "22 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0078",
+          "name": "Fresh Linen Wax Melts · 12 cubes",
+          "detail": "32 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0111",
+          "name": "Gift Bag",
+          "detail": "17 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0092",
+          "name": "Holiday Trio",
+          "detail": "18 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0090",
+          "name": "Housewarming Set",
+          "detail": "15 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0013",
+          "name": "Lavender Field Candle · 4 oz travel tin",
+          "detail": "19 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0015",
+          "name": "Lavender Field Candle · 14 oz three-wick",
+          "detail": "8 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0051",
+          "name": "Lavender Field Reed Diffuser · 100 ml",
+          "detail": "22 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0052",
+          "name": "Lavender Field Reed Diffuser · 200 ml refill",
+          "detail": "22 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0071",
+          "name": "Lavender Field Wax Melts · 6 cubes",
+          "detail": "39 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0072",
+          "name": "Lavender Field Wax Melts · 12 cubes",
+          "detail": "17 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0100",
+          "name": "Long Matches",
+          "detail": "41 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0026",
+          "name": "Orange Blossom Candle · 8 oz",
+          "detail": "27 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0027",
+          "name": "Orange Blossom Candle · 14 oz three-wick",
+          "detail": "12 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0060",
+          "name": "Orange Blossom Reed Diffuser · 200 ml refill",
+          "detail": "17 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0080",
+          "name": "Orange Blossom Wax Melts · 12 cubes",
+          "detail": "13 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0061",
+          "name": "Pine & Birch Reed Diffuser · 100 ml",
+          "detail": "9 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0062",
+          "name": "Pine & Birch Reed Diffuser · 200 ml refill",
+          "detail": "14 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0082",
+          "name": "Pine & Birch Wax Melts · 12 cubes",
+          "detail": "40 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0117",
+          "name": "Reed Diffuser Cap",
+          "detail": "25 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0110",
+          "name": "Reed Refill Pack",
+          "detail": "47 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0036",
+          "name": "Rose Water Candle · 14 oz three-wick",
+          "detail": "17 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0040",
+          "name": "Sandalwood Candle · 4 oz travel tin",
+          "detail": "20 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0041",
+          "name": "Sandalwood Candle · 8 oz",
+          "detail": "24 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0042",
+          "name": "Sandalwood Candle · 14 oz three-wick",
+          "detail": "14 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0119",
+          "name": "Scent Card Set",
+          "detail": "9 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0004",
+          "name": "Sea Salt & Sage Candle · 4 oz travel tin",
+          "detail": "26 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0006",
+          "name": "Sea Salt & Sage Candle · 14 oz three-wick",
+          "detail": "9 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0065",
+          "name": "Sea Salt & Sage Wax Melts · 6 cubes",
+          "detail": "25 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0066",
+          "name": "Sea Salt & Sage Wax Melts · 12 cubes",
+          "detail": "32 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0118",
+          "name": "Tea Lights",
+          "detail": "46 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0033",
+          "name": "Tobacco Leaf Candle · 14 oz three-wick",
+          "detail": "12 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0083",
+          "name": "Tobacco Leaf Wax Melts · 6 cubes",
+          "detail": "44 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0084",
+          "name": "Tobacco Leaf Wax Melts · 12 cubes",
+          "detail": "17 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0016",
+          "name": "Vanilla Bean Candle · 4 oz travel tin",
+          "detail": "23 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0018",
+          "name": "Vanilla Bean Candle · 14 oz three-wick",
+          "detail": "16 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0054",
+          "name": "Vanilla Bean Reed Diffuser · 200 ml refill",
+          "detail": "22 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0073",
+          "name": "Vanilla Bean Wax Melts · 6 cubes",
+          "detail": "1 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0105",
+          "name": "Warming Lamp · Brass",
+          "detail": "6 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0106",
+          "name": "Warming Lamp · Black",
+          "detail": "8 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0095",
+          "name": "Wax Melt Sampler",
+          "detail": "9 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0096",
+          "name": "Wick Trimmer · Brass",
+          "detail": "4 in stock · sells 0 a week"
+        },
+        {
+          "id": "var_0022",
+          "name": "Fresh Linen Candle · 4 oz travel tin",
+          "detail": "40 in stock · sells 0.23 a week · 1200 days left"
+        },
+        {
+          "id": "var_0032",
+          "name": "Tobacco Leaf Candle · 8 oz",
+          "detail": "46 in stock · sells 0.23 a week · 1380 days left"
+        },
+        {
+          "id": "var_0067",
+          "name": "Fig & Cassis Wax Melts · 6 cubes",
+          "detail": "56 in stock · sells 0.23 a week · 1680 days left"
+        }
+      ],
+      "draft": {
+        "variantId": "var_0005",
+        "quantity": 36,
+        "expectedAt": "2026-10-03"
+      },
+      "note": {
+        "text": "Sea Salt & Sage Candle (8 oz) has 4 in stock and sells about 4.96 a week. After this delivery: 40 in stock, about 8 weeks of sales."
+      }
+    }
+  }
+}
