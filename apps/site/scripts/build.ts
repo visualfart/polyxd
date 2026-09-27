@@ -5,7 +5,7 @@
  *   /gallery/              the live example gallery (apps/gallery, built with Vite)
  *   sitemap.xml, robots.txt, 404.html, assets
  */
-import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { copyFile, cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, join } from "node:path";
@@ -168,7 +168,7 @@ function typeOf(s: any): string {
 async function componentsPage(): Promise<Page> {
   const dir = join(REPO, "packages/spec/components");
   const comps = await Promise.all((await readdir(dir)).filter((f) => f.endsWith(".json")).map(async (f) => JSON.parse(await readFile(join(dir, f), "utf8"))));
-  const order = ["structure", "content", "feedback", "input", "action", "flow"];
+  const order = ["shell", "structure", "content", "feedback", "input", "action", "flow"];
   comps.sort((a, b) => order.indexOf(a.category) - order.indexOf(b.category) || a.name.localeCompare(b.name));
   const toc = comps.map((c) => ({ id: slugify(c.name), text: c.name }));
   const list = (xs: string[]) => `<ul>${xs.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
@@ -520,10 +520,21 @@ execFileSync("npx", ["vite", "build", "--outDir", join(DIST, "demos"), "--emptyO
   cwd: join(REPO, "apps/demos"),
   stdio: "inherit",
 });
-const demos = ["halden", "foundry", "wexley"];
+const demos = ["halden", "foundry", "wexley", "quay"];
 
 const urls = ["/", "/gallery/", "/demos/", ...demos.map((d) => `/demos/${d}/`), ...pages.map((p) => href(p.slug))];
 await write(join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${ORIGIN}${u}</loc></url>`).join("\n")}\n</urlset>\n`);
 await write(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${ORIGIN}/sitemap.xml\n`);
+
+// The JSON Schemas, at the URLs documents name in "$schema", so editors validate and complete them.
+// Every minor the schema pattern accepts is served, so a 0.2 document keeps resolving.
+{
+  const schemaDir = join(REPO, "packages/spec/schema");
+  const files = (await readdir(schemaDir)).filter((f) => f.endsWith(".json"));
+  for (const v of ["0.2", "0.3"]) {
+    await mkdir(join(DIST, "schema", v), { recursive: true });
+    for (const f of files) await copyFile(join(schemaDir, f), join(DIST, "schema", v, f));
+  }
+}
 
 console.log(`built ${pages.length} docs pages, landing, gallery → ${DIST}`);
