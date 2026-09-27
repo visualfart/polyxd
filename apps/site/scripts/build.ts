@@ -46,7 +46,7 @@ const href = (slug: string) => (slug ? `/docs/${slug}/` : "/docs/");
 // ---------- Shared chrome ----------
 
 import { mark, svg as markSvg } from "../../../brand/build.ts";
-/** The mark as the p of the wordmark: three shapes, drawn once in brand/build.ts. */
+/** The mark beside the wordmark: three shapes, drawn once in brand/build.ts. */
 const LOGO = `<svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true">${mark()}</svg>`;
 
 function head({ title, description, path, css = [] }: { title: string; description: string; path: string; css?: string[] }) {
@@ -71,7 +71,7 @@ ${css.map((c) => `<link rel="stylesheet" href="${c}">`).join("\n")}`;
 function header(current: "home" | "docs") {
   const cur = (k: string) => (k === current ? ' aria-current="page"' : "");
   return `<header class="site-header"><div class="wrap">
-<a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">olyxd</span></a>
+<a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">polyxd</span></a>
 <nav class="site-nav" aria-label="Main">
 <a class="nav-optional" href="/#how">How it works</a>
 <a class="nav-optional" href="/docs/designers/">For design teams</a>
@@ -83,7 +83,7 @@ function header(current: "home" | "docs") {
 }
 
 const footer = `<footer class="site-footer"><div class="wrap">
-<a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">olyxd</span></a>
+<a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">polyxd</span></a>
 <nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/demos/">Demos</a><a href="/docs/reference/coverage/">All components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
 <span>© 2026 Polyxd · Apache-2.0 code, CC-BY-4.0 spec</span>
 </div></footer>`;
