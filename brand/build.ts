@@ -30,16 +30,24 @@ const STEM = { x: 6, y: 14, w: 5, h: 14, r: 2.5 };
 export interface MarkOptions {
   ink?: string;
   accent?: string;
+  /**
+   * The pupil is a hole in the squircle, so whatever the mark sits on shows through: paper on the
+   * site, ink on the app icon, a photo behind a badge. `false` leaves the squircle whole (16–20px).
+   */
   pupil?: boolean | { cx?: number; cy?: number; r?: number };
-  /** Replaces the pupil with another ink shape (a blink line, a tick). */
+  /** An extra ink shape in the window (a blink line, a tick) for the states. */
   extra?: string;
 }
+
+/** A circle as a subpath, so the squircle can carry it as a hole (evenodd). */
+const circle = (cx: number, cy: number, r: number) => `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0z`;
 
 /** The mark's inner SVG, 32×32 viewBox. */
 export function mark({ ink = INK, accent = ACCENT, pupil = true, extra = "" }: MarkOptions = {}): string {
   const p = typeof pupil === "object" ? pupil : {};
-  const dot = pupil ? `<circle cx="${p.cx ?? c}" cy="${p.cy ?? c}" r="${p.r ?? 2.4}" fill="${ink}"/>` : "";
-  return `<path d="${P}" fill="${ink}"/><rect x="${STEM.x}" y="${STEM.y}" width="${STEM.w}" height="${STEM.h}" rx="${STEM.r}" fill="${ink}"/><path d="${SQUIRCLE}" fill="${accent}"/>${dot}${extra}`;
+  // The hole goes through the squircle and the bowl beneath it, so the background really shows.
+  const hole = pupil ? circle(p.cx ?? c, p.cy ?? c, p.r ?? 2.4) : "";
+  return `<path fill-rule="evenodd" d="${P}${hole}" fill="${ink}"/><rect x="${STEM.x}" y="${STEM.y}" width="${STEM.w}" height="${STEM.h}" rx="${STEM.r}" fill="${ink}"/><path fill-rule="evenodd" d="${SQUIRCLE}${hole}" fill="${accent}"/>${extra}`;
 }
 
 export const svg = (inner: string, attrs = "") => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"${attrs}>${inner}</svg>\n`;
@@ -61,7 +69,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   await mkdir(dir, { recursive: true });
   await writeFile(`${dir}mark.svg`, svg(mark()));
   await writeFile(`${dir}mark-dark.svg`, svg(mark({ ink: PAPER })));
-  await writeFile(`${dir}mark-mono.svg`, svg(mark({ accent: INK }).replace(`r="2.4" fill="${INK}"`, `r="2.4" fill="${PAPER}"`)));
+  await writeFile(`${dir}mark-mono.svg`, svg(mark({ accent: INK })));
   await writeFile(`${dir}mark-small.svg`, svg(mark({ pupil: false })));
   await writeFile(
     `${dir}mark-states.svg`,
