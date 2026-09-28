@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polyxd.com/schema/0.3/design-system.schema.json",
+  "title": "Polyxd design-system pack manifest",
+  "description": "Describes a design-system pack: which DTCG token files make up each mode. Files listed for a mode are merged in order, later files overriding earlier ones.",
+  "type": "object",
+  "required": ["name", "version", "contractVersion", "license", "modes", "defaultMode"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "displayName": { "type": "string" },
+    "version": { "type": "string" },
+    "contractVersion": { "type": "string", "description": "Version of the semantic token contract this pack satisfies" },
+    "license": { "type": "string" },
+    "modes": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "type": "string", "description": "Path to a DTCG token file, relative to the manifest" }
+      }
+    },
+    "defaultMode": { "type": "string" },
+    "layout": {
+      "type": "object",
+      "description": "Layout variables this system's components differ on, which tokens can't express: Carbon's modal footer runs the full width of the dialog, Material's sits inline at the trailing edge. The renderer defines the variables and their defaults; a pack may set them and may not add rules.",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": { "type": "string" }
+    },
+    "template": {
+      "type": "boolean",
+      "description": "True for an original Polyxd template: a pack meant to be copied and changed, counted apart from the packs that reproduce a real design system."
+    },
+    "extras": {
+      "type": "string",
+      "pattern": "\\.css$",
+      "description": "Optional stylesheet, relative to the manifest, that the theme compiler appends verbatim to the pack's theme CSS: the few things tokens can't express, such as a hand-drawn pack's uneven radii or a wireframe's dashed borders. Every rule must be scoped by [data-pxd-theme=\"<name>\"], and it may name no colour of its own — only var(--pxd-…) tokens — so the compiler rejects it otherwise."
+    },
+    "logo": {
+      "type": "object",
+      "description": "The pack's logo, shown beside its name wherever the pack is listed. A pack that reproduces a real design system ships that system's official logo, unaltered, from the owner's own site or repository; a template ships a Polyxd-made mark drawn from its own tokens; a system whose marks are protected has text instead of a file.",
+      "anyOf": [{ "required": ["file", "source"] }, { "required": ["text", "note"] }],
+      "properties": {
+        "file": { "type": "string", "pattern": "\\.(svg|png)$", "description": "The logo file, relative to the manifest. SVG where the owner publishes one." },
+        "dark": { "type": "string", "pattern": "\\.(svg|png)$", "description": "The owner's own version for dark grounds, when the owner publishes one. Never a recolour of file." },
+        "source": { "type": "string", "description": "The official URL the file was downloaded from, or \"Polyxd\" for a template's own mark." },
+        "text": { "type": "string", "description": "For a system whose marks may not be used: the plain words to set in the host's own type instead of a logo. note says why." },
+        "guidelines": { "type": "string", "description": "The owner's brand or trademark guidelines for using the logo." },
+        "colours": { "type": "array", "items": { "type": "string" }, "description": "The colours the file is drawn in, as the owner provides them." },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "array",
+      "description": "Where the values came from, so packs stay auditable",
+      "items": {
+        "type": "object",
+        "required": ["source"],
+        "properties": {
+          "source": { "type": "string" },
+          "version": { "type": "string" },
+          "license": { "type": "string" },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

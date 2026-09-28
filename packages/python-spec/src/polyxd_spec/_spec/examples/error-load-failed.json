@@ -1,0 +1,32 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "statement-error",
+    "title": "Statements",
+    "intent": "money.statements"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Status",
+      "kind": "error",
+      "title": "We couldn't load your statements",
+      "message": "Check your connection. Nothing has been changed.",
+      "action": "retry"
+    },
+    {
+      "id": "retry",
+      "component": "Action",
+      "label": "Try again",
+      "emphasis": "primary",
+      "action": {
+        "event": {
+          "name": "statements.reload"
+        }
+      }
+    }
+  ],
+  "data": {}
+}

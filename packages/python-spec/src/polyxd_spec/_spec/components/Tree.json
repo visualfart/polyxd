@@ -1,0 +1,79 @@
+{
+  "name": "Tree",
+  "category": "content",
+  "summary": "A hierarchy people expand, browse and pick from: folders, an org chart, nested categories.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "What the tree holds, e.g. 'Folders'"
+    },
+    "items": {
+      "$ref": "#/$defs/Binding",
+      "description": "The top-level nodes in host data: a list"
+    },
+    "labelPath": {
+      "$ref": "#/$defs/Path",
+      "description": "Relative to each node: the text shown"
+    },
+    "childrenPath": {
+      "$ref": "#/$defs/Path",
+      "description": "Relative to each node: its list of child nodes, absent or empty for a leaf"
+    },
+    "valuePath": {
+      "$ref": "#/$defs/Path",
+      "description": "Relative to each node: what selection writes; the label when absent"
+    },
+    "detailPath": {
+      "$ref": "#/$defs/Path",
+      "description": "Relative to each node: a count or note shown after the label"
+    },
+    "selection": {
+      "enum": ["none", "single", "multiple"],
+      "default": "none"
+    },
+    "selected": {
+      "$ref": "#/$defs/Binding",
+      "description": "Selected node value(s) in host data when selection is not 'none'"
+    },
+    "expanded": {
+      "$ref": "#/$defs/Binding",
+      "description": "Values of the nodes shown open; the first level is open without it"
+    },
+    "action": {
+      "$ref": "#/$defs/Action",
+      "description": "Activating a node, e.g. open that folder; context may bind to the node's fields"
+    }
+  },
+  "required": ["label", "items", "labelPath", "childrenPath"],
+  "whenToUse": [
+    "Things that contain things: folders and files, an organisation, nested categories",
+    "Picking a place in a hierarchy (move to folder, choose a category)"
+  ],
+  "whenNotToUse": [
+    "A flat list, however long: use Collection or Table",
+    "Nested navigation of the product itself: use Navigation",
+    "Progressive disclosure of one section: use Disclosure"
+  ],
+  "accessibility": {
+    "role": "tree with treeitem nodes; aria-expanded on nodes with children, aria-selected when selectable",
+    "requirements": [
+      "Arrow keys move and expand; Home and End jump; typing jumps to a label",
+      "Level and position are exposed (aria-level, aria-setsize, aria-posinset)",
+      "Expanded state is announced; selection is announced"
+    ]
+  },
+  "agent": "Reads every node by label and level; expands a node by name and selects or activates one by name.",
+  "rendering": [
+    "Indent per level uses space.inline.default; the expander is a chevron at size.target.min",
+    "Leaves have no expander and align with siblings' labels",
+    "Selection uses color.selection.background; the focused node shows color.border.focus",
+    "Beyond 200 nodes the renderer virtualises rows"
+  ],
+  "mappings": {
+    "web": "Radix Accordion primitives (no shadcn tree)",
+    "ios": "OutlineGroup / List with children",
+    "android": "LazyColumn with expandable rows"
+  },
+  "a2ui": "Nested Column of Text",
+  "sources": ["WAI-ARIA APG tree view pattern"]
+}

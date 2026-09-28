@@ -42,7 +42,7 @@ Each layer ships as its own package, so nobody has to adopt all of it. The first
 
 | Layer | Planned package | Channel | Today |
 |---|---|---|---|
-| Spec | `@polyxd/spec`, `polyxd-spec` (Python) | npm, PyPI | `@polyxd/spec` exists; Python planned |
+| Spec | `@polyxd/spec`, `polyxd-spec` (Python) | npm, PyPI | `@polyxd/spec` exists. `polyxd-spec` exists in the repository (`packages/python-spec`), not yet on PyPI |
 | Design-system packs | `@polyxd/ds-material3`, `ds-carbon`, `ds-antd` | npm | Exist |
 | Web renderer | `@polyxd/react` | npm | Exists |
 | Verifier and benchmark | `polyxd-verify` CLI, dataset | npm, Hugging Face Datasets | Verifier exists; dataset in progress |

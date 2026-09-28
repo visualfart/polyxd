@@ -1,0 +1,188 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "habits",
+    "title": "Habits",
+    "intent": "personal.habits.today"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "streaks",
+        "week",
+        "list"
+      ]
+    },
+    {
+      "id": "streaks",
+      "component": "Group",
+      "arrangement": "inline",
+      "label": "Streaks",
+      "children": [
+        "best",
+        "current"
+      ]
+    },
+    {
+      "id": "best",
+      "component": "Metric",
+      "key": "best_streak",
+      "label": "Best streak (days)",
+      "value": {
+        "path": "/stats/best"
+      },
+      "format": {
+        "type": "number"
+      }
+    },
+    {
+      "id": "current",
+      "component": "Metric",
+      "key": "current_streak",
+      "label": "Current streak (days)",
+      "value": {
+        "path": "/stats/current"
+      },
+      "format": {
+        "type": "number"
+      }
+    },
+    {
+      "id": "week",
+      "component": "Chart",
+      "key": "week",
+      "intent": "comparison",
+      "title": "Habits done this week",
+      "summary": {
+        "path": "/stats/summary"
+      },
+      "data": {
+        "path": "/stats/week"
+      },
+      "x": {
+        "path": "day",
+        "label": "Day"
+      },
+      "series": [
+        {
+          "path": "done",
+          "label": "Habits done",
+          "format": {
+            "type": "number"
+          }
+        }
+      ]
+    },
+    {
+      "id": "list",
+      "component": "Collection",
+      "key": "habits",
+      "label": "Today's habits",
+      "items": {
+        "path": "/habits",
+        "componentId": "habit"
+      },
+      "layout": "list"
+    },
+    {
+      "id": "habit",
+      "component": "Card",
+      "title": {
+        "path": "name"
+      },
+      "subtitle": {
+        "path": "streak"
+      },
+      "children": [
+        "habit-done"
+      ],
+      "action": {
+        "event": {
+          "name": "habit.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "habit-done",
+      "component": "Toggle",
+      "key": "habit_done",
+      "label": {
+        "path": "doneLabel"
+      },
+      "value": {
+        "path": "done"
+      },
+      "action": {
+        "event": {
+          "name": "habit.check",
+          "context": {
+            "id": {
+              "path": "id"
+            },
+            "done": {
+              "path": "done"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "data": {
+    "stats": {
+      "best": 21,
+      "current": 6,
+      "summary": "You did the most on Tuesday and missed Saturday.",
+      "week": [
+        {
+          "day": "Mon",
+          "done": 3
+        },
+        {
+          "day": "Tue",
+          "done": 4
+        },
+        {
+          "day": "Wed",
+          "done": 2
+        },
+        {
+          "day": "Thu",
+          "done": 3
+        },
+        {
+          "day": "Fri",
+          "done": 3
+        },
+        {
+          "day": "Sat",
+          "done": 0
+        }
+      ]
+    },
+    "habits": [
+      {
+        "id": "h1",
+        "name": "Read 20 minutes",
+        "done": true,
+        "streak": "12-day streak",
+        "doneLabel": "Done: Read 20 minutes"
+      },
+      {
+        "id": "h2",
+        "name": "Walk 8k steps",
+        "done": false,
+        "streak": "6-day streak",
+        "doneLabel": "Done: Walk 8k steps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "Group",
+  "category": "structure",
+  "summary": "Visually groups closely related items without a heading (proximity).",
+  "props": {
+    "children": {
+      "$ref": "#/$defs/ChildList"
+    },
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Accessible name for the group when it isn't obvious from its content"
+    },
+    "arrangement": {
+      "enum": [
+        "auto",
+        "inline",
+        "grid"
+      ],
+      "default": "auto",
+      "description": "Hint only. 'inline' for a few short peers (e.g. metrics); renderers stack on narrow screens."
+    }
+  },
+  "required": [
+    "children"
+  ],
+  "whenToUse": [
+    "A few items that belong together (a key figure and its caption, several metrics)"
+  ],
+  "whenNotToUse": [
+    "The group needs a heading: use Section",
+    "Choosing between items: use Choice or Comparison"
+  ],
+  "accessibility": {
+    "role": "group",
+    "requirements": [
+      "Has an accessible name when it contains interactive items"
+    ]
+  },
+  "agent": "Treated as one unit when its label is present.",
+  "rendering": [
+    "'inline' collapses to a stack below the compact breakpoint",
+    "Gap uses space.stack.default or space.inline.default"
+  ],
+  "mappings": {
+    "web": "<div role=group> with flex/grid and semantic spacing tokens",
+    "ios": "VStack / HStack / Grid (ViewThatFits for inline)",
+    "android": "Column / Row / FlowRow"
+  },
+  "a2ui": "Column or Row",
+  "sources": [
+    "Gestalt: proximity"
+  ]
+}

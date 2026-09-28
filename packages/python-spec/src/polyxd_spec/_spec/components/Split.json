@@ -1,0 +1,34 @@
+{
+  "name": "Split",
+  "category": "structure",
+  "summary": "Master and detail side by side: a list that stays while the chosen item's detail shows beside it; on compact layouts the detail replaces the list.",
+  "props": {
+    "primary": { "$ref": "#/$defs/Id", "description": "The list: a Collection or a Table with selection 'single'" },
+    "detail": { "$ref": "#/$defs/Id", "description": "What shows for the selected item; its bindings resolve against the selected item's scope" },
+    "selected": { "$ref": "#/$defs/Binding", "description": "The selected item's value in host data, shared with the primary's 'selected'" },
+    "empty": { "$ref": "#/$defs/Id", "description": "A Status shown in the detail pane while nothing is selected" },
+    "ratio": { "enum": ["narrow", "balanced", "wide"], "default": "narrow", "description": "The list's share: about a third, half, or two thirds" },
+    "resizable": { "type": "boolean", "default": false }
+  },
+  "required": ["primary", "detail", "selected"],
+  "whenToUse": ["Mail, tickets, messages, files: a list people move through while reading", "Settings with many sections on wide screens"],
+  "whenNotToUse": ["Under about 640px of surface width: it becomes a list then a page, so don't use it for a single record", "Two unrelated things side by side: use Columns"],
+  "accessibility": {
+    "role": "none; the primary and detail keep their own roles",
+    "requirements": [
+      "Selection in the list moves focus to the detail on compact layouts and announces the item's name",
+      "A Back control returns to the list on compact layouts",
+      "The list keeps its scroll position and selection while the detail changes"
+    ]
+  },
+  "agent": "Selects an item in the primary by name and reads the detail; on compact layouts it goes back to choose another.",
+  "rendering": [
+    "Wide: two panes with a border between; the list scrolls independently",
+    "Compact: the list, then the detail as a page with a back control when an item is selected",
+    "Selection state in the list uses color.selection.*",
+    "Resizable splits keep the handle at size.target.min wide with a visible focus ring"
+  ],
+  "mappings": { "web": "Fluent SplitView, Carbon side panel, shadcn Resizable", "ios": "NavigationSplitView", "android": "ListDetailPaneScaffold" },
+  "a2ui": "custom",
+  "sources": ["Apple HIG split views", "Material 3 canonical layouts: list-detail"]
+}

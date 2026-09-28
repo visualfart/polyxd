@@ -1,0 +1,53 @@
+{
+  "name": "Section",
+  "category": "structure",
+  "summary": "A titled region of the surface that groups related content under a heading.",
+  "props": {
+    "title": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Heading for the section"
+    },
+    "description": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Optional one-line explanation under the heading"
+    },
+    "children": {
+      "$ref": "#/$defs/ChildList"
+    }
+  },
+  "required": [
+    "title",
+    "children"
+  ],
+  "whenToUse": [
+    "The surface has two or more distinct topics (e.g. 'Recipient' and 'Amount')",
+    "Content would otherwise exceed one screen and needs signposting"
+  ],
+  "whenNotToUse": [
+    "Only one topic: put content directly under the root",
+    "Visual grouping without a heading: use Group"
+  ],
+  "accessibility": {
+    "role": "region (with heading)",
+    "requirements": [
+      "Title is rendered as a real heading; nesting depth sets the heading level",
+      "Title is the region's accessible name"
+    ]
+  },
+  "agent": "Navigate by heading; the title names the region.",
+  "rendering": [
+    "Heading level follows nesting depth, never chosen by the model",
+    "Spacing between sections uses space.stack.section"
+  ],
+  "mappings": {
+    "web": "<section> + heading; shadcn has no Section primitive (plain markup with semantic tokens)",
+    "ios": "Section(header:) inside List/Form, or VStack with .accessibilityAddTraits(.isHeader) on the title",
+    "android": "Column with a Text heading marked Modifier.semantics { heading() }"
+  },
+  "a2ui": "No direct equivalent; exports as Column with a Text(variant: h2) first child",
+  "sources": [
+    "Gestalt: common region",
+    "Material 3 layout guidance",
+    "GOV.UK headings"
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "plans",
+    "title": "Choose a plan",
+    "intent": "commerce.plan.choose",
+    "pattern": "compare-and-choose"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Comparison",
+      "key": "plans",
+      "items": {
+        "path": "/plans"
+      },
+      "itemTitle": "name",
+      "recommended": "Plus",
+      "attributes": [
+        {
+          "key": "price",
+          "label": "Price per month",
+          "path": "price",
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          },
+          "better": "lower",
+          "group": "Cost"
+        },
+        {
+          "key": "storage",
+          "label": "Storage (GB)",
+          "path": "storage",
+          "format": {
+            "type": "number"
+          },
+          "better": "higher",
+          "group": "What you get"
+        },
+        {
+          "key": "support",
+          "label": "Support",
+          "path": "support",
+          "group": "What you get"
+        },
+        {
+          "key": "offline",
+          "label": "Offline access",
+          "path": "offline",
+          "group": "What you get"
+        },
+        {
+          "key": "sharing",
+          "label": "Share with family",
+          "path": "sharing",
+          "group": "What you get"
+        }
+      ],
+      "choose": {
+        "label": "Choose",
+        "action": {
+          "event": {
+            "name": "plan.select",
+            "context": {
+              "plan": {
+                "path": "id"
+              }
+            }
+          }
+        }
+      },
+      "recommendedReason": "Enough storage and email support, at half the price of Pro"
+    }
+  ],
+  "data": {
+    "plans": [
+      {
+        "id": "basic",
+        "name": "Basic",
+        "price": 0,
+        "storage": 5,
+        "support": "Community",
+        "offline": false,
+        "sharing": false
+      },
+      {
+        "id": "plus",
+        "name": "Plus",
+        "price": 4.99,
+        "storage": 200,
+        "support": "Email",
+        "offline": true,
+        "sharing": false
+      },
+      {
+        "id": "pro",
+        "name": "Pro",
+        "price": 11.99,
+        "storage": 2000,
+        "support": "Priority",
+        "offline": true,
+        "sharing": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polyxd.com/schema/0.3/check.schema.json",
+  "title": "Polyxd check",
+  "description": "Declarative rule evaluated against a UI document. Shared by patterns, Design Direction rules, journey checkpoints and acceptance criteria. Implemented in src/checks.ts.",
+  "$ref": "#/$defs/Check",
+  "$defs": {
+    "Where": { "type": "object", "description": "Props the component must have (exact JSON match)" },
+    "Names": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "Check": {
+      "type": "object",
+      "required": ["check"],
+      "discriminator": { "propertyName": "check" },
+      "oneOf": [
+        { "properties": { "check": { "const": "rootIs" }, "components": { "$ref": "#/$defs/Names" } }, "required": ["components"], "additionalProperties": false },
+        { "properties": { "check": { "const": "contains" }, "component": { "type": "string" }, "where": { "$ref": "#/$defs/Where" }, "min": { "type": "integer", "minimum": 0 }, "max": { "type": "integer", "minimum": 0 } }, "required": ["component"], "additionalProperties": false },
+        { "properties": { "check": { "const": "precedes" }, "before": { "$ref": "#/$defs/Names" }, "after": { "$ref": "#/$defs/Names" } }, "required": ["before", "after"], "additionalProperties": false },
+        { "properties": { "check": { "const": "maxInputsPerView" }, "max": { "type": "integer", "minimum": 1 } }, "required": ["max"], "additionalProperties": false },
+        { "properties": { "check": { "const": "requires" }, "component": { "type": "string" }, "where": { "$ref": "#/$defs/Where" }, "props": { "$ref": "#/$defs/Names" } }, "required": ["component", "props"], "additionalProperties": false },
+        { "properties": { "check": { "const": "labelMatches" }, "component": { "type": "string" }, "where": { "$ref": "#/$defs/Where" }, "prop": { "type": "string", "description": "Dotted path of one text prop to check (e.g. 'confirm.label'); default: all visible labels" }, "pattern": { "type": "string" }, "flags": { "type": "string" } }, "required": ["component", "pattern"], "additionalProperties": false },
+        { "properties": { "check": { "const": "noLabelMatches" }, "pattern": { "type": "string" }, "flags": { "type": "string" } }, "required": ["pattern"], "additionalProperties": false },
+        { "properties": { "check": { "const": "actionInside" }, "capabilities": { "$ref": "#/$defs/Names" }, "container": { "$ref": "#/$defs/Names" } }, "required": ["capabilities", "container"], "additionalProperties": false },
+        { "properties": { "check": { "const": "casing" }, "style": { "enum": ["sentence", "title"] } }, "required": ["style"], "additionalProperties": false },
+        { "properties": { "check": { "const": "maxWords" }, "max": { "type": "integer", "minimum": 1 } }, "required": ["max"], "additionalProperties": false },
+        { "properties": { "check": { "const": "readingLevel" }, "maxGrade": { "type": "number" } }, "required": ["maxGrade"], "additionalProperties": false },
+        { "properties": { "check": { "const": "avoidTerms" }, "terms": { "$ref": "#/$defs/Names" }, "suggest": { "type": "string" } }, "required": ["terms"], "additionalProperties": false },
+        { "properties": { "check": { "const": "noEmoji" } }, "additionalProperties": false },
+        { "properties": { "check": { "const": "spelling" }, "variant": { "enum": ["en-GB", "en-US"] } }, "required": ["variant"], "additionalProperties": false },
+        { "properties": { "check": { "const": "person" }, "style": { "enum": ["you", "we-and-you", "impersonal"] } }, "required": ["style"], "additionalProperties": false },
+        { "properties": { "check": { "const": "anyOf" }, "checks": { "type": "array", "items": { "$ref": "#/$defs/Check" }, "minItems": 1 } }, "required": ["checks"], "additionalProperties": false },
+        { "properties": { "check": { "const": "allOf" }, "checks": { "type": "array", "items": { "$ref": "#/$defs/Check" }, "minItems": 1 } }, "required": ["checks"], "additionalProperties": false },
+        { "properties": { "check": { "const": "not" }, "checks": { "type": "array", "items": { "$ref": "#/$defs/Check" }, "minItems": 1, "maxItems": 1 } }, "required": ["checks"], "additionalProperties": false }
+      ]
+    },
+    "Rule": {
+      "type": "object",
+      "required": ["id", "description", "severity", "rule"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "description": { "type": "string", "description": "The rule in plain language, as a designer or PM would write it" },
+        "severity": { "enum": ["error", "warning"] },
+        "rule": { "$ref": "#/$defs/Check" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -98,6 +98,7 @@ It reads your CSS custom properties, maps what it can onto the contract, writes 
 | [`@polyxd/web`](https://www.npmjs.com/package/@polyxd/web) | The Web Components renderer: `<polyxd-surface>`, `<polyxd-frame>`, no framework; Vue and Svelte adapters to copy |
 | [`@polyxd/spec`](https://www.npmjs.com/package/@polyxd/spec) | Types, JSON Schema, validator, patterns, token contract; `polyxd-validate` |
 | [`@polyxd/verifier`](https://www.npmjs.com/package/@polyxd/verifier) | `polyxd-verify`: static, rendered and agent checks |
+| `polyxd-spec` (Python) | The schemas, component catalogue and validator for Python, with the same results as `@polyxd/spec`; `polyxd-spec validate`. In [`packages/python-spec`](packages/python-spec), not yet on PyPI |
 | [`@polyxd/a2ui`](https://www.npmjs.com/package/@polyxd/a2ui) | Export to A2UI v1.0 |
 | [`polyxd`](https://www.npmjs.com/package/polyxd) | The `polyxd` command: `pack` and `check` |
 | [`@polyxd/ds-kit`](https://www.npmjs.com/package/@polyxd/ds-kit) | The library behind `polyxd pack` |
@@ -137,6 +138,7 @@ Polyxd ships no model. Any model or program that emits spec-valid JSON drives it
 | | |
 |---|---|
 | `packages/spec` | The spec: components, patterns, token contract, validator, JSON Schema |
+| `packages/python-spec` | The spec for Python: copies of the schemas and components, and a port of the validator checked against the TypeScript one (`npm run test:python`, needs [uv](https://docs.astral.sh/uv/)) |
 | `packages/core` | The framework-free core: document types, bindings, formatting, the renderer's decisions, the headless surface |
 | `packages/react` | The React renderer and the compiled theme CSS for every pack |
 | `packages/web` | The Web Components renderer, its preview bundle, and the Vue and Svelte adapters |

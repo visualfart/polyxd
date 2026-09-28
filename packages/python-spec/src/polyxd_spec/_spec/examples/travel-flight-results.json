@@ -1,0 +1,128 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "flights",
+    "title": "Flights to Lisbon",
+    "intent": "travel.flights.search"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Table",
+      "key": "flights",
+      "caption": "Flights from London to Lisbon, Fri 3 Oct",
+      "rows": {
+        "path": "/flights"
+      },
+      "columns": [
+        {
+          "key": "depart",
+          "label": "Departs",
+          "path": "depart",
+          "format": {
+            "type": "time"
+          },
+          "sortable": true
+        },
+        {
+          "key": "arrive",
+          "label": "Arrives",
+          "path": "arrive",
+          "format": {
+            "type": "time"
+          },
+          "sortable": true
+        },
+        {
+          "key": "stops",
+          "label": "Stops",
+          "path": "stops",
+          "format": {
+            "type": "number"
+          },
+          "sortable": true,
+          "kind": "number"
+        },
+        {
+          "key": "airline",
+          "label": "Airline",
+          "path": "airline",
+          "sortable": false
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "path": "price",
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          },
+          "sortable": true,
+          "kind": "currency"
+        }
+      ],
+      "rowAction": {
+        "event": {
+          "name": "flight.select",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      },
+      "empty": "none",
+      "sort": {
+        "column": {
+          "path": "/sort/column"
+        },
+        "direction": {
+          "path": "/sort/direction"
+        },
+        "action": {
+          "event": {
+            "name": "flights.sort",
+            "context": {
+              "column": {
+                "path": "/sort/column"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "none",
+      "component": "Status",
+      "kind": "empty",
+      "title": "No flights that day",
+      "message": "Try a day earlier or later."
+    }
+  ],
+  "data": {
+    "flights": [
+      {
+        "id": "f1",
+        "depart": "2026-10-03T07:10:00Z",
+        "arrive": "2026-10-03T09:55:00Z",
+        "stops": 0,
+        "airline": "TAP",
+        "price": 89
+      },
+      {
+        "id": "f2",
+        "depart": "2026-10-03T12:40:00Z",
+        "arrive": "2026-10-03T17:30:00Z",
+        "stops": 1,
+        "airline": "Iberia",
+        "price": 72
+      }
+    ],
+    "sort": {
+      "column": "depart",
+      "direction": "ascending"
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "$schema": "../../schema/direction.schema.json",
+  "name": "calm-finance",
+  "version": "0.1.0",
+  "designSystem": "material3",
+  "profile": {
+    "density": "comfortable",
+    "emphasisBudget": 1,
+    "dataDisplay": "prefer-metrics",
+    "motion": "subtle",
+    "disclosure": "progressive",
+    "freedom": "strict"
+  },
+  "voice": {
+    "guidelines": [
+      "Plain, calm and specific. Say what happens to the user's money.",
+      "No jokes about money."
+    ],
+    "tone": {
+      "formality": "neutral",
+      "energy": "calm",
+      "warmth": "reserved",
+      "humor": "none"
+    },
+    "person": "you",
+    "readingLevel": {
+      "maxGrade": 8
+    },
+    "casing": "sentence",
+    "spelling": "en-GB",
+    "punctuation": {
+      "exclamation": "never",
+      "emoji": "never"
+    },
+    "labels": {
+      "maxWords": 4,
+      "verbFirst": true
+    },
+    "glossary": [
+      {
+        "use": "payment",
+        "insteadOf": [
+          "transaction",
+          "txn"
+        ]
+      },
+      {
+        "use": "send",
+        "insteadOf": [
+          "transfer"
+        ]
+      }
+    ],
+    "avoid": [
+      "simply",
+      "just",
+      "oops",
+      "invalid",
+      "failed"
+    ],
+    "situations": {
+      "empty": "Say what will appear here and how to make it appear.",
+      "error": "Say what happened, that nothing was lost, and what to do next. Never blame the user.",
+      "confirm": "Name the amount, the recipient and whether it can be undone.",
+      "success": "Confirm what happened in one short sentence, with the amount."
+    }
+  },
+  "patterns": {
+    "prefer": [
+      "confirm-destructive",
+      "review-and-submit"
+    ]
+  },
+  "rules": [
+    {
+      "id": "money-moves-in-confirm",
+      "description": "Money only moves from a confirmation",
+      "severity": "error",
+      "rule": {
+        "check": "actionInside",
+        "capabilities": [
+          "transfer.confirm"
+        ],
+        "container": [
+          "Confirm"
+        ]
+      }
+    }
+  ],
+  "exemplars": [
+    {
+      "request": "send Alex the rent",
+      "document": "../money-send-form.json"
+    },
+    {
+      "request": "confirm sending £250 to Alex",
+      "document": "../money-send-confirm.json"
+    }
+  ]
+}

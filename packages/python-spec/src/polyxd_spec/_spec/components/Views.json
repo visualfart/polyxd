@@ -1,0 +1,80 @@
+{
+  "name": "Views",
+  "category": "structure",
+  "summary": "Switch between alternative views of the same subject (tabs).",
+  "props": {
+    "views": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "content"
+        ],
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/Key"
+          },
+          "label": {
+            "$ref": "#/$defs/DynamicString"
+          },
+          "content": {
+            "$ref": "#/$defs/Id"
+          },
+          "count": {
+            "$ref": "#/$defs/Binding",
+            "description": "How many items the view holds, shown beside its label"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "selected": {
+      "$ref": "#/$defs/Binding",
+      "description": "Key of the selected view in host data"
+    },
+    "variant": {
+      "enum": [
+        "tabs",
+        "segmented"
+      ],
+      "default": "tabs",
+      "description": "'tabs' for sections of a record; 'segmented' for switching how the same thing is shown"
+    }
+  },
+  "required": [
+    "views"
+  ],
+  "whenToUse": [
+    "2–6 peer views of the same data (Overview / Transactions / Settings)"
+  ],
+  "whenNotToUse": [
+    "Sequential steps: use Steps",
+    "Filtering one list: use Choice"
+  ],
+  "accessibility": {
+    "role": "tablist / tab / tabpanel",
+    "requirements": [
+      "Each tab has a visible label",
+      "Arrow keys move between tabs"
+    ]
+  },
+  "agent": "Select a view by its label.",
+  "rendering": [
+    "More than 4 views on compact screens become a menu or scrollable tabs",
+    "Counts sit beside their labels and are part of the tab's accessible name"
+  ],
+  "mappings": {
+    "web": "shadcn Tabs",
+    "ios": "Picker(.segmented) switching content, or TabView for top-level",
+    "android": "PrimaryTabRow + content"
+  },
+  "a2ui": "Tabs",
+  "sources": [
+    "WAI-ARIA tabs pattern",
+    "Material 3 tabs"
+  ]
+}

@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "polyxd-spec"
+# Kept equal to @polyxd/spec's version (tests/test_package.py checks).
+version = "0.3.0"
+description = "Polyxd spec: JSON Schemas, the component catalogue and a validator for just-in-time interfaces"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Polyxd" }]
+keywords = ["polyxd", "ui", "json-schema", "generative-ui", "a2ui", "validation"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development :: Libraries",
+  "Typing :: Typed",
+]
+dependencies = ["jsonschema>=4.18"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+polyxd-spec = "polyxd_spec.cli:main"
+
+[project.urls]
+Homepage = "https://polyxd.com"
+Documentation = "https://polyxd.com/docs/"
+Repository = "https://github.com/visualfart/polyxd"
+Issues = "https://github.com/visualfart/polyxd/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/polyxd_spec"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/polyxd_spec", "scripts", "tests", "hatch_build.py", "README.md", "LICENSE", "NOTICE"]
+
+# Before a build inside the repository, copy the spec in from packages/spec (scripts/sync.py).
+# Outside it (building from an sdist), the copies already in the source are used as they are.
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

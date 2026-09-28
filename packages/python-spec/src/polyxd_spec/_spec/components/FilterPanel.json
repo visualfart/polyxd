@@ -1,0 +1,63 @@
+{
+  "name": "FilterPanel",
+  "category": "layout",
+  "summary": "Filters for a list of results, with the result count.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Defaults to 'Filters'"
+    },
+    "children": {
+      "$ref": "#/$defs/ChildList",
+      "description": "The filter inputs (Choice, RangeInput, Toggle, DateInput, TextInput)"
+    },
+    "results": {
+      "$ref": "#/$defs/Id",
+      "description": "The Collection or Table the filters narrow"
+    },
+    "resultCount": {
+      "$ref": "#/$defs/Binding",
+      "description": "Number of results with the current filters, from host data"
+    },
+    "clear": {
+      "$ref": "#/$defs/Action",
+      "description": "Optional action that resets the filters on the host"
+    }
+  },
+  "required": [
+    "children",
+    "results"
+  ],
+  "whenToUse": [
+    "Browsing results people narrow by several attributes",
+    "More than two filters, or filters that take space (ranges, long lists)"
+  ],
+  "whenNotToUse": [
+    "One or two quick filters: put a Choice (chips) above the results",
+    "Filling in information: use Form"
+  ],
+  "accessibility": {
+    "role": "region (filters) plus the results",
+    "requirements": [
+      "The result count is announced politely when it changes",
+      "Each active filter can be removed with a named button ('Remove filter: Desk')"
+    ]
+  },
+  "agent": "Set filter inputs by label; read the result count; remove filters by their Remove buttons.",
+  "rendering": [
+    "Wide: filters in a sidebar beside the results",
+    "Compact: a 'Filters · n' button opens a bottom sheet whose action says 'Show n results'",
+    "Active filters show as removable chips above the results",
+    "Filters apply as they change (no separate Apply on wide)"
+  ],
+  "mappings": {
+    "web": "Sidebar + Sheet (shadcn)",
+    "ios": "List with a filter sheet",
+    "android": "Side sheet / modal bottom sheet"
+  },
+  "a2ui": "Column",
+  "sources": [
+    "Baymard: product list filtering",
+    "NN/g: filters vs facets"
+  ]
+}

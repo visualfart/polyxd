@@ -1,0 +1,93 @@
+{
+  "name": "Status",
+  "category": "feedback",
+  "summary": "Feedback about state: info, success, warning, error, empty or loading.",
+  "props": {
+    "kind": {
+      "enum": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "empty",
+        "loading",
+        "undo"
+      ]
+    },
+    "title": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "message": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "action": {
+      "$ref": "#/$defs/Id",
+      "description": "Optional Action (or ActionBar for a primary and a secondary) to recover or continue, e.g. 'Try again'; for 'undo', the Undo action"
+    },
+    "icon": {
+      "enum": [
+        "lock",
+        "trash",
+        "clock",
+        "tag",
+        "info",
+        "alert",
+        "mail",
+        "shield",
+        "search",
+        "book",
+        "inbox",
+        "check"
+      ],
+      "description": "Optional icon for empty states; the renderer picks one by kind otherwise"
+    },
+    "variant": {
+      "enum": [
+        "default",
+        "inline"
+      ],
+      "default": "default",
+      "description": "'inline' is a notice inside a page (a warning above a record) rather than a block of its own"
+    }
+  },
+  "required": [
+    "kind",
+    "title"
+  ],
+  "whenToUse": [
+    "Results of an action",
+    "Empty collections",
+    "Errors with a way to recover",
+    "Loading states",
+    "'undo': after a reversible action ran, say what happened and offer Undo instead of asking first"
+  ],
+  "whenNotToUse": [
+    "Validation errors on a field: inputs show their own errors",
+    "Confirmation before acting: use Confirm"
+  ],
+  "accessibility": {
+    "role": "status or alert (live region)",
+    "requirements": [
+      "success/info/loading are polite live regions; error is assertive",
+      "Meaning is in text, not only color or icon"
+    ]
+  },
+  "agent": "Reads the title and message; the recovery action is exposed.",
+  "rendering": [
+    "error and warning use color.status.* tokens and an icon",
+    "empty states explain why and what to do next",
+    "loading shows a skeleton when layout is known, otherwise a progress indicator",
+    "'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action",
+    "Empty states may carry an ActionBar: one primary and one secondary action",
+    "'inline' renders a bordered notice with its action on the right"
+  ],
+  "mappings": {
+    "web": "shadcn Alert / Skeleton / Sonner toast",
+    "ios": "ContentUnavailableView / ProgressView / inline Label",
+    "android": "Snackbar / Card with status color / CircularProgressIndicator"
+  },
+  "a2ui": "Text + Icon",
+  "sources": [
+    "Nielsen: visibility of system status; help users recover from errors"
+  ]
+}

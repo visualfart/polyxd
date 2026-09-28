@@ -1,0 +1,115 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "tasks",
+    "title": "Today",
+    "intent": "tasks.today"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "list",
+        "bar"
+      ]
+    },
+    {
+      "id": "list",
+      "component": "Collection",
+      "key": "tasks",
+      "label": "Tasks due today",
+      "items": {
+        "path": "/tasks",
+        "componentId": "task"
+      },
+      "selection": "multiple",
+      "selected": {
+        "path": "/done"
+      },
+      "empty": "none-due"
+    },
+    {
+      "id": "task",
+      "component": "Card",
+      "title": {
+        "path": "title"
+      },
+      "subtitle": {
+        "path": "project"
+      },
+      "badge": {
+        "text": {
+          "path": "priority"
+        },
+        "tone": "warning"
+      },
+      "action": {
+        "event": {
+          "name": "task.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "none-due",
+      "component": "Status",
+      "kind": "empty",
+      "title": "Nothing due today",
+      "message": "Enjoy it, or pull something forward from tomorrow.",
+      "action": "plan"
+    },
+    {
+      "id": "plan",
+      "component": "Action",
+      "label": "Plan tomorrow",
+      "action": {
+        "event": {
+          "name": "tasks.planTomorrow"
+        }
+      }
+    },
+    {
+      "id": "bar",
+      "component": "ActionBar",
+      "children": [
+        "add"
+      ]
+    },
+    {
+      "id": "add",
+      "component": "Action",
+      "key": "add_task",
+      "label": "Add task",
+      "emphasis": "primary",
+      "action": {
+        "event": {
+          "name": "task.create"
+        }
+      }
+    }
+  ],
+  "data": {
+    "tasks": [
+      {
+        "id": "k1",
+        "title": "Send invoice",
+        "project": "Freelance",
+        "priority": "High"
+      },
+      {
+        "id": "k2",
+        "title": "Book dentist",
+        "project": "Personal",
+        "priority": "Normal"
+      }
+    ],
+    "done": []
+  }
+}

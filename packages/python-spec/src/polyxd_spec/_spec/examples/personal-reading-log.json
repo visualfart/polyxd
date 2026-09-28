@@ -1,0 +1,124 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "reading",
+    "title": "Reading list",
+    "intent": "personal.reading.list"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "books",
+        "bar"
+      ]
+    },
+    {
+      "id": "books",
+      "component": "Collection",
+      "key": "books",
+      "label": "Reading now",
+      "items": {
+        "path": "/books",
+        "componentId": "book"
+      },
+      "empty": "empty",
+      "layout": "list"
+    },
+    {
+      "id": "book",
+      "component": "Card",
+      "title": {
+        "path": "title"
+      },
+      "subtitle": {
+        "path": "author"
+      },
+      "action": {
+        "event": {
+          "name": "book.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      },
+      "progress": {
+        "value": {
+          "path": "progress"
+        },
+        "label": {
+          "path": "pages"
+        }
+      }
+    },
+    {
+      "id": "empty",
+      "component": "Status",
+      "kind": "empty",
+      "title": "Nothing on your list yet",
+      "message": "Add a book you're reading, or bring your shelf across from Goodreads.",
+      "icon": "book"
+    },
+    {
+      "id": "bar",
+      "component": "ActionBar",
+      "children": [
+        "add",
+        "import"
+      ]
+    },
+    {
+      "id": "add",
+      "component": "Action",
+      "key": "add_book",
+      "label": "Add a book",
+      "emphasis": "primary",
+      "action": {
+        "event": {
+          "name": "book.create"
+        }
+      }
+    },
+    {
+      "id": "import",
+      "component": "Action",
+      "key": "import",
+      "label": "Import from Goodreads",
+      "action": {
+        "event": {
+          "name": "books.import"
+        }
+      }
+    }
+  ],
+  "data": {
+    "books": [
+      {
+        "id": "b1",
+        "title": "The Design of Everyday Things",
+        "author": "Don Norman",
+        "progress": 0.38,
+        "pages": "120 of 320 pages"
+      },
+      {
+        "id": "b2",
+        "title": "Thinking in Systems",
+        "author": "Donella Meadows",
+        "progress": 0.8,
+        "pages": "148 of 185 pages"
+      },
+      {
+        "id": "b3",
+        "title": "The Craftsman",
+        "author": "Richard Sennett",
+        "progress": 0.05,
+        "pages": "16 of 326 pages"
+      }
+    ]
+  }
+}

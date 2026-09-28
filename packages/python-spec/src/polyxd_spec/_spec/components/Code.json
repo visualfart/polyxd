@@ -1,0 +1,64 @@
+{
+  "name": "Code",
+  "category": "content",
+  "summary": "Code, a command or preformatted text, shown as written and copyable.",
+  "props": {
+    "text": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "The code itself, usually bound to host data (an API key, a command, a snippet)"
+    },
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "What it is, shown above: 'Install', 'Your API key'"
+    },
+    "language": {
+      "type": "string",
+      "description": "A language name for highlighting, when the renderer has it: 'bash', 'json', 'ts'"
+    },
+    "copyable": {
+      "type": "boolean",
+      "default": true,
+      "description": "A Copy control beside it"
+    },
+    "wrap": {
+      "type": "boolean",
+      "default": false,
+      "description": "Wrap long lines instead of scrolling sideways"
+    },
+    "secret": {
+      "$ref": "#/$defs/DynamicBoolean",
+      "default": false,
+      "description": "Masked until revealed: a key shown once"
+    }
+  },
+  "required": ["text"],
+  "whenToUse": [
+    "A command to run, a snippet to paste, an identifier to copy",
+    "Structured text whose spacing matters"
+  ],
+  "whenNotToUse": [
+    "Prose: use Text",
+    "Something the person types: use TextInput"
+  ],
+  "accessibility": {
+    "role": "region named by the label, holding a code element; the copy control is a button named 'Copy <label>'",
+    "requirements": [
+      "Text is real text: selectable and read by screen readers line by line",
+      "Copying is announced ('Copied')",
+      "A secret is masked with the same length, with a 'Show' control"
+    ]
+  },
+  "agent": "Reads the text verbatim; can activate Copy.",
+  "rendering": [
+    "type.mono at type.body.small on color.surface.subtle, with radius.control",
+    "Overflow scrolls sideways unless wrap is set; never clipped",
+    "The copy control sits in the top-right corner and says 'Copied' for two seconds after use"
+  ],
+  "mappings": {
+    "web": "pre > code with a Copy button",
+    "ios": "Text with monospaced design in a rounded rectangle",
+    "android": "Text with FontFamily.Monospace in a Surface"
+  },
+  "a2ui": "Text",
+  "sources": ["WCAG 1.3.1 info and relationships"]
+}

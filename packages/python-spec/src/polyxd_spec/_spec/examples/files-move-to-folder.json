@@ -1,0 +1,245 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "move-files",
+    "title": "Move 3 files",
+    "intent": "files.move"
+  },
+  "root": "drawer",
+  "components": [
+    {
+      "id": "drawer",
+      "component": "Panel",
+      "kind": "drawer",
+      "title": "Move 3 files",
+      "children": [
+        "selected",
+        "folders",
+        "move-note"
+      ],
+      "actions": "move-actions"
+    },
+    {
+      "id": "selected",
+      "component": "Collection",
+      "key": "selected_files",
+      "label": "Files to move",
+      "layout": "list",
+      "items": {
+        "path": "/selection/files",
+        "componentId": "file"
+      }
+    },
+    {
+      "id": "file",
+      "component": "Card",
+      "title": {
+        "path": "name"
+      },
+      "subtitle": {
+        "path": "modified"
+      },
+      "children": [
+        "file-kind",
+        "file-size"
+      ]
+    },
+    {
+      "id": "file-kind",
+      "component": "Tag",
+      "kind": "label",
+      "label": {
+        "path": "kind"
+      }
+    },
+    {
+      "id": "file-size",
+      "component": "Tag",
+      "kind": "label",
+      "label": {
+        "path": "size"
+      }
+    },
+    {
+      "id": "folders",
+      "component": "Tree",
+      "key": "folder",
+      "label": "Move to",
+      "items": {
+        "path": "/folders"
+      },
+      "labelPath": "name",
+      "childrenPath": "folders",
+      "valuePath": "id",
+      "detailPath": "count",
+      "selection": "single",
+      "selected": {
+        "path": "/draft/folder"
+      },
+      "expanded": {
+        "path": "/draft/expanded"
+      }
+    },
+    {
+      "id": "move-note",
+      "component": "Text",
+      "variant": "supporting",
+      "text": "Sharing settings and links stay as they are."
+    },
+    {
+      "id": "move-actions",
+      "component": "ActionBar",
+      "children": [
+        "move",
+        "cancel"
+      ]
+    },
+    {
+      "id": "move",
+      "component": "Action",
+      "label": "Move 3 files",
+      "emphasis": "primary",
+      "action": {
+        "event": {
+          "name": "files.move",
+          "context": {
+            "files": {
+              "path": "/selection/ids"
+            },
+            "folder": {
+              "path": "/draft/folder"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "cancel",
+      "component": "Action",
+      "label": "Cancel",
+      "emphasis": "tertiary",
+      "action": {
+        "event": {
+          "name": "ui.dismiss"
+        }
+      }
+    }
+  ],
+  "data": {
+    "selection": {
+      "ids": [
+        "file_8213",
+        "file_8214",
+        "file_8219"
+      ],
+      "files": [
+        {
+          "id": "file_8213",
+          "name": "Northwind invoice September 2026.pdf",
+          "kind": "PDF",
+          "size": "1.2 MB",
+          "modified": "Edited yesterday · in Downloads"
+        },
+        {
+          "id": "file_8214",
+          "name": "Northwind purchase order PO-4471.pdf",
+          "kind": "PDF",
+          "size": "640 KB",
+          "modified": "Edited on 22 September · in Downloads"
+        },
+        {
+          "id": "file_8219",
+          "name": "Northwind statement Q3.xlsx",
+          "kind": "Spreadsheet",
+          "size": "98 KB",
+          "modified": "Edited 2 hours ago · in Downloads"
+        }
+      ]
+    },
+    "folders": [
+      {
+        "id": "fld_clients",
+        "name": "Clients",
+        "count": 148,
+        "folders": [
+          {
+            "id": "fld_northwind",
+            "name": "Northwind Traders",
+            "count": 37,
+            "folders": [
+              {
+                "id": "fld_northwind_2025",
+                "name": "2025",
+                "count": 22,
+                "folders": []
+              },
+              {
+                "id": "fld_northwind_2026",
+                "name": "2026",
+                "count": 15,
+                "folders": []
+              }
+            ]
+          },
+          {
+            "id": "fld_alderton",
+            "name": "Alderton & Co",
+            "count": 41,
+            "folders": []
+          },
+          {
+            "id": "fld_bramble",
+            "name": "Bramble Bakery",
+            "count": 26,
+            "folders": []
+          }
+        ]
+      },
+      {
+        "id": "fld_finance",
+        "name": "Finance",
+        "count": 212,
+        "folders": [
+          {
+            "id": "fld_invoices",
+            "name": "Invoices",
+            "count": 96,
+            "folders": []
+          },
+          {
+            "id": "fld_receipts",
+            "name": "Receipts",
+            "count": 88,
+            "folders": []
+          },
+          {
+            "id": "fld_statements",
+            "name": "Statements",
+            "count": 28,
+            "folders": []
+          }
+        ]
+      },
+      {
+        "id": "fld_shared",
+        "name": "Shared with me",
+        "count": 19,
+        "folders": []
+      },
+      {
+        "id": "fld_archive",
+        "name": "Archive",
+        "count": 1043,
+        "folders": []
+      }
+    ],
+    "draft": {
+      "folder": "fld_northwind_2026",
+      "expanded": [
+        "fld_clients",
+        "fld_northwind"
+      ]
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "notifications",
+    "title": "Notifications",
+    "intent": "settings.notifications"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Form",
+      "layout": "horizontal",
+      "children": [
+        "channels",
+        "quiet"
+      ],
+      "submit": {
+        "label": "Save notification settings",
+        "action": {
+          "event": {
+            "name": "notifications.save",
+            "context": {
+              "push": {
+                "path": "/prefs/push"
+              },
+              "email": {
+                "path": "/prefs/email"
+              },
+              "quiet": {
+                "path": "/prefs/quiet"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "channels",
+      "component": "Section",
+      "title": "How we contact you",
+      "children": [
+        "push",
+        "email"
+      ]
+    },
+    {
+      "id": "push",
+      "component": "Toggle",
+      "key": "push",
+      "label": "Push notifications",
+      "description": "Payments, security alerts",
+      "value": {
+        "path": "/prefs/push"
+      },
+      "action": {
+        "event": {
+          "name": "prefs.set",
+          "context": {
+            "push": {
+              "path": "/prefs/push"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "email",
+      "component": "Toggle",
+      "key": "email",
+      "label": "Email summaries",
+      "description": "Weekly, on Mondays",
+      "value": {
+        "path": "/prefs/email"
+      },
+      "action": {
+        "event": {
+          "name": "prefs.set",
+          "context": {
+            "email": {
+              "path": "/prefs/email"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "quiet",
+      "component": "Section",
+      "title": "Quiet hours",
+      "children": [
+        "quiet-toggle",
+        "quiet-note"
+      ]
+    },
+    {
+      "id": "quiet-toggle",
+      "component": "Toggle",
+      "key": "quiet_hours",
+      "label": "Pause non-urgent notifications 22:00–07:00",
+      "value": {
+        "path": "/prefs/quiet"
+      },
+      "action": {
+        "event": {
+          "name": "prefs.set",
+          "context": {
+            "quiet": {
+              "path": "/prefs/quiet"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "quiet-note",
+      "component": "Text",
+      "variant": "supporting",
+      "text": "Security alerts always come through."
+    }
+  ],
+  "data": {
+    "prefs": {
+      "push": true,
+      "email": false,
+      "quiet": true
+    }
+  }
+}

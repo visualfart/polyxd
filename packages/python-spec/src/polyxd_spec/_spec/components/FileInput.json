@@ -1,0 +1,66 @@
+{
+  "name": "FileInput",
+  "category": "input",
+  "summary": "Choose or drop files to attach or upload.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "The chosen files in host data: a list of { name, size, type, ref }, written by the renderer; the host uploads them"
+    },
+    "accept": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Allowed types as extensions or MIME types: ['.pdf', 'image/*']"
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false
+    },
+    "maxSize": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Largest file, in bytes; the renderer refuses larger ones with a message"
+    },
+    "help": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "What to attach and why; the accepted types and size are said by the renderer"
+    },
+    "required": {
+      "$ref": "#/$defs/DynamicBoolean",
+      "default": false
+    }
+  },
+  "required": ["label", "value"],
+  "whenToUse": [
+    "Attaching a document, a receipt, a photo",
+    "Importing a file the product reads"
+  ],
+  "whenNotToUse": [
+    "Taking a photo with the camera: the host's own flow",
+    "Pasting text: use TextInput"
+  ],
+  "accessibility": {
+    "role": "a native file input, labelled; the drop zone is a large target for the same input",
+    "requirements": [
+      "Keyboard opens the chooser; drag-and-drop is an addition, never the only way",
+      "Chosen files are listed as text with a 'Remove <name>' button each",
+      "Type and size limits are said before choosing and in any refusal"
+    ]
+  },
+  "agent": "Reads the label and limits; attaches files through the host.",
+  "rendering": [
+    "A dashed drop zone on color.surface.subtle with radius.control, the chooser control inside it",
+    "Each chosen file shows name, size and a remove control; a progress bar while the host uploads",
+    "Refusals use color.status.danger text under the zone"
+  ],
+  "mappings": {
+    "web": "shadcn Input type=file with a drop zone",
+    "ios": "fileImporter / PhotosPicker",
+    "android": "ActivityResultContracts.GetContent"
+  },
+  "a2ui": "Custom (no Basic equivalent)",
+  "sources": ["WCAG 2.5.7 dragging movements"]
+}

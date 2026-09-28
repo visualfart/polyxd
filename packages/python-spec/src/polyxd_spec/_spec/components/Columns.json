@@ -1,0 +1,34 @@
+{
+  "name": "Columns",
+  "category": "structure",
+  "summary": "Side-by-side columns that collapse to a stack on compact layouts: a main column with a narrower one beside it, or equal halves.",
+  "props": {
+    "children": { "$ref": "#/$defs/ChildList", "description": "One component per column, in reading order" },
+    "layout": {
+      "enum": ["two-thirds", "one-third", "halves", "thirds", "sidebar-start", "sidebar-end"],
+      "default": "two-thirds",
+      "description": "'two-thirds' is a wide first column (GOV.UK's default); 'one-third' the reverse; 'halves' and 'thirds' equal; 'sidebar-*' a fixed 18rem column at that edge"
+    },
+    "collapse": { "enum": ["compact", "medium", "never"], "default": "compact", "description": "The width below which the columns stack" },
+    "align": { "enum": ["start", "center", "stretch"], "default": "stretch" }
+  },
+  "required": ["children"],
+  "whenToUse": [
+    "A form with help beside it; a record with a summary beside it; a list beside a preview",
+    "Anywhere a wide screen should use its width without the compact screen paying for it"
+  ],
+  "whenNotToUse": ["Metrics in a row: use Group with arrangement 'inline'", "A master–detail pair that keeps both alive: use Split"],
+  "accessibility": {
+    "role": "none (layout only)",
+    "requirements": ["Reading order is the children's order at every width", "Collapsing never reorders content"]
+  },
+  "agent": "Invisible: reads the children in order.",
+  "rendering": [
+    "Gutter space.inline.loose between columns; stacked with space.stack.loose",
+    "Column widths follow the layout; 'sidebar-*' columns never shrink below 16rem",
+    "Collapses at the surface's width, not the viewport's"
+  ],
+  "mappings": { "web": "GOV.UK grid row, Polaris Layout, Carbon Grid, Bootstrap row/col", "ios": "HStack with .layoutPriority", "android": "Row with weights" },
+  "a2ui": "Row",
+  "sources": ["GOV.UK grid", "Polaris Layout"]
+}

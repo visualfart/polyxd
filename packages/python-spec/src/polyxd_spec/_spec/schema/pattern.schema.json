@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polyxd.com/schema/0.3/pattern.schema.json",
+  "title": "Polyxd pattern",
+  "description": "A known arrangement of components for a task. Patterns are where recognition lives: the same task always takes the same shape.",
+  "type": "object",
+  "required": ["id", "name", "summary", "whenToUse", "structure", "checks", "journey"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "name": { "type": "string" },
+    "summary": { "type": "string" },
+    "whenToUse": { "type": "array", "items": { "type": "string" } },
+    "whenNotToUse": { "type": "array", "items": { "type": "string" } },
+    "structure": { "type": "array", "items": { "type": "string" }, "description": "The arrangement, in reading order" },
+    "checks": { "type": "array", "items": { "$ref": "check.schema.json#/$defs/Rule" } },
+    "journey": {
+      "type": "object",
+      "description": "Task semantics for humans and agents: what the user is doing, what must happen, and when it's done",
+      "required": ["goal", "checkpoints", "done"],
+      "properties": {
+        "goal": { "type": "string" },
+        "checkpoints": { "type": "array", "items": { "type": "string" } },
+        "done": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "agent": { "type": "string", "description": "How an agent completes the pattern through the accessibility tree" },
+    "examples": { "type": "array", "items": { "type": "string" } },
+    "sources": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

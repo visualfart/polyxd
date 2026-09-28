@@ -1,0 +1,179 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "harbourline-shell",
+    "title": "Harbourline",
+    "intent": "product.shell",
+    "kind": "shell",
+    "origin": "authored"
+  },
+  "root": "frame",
+  "components": [
+    {
+      "id": "frame",
+      "component": "Frame",
+      "banner": "banner",
+      "header": "bar",
+      "navigation": "nav",
+      "main": "outlet",
+      "aside": "aside",
+      "footer": "footer"
+    },
+    {
+      "id": "banner",
+      "component": "Status",
+      "kind": "info",
+      "variant": "inline",
+      "title": { "path": "/notice/title" },
+      "message": { "path": "/notice/message" }
+    },
+    {
+      "id": "bar",
+      "component": "AppBar",
+      "title": "Harbourline",
+      "search": "search",
+      "actions": "bar-actions",
+      "account": "me"
+    },
+    {
+      "id": "search",
+      "component": "TextInput",
+      "key": "search",
+      "kind": "search",
+      "label": "Search",
+      "placeholder": "Shipments, customers, invoices",
+      "value": { "path": "/search/query" }
+    },
+    {
+      "id": "bar-actions",
+      "component": "ActionBar",
+      "children": ["notifications", "help"]
+    },
+    {
+      "id": "notifications",
+      "component": "Action",
+      "key": "notifications",
+      "label": "Notifications",
+      "emphasis": "tertiary",
+      "action": { "event": { "name": "notifications.open" } }
+    },
+    {
+      "id": "help",
+      "component": "Action",
+      "key": "help",
+      "label": "Help",
+      "emphasis": "tertiary",
+      "action": { "event": { "name": "help.open", "context": { "topic": "home" } } }
+    },
+    {
+      "id": "me",
+      "component": "Identity",
+      "key": "account",
+      "name": { "path": "/account/name" },
+      "detail": { "path": "/account/email" },
+      "image": { "path": "/account/avatar" },
+      "size": "small",
+      "action": { "event": { "name": "account.open", "context": { "id": { "path": "/account/id" } } } }
+    },
+    {
+      "id": "nav",
+      "component": "Navigation",
+      "label": "Main",
+      "kind": "main",
+      "placement": "auto",
+      "current": { "path": "/nav/current" },
+      "items": [
+        { "key": "home", "label": "Home", "icon": "home", "action": { "event": { "name": "nav.go", "context": { "to": "home" } } } },
+        { "key": "shipments", "label": "Shipments", "icon": "orders", "badge": { "path": "/counts/shipmentsDue" }, "action": { "event": { "name": "nav.go", "context": { "to": "shipments" } } } },
+        { "key": "customers", "label": "Customers", "icon": "customers", "action": { "event": { "name": "nav.go", "context": { "to": "customers" } } } },
+        { "key": "invoices", "label": "Invoices", "icon": "card", "badge": { "path": "/counts/invoicesOverdue" }, "action": { "event": { "name": "nav.go", "context": { "to": "invoices" } } } },
+        { "key": "settings", "label": "Settings", "icon": "settings", "action": { "event": { "name": "nav.go", "context": { "to": "settings" } } } }
+      ]
+    },
+    {
+      "id": "outlet",
+      "component": "Outlet",
+      "label": "Current screen",
+      "loading": "loading"
+    },
+    {
+      "id": "loading",
+      "component": "Status",
+      "kind": "loading",
+      "title": "Loading the screen"
+    },
+    {
+      "id": "aside",
+      "component": "Group",
+      "label": "Today",
+      "children": ["logo", "sailing"]
+    },
+    {
+      "id": "logo",
+      "component": "Custom",
+      "name": "brand.logo",
+      "label": "Harbourline",
+      "props": { "variant": "mark", "season": { "path": "/brand/season" } },
+      "fallback": "logo-image"
+    },
+    {
+      "id": "logo-image",
+      "component": "Media",
+      "src": { "path": "/brand/logo" },
+      "alt": "Harbourline",
+      "aspect": "square"
+    },
+    {
+      "id": "sailing",
+      "component": "Status",
+      "kind": "info",
+      "variant": "inline",
+      "icon": "clock",
+      "title": { "path": "/nextSailing/title" },
+      "message": { "path": "/nextSailing/message" }
+    },
+    {
+      "id": "footer",
+      "component": "Footer",
+      "groups": [
+        {
+          "key": "help",
+          "label": "Help",
+          "items": [
+            { "key": "docs", "label": "Documentation", "action": { "event": { "name": "help.open", "context": { "topic": "docs" } } } },
+            { "key": "support", "label": "Contact support", "action": { "event": { "name": "help.open", "context": { "topic": "support" } } } },
+            { "key": "status", "label": "Service status", "action": { "event": { "name": "help.open", "context": { "topic": "status" } } } }
+          ]
+        },
+        {
+          "key": "legal",
+          "label": "Legal",
+          "items": [
+            { "key": "privacy", "label": "Privacy", "action": { "event": { "name": "help.open", "context": { "topic": "privacy" } } } },
+            { "key": "terms", "label": "Terms", "action": { "event": { "name": "help.open", "context": { "topic": "terms" } } } }
+          ]
+        }
+      ],
+      "legal": { "path": "/legal" },
+      "aside": "release"
+    },
+    {
+      "id": "release",
+      "component": "Tag",
+      "label": { "path": "/release" },
+      "tone": "neutral"
+    }
+  ],
+  "data": {
+    "notice": { "title": "Planned maintenance on Sunday", "message": "Harbourline is read-only from 02:00 to 03:00 UTC on 5 October." },
+    "search": { "query": "" },
+    "account": { "id": "u_204", "name": "Priya Nair", "email": "priya@northquay.example", "avatar": "img_priya" },
+    "nav": { "current": "shipments" },
+    "counts": { "shipmentsDue": 4, "invoicesOverdue": 2 },
+    "brand": { "logo": "img_harbourline_mark", "season": "autumn" },
+    "nextSailing": { "title": "Next sailing: 14:30", "message": "MV Northquay to Rotterdam, 3 shipments booked." },
+    "legal": "© 2026 Harbourline Ltd. Registered in England, no. 09876543.",
+    "release": "Release 12.4"
+  }
+}

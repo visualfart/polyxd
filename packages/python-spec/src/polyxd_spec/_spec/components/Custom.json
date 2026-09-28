@@ -1,0 +1,38 @@
+{
+  "name": "Custom",
+  "category": "shell",
+  "shell": true,
+  "summary": "A slot for a component the host implements itself: a logo, a brand moment, a bespoke widget. The document names it and gives it props; the product renders it, and a fallback stands in when it can't.",
+  "props": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)+$",
+      "description": "The host's name for the component, namespaced: 'brand.logo', 'store.map'"
+    },
+    "props": { "type": "object", "description": "What the host component takes; values may be bindings", "additionalProperties": true },
+    "fallback": { "$ref": "#/$defs/Id", "description": "What renders when the host has no component of that name: a Text, a Media, a Status. Required, so the document stands on its own" },
+    "label": { "$ref": "#/$defs/DynamicString", "description": "An accessible name for the slot when the host component is decorative or complex" }
+  },
+  "required": ["name", "fallback"],
+  "whenToUse": [
+    "The parts of a product that are truly its own: a logo, an illustration system, a map, a chart type the spec doesn't have",
+    "Only in authored documents: a shell or a screen a person wrote for that product"
+  ],
+  "whenNotToUse": [
+    "Anything a spec component can express: a Custom is invisible to the verifier beyond its fallback",
+    "In a generated document: a generator can't know a host's components (the validator refuses it)"
+  ],
+  "accessibility": {
+    "role": "whatever the host component provides; the fallback carries its own",
+    "requirements": ["The host component is responsible for its own accessibility; the verifier audits the rendered result", "A decorative Custom is hidden from assistive tech; a meaningful one has a name"]
+  },
+  "agent": "Reads the host component if it exposes a role and name; otherwise reads the fallback.",
+  "rendering": [
+    "The renderer looks the name up in the host's registry (the same one that overrides components); found, it renders it with the resolved props",
+    "Not found, it renders the fallback and notes the missing name in development",
+    "Never renders the raw props"
+  ],
+  "mappings": { "web": "the host's own component", "ios": "the host's own view", "android": "the host's own composable" },
+  "a2ui": "custom",
+  "sources": ["Server-driven UI practice: escape hatches with fallbacks"]
+}

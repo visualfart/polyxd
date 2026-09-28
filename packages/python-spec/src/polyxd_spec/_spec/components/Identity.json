@@ -1,0 +1,91 @@
+{
+  "name": "Identity",
+  "category": "content",
+  "summary": "A person, team or organisation: picture, name and details, or several of them together.",
+  "props": {
+    "name": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Always bound to host data: a name is never invented"
+    },
+    "detail": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "One line under the name: a role, an email, a team, a status"
+    },
+    "image": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "A media reference from host data, resolved by the host as Media's is; initials from the name are shown without one"
+    },
+    "kind": {
+      "enum": ["person", "team", "organization"],
+      "default": "person",
+      "description": "A person's picture is round; a team's or organisation's is square"
+    },
+    "size": {
+      "enum": ["small", "default", "large"],
+      "default": "default"
+    },
+    "action": {
+      "$ref": "#/$defs/Action",
+      "description": "Activating the identity as a whole, e.g. open the person's record"
+    },
+    "group": {
+      "type": "object",
+      "required": ["path", "namePath"],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/Path",
+          "description": "A list of people in host data, shown as overlapping pictures with a '+N' for the rest"
+        },
+        "namePath": {
+          "$ref": "#/$defs/Path",
+          "description": "Relative to each entry"
+        },
+        "imagePath": {
+          "$ref": "#/$defs/Path",
+          "description": "Relative to each entry"
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8,
+          "default": 4,
+          "description": "Pictures shown before '+N'"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Several identities as one element ('Rhea, Tom and 3 others'). name is then the group's accessible summary"
+    }
+  },
+  "required": ["name"],
+  "whenToUse": [
+    "Who something belongs to, was sent by or is assigned to",
+    "The recipient on a payment, the owner on a record, the members on a team",
+    "A list of people where the face helps recognition"
+  ],
+  "whenNotToUse": [
+    "Choosing a person from a list: use Choice with avatarPath",
+    "A person's full record: use Card or DetailList"
+  ],
+  "accessibility": {
+    "role": "group named by the name; the picture is decorative and the name is text",
+    "requirements": [
+      "The name is real text, never only an image or initials",
+      "A group's accessible name lists the first names and how many more",
+      "With an action, the whole element is one button or link named by the name"
+    ]
+  },
+  "agent": "Reads the name and detail; a group exposes every member's name.",
+  "rendering": [
+    "Initials come from the name's first letters, on a neutral surface with color.text.default; a pack may derive a stable colour from the name",
+    "Sizes: small 24px, default 40px, large 64px; the name uses type.body.default or type.heading.small for large",
+    "A group overlaps pictures by a quarter, with a '+N' tag for the rest",
+    "Images are never stretched; missing images fall back to initials, never to a broken image"
+  ],
+  "mappings": {
+    "web": "shadcn Avatar",
+    "ios": "AsyncImage in a Circle + Text",
+    "android": "AsyncImage with CircleShape + Text"
+  },
+  "a2ui": "Row of Image + Text",
+  "sources": ["Recognition over recall"]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Action",
+  "category": "action",
+  "summary": "A button that triggers a host capability.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Verb-first label saying what happens ('Send £20', not 'OK')"
+    },
+    "action": {
+      "$ref": "#/$defs/Action"
+    },
+    "emphasis": {
+      "enum": [
+        "primary",
+        "secondary",
+        "tertiary"
+      ],
+      "default": "secondary"
+    },
+    "tone": {
+      "enum": [
+        "default",
+        "danger"
+      ],
+      "default": "default"
+    },
+    "disabled": {
+      "$ref": "#/$defs/DynamicBoolean"
+    },
+    "description": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "A second line under the label saying what the action does, for menu-like actions"
+    },
+    "copy": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "For the renderer action ui.copy: the text put on the clipboard; otherwise the action context's 'text' is copied"
+    },
+    "shortcut": {
+      "type": "string",
+      "pattern": "^((mod|ctrl|alt|shift)\\+){0,3}([a-z0-9]|enter|escape|space|tab|backspace|delete|arrowup|arrowdown|arrowleft|arrowright|home|end|f[1-9]|f1[0-2]|slash|comma|period)$",
+      "description": "Keyboard shortcut that triggers the action while the surface has focus, e.g. \"mod+enter\" or \"shift+d\". 'mod' is Command on Apple platforms and Control elsewhere. The renderer shows the hint beside the label and never binds it outside the surface."
+    }
+  },
+  "required": [
+    "label",
+    "action"
+  ],
+  "whenToUse": [
+    "Anything the user can do that isn't typing or choosing"
+  ],
+  "whenNotToUse": [
+    "Navigating between views: use Views",
+    "Confirming something destructive: wrap in Confirm"
+  ],
+  "accessibility": {
+    "role": "button",
+    "requirements": [
+      "Label describes the outcome",
+      "Target at least size.target.min",
+      "Disabled actions explain why nearby",
+      "A shortcut is a hint, never the only way: the button itself stays clickable and focusable"
+    ]
+  },
+  "agent": "Activate by label.",
+  "rendering": [
+    "At most one primary action visible at a time",
+    "danger tone uses color.action.danger.*",
+    "'description' sits under the label in type.body.small, muted; the button's accessible description",
+    "ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely",
+    "'shortcut' shows as a keyboard hint (kbd) beside the label, with mod written as ⌘ or Ctrl for the platform; it fires only while focus is inside the surface, never over the host page, and never on a disabled action"
+  ],
+  "mappings": {
+    "web": "shadcn Button (default / secondary / ghost / destructive)",
+    "ios": "Button with .borderedProminent / .bordered / .borderless; role: .destructive",
+    "android": "Button / FilledTonalButton / OutlinedButton / TextButton"
+  },
+  "a2ui": "Button",
+  "sources": [
+    "Fitts's law",
+    "Material 3 button hierarchy"
+  ]
+}
