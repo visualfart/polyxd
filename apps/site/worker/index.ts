@@ -5,6 +5,8 @@
  */
 import type { LiveEnv } from "../../demos/server/live.ts";
 
+const MCP_REGISTRY_AUTH = "v=MCPv1; k=ed25519; p=GVC7yJA/uF9BRXCxBfCBN+0BZXehPACU4rTI6cUtF4w=";
+
 interface Env extends LiveEnv {
   ASSETS: Fetcher;
   WAITLIST: KVNamespace;
@@ -58,6 +60,9 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     if (url.pathname === "/api/waitlist") return waitlist(request, env);
+    // Proof for the MCP Registry that we control polyxd.com (the server is listed as com.polyxd/mcp).
+    // The line is the public half of an Ed25519 key; the private half stays with the owner.
+    if (url.pathname === "/.well-known/mcp-registry-auth") return new Response(MCP_REGISTRY_AUTH, { headers: { "content-type": "text/plain; charset=utf-8" } });
     if (url.pathname.startsWith("/demos/api/")) return demosApi(request, env, ctx);
     if (url.hostname === "www.polyxd.com") return Response.redirect(`https://polyxd.com${url.pathname}${url.search}`, 301);
     // Studio's sign-up links to /privacy and /terms without the slash; send them to the pages for good.
