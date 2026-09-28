@@ -13,7 +13,7 @@ const CAN_MANAGE_INGEST = new Set(["owner", "engineer", "design-system", "produc
 const ROLES: [string, string][] = [["design-system", "Design system: tokens, components, rules, releases"], ["designer", "Designer: direction, reviews, exemplars"], ["product", "Product: capabilities, journeys, insights"], ["engineer", "Engineer: components, capabilities, integrations"], ["viewer", "Viewer: everything, read only"]];
 
 export function Team({ ws }: { ws: Ws }) {
-  const { toast } = useSession();
+  const { toast, me } = useSession();
   const [d, setD] = useState<Detail | null>(null);
   const [keys, setKeys] = useState<Key[]>([]);
   const [inviting, setInviting] = useState(false);
@@ -59,16 +59,26 @@ export function Team({ ws }: { ws: Ws }) {
     setNewKey(r.key);
     load();
   };
+  const act = async (method: string, path: string, done: string) => {
+    try {
+      await api(method, `/api/w/${ws.slug}/${path}`);
+      toast(done);
+      load();
+    } catch (e) {
+      toast((e as Error).message, "bad");
+    }
+  };
+  const canInvite = ws.role === "owner" || ws.role === "design-system";
   if (!d) return null;
   return (
     <Page crumbs={[ws.name, "Workspace", "Team"]} title="Team" lede={`${d.members.length} people · ${d.invites.length} invite${d.invites.length === 1 ? "" : "s"} pending`} actions={<button type="button" className="btn primary" onClick={() => setInviting(true)}>Invite people</button>}>
       <div className="split">
         <div className="grow" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <table>
-            <thead><tr><th>Person</th><th>Role</th><th>Joined</th></tr></thead>
+            <thead><tr><th>Person</th><th>Role</th><th>Joined</th><th /></tr></thead>
             <tbody>
-              {d.members.map((m) => <tr key={m.id}><td><b>{m.name || m.email}</b><div className="small muted">{m.email}</div></td><td>{m.role}</td><td className="small muted">{new Date(m.created_at).toLocaleDateString("en-GB")}</td></tr>)}
-              {d.invites.map((i) => <tr key={i.id}><td><b>{i.email}</b><div className="small muted">invited</div></td><td>{i.role}</td><td className="small muted">expires {new Date(i.expires_at).toLocaleDateString("en-GB")}</td></tr>)}
+              {d.members.map((m) => <tr key={m.id}><td><b>{m.name || m.email}</b><div className="small muted">{m.email}</div></td><td>{m.role}</td><td className="small muted">{new Date(m.created_at).toLocaleDateString("en-GB")}</td><td style={{ textAlign: "right" }}>{ws.role === "owner" && m.id !== me.user?.id && <button type="button" className="btn ghost sm" onClick={() => act("DELETE", `members/${m.id}`, `${m.name || m.email} is out of ${ws.name}`)}>Remove</button>}</td></tr>)}
+              {d.invites.map((i) => <tr key={i.id}><td><b>{i.email}</b><div className="small muted">invited</div></td><td>{i.role}</td><td className="small muted">expires {new Date(i.expires_at).toLocaleDateString("en-GB")}</td><td style={{ textAlign: "right" }}>{canInvite && <button type="button" className="btn ghost sm" onClick={() => act("DELETE", `invites/${i.id}`, `The invite to ${i.email} is withdrawn`)}>Withdraw</button>}</td></tr>)}
             </tbody>
           </table>
           <div className="card">

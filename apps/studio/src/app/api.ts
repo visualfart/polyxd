@@ -20,16 +20,54 @@ export async function api<T = unknown>(method: string, path: string, body?: unkn
   const r = await fetch(path, init);
   const text = await r.text();
   const data = text ? JSON.parse(text) : {};
+  // A plan's limit, wherever it was hit: the shell shows the upgrade dialog (App.tsx), and the caller still gets the error.
+  if (r.status === 402) window.dispatchEvent(new CustomEvent<PlanLimitError>(PLAN_LIMIT_EVENT, { detail: { error: data.error ?? "Your plan's limit", ...data } }));
   if (!r.ok) throw new ApiError(r.status, data.error ?? `${r.status} ${r.statusText}`, data);
   return data as T;
 }
 
+export const PLAN_LIMIT_EVENT = "studio:plan-limit";
+/** The Worker's 402: what ran out, on which plan (src/worker/plans.ts). */
+export interface PlanLimitError {
+  error: string;
+  code?: "plan_limit" | "over_quota";
+  limit?: string;
+  plan?: string;
+  current?: number;
+  max?: number | null;
+}
+
 export interface Me {
   user: { id: string; email: string; name: string } | null;
-  workspaces: { id: string; slug: string; name: string; role: string }[];
+  workspaces: { id: string; slug: string; name: string; role: string; plan?: string }[];
   signIn?: { google: boolean; emailVerification: boolean };
   /** Present only when the Worker has a PostHog key: the project's public key and PostHog's app for its region. */
   analytics?: { key: string; ui: string };
+  /** Whether this Studio has plans (the hosted one). A self-hosted Studio has no limits and no Billing page. */
+  billing?: boolean;
+}
+
+type Limit = number | null;
+export interface Billing {
+  enabled: true;
+  plan: "free" | "pro" | "team" | "enterprise";
+  status: string | null;
+  interval: "month" | "year" | null;
+  seats: number | null;
+  periodEnd: string | null;
+  subscribed: boolean;
+  customer: boolean;
+  limits: { workspaces: Limit; editors: Limit; designSystems: Limit; directions: Limit; publishedScreens: Limit; fetches: Limit; history: Limit; privateMcp: boolean; approvals: boolean; sharedLibraries: boolean };
+  usage: { editors: number; pendingEditors: number; viewers: number; designSystems: number; directions: number; publishedScreens: number; fetches: number };
+  period: string;
+  fetchesPercent: number | null;
+  overQuotaSince: string | null;
+  lockedFrom: string | null;
+  locked: boolean;
+  prices: { pro: { month: number; year: number }; team: { month: number; year: number } };
+  founding: boolean;
+  checkout: boolean;
+  canManage: boolean;
 }
 
 export interface Scan {

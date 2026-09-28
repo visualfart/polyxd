@@ -1,6 +1,6 @@
 import { createContext, lazy, Suspense, useContext, useEffect, useState, type ReactNode } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useNavigate, useParams } from "react-router-dom";
-import { api, type Me } from "./api.ts";
+import { api, PLAN_LIMIT_EVENT, type Me, type PlanLimitError } from "./api.ts";
 import { startAnalytics, stopAnalytics } from "./analytics.ts";
 import { SignIn } from "./pages/SignIn.tsx";
 import { Workspaces } from "./pages/Workspaces.tsx";
@@ -14,6 +14,7 @@ import { Components } from "./pages/Components.tsx";
 import { Rules } from "./pages/Rules.tsx";
 import { Team } from "./pages/Team.tsx";
 import { Invite } from "./pages/Invite.tsx";
+import { Billing } from "./pages/Billing.tsx";
 import { Mark, StudioLockup } from "./mark.tsx";
 // The screen pages carry the renderer, the schema and the spec's examples; they load when opened.
 const Screens = lazy(() => import("./pages/Screens.tsx").then((m) => ({ default: m.Screens })));
@@ -81,7 +82,7 @@ const NAV: { group?: string; items: { to: string; label: string }[] }[] = [
   { group: "Foundations", items: [{ to: "design-systems", label: "Design systems" }, { to: "components", label: "Components" }] },
   { group: "Direction", items: [{ to: "directions", label: "Directions" }, { to: "rules", label: "Rules" }] },
   { group: "Product", items: [{ to: "screens", label: "Screens" }, { to: "insights", label: "Insights" }] },
-  { group: "Workspace", items: [{ to: "team", label: "Team" }] },
+  { group: "Workspace", items: [{ to: "team", label: "Team" }, { to: "billing", label: "Billing" }] },
 ];
 
 function Shell() {
@@ -106,7 +107,8 @@ function Shell() {
           {NAV.map((g, i) => (
             <div key={i}>
               {g.group && <div className="nav-group">{g.group}</div>}
-              {g.items.map((it) => (
+              {/* Billing only where there are plans: a self-hosted Studio has none. */}
+              {g.items.filter((it) => it.to !== "billing" || me.billing).map((it) => (
                 <NavLink key={it.to} to={`/w/${slug}/${it.to}`} end={it.to === ""}>
                   {it.label}
                 </NavLink>
@@ -145,10 +147,39 @@ function Shell() {
           <Route path="insights" element={<Suspense fallback={null}><Insights ws={ws} /></Suspense>} />
           <Route path="insights/:intent" element={<Suspense fallback={null}><InsightDetail ws={ws} /></Suspense>} />
           <Route path="team" element={<Team ws={ws} />} />
+          <Route path="billing" element={<Billing ws={ws} />} />
           <Route path="*" element={<div className="empty"><h2>That page isn't here</h2><p>The link may be from another workspace.</p></div>} />
         </Routes>
       </main>
+      <UpgradeDialog slug={slug!} />
     </div>
+  );
+}
+
+/** Shown on any 402 from the Worker: what ran out, and the way to more. Viewers are always free. */
+function UpgradeDialog({ slug }: { slug: string }) {
+  const [hit, setHit] = useState<PlanLimitError | null>(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const on = (e: Event) => setHit((e as CustomEvent<PlanLimitError>).detail);
+    window.addEventListener(PLAN_LIMIT_EVENT, on);
+    return () => window.removeEventListener(PLAN_LIMIT_EVENT, on);
+  }, []);
+  if (!hit) return null;
+  const locked = hit.code === "over_quota";
+  return (
+    <>
+      <div className="drawer-scrim" onClick={() => setHit(null)} />
+      <div className="dialog" role="dialog" aria-modal="true" aria-label={locked ? "Editing is paused" : "Your plan's limit"}>
+        <h2>{locked ? "Editing is paused" : "That's your plan's limit"}</h2>
+        <p style={{ color: "var(--ink-2)" }}>{hit.error}</p>
+        {hit.limit === "editors" && <p className="small muted">Viewers are always free: invite people as viewers, or make someone a viewer, to stay on this plan.</p>}
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+          <button type="button" className="btn" onClick={() => setHit(null)}>Not now</button>
+          <button type="button" className="btn primary" onClick={() => { setHit(null); navigate(`/w/${slug}/billing`); }}>See plans</button>
+        </div>
+      </div>
+    </>
   );
 }
 
