@@ -325,8 +325,6 @@
 
 /* ---------- Small screens: every scene stacks and shows its still ---------- */
 @media (max-width: 899px) {
-  .logo-lane { grid-template-columns: minmax(0, 1fr); gap: 10px; padding-left: 0; }
-  .logo-lane-label { padding-left: var(--gutter); }
   .home .site-header { position: relative; }
   .hero { padding-top: 24px; min-height: 0; }
   .hero-grid { grid-template-columns: minmax(0, 1fr); }
@@ -400,17 +398,19 @@
 /* ---------- The logo band: every pack by its own logo, drifting slowly ---------- */
 .logo-band { padding: 40px 0 44px; border-top: 1px solid var(--rule); overflow: hidden; }
 .logo-band { display: flex; flex-direction: column; gap: 22px; }
-.logo-lane { display: grid; grid-template-columns: 220px minmax(0, 1fr); align-items: center; gap: 20px; padding-left: var(--gutter); }
-.logo-lane-label { margin: 0; }
+.logo-lane { display: flex; flex-direction: column; gap: 12px; }
+.logo-lane-label { margin: 0; padding-inline: var(--gutter); }
 .logo-track { min-width: 0; overflow: hidden; }
 .lane-templates .logo-marquee { animation-direction: reverse; animation-duration: 64s; }
-.lane-templates .logo-marquee li { background: var(--ground); }
+.lane-templates .lb-pill { background: var(--ground); }
 /* The pill is the frame; the logo sits in it without a second border. */
 .logo-marquee .ds-logo { border: 0; }
 .logo-marquee { display: flex; width: max-content; animation: marquee 70s linear infinite; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-.logo-marquee:hover { animation-play-state: paused; }
+.logo-marquee:hover, .logo-marquee:focus-within, .logo-marquee.paused { animation-play-state: paused; }
 .logo-marquee ul { display: flex; gap: 12px; margin: 0; padding: 0 6px; list-style: none; }
-.logo-marquee li { display: flex; align-items: center; gap: 10px; padding: 8px 18px 8px 8px; border-radius: var(--radius-pill); border: 1px solid var(--rule); background: var(--surface); white-space: nowrap; font-weight: 600; font-size: 15px; }
+.logo-marquee li { display: flex; }
+.lb-pill { display: flex; align-items: center; gap: 10px; padding: 8px 18px 8px 8px; border-radius: var(--radius-pill); border: 1px solid var(--rule); background: var(--surface); white-space: nowrap; font-weight: 600; font-size: 15px; color: var(--ink); text-decoration: none; transition: border-color var(--duration-fast) var(--ease-standard); }
+.lb-pill:hover, .lb-pill:focus-visible { border-color: var(--ink); }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
   .logo-marquee { animation: none; width: auto; flex-wrap: wrap; justify-content: center; -webkit-mask-image: none; mask-image: none; }
@@ -466,7 +466,7 @@
 .st-steps button > span:last-child { display: none; font-size: 15px; line-height: 1.5; }
 .st-window-wrap { position: relative; }
 .st-view { background: #FBFAF7; }
-.st-app { display: grid; grid-template-columns: 196px minmax(0, 1fr); height: 600px; background: #FBFAF7; color: #141413; font: 14px/1.45 var(--font-body); }
+.st-app { display: grid; grid-template-columns: 196px minmax(0, 1fr); height: 100%; background: #FBFAF7; color: #141413; font: 14px/1.45 var(--font-body); }
 .st-side { display: flex; flex-direction: column; gap: 3px; padding: 18px 12px; background: #F3F1EC; border-right: 1px solid #E4E0D6; }
 .st-ws { display: flex; align-items: center; gap: 8px; margin: 0 0 10px 8px; font-size: 15px; }
 .st-side-h { margin: 12px 0 4px 10px; font: 500 10px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: #8A857B; }
@@ -610,3 +610,42 @@
 }
 
 .fit[data-w="960"] { width: 960px; }
+
+/* ---------- What's inside a pack: the card a ticker pill opens ---------- */
+.pk-pop { position: fixed; left: 0; top: 0; z-index: 30; width: 320px; pointer-events: none; animation: rise 240ms var(--ease-standard) both; }
+.pk-card { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 24px; background: var(--surface); box-shadow: 0 0 0 1px var(--rule), 0 24px 48px -20px rgba(20,20,19,.35); color: var(--ink); }
+.pk-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.pk-head b { display: block; font-size: 16px; }
+.pk-head span { font-size: 12.5px; color: var(--muted); }
+.pk-kind { padding: 4px 10px; border-radius: 99px; border: 1px solid var(--rule); font: 500 10px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.pk-body { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 16px; background: var(--pxd-color-surface-default, #fff); color: var(--pxd-color-text-default, #141413); }
+.pk-swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.pk-swatches i { height: 26px; border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(20,20,19,.12); }
+.pk-type { display: flex; align-items: baseline; gap: 10px; font-size: 13px; }
+.pk-aa { font-size: 30px; line-height: 1; }
+.pk-example { --k: .67; position: relative; height: 200px; overflow: hidden; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(20,20,19,.1); }
+.pk-example > .fit { position: absolute; left: 0; top: 0; width: 390px; height: calc(100% / var(--k)); transform: scale(var(--k)); transform-origin: 0 0; overflow: hidden; }
+.pk-example .pxd-frame { height: 100%; overflow: hidden; }
+.pk-foot { margin: 0; font-size: 13px; font-weight: 600; color: var(--signal-text); }
+
+/* ---------- Phones: tighter rhythm, and nothing sized for a desk ---------- */
+@media (max-width: 899px) {
+  .stick { padding: 64px 0; }
+  .hero { padding-bottom: 32px; }
+  .hero-stage { --ph: min(460px, 62svh); height: calc(var(--ph) + 170px); }
+  .hero-mark { width: 200px; height: 200px; margin: -100px 0 0 -100px; }
+  .asking .hero-mark { transform: translate(calc(-1 * min(260px, 50%) + 100px), calc(100px - (var(--ph) + 170px) / 2)) scale(.26); }
+  .stage-status { left: calc(50% - min(260px, 50%) + 64px); top: 10px; }
+  .turn-left { height: 320px; }
+  .turn-json { font-size: 12px; white-space: pre-wrap; word-break: break-word; }
+  .chat { height: 420px; }
+  .st-side { display: none; }
+  .st-app { grid-template-columns: minmax(0, 1fr); }
+  .st-view { aspect-ratio: 3 / 4; }
+  .st-view > .fit { width: 600px; }
+  .st-map, .st-tune, .st-deliver { grid-template-columns: minmax(0, 1fr); }
+  .st-editor { grid-template-columns: minmax(0, 1fr); }
+  .st-tree, .st-props { display: none; }
+  .st-sources { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pk-pop { width: min(320px, calc(100vw - 24px)); }
+}

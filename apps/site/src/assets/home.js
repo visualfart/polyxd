@@ -89,11 +89,56 @@
   // ---------- Devices: the screen inside is scaled from a 390px (phone) or 1024px (desktop) layout ----------
   const fitRO = new ResizeObserver((es) => {
     for (const e of es) {
-      const w = Number(e.target.firstElementChild?.dataset.w) || 390;
+      // The layout width of what's inside (untransformed), so CSS may change it per screen size.
+      const w = e.target.firstElementChild?.offsetWidth || Number(e.target.firstElementChild?.dataset.w) || 390;
       if (e.contentRect.width) e.target.style.setProperty("--k", (e.contentRect.width / w).toFixed(4));
     }
   });
   $$(".phone-view, .browser-view, .tablet-view").forEach((v) => fitRO.observe(v));
+
+  // ---------- What's inside a pack: the ticker's preview card ----------
+  const pop = $(".pk-pop");
+  if (pop) {
+    let cur = null, hideT = 0;
+    const place = (pill) => {
+      const r = pill.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+      const left = clamp(r.left + r.width / 2 - pw / 2, 12, innerWidth - pw - 12);
+      let top = r.top - ph - 12;
+      if (top < 12) top = r.bottom + 12;
+      pop.style.left = `${Math.round(left)}px`;
+      pop.style.top = `${Math.round(top)}px`;
+    };
+    const show = (pill) => {
+      clearTimeout(hideT);
+      const k = pill.dataset.pack;
+      if (cur !== k) {
+        const tpl = $(`template[data-pack-preview="${k}"]`);
+        if (!tpl) return;
+        pop.replaceChildren(tpl.content.cloneNode(true));
+        cur = k;
+      }
+      pop.hidden = false;
+      const ex = $(".pk-example", pop);
+      if (ex) ex.style.setProperty("--k", (ex.clientWidth / 390).toFixed(4));
+      place(pill);
+      pill.closest(".logo-marquee")?.classList.add("paused");
+    };
+    const hide = () => {
+      hideT = setTimeout(() => {
+        pop.hidden = true;
+        $$(".logo-marquee.paused").forEach((m) => m.classList.remove("paused"));
+      }, 120);
+    };
+    $$(".lb-pill").forEach((pill) => {
+      pill.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") show(pill); });
+      pill.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") hide(); });
+      pill.addEventListener("focus", () => show(pill));
+      pill.addEventListener("blur", hide);
+      // On touch, the first tap shows what's inside; a second tap opens it in the gallery.
+      pill.addEventListener("click", (e) => { if (matchMedia("(hover: none)").matches && (pop.hidden || cur !== pill.dataset.pack)) { e.preventDefault(); show(pill); } });
+    });
+    addEventListener("scroll", () => { if (!pop.hidden) hide(); }, { passive: true });
+  }
 
   // ---------- The dot field (assets/field.js) ----------
   // The hero's field gathers into the answer's box when something is asked.
