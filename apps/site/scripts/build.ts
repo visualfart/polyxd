@@ -764,17 +764,52 @@ async function showcaseHtml(): Promise<string> {
   return rows.join("\n");
 }
 
-/** A band of every pack's logo, moving slowly: the systems people already know, and the templates. */
+/** Who makes each pack and what it's like, as the gallery says it. */
+const PACK_BY: Record<string, string> = {
+  material3: "Google · Roboto", carbon: "IBM · IBM Plex Sans", antd: "Ant Group", fluent: "Microsoft · Segoe UI", shadcn: "Tailwind CSS v4",
+  bootstrap: "Bootstrap team", mantine: "Mantine", radix: "WorkOS · indigo", polaris: "Shopify · Inter", primer: "GitHub · Mona Sans",
+  spectrum: "Adobe · Source Sans", govuk: "GDS · one theme, no dark", chakra: "Chakra · Inter",
+  sketch: "Hand-drawn · Caveat, Patrick Hand", wireframe: "Low-fidelity · greys, dashed, mono", editorial: "Serif display · Fraunces",
+  brutalist: "Black, yellow, hard shadows", glass: "Translucent · cool, 20px", terminal: "Dark · JetBrains Mono, green",
+  pastel: "Mint, lavender, peach · Nunito", civic: "Plain, high-contrast, large", finance: "Navy and gold · dense tables",
+  health: "Calm teal, cream · roomy", neon: "Dark · magenta, cyan · Space Grotesk", mono: "One hue in every role · indigo",
+};
+
+/**
+ * A band of every pack's logo, drifting slowly: the systems people already know in one row, the
+ * templates in another. Point at one (or focus it, or tap it) and a card shows what's inside:
+ * its colours and type as the pack defines them, and a real screen drawn in it.
+ */
 async function logoBandHtml(): Promise<string> {
   const dirs = (await readdir(join(REPO, "packages"))).filter((d) => d.startsWith("ds-") && existsSync(join(REPO, "packages", d, "manifest.json"))).sort();
   const ms = await Promise.all(dirs.map(async (d) => JSON.parse(await readFile(join(REPO, "packages", d, "manifest.json"), "utf8"))));
   const real = ms.filter((m) => !isTemplate(m));
   real.sort((a, b) => Number(b.name === "material3") - Number(a.name === "material3"));
-  const row = (list: any[]) => list.map((m) => `<li>${packLogo(m.name, 32, true)}<span>${esc(m.displayName)}</span></li>`).join("");
-  const lane = (label: string, list: any[], cls: string) => `<div class="logo-lane ${cls}"><p class="eyebrow logo-lane-label">${label}</p><div class="logo-track"><div class="logo-marquee"><ul>${row(list)}</ul><ul aria-hidden="true">${row(list)}</ul></div></div></div>`;
+  const templates = ms.filter(isTemplate);
+  const confirm = JSON.parse(await readFile(join(REPO, "packages/spec/examples/money-send-confirm.json"), "utf8")) as UIDocument;
+  const row = (list: any[], dup = false) =>
+    list.map((m) => `<li><a class="lb-pill" href="/gallery/?theme=${m.name}" data-pack="${m.name}"${dup ? ' tabindex="-1"' : ""}>${packLogo(m.name, 32, true)}<span>${esc(m.displayName)}</span></a></li>`).join("");
+  const lane = (label: string, list: any[], cls: string) =>
+    `<div class="logo-lane ${cls}"><p class="eyebrow logo-lane-label">${label}</p><div class="logo-track"><div class="logo-marquee"><ul>${row(list)}</ul><ul aria-hidden="true">${row(list, true)}</ul></div></div></div>`;
+  const sw = ["action-primary-background", "surface-subtle", "text-default", "text-link", "border-default", "status-success-emphasis"];
+  const previews = ms
+    .map(
+      (m) => `<template data-pack-preview="${m.name}"><div class="pk-card">
+<div class="pk-head">${packLogo(m.name, 36, true)}<div><b>${esc(m.displayName)}</b><span>${esc(PACK_BY[m.name] ?? "")}</span></div><span class="pk-kind">${isTemplate(m) ? "Template" : "Design system"}</span></div>
+<div class="pk-body" data-pxd-theme="${m.name}" data-pxd-mode="light">
+<div class="pk-swatches">${sw.map((t) => `<i style="background:var(--pxd-color-${t})"></i>`).join("")}</div>
+<div class="pk-type"><span class="pk-aa" style="font-family:var(--pxd-type-title-page-family)">Aa</span><span style="font-family:var(--pxd-type-body-default-family)">Confirm payment to Alex Kim</span></div>
+<div class="pk-example"><div class="fit" data-w="390">${surfaceHtml(confirm, m.name)}</div></div>
+</div>
+<p class="pk-foot">Open it in the gallery</p>
+</div></template>`,
+    )
+    .join("\n");
   return `<section class="logo-band" aria-label="Design systems and templates Polyxd draws in">
 ${lane(`${real.length} design systems you already know`, real, "lane-systems")}
-${lane(`${ms.filter(isTemplate).length} templates to start from`, ms.filter(isTemplate), "lane-templates")}
+${lane(`${templates.length} templates to start from`, templates, "lane-templates")}
+${previews}
+<div class="pk-pop" hidden></div>
 </section>`;
 }
 
