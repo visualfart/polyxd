@@ -1,0 +1,42 @@
+{
+  "prompt": "Compare the three broadband deals you found for my flat and help me pick one. I mostly work from home.",
+  "pack": "editorial",
+  "mode": "light",
+  "document": {
+    "specVersion": "0.3.0",
+    "surface": { "id": "compare-broadband", "title": "Choose a broadband plan", "intent": "broadband.choose", "pattern": "compare-and-choose" },
+    "root": "compare",
+    "components": [
+      {
+        "id": "compare",
+        "component": "Comparison",
+        "key": "plans",
+        "items": { "path": "/plans" },
+        "itemTitle": "name",
+        "attributes": [
+          { "key": "price", "label": "Per month", "path": "monthly", "format": { "type": "currency", "currency": "GBP" }, "better": "lower", "group": "Cost" },
+          { "key": "setup", "label": "Set-up fee", "path": "setup", "format": { "type": "currency", "currency": "GBP" }, "better": "lower", "group": "Cost" },
+          { "key": "download", "label": "Average download, Mbps", "path": "download", "format": { "type": "number" }, "better": "higher", "group": "Speed" },
+          { "key": "upload", "label": "Average upload, Mbps", "path": "upload", "format": { "type": "number" }, "better": "higher", "group": "Speed" },
+          { "key": "contract", "label": "Contract, months", "path": "contract", "format": { "type": "number" }, "better": "lower", "group": "Terms" }
+        ],
+        "recommended": { "path": "/recommendation/plan" },
+        "recommendedReason": { "path": "/recommendation/reason" },
+        "summary": { "path": "/recommendation/summary" },
+        "choose": { "label": "Choose this plan", "action": { "event": { "name": "plan.choose", "context": { "plan": { "path": "id" } } } } }
+      }
+    ],
+    "data": {
+      "plans": [
+        { "id": "p_fibre150", "name": "Fibre 150", "monthly": 27, "setup": 0, "download": 145, "upload": 30, "contract": 24 },
+        { "id": "p_full500", "name": "Full Fibre 500", "monthly": 32, "setup": 0, "download": 500, "upload": 70, "contract": 18 },
+        { "id": "p_flex900", "name": "Flex 900", "monthly": 45, "setup": 35, "download": 900, "upload": 110, "contract": 1 }
+      ],
+      "recommendation": {
+        "plan": "Full Fibre 500",
+        "reason": "Fast uploads for video calls, for £5 a month more than the cheapest",
+        "summary": "All three reach your flat. For working from home, upload speed matters most, because it carries your side of every call."
+      }
+    }
+  }
+}

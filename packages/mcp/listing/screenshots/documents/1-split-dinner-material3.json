@@ -1,0 +1,70 @@
+{
+  "prompt": "Split Friday's dinner at Dishoom with Priya, Sam and Jo. The bill was £126.40 and I'd like to add a 10% tip. Show it in Material 3.",
+  "pack": "material3",
+  "mode": "light",
+  "document": {
+    "specVersion": "0.3.0",
+    "surface": { "id": "split-dinner", "title": "Split the bill", "intent": "bill.split", "pattern": "multi-step-form" },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": ["place", "people", "split", "tip"],
+        "aside": "summary",
+        "submit": {
+          "label": "Review requests",
+          "action": { "event": { "name": "split.review", "context": { "people": { "path": "/draft/people" }, "split": { "path": "/draft/split" }, "tip": { "path": "/draft/tip" } } } }
+        },
+        "cancel": { "label": "Not now", "action": { "event": { "name": "ui.dismiss" } } }
+      },
+      { "id": "place", "component": "Text", "key": "place", "variant": "supporting", "text": { "path": "/bill/place" } },
+      {
+        "id": "people",
+        "component": "Choice",
+        "key": "people",
+        "label": "Who's splitting with you?",
+        "mode": "multiple",
+        "options": { "path": "/friends", "valuePath": "id", "labelPath": "name", "avatarPath": "initials" },
+        "value": { "path": "/draft/people" },
+        "required": true
+      },
+      {
+        "id": "split",
+        "component": "Choice",
+        "key": "split",
+        "label": "How to split it",
+        "options": [
+          { "value": "equal", "label": "Equally" },
+          { "value": "by_item", "label": "By what each person ordered" }
+        ],
+        "value": { "path": "/draft/split" },
+        "required": true
+      },
+      { "id": "tip", "component": "Toggle", "key": "tip", "label": "Add a 10% tip", "description": "Shared equally, like the bill", "value": { "path": "/draft/tip" } },
+      {
+        "id": "summary",
+        "component": "DetailList",
+        "key": "summary",
+        "title": "Each share",
+        "variant": "receipt",
+        "items": [
+          { "key": "bill", "label": "Bill", "value": { "path": "/bill/total" }, "format": { "type": "currency", "currency": "GBP" } },
+          { "key": "tip", "label": "Tip", "value": { "path": "/bill/tip" }, "format": { "type": "currency", "currency": "GBP" } },
+          { "key": "people", "label": "People", "value": { "path": "/bill/people" }, "format": { "type": "number" } },
+          { "key": "share", "label": "Each person pays", "value": { "path": "/bill/share" }, "format": { "type": "currency", "currency": "GBP" } },
+          { "key": "owed", "label": "You get back", "value": { "path": "/bill/owed" }, "format": { "type": "currency", "currency": "GBP" }, "total": true }
+        ]
+      }
+    ],
+    "data": {
+      "bill": { "place": "Dishoom, Friday 25 September. You paid.", "total": 126.4, "tip": 12.64, "people": 4, "share": 34.76, "owed": 104.28 },
+      "friends": [
+        { "id": "u_priya", "name": "Priya Shah", "initials": "PS" },
+        { "id": "u_sam", "name": "Sam Okafor", "initials": "SO" },
+        { "id": "u_jo", "name": "Jo Lin", "initials": "JL" }
+      ],
+      "draft": { "people": ["u_priya", "u_sam", "u_jo"], "split": "equal", "tip": true }
+    }
+  }
+}

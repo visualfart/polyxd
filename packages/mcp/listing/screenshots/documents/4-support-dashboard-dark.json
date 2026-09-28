@@ -1,0 +1,93 @@
+{
+  "prompt": "Here's this week's helpdesk export. Show my support team's week as a dashboard, in dark mode.",
+  "pack": "shadcn",
+  "mode": "dark",
+  "document": {
+    "specVersion": "0.3.0",
+    "surface": { "id": "support-week", "title": "Support this week", "intent": "support.dashboard" },
+    "root": "root",
+    "components": [
+      { "id": "root", "component": "Group", "children": ["period", "metrics", "trend", "topics"] },
+      { "id": "period", "component": "Text", "key": "period", "variant": "supporting", "text": { "path": "/week/label" } },
+      { "id": "metrics", "component": "Group", "arrangement": "grid", "children": ["open", "reply", "csat"] },
+      {
+        "id": "open",
+        "component": "Metric",
+        "key": "open_tickets",
+        "label": "Open tickets",
+        "value": { "path": "/metrics/open" },
+        "format": { "type": "number" },
+        "change": { "value": { "path": "/metrics/openChange" }, "format": { "type": "percent" }, "favorable": "decrease" },
+        "caption": "Against last week"
+      },
+      {
+        "id": "reply",
+        "component": "Metric",
+        "key": "first_reply",
+        "label": "Median first reply, minutes",
+        "value": { "path": "/metrics/firstReply" },
+        "format": { "type": "number" },
+        "change": { "value": { "path": "/metrics/firstReplyChange" }, "format": { "type": "percent" }, "favorable": "decrease" },
+        "caption": "Against last week"
+      },
+      {
+        "id": "csat",
+        "component": "Metric",
+        "key": "csat",
+        "label": "Customer satisfaction",
+        "value": { "path": "/metrics/csat" },
+        "format": { "type": "percent" },
+        "change": { "value": { "path": "/metrics/csatChange" }, "format": { "type": "percent" }, "favorable": "increase" },
+        "caption": "Against last week"
+      },
+      {
+        "id": "trend",
+        "component": "Chart",
+        "key": "tickets_by_day",
+        "intent": "trend",
+        "title": "Tickets opened and solved",
+        "summary": { "path": "/week/summary" },
+        "data": { "path": "/days" },
+        "x": { "path": "day", "label": "Day", "format": { "type": "date" } },
+        "series": [
+          { "key": "opened", "path": "opened", "label": "Opened" },
+          { "key": "solved", "path": "solved", "label": "Solved" }
+        ]
+      },
+      {
+        "id": "topics",
+        "component": "Table",
+        "key": "top_topics",
+        "caption": "Top topics",
+        "rows": { "path": "/topics" },
+        "columns": [
+          { "key": "topic", "label": "Topic", "path": "name" },
+          { "key": "tickets", "label": "Tickets", "path": "tickets", "format": { "type": "number" }, "align": "end" },
+          { "key": "reply", "label": "Median reply, minutes", "path": "reply", "format": { "type": "number" }, "align": "end" },
+          { "key": "change", "label": "Change", "path": "change", "format": { "type": "percent" }, "align": "end" }
+        ],
+        "empty": "topics_empty"
+      },
+      { "id": "topics_empty", "component": "Status", "kind": "empty", "title": "No tickets this week" }
+    ],
+    "data": {
+      "week": { "label": "Monday 21 to Sunday 27 September", "summary": "The team solved more tickets than came in on five of seven days, so the queue shrank by about a tenth." },
+      "metrics": { "open": 42, "openChange": -0.12, "firstReply": 38, "firstReplyChange": -0.21, "csat": 0.94, "csatChange": 0.02 },
+      "days": [
+        { "day": "2026-09-21", "opened": 64, "solved": 58 },
+        { "day": "2026-09-22", "opened": 71, "solved": 76 },
+        { "day": "2026-09-23", "opened": 59, "solved": 66 },
+        { "day": "2026-09-24", "opened": 62, "solved": 69 },
+        { "day": "2026-09-25", "opened": 55, "solved": 61 },
+        { "day": "2026-09-26", "opened": 31, "solved": 35 },
+        { "day": "2026-09-27", "opened": 24, "solved": 21 }
+      ],
+      "topics": [
+        { "name": "Billing and invoices", "tickets": 96, "reply": 31, "change": -0.08 },
+        { "name": "Login and passwords", "tickets": 74, "reply": 22, "change": 0.15 },
+        { "name": "Exports", "tickets": 51, "reply": 47, "change": -0.19 },
+        { "name": "Integrations", "tickets": 38, "reply": 64, "change": 0.04 }
+      ]
+    }
+  }
+}

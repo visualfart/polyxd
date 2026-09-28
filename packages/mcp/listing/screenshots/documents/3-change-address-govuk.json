@@ -1,0 +1,55 @@
+{
+  "prompt": "Help me tell the council I've moved house. Make it a GOV.UK form.",
+  "pack": "govuk",
+  "mode": "light",
+  "document": {
+    "specVersion": "0.3.0",
+    "surface": { "id": "change-address", "title": "Tell us you've moved", "intent": "address.change", "pattern": "multi-step-form" },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": ["current", "line1", "line2", "town", "postcode", "moved_on"],
+        "submit": {
+          "label": "Continue",
+          "action": { "event": { "name": "address.review", "context": { "line1": { "path": "/draft/line1" }, "line2": { "path": "/draft/line2" }, "town": { "path": "/draft/town" }, "postcode": { "path": "/draft/postcode" }, "movedOn": { "path": "/draft/movedOn" } } } }
+        }
+      },
+      {
+        "id": "current",
+        "component": "DetailList",
+        "key": "current_address",
+        "items": [{ "key": "address", "label": "Address we have for you", "value": { "path": "/person/address" } }]
+      },
+      { "id": "line1", "component": "TextInput", "key": "line1", "label": "Address line 1", "value": { "path": "/draft/line1" }, "required": true, "autocomplete": "address-line1", "validation": { "maxLength": 60 } },
+      { "id": "line2", "component": "TextInput", "key": "line2", "label": "Address line 2 (optional)", "value": { "path": "/draft/line2" }, "autocomplete": "address-line2", "validation": { "maxLength": 60 } },
+      { "id": "town", "component": "TextInput", "key": "town", "label": "Town or city", "value": { "path": "/draft/town" }, "required": true, "autocomplete": "address-level2", "validation": { "maxLength": 40 } },
+      {
+        "id": "postcode",
+        "component": "TextInput",
+        "key": "postcode",
+        "label": "Postcode",
+        "value": { "path": "/draft/postcode" },
+        "required": true,
+        "autocomplete": "postal-code",
+        "validation": { "minLength": 5, "maxLength": 8, "message": "Enter a full postcode, like LS1 4AP" }
+      },
+      {
+        "id": "moved_on",
+        "component": "DateInput",
+        "key": "moved_on",
+        "label": "When did you move in?",
+        "help": "We use this date for your council tax bill.",
+        "value": { "path": "/draft/movedOn" },
+        "max": { "path": "/today" },
+        "required": true
+      }
+    ],
+    "data": {
+      "person": { "address": "14 Albion Street, Leeds, LS1 6HX" },
+      "draft": { "line1": "", "line2": "", "town": "", "postcode": "", "movedOn": null },
+      "today": "2026-09-28"
+    }
+  }
+}

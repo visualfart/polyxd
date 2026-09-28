@@ -1,0 +1,92 @@
+{
+  "prompt": "I need to return the running shoes from order #4821, they're too small. Use Carbon.",
+  "pack": "carbon",
+  "mode": "light",
+  "document": {
+    "specVersion": "0.3.0",
+    "surface": { "id": "return-shoes", "title": "Return an item", "intent": "order.return", "pattern": "multi-step-form" },
+    "root": "form",
+    "components": [
+      {
+        "id": "form",
+        "component": "Form",
+        "children": ["item", "reason", "method", "refund_to"],
+        "aside": "refund",
+        "submit": {
+          "label": "Review return",
+          "action": { "event": { "name": "return.review", "context": { "orderId": { "path": "/order/id" }, "reason": { "path": "/draft/reason" }, "method": { "path": "/draft/method" }, "refundTo": { "path": "/draft/refundTo" } } } }
+        },
+        "cancel": { "label": "Keep the shoes", "action": { "event": { "name": "ui.dismiss" } } }
+      },
+      {
+        "id": "item",
+        "component": "DetailList",
+        "key": "item",
+        "title": "Returning",
+        "items": [
+          { "key": "name", "label": "Item", "value": { "path": "/order/item" } },
+          { "key": "order", "label": "Order", "value": { "path": "/order/number" } },
+          { "key": "delivered", "label": "Delivered", "value": { "path": "/order/delivered" }, "format": { "type": "date" } }
+        ]
+      },
+      {
+        "id": "reason",
+        "component": "Choice",
+        "key": "reason",
+        "label": "Why are you returning them?",
+        "options": [
+          { "value": "too_small", "label": "Too small" },
+          { "value": "too_big", "label": "Too big" },
+          { "value": "not_as_described", "label": "Not as described" },
+          { "value": "changed_mind", "label": "Changed my mind" }
+        ],
+        "value": { "path": "/draft/reason" },
+        "required": true
+      },
+      {
+        "id": "method",
+        "component": "Choice",
+        "key": "method",
+        "label": "How will you send them back?",
+        "options": { "path": "/methods", "valuePath": "id", "labelPath": "name", "descriptionPath": "detail" },
+        "value": { "path": "/draft/method" },
+        "required": true
+      },
+      {
+        "id": "refund_to",
+        "component": "Choice",
+        "key": "refund_to",
+        "label": "Where should the refund go?",
+        "options": { "path": "/refundTargets", "valuePath": "id", "labelPath": "name" },
+        "value": { "path": "/draft/refundTo" },
+        "required": true
+      },
+      {
+        "id": "refund",
+        "component": "DetailList",
+        "key": "refund",
+        "title": "Your refund",
+        "variant": "receipt",
+        "items": [
+          { "key": "price", "label": "Item price", "value": { "path": "/refund/price" }, "format": { "type": "currency", "currency": "GBP" } },
+          { "key": "postage", "label": "Return postage", "value": { "path": "/refund/postage" }, "format": { "type": "currency", "currency": "GBP" } },
+          { "key": "deadline", "label": "Send back by", "value": { "path": "/refund/deadline" }, "format": { "type": "date" } },
+          { "key": "total", "label": "You get back", "value": { "path": "/refund/total" }, "format": { "type": "currency", "currency": "GBP" }, "total": true }
+        ]
+      }
+    ],
+    "data": {
+      "order": { "id": "ord_4821", "number": "#4821", "item": "Trail running shoes, UK 9", "delivered": "2026-09-18" },
+      "methods": [
+        { "id": "dropoff", "name": "Drop off at a parcel shop", "detail": "Free. We email you a QR code." },
+        { "id": "collection", "name": "Courier collection from home", "detail": "£3.50, taken from your refund" }
+      ],
+      "refundTargets": [
+        { "id": "card", "name": "Visa ending 4417, in 3 to 5 days" },
+        { "id": "credit", "name": "Store credit, as soon as we scan the parcel" }
+      ],
+      "draft": { "reason": "too_small", "method": "dropoff", "refundTo": "card" },
+      "refund": { "price": 89.99, "postage": 0, "deadline": "2026-10-18", "total": 89.99 }
+    }
+  }
+}
