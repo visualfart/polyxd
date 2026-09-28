@@ -252,7 +252,7 @@ test("the only thing logged is one line per request: method, path, status and du
   assert.deepEqual(Object.keys(JSON.parse(lines[0])).sort(), ["method", "ms", "path", "status"]);
 });
 
-test("the HTTP entry bundles for a Worker: no Node built-ins, no file system", async () => {
+test("the HTTP entry bundles for a Worker (no Node built-ins, no file system) and its results pass the Worker's output-schema checks", async () => {
   const result = await build({
     entryPoints: [fileURLToPath(new URL("../src/http.ts", import.meta.url))],
     bundle: true,
@@ -266,4 +266,38 @@ test("the HTTP entry bundles for a Worker: no Node built-ins, no file system", a
   assert.equal(result.errors.length, 0);
   const js = result.outputFiles[0].text;
   assert.doesNotMatch(js, /from ["']node:|require\(["']node:/);
+
+  // The bundle runs: the SDK's Worker build checks each result against its output schema with
+  // @cfworker/json-schema, not Ajv, so every tool is called through it on every example.
+  assert.ok(js.includes("CfWorkerJsonSchemaValidator"), "the Worker build validates with @cfworker/json-schema");
+  const bundled = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
+  const handle = bundled.createHttpHandler({ viewHtml: () => "<!doctype html>", log: () => {} });
+  const c = await client(handle);
+  try {
+    const { tools } = await c.listTools();
+    assert.equal(tools.filter((t) => t.outputSchema).length, 6);
+    const ok = async (name: string, args: Record<string, unknown> = {}) => {
+      const r: any = await c.callTool({ name, arguments: args });
+      assert.notEqual(r.isError, true, `${name}: ${textOf(r)}`);
+      assert.ok(r.structuredContent, name);
+      return r;
+    };
+    await ok("polyxd_guide");
+    await ok("polyxd_packs");
+    await ok("polyxd_components");
+    await ok("polyxd_components", { name: "Choice" });
+    for (const f of exampleFiles) {
+      const document = loadExample(f);
+      await ok("polyxd_validate", { document });
+      await ok("polyxd_validate", { document, data: {} });
+      await ok("polyxd_verify", { document });
+      await ok("polyxd_verify", { document, direction: "calm-finance" });
+      await ok("polyxd_show", { document, pack: "carbon", mode: "dark" });
+    }
+    const bad: any = await c.callTool({ name: "polyxd_show", arguments: { document: { ...loadExample("tasks-add.json"), root: "missing" } } });
+    assert.equal(bad.isError, true);
+    assert.equal(bad.structuredContent.shown, false);
+  } finally {
+    await c.close();
+  }
 });

@@ -12,6 +12,7 @@ import { formatValidation, formatVerify, validate, verify, withData } from "./ch
 import { guide, SPEC_VERSION } from "./prompt.ts";
 import { PACKS } from "./packs.generated.ts";
 import { componentDefinitions, componentNamed, exampleDirections, exampleDocuments } from "./spec.ts";
+import { componentsOutput, guideOutput, packsOutput, showOutput, validateOutput, verifyOutput } from "./output-schemas.ts";
 
 export const VERSION = "0.3.0";
 /** The MCP App resource every shown screen renders in. */
@@ -90,9 +91,13 @@ export function createServer(options: ServerOptions): McpServer {
       description:
         "Returns the instructions for writing a Polyxd UI document: the document shape, the rules for generated screens, bindings, actions, every component with its props, and the patterns. Call this once before writing your first document.",
       inputSchema: fromJsonSchema<Record<string, never>>({ type: "object", properties: {} }),
+      outputSchema: fromJsonSchema(guideOutput),
       annotations: readOnly("Polyxd guide"),
     },
-    async () => ({ content: text(guide()) }),
+    async () => {
+      const g = guide();
+      return { content: text(g), structuredContent: { specVersion: SPEC_VERSION, guide: g } };
+    },
   );
 
   server.registerTool(
@@ -106,6 +111,7 @@ export function createServer(options: ServerOptions): McpServer {
         properties: { document: documentSchema, data: dataSchema },
         required: ["document"],
       }),
+      outputSchema: fromJsonSchema(validateOutput),
       annotations: readOnly("Validate a Polyxd document"),
     },
     async ({ document, data }) => {
@@ -136,6 +142,7 @@ export function createServer(options: ServerOptions): McpServer {
         },
         required: ["document"],
       }),
+      outputSchema: fromJsonSchema(verifyOutput),
       annotations: readOnly("Verify a Polyxd document"),
     },
     async ({ document, data, direction, registry }) => {
@@ -163,6 +170,7 @@ export function createServer(options: ServerOptions): McpServer {
         },
         required: ["document"],
       }),
+      outputSchema: fromJsonSchema(showOutput),
       annotations: readOnly("Show a Polyxd screen"),
       _meta: {
         ui: { resourceUri: VIEW_URI },
@@ -212,6 +220,7 @@ export function createServer(options: ServerOptions): McpServer {
       title: "List Polyxd packs",
       description: "Lists the design-system packs polyxd_show can draw a screen in: published design systems (Material 3, Carbon, GOV.UK and others) and original templates. The same document looks native in each.",
       inputSchema: fromJsonSchema<Record<string, never>>({ type: "object", properties: {} }),
+      outputSchema: fromJsonSchema(packsOutput),
       annotations: readOnly("List Polyxd packs"),
     },
     async () => {
@@ -235,6 +244,7 @@ export function createServer(options: ServerOptions): McpServer {
         type: "object",
         properties: { name: { type: "string", description: "A component name, e.g. \"Choice\", for its full definition." } },
       }),
+      outputSchema: fromJsonSchema(componentsOutput),
       annotations: readOnly("List Polyxd components"),
     },
     async ({ name }) => {
