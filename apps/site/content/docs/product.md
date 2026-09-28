@@ -16,7 +16,7 @@ When screens are generated, product managers and designers stop drawing screens 
 | Acceptance criteria | **Checks** that run against generated UIs |
 | Analytics and funnels | **Semantic events**, emitted automatically |
 
-All three have schemas in `@polyxd/spec` today. Capabilities and journeys are checked by the validator and verifier. Emitting these events is planned: the [runtime](/docs/runtime) doesn't emit them yet.
+All three have schemas in `@polyxd/spec` today. Capabilities and journeys are checked by the validator and verifier. Both renderers emit the events to a handler you pass, and `@polyxd/analytics` sends them on to your own analytics. Polyxd receives none of them.
 
 ## Capabilities
 
@@ -128,21 +128,57 @@ The verifier's scripted agent tasks (`bench/tasks.json`) use this goal and done-
 
 ## Semantic analytics events
 
-Every generated UI already knows its intent, pattern, components and capabilities, so the runtime is planned to emit standard events with no manual tracking (`schema/event.schema.json`). It doesn't yet: today its `onEvent` hook reports only on generation (counts, timings, validity and check ids). The planned events:
+Every screen already knows its intent, pattern, components and capabilities. So the renderers can report what people do with it in those terms, with no tracking code. Both renderers, `@polyxd/react` and `@polyxd/web`, emit the events defined in `schema/event.schema.json` when you give them a handler. Without a handler they make none.
 
-| Event | When |
-|---|---|
-| `surface.shown`, `surface.dismissed` | A UI appears or is closed |
-| `surface.regenerated` | The user had to ask again |
-| `action.taken` | A capability action is triggered |
-| `checkpoint.reached` | A journey checkpoint is reached |
-| `task.completed`, `task.abandoned` | A journey finishes or is given up |
-| `input.error` | A field fails validation |
-| `status.shown` | A `Status` is shown |
-| `undo` | The user undoes something |
-| `feedback` | Optional quick rating (−1, 0, 1) |
+**Polyxd itself receives none of these events.** They go to your handler and nowhere else, and Polyxd has no telemetry.
 
-Each event carries the surface (id, intent, pattern, journey, spec version, generator, Direction, experiment variants), the actor (`human` or `agent`, and whether assistive technology is in use), and where relevant the component, capability, checkpoint, duration and step count. So metrics can be split by human versus agent from the start.
+These are about people using a rendered screen. The [runtime's](/docs/runtime#events-and-privacy) `onEvent` is a different hook: it reports on generating a screen.
+
+### Receive them
+
+```tsx
+<PolyxdSurface
+  document={doc}
+  onEvent={(event) => console.log(event.type)}
+  events={{ journey, generator: "my-model@3", direction: "calm-finance@0.1.0" }}
+/>
+```
+
+On the Web Components renderer, listen for `polyxd-event` on the element, or set `el.onEvent`. See [Renderers](/docs/renderers/#semantic-events).
+
+`events` is optional. It holds what the document can't say: `sessionId`, `actor`, `journey`, `generator`, `direction` and `experiment` (experiment key to variant). It is read when the surface is shown.
+
+### The events
+
+| Event | When it fires | Also carries |
+|---|---|---|
+| `surface.shown` | The surface first mounts in a browser. Once per surface. A server render emits nothing | |
+| `action.taken` | An action reaches your `onAction`: a button, a Form's submit, a Confirm's confirm, an item's action. Not `ui.dismiss`, and not Back or Continue inside Steps | `component`, `capability` |
+| `checkpoint.reached` | You passed a journey, and an action's name is one of its checkpoints' `event`. Once per checkpoint | `component`, `capability`, `checkpoint` |
+| `task.completed` | With a journey: its `done.event`. Without one: the primary action of a Form (submit), a Confirm (confirm) or a Steps (finish). Once | `component`, `capability` |
+| `task.abandoned` | The surface is dismissed or taken down after at least one interaction, and it neither completed nor handed on | `reason`: `dismiss` or `unmount` |
+| `surface.dismissed` | `ui.dismiss` fired (Cancel on a root Confirm, closing a root Panel, any action named `ui.dismiss`): `reason` is `dismiss`. Or the surface was taken down (unmounted, or replaced by a new document) before it completed or handed on: `reason` is `unmount` | `reason` |
+| `input.error` | A control fails the browser's validation, on a Form's submit or a Steps' Continue. Or a FileInput refuses a file | `component`, `reason` |
+| `status.shown` | A Status appears. Again if it goes and comes back, not on a redraw | `component`, `reason`: the Status kind (`error`, `success`, `undo`, `empty`, …) |
+| `undo` | The action of an `undo` Status fires, straight after its `action.taken` | `component`, `capability` |
+| `feedback` | You report a rating: `feedback(rating)` on the surface's handle | `rating`: -1, 0 or 1, and an optional `reason` code |
+| `surface.regenerated` | You report that the person asked again and this surface is being replaced: `regenerated(reason?)`. Nothing else follows from it | optional `reason` |
+
+A surface **hands on** when it reaches a journey checkpoint, or when a Form, Confirm or Steps primary action fires that isn't the journey's done event. It has done its part, so leaving it afterwards is not abandoning it. That is how a journey spread over two surfaces, such as the form and then the confirmation of `money.send`, reads as one task.
+
+A Panel or a Confirm that isn't the surface's root closes only itself. Closing it is not the surface being dismissed.
+
+`input.error` reason codes: `required`, `type`, `pattern`, `too-short`, `too-long`, `too-low`, `too-high`, `step`, `bad-input`, `custom` and `invalid` from the browser's validity checks, and `file-too-large` or `file-type` from a FileInput.
+
+A shell (a document with `surface.kind` of `shell`) is the product's frame. It reports `surface.shown`, its actions and `surface.dismissed`, but it has no task, so never `task.completed` or `task.abandoned`.
+
+### What each event carries
+
+- `type`, `timestamp` and `sessionId`. The session id is random for each surface a renderer shows, unless you pass `events.sessionId`.
+- `surface`: `id`, `intent` (the surface id when the document has none), `pattern`, `journey`, `specVersion`, and `generator`, `direction` and `experiment` when you pass them.
+- `actor`: `kind` is `human` or `agent`. Pass `events.actor` when you know. Otherwise it is `agent` when the browser says it is automated (`navigator.webdriver`), and `human` if not. `assistiveTech` is only there when you pass it; it is never guessed.
+- `component`: the document's `id` for the component, its `key` when the document gives one (the stable semantic key, such as `amount`), and its `type`.
+- After `surface.shown`, every event has `durationMs` (time since `surface.shown`) and `steps` (interactions since then). Each action is a step, and so is each field edited. Typing into one field is one step until you move to another.
 
 ```json
 {
@@ -166,4 +202,38 @@ This example is from `packages/spec/examples/events/`. The generator name in it 
 
 ### Privacy
 
-Events carry keys and semantics, **never field values or personal data**. `reason` is a short code, never free text from the user. Events go to the host's own analytics through adapters (PostHog, Amplitude, Segment or OpenTelemetry are the planned targets). **Polyxd itself collects nothing** and has no telemetry.
+- Events carry ids, keys, capability names and short codes. **Never field values, never text from your data, never the document's data.**
+- `reason` is a short code: letters, digits, dots, dashes and underscores, up to 64 characters. Anything else is never sent. An input error's reason becomes `invalid` instead.
+- The adapters below run `redact` on every event first. It rebuilds the event from the schema's allow-list, so a property the schema doesn't define never leaves the page.
+- **Polyxd receives nothing.** The events go to your handler, and the adapters send them only where you point them.
+
+### Send them to PostHog
+
+`@polyxd/analytics` has adapters with no dependencies. It is in the repository at `packages/analytics`, not yet on npm.
+
+```tsx
+import posthog from "posthog-js";
+import { toPostHog } from "@polyxd/analytics";
+
+<PolyxdSurface document={doc} onEvent={toPostHog(posthog)} />
+```
+
+Each event becomes `posthog.capture("polyxd action.taken", properties)`. The properties are flat: `surface_id`, `intent`, `pattern`, `journey`, `spec_version`, `generator`, `direction`, `experiment_<key>`, `actor`, `assistive_tech`, `component`, `component_key`, `component_type`, `capability`, `checkpoint`, `duration_ms`, `steps`, `reason`, `rating` and `polyxd_session_id`, whichever the event has. For PostHog groups, pass `toPostHog(posthog, { groups: { company: "acme" } })`, or a function of the event. Every adapter takes `eventName` to rename events.
+
+The others are one line each:
+
+```ts
+toSegment(analytics)             // analytics.track("polyxd action.taken", properties)
+toGA4(gtag)                      // gtag("event", "polyxd_action_taken", properties)
+toFetch("/analytics/polyxd")     // POST { "events": [...] } to your endpoint; make it once, not on every render
+el.onEvent = toPostHog(posthog); // on <polyxd-surface>
+```
+
+GA4 names can't hold dots or spaces, so `ga4EventName` turns `action.taken` into `polyxd_action_taken`, and values are cut to GA4's limits. `toFetch` sends the events as the schema defines them, not flattened, in batches: 20 at a time, after 5 seconds, or when the page is hidden. It uses `keepalive`, so a batch sent as the page closes still arrives. Its handler also has `flush()` and `close()`.
+
+For another tool, `flatten(event)` gives the same flat properties and `defaultEventName(type)` the same name, so a handler is one line: `(e) => amplitude.track(defaultEventName(e.type), flatten(redact(e)!))`. `EVENT_TYPES` and `ALLOWED_PROPERTIES` are the event types and the allow-list, both checked against the schema in the package's tests.
+
+### Not built yet
+
+- Checkpoints that a journey defines with a `rule` instead of an `event` are not detected while the screen is in use. They stay checks for the [verifier](/docs/verifier).
+- There are no Amplitude or OpenTelemetry adapters. The one-line handler above covers Amplitude.

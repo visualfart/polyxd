@@ -39,13 +39,48 @@ A UI document says what an interface means; a renderer turns it into your platfo
 </script>
 ```
 
-`document`, `data`, `resolveMedia`, `derive` and `components` are properties; `theme`, `mode`, `density`, `locale` and `disclosure` are attributes as well. The element dispatches `polyxd-action` (the `ActionEvent`), `polyxd-datachange` (the new data) and `polyxd-dismiss`. `<polyxd-frame>` renders a shell document around the host's screen, with `current` and `loading` like `PolyxdFrame`. For a DOM owned by something else, `mount(el, props)` renders without the elements. Without a bundler, `preview/polyxd-web.js` and `preview/polyxd-web.css` are a self-contained build.
+`document`, `data`, `resolveMedia`, `derive`, `components`, `onEvent` and `events` are properties; `theme`, `mode`, `density`, `locale` and `disclosure` are attributes as well. The element dispatches `polyxd-action` (the `ActionEvent`), `polyxd-datachange` (the new data), `polyxd-dismiss`, and `polyxd-event` for [semantic events](#semantic-events). `<polyxd-frame>` renders a shell document around the host's screen, with `current` and `loading` like `PolyxdFrame`. For a DOM owned by something else, `mount(el, props)` renders without the elements. Without a bundler, `preview/polyxd-web.js` and `preview/polyxd-web.css` are a self-contained build.
 
 The DOM it produces is the React renderer's: the same `pxd-*` classes, the same ARIA, so the stylesheet and every theme apply unchanged, and so does everything the verifier checks. Overlays are native `<dialog>` elements shown modally; menus, comboboxes, tabs, radios, switches and sliders are written for the DOM with the roles and keyboard handling Radix gives React.
 
 ### Vue and Svelte
 
-Two adapters ship as files to copy, in `@polyxd/web`'s `adapters/` folder: `PolyxdSurface.vue` (Vue 3, `<script setup>`) and `PolyxdSurface.svelte` (Svelte 5 runes). Each takes the same props, forwards the element's events as `action`, `datachange` and `dismiss`, and stays a few dozen lines because the element does the work. They are documented, not published.
+Two adapters ship as files to copy, in `@polyxd/web`'s `adapters/` folder: `PolyxdSurface.vue` (Vue 3, `<script setup>`) and `PolyxdSurface.svelte` (Svelte 5 runes). Each takes the same props, including a handler for semantic events (`onEvent` in Vue, `onevent` in Svelte), forwards the element's events as `action`, `datachange` and `dismiss`, and stays a few dozen lines because the element does the work. They are documented, not published.
+
+## Semantic events
+
+Both renderers emit the semantic analytics events described in [Capabilities, journeys and events](/docs/product#semantic-analytics-events): `surface.shown`, `action.taken`, `checkpoint.reached`, `task.completed`, `task.abandoned`, `surface.dismissed`, `input.error`, `status.shown`, `undo`, and `feedback` and `surface.regenerated` when you report them. They are off until you pass a handler, and then they go to that handler and nowhere else. Polyxd receives none of them.
+
+In React, pass `onEvent`. The `ref` gives you `feedback(rating, reason?)`, `regenerated(reason?)` and the `sessionId`:
+
+```tsx
+import { PolyxdSurface, type PolyxdSurfaceHandle } from "@polyxd/react";
+
+const surface = useRef<PolyxdSurfaceHandle>(null);
+
+<PolyxdSurface
+  ref={surface}
+  document={doc}
+  onEvent={(event) => analytics(event)}
+  events={{ journey, generator: "my-model@3" }}   // optional: sessionId, actor, journey, generator, direction, experiment
+/>
+
+surface.current?.feedback(1);
+```
+
+A component of your own inside the surface (a `Custom`) can reach the same emitter through `useSurface().events`.
+
+On the Web Components renderer, set `onEvent`, or listen for `polyxd-event`:
+
+```js
+el.events = { journey };                      // optional; setting it also switches the events on
+el.addEventListener("polyxd-event", ({ detail }) => analytics(detail));
+el.feedback(1);                               // and el.regenerated("asked-again")
+```
+
+The events are on when you set `onEvent` or `events`, or add a `polyxd-event` listener to the element itself. A listener further up the page can't be seen, so set `events` (even `{}`) in that case. `mount()` takes `onEvent` and `events` in its props, and its handle has `feedback` and `regenerated`.
+
+Listening changes nothing in the DOM: the tests render every spec example with and without a handler and compare the markup, and the verifier's harnesses always listen, so the conformance suite runs with events on. The verifier also clicks through the same documents in both renderers and checks they emit the same events.
 
 ## The core
 
@@ -56,7 +91,8 @@ Two adapters ship as files to copy, in `@polyxd/web`'s `adapters/` folder: `Poly
 | Document | The types (`UIDocument`, `Node`, `Action`, `ActionEvent`, `FrameLayout`, `NavigationPlacement`), the component list `COMPONENTS`, the renderer's own action names `RENDERER_ACTIONS`, `indexById`, `mainNavigation` |
 | Bindings | JSON Pointer `get` and immutable `set`; `resolve`, `resolveContext`, `resolveDeep`, `absolute`, `childPointer`, `asList`, `isBinding`, `itemScopes`, `ROOT_SCOPE` |
 | Formatting | `formatValue` (numbers, currency, percent, dates, times, relative time, duration, bytes, colours, per locale), `resolveFormat`, `safeColor`, `currencySymbol`, `formatCount`, `formatPercent` |
-| The headless surface | `createSurface(document, { data, locale, derive, onAction, onDataChange, onDismiss })` returns `{ byId, data, setValue, replaceData, dispatch, subscribe, resolve, text, pointer, write, context, visible }`; `dispatchAction` (ui.dismiss to the host's `onDismiss`, everything else to `onAction` with its context resolved), `contextWithValue`, `copyText`, `rowChangeAction`, `isRendererAction`, `a11yAttributes` |
+| The headless surface | `createSurface(document, { data, locale, derive, onAction, onDataChange, onDismiss, events })` returns `{ byId, data, setValue, replaceData, dispatch, subscribe, resolve, text, pointer, write, context, visible }`; `dispatchAction` (ui.dismiss to the host's `onDismiss`, everything else to `onAction` with its context resolved), `contextWithValue`, `copyText`, `rowChangeAction`, `isRendererAction`, `a11yAttributes` |
+| Semantic events | `createSurfaceEvents(document, emit, options)` is the emitter a renderer tells what happened: `shown()`, `action(action, source)` (which `dispatchAction` calls for you), `edited(pointer)`, `inputError(node, reason)`, `statusShown(node)`, `feedback(rating)`, `regenerated(reason)` and `unmounted(defer?)`. It decides which events that makes. `validityReason` turns a control's `ValidityState` into a reason code, and `fileRefusalReason` does the same for a refused file. `SEMANTIC_EVENT_TYPES`, `EVENT_PROPERTIES`, `EVENT_SURFACE_PROPERTIES`, `EVENT_ACTOR_PROPERTIES` and `EVENT_COMPONENT_PROPERTIES` are the schema's types and property names, checked against `schema/event.schema.json` in core's tests |
 | Choice | `optionsOf`, `planChoice` (chips for a few short options, a people picker for faces, otherwise a list, searchable past ten), `optionKey`, `matchesQuery`, `partitionRecent`, `toggleSelection`, `isSelected`, `searchPlaceholder`, `idOf`, `idGenerator`, `CHIPS_MAX`, `CHIP_LABEL_MAX`, `SEARCHABLE_PAST` |
 | State machines | Steps: `stepsReducer`, `initialStep`, `isLastStep`, `stepsProgress`, `TASK_STATUS`, `taskStatus`, `tasklistReducer`, `tasklistProgress`. Views: `selectedView`, `viewsReducer`. Split: `splitReducer`, `initialSplit`, `splitPanes`, `splitSelection`, `splitItemValue`, `clampShare`, `SPLIT_COMPACT_PX`, `SHARE`, `SHARE_MIN`, `SHARE_MAX` |
 | Layout rules | Frame: `frameWidth`, `placementFor`, `appBarTitle`, `documentTitle`, `WIDE_PX`, `MEDIUM_PX`, `BAR_MAX`, `NAV_COMPACT_PX`. Table: `TABLE_COMPACT_PX`, `PAGE_SIZES`, `isNumericColumn`, `stackedColumns`, `rowValue`, `rowScopes`, `toggleValue`, `nextSort`, `columnCount`, `paging`. ActionBar: `fitActions`, `minShown`, `menuOrder`, `MORE_ACTIONS`, `TRIGGER_FALLBACK`. Collection: `collectionItemValue`, `collectionLayout`, `orderedIndices`, `moveItem`, `dateParts`, `monthToShow`, `shiftMonth`, `calendarMonth`, `nearestSlide`. Tree: `treeRows`, `treeKey`, `typeAheadTarget`, `visibleWindow`, `VIRTUAL_LIMIT`, `OVERSCAN`, `TYPEAHEAD_MS`. FilterPanel: `activeFilters`, `resultCountText`, `FILTER_COMPACT_PX`. Comparison and Navigation: `bestPerAttribute`, `groupAttributes`, `recommendedFirst`, `groupItems`, `navigationLabel` |
@@ -72,7 +108,7 @@ Two adapters ship as files to copy, in `@polyxd/web`'s `adapters/` folder: `Poly
 The contract is on the rendered page, not on a component API, so it holds for any framework. In full in the verifier's `harness/README.md`; in short:
 
 1. **Read `window.__PXD__ = { document, theme, mode }`** and render the document into `#root`, with the outer element carrying `class="pxd-surface"`, `data-pxd-theme` and `data-pxd-mode`, and every component's element carrying `data-pxd-id` and `data-pxd-component`. Overlays render inside the surface. A shell renders around a stand-in screen (`<h1>Screen</h1>`). Media references resolve to a placeholder.
-2. **Record what it sends**: push every `ActionEvent` onto `window.__pxdActions`; count `ui.dismiss` in `window.__pxdDismissed`.
+2. **Record what it sends**: push every `ActionEvent` onto `window.__pxdActions`; count `ui.dismiss` in `window.__pxdDismissed`. Optionally, push every semantic event onto `window.__pxdEvents`, as the shipped harnesses do.
 3. **Set `window.__pxdReady = true`** after the first paint. The verifier waits for finite animations to end before it measures.
 4. **Make the same decisions.** A `Choice` with three short options is chips, a `Table` stacks below 720px, a `Frame` puts five items in a bar on a phone, `ui.dismiss` closes, an input's action carries the value it just wrote. All of these are in `@polyxd/core`; use it.
 5. **Give the same accessibility tree.** The roles, accessible names, states and reading order the [component definitions](/docs/reference/components) require, which the React renderer's output defines in practice: a `Confirm` is an `alertdialog` whose consequence sits directly above its buttons, a rating is a radiogroup of "1 star" to "5 stars", a table's stacked rows keep the Select button an agent presses at any width.
