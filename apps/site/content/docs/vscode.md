@@ -13,7 +13,16 @@ The **Polyxd** extension puts the check and the preview next to the document you
 
 ## Install it
 
-The extension is coming to the Visual Studio Marketplace and to Open VSX, the registry Cursor, VSCodium and Windsurf use. Until then, build the `.vsix` from the repository and install it:
+Search for **Polyxd** in the Extensions view, or install it from the command line:
+
+```sh
+code --install-extension Polyxd.polyxd-vscode
+```
+
+- **VS Code:** [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Polyxd.polyxd-vscode)
+- **Cursor, VSCodium and Windsurf:** [Open VSX](https://open-vsx.org/extension/polyxd/polyxd-vscode)
+
+To build it from the repository instead:
 
 ```sh
 git clone https://github.com/visualfart/polyxd && cd polyxd
