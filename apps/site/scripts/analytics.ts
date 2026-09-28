@@ -79,6 +79,9 @@ if (w.pxdTrack) {
   posthog.init(${JSON.stringify(key)}, {
     api_host: "/ingest",
     ui_host: ${JSON.stringify(ui)},
+    // Cookieless: nothing is stored in the browser; PostHog counts unique visitors with a daily
+    // server-side hash that it discards (the project has cookieless server hash mode on).
+    cookieless_mode: "always",
     persistence: "memory",
     person_profiles: "identified_only",
     autocapture: false,

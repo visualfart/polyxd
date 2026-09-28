@@ -38,7 +38,7 @@ This policy covers polyxd.com (the site, the docs, the gallery and the demos), P
   - in a demo, whether your ask was answered from the library, generated live, or not yet. Never what you asked.
 
   Addresses are sent without their query strings or fragments, and without ad-click ids.
-- **No cookies or local storage for analytics.** The analytics keep a random id in memory for the page you are on. Each page load gets a new one, so we can't tell your visits apart or recognise you when you come back.
+- **No cookies or local storage for analytics.** Nothing is stored in your browser. To count unique visitors, PostHog makes a code each day from your IP address, your browser details and a secret that changes daily, and uses it only for that day. The code can't be turned back into your IP address, and a new day gives you a new code, so we can't recognise you from one day to the next.
 - **Do Not Track and Global Privacy Control.** If your browser sends either signal, the analytics script isn't loaded at all.
 - **How it travels.** Events go to polyxd.com first, at `/ingest`, which passes them on to PostHog without cookies. PostHog uses your IP address to work out your country, then discards the address. It isn't stored.
 - **No advertising.** The site loads no advertising scripts and sets no cookies of its own.
