@@ -220,7 +220,7 @@ select:focus-visible {
   }
 }
 
-/* Hero: badge and buttons. The rest of the landing page lives in story.css. */
+/* Hero: badge and buttons. The home page's scenes live in home.css. */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -365,26 +365,135 @@ select:focus-visible {
 }
 
 /* Footer */
-.site-footer .wrap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding-block: 48px;
-  font-size: 15px;
-  color: var(--muted);
+/* The footer: signal orange with ink. Its colours are pinned, so it reads the same in dark mode. */
+.site-footer {
+  --ink: #141413;
+  --ground: #f3f1ec;
+  --focus: #141413;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0;
+  background: var(--signal, #ff6e40);
+  color: #141413;
 }
-.site-footer nav {
+.footer-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* Without WebGL: a still band of ink dots along the top edge. */
+.footer-field:not(.field-live) {
+  background-image: radial-gradient(#141413 2.2px, transparent 2.6px);
+  background-size: 12px 12px;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 90px);
+  mask-image: linear-gradient(180deg, #000, transparent 90px);
+}
+.site-footer > :not(.footer-field) {
+  position: relative;
+}
+.footer-top {
+  margin-top: 72px;
+}
+.footer-top {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  padding-block: 32px 56px;
+  border-bottom: 1px solid rgba(20, 20, 19, 0.28);
+}
+.footer-line {
+  margin: 0;
+  max-width: 14ch;
+  font-size: clamp(44px, 6vw, 96px);
+  line-height: 0.98;
+  text-wrap: balance;
+}
+.footer-actions {
+  display: flex;
+  align-items: center;
   gap: 24px;
 }
+.site-footer .footer-btn {
+  background: #141413;
+  color: #f3f1ec;
+}
+.site-footer .footer-btn:hover {
+  background: #2b2a28;
+  color: #f3f1ec;
+}
 .site-footer a {
+  color: #141413;
   text-decoration: none;
 }
-.site-footer a:hover {
-  color: var(--signal-text);
+.site-footer a:not(.btn):hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.footer-quiet {
+  font-weight: 600;
+}
+.footer-cols {
+  padding-block: 48px;
+}
+.site-footer nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px;
+}
+.site-footer .footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 17px;
+}
+.site-footer .footer-col b {
+  margin-bottom: 6px;
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 19, 0.72);
+}
+.footer-giant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--s) * 5 / 32);
+  --s: min(24vw, 360px);
+  padding: 8px var(--gutter) 0;
+  line-height: 1;
+}
+.footer-giant .footer-mark {
+  width: var(--s);
+  height: var(--s);
+}
+.footer-giant .pxb-pupil {
+  transition: cx 180ms var(--ease-standard), cy 180ms var(--ease-standard);
+}
+.footer-word {
+  font: 400 calc(var(--s) * 0.8) / 1 var(--font-display);
+  letter-spacing: -0.015em;
+  transform: translateY(-0.06em);
+}
+.footer-base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-block: 28px 32px;
+  font-size: 14px;
+  color: rgba(20, 20, 19, 0.8);
+}
+@media (max-width: 720px) {
+  .site-footer nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .footer-giant {
+    --s: 20vw;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

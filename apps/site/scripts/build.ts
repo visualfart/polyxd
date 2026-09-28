@@ -21,6 +21,7 @@ const SITE = here("../");
 const REPO = here("../../../");
 const DIST = join(SITE, "dist");
 const ORIGIN = "https://polyxd.com";
+const GITHUB = "https://github.com/visualfart/polyxd";
 const SECTIONS = ["Start", "Concepts", "Guides", "Reference", "Project"];
 
 interface Page {
@@ -117,25 +118,56 @@ function head({ title, description, path, css = [] }: { title: string; descripti
 ${css.map((c) => `<link rel="stylesheet" href="${c}">`).join("\n")}`;
 }
 
-function header(current: "home" | "docs") {
+function header(current: string) {
   const cur = (k: string) => (k === current ? ' aria-current="page"' : "");
   return `<header class="site-header"><div class="wrap">
 <a class="brand" href="/" aria-label="Polyxd home">${LOGO}</a>
 <nav class="site-nav" aria-label="Main">
-<a class="nav-optional" href="/#how">How it works</a>
-<a class="nav-optional" href="/docs/designers/">For design teams</a>
+<a class="nav-optional" href="/how-it-works/"${cur("how-it-works")}>Product</a>
+<a class="nav-optional" href="/design-systems/"${cur("design-systems")}>Design systems</a>
+<a class="nav-wide" href="/verify/"${cur("verify")}>Verify</a>
+<a class="nav-wide" href="/studio/"${cur("studio")}>Studio</a>
 <a class="nav-wide" href="/demos/">Demos</a>
-<a class="nav-wide" href="/gallery/">Gallery</a>
 <a href="/docs/"${cur("docs")}>Docs</a>
-<a class="btn btn-line btn-small" href="/#access">Early access</a>
+<a class="nav-wide" href="${GITHUB}">GitHub</a>
+<a class="btn btn-signal btn-small" href="/docs/quickstart/">Get started</a>
 </nav></div></header>`;
 }
 
-const footer = `<footer class="site-footer"><div class="wrap">
-<a class="brand" href="/" aria-label="Polyxd home">${LOGO}</a>
-<nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/demos/">Demos</a><a href="/docs/reference/coverage/">All components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
-<span>© 2026 Polyxd · Apache-2.0 code, CC-BY-4.0 spec</span>
-</div></footer>`;
+/**
+ * The footer: signal orange, ink text (6.6:1), a band of ink dots from the home page's field, and
+ * the lockup at full width in its one-colour ink form (an orange p would vanish on orange). The
+ * pupil follows the pointer; the script is inline so every page, docs included, gets it.
+ */
+const footer = `<footer class="site-footer" aria-labelledby="footer-title">
+<canvas class="footer-field" data-field data-rest="#141413" data-rest-alpha=".34" data-active="#F3F1EC" data-density=".8" data-quiet=".footer-line, .footer-col b, .footer-col a, .footer-base > *, .footer-quiet" data-solid=".footer-btn, .footer-giant .footer-mark, .footer-word" aria-hidden="true"></canvas>
+<div class="wrap footer-top">
+<p class="display footer-line" id="footer-title">Every ask gets a screen.</p>
+<div class="footer-actions"><a class="btn footer-btn" href="/docs/quickstart/">Get started</a><a class="footer-quiet" href="https://studio.polyxd.com">Try Studio</a></div>
+</div>
+<div class="wrap footer-cols">
+<nav aria-label="Footer">
+<span class="footer-col"><b>Product</b><a href="/how-it-works/">How it works</a><a href="/design-systems/">Design systems</a><a href="/verify/">Verify</a><a href="/studio/">Studio</a></span>
+<span class="footer-col"><b>For</b><a href="/designers/">Designers</a><a href="/design-system-teams/">Design-system teams</a><a href="/developers/">Engineers</a><a href="/product-teams/">Product teams</a></span>
+<span class="footer-col"><b>Build</b><a href="/docs/">Docs</a><a href="/docs/quickstart/">Quickstart</a><a href="/gallery/">Gallery</a><a href="/demos/">Demos</a></span>
+<span class="footer-col"><b>Open</b><a href="/open-source/">Open source</a><a href="${GITHUB}">GitHub</a><a href="/docs/roadmap/">Roadmap</a><a href="https://studio.polyxd.com">Try Studio</a></span>
+</nav>
+</div>
+<div class="footer-giant" aria-hidden="true">${livingMark({ size: 320, mono: "ink", className: "footer-mark" })}<span class="footer-word">polyxd</span></div>
+<div class="wrap footer-base"><span>© 2026 Polyxd</span><span>Apache-2.0 code · CC-BY-4.0 spec</span><a href="#">Back to top</a></div>
+<script src="/assets/field.js" defer></script>
+<script>(() => {
+  const m = document.querySelector(".footer-mark"), p = m && m.querySelector(".pxb-pupil");
+  if (!p || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  addEventListener("pointermove", (e) => {
+    const r = m.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    const ax = e.clientX - (r.left + r.width / 2), ay = e.clientY - (r.top + r.height / 2), d = Math.hypot(ax, ay) || 1, k = Math.min(1, d / 320) * 1.35;
+    p.setAttribute("cx", (16 + (ax / d) * k).toFixed(2));
+    p.setAttribute("cy", (16 + (ay / d) * k).toFixed(2));
+  }, { passive: true });
+})();</script>
+</footer>`;
 
 // ---------- Markdown ----------
 
@@ -525,6 +557,113 @@ async function scenariosHtml(packs: { key: string; name: string }[]): Promise<st
   return items.join("\n");
 }
 
+// ---------- The home page and landing pages: real screens, real logos ----------
+
+/** The pack each demo product ships in. */
+const DEMO_PACK: Record<string, string> = { halden: "material3", foundry: "shadcn", wexley: "govuk", quay: "polaris" };
+const DEMO_NAME: Record<string, string> = { halden: "Halden", foundry: "Foundry", wexley: "Wexley Borough Council", quay: "Quay" };
+const PACK_DISPLAY: Record<string, string> = {};
+async function loadPackNames() {
+  for (const dir of (await readdir(join(REPO, "packages"))).filter((d) => d.startsWith("ds-") && existsSync(join(REPO, "packages", d, "manifest.json")))) {
+    const m = JSON.parse(await readFile(join(REPO, "packages", dir, "manifest.json"), "utf8"));
+    PACK_DISPLAY[m.name] = m.displayName;
+  }
+}
+
+/**
+ * The hero's four asks. Each answer is a demo product's own verified document, with the data
+ * snapshot it was verified against, rendered at build time by @polyxd/react in that product's pack.
+ * Typed words reach an answer through the intent's keywords, the same way the demo's ask box does.
+ */
+const HERO_ASKS = [
+  { product: "halden", intent: "money.send", chip: "Send £40 to Priya for dinner", extra: ["money", "priya", "owe", "split", "£"] },
+  { product: "foundry", intent: "accounts.renewing-with-tickets", chip: "Renewals with open tickets", extra: ["renew", "renewal", "renewals", "tickets", "risk", "accounts"] },
+  { product: "wexley", intent: "bin.missed", chip: "My bin wasn’t collected", extra: ["recycling", "rubbish", "council", "waste"] },
+  { product: "quay", intent: "order.refund", chip: "Refund order #1042", extra: ["order", "return", "1042"] },
+];
+
+async function demoIntent(product: string, id: string) {
+  const intent = JSON.parse(await readFile(join(REPO, "apps/demos", product, "intents", `${id}.json`), "utf8"));
+  const report = JSON.parse(await readFile(join(REPO, "apps/demos", product, "reports", `${id}.json`), "utf8").catch(() => "null"));
+  return { intent, report } as { intent: { title: string; ask: string[]; keywords?: string[]; document: UIDocument }; report: { score: number; targets: unknown[] } | null };
+}
+
+/** A document drawn by the real renderer in one pack; decorative copies are inert. */
+function surfaceHtml(doc: UIDocument, pack: string, { mode = "light", inert = true, cls = "" } = {}) {
+  const html = renderToStaticMarkup(createElement(PolyxdSurface, { document: doc, theme: pack, mode: mode as "light" | "dark" }));
+  return `<div class="pxd-frame${cls ? ` ${cls}` : ""}" data-pxd-theme="${pack}" data-pxd-mode="${mode}"${inert ? ' inert aria-hidden="true"' : ""}>${html}</div>`;
+}
+
+async function heroAsksHtml(): Promise<{ chips: string; answers: string }> {
+  const chips: string[] = [];
+  const answers: string[] = [];
+  for (const [i, a] of HERO_ASKS.entries()) {
+    const { intent, report } = await demoIntent(a.product, a.intent);
+    const pack = DEMO_PACK[a.product];
+    const words = [...new Set([...(intent.keywords ?? []), ...a.extra].map((w) => w.toLowerCase()))];
+    chips.push(`<button type="button" class="chip" data-ask="${i}">${esc(a.chip)}</button>`);
+    answers.push(`<figure class="answer" data-answer="${i}" data-words="${esc(words.join("|"))}" data-pack-name="${esc(PACK_DISPLAY[pack])}" data-product="${esc(DEMO_NAME[a.product])}" hidden>
+<p class="sr-only">${esc(intent.title)}, drawn by ${esc(DEMO_NAME[a.product])} in ${esc(PACK_DISPLAY[pack])}.</p>
+<div class="answer-screen">${surfaceHtml(intent.document, pack)}</div>
+<figcaption>${packName(pack, PACK_DISPLAY[pack], 20)}<span class="answer-score">${report ? `Checked in ${report.targets.length} renders · score ${report.score}` : "Checked"}</span><a href="/demos/${a.product}/">Open ${esc(DEMO_NAME[a.product].split(" ")[0])}</a></figcaption>
+</figure>`);
+  }
+  return { chips: chips.join("\n"), answers: answers.join("\n") };
+}
+
+/** Short names for big type, as the gallery shows them. */
+const SHORT: Record<string, string> = { material3: "Material 3", shadcn: "shadcn/ui", govuk: "GOV.UK", polaris: "Polaris", carbon: "Carbon", fluent: "Fluent 2" };
+/** One document, the real renderer, a run of design systems: the home page's wipe. */
+// Carbon last: the screen carries on from here into the dark "Checked" scene in Carbon's dark mode.
+const WIPE_PACKS = ["material3", "shadcn", "govuk", "polaris", "fluent", "carbon"];
+const DARK_PACK = "carbon";
+async function packWipeHtml(): Promise<{ layers: string; names: string; tabs: string; count: number }> {
+  const { intent } = await demoIntent("halden", "money.send");
+  const n = WIPE_PACKS.length;
+  const layers = WIPE_PACKS.map((p, i) => `<div class="wipe-layer" style="--i:${i === 0 ? -9 : i}">${surfaceHtml(intent.document, p)}</div>`).join("\n");
+  const edges = WIPE_PACKS.slice(1).map((_, i) => `<i class="wipe-edge" style="--i:${i + 1}" aria-hidden="true"></i>`).join("");
+  const names = WIPE_PACKS.map((p, i) => `<span class="wipe-name" style="--i:${i};--j:${i === n - 1 ? 99 : i + 1}">${packLogo(p, "0.7em")}<span>${esc(SHORT[p] ?? PACK_DISPLAY[p])}</span></span>`).join("\n");
+  const tabs = WIPE_PACKS.map((p, i) => `<button type="button" class="wipe-tab" data-wipe="${i}" aria-pressed="${i === 0}">${packLogo(p, 18)}<span>${esc(SHORT[p] ?? PACK_DISPLAY[p])}</span></button>`).join("\n");
+  return { layers: layers + edges, names, tabs, count: n };
+}
+
+/**
+ * One screen that travels down the page: born in "the turn", restyled through the packs in the
+ * phone, checked at night, then let go. Fixed to the viewport and moved by home.js between the
+ * scenes' [data-slot] places; the scenes keep their own copies as stills for when nothing moves.
+ */
+function travellerHtml(doc: UIDocument): string {
+  const layers = WIPE_PACKS.map((p, i) => `<div class="tv-layer" style="--i:${i === 0 ? -9 : i}">${surfaceHtml(doc, p)}</div>`).join("");
+  const edges = WIPE_PACKS.slice(1).map((_, i) => `<i class="tv-edge" style="--i:${i + 1}"></i>`).join("");
+  return `<div class="traveller" data-traveller aria-hidden="true" inert><div class="tv-clip">${layers}<div class="tv-dark">${surfaceHtml(doc, DARK_PACK, { mode: "dark" })}</div>${edges}<i class="tv-scan"></i></div></div>`;
+}
+
+/** Every pack the repo ships, by its own logo: the real systems, then Polyxd's templates. */
+async function packWallHtml(realOnly = false): Promise<string> {
+  const dirs = (await readdir(join(REPO, "packages"))).filter((d) => d.startsWith("ds-") && existsSync(join(REPO, "packages", d, "manifest.json"))).sort();
+  const ms = await Promise.all(dirs.map(async (d) => JSON.parse(await readFile(join(REPO, "packages", d, "manifest.json"), "utf8"))));
+  const tile = (m: any) => `<li class="wall-tile">${packLogo(m.name, 36, true)}<span>${esc(m.displayName)}</span></li>`;
+  const real = ms.filter((m) => !isTemplate(m));
+  real.sort((a, b) => Number(b.name === "material3") - Number(a.name === "material3"));
+  const systems = `<ul class="wall" aria-label="Design systems">${real.map(tile).join("")}</ul>`;
+  if (realOnly) return `${systems}\n<p class="wall-more">And ${esc(ms.filter(isTemplate).map((m) => m.displayName).join(", "))}: templates to start from.</p>`;
+  return `${systems}\n<ul class="wall wall-templates" aria-label="Templates">${ms.filter(isTemplate).map(tile).join("")}</ul>`;
+}
+
+/** The four demo products, each shown by the screen its ask box drew above. */
+async function demoCardsHtml(): Promise<string> {
+  const cards: string[] = [];
+  for (const a of HERO_ASKS) {
+    const { intent } = await demoIntent(a.product, a.intent);
+    const pack = DEMO_PACK[a.product];
+    cards.push(`<a class="demo-tile" href="/demos/${a.product}/">
+<div class="demo-shot">${surfaceHtml(intent.document, pack)}</div>
+<span class="demo-meta"><b>${esc(DEMO_NAME[a.product])}</b>${packName(pack, PACK_DISPLAY[pack], 18)}</span>
+</a>`);
+  }
+  return cards.join("\n");
+}
+
 // ---------- Build ----------
 
 async function write(path: string, content: string) {
@@ -551,24 +690,272 @@ const demo = await demoHtml();
 await write(join(DIST, "assets/themes.css"), demo.themes);
 await cp(join(REPO, "packages/react/src/styles.css"), join(DIST, "assets/renderer.css"));
 const spelled = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen"];
-const landing = (await readFile(join(SITE, "src/index.html"), "utf8"))
-  .replace("<!--HEAD-->", head({ title: "Polyxd — interfaces that show up when you need them", description: "Polyxd turns a request into a real, accessible interface, built from your design system, usable by people and agents, and gone when the task is done.", path: "/", css: ["/assets/themes.css", "/assets/renderer.css"] }))
-  .replace("<!--HEADER-->", header("home"))
-  .replace("<!--DEMO-->", demo.html)
-  .replace("<!--PACKCOUNT-->", spelled[demo.count - 1] ?? String(demo.count))
-  // The story's "any design system" act rolls through every pack by name; story.js reads the keys off these spans.
-  .replace("<!--PACKNAMES-->", demo.packs.map((p) => `<span data-pack="${p.key}">${packName(p.key, p.name, "0.8em")}</span>`).join(""))
-  // A demo card names its product's design system with that system's logo.
-  .replace(/<!--PACKLOGO:([a-z0-9]+)-->/g, (_, key: string) => packLogo(key, 24))
-  .replace("<!--SCENARIOS-->", await scenariosHtml(demo.packs))
-  .replace("<!--EXAMPLECOUNT-->", String((await readdir(join(REPO, "packages/spec/examples"))).filter((f) => f.endsWith(".json")).length))
-  .replace("<!--COMPONENTCOUNT-->", String((await readdir(join(REPO, "packages/spec/components"))).filter((f) => f.endsWith(".json")).length))
-  .replace("<!--RENDERCOUNT-->", (await renderCount()).toLocaleString("en-GB"))
-  .replace("<!--TEMPLATECOUNT-->", await templateCount())
-  .replace("<!--FOOTER-->", footer)
-  // <!--MARK:state:size:class--> places the living mark (only its pupil moves).
-  .replace(/<!--MARK:(\w+):(\d+)(?::([\w-]+))?-->/g, (_, state: MarkState, size: string, className?: string) => livingMark({ state, size: Number(size), className }));
+await loadPackNames();
+const hero = await heroAsksHtml();
+const send = await demoIntent("halden", "money.send");
+const sent = await demoIntent("halden", "money.send.confirm");
+const SCREENS: Record<string, string> = {
+  TURN_SCREEN: surfaceHtml(send.intent.document, "material3"),
+  CHECK_SCREEN: surfaceHtml(send.intent.document, DARK_PACK, { mode: "dark" }),
+  GONE_SCREEN: surfaceHtml(send.intent.document, DARK_PACK),
+  TRAVELLER: travellerHtml(send.intent.document),
+};
+const wipe = await packWipeHtml();
+const counts = {
+  PACKCOUNT: spelled[demo.count - 1] ?? String(demo.count),
+  PACKCOUNTNUM: String(demo.count),
+  TEMPLATECOUNT: await templateCount(),
+  RENDERCOUNT: (await renderCount()).toLocaleString("en-GB"),
+  RENDERCOUNTNUM: String(await renderCount()),
+  EXAMPLECOUNT: String((await readdir(join(REPO, "packages/spec/examples"))).filter((f) => f.endsWith(".json")).length),
+  COMPONENTCOUNT: String((await readdir(join(REPO, "packages/spec/components"))).filter((f) => f.endsWith(".json")).length),
+};
+async function replaceAsync(s: string, re: RegExp, fn: (...m: string[]) => Promise<string>): Promise<string> {
+  const parts = await Promise.all([...s.matchAll(re)].map((m) => fn(...(m as unknown as string[]))));
+  let i = 0;
+  return s.replace(re, () => parts[i++]);
+}
+/** Fills a page's placeholders: the shared chrome, the real renders, the counts and the living mark. */
+async function fill(html: string, { title, description, path, current = "home" }: { title: string; description: string; path: string; current?: string }): Promise<string> {
+  // Scenes first: they carry placeholders of their own.
+  html = await replaceAsync(html, /<!--SCENE:([a-z]+)-->/g, async (_, name: string) => readFile(join(SITE, "src/scenes", `${name}.html`), "utf8"));
+  let out = html
+    .replace("<!--HEAD-->", head({ title, description, path, css: ["/assets/themes.css", "/assets/renderer.css", "/assets/home.css"] }))
+    .replace("<!--HEADER-->", header(current))
+    .replace("<!--FOOTER-->", footer)
+    .replace("<!--HERO_CHIPS-->", hero.chips)
+    .replace("<!--HERO_ANSWERS-->", hero.answers)
+    .replace("<!--WIPE_LAYERS-->", wipe.layers)
+    .replace("<!--WIPE_NAMES-->", wipe.names)
+    .replace("<!--WIPE_TABS-->", wipe.tabs)
+    .replace(/<!--WIPE_COUNT-->/g, String(wipe.count));
+  if (out.includes("<!--PACK_WALL-->")) out = out.replace("<!--PACK_WALL-->", await packWallHtml());
+  if (out.includes("<!--PACK_WALL_SYSTEMS-->")) out = out.replace("<!--PACK_WALL_SYSTEMS-->", await packWallHtml(true));
+  if (out.includes("<!--DEMO_TILES-->")) out = out.replace("<!--DEMO_TILES-->", await demoCardsHtml());
+  if (out.includes("<!--SCENARIOS-->")) out = out.replace("<!--SCENARIOS-->", await scenariosHtml(demo.packs));
+  for (const [k, v] of Object.entries({ ...counts, ...SCREENS })) out = out.replaceAll(`<!--${k}-->`, v);
+  return out
+    .replace(/<!--PACKLOGO:([a-z0-9]+)(?::(\d+))?-->/g, (_, key: string, size?: string) => packLogo(key, size ? Number(size) : 24))
+    // <!--MARK:state:size:class--> places the living mark (only its pupil moves).
+    .replace(/<!--MARK:(\w+):(\d+)(?::([\w-]+))?-->/g, (_, state: MarkState, size: string, className?: string) => livingMark({ state, size: Number(size), className }));
+}
+const landing = await fill(await readFile(join(SITE, "src/index.html"), "utf8"), {
+  title: "Polyxd: every ask gets a screen",
+  description: "Your product has screens for what people asked last year. Polyxd draws the rest on demand, in your own design system, and checks each one before anyone sees it.",
+  path: "/",
+});
 await write(join(DIST, "index.html"), landing);
+
+// ---------- The landing pages ----------
+// Each is the home page's cut for one reader: a hero on the same dot field, then scenes from
+// src/scenes and a few short blocks. Nothing here claims what the roadmap only plans.
+
+type Block =
+  | { scene: string }
+  | { points: { title: string; items: [string, string][] } }
+  | { term: { title: string; lead: string; code: string; link?: [string, string] } }
+  | { wall: string }
+  | { specimens: string }
+  | { note: string };
+interface LandingPage {
+  slug: string;
+  nav?: string;
+  title: string;
+  description: string;
+  eyebrow: string;
+  h1: string;
+  lead: string;
+  ctas: [string, string][];
+  art: string;
+  blocks: Block[];
+}
+
+const art = {
+  screen: (doc: UIDocument, pack: string, mode = "light", slot = false) =>
+    `<div class="art-screen"><i class="art-halo"></i><div class="art-slot"${slot ? ` data-slot="art"${mode === "dark" ? ' data-mode="dark"' : ""}` : ""}>${surfaceHtml(doc, pack, { mode })}</div></div>`,
+  wall: () => {
+    const keys = ["material3", "carbon", "shadcn", "polaris", "fluent", "antd", "primer", "spectrum", "chakra", "mantine", "radix", "bootstrap"];
+    return `<div class="art-wall">${keys.map((k, i) => `<span style="--i:${i}">${packLogo(k, 44)}</span>`).join("")}</div>`;
+  },
+  term: (code: string) => `<pre class="term mono art-term">${code}</pre>`,
+  mark: () => `<div class="art-mark">${livingMark({ state: "looking", size: 280 })}</div>`,
+};
+
+function blockHtml(b: Block): string {
+  if ("scene" in b) return `<!--SCENE:${b.scene}-->`;
+  if ("points" in b)
+    return `<section class="section block-points"><div class="wrap"><h2 class="display block-title">${esc(b.points.title)}</h2><ol class="points">${b.points.items
+      .map(([t, d], i) => `<li><span class="mono point-n">${String(i + 1).padStart(2, "0")}</span><h3>${esc(t)}</h3><p>${d}</p></li>`)
+      .join("")}</ol></div></section>`;
+  if ("term" in b)
+    return `<section class="section block-term"><div class="wrap block-split"><div><h2 class="display block-title">${esc(b.term.title)}</h2><p class="block-lead">${b.term.lead}</p>${b.term.link ? `<a class="panel-link" href="${b.term.link[1]}">${esc(b.term.link[0])}</a>` : ""}</div><pre class="term mono">${b.term.code}</pre></div></section>`;
+  if ("wall" in b) return `<section class="section block-wall"><div class="wrap"><h2 class="display block-title">${esc(b.wall)}</h2><!--PACK_WALL--></div></section>`;
+  if ("specimens" in b) return `<section class="section block-specimens"><div class="wrap"><h2 class="display block-title">${esc(b.specimens)}</h2><ul class="specimens"><!--SCENARIOS--></ul></div></section>`;
+  return `<section class="section block-note"><div class="wrap"><p>${b.note}</p></div></section>`;
+}
+
+const cta = (label: string, href: string, primary = false) => `<a class="btn ${primary ? "btn-signal" : "btn-line"}" href="${href}">${esc(label)}</a>`;
+const refund = await demoIntent("quay", "order.refund");
+const renewals = await demoIntent("foundry", "accounts.renewing-with-tickets");
+
+const LANDING_PAGES: LandingPage[] = [
+  {
+    slug: "how-it-works", nav: "how-it-works",
+    title: "How Polyxd works", description: "A model, a template or a designer writes a small document. Your product draws it with your design system. A verifier checks it first.",
+    eyebrow: "How it works", h1: "Polyxd turns the answer into a screen.",
+    lead: "A small document says what the screen means. Your design system draws it. A verifier checks it before anyone sees it.",
+    ctas: [["Get started", "/docs/quickstart/"], ["Try Studio", "https://studio.polyxd.com"]],
+    art: art.screen(send.intent.document, "material3", "light", true),
+    blocks: [
+      { scene: "gap" }, { scene: "turn" },
+      { points: { title: "Four layers. Your generator touches one.", items: [
+        ["The ask", "Typed, spoken, or sent by someone else’s agent."],
+        ["A document", `${counts.COMPONENTCOUNT} components, bound to data your app supplies. UI is data, never code.`],
+        ["Your design system", "The real renderer draws it with your tokens, in React, Web Components, Vue or Svelte."],
+        ["The check", "Schema, patterns, allowed actions, accessibility and an agent task, before it is shown."],
+      ] } },
+      { scene: "check" }, { scene: "gone" },
+    ],
+  },
+  {
+    slug: "design-systems", nav: "design-systems",
+    title: "Design systems · Polyxd", description: `${counts.PACKCOUNTNUM} established design systems and ${counts.TEMPLATECOUNT} templates, drawn by the real renderer. Or bring yours with one command.`,
+    eyebrow: "Design systems", h1: "Drawn in your design system. Not ours.",
+    lead: `${counts.PACKCOUNTNUM} established systems and ${counts.TEMPLATECOUNT} templates, drawn by the real renderer. Or bring yours with one command.`,
+    ctas: [["Bring your design system", "/docs/your-design-system/"], ["Browse the gallery", "/gallery/"]],
+    art: art.wall(),
+    blocks: [
+      { scene: "wipe" },
+      { wall: "Every pack, by its own logo." },
+      { term: { title: "Bring yours in one command.", lead: "Point it at your CSS variables. It maps them onto 87 roles, writes down every guess, and names every colour pair that fails.", code: `<span class="dim">$</span> npx polyxd pack ./tokens.css\n--brand-600   → <em>action.primary</em>\n--gray-50     → <em>surface.base</em>\n--gray-900    → <em>text.primary</em>\n<span class="dim">…every guess written to pack.notes.md</span>\n\n<span class="dim">$</span> npx polyxd check`, link: ["Your design system", "/docs/your-design-system/"] } },
+      { specimens: "Real screens, rendered at build time." },
+    ],
+  },
+  {
+    slug: "verify", nav: "verify",
+    title: "Verify · Polyxd", description: "Every screen is rendered in every pack, light and dark, phone and desktop, audited, and operated by an agent before anyone sees it.",
+    eyebrow: "Verify", h1: "Checked before anyone sees it.",
+    lead: "Every screen, every pack, light and dark, phone and desktop. Then an agent tries to finish the task by name alone.",
+    ctas: [["How the verifier works", "/docs/verifier/"], ["Run it in CI", "/docs/quickstart/#3-verify-it"]],
+    art: art.screen(send.intent.document, DARK_PACK, "dark", true),
+    blocks: [
+      { scene: "check" },
+      { points: { title: "Four layers of checks.", items: [
+        ["Document", "Schema, references, one primary action per view, data bindings, the pattern’s rules, allowed actions, labels that say what happens."],
+        ["Rendered", "Headless Chromium in each pack, mode and width: axe-core WCAG 2.2 AA, contrast, overflow, target size, runtime errors."],
+        ["Agent", "Scripted tasks through the accessibility tree only. The product must receive the expected action."],
+        ["Consistency", "Two generations of the same ask, compared."],
+      ] } },
+      { term: { title: "Twenty broken screens. Twenty caught.", lead: "Two primary actions, a destructive action outside a confirmation, a hard-coded balance, an image without alt text, a required field removed so the task can’t be done, and fifteen more.", code: `polyxd-verify ./screens\nschema ........... <em>pass</em>\npatterns ......... <em>pass</em>\nactions .......... <em>pass</em>\naxe, contrast .... <em>pass</em>\nagent tasks ...... <em>pass</em>`, link: ["The verifier", "/docs/verifier/"] } },
+    ],
+  },
+  {
+    slug: "studio", nav: "studio",
+    title: "Studio · Polyxd", description: "Import your design system, map it to 87 roles with contrast measured, author screens and the shell, and export to six formats.",
+    eyebrow: "Studio", h1: "Where your design system and your screens live.",
+    lead: "Import your tokens, map them to 87 roles with contrast measured, write screens and the shell, and export to six formats.",
+    ctas: [["Try Studio", "https://studio.polyxd.com"], ["Read about Studio", "/docs/studio/"]],
+    art: art.term(`<span class="dim">$</span> npx polyxd studio push ./\n<span class="dim">→ new version of</span> <em>acme-ds</em>\n\naction.primary   5.9:1\ntext.primary    16.1:1\ntext.muted       <em>3.9:1 fails</em>\n\n<span class="dim">publish waits until every pair passes</span>`),
+    blocks: [
+      { points: { title: "Your design system, kept honest.", items: [
+        ["Import", "From npm, a tarball, Tokens Studio, DTCG or CSS. Or start from a template."],
+        ["Map", "87 roles onto your semantic tokens, contrast measured in every mode. Publishing waits while any pair fails."],
+        ["Tune", "A tokens editor where every alias follows and contrast is measured as you type."],
+        ["Export", "CSS, DTCG, Tailwind, Style Dictionary, Swift and Compose."],
+      ] } },
+      { scene: "platform" },
+      { note: "Reviews, releases and insights are on the <a href=\"/docs/roadmap/\">roadmap</a>. Studio is free for one workspace, and you can run it yourself." },
+    ],
+  },
+  {
+    slug: "designers",
+    title: "For designers · Polyxd", description: "Decide what every screen must be like, and prove it. Your taste becomes a file the generator follows.",
+    eyebrow: "For designers", h1: "Draw the rules, not every screen.",
+    lead: "Decide what every screen must be like, and prove it. Author the ones that matter in the same format.",
+    ctas: [["Try Studio", "https://studio.polyxd.com"], ["The designer’s job", "/docs/designers/"]],
+    art: art.screen(refund.intent.document, "polaris"),
+    blocks: [
+      { points: { title: "The same judgement, applied once.", items: [
+        ["Direction", "Your taste as a file the generator reads: which components, what guidance, what never to do."],
+        ["Rules", "Written when something goes wrong, then held by the verifier for good."],
+        ["Authored screens", "The screens that matter, written in the same format, checked the same way."],
+        ["The shell", "Header, navigation and footer as a document a generator can never touch."],
+      ] } },
+      { scene: "wipe" },
+    ],
+  },
+  {
+    slug: "design-system-teams",
+    title: "For design-system teams · Polyxd", description: "One contract of 87 roles, checked before publishing, used by every generated screen.",
+    eyebrow: "For design-system teams", h1: "Adoption you can prove.",
+    lead: "One contract of 87 roles, contrast checked before anything publishes, and every generated screen built from your components.",
+    ctas: [["Bring your design system", "/docs/your-design-system/"], ["Try Studio", "https://studio.polyxd.com"]],
+    art: art.wall(),
+    blocks: [
+      { term: { title: "Your tokens, read in one command.", lead: "Every guess written down. Every failing colour pair named.", code: `<span class="dim">$</span> npx polyxd pack ./tokens.css\n--brand-600   → <em>action.primary</em>\n--gray-50     → <em>surface.base</em>\n<span class="dim">…</span>\n<em>2 pairs fail 4.5:1</em>`, link: ["Your design system", "/docs/your-design-system/"] } },
+      { scene: "wipe" },
+      { wall: "Beside the systems you already know." },
+    ],
+  },
+  {
+    slug: "developers",
+    title: "For engineers · Polyxd", description: "Render a UI document with a real renderer in React, Web Components, Vue or Svelte. UI is data, never code.",
+    eyebrow: "For engineers", h1: "Render a document. Ship a screen.",
+    lead: "Real renderers for React, Web Components, Vue and Svelte. UI is data, never code. The verifier runs in CI.",
+    ctas: [["Quickstart", "/docs/quickstart/"], ["GitHub", GITHUB]],
+    art: art.term(`<span class="dim">$</span> npm i @polyxd/react\n\n<span class="dim">&lt;</span>PolyxdSurface\n  document={doc}\n  data={hostData}\n  theme=<em>"material3"</em>\n  onAction={handle}\n<span class="dim">/&gt;</span>`),
+    blocks: [
+      { scene: "turn" },
+      { points: { title: "What you get.", items: [
+        ["Renderers", "<code>@polyxd/react</code>, and <code>@polyxd/web</code> for Web Components, Vue and Svelte, held to one conformance suite."],
+        ["Data from you", "Documents bind to data your app supplies. A model can’t invent a balance."],
+        ["Actions you allow", "A registry of what a document may trigger, and how risky each is."],
+        ["Checks in CI", "<code>polyxd-verify</code> on every change. Export to A2UI when you need it."],
+      ] } },
+      { specimens: "Rendered at build time, by the same code." },
+    ],
+  },
+  {
+    slug: "product-teams",
+    title: "For product teams · Polyxd", description: "Screens for the long tail, in your brand, gone when they are done. And agents can operate your product.",
+    eyebrow: "For product teams", h1: "Your assistant can finally show, not tell.",
+    lead: "Screens for the long tail, in your brand, gone when they’re done. And someone else’s agent can operate your product by name.",
+    ctas: [["See the demos", "/demos/"], ["Get started", "/docs/quickstart/"]],
+    art: art.screen(renewals.intent.document, "shadcn"),
+    blocks: [{ scene: "gap" }, { scene: "demos" }, { scene: "gone" }],
+  },
+  {
+    slug: "open-source",
+    title: "Open source · Polyxd", description: "Apache-2.0 code and CC-BY-4.0 spec. Any model, or none. Everything that runs inside your product is free.",
+    eyebrow: "Open source", h1: "Open spec. Any model. Your design system.",
+    lead: "Apache-2.0 code and a CC-BY-4.0 spec. Everything that runs inside your product is free, with no usage metering.",
+    ctas: [["Star on GitHub", GITHUB], ["Roadmap", "/docs/roadmap/"]],
+    art: art.mark(),
+    blocks: [
+      { points: { title: "What’s in the box.", items: [
+        ["The spec", `<code>@polyxd/spec</code>: ${counts.COMPONENTCOUNT} components, patterns, the action registry and the JSON Schema.`],
+        ["Renderers", "<code>@polyxd/react</code> and <code>@polyxd/web</code>, on the shared <code>@polyxd/core</code>."],
+        ["Packs", `${counts.PACKCOUNTNUM} design systems and ${counts.TEMPLATECOUNT} templates, one package each.`],
+        ["Tools", "The <code>polyxd</code> CLI, <code>@polyxd/verifier</code>, <code>@polyxd/a2ui</code> and the editor extension."],
+      ] } },
+      { note: "Planned, not shipped: an MCP server, a runtime SDK, native renderers and a Figma importer. Follow them on the <a href=\"/docs/roadmap/\">roadmap</a>." },
+    ],
+  },
+];
+
+const template = await readFile(join(SITE, "src/page.html"), "utf8");
+for (const pg of LANDING_PAGES) {
+  const html = template
+    .replace("<!--TITLE-->", esc(pg.title))
+    .replace("<!--DESCRIPTION-->", esc(pg.description))
+    .replace("<!--EYEBROW-->", esc(pg.eyebrow))
+    .replace("<!--H1-->", esc(pg.h1))
+    .replace("<!--LEAD-->", pg.lead)
+    .replace("<!--CTAS-->", pg.ctas.map(([l, h], i) => cta(l, h, i === 0)).join(""))
+    .replace("<!--ART-->", pg.art)
+    .replace("<!--BLOCKS-->", pg.blocks.map(blockHtml).join("\n"));
+  await write(join(DIST, pg.slug, "index.html"), await fill(html, { title: pg.title, description: pg.description, path: `/${pg.slug}/`, current: pg.nav ?? "" }));
+}
 
 const pages = [...(await markdownPages()), await componentsPage(), await tokensPage(), await coveragePage()].sort(
   (a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section) || a.order - b.order,
@@ -619,7 +1006,7 @@ execFileSync("npx", ["vite", "build", "--outDir", join(DIST, "demos"), "--emptyO
 });
 const demos = ["halden", "foundry", "wexley", "quay"];
 
-const urls = ["/", "/gallery/", "/demos/", ...demos.map((d) => `/demos/${d}/`), ...pages.map((p) => href(p.slug))];
+const urls = ["/", ...LANDING_PAGES.map((p) => `/${p.slug}/`), "/gallery/", "/demos/", ...demos.map((d) => `/demos/${d}/`), ...pages.map((p) => href(p.slug))];
 await write(join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${ORIGIN}${u}</loc></url>`).join("\n")}\n</urlset>\n`);
 await write(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${ORIGIN}/sitemap.xml\n`);
 

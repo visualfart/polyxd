@@ -1,0 +1,33 @@
+<!-- 06 · The turn -->
+<section class="scene scene-turn" data-scene="turn" data-kind="pin" style="--len:3" aria-labelledby="turn-title">
+<div class="stick"><div class="wrap scene-inner">
+<h2 class="display scene-title center" id="turn-title">Polyxd turns the answer into a screen.</h2>
+<div class="turn-grid">
+<div class="turn-left" aria-hidden="true">
+<div class="turn-para">Sure. To split a payment, open Payments and choose New payment. If Priya is not saved yet, tap Add payee and enter her name, sort code and account number…</div>
+<div class="turn-dots"></div>
+<pre class="turn-json mono">{
+  "surface": { "title": "Send money" },
+  "data": { "payees": …, "draft": … },
+  "children": [
+    { "component": "Select", "bind": "/draft/to" },
+    { "component": "MoneyInput", "bind": "/draft/amount" },
+    { "component": "Button", "action": "transfer.review" }
+  ]
+}</pre>
+</div>
+<div class="turn-line" aria-hidden="true"><i></i></div>
+<div class="turn-right">
+<div class="turn-halo" aria-hidden="true"></div>
+<div class="turn-screen" data-slot="turn"><!--TURN_SCREEN--></div>
+<div class="turn-check"><!--MARK:checked:48--><span class="mono">Checked</span></div>
+</div>
+</div>
+<ol class="turn-rail">
+<li style="--at:0">The ask</li>
+<li style="--at:.24">A document, not code</li>
+<li style="--at:.5">Your design system draws it</li>
+<li style="--at:.9">Checked, then shown</li>
+</ol>
+</div></div>
+</section>
