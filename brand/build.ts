@@ -15,6 +15,7 @@
  *   brand/tokens.css            CSS custom properties for both themes, from tokens.json
  *   brand/icon-*.png            app icons (128, 180, 192, 512, 1024) on ink; icon-accent-1024.png on signal
  *   brand/og.png                1200×630 social image
+ *   brand/favicon.ico           the mark alone at 16, 32 and 48px, for browsers and crawlers that ask for /favicon.ico
  * tokens.json is the design system's own file (Claude Design, "Polyxd Design System"), copied here.
  * Run with `node brand/build.ts`; the site, Studio, the demos and the editor extension copy from here.
  */
@@ -243,6 +244,31 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       `<!doctype html><body style="margin:0;background:transparent"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><path d="${roundRect(0, 0, size, size, size * 0.225, 0.73)}" fill="${bg}"/><svg x="${size * 0.13}" y="${size * 0.13}" width="${size * 0.74}" height="${size * 0.74}" viewBox="0 0 32 32">${inner}</svg></svg></body>`;
     for (const size of [128, 180, 192, 512, 1024]) await shot(tile(INK, mark(), size), size, size, `icon-${size}.png`);
     await shot(tile(SIGNAL, mark({ colours: "ink" }), 1024), 1024, 1024, "icon-accent-1024.png");
+    // favicon.ico: the mark alone, as the SVG favicon is, at three sizes, each a PNG inside the ICO.
+    const sizes = [16, 32, 48];
+    const pngs: Buffer[] = [];
+    for (const size of sizes) {
+      const page = await browser.newPage({ viewport: { width: size, height: size }, deviceScaleFactor: 1 });
+      await page.setContent(`<!doctype html><body style="margin:0;background:transparent"><svg width="${size}" height="${size}" viewBox="0 0 32 32">${mark()}</svg></body>`);
+      pngs.push(await page.screenshot({ omitBackground: true }));
+      await page.close();
+    }
+    const head = Buffer.alloc(6 + 16 * sizes.length);
+    head.writeUInt16LE(1, 2);
+    head.writeUInt16LE(sizes.length, 4);
+    let offset = head.length;
+    sizes.forEach((size, i) => {
+      const at = 6 + 16 * i;
+      head.writeUInt8(size, at);
+      head.writeUInt8(size, at + 1);
+      head.writeUInt16LE(1, at + 4);
+      head.writeUInt16LE(32, at + 6);
+      head.writeUInt32LE(pngs[i].length, at + 8);
+      head.writeUInt32LE(offset, at + 12);
+      offset += pngs[i].length;
+    });
+    await writeFile(`${dir}favicon.ico`, Buffer.concat([head, ...pngs]));
+    console.log("wrote brand/favicon.ico");
     // The lockup: the word at 0.8 of the mark, a gap of 5/32 of it.
     const m = 96;
     await shot(

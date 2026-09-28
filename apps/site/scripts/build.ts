@@ -96,14 +96,28 @@ import { mark, svg as markSvg, markSvg as livingMark, FONTS_URL, PAPER, NIGHT, t
 /** The lockup: the mark (brand/build.ts, its pupil moved by brand/mark.css) beside the wordmark. */
 const LOGO = `${livingMark({ size: 32 })}<span class="brand-word">polyxd</span>`;
 
+/**
+ * Each page's social card (scripts/og.ts renders them into og/png/, keyed by the path without its
+ * slashes: "/" is "home"); a page without one gets the home card.
+ */
+const OG_DIR = join(SITE, "og/png");
+const ogImage = (path: string) => {
+  const key = path === "/" ? "home" : path.replace(/^\/|\/$/g, "").split("/").join("-");
+  return existsSync(join(OG_DIR, `${key}.png`)) ? `/og/${key}.png` : "/og.png";
+};
+
 function head({ title, description, path, css = [] }: { title: string; description: string; path: string; css?: string[] }) {
   return `<script>try{var t=localStorage.getItem("pxd-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <meta name="theme-color" content="${PAPER}" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="${NIGHT}" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="${ORIGIN}${path}">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-180.png">
-<meta property="og:image" content="${ORIGIN}/og.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:image" content="${ORIGIN}${ogImage(path)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Polyxd">
@@ -856,7 +870,14 @@ await mkdir(join(DIST, "assets/vendor"), { recursive: true });
 await Promise.all(VENDOR.map((f) => cp(join(REPO, "node_modules", f), join(DIST, "assets/vendor", f.split("/").pop()!))));
 // Favicons: down to 12px the pupil stays (BRAND-2026.md), so the SVG favicon is the whole mark.
 await write(join(DIST, "favicon.svg"), markSvg(mark()));
-for (const f of ["icon-180.png", "icon-192.png", "icon-512.png", "og.png"]) await copyFile(join(REPO, "brand", f), join(DIST, f));
+for (const f of ["icon-180.png", "icon-192.png", "icon-512.png", "favicon.ico"]) await copyFile(join(REPO, "brand", f), join(DIST, f));
+// Social cards: one per page (scripts/og.ts), and the home card as the default /og.png.
+if (existsSync(OG_DIR)) await cp(OG_DIR, join(DIST, "og"), { recursive: true });
+await copyFile(existsSync(join(OG_DIR, "home.png")) ? join(OG_DIR, "home.png") : join(REPO, "brand/og.png"), join(DIST, "og.png"));
+await write(join(DIST, "site.webmanifest"), JSON.stringify({
+  name: "Polyxd", short_name: "Polyxd", start_url: "/", display: "browser", background_color: PAPER, theme_color: PAPER,
+  icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }, { src: "/icon-512.png", sizes: "512x512", type: "image/png" }, { src: "/favicon.svg", sizes: "any", type: "image/svg+xml" }],
+}, null, 2) + "\n");
 // The brand's tokens and the mark's states, as brand/build.ts writes them.
 for (const f of ["tokens.css", "mark.css"]) await copyFile(join(REPO, "brand", f), join(DIST, "assets", f));
 
