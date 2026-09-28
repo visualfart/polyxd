@@ -6,7 +6,7 @@
 //   data-rest, data-rest-alpha   the dots at rest (default: the page's ink at 20%)
 //   data-active                  the dots under the pointer (default: signal orange)
 //   data-density                 how much of the field is inked (default 1)
-//   data-quiet                   selector: text whose every line the dots keep clear of
+//   data-quiet                   selector: blocks of text the dots keep clear of
 //   data-solid                   selector: boxes the dots keep clear of (controls, marks)
 (() => {
   const MAX = 48;
@@ -28,6 +28,7 @@ float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),u=fract(p);u=u*u*(3.-2.*u);return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);}
 float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){s+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return s;}
 float box(vec2 p, vec4 r){vec2 c=r.xy+r.zw*.5;vec2 d=abs(p-c)-r.zw*.5;return length(max(d,0.))+min(max(d.x,d.y),0.);}
+float rbox(vec2 p, vec4 r){float k=min(24.,min(r.z,r.w)*.5);return box(p,vec4(r.xy+k,r.zw-2.*k))-k;}
 void main(){
   vec2 px=vec2(gl_FragCoord.x,R.y-gl_FragCoord.y)/D; vec2 res=R/D;
   float cell=11.; vec2 g=floor(px/cell)*cell+cell*.5; vec2 q=g/max(res.y,600.);
@@ -36,10 +37,11 @@ void main(){
   vec2 dm=g-M; float pull=exp(-dot(dm,dm)/(2.*150.*150.));
   float sd=box(g,B); float inside=1.-smoothstep(-4.,4.,sd); float halo=exp(-max(sd,0.)/38.)*(1.-inside);
   float near=1e4;
-  for(int i=0;i<${MAX};i++){ if(i>=QN) break; near=min(near,box(g,Q[i])); }
-  float clear=smoothstep(4.,34.,near);
-  float rim=exp(-max(near-6.,0.)/22.)*clear;
-  float dens=(smoothstep(.42,.86,flow)*.95)*DEN+pull*.85+rim*.35;
+  for(int i=0;i<${MAX};i++){ if(i>=QN) break; near=min(near,rbox(g,Q[i])); }
+  // Soft, rounded pools of clear ground around text: no edge, no ring, so they read as calm
+  // patches of paper rather than boxes behind the words.
+  float clear=smoothstep(0.,64.,near-18.);
+  float dens=(smoothstep(.42,.86,flow)*.95)*DEN+pull*.85*clear;
   float condensed=max(inside*.92,halo*.9*(.6+.4*sin(T*3.+sd*.08)));
   dens=mix(dens,max(dens*.18,condensed),F)*clear;
   float rad=cell*.5*clamp(dens,0.,1.);
@@ -86,11 +88,8 @@ void main(){
         if (r.bottom < base.top - 40 || r.top > base.bottom + 40) return;
         out.push(r.left - base.left - pad, r.top - base.top - pad, r.width + pad * 2, r.height + pad * 2);
       };
-      if (ds.quiet) for (const el of document.querySelectorAll(ds.quiet)) {
-        const range = document.createRange();
-        range.selectNodeContents(el);
-        for (const r of range.getClientRects()) add(r, 2);
-      }
+      // One pool per block of text (a paragraph, a column of links), not one per line.
+      if (ds.quiet) for (const el of document.querySelectorAll(ds.quiet)) add(el.getBoundingClientRect(), 4);
       if (ds.solid) for (const el of document.querySelectorAll(ds.solid)) add(el.getBoundingClientRect(), 0);
       rects = new Float32Array(MAX * 4);
       rects.set(out);

@@ -140,7 +140,7 @@ function header(current: string) {
  * pupil follows the pointer; the script is inline so every page, docs included, gets it.
  */
 const footer = `<footer class="site-footer" aria-labelledby="footer-title">
-<canvas class="footer-field" data-field data-rest="#141413" data-rest-alpha=".34" data-active="#F3F1EC" data-density=".8" data-quiet=".footer-line, .footer-col b, .footer-col a, .footer-base > *, .footer-quiet" data-solid=".footer-btn, .footer-giant .footer-mark, .footer-word" aria-hidden="true"></canvas>
+<canvas class="footer-field" data-field data-rest="#141413" data-rest-alpha=".34" data-active="#F3F1EC" data-density=".8" data-quiet=".footer-line, .footer-actions, .footer-col, .footer-base" data-solid=".footer-giant .footer-mark, .footer-word" aria-hidden="true"></canvas>
 <div class="wrap footer-top">
 <p class="display footer-line" id="footer-title">Every ask gets a screen.</p>
 <div class="footer-actions"><a class="btn footer-btn" href="/docs/quickstart/">Get started</a><a class="footer-quiet" href="https://studio.polyxd.com">Try Studio</a></div>
