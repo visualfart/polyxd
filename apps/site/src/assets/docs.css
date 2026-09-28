@@ -147,6 +147,14 @@
   color: var(--muted);
   margin: 0 0 40px;
 }
+/* The privacy policy and terms: the date they were last changed, under the title. */
+.prose .legal-updated {
+  margin: 0 0 40px;
+  font: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--muted);
+}
 .prose h2 {
   font-family: var(--display);
   font-weight: 400;
