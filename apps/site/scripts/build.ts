@@ -3,6 +3,7 @@
  *   /                      landing page (src/index.html)
  *   /docs/…                Markdown in content/docs, plus reference pages generated from the spec's own JSON
  *   /gallery/              the live example gallery (apps/gallery, built with Vite)
+ *   /privacy/, /terms/     Markdown in content/legal
  *   sitemap.xml, robots.txt, 404.html, assets
  */
 import { copyFile, cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
@@ -220,7 +221,7 @@ const footer = `<footer class="site-footer" aria-labelledby="footer-title">
 </nav>
 </div>
 <div class="footer-giant" aria-hidden="true">${livingMark({ size: 320, mono: "ink", className: "footer-mark" })}<span class="footer-word">polyxd</span></div>
-<div class="wrap footer-base"><span>© 2026 Polyxd</span><span>Apache-2.0 code · CC-BY-4.0 spec</span><a href="#">Back to top</a></div>
+<div class="wrap footer-base"><span>© 2026 Polyxd</span><span>Apache-2.0 code · CC-BY-4.0 spec</span><span class="footer-legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></span><a href="#">Back to top</a></div>
 <script src="/assets/field.js" defer></script>
 <script>(() => {
   const m = document.querySelector(".footer-mark"), p = m && m.querySelector(".pxb-pupil");
@@ -542,6 +543,71 @@ ${footer}
 `;
 }
 
+
+// ---------- Legal pages ----------
+
+/**
+ * The privacy policy and the terms, from content/legal: the docs' reading column and on-this-page
+ * list, the two pages together in the nav, and each page's "Last updated" line at the top.
+ */
+interface LegalPage extends Page {
+  updated: string;
+}
+const LEGAL = ["privacy", "terms"];
+async function legalPages(): Promise<LegalPage[]> {
+  return Promise.all(
+    LEGAL.map(async (slug, order) => {
+      const { meta, body } = frontMatter(await readFile(join(SITE, "content/legal", `${slug}.md`), "utf8"));
+      const { html, toc } = renderMarkdown(body.replace(/^\s*# .*\n/, ""));
+      return { slug, title: meta.title ?? slug, description: meta.description ?? "", section: "Legal", order, html, toc, updated: meta.updated ?? "" };
+    }),
+  );
+}
+
+function legalPage(page: LegalPage, pages: LegalPage[]) {
+  const nav = `<h2>Legal</h2><ul>${pages.map((p) => `<li><a href="/${p.slug}/"${p.slug === page.slug ? ' aria-current="page"' : ""}>${esc(p.title)}</a></li>`).join("")}</ul>`;
+  const toc = page.toc.length > 1 ? `<aside class="docs-toc" aria-label="On this page"><h2>On this page</h2><ul>${page.toc.map((t) => `<li><a href="#${t.id}">${esc(t.text)}</a></li>`).join("")}</ul></aside>` : "<div></div>";
+  const title = `${page.title} · Polyxd`;
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(page.description)}">
+${head({ title, description: page.description, path: `/${page.slug}/`, css: ["/assets/docs.css"] })}
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+${header("")}
+<div class="docs legal">
+<nav class="docs-nav" aria-label="Legal">
+<button class="docs-nav-toggle" type="button" aria-expanded="false" aria-controls="docs-nav-inner">Menu · ${esc(page.title)}</button>
+<div class="docs-nav-inner" id="docs-nav-inner">${nav}</div>
+</nav>
+<main id="content" class="prose">
+<h1>${esc(page.title)}</h1>
+<p class="legal-updated">Last updated: ${esc(page.updated)}</p>
+${page.html}
+</main>
+${toc}
+</div>
+${footer}
+<script>
+(() => {
+  const nav = document.querySelector(".docs-nav");
+  const btn = nav.querySelector(".docs-nav-toggle");
+  btn.addEventListener("click", () => {
+    const open = !nav.hasAttribute("data-open");
+    nav.toggleAttribute("data-open", open);
+    btn.setAttribute("aria-expanded", String(open));
+  });
+})();
+</script>
+</body>
+</html>
+`;
+}
 
 // ---------- The landing page's demo ----------
 
@@ -1255,6 +1321,8 @@ const pages = [...(await markdownPages()), await componentsPage(), await tokensP
   (a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section) || a.order - b.order,
 );
 for (const p of pages) await write(join(DIST, p.slug ? `docs/${p.slug}/index.html` : "docs/index.html"), docsPage(p, pages));
+const legal = await legalPages();
+for (const p of legal) await write(join(DIST, p.slug, "index.html"), legalPage(p, legal));
 
 await write(
   join(DIST, "404.html"),
@@ -1300,7 +1368,7 @@ execFileSync("npx", ["vite", "build", "--outDir", join(DIST, "demos"), "--emptyO
 });
 const demos = ["halden", "foundry", "wexley", "quay"];
 
-const urls = ["/", "/studio/", ...LANDING_PAGES.map((p) => `/${p.slug}/`), "/gallery/", "/demos/", ...demos.map((d) => `/demos/${d}/`), ...pages.map((p) => href(p.slug))];
+const urls = ["/", "/studio/", ...LANDING_PAGES.map((p) => `/${p.slug}/`), "/gallery/", "/demos/", ...demos.map((d) => `/demos/${d}/`), ...pages.map((p) => href(p.slug)), ...legal.map((p) => `/${p.slug}/`)];
 await write(join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${ORIGIN}${u}</loc></url>`).join("\n")}\n</urlset>\n`);
 await write(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${ORIGIN}/sitemap.xml\n`);
 

@@ -487,6 +487,10 @@ select:focus-visible {
   font-size: 14px;
   color: rgba(20, 20, 19, 0.8);
 }
+.footer-legal {
+  display: flex;
+  gap: 20px;
+}
 @media (max-width: 720px) {
   .site-footer nav {
     grid-template-columns: repeat(2, minmax(0, 1fr));

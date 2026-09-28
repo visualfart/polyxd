@@ -1,0 +1,6 @@
+file	pack	mode	valid	validator issues	verifier errors	verifier warnings
+1-split-dinner-material3.png	material3	light	true	0	0	0
+2-return-shoes-carbon.png	carbon	light	true	0	0	0
+3-change-address-govuk.png	govuk	light	true	0	0	0
+4-support-dashboard-dark.png	shadcn	dark	true	0	0	0
+5-compare-broadband-editorial.png	editorial	light	true	0	0	0

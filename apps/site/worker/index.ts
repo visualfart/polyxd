@@ -60,6 +60,8 @@ export default {
     if (url.pathname === "/api/waitlist") return waitlist(request, env);
     if (url.pathname.startsWith("/demos/api/")) return demosApi(request, env, ctx);
     if (url.hostname === "www.polyxd.com") return Response.redirect(`https://polyxd.com${url.pathname}${url.search}`, 301);
+    // Studio's sign-up links to /privacy and /terms without the slash; send them to the pages for good.
+    if (url.pathname === "/privacy" || url.pathname === "/terms") return Response.redirect(`${url.origin}${url.pathname}/${url.search}`, 301);
     const response = await env.ASSETS.fetch(request);
     // The demo products route on the client: any path under /demos/<name>/ is that product's page.
     const demo = response.status === 404 && /^\/demos\/([a-z]+)\/./.exec(url.pathname);
