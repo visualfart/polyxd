@@ -1,4 +1,4 @@
-import { StrictMode, useMemo, useState } from "react";
+import { StrictMode, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { PolyxdSurface, type ActionEvent, type UIDocument } from "@polyxd/react";
 import "@polyxd/react/styles.css";
@@ -109,6 +109,25 @@ function Gallery() {
   const [width, setWidth] = useState<Width>(() =>
     readParam("width", ["phone", "tablet", "desktop"] as const, typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches ? "phone" : "desktop"),
   );
+  // A frame wider than the stage is shown whole, scaled down (CSS zoom keeps its layout at the width
+  // it says, so the surface renders exactly as it would at 1100 px); on a phone the stage scrolls instead.
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState(1);
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const measure = () => {
+      const cs = getComputedStyle(el);
+      const room = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const small = window.matchMedia("(max-width: 760px)").matches;
+      setFit(small ? 1 : Math.max(0.5, Math.min(1, room / WIDTHS[width])));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [width]);
+
   const [density, setDensity] = useState<Density>(() => readParam("density", ["comfortable", "compact", "spacious"] as const, "comfortable"));
   const [panel, setPanel] = useState<"log" | "json">("log");
   const [search, setSearch] = useState("");
@@ -202,17 +221,17 @@ function Gallery() {
           </Cluster>
         </div>
 
-        <div className="g-stage">
+        <div className="g-stage" ref={stageRef}>
           <div className="g-stage-inner" data-width={width}>
-          <div className="g-caption" style={{ width: WIDTHS[width] }}>
+          <div className="g-caption" style={{ width: WIDTHS[width] * fit }}>
             <span className="g-caption-text">{caption}</span>
-            <span className="g-caption-width">{WIDTHS[width]}px</span>
+            <span className="g-caption-width">{WIDTHS[width]}px{fit < 1 ? ` · ${Math.round(fit * 100)}%` : ""}</span>
             <button type="button" className="g-reset" onClick={() => (setRun((r) => r + 1), setLog([]))}>
               <Icon name="reset" size={15} />
               Reset
             </button>
           </div>
-          <div className="g-frame" style={{ width: WIDTHS[width], colorScheme: mode }}>
+          <div className="g-frame" style={{ width: WIDTHS[width], colorScheme: mode, zoom: fit < 1 ? fit : undefined }}>
             {surface}
           </div>
           </div>
