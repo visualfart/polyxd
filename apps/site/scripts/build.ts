@@ -770,11 +770,11 @@ async function logoBandHtml(): Promise<string> {
   const ms = await Promise.all(dirs.map(async (d) => JSON.parse(await readFile(join(REPO, "packages", d, "manifest.json"), "utf8"))));
   const real = ms.filter((m) => !isTemplate(m));
   real.sort((a, b) => Number(b.name === "material3") - Number(a.name === "material3"));
-  const all = [...real, ...ms.filter(isTemplate)];
-  const tiles = all.map((m) => `<li>${packLogo(m.name, 32, true)}<span>${esc(m.displayName)}</span></li>`).join("");
-  return `<section class="logo-band" aria-label="Design systems Polyxd draws in">
-<p class="eyebrow logo-band-label">Drawn in the systems you already use, and templates to start from</p>
-<div class="logo-marquee"><ul>${tiles}</ul><ul aria-hidden="true">${tiles}</ul></div>
+  const row = (list: any[]) => list.map((m) => `<li>${packLogo(m.name, 32, true)}<span>${esc(m.displayName)}</span></li>`).join("");
+  const lane = (label: string, list: any[], cls: string) => `<div class="logo-lane ${cls}"><p class="eyebrow logo-lane-label">${label}</p><div class="logo-track"><div class="logo-marquee"><ul>${row(list)}</ul><ul aria-hidden="true">${row(list)}</ul></div></div></div>`;
+  return `<section class="logo-band" aria-label="Design systems and templates Polyxd draws in">
+${lane(`${real.length} design systems you already know`, real, "lane-systems")}
+${lane(`${ms.filter(isTemplate).length} templates to start from`, ms.filter(isTemplate), "lane-templates")}
 </section>`;
 }
 

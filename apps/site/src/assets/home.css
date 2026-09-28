@@ -325,6 +325,8 @@
 
 /* ---------- Small screens: every scene stacks and shows its still ---------- */
 @media (max-width: 899px) {
+  .logo-lane { grid-template-columns: minmax(0, 1fr); gap: 10px; padding-left: 0; }
+  .logo-lane-label { padding-left: var(--gutter); }
   .home .site-header { position: relative; }
   .hero { padding-top: 24px; min-height: 0; }
   .hero-grid { grid-template-columns: minmax(0, 1fr); }
@@ -397,7 +399,14 @@
 
 /* ---------- The logo band: every pack by its own logo, drifting slowly ---------- */
 .logo-band { padding: 40px 0 44px; border-top: 1px solid var(--rule); overflow: hidden; }
-.logo-band-label { margin: 0 0 22px; text-align: center; }
+.logo-band { display: flex; flex-direction: column; gap: 22px; }
+.logo-lane { display: grid; grid-template-columns: 220px minmax(0, 1fr); align-items: center; gap: 20px; padding-left: var(--gutter); }
+.logo-lane-label { margin: 0; }
+.logo-track { min-width: 0; overflow: hidden; }
+.lane-templates .logo-marquee { animation-direction: reverse; animation-duration: 64s; }
+.lane-templates .logo-marquee li { background: var(--ground); }
+/* The pill is the frame; the logo sits in it without a second border. */
+.logo-marquee .ds-logo { border: 0; }
 .logo-marquee { display: flex; width: max-content; animation: marquee 70s linear infinite; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
 .logo-marquee:hover { animation-play-state: paused; }
 .logo-marquee ul { display: flex; gap: 12px; margin: 0; padding: 0 6px; list-style: none; }
