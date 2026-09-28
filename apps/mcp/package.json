@@ -1,0 +1,21 @@
+{
+  "name": "@polyxd/mcp-remote",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The hosted Polyxd MCP server, https://mcp.polyxd.com/mcp: @polyxd/mcp over Streamable HTTP in a Cloudflare Worker",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build -w @polyxd/mcp && wrangler dev",
+    "deploy": "npm run build -w @polyxd/mcp && wrangler deploy",
+    "typecheck": "tsc -p .",
+    "test": "npm run build -w @polyxd/mcp && node --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@polyxd/mcp": "^0.3.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260919.1",
+    "@modelcontextprotocol/client": "^2.1.0",
+    "wrangler": "^4.135.0"
+  }
+}

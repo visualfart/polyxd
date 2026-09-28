@@ -47,7 +47,7 @@ Each layer ships as its own package, so nobody has to adopt all of it. What exis
 | Web renderer | `@polyxd/react` | npm | Exists |
 | Verifier and benchmark | `polyxd-verify` CLI, dataset | npm, Hugging Face Datasets | Verifier exists; dataset in progress |
 | Runtime SDK (generator, memory, validation, streaming) | `@polyxd/runtime`, `polyxd` (Python) | npm, PyPI | `@polyxd/runtime` exists in the repository, not on npm yet; Python planned |
-| Agent integration | MCP server (MCP Apps compatible) and A2UI export | npm (`npx @polyxd/mcp`) | A2UI export exists; the MCP server is built ([`@polyxd/mcp`](/docs/mcp/)) but not yet on npm |
+| Agent integration | MCP server (MCP Apps compatible) and A2UI export | npm (`npx @polyxd/mcp`) | A2UI export exists; the MCP server ([`@polyxd/mcp`](/docs/mcp/)) is hosted at `mcp.polyxd.com` but not yet on npm |
 | Server | Generation server and HTTP API with streaming, pointed at the model endpoint you choose | Docker image on GitHub Container Registry, and npm (`npx @polyxd/server`) | Built ([`@polyxd/server`](/docs/server/)), with a Dockerfile. Not on npm, and no image on GitHub Container Registry yet |
 | Native renderers | Swift package, Compose library | SPM, Maven Central | Later |
 

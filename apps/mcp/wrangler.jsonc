@@ -1,0 +1,25 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "polyxd-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  // The MCP App's page is bundled as text (src/index.ts).
+  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
+  "routes": [{ "pattern": "mcp.polyxd.com", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false,
+  // Per IP address, per Cloudflare location. The namespace id is any number unique to this
+  // rate limiter within the account.
+  "ratelimits": [{ "name": "RATE_LIMITER", "namespace_id": "4801", "simple": { "limit": 600, "period": 60 } }],
+  // The privacy policy promises that the hosted server logs a request's method, path, status and
+  // duration, and nothing else. The Worker writes exactly that line (packages/mcp/src/http.ts,
+  // src/app.ts). Cloudflare's invocation logs, traces and Issues would add the full URL, headers,
+  // the client's address or error details, so all three are off.
+  "observability": {
+    "enabled": true,
+    "redact_query_string": true,
+    "logs": { "enabled": true, "invocation_logs": false },
+    "traces": { "enabled": false },
+    "issues": { "enabled": false }
+  }
+}
