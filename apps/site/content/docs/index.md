@@ -52,7 +52,7 @@ These rules make a Polyxd surface safe to embed in other software:
 
 ## What's in the box today
 
-Everything here is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) scope, from one [open-source monorepo](https://github.com/visualfart/polyxd), except `@polyxd/runtime`, `@polyxd/mcp` and the Python package `polyxd-spec`, which are new and in the repository only for now.
+Everything here is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) scope, from one [open-source monorepo](https://github.com/visualfart/polyxd), except `@polyxd/runtime`, `@polyxd/mcp`, `@polyxd/server` and the Python package `polyxd-spec`, which are new and in the repository only for now.
 
 | Package | What it does |
 |---|---|
@@ -64,7 +64,8 @@ Everything here is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd
 | `polyxd` | The `polyxd pack` command, which makes a pack from your own tokens. See [Your design system](/docs/your-design-system) |
 | `@polyxd/a2ui` | Exports UI documents to A2UI v1.0 (release candidate) messages, with a Polyxd A2UI catalog |
 | `@polyxd/mcp` | An MCP server: gives the host's model the spec, validates and verifies what it writes, and shows it to the user as an MCP App in any pack. Built, not yet on npm. See [MCP server](/docs/mcp/) |
-| `@polyxd/verifier` | The `polyxd-verify` CLI and library: document checks, rendered accessibility and layout checks, scripted agent tasks, and a consistency score |
+| `@polyxd/server` | A generation server: the runtime behind an HTTP API, with streaming, pointed at the model you choose. Build its Docker image from the repository. Not on npm, and no published image yet. See [Generation server](/docs/server/) |
+| `@polyxd/verifier` | The `polyxd-verify` CLI and library: document checks, rendered accessibility and layout checks, scripted agent tasks, and a consistency score. The document checks alone are `@polyxd/verifier/static`, which runs anywhere and needs no Playwright |
 | `polyxd-spec` (Python) | The spec's schemas, component catalogue and validator for Python, with the same verdicts and messages as `@polyxd/spec`, and a `polyxd-spec validate` command. In the repository at `packages/python-spec`; not yet on PyPI |
 | `@polyxd/runtime` | Generates a document for an ask with the model you choose (Claude, GPT, Gemini, or a local model behind an OpenAI-compatible endpoint), with your Design Direction applied; checks and repairs the answer, streams it, and remembers the screen per intent on the client. See [Runtime](/docs/runtime). Not on npm yet |
 
@@ -91,4 +92,5 @@ Polyxd is an **early preview**. The spec is at `specVersion` 0.3 and may still c
 - [UI documents](/docs/ui-documents): how a document is put together.
 - [Renderers](/docs/renderers/): not React? The Web Components renderer, the shared core, and what a conformant renderer must do.
 - [MCP server](/docs/mcp/): let Claude or another MCP host write screens and show them to the user.
+- [Generation server](/docs/server/): generate screens over HTTP, with the model key kept on your server.
 - [Components reference](/docs/reference/components): every component and its props.

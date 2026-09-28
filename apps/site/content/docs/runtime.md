@@ -114,14 +114,12 @@ The Direction's rules and its compiled voice are also checked on every answer (s
 
 Each answer is parsed first. A code fence, or a sentence before the JSON, is tolerated. Then it is checked:
 
-- **Everywhere:** `checkDocument` runs the spec validator (with the Direction's `emphasisBudget`, and every binding checked against your `data`), the checks of the pattern the document declares, the capabilities on offer, and the Direction's rules and compiled voice. Check ids and messages match the [verifier's](/docs/verifier).
+- **Everywhere:** `checkDocument` runs the [verifier's](/docs/verifier) document checks, `staticAudit` from `@polyxd/verifier/static`. That is the spec validator (with the Direction's `emphasisBudget`, and every binding checked against your `data`), the checks of the pattern the document declares, the capabilities on offer, the Direction's rules and compiled voice, and the verifier's agent-readiness checks: distinct control names, labels that say what happens, no template placeholders, and the rest. They read no files and load no browser, so they run anywhere the runtime does.
 - **Generated only:** the document is never a shell (`generated:shell`), uses only the allowed components (`generated:component`), and follows no disallowed pattern (`direction:pattern-disallowed`).
-- **With the verifier, in Node:** pass `audit: staticAudit` from `@polyxd/verifier` to use the verifier's document checks instead of `checkDocument`, which adds its agent-readiness checks. It gets the same options the verifier takes.
+- **Your own:** pass `audit` to use your own checks instead of `checkDocument`. It gets the same options `staticAudit` takes. The generated-only checks still run.
 
 ```ts
-import { staticAudit } from "@polyxd/verifier";
-
-const runtime = createRuntime({ generator, direction, audit: staticAudit });
+const runtime = createRuntime({ generator, direction, audit: (doc, options) => myChecks(doc, options) });
 ```
 
 If an answer has errors, the model gets it back with each problem listed and is asked for the whole document again. That happens up to `maxRepairs` times (default 2). Warnings don't trigger a repair unless you set `repairWarnings: true`, and even then a document with only warnings is accepted on the last attempt.
@@ -187,5 +185,5 @@ When a document passes, it is stored by its ask's `intent`, without its data. Th
 | `systemPrompt(options)`, `userPrompt(input)`, `repairPrompt(findings)` | The three kinds of prompt text, for use with your own loop |
 | `dataPaths(data)` | The JSON Pointers a data object offers, as the prompt lists them |
 | `parseDocument(text)`, `extractJson(text)` | The JSON inside a model's answer, fences and prose removed |
-| `checkDocument(doc, options)` | The document checks that run anywhere |
+| `checkDocument(doc, options)` | The verifier's document checks (`staticAudit`), which run anywhere. The default checks |
 | `memoryStore()`, `storageStore(storage, { prefix })` | Interface memory in memory, or in `localStorage` |

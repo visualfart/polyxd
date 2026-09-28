@@ -1,7 +1,7 @@
 {
-  "name": "@polyxd/runtime",
+  "name": "@polyxd/server",
   "version": "0.3.0",
-  "description": "Generates a spec-valid Polyxd UI document for an ask with the model you choose: applies a Design Direction, validates and repairs, streams, and remembers the screen per intent",
+  "description": "A generation server for Polyxd: an HTTP API with streaming around @polyxd/runtime, pointed at the model endpoint you choose",
   "license": "Apache-2.0",
   "type": "module",
   "main": "dist/index.js",
@@ -13,6 +13,9 @@
     },
     "./package.json": "./package.json"
   },
+  "bin": {
+    "polyxd-server": "dist/bin.js"
+  },
   "files": [
     "dist",
     "README.md",
@@ -21,18 +24,18 @@
   ],
   "scripts": {
     "build": "tsc -b",
-    "build:catalog": "node scripts/build-catalog.ts",
-    "test": "node --test \"test/**/*.test.ts\""
+    "start": "node dist/bin.js",
+    "test": "tsc -b && node --test \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@polyxd/core": "^0.3.0",
+    "@polyxd/runtime": "^0.3.0",
     "@polyxd/spec": "^0.3.0",
     "@polyxd/verifier": "^0.3.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/visualfart/polyxd.git",
-    "directory": "packages/runtime"
+    "directory": "packages/server"
   },
   "homepage": "https://polyxd.com",
   "bugs": "https://github.com/visualfart/polyxd/issues",

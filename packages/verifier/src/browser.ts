@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { extname } from "node:path";
-import { chromium, type Browser, type Page } from "playwright";
+import type { Browser, Page } from "playwright";
 
 const ORIGIN = "http://harness.polyxd.local";
 
@@ -19,7 +19,8 @@ export const HARNESSES: Record<"react" | "web", RendererHarness> = {
   web: { name: "web", html: new URL("../harness-web-dist/index.html", import.meta.url) },
 };
 const TYPES: Record<string, string> = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml" };
-const axeSource = readFile(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
+let axeSource: Promise<string> | undefined;
+const axe = () => (axeSource ??= readFile(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8"));
 
 export interface RenderTarget {
   theme: string;
@@ -28,8 +29,19 @@ export interface RenderTarget {
   width: number;
 }
 
+/**
+ * Starts headless Chromium for the rendered checks. Playwright is an optional peer dependency, so
+ * nothing loads it until now: the document checks (`@polyxd/verifier/static`) never need it.
+ */
 export async function launch(): Promise<Browser> {
-  return chromium.launch();
+  let playwright: typeof import("playwright");
+  try {
+    playwright = await import("playwright");
+  } catch (err) {
+    if ((err as { code?: string }).code !== "ERR_MODULE_NOT_FOUND") throw err;
+    throw new Error("The rendered checks need Playwright, which @polyxd/verifier doesn't install for you: run `npm install -D playwright && npx playwright install chromium`. The document checks alone are in @polyxd/verifier/static.");
+  }
+  return playwright.chromium.launch();
 }
 
 /**
@@ -68,7 +80,7 @@ export async function renderPage(browser: Browser, document: unknown, target: Re
     const doc = (globalThis as any).document as { getAnimations(): { effect?: { getTiming(): { iterations: number } }; finished: Promise<unknown> }[] };
     return Promise.all(doc.getAnimations().filter((a) => a.effect?.getTiming().iterations !== Infinity).map((a) => a.finished.catch(() => undefined)));
   });
-  await page.addScriptTag({ content: await axeSource });
+  await page.addScriptTag({ content: await axe() });
   return { page, errors };
 }
 

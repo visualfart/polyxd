@@ -1,38 +1,17 @@
-import { validateDocument } from "@polyxd/spec/browser";
-import { checkCapabilities } from "@polyxd/spec/capabilities";
-import { runCheck } from "@polyxd/spec/checks";
-import { COMPONENTS, PATTERNS } from "./catalog.generated.ts";
+import { staticAudit } from "@polyxd/verifier/static";
+import { COMPONENTS } from "./catalog.generated.ts";
 import type { AuditOptions, Direction, Finding, Report } from "./types.ts";
 
 /**
- * The document checks the runtime runs anywhere, with no file system and no browser to render in:
- * the spec validator, the pattern the document declares, the capabilities on offer, and the
- * Design Direction's rules. Check ids and messages match the verifier's `staticAudit`, which adds
- * agent-readiness checks on top and can be passed to the runtime as `audit` in Node.
+ * The document checks the runtime runs by default: the verifier's `staticAudit`, from its
+ * `@polyxd/verifier/static` entry, which needs no file system and no browser. That is the spec
+ * validator (with the Direction's `emphasisBudget`, and bindings checked against the data), the
+ * pattern the document declares, the capabilities on offer, the Design Direction's rules, and the
+ * verifier's agent-readiness checks. A binding that reads nothing is a warning unless `missingData`
+ * says otherwise; the runtime makes it an error when the ask carries data.
  */
-export function checkDocument(doc: unknown, options: AuditOptions & { missingData?: "warning" | "error" } = {}): Finding[] {
-  const out: Finding[] = [];
-  const v = validateDocument(doc as any, { emphasisBudget: options.emphasisBudget, missingData: options.missingData });
-  for (const i of v.issues) out.push({ severity: i.severity, check: i.code ?? "spec", message: `${i.at}: ${i.message}` });
-  // Everything below needs a structurally sound document.
-  if (v.issues.some((i) => i.severity === "error" && !i.code)) return out;
-  const d = doc as any;
-  const patternId = d.surface?.pattern;
-  if (patternId) {
-    const pattern = PATTERNS.find((p) => p.id === patternId);
-    if (!pattern) out.push({ severity: "error", check: "pattern:unknown-pattern", message: `Declared pattern exists: unknown pattern "${patternId}"` });
-    else
-      for (const r of pattern.checks) {
-        const res = runCheck(r.rule, d);
-        if (!res.pass) out.push({ severity: r.severity, check: `pattern:${r.id}`, message: `${r.description}: ${res.message}` });
-      }
-  }
-  if (options.registry) for (const i of checkCapabilities(d, options.registry)) out.push({ severity: i.severity, check: "capability", message: `${i.at}: ${i.message}` });
-  for (const r of options.rules ?? []) {
-    const res = runCheck(r.rule, d);
-    if (!res.pass) out.push({ severity: r.severity, check: `rule:${r.id}`, message: `${r.description}: ${res.message}` });
-  }
-  return out;
+export function checkDocument(doc: unknown, options: AuditOptions = {}): Finding[] {
+  return staticAudit(doc, { ...options, missingData: options.missingData ?? "warning" });
 }
 
 const SHELL = new Set(COMPONENTS.filter((c) => c.shell).map((c) => c.name));

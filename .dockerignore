@@ -1,0 +1,26 @@
+# The only image built here is the generation server (packages/server/Dockerfile), and it needs
+# little of the repository: every workspace's package.json (so `npm ci` matches the lockfile),
+# the root configs, and the five packages the server is made of. Everything else stays out,
+# including .env files, .git and anything built.
+**
+!package.json
+!package-lock.json
+!tsconfig.json
+!tsconfig.base.json
+!LICENSE
+!NOTICE
+!packages/*/package.json
+!apps/*/package.json
+!packages/spec/**
+!packages/core/**
+!packages/verifier/**
+!packages/runtime/**
+!packages/server/**
+**/node_modules
+**/dist
+**/*.tsbuildinfo
+**/.env*
+**/.dev.vars
+packages/verifier/harness-dist
+packages/verifier/harness-web-dist
+packages/spec/.venv

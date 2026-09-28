@@ -103,7 +103,9 @@ export interface AuditOptions {
   rules?: Rule[];
   /** The Direction's `profile.emphasisBudget`. */
   emphasisBudget?: number;
+  /** How a binding that reads nothing from the data is reported: "error" when the ask carries data, "warning" when it doesn't. */
+  missingData?: "warning" | "error";
 }
 
-/** A document check. `staticAudit` from `@polyxd/verifier` fits this shape. */
+/** A document check. `staticAudit` from `@polyxd/verifier/static` fits this shape, and is the default. */
 export type Audit = (doc: any, options: AuditOptions) => Finding[] | Promise<Finding[]>;

@@ -58,7 +58,7 @@ Material 3, Carbon and Ant Design × light and dark × 390px and 1100px wide. Th
 ## CLI
 
 ```bash
-npm install -D @polyxd/verifier
+npm install -D @polyxd/verifier playwright
 npx playwright install chromium   # once
 
 # one or more documents
@@ -111,6 +111,25 @@ report.score;        // 0–100
 report.static;       // document findings
 report.targets;      // per theme/mode/width: findings and agent results
 ```
+
+Playwright is an optional peer dependency. The rendered checks need it, so install it beside the verifier, as above. Nothing loads it until a browser is launched. Without it, `launch()` says what to install.
+
+### Document checks only
+
+`@polyxd/verifier/static` has the document checks on their own. It imports no Playwright and reads no files, because the spec's pattern checks are built into it. So it runs in Node, browsers and Workers, and you don't need Playwright to use it.
+
+```ts
+import { staticAudit } from "@polyxd/verifier/static";
+
+const findings = staticAudit(doc, {
+  registry,                  // optional capability registry
+  rules: direction.rules,    // optional Design Direction or acceptance rules
+  emphasisBudget: 1,         // optional: primary actions allowed in one view
+  missingData: "warning",    // optional: how a binding that reads nothing is reported. Default "error"
+});
+```
+
+The [runtime](/docs/runtime) runs these checks on every answer by default. The [MCP server](/docs/mcp/) and the [generation server](/docs/server/) use them for their verify tools.
 
 ## Score (v0)
 

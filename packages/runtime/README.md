@@ -53,10 +53,10 @@ The same input gives the same text. `runtime.prompt(ask)` returns exactly what t
 
 Each answer is parsed (code fences and prose around the JSON are tolerated) and checked:
 
-- `checkDocument`: the spec validator, with the Direction's `emphasisBudget` and bindings checked against your data; the declared pattern's checks; the capabilities on offer; the Direction's rules and its compiled voice. These run anywhere.
+- `checkDocument`: the verifier's document checks, `staticAudit` from `@polyxd/verifier/static`. That is the spec validator, with the Direction's `emphasisBudget` and bindings checked against your data; the declared pattern's checks; the capabilities on offer; the Direction's rules and its compiled voice; and the verifier's agent-readiness checks (distinct control names, labels that say what happens, no template placeholders, and the rest). They read no files and load no browser, so they run anywhere.
 - Generated-only checks: never a shell (`generated:shell`), only allowed components (`generated:component`), no disallowed pattern (`direction:pattern-disallowed`).
 
-In Node, pass the verifier's document checks to add its agent-readiness checks: `createRuntime({ ..., audit: staticAudit })` with `staticAudit` from `@polyxd/verifier`.
+Pass `audit` to use checks of your own instead of `checkDocument`. It gets the same options `staticAudit` takes.
 
 If anything is an error, the model gets its answer back with the problems listed and is asked for the whole document again, up to `maxRepairs` times (default 2). `repairWarnings: true` sends warnings back too. The result is `{ document, report, attempts, usage }`. When it gives up, `report.valid` is false and `document` is the last one that parsed.
 
@@ -82,4 +82,4 @@ The order is `started`, then for each attempt its `text` pieces and an `attempt`
 
 ## Tests
 
-`npm test -w @polyxd/runtime` runs with a fake generator and no network: prompt snapshots, the repair loop and giving up, fence stripping, streaming order, memory, event redaction, the verifier as `audit`, and each adapter's request and stream parsing against fixture streams written in each provider's documented format. `npm run build:catalog -w @polyxd/runtime` regenerates the spec catalog; a test fails when it is out of date.
+`npm test -w @polyxd/runtime` runs with a fake generator and no network: prompt snapshots, the repair loop and giving up, fence stripping, streaming order, memory, event redaction, the default checks and a custom `audit`, that nothing loads the file system or Playwright, and each adapter's request and stream parsing against fixture streams written in each provider's documented format. `npm run build:catalog -w @polyxd/runtime` regenerates the spec catalog; a test fails when it is out of date.

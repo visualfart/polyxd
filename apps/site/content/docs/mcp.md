@@ -52,7 +52,7 @@ All six are read-only.
 
 `polyxd_validate`, `polyxd_verify` and `polyxd_show` also take `data`: the values the screen shows. It replaces the document's own `data`.
 
-`polyxd_verify` runs the document checks only. The rendered checks (accessibility, layout and agent tasks) need a browser, so run [`polyxd-verify`](/docs/verifier/) for those.
+`polyxd_verify` runs the document checks only, from `@polyxd/verifier/static`, so installing the server installs no Playwright and no browser. The rendered checks (accessibility, layout and agent tasks) need a browser, so run [`polyxd-verify`](/docs/verifier/) for those.
 
 The server also lists the spec's example documents as resources (`polyxd://examples/<name>.json`), and the example Design Directions (`polyxd://directions/<name>.json`).
 

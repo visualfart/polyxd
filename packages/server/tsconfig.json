@@ -9,5 +9,5 @@
     "verbatimModuleSyntax": true
   },
   "include": ["src"],
-  "references": [{ "path": "../spec" }, { "path": "../core" }, { "path": "../verifier" }]
+  "references": [{ "path": "../spec" }, { "path": "../verifier" }, { "path": "../runtime" }]
 }

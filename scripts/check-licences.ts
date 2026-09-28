@@ -62,7 +62,7 @@ else {
 
 // ---------- Dependencies ----------
 
-const workspaces = ["packages/spec", "packages/core", "packages/react", "packages/web", "packages/verifier", "packages/runtime", "packages/mcp", "packages/a2ui", "packages/ds-kit", "apps/site", "apps/gallery"];
+const workspaces = ["packages/spec", "packages/core", "packages/react", "packages/web", "packages/verifier", "packages/runtime", "packages/mcp", "packages/server", "packages/a2ui", "packages/ds-kit", "apps/site", "apps/gallery"];
 const seen = new Map<string, string>();
 for (const w of workspaces) {
   const path = join(REPO, w, "package.json");

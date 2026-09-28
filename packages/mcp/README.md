@@ -32,7 +32,7 @@ From a clone of this repository: `npm install && npm run build -w @polyxd/mcp`, 
 |---|---|
 | `polyxd_guide` | The spec as instructions: how to use these tools, then the generator prompt the demos use (document shape, rules for generated screens, bindings, actions, every component and its props, the patterns). |
 | `polyxd_validate` | Validates a document. Every issue comes with its JSON Pointer, the component it is in, and a hint saying what to change. |
-| `polyxd_verify` | The verifier's document checks (`staticAudit` from `@polyxd/verifier`), optionally against a Design Direction (an object, or `calm-finance` / `playful-personal`) and a capability registry. A compact report. |
+| `polyxd_verify` | The verifier's document checks (`staticAudit` from `@polyxd/verifier/static`, so installing the server installs no Playwright), optionally against a Design Direction (an object, or `calm-finance` / `playful-personal`) and a capability registry. A compact report. |
 | `polyxd_show` | Validates, then returns the document for display. `pack` picks the design-system pack (default `material3`), `mode` picks light or dark (default: the host's theme). Shows nothing when there are errors. |
 | `polyxd_packs` | The packs: published design systems and original templates. |
 | `polyxd_components` | The components with a one-line summary each, or one component's full definition by `name`. |

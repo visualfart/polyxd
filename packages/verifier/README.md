@@ -3,10 +3,24 @@
 Scores a Polyxd UI document the way it will actually be used: rendered, in every design system, by people and by agents.
 
 ```bash
-npm install -D @polyxd/verifier
+npm install -D @polyxd/verifier playwright
 npx playwright install chromium    # once
 npx polyxd-verify my-ui.json --themes carbon --modes light --widths 390 --json report.json
 ```
+
+Playwright is an optional peer dependency: the rendered checks need it, so install it beside the verifier as above. Nothing loads it until a browser is launched, and without it `launch()` says what to install.
+
+## Document checks only
+
+`@polyxd/verifier/static` is the document checks on their own: `staticAudit(doc, { registry, rules, emphasisBudget, missingData })`. It imports no Playwright and reads no files (the spec's pattern checks are built into it), so it runs in Node, browsers and Workers, and installing the verifier for it alone doesn't pull in Playwright.
+
+```ts
+import { staticAudit } from "@polyxd/verifier/static";
+
+const findings = staticAudit(doc, { registry });
+```
+
+`@polyxd/runtime` uses it as its default checks, and `@polyxd/mcp` and `@polyxd/server` use it for their verify tools. `npm run build:patterns -w @polyxd/verifier` regenerates the pattern checks from the spec; a test fails when they are out of date.
 
 Inside the Polyxd repository, `npm run verify:examples -w @polyxd/verifier` runs every spec example through the full matrix with agent tasks.
 
