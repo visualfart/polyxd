@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
-import { Ajv2020 } from "ajv/dist/2020.js";
 import { runCheck, type Check } from "./checks.ts";
+import { validatePattern } from "./pattern-validator.generated.ts";
+import type { SchemaValidator } from "./schema-validator.ts";
 
 export interface Rule {
   id: string;
@@ -28,12 +29,10 @@ export interface RuleResult {
 }
 
 const dir = new URL("../patterns/", import.meta.url);
-const schemaDir = new URL("../schema/", import.meta.url);
 const readJson = (url: URL) => JSON.parse(readFileSync(url, "utf8"));
 
-const ajv = new Ajv2020({ allErrors: true, discriminator: true, strict: false });
-ajv.addSchema(readJson(new URL("check.schema.json", schemaDir)));
-export const validatePatternFile = ajv.compile(readJson(new URL("pattern.schema.json", schemaDir)));
+/** Checks a pattern file against schema/pattern.schema.json; compiled ahead of time (scripts/build-validators.ts). */
+export const validatePatternFile: SchemaValidator = validatePattern;
 
 export function loadPatterns(): Map<string, Pattern> {
   const out = new Map<string, Pattern>();

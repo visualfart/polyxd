@@ -1,8 +1,8 @@
 /**
- * The document schema, read without a schema library. `@polyxd/spec/browser` compiles it with
- * ajv at load, and Workers refuse code generated from strings, so Studio walks the JSON itself:
- * here for the shapes (what a component's props are, which hold children), in validate.ts for
- * the checking. Everything the editor knows about a component comes from this file.
+ * The document schema, read without a schema library. Studio walks the JSON itself: here for the
+ * shapes (what a component's props are, which hold children), in validate.ts for the checking,
+ * which puts each problem at the prop it is about so the editor can show it there. Everything the
+ * editor knows about a component comes from this file.
  */
 import schema from "@polyxd/spec/schema/ui.schema.json" with { type: "json" };
 import catalog from "@polyxd/spec/catalog/catalog.json" with { type: "json" };
@@ -40,7 +40,8 @@ export const COMMON_PROPS = new Set(["id", "component", "key", "accessibility", 
 
 /**
  * Which component types a reference may point to. Copied from the spec's references.ts: its
- * entry modules can't load in a Worker (see the top of this file), and this table is the grammar.
+ * `/browser` entry exports the table too, but brings the document validator with it, which
+ * Studio's bundles don't otherwise need. This table is the grammar.
  */
 export const REFERENCE_TYPES: Record<string, string[]> = {
   "Card.media": ["Media"],

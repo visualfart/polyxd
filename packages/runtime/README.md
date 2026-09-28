@@ -1,6 +1,6 @@
 # @polyxd/runtime
 
-Generates a spec-valid Polyxd UI document for an ask, with the model you choose. It builds the prompt from the spec and your Design Direction, checks the answer, sends the problems back for repair, streams as it goes, and remembers the screen shown for each intent so the next one is recognisable. It uses `fetch` only, has no model SDK dependencies, and runs in Node, browsers and Workers.
+Generates a spec-valid Polyxd UI document for an ask, with the model you choose. It builds the prompt from the spec and your Design Direction, checks the answer, sends the problems back for repair, streams as it goes, and remembers the screen shown for each intent so the next one is recognisable. It uses `fetch` only and has no model SDK dependencies. It runs in Node, browsers and Cloudflare Workers as it is: the spec's schema checks come compiled ahead of time, so nothing needs `eval` or `new Function`.
 
 ```ts
 import { createRuntime, anthropic, memoryStore } from "@polyxd/runtime";

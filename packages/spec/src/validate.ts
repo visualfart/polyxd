@@ -1,6 +1,7 @@
-import { Ajv2020, type ErrorObject } from "ajv/dist/2020.js";
 import { REFERENCE_TYPES } from "./references.ts";
+import type { SchemaError } from "./schema-validator.ts";
 import { SHELL_COMPONENTS, UI_SCHEMA } from "./ui-schema.generated.ts";
+import { validateUi as validateSchema } from "./ui-validator.generated.ts";
 
 type Json = unknown;
 type Schema = Record<string, any>;
@@ -24,8 +25,8 @@ export interface ValidationResult {
 
 export const uiSchema: Schema = UI_SCHEMA;
 
-const ajv = new Ajv2020({ allErrors: true, discriminator: true, strict: false });
-const validateSchema = ajv.compile(uiSchema);
+// The schema check is compiled ahead of time (scripts/build-validators.ts), so nothing here
+// generates code at run time: it runs in browsers under a strict CSP and in Cloudflare Workers.
 
 /** Props whose paths resolve against the current item of a repeated structure. */
 const ITEM_SCOPED: Record<string, string[]> = {
@@ -143,7 +144,7 @@ function pointersEndingIn(data: Json, field: string, at = "", depth = 0): string
   return Object.entries(data).flatMap(([k, v]) => [...(k === field ? [`${at}/${k}`] : []), ...pointersEndingIn(v as Json, field, `${at}/${k}`, depth + 1)]);
 }
 
-const schemaMessage = (e: ErrorObject) => {
+const schemaMessage = (e: SchemaError) => {
   if (e.keyword === "additionalProperties") return `unknown property "${e.params.additionalProperty}"`;
   if (e.keyword === "const" && e.instancePath.endsWith("/component")) return `unknown component "${e.data}"`;
   if (e.keyword === "discriminator") return `unknown or missing component type`;
