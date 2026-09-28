@@ -18,7 +18,7 @@ export const MCP_NOTES = `How this works over MCP
 
 You are the generator. Write the Polyxd UI document yourself, following the prompt below, and pass it to the tools as the "document" argument instead of writing JSON into the chat.
 
-1. Write the document. Put the values the screen shows in "data" (the polyxd_show and polyxd_validate tools take it as a separate "data" argument, or inside the document). Take those values from the conversation or from other tools' results; never make figures up.
+1. Write the document. Put the values the screen shows in "data" (the polyxd_show and polyxd_validate tools take it as a separate "data" argument, or inside the document). Take those values from the conversation or from other tools' results; never make figures up. If a chart or table needs values nobody gave you (say, daily numbers when you only have weekly totals), leave that part out and say what is missing; never fill a series with plausible numbers.
 2. Call polyxd_validate. Fix every error at the JSON Pointer it gives, then validate again. Warnings are advice.
 3. Optionally call polyxd_verify for the verifier's document checks, with a Design Direction if the user has one.
 4. Call polyxd_show to put the screen in front of the user. It validates first and shows nothing if there are errors. Pick a design-system pack with "pack" (default material3; polyxd_packs lists them).

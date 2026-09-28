@@ -306,7 +306,7 @@ for the first four cases are in `screenshots/documents/`, valid and verified.
 
 **P4. A dark-mode dashboard**
 
-- Prompt: "Here's this week's helpdesk export: 42 open tickets (down 12%), median first reply 38 minutes (down 21%), satisfaction 94% (up 2%), and tickets opened and solved per day. Show my support team's week as a dashboard in shadcn, dark mode."
+- Prompt: "Here's this week's helpdesk export: 42 open tickets (down 12%), median first reply 38 minutes (down 21%), satisfaction 94% (up 2%). Tickets opened and solved per day, Monday to Sunday: opened 18, 24, 19, 22, 17, 9, 8; solved 21, 20, 23, 25, 21, 12, 10. Show my support team's week as a dashboard in shadcn, dark mode."
 - Expected tools: `polyxd_validate`, then `polyxd_show` with `pack: "shadcn"`, `mode: "dark"`.
 - Expected result: `shown: true`, `mode: "dark"`. Three metrics with their changes coloured by whether the change is good, a line chart of opened and solved per day with a one-sentence summary, and a table of top topics. The numbers are the ones in the prompt, none invented.
 - Fixture: `screenshots/documents/4-support-dashboard-dark.json`.

@@ -102,9 +102,9 @@
     },
     {
       "description": "A dashboard in dark mode, using only the numbers given.",
-      "user_prompt": "Here's this week's helpdesk export: 42 open tickets (down 12%), median first reply 38 minutes (down 21%), satisfaction 94% (up 2%), and tickets opened and solved per day. Show my support team's week as a dashboard in shadcn, dark mode.",
+      "user_prompt": "Here's this week's helpdesk export: 42 open tickets (down 12%), median first reply 38 minutes (down 21%), satisfaction 94% (up 2%). Tickets opened and solved per day, Monday to Sunday: opened 18, 24, 19, 22, 17, 9, 8; solved 21, 20, 23, 25, 21, 12, 10. Show my support team's week as a dashboard in shadcn, dark mode.",
       "tools_triggered": "polyxd_validate, polyxd_show",
-      "expected_output": "A dark-mode dashboard in the shadcn/ui pack: three metrics with their changes, a chart of tickets opened and solved per day with a one-sentence summary, and the numbers from the prompt with none invented."
+      "expected_output": "A dark-mode dashboard in the shadcn/ui pack: three metrics with their changes (down 12%, down 21%, up 2%), a chart of tickets opened and solved per day with a one-sentence summary, using exactly the numbers in the prompt and none invented."
     },
     {
       "description": "List the packs, then compare three plans in the Editorial template.",
