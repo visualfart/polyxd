@@ -1,4 +1,4 @@
-import { daysFromNow, ids, rng } from "../kit/store.ts";
+import { daysFromNow, ids, rng } from "../kit/seeding.ts";
 import { fromDay, isoDay, round2 } from "./format.ts";
 import { mediaRef, type Silhouette } from "./media.ts";
 
