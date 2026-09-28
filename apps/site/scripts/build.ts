@@ -45,12 +45,13 @@ const href = (slug: string) => (slug ? `/docs/${slug}/` : "/docs/");
 
 // ---------- Shared chrome ----------
 
-import { mark, svg as markSvg } from "../../../brand/build.ts";
-/** The mark beside the wordmark: three shapes, drawn once in brand/build.ts. */
-const LOGO = `<svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true">${mark()}</svg>`;
+import { mark, svg as markSvg, markSvg as livingMark, FONTS_URL, PAPER, NIGHT, type MarkState } from "../../../brand/build.ts";
+/** The lockup: the mark (brand/build.ts, its pupil moved by brand/mark.css) beside the wordmark. */
+const LOGO = `${livingMark({ size: 32 })}<span class="brand-word">polyxd</span>`;
 
 function head({ title, description, path, css = [] }: { title: string; description: string; path: string; css?: string[] }) {
-  return `<meta name="theme-color" content="#f4f1ea">
+  return `<meta name="theme-color" content="${PAPER}" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="${NIGHT}" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="${ORIGIN}${path}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-180.png">
@@ -63,7 +64,11 @@ function head({ title, description, path, css = [] }: { title: string; descripti
 <meta property="og:url" content="${ORIGIN}${path}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400&family=Roboto:wght@400;500&display=swap">
+<link rel="stylesheet" href="${FONTS_URL}">
+<!-- Faces the design-system packs on the page render in; not Polyxd's own. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400&family=Roboto:wght@400;500&display=swap">
+<link rel="stylesheet" href="/assets/tokens.css">
+<link rel="stylesheet" href="/assets/mark.css">
 <link rel="stylesheet" href="/assets/site.css">
 ${css.map((c) => `<link rel="stylesheet" href="${c}">`).join("\n")}`;
 }
@@ -71,19 +76,19 @@ ${css.map((c) => `<link rel="stylesheet" href="${c}">`).join("\n")}`;
 function header(current: "home" | "docs") {
   const cur = (k: string) => (k === current ? ' aria-current="page"' : "");
   return `<header class="site-header"><div class="wrap">
-<a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">polyxd</span></a>
+<a class="brand" href="/" aria-label="Polyxd home">${LOGO}</a>
 <nav class="site-nav" aria-label="Main">
 <a class="nav-optional" href="/#how">How it works</a>
 <a class="nav-optional" href="/docs/designers/">For design teams</a>
 <a class="nav-wide" href="/demos/">Demos</a>
 <a class="nav-wide" href="/gallery/">Gallery</a>
 <a href="/docs/"${cur("docs")}>Docs</a>
-<a class="btn btn-ink btn-small" href="/#access">Early access</a>
+<a class="btn btn-line btn-small" href="/#access">Early access</a>
 </nav></div></header>`;
 }
 
 const footer = `<footer class="site-footer"><div class="wrap">
-<a class="brand" href="/" aria-label="Polyxd home">${LOGO}<span class="brand-word">polyxd</span></a>
+<a class="brand" href="/" aria-label="Polyxd home">${LOGO}</a>
 <nav aria-label="Footer"><a href="/docs/">Docs</a><a href="/demos/">Demos</a><a href="/docs/reference/coverage/">All components</a><a href="/docs/verifier/">Verifier</a><a href="/gallery/">Gallery</a><a href="/#access">Early access</a></nav>
 <span>© 2026 Polyxd · Apache-2.0 code, CC-BY-4.0 spec</span>
 </div></footer>`;
@@ -487,9 +492,11 @@ await cp(join(SITE, "src/assets"), join(DIST, "assets"), { recursive: true });
 const VENDOR = ["gsap/dist/gsap.min.js", "gsap/dist/ScrollTrigger.min.js", "gsap/dist/SplitText.min.js", "gsap/dist/DrawSVGPlugin.min.js", "lenis/dist/lenis.min.js"];
 await mkdir(join(DIST, "assets/vendor"), { recursive: true });
 await Promise.all(VENDOR.map((f) => cp(join(REPO, "node_modules", f), join(DIST, "assets/vendor", f.split("/").pop()!))));
-// Favicons: the pupil leaves below 24px, so the SVG favicon is the small mark; the touch icon keeps it.
-await write(join(DIST, "favicon.svg"), markSvg(mark({ pupil: false })));
+// Favicons: down to 12px the pupil stays (BRAND-2026.md), so the SVG favicon is the whole mark.
+await write(join(DIST, "favicon.svg"), markSvg(mark()));
 for (const f of ["icon-180.png", "icon-192.png", "icon-512.png", "og.png"]) await copyFile(join(REPO, "brand", f), join(DIST, f));
+// The brand's tokens and the mark's states, as brand/build.ts writes them.
+for (const f of ["tokens.css", "mark.css"]) await copyFile(join(REPO, "brand", f), join(DIST, "assets", f));
 
 const demo = await demoHtml();
 await write(join(DIST, "assets/themes.css"), demo.themes);
@@ -507,7 +514,9 @@ const landing = (await readFile(join(SITE, "src/index.html"), "utf8"))
   .replace("<!--COMPONENTCOUNT-->", String((await readdir(join(REPO, "packages/spec/components"))).filter((f) => f.endsWith(".json")).length))
   .replace("<!--RENDERCOUNT-->", (await renderCount()).toLocaleString("en-GB"))
   .replace("<!--TEMPLATECOUNT-->", await templateCount())
-  .replace("<!--FOOTER-->", footer);
+  .replace("<!--FOOTER-->", footer)
+  // <!--MARK:state:size:class--> places the living mark (only its pupil moves).
+  .replace(/<!--MARK:(\w+):(\d+)(?::([\w-]+))?-->/g, (_, state: MarkState, size: string, className?: string) => livingMark({ state, size: Number(size), className }));
 await write(join(DIST, "index.html"), landing);
 
 const pages = [...(await markdownPages()), await componentsPage(), await tokensPage(), await coveragePage()].sort(

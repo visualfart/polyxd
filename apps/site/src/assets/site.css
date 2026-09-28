@@ -1,26 +1,15 @@
-/* polyxd.com — site styles. Warm neutral ground, ink, one signal accent. */
+/* polyxd.com: site styles. The brand's tokens (brand/tokens.css, served as /assets/tokens.css)
+   come first; the names below are the site's older ones, each pointing at a token, so paper and
+   night both follow. */
 :root {
-  --ground: #f4f1ea;
-  --paper: #ffffff;
-  --ink: #141414;
-  --ink-2: #3f3e3a;
-  --muted: #56554f;
-  --line: #ddd8cc;
-  --line-soft: #ece8de;
-  --signal: #ff5a1f;
-  --signal-ink: #b8350a;
-  --night: #141414;
-  --night-2: #1f1e1c;
-  --night-3: #262523;
-  --night-line: #3a3935;
-  --night-text: #f4f1ea;
-  --night-muted: #cfcbc0;
-  --night-faint: #a9a69d;
-  --code-string: #ffb08f;
-  --ok: #7ee0a1;
-  --display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --body: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --paper: var(--surface);
+  --ink-2: var(--muted);
+  --line: var(--rule);
+  --line-soft: color-mix(in srgb, var(--rule) 50%, var(--surface));
+  --signal-ink: var(--signal-text);
+  --display: var(--font-display);
+  --body: var(--font-body);
+  --mono: var(--font-mono);
   --gutter: clamp(20px, 5.5vw, 80px);
   --max: 1440px;
 }
@@ -51,10 +40,17 @@ svg {
 a {
   color: inherit;
 }
+/* Focus: a gap of ground, then a solid ring in focus. Never orange. */
 :focus-visible {
-  outline: 3px solid var(--signal);
-  outline-offset: 3px;
-  border-radius: 4px;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.btn:focus-visible,
+input:focus-visible,
+button:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 .skip {
   position: absolute;
@@ -86,58 +82,66 @@ a {
 .mono {
   font-family: var(--mono);
 }
+/* Eyebrows: the label style, uppercase, in muted. */
 .eyebrow {
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.04em;
+  font: var(--text-label);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--signal-ink);
+  color: var(--muted);
 }
 .display {
   font-family: var(--display);
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-weight: 400;
+  letter-spacing: -0.015em;
   line-height: 1;
   margin: 0;
+  text-wrap: balance;
 }
 
-/* Buttons */
+/* Buttons: the design system's, fully round. One primary (signal, ink text) per view. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 52px;
-  padding: 0 24px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 16px;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: var(--radius-pill);
+  font: var(--text-ui);
   text-decoration: none;
   border: 1.5px solid transparent;
   white-space: nowrap;
   cursor: pointer;
-  transition: transform 120ms ease, background 120ms ease;
-}
-.btn:hover {
-  transform: translateY(-1px);
+  transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
 .btn-signal {
   background: var(--signal);
-  color: var(--ink);
+  color: var(--on-signal);
+}
+.btn-signal:hover {
+  background: color-mix(in srgb, var(--signal) 88%, var(--on-signal));
 }
 .btn-ink {
   background: var(--ink);
   color: var(--ground);
 }
+.btn-ink:hover {
+  background: color-mix(in srgb, var(--ink) 86%, var(--ground));
+}
 .btn-line {
-  border-color: var(--ink);
+  border-color: var(--border);
   color: var(--ink);
   background: transparent;
 }
+.btn-line:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 .btn-small {
-  min-height: 44px;
   padding: 0 18px;
-  font-size: 15px;
 }
 
 /* Header */
@@ -156,17 +160,29 @@ a {
   gap: 24px;
   min-height: 72px;
 }
+/* The lockup: the word at 0.8 of the mark, a gap of 5/32 of it. */
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   text-decoration: none;
+  color: var(--ink);
+}
+.brand .pxb-mark {
+  width: 32px;
+  height: 32px;
 }
 .brand-word {
   font-family: var(--display);
-  font-weight: 800;
-  font-size: 24px;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  margin-top: -1px;
+}
+/* The mark reads the word beside it when you point at it. */
+.brand:is(:hover, :focus-visible) .pxb-mark[data-state="idle"] .pxb-pupil {
+  transform: translate(1.3px, -1.1px);
 }
 .site-nav {
   display: flex;
@@ -181,7 +197,7 @@ a {
 }
 .site-nav a:not(.btn):hover,
 .site-nav a[aria-current="page"] {
-  color: var(--signal-ink);
+  color: var(--signal-text);
 }
 @media (max-width: 860px) {
   .site-nav .nav-optional {
@@ -191,6 +207,13 @@ a {
 @media (max-width: 440px) {
   .site-nav .nav-wide {
     display: none;
+  }
+  .brand .pxb-mark {
+    width: 28px;
+    height: 28px;
+  }
+  .brand {
+    gap: 4px;
   }
   .brand-word {
     font-size: 22px;
@@ -204,11 +227,11 @@ a {
   gap: 10px;
   min-height: 32px;
   padding: 0 14px;
-  border: 1px solid var(--ink);
-  border-radius: 999px;
-  font-family: var(--mono);
-  font-size: 12.5px;
-  letter-spacing: 0.03em;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font: var(--text-label);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .badge-dot {
@@ -248,10 +271,10 @@ a {
   order: 1;
   margin: 0;
   font-family: var(--display);
-  font-weight: 700;
+  font-weight: 400;
   font-size: clamp(40px, 4vw, 56px);
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.015em;
 }
 @media (max-width: 800px) {
   .proof .wrap {
@@ -269,24 +292,31 @@ a {
   margin-inline: clamp(12px, 2.8vw, 40px);
   padding: clamp(36px, 5.5vw, 80px);
   background: var(--signal);
-  border-radius: clamp(24px, 2.6vw, 36px);
+  color: var(--on-signal);
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
   gap: clamp(28px, 5vw, 64px);
   align-items: center;
 }
 .cta h2 {
-  font-weight: 800;
-  font-size: clamp(40px, 5vw, 72px);
-  letter-spacing: -0.035em;
-  line-height: 0.96;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1;
   text-wrap: balance;
 }
 .cta p {
   margin: 18px 0 0;
   font-size: clamp(17px, 1.3vw, 19px);
-  color: #2a1a12;
+  color: var(--on-signal);
   max-width: 44ch;
+}
+/* On signal, a control's outline is ink: border reaches too little against the orange. */
+.cta .btn-line {
+  border-color: var(--on-signal);
+}
+.cta .btn-line:hover {
+  background: color-mix(in srgb, var(--on-signal) 8%, transparent);
 }
 .waitlist {
   display: flex;
@@ -297,17 +327,30 @@ a {
   font-weight: 600;
 }
 .waitlist input[type="email"] {
-  min-height: 56px;
-  padding: 0 20px;
+  min-height: 48px;
+  padding: 0 18px;
   border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  background: var(--ground);
-  font: 17px var(--body);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font: 16px var(--body);
   color: var(--ink);
 }
 .waitlist .hp {
   position: absolute;
   left: -9999px;
+}
+.waitlist-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+}
+/* The mark answers for the form: thinking while it sends, a tick when you're on the list. */
+.waitlist-note .pxb-mark {
+  visibility: hidden;
+}
+.waitlist-note .pxb-mark:not([data-state="idle"]) {
+  visibility: visible;
 }
 .waitlist-status {
   min-height: 1.5em;
@@ -341,7 +384,7 @@ a {
   text-decoration: none;
 }
 .site-footer a:hover {
-  color: var(--signal-ink);
+  color: var(--signal-text);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -376,20 +419,20 @@ a {
   flex-direction: column;
   gap: 6px;
   padding: 22px 24px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
+  background: var(--surface);
   color: inherit;
   text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color var(--duration-fast) var(--ease-standard);
 }
 .demo-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.08);
+  border-color: var(--border);
 }
 .demo-card b {
-  font: 700 22px/1.1 var(--display);
-  letter-spacing: -0.02em;
+  font: 400 22px/1.15 var(--display);
+  letter-spacing: -0.01em;
 }
 .demo-card span {
   color: var(--ink-2);

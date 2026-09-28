@@ -156,6 +156,7 @@
     .from(new SplitText($("h1", first), { type: "words" }).words, { opacity: 0, y: 18, duration: 0.6, stagger: 0.025, ease: "power3.out" }, 0.05)
     .to([$(".lede", first), $(".cta-row", first)], { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "power2.out" }, 0.3)
     .to(".ask", { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.4)
+    .call(markState, ["reading"], 0.5)
     .from(askChars, { opacity: 0, duration: 0.01, stagger: 0.035 }, 0.55)
     // Fonts first if they are quick; the drawing is redrawn from real geometry anyway.
     .call(() => Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 700))]).then(drawing), [], 1.3);
@@ -167,7 +168,8 @@
     gsap.set(notes, { opacity: 0 });
     gsap
       .timeline()
-      // 2 · a hand sketches it
+      // 2 · a hand sketches it, while Polyxd thinks
+      .call(markState, ["thinking"], 0)
       .to(".sketch", { opacity: 1, duration: 0.2 }, 0)
       .to(strokes, { drawSVG: "100%", duration: 0.5, stagger: 0.045, ease: "power1.inOut" }, 0)
       .to(notes, { opacity: 0.85, duration: 0.3, stagger: 0.15 }, 1.1)
@@ -181,13 +183,20 @@
       .to(notes, { opacity: 0, duration: 0.3 }, 2.8)
       .to([".chips", ".leaders"], { opacity: 0, duration: 0.4 }, 3.05)
       .call(() => setHud({ pack: "material3", axe: "0 violations" }), [], 3.3)
+      .call(markState, ["checked"], 3.3)
+      .call(markState, ["idle"], 5.2)
       // 5 · it comes to you
       .to(slot, { scale: 1.05, duration: 0.5, ease: "power2.out" }, 3.4)
-      .to(stage, { boxShadow: "0 40px 100px rgba(20,20,20,.28), 0 0 60px rgba(255,90,31,.16)", duration: 0.5 }, 3.4)
       .to(slot, { scale: 1, duration: 0.6, ease: "power2.inOut" }, 4.3)
-      .to(stage, { boxShadow: "0 24px 60px rgba(20,20,20,.16), 0 0 0 1px rgba(20,20,20,.04)", duration: 0.6 }, 4.3)
       .to(".sketch", { opacity: 0, duration: 0.4 }, 4.3)
       .to($(".scroll-hint", first), { opacity: 1, y: 0, duration: 0.5 }, 3.9);
+  }
+
+  // ---------- The mark in the ask: only its pupil moves (brand/mark.css) ----------
+
+  function markState(state) {
+    const m = $(".ask .pxb-mark");
+    if (m) m.dataset.state = state;
   }
 
   // ---------- The readout ----------
@@ -327,7 +336,7 @@
     .to([".ghost", '[data-when="friday"]', ".same li"], { opacity: 0, duration: 0.15 }, 6.0);
 
   // Chapter 5, Verify: the checks land on it.
-  tl.fromTo(".stamp", { opacity: 0, scale: 1.7 }, { opacity: 1, scale: 1, duration: 0.2, stagger: 0.14, ease: "back.out(2.2)" }, 6.15).to({}, { duration: 0.25 }, TOTAL - 0.25);
+  tl.fromTo(".stamp", { opacity: 0, scale: 1.7 }, { opacity: 1, scale: 1, duration: 0.2, stagger: 0.14, ease: "power3.out" }, 6.15).to({}, { duration: 0.25 }, TOTAL - 0.25);
 
   // Chapters are places you can go to.
   rail.forEach((a, i) => {
@@ -354,8 +363,8 @@
   reveal(".studio-shell", ".studio", { delay: 0.15 });
   // Studio: the flag and the rule suggestion arrive a beat after the screen does.
   gsap.timeline({ scrollTrigger: { trigger: ".studio-shell", start: "top 60%", once: true } })
-    .fromTo(".st-flagline mark", { backgroundColor: "rgba(255,90,31,0)" }, { backgroundColor: "rgba(255,90,31,.28)", duration: 0.4 }, 0.6)
-    .fromTo([".st-flagline .st-pin", ".st-flag"], { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 0.8)
+    .fromTo(".st-flagline mark", { backgroundColor: "rgba(255,110,64,0)" }, { backgroundColor: "rgba(255,110,64,.28)", duration: 0.4 }, 0.6)
+    .fromTo([".st-flagline .st-pin", ".st-flag"], { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, 0.8)
     .fromTo(".st-suggest", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35 }, 1.4);
 
   // The row of built scenarios drifts by, then repeats: its contents are cloned once so the

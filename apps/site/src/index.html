@@ -86,7 +86,7 @@
 <div class="grid"></div>
 <div class="hud"><span><b>intent</b><i data-hud="intent">transfer.confirm</i></span><span><b>pattern</b><i data-hud="pattern">confirm</i></span><span><b>pack</b><i data-hud="pack">—</i></span><span><b>axe</b><i data-hud="axe">—</i></span><span><b>agent</b><i data-hud="agent">—</i></span></div>
 
-<div class="ask"><span class="ask-label">You ask</span><span class="ask-text">send alex the rent</span><span class="caret"></span></div>
+<div class="ask"><span class="ask-label">You ask</span><span class="ask-text">send alex the rent</span><span class="caret"></span><!--MARK:idle:24:ask-mark--></div>
 <div class="packname"><!--PACKNAMES--></div>
 
 <div class="slot">
@@ -109,7 +109,7 @@
 <div class="when"><span data-when="monday">Monday</span><span data-when="friday">Friday</span></div>
 <div class="cursor"></div>
 <ul class="same"><li>same pattern</li><li>same order</li><li>same labels</li><li>same controls</li></ul>
-<div class="stamps"><span class="stamp">WCAG 2.2 AA</span><span class="stamp">agent ✓</span><span class="stamp">direction ✓</span><span class="stamp stamp-signal">score 100</span></div>
+<div class="stamps"><span class="stamp">WCAG 2.2 AA</span><span class="stamp">agent ✓</span><span class="stamp">direction ✓</span><span class="stamp stamp-checked"><!--MARK:checked:24-->Checked · score 100</span></div>
 </div>
 
 <ul class="layers"><li><b>verifier</b><span>checks, stamped on top</span></li><li><b>surface</b><span>what people and agents get</span></li><li><b>tokens</b><span>from your design system</span></li><li><b>components</b><span>what the generator chose</span></li><li><b>intent · pattern</b><span>what the request means</span></li></ul>
@@ -124,7 +124,7 @@
 <span class="chip" data-target="b1" data-from="right">target ≥ 40</span>
 </div>
 
-<pre class="tree"><span class="c">accessibility tree</span>
+<pre class="tree" data-theme="dark"><span class="c">accessibility tree</span>
 alertdialog <span class="s">"Send £250.00 to Alex Kim?"</span>
   term <span class="s">"Amount"</span>  definition <span class="s">"£250.00"</span>
   button <span class="s">"Send £250.00"</span>
@@ -143,7 +143,7 @@ press <span class="s">"Send £250.00"</span>  →  transfer.confirm <span class=
 <p>Designers set the direction: voice, rules, patterns, how much freedom the generator gets, and author the product's own screens in the same format, previewed in its design system and checked before release. Product managers register what the product can do and what done looks like. Studio shows every surface, generated or authored, why it came out that way, and how it performed.</p>
 <div class="cta-row"><a class="btn btn-line" href="/docs/designers/">The designer's job</a><a class="btn btn-line" href="/docs/product/">Capabilities and journeys</a></div>
 </div>
-<div class="studio-shell" aria-hidden="true">
+<div class="studio-shell" data-theme="light" aria-hidden="true">
 <div class="st-bar"><span class="st-brand">Studio</span><span class="st-dir">calm-finance</span><span class="st-state"><i></i>v0.1.1 draft · 3 unpublished changes</span><span class="st-publish">Publish…</span></div>
 <div class="st-body">
 <nav class="st-nav"><span>Direction</span><span>Preview</span><span class="on">Review<em>12</em></span><span>Rules</span><span>Exemplars</span><span class="st-sep"></span><span>Capabilities</span><span>Journeys</span><span class="st-sep"></span><span>Metrics</span><span>Flow map</span><span>Unmet demand</span><span class="st-sep"></span><span>Publish</span></nav>
@@ -208,7 +208,7 @@ press <span class="s">"Send £250.00"</span>  →  transfer.confirm <span class=
 </div>
 </section>
 
-<section class="cta" id="access" aria-labelledby="access-title">
+<section class="cta" id="access" data-theme="light" aria-labelledby="access-title">
 <div>
 <h2 class="display" id="access-title">Open spec. Any model. Your design system.</h2>
 <p>Spec, renderer, design-system packs and verifier are Apache-2.0. They work with any generator that writes JSON: Claude, GPT, Gemini, or your own model. There is no bundled model. Studio is where your team directs it, and where designers author the screens that aren't generated.</p>
@@ -219,7 +219,7 @@ press <span class="s">"Send £250.00"</span>  →  transfer.confirm <span class=
 <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@company.com">
 <input class="hp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
 <button class="btn btn-ink" type="submit">Join the waitlist</button>
-<p class="waitlist-status" role="status" aria-live="polite"></p>
+<div class="waitlist-note"><!--MARK:idle:28--><p class="waitlist-status" role="status" aria-live="polite"></p></div>
 </form>
 </section>
 

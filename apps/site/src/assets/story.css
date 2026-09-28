@@ -4,25 +4,22 @@
    chapters stack as plain sections and nothing is hidden. The card's colours, type and radii
    come from the pack's own tokens (themes.css); nothing here names one. */
 
-/* ---------- The landing page's own ground: the site's paper, graphite for the pencil, the
-   brand's signal orange for intent. Everything the site shares (header, buttons, footer) stays
-   as it is on the docs. ---------- */
+/* ---------- The landing page's own ground: the brand's tokens, graphite (ink over the ground)
+   for the pencil, signal for intent. Everything the site shares (header, buttons, footer) stays
+   as it is on the docs. Hairlines, not shadows. ---------- */
 .landing {
   --void: var(--ground);
-  --panel: #faf8f3;
-  --panel-2: #f1ede4;
-  --hair: var(--line);
-  --hair-2: #cfc9bb;
+  --panel: var(--surface);
+  --panel-2: var(--ground);
+  --hair: var(--rule);
+  --hair-2: color-mix(in srgb, var(--border) 45%, var(--rule));
   --text: var(--ink);
-  --dim: var(--ink-2);
-  --faint: #8a887f;
-  --ice: #3a3a3a;
-  --ice-dim: rgb(58 58 58 / 0.4);
-  --hand: "Architects Daughter", "Geist Mono", monospace;
-  --shadow: 0 24px 60px rgb(20 20 20 / 0.16), 0 0 0 1px rgb(20 20 20 / 0.04);
-}
-.landing .eyebrow {
-  color: var(--signal-ink);
+  --dim: var(--muted);
+  --faint: var(--muted);
+  --ice: color-mix(in srgb, var(--ink) 78%, var(--ground));
+  --ice-dim: color-mix(in srgb, var(--ice) 40%, transparent);
+  --hand: "Architects Daughter", var(--font-mono);
+  --shadow: 0 0 0 1px var(--rule);
 }
 
 /* ---------- The pinned stage ---------- */
@@ -53,10 +50,10 @@
 .act h1 {
   margin: 0;
   font-family: var(--display);
-  font-weight: 800;
-  font-size: clamp(44px, 5.4vw, 84px);
-  line-height: 0.95;
-  letter-spacing: -0.037em;
+  font-weight: 400;
+  font-size: clamp(42px, 5.2vw, 88px);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
   text-wrap: balance;
 }
 .act h2 {
@@ -77,7 +74,7 @@
   font-size: clamp(18px, 1.5vw, 21px);
   max-width: 36ch;
 }
-.scroll-hint {
+.act .scroll-hint {
   font: 12px var(--mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -87,7 +84,7 @@
   content: "↓";
   display: inline-block;
   margin-right: 10px;
-  color: var(--signal-ink);
+  color: var(--signal-text);
   animation: nudge 1.6s ease-in-out infinite;
 }
 @keyframes nudge {
@@ -141,7 +138,8 @@
   position: relative;
   height: min(74vh, 720px);
   border: 1px solid var(--hair);
-  border-radius: 24px;
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
   background: var(--panel);
 }
 .scene > * {
@@ -167,8 +165,8 @@
   gap: 4px 22px;
   padding: 12px 20px;
   border-top: 1px solid var(--hair);
-  border-radius: 0 0 24px 24px;
-  background: rgb(244 241 234 / 0.72);
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+  background: color-mix(in srgb, var(--ground) 72%, transparent);
   font: 11px var(--mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -199,15 +197,19 @@
   gap: 14px;
   max-width: calc(100% - 40px);
   min-height: 52px;
-  padding: 0 20px;
-  background: var(--void);
-  border: 1px solid var(--hair-2);
+  padding: 0 12px 0 20px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   color: var(--text);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 17px;
   white-space: nowrap;
-  box-shadow: 0 10px 30px rgb(20 20 20 / 0.2);
   z-index: 3;
+}
+/* Polyxd, listening: reading while the ask arrives, thinking while it is drawn, checked when
+   the verifier passes it. story.js sets the state; without motion it stays idle. */
+.ask-mark {
+  margin-left: 2px;
 }
 .ask-label {
   font: 11px var(--mono);
@@ -234,10 +236,10 @@
   height: 1.1em;
   overflow: hidden;
   font-family: var(--display);
-  font-weight: 800;
+  font-weight: 400;
   font-size: clamp(28px, 3vw, 46px);
   line-height: 1.1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.015em;
   text-align: center;
   color: var(--text);
   opacity: 0;
@@ -264,12 +266,12 @@
   inset: 0;
   border-radius: 20px;
   border: 1px solid var(--ice-dim);
-  background: rgb(250 248 243 / 0.97);
+  background: color-mix(in srgb, var(--surface) 97%, transparent);
   opacity: 0;
   pointer-events: none;
 }
 .plate-intent {
-  background-color: rgb(241 237 228 / 0.97);
+  background-color: color-mix(in srgb, var(--ground) 97%, transparent);
   background-image: radial-gradient(var(--ice-dim) 1px, transparent 1.2px);
   background-size: 20px 20px;
 }
@@ -324,7 +326,7 @@
   width: 20px;
   height: 20px;
   border-radius: 6px;
-  border: 1px solid rgb(0 0 0 / 0.12);
+  border: 1px solid var(--rule);
 }
 .plate-tokens .type-sample {
   position: absolute;
@@ -339,7 +341,7 @@
 }
 .plate-checks {
   border-style: dashed;
-  background: rgb(58 58 58 / 0.05);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -350,7 +352,7 @@
 .plate-checks span {
   padding: 6px 10px;
   border: 1.5px solid var(--ice);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--panel);
   font: 10px var(--mono);
   letter-spacing: 0.06em;
@@ -549,22 +551,21 @@
   gap: 8px;
   height: 26px;
   padding: 0 10px;
-  background: var(--paper);
+  background: var(--surface);
   border: 1px solid var(--ice);
-  border-radius: 6px;
+  border-radius: var(--radius-pill);
   font: 10px var(--mono);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--ice);
   white-space: nowrap;
-  box-shadow: 0 6px 20px rgb(20 20 20 / 0.15);
   opacity: 0;
 }
 .chip b {
   width: 12px;
   height: 12px;
-  border-radius: 3px;
-  border: 1px solid rgb(0 0 0 / 0.12);
+  border-radius: 50%;
+  border: 1px solid var(--rule);
 }
 
 .cursor {
@@ -575,7 +576,7 @@
   height: 24px;
   border: 2.5px solid var(--signal);
   border-radius: 50%;
-  box-shadow: 0 0 0 5px rgb(255 90 31 / 0.18), 0 0 24px rgb(255 90 31 / 0.5);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--signal) 22%, transparent);
   opacity: 0;
   z-index: 3;
 }
@@ -589,14 +590,13 @@
   position: absolute;
   padding: 8px 14px;
   border: 1.5px solid var(--ice);
-  border-radius: 999px;
-  background: var(--paper);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
   color: var(--ice);
-  font: 600 12px var(--mono);
+  font: 500 12px var(--mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 0 10px 30px rgb(20 20 20 / 0.18);
   opacity: 0;
 }
 .stamp:nth-child(1) {
@@ -614,14 +614,21 @@
   left: -22px;
   rotate: -4deg;
 }
-.stamp-signal {
+/* The last stamp is the design system's CheckedBadge: ink, with the mark's own tick. */
+.stamp-checked {
   bottom: 30%;
   left: -56px;
   rotate: -5deg;
-  background: var(--signal);
-  border-color: var(--signal);
-  color: #fff;
-  box-shadow: 0 10px 30px rgb(20 20 20 / 0.18);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px 6px 6px;
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ground);
+  font: 600 14px var(--body);
+  letter-spacing: 0;
+  text-transform: none;
 }
 .tree {
   left: 16px;
@@ -629,26 +636,26 @@
   bottom: 52px;
   margin: 0;
   padding: clamp(14px, 1.8vw, 22px);
-  background: var(--night);
-  border: 1px solid var(--night-line);
-  border-radius: 16px;
+  /* A night surface in both themes (data-theme="dark" in the page): what a screen reader hears. */
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-small);
   font: clamp(11px, 0.95vw, 13px) / 1.75 var(--mono);
-  color: #d9d5ca;
+  color: var(--ink);
   white-space: pre;
   overflow: hidden;
   opacity: 0;
   transform: translateY(24px);
-  box-shadow: 0 20px 50px rgb(20 20 20 / 0.25);
   z-index: 4;
 }
 .tree .c {
-  color: #8f8c84;
+  color: var(--muted);
 }
 .tree .s {
-  color: var(--code-string);
+  color: var(--signal-text);
 }
 .tree .ok {
-  color: var(--ok);
+  color: var(--success);
 }
 .tree .agent-line {
   display: block;
@@ -670,8 +677,8 @@
 .same li {
   padding: 5px 10px;
   border: 1px solid var(--hair);
-  border-radius: 999px;
-  background: var(--paper);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
   color: var(--text);
   font: 11px var(--mono);
   letter-spacing: 0.04em;
@@ -680,7 +687,7 @@
 }
 .same li::after {
   content: " ✓";
-  color: var(--ok);
+  color: var(--success);
 }
 
 /* ---------- Studio: for design and product teams ---------- */
@@ -713,25 +720,27 @@
   color: var(--dim);
   text-wrap: pretty;
 }
-/* The screen is Studio's Review page, on paper, the way the tool itself is drawn. */
+/* The screen is Studio's Review page, on paper (data-theme="light" in the page), drawn with the
+   brand's tokens the way the tool itself is. */
 .studio-shell {
-  --st-ground: #f4f1ea;
-  --st-paper: #fff;
-  --st-ink: #141414;
-  --st-ink2: #3f3e3a;
-  --st-muted: #6b6a63;
-  --st-faint: #9a988f;
-  --st-line: #ddd8cc;
-  --st-soft: #ece8de;
-  --st-ok: #1f7a3f;
-  --st-okbg: #e6f4ea;
-  --st-warnbg: #fff1ea;
-  --st-sigink: #b8350a;
+  --st-ground: var(--ground);
+  --st-paper: var(--surface);
+  --st-ink: var(--ink);
+  --st-ink2: var(--muted);
+  --st-muted: var(--muted);
+  --st-faint: var(--muted);
+  --st-line: var(--rule);
+  --st-soft: color-mix(in srgb, var(--rule) 50%, var(--ground));
+  --st-ok: var(--success);
+  --st-okbg: color-mix(in srgb, var(--success) 12%, var(--surface));
+  --st-warnbg: color-mix(in srgb, var(--signal) 12%, var(--surface));
+  --st-sigink: var(--signal-text);
   background: var(--st-ground);
   color: var(--st-ink);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
   overflow: hidden;
-  box-shadow: 0 30px 80px rgb(20 20 20 / 0.2), 0 0 0 1px rgb(20 20 20 / 0.06);
+  border: 1px solid var(--rule);
   font-size: 12px;
   line-height: 1.4;
 }
@@ -745,9 +754,13 @@
   border-bottom: 1px solid var(--st-line);
 }
 .st-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   font-family: var(--display);
-  font-weight: 800;
+  font-weight: 400;
   font-size: 15px;
+  letter-spacing: -0.015em;
 }
 .st-dir {
   padding: 4px 8px;
@@ -773,14 +786,14 @@
 .st-publish {
   margin-left: auto;
   padding: 7px 12px;
-  border-radius: 999px;
-  background: var(--st-ink);
-  color: #fff;
+  border-radius: var(--radius-pill);
+  background: var(--signal);
+  color: var(--on-signal);
   font-weight: 600;
 }
 .st-body {
   display: grid;
-  grid-template-columns: 128px minmax(0, 1fr) 210px;
+  grid-template-columns: 128px minmax(0, 1fr) 220px;
   min-height: 420px;
 }
 .st-nav {
@@ -808,7 +821,7 @@
   font: 10px var(--mono);
   color: var(--st-sigink);
 }
-.st-sep {
+.st-nav .st-sep {
   height: 1px;
   margin: 6px 4px;
   background: var(--st-line);
@@ -872,8 +885,8 @@
   width: 250px;
   padding: 14px 10px 18px;
   border-radius: 24px;
-  background: #fdf7ff;
-  box-shadow: 0 12px 30px rgb(20 20 20 / 0.12);
+  background: #fdf7ff; /* Material 3's own surface: the phone shows the product, not Polyxd */
+  border: 1px solid var(--st-line);
 }
 .st-phone .stage {
   padding: 0;
@@ -902,7 +915,7 @@
   gap: 6px;
 }
 .st-flagline mark {
-  background: rgb(255 90 31 / 0.28);
+  background: color-mix(in srgb, var(--signal) 28%, transparent);
   border-bottom: 2px solid var(--signal);
   color: inherit;
 }
@@ -912,12 +925,12 @@
   height: 16px;
   border-radius: 50%;
   background: var(--signal);
-  color: #fff;
+  color: var(--on-signal);
   font: 9px var(--mono);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 3px rgb(255 90 31 / 0.2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--signal) 20%, transparent);
 }
 .st-actions {
   display: flex;
@@ -934,7 +947,7 @@
 .st-btn-ink {
   background: var(--st-ink);
   border-color: var(--st-ink);
-  color: #fff;
+  color: var(--st-ground);
 }
 .st-side {
   padding: 14px 12px;
@@ -980,7 +993,7 @@
   display: flex;
   gap: 8px;
   padding: 8px;
-  border: 1px solid rgb(255 90 31 / 0.5);
+  border: 1px solid color-mix(in srgb, var(--signal) 50%, transparent);
   background: var(--st-warnbg);
   border-radius: 8px;
   font-size: 11px;
@@ -1012,16 +1025,16 @@
 }
 .st-metrics b {
   font-family: var(--display);
-  font-weight: 700;
+  font-weight: 400;
   font-size: 20px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 .st-metrics .up {
   color: var(--st-ok);
 }
 .st-metrics span {
-  font: 9px var(--mono);
-  letter-spacing: 0.05em;
+  font: 8px var(--mono);
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--st-faint);
 }
@@ -1075,7 +1088,7 @@
   font-size: 15px;
 }
 .specimen-link:hover .specimen-ask {
-  color: var(--signal-ink);
+  color: var(--signal-text);
 }
 .specimen-ask::before {
   content: "“";
@@ -1093,7 +1106,8 @@
 .specimen-frame {
   height: 400px;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
   background: var(--pxd-color-surface-default);
   box-shadow: var(--shadow);
   -webkit-mask-image: linear-gradient(#000 78%, transparent);
@@ -1113,7 +1127,7 @@
   text-decoration: none;
 }
 .built-note a:hover {
-  color: var(--signal-ink);
+  color: var(--signal-text);
 }
 .motion .specimens {
   animation: drift var(--drift-time, 90s) linear infinite;
@@ -1225,6 +1239,8 @@ html:not(.motion) .ask {
 }
 html:not(.motion) .slot {
   position: relative;
+  left: auto;
+  top: auto;
   width: min(440px, 100%);
   margin: 0 auto;
 }
@@ -1335,8 +1351,10 @@ html:not(.motion) .slot {
   .stamp:nth-child(3) {
     left: -6px;
   }
-  .stamp-signal {
+  .stamp-checked {
     left: -8px;
+    padding: 4px 12px 4px 4px;
+    font-size: 12px;
   }
   .tree {
     left: 10px;

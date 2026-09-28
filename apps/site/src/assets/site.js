@@ -29,15 +29,22 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const button = form.querySelector("button");
+    // The mark beside the status: thinking while it sends, checked when you're on the list,
+    // attention when something needs you.
+    const mark = form.querySelector(".waitlist-note .pxb-mark");
+    const state = (s) => mark && (mark.dataset.state = s);
     button.disabled = true;
+    state("thinking");
     status.textContent = "Adding you…";
     try {
       const res = await fetch(form.action, { method: "POST", body: new FormData(form) });
       const body = await res.json().catch(() => ({}));
       status.textContent = res.ok ? "You're on the list. We'll be in touch." : body.error ?? "Something went wrong. Please try again.";
+      state(res.ok ? "checked" : "attention");
       if (res.ok) form.reset();
     } catch {
       status.textContent = "Couldn't reach the server. Please try again.";
+      state("attention");
     } finally {
       button.disabled = false;
     }
