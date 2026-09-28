@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { PackLogo } from "../packlogo.tsx";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type Scan, type TemplateSummary } from "../api.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
@@ -98,6 +99,7 @@ export function DesignSystems({ ws }: { ws: Ws }) {
                 <div className="tpl-grid" role="listbox" aria-label="Templates">
                   {templates.map((t) => (
                     <button type="button" key={t.name} role="option" aria-selected={template === t.name} aria-pressed={template === t.name} className="tpl" onClick={() => setTemplate(t.name)}>
+                      <PackLogo id={t.name} size={32} />
                       <span className="tpl-strip" aria-hidden="true">{t.swatches.map((s) => <span key={s.role} title={`${s.role}: ${s.value}`} style={{ background: s.value }} />)}</span>
                       <span><b>{t.displayName}</b><span className="character">{t.character}</span></span>
                       <span className="facts">{t.radius ? `radius ${t.radius}` : ""}{t.font ? ` · ${t.font}` : ""} · {t.modes.join(", ")}{t.extras ? " · extras.css" : ""}</span>

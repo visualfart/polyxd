@@ -5,6 +5,7 @@
  * document a product fetches.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { PackLogo } from "../packlogo.tsx";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { ActionEvent } from "@polyxd/react";
 import "@polyxd/react/styles.css";
@@ -327,6 +328,7 @@ export function Screen({ ws }: { ws: Ws }) {
         </aside>
         <section className="scr-center" aria-label="Preview">
           <div className="scr-toolbar">
+            {themeId !== "workspace" && <PackLogo id={themeId} size={32} />}
             <select className="select" value={themeId} onChange={(e) => setThemeId(e.target.value)} aria-label="Design system">
               {wsTheme && <option value="workspace">{wsTheme.name} (your design system)</option>}
               {wsTheme === null && <option value="" disabled>No published design system yet</option>}

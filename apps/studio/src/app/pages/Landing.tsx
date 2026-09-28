@@ -14,6 +14,7 @@ import "@polyxd/react/themes/govuk.css";
 import sendMoney from "../../../../../packages/spec/examples/money-send-form.json" with { type: "json" };
 import { useSession } from "../App.tsx";
 import { Mark, StudioLockup } from "../mark.tsx";
+import { PackLogo } from "../packlogo.tsx";
 import "../landing.css";
 
 const PACKS: { id: string; name: string }[] = [
@@ -200,6 +201,7 @@ function Hero() {
                 setHeld(true);
               }}
             >
+              <PackLogo id={p.id} size={22} />
               {p.name}
             </button>
           ))}
