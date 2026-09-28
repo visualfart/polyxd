@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/ds-primer",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "GitHub Primer design-system pack for Polyxd (DTCG 2025.10 tokens)",
   "license": "Apache-2.0",
   "type": "module",

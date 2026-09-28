@@ -32,6 +32,7 @@ The [runtime SDK](/docs/runtime), `@polyxd/runtime`, the [MCP server](/docs/mcp/
 | v0.2 | | Authored screens, more components, the demos, Studio's first version | Released |
 | v0.3 | | The shell components, `@polyxd/core`, the Web Components renderer, twelve templates, `polyxd dev` | Released |
 | v0.4 | | Runtime SDK, MCP server (local and hosted at mcp.polyxd.com), generation server, precompiled spec validators, `@polyxd/verifier/static` | Released |
+| v0.4.1 | | Semantic analytics events from both renderers, `@polyxd/analytics`, chart axis labels that thin themselves | Released |
 | v1.0 | | Spec frozen, then native renderers | Planned |
 
 Before v1.0 the spec may break. Every document carries `specVersion`, releases follow semver, and breaking changes will come with migration notes.
@@ -47,7 +48,7 @@ Each layer ships as its own package, so nobody has to adopt all of it. What exis
 | Web renderer | `@polyxd/react` | npm | Exists |
 | Verifier and benchmark | `polyxd-verify` CLI, dataset | npm, Hugging Face Datasets | Verifier exists; dataset in progress |
 | Runtime SDK (generator, memory, validation, streaming) | `@polyxd/runtime`, `polyxd` (Python) | npm, PyPI | `@polyxd/runtime` on npm; Python planned |
-| Semantic analytics events and adapters | `@polyxd/react` and `@polyxd/web` emit them; `@polyxd/analytics` sends them to PostHog, Segment, GA4 or an endpoint | npm | `@polyxd/analytics` is on npm. The renderers emit the events in the repository; the renderers on npm (0.4.0) don't yet. Amplitude and OpenTelemetry adapters are not written |
+| Semantic analytics events and adapters | `@polyxd/react` and `@polyxd/web` emit them; `@polyxd/analytics` sends them to PostHog, Segment, GA4 or an endpoint | npm | `@polyxd/analytics` is on npm, and the renderers emit the events from 0.4.1 on. Amplitude and OpenTelemetry adapters are not written |
 | Agent integration | MCP server (MCP Apps compatible) and A2UI export | npm (`npx @polyxd/mcp`) | A2UI export exists; the MCP server ([`@polyxd/mcp`](/docs/mcp/)) is on npm and hosted at `mcp.polyxd.com` |
 | Server | Generation server and HTTP API with streaming, pointed at the model endpoint you choose | Docker image on GitHub Container Registry, and npm (`npx @polyxd/server`) | [`@polyxd/server`](/docs/server/) on npm, with a Dockerfile to build the image |
 | Native renderers | Swift package, Compose library | SPM, Maven Central | Later |

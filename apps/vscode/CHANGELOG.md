@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Charts in the preview label every second or third point when there are too many to fit, instead of drawing the labels on top of each other.
+
 ## 0.4.0
 
 - Built on the Polyxd 0.4.0 packages: the spec's validators are compiled ahead of time, and people's initials stay visible on a selected row in the preview.

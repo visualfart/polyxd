@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/server",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A generation server for Polyxd: an HTTP API with streaming around @polyxd/runtime, pointed at the model endpoint you choose",
   "license": "Apache-2.0",
   "type": "module",
@@ -28,9 +28,9 @@
     "test": "tsc -b && node --test \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@polyxd/runtime": "^0.4.0",
-    "@polyxd/spec": "^0.4.0",
-    "@polyxd/verifier": "^0.4.0"
+    "@polyxd/runtime": "^0.4.1",
+    "@polyxd/spec": "^0.4.1",
+    "@polyxd/verifier": "^0.4.1"
   },
   "repository": {
     "type": "git",

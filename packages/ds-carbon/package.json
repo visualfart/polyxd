@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/ds-carbon",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "IBM Carbon design-system pack for Polyxd (DTCG 2025.10 tokens)",
   "license": "Apache-2.0",
   "type": "module",

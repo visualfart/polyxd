@@ -14,7 +14,7 @@ import { PACKS } from "./packs.generated.ts";
 import { componentDefinitions, componentNamed, exampleDirections, exampleDocuments } from "./spec.ts";
 import { componentsOutput, guideOutput, packsOutput, showOutput, validateOutput, verifyOutput } from "./output-schemas.ts";
 
-export const VERSION = "0.4.0";
+export const VERSION = "0.4.1";
 /** The MCP App resource every shown screen renders in. */
 export const VIEW_URI = "ui://polyxd/surface.html";
 /** MCP Apps' HTML profile. */

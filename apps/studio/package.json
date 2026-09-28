@@ -15,10 +15,10 @@
     "deploy": "npm run build && wrangler deploy --env production"
   },
   "dependencies": {
-    "@polyxd/analytics": "^0.4.0",
-    "@polyxd/ds-kit": "^0.4.0",
-    "@polyxd/react": "^0.4.0",
-    "@polyxd/spec": "^0.4.0",
+    "@polyxd/analytics": "^0.4.1",
+    "@polyxd/ds-kit": "^0.4.1",
+    "@polyxd/react": "^0.4.1",
+    "@polyxd/spec": "^0.4.1",
     "better-auth": "^1.7.6",
     "hono": "^4.6.0",
     "kysely": "^0.28.17",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260919.1",
-    "@polyxd/core": "^0.4.0",
+    "@polyxd/core": "^0.4.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",

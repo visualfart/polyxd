@@ -209,7 +209,7 @@ This example is from `packages/spec/examples/events/`. The generator name in it 
 
 ### Send them to PostHog
 
-`@polyxd/analytics` has adapters with no dependencies. It is on npm; the renderers on npm (0.4.0) don't emit the events yet, the ones in the repository do.
+`@polyxd/analytics` has adapters with no dependencies. It is on npm, and the renderers emit the events from 0.4.1 on.
 
 ```tsx
 import posthog from "posthog-js";
