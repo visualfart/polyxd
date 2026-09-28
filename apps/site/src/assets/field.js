@@ -117,8 +117,15 @@ void main(){
     let size = [1, 1];
 
     const ds = canvas.dataset;
-    const REST = rgb(ds.rest || token("--ink", "#141413"));
-    const ACT = rgb(ds.active || token("--signal", "#FF6E40"));
+    // Colours follow the theme: read again when the switch or the system changes it.
+    let REST, ACT;
+    const readColors = () => {
+      REST = rgb(ds.rest || token("--ink", "#141413"));
+      ACT = rgb(ds.active || token("--signal", "#FF6E40"));
+    };
+    readColors();
+    new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", readColors);
     const RA = Number(ds.restAlpha ?? .2);
     const DEN = Number(ds.density ?? 1);
     const scope = canvas.parentElement;

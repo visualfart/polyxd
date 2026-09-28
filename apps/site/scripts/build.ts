@@ -97,7 +97,8 @@ import { mark, svg as markSvg, markSvg as livingMark, FONTS_URL, PAPER, NIGHT, t
 const LOGO = `${livingMark({ size: 32 })}<span class="brand-word">polyxd</span>`;
 
 function head({ title, description, path, css = [] }: { title: string; description: string; path: string; css?: string[] }) {
-  return `<meta name="theme-color" content="${PAPER}" media="(prefers-color-scheme: light)">
+  return `<script>try{var t=localStorage.getItem("pxd-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+<meta name="theme-color" content="${PAPER}" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="${NIGHT}" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="${ORIGIN}${path}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -120,6 +121,53 @@ function head({ title, description, path, css = [] }: { title: string; descripti
 ${css.map((c) => `<link rel="stylesheet" href="${c}">`).join("\n")}`;
 }
 
+/**
+ * The theme switch: collapsed to one icon for the current theme; opens into System, Light and Dark,
+ * then folds away. The choice is kept in localStorage and applied in <head> before the page paints.
+ */
+const ICON = {
+  system: `<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 3.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg>`,
+  light: `<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.3 4.3l1.4 1.4M14.3 14.3l1.4 1.4M4.3 15.7l1.4-1.4M14.3 5.7l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  dark: `<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M15.5 12.2A6.5 6.5 0 0 1 7.8 4.5a6.5 6.5 0 1 0 7.7 7.7z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
+};
+const THEME_SWITCH = `<div class="theme-switch" data-theme-switch>
+<button type="button" class="theme-toggle" aria-expanded="false" aria-controls="theme-options" aria-label="Theme: system. Change theme">${ICON.system}</button>
+<div class="theme-options" id="theme-options" role="radiogroup" aria-label="Theme">
+<button type="button" role="radio" aria-checked="true" data-set-theme="system" aria-label="System" title="System">${ICON.system}</button>
+<button type="button" role="radio" aria-checked="false" data-set-theme="light" aria-label="Light" title="Light">${ICON.light}</button>
+<button type="button" role="radio" aria-checked="false" data-set-theme="dark" aria-label="Dark" title="Dark">${ICON.dark}</button>
+</div>
+</div>`;
+const THEME_SCRIPT = `<script>(() => {
+  const root = document.documentElement, sw = document.querySelector("[data-theme-switch]");
+  if (!sw) return;
+  const toggle = sw.querySelector(".theme-toggle"), opts = [...sw.querySelectorAll("[data-set-theme]")];
+  const get = () => { try { return localStorage.getItem("pxd-theme") || "system"; } catch { return "system"; } };
+  const apply = (t) => {
+    if (t === "system") root.removeAttribute("data-theme"); else root.dataset.theme = t;
+    try { t === "system" ? localStorage.removeItem("pxd-theme") : localStorage.setItem("pxd-theme", t); } catch {}
+    opts.forEach((o) => { const on = o.dataset.setTheme === t; o.setAttribute("aria-checked", String(on)); o.tabIndex = on ? 0 : -1; });
+    toggle.innerHTML = sw.querySelector('[data-set-theme="' + t + '"]').innerHTML;
+    toggle.setAttribute("aria-label", "Theme: " + t + ". Change theme");
+  };
+  const open = (v) => {
+    sw.toggleAttribute("data-open", v);
+    toggle.setAttribute("aria-expanded", String(v));
+    if (v) sw.querySelector('[aria-checked="true"]').focus();
+  };
+  toggle.addEventListener("click", () => open(true));
+  opts.forEach((o, i) => {
+    o.addEventListener("click", () => { apply(o.dataset.setTheme); open(false); toggle.focus(); });
+    o.addEventListener("keydown", (e) => {
+      const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (d) { e.preventDefault(); opts[(i + d + opts.length) % opts.length].focus(); }
+    });
+  });
+  document.addEventListener("click", (e) => { if (!sw.contains(e.target)) open(false); });
+  sw.addEventListener("keydown", (e) => { if (e.key === "Escape") { open(false); toggle.focus(); } });
+  apply(get());
+})();</script>`;
+
 function header(current: string) {
   const cur = (k: string) => (k === current ? ' aria-current="page"' : "");
   return `<header class="site-header"><div class="wrap">
@@ -132,8 +180,10 @@ function header(current: string) {
 <a class="nav-wide" href="/demos/">Demos</a>
 <a href="/docs/"${cur("docs")}>Docs</a>
 <a class="nav-wide" href="${GITHUB}">GitHub</a>
+${THEME_SWITCH}
 <a class="btn btn-signal btn-small" href="/docs/quickstart/">Get started</a>
-</nav></div></header>`;
+</nav></div></header>
+${THEME_SCRIPT}`;
 }
 
 /**
