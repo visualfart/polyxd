@@ -1,0 +1,552 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "accounts",
+    "title": "Accounts",
+    "intent": "accounts.browse",
+    "subtitle": "1,284 accounts · £312,480 monthly recurring revenue",
+    "breadcrumbs": [
+      {
+        "label": "Customers",
+        "action": {
+          "event": {
+            "name": "nav.go",
+            "context": {
+              "to": "customers"
+            }
+          }
+        }
+      }
+    ],
+    "actions": "header-actions"
+  },
+  "root": "table",
+  "components": [
+    {
+      "id": "nav",
+      "component": "Navigation",
+      "label": "Main",
+      "current": {
+        "path": "/nav"
+      },
+      "items": [
+        {
+          "key": "overview",
+          "label": "Overview",
+          "icon": "chart",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "overview"
+              }
+            }
+          }
+        },
+        {
+          "key": "accounts",
+          "label": "Accounts",
+          "icon": "people",
+          "group": "Customers",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "accounts"
+              }
+            }
+          }
+        },
+        {
+          "key": "contacts",
+          "label": "Contacts",
+          "icon": "people",
+          "group": "Customers",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "contacts"
+              }
+            }
+          }
+        },
+        {
+          "key": "invoices",
+          "label": "Invoices",
+          "icon": "file",
+          "group": "Billing",
+          "badge": {
+            "path": "/overdue"
+          },
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "invoices"
+              }
+            }
+          }
+        },
+        {
+          "key": "subscriptions",
+          "label": "Subscriptions",
+          "icon": "card",
+          "group": "Billing",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "subscriptions"
+              }
+            }
+          }
+        },
+        {
+          "key": "settings",
+          "label": "Settings",
+          "icon": "settings",
+          "action": {
+            "event": {
+              "name": "nav.go",
+              "context": {
+                "to": "settings"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "header-actions",
+      "component": "ActionBar",
+      "children": [
+        "import"
+      ]
+    },
+    {
+      "id": "import",
+      "component": "Action",
+      "label": "Import accounts",
+      "emphasis": "tertiary",
+      "action": {
+        "event": {
+          "name": "accounts.import"
+        }
+      }
+    },
+    {
+      "id": "table",
+      "component": "Table",
+      "rows": {
+        "path": "/accounts"
+      },
+      "caption": "Accounts, sorted by monthly recurring revenue",
+      "rowValuePath": "id",
+      "views": [
+        {
+          "key": "all",
+          "label": "All accounts",
+          "count": {
+            "path": "/counts/all"
+          }
+        },
+        {
+          "key": "mine",
+          "label": "Mine",
+          "count": {
+            "path": "/counts/mine"
+          }
+        },
+        {
+          "key": "pastdue",
+          "label": "Past due",
+          "count": {
+            "path": "/counts/pastdue"
+          }
+        },
+        {
+          "key": "trials",
+          "label": "Trials",
+          "count": {
+            "path": "/counts/trials"
+          }
+        }
+      ],
+      "view": {
+        "path": "/view"
+      },
+      "search": "search",
+      "toolbar": "toolbar",
+      "bulkActions": "bulk",
+      "rowActions": "row-actions",
+      "selection": "multiple",
+      "selected": {
+        "path": "/selected"
+      },
+      "sort": {
+        "column": {
+          "path": "/sort/column"
+        },
+        "direction": {
+          "path": "/sort/direction"
+        },
+        "action": {
+          "event": {
+            "name": "accounts.sort",
+            "context": {
+              "column": {
+                "path": "/sort/column"
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "index": {
+          "path": "/page"
+        },
+        "size": {
+          "path": "/pageSize"
+        },
+        "total": {
+          "path": "/counts/all"
+        },
+        "action": {
+          "event": {
+            "name": "accounts.page",
+            "context": {
+              "page": {
+                "path": "/page"
+              }
+            }
+          }
+        }
+      },
+      "rowAction": {
+        "event": {
+          "name": "account.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      },
+      "columns": [
+        {
+          "key": "name",
+          "label": "Account",
+          "path": "name",
+          "kind": "entity",
+          "avatarPath": "initials",
+          "sortable": true
+        },
+        {
+          "key": "owner",
+          "label": "Owner",
+          "path": "owner",
+          "sortable": true
+        },
+        {
+          "key": "plan",
+          "label": "Plan",
+          "path": "plan",
+          "sortable": true
+        },
+        {
+          "key": "mrr",
+          "label": "MRR",
+          "path": "mrr",
+          "kind": "currency",
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          },
+          "sortable": true
+        },
+        {
+          "key": "seats",
+          "label": "Seats",
+          "path": "seats",
+          "align": "end"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "path": "status",
+          "kind": "status",
+          "tones": {
+            "Active": "success",
+            "Past due": "danger",
+            "Trial": "info",
+            "Renewing": "warning"
+          },
+          "sortable": true
+        },
+        {
+          "key": "renews",
+          "label": "Renews",
+          "path": "renews",
+          "kind": "date",
+          "sortable": true
+        }
+      ],
+      "empty": "no-accounts"
+    },
+    {
+      "id": "search",
+      "component": "TextInput",
+      "key": "q",
+      "label": "Search accounts",
+      "kind": "search",
+      "placeholder": "Name, owner or domain",
+      "value": {
+        "path": "/q"
+      }
+    },
+    {
+      "id": "toolbar",
+      "component": "ActionBar",
+      "children": [
+        "export",
+        "new"
+      ]
+    },
+    {
+      "id": "export",
+      "component": "Action",
+      "label": "Export CSV",
+      "emphasis": "tertiary",
+      "action": {
+        "event": {
+          "name": "accounts.export"
+        }
+      }
+    },
+    {
+      "id": "new",
+      "component": "Action",
+      "label": "New account",
+      "emphasis": "primary",
+      "action": {
+        "event": {
+          "name": "account.create"
+        }
+      }
+    },
+    {
+      "id": "bulk",
+      "component": "ActionBar",
+      "children": [
+        "assign",
+        "remind"
+      ]
+    },
+    {
+      "id": "assign",
+      "component": "Action",
+      "label": "Assign owner",
+      "action": {
+        "event": {
+          "name": "accounts.assign",
+          "context": {
+            "ids": {
+              "path": "/selected"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "remind",
+      "component": "Action",
+      "label": "Send payment reminder",
+      "action": {
+        "event": {
+          "name": "accounts.remindStart",
+          "context": {
+            "ids": {
+              "path": "/selected"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "row-actions",
+      "component": "ActionBar",
+      "children": [
+        "open",
+        "invoice",
+        "cancel-sub"
+      ]
+    },
+    {
+      "id": "open",
+      "component": "Action",
+      "label": "Open account",
+      "action": {
+        "event": {
+          "name": "account.open",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "invoice",
+      "component": "Action",
+      "label": "Create invoice",
+      "action": {
+        "event": {
+          "name": "invoice.createStart",
+          "context": {
+            "account": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "cancel-sub",
+      "component": "Action",
+      "label": "Cancel subscription",
+      "tone": "danger",
+      "action": {
+        "event": {
+          "name": "subscription.cancelStart",
+          "context": {
+            "account": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "no-accounts",
+      "component": "Status",
+      "kind": "empty",
+      "title": "No accounts match these filters",
+      "message": "Try a different saved view, or clear the search."
+    }
+  ],
+  "data": {
+    "nav": "accounts",
+    "overdue": 12,
+    "view": "all",
+    "q": "",
+    "selected": [
+      "a1",
+      "a3"
+    ],
+    "sort": {
+      "column": "mrr",
+      "direction": "descending"
+    },
+    "page": 1,
+    "pageSize": 50,
+    "counts": {
+      "all": 1284,
+      "mine": 212,
+      "pastdue": 31,
+      "trials": 58
+    },
+    "accounts": [
+      {
+        "id": "a1",
+        "name": "Acme Corp",
+        "initials": "AC",
+        "owner": "Rhea M.",
+        "plan": "Enterprise",
+        "mrr": 4200,
+        "seats": "48 / 50",
+        "status": "Past due",
+        "renews": "12 Oct 2026"
+      },
+      {
+        "id": "a2",
+        "name": "Globex",
+        "initials": "GL",
+        "owner": "Tom W.",
+        "plan": "Pro",
+        "mrr": 1180,
+        "seats": "22 / 25",
+        "status": "Active",
+        "renews": "3 Nov 2026"
+      },
+      {
+        "id": "a3",
+        "name": "Initech",
+        "initials": "IN",
+        "owner": "Rhea M.",
+        "plan": "Pro",
+        "mrr": 940,
+        "seats": "18 / 20",
+        "status": "Active",
+        "renews": "21 Oct 2026"
+      },
+      {
+        "id": "a4",
+        "name": "Umbrella Health",
+        "initials": "UH",
+        "owner": "Sam P.",
+        "plan": "Enterprise",
+        "mrr": 6750,
+        "seats": "120 / 120",
+        "status": "Active",
+        "renews": "30 Jan 2027"
+      },
+      {
+        "id": "a5",
+        "name": "Hooli",
+        "initials": "HO",
+        "owner": "Jo R.",
+        "plan": "Starter",
+        "mrr": 120,
+        "seats": "3 / 5",
+        "status": "Trial",
+        "renews": "27 Sep 2026"
+      },
+      {
+        "id": "a6",
+        "name": "Stark Logistics",
+        "initials": "SL",
+        "owner": "Tom W.",
+        "plan": "Pro",
+        "mrr": 1560,
+        "seats": "30 / 30",
+        "status": "Active",
+        "renews": "14 Dec 2026"
+      },
+      {
+        "id": "a7",
+        "name": "Wayne Retail",
+        "initials": "WR",
+        "owner": "Sam P.",
+        "plan": "Enterprise",
+        "mrr": 3900,
+        "seats": "64 / 80",
+        "status": "Renewing",
+        "renews": "2 Oct 2026"
+      },
+      {
+        "id": "a8",
+        "name": "Soylent",
+        "initials": "SO",
+        "owner": "Rhea M.",
+        "plan": "Pro",
+        "mrr": 1020,
+        "seats": "19 / 25",
+        "status": "Past due",
+        "renews": "18 Oct 2026"
+      }
+    ]
+  }
+}

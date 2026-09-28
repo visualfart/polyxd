@@ -1,0 +1,57 @@
+{
+  "name": "ActionMenu",
+  "category": "action",
+  "summary": "Secondary actions behind one control: an overflow menu, a dropdown, a split button or a context menu.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "The control's name: 'More actions' for an overflow, or the verb for a dropdown ('Export')"
+    },
+    "kind": {
+      "enum": ["overflow", "dropdown", "split", "context"],
+      "default": "overflow",
+      "description": "'overflow' is the '…' control; 'dropdown' is a labelled button that opens the menu; 'split' pairs a primary action with a menu of alternatives; 'context' opens on right-click or long-press of the component it belongs to"
+    },
+    "children": {
+      "$ref": "#/$defs/ChildList",
+      "description": "The Actions in the menu, in order; a danger-toned one goes last and is separated"
+    },
+    "primary": {
+      "$ref": "#/$defs/Id",
+      "description": "For 'split': the Action that runs when the main part is pressed"
+    }
+  },
+  "required": ["label", "children"],
+  "whenToUse": [
+    "Three or more secondary actions on a row, a card or a page header",
+    "One usual action with rarer alternatives (split: 'Save' with 'Save as draft')",
+    "Actions that belong to the thing under the pointer (context)"
+  ],
+  "whenNotToUse": [
+    "One or two actions: use Action or ActionBar, where they are visible",
+    "The main thing to do on the surface: never hidden in a menu",
+    "Navigation between views: use Views or Navigation"
+  ],
+  "accessibility": {
+    "role": "a menu button (aria-haspopup, aria-expanded) opening a menu of menuitems; a split's main part is a plain button",
+    "requirements": [
+      "Every action is reachable by keyboard: arrows move, Enter activates, Escape closes and returns focus",
+      "An overflow control is named for what it holds ('More actions for Acme Corp'), never just '…'",
+      "A context menu's actions are also reachable another way (an overflow control), since right-click and long-press aren't discoverable"
+    ]
+  },
+  "agent": "Opens the menu by its name and activates an action by its label.",
+  "rendering": [
+    "The menu uses color.surface.overlay with elevation.overlay and radius.default; items are size.control.default tall with space.inset.default",
+    "A danger-toned Action shows in color.status.danger.emphasis after a divider",
+    "The overflow control is an icon-only button at size.target.min with the label as its accessible name; a dropdown shows the label with a chevron",
+    "A split's two parts share one outline; the menu part is at least size.target.min wide"
+  ],
+  "mappings": {
+    "web": "shadcn DropdownMenu, ContextMenu; split as a ButtonGroup",
+    "ios": "Menu, contextMenu",
+    "android": "DropdownMenu, combinedClickable for context"
+  },
+  "a2ui": "Custom (no Basic equivalent)",
+  "sources": ["WAI-ARIA APG menu button pattern"]
+}

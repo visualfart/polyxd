@@ -1,0 +1,71 @@
+{
+  "name": "Rating",
+  "category": "input",
+  "summary": "A score out of N: given by the person, or shown as others gave it.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "What is rated: 'Your rating', 'Average rating'"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "The score in host data; written when the person can rate"
+    },
+    "max": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 10,
+      "default": 5
+    },
+    "readOnly": {
+      "$ref": "#/$defs/DynamicBoolean",
+      "default": false,
+      "description": "Show a score rather than take one"
+    },
+    "count": {
+      "$ref": "#/$defs/DynamicNumber",
+      "description": "How many ratings the score is from, shown after it: '4.6 (212)'"
+    },
+    "help": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "required": {
+      "$ref": "#/$defs/DynamicBoolean",
+      "default": false
+    },
+    "action": {
+      "$ref": "#/$defs/Action",
+      "description": "Runs when a rating is given, with context bound to value"
+    }
+  },
+  "required": ["label", "value"],
+  "whenToUse": [
+    "Asking how something went, out of five",
+    "Showing a product's or place's rating with the count behind it"
+  ],
+  "whenNotToUse": [
+    "A number within bounds that isn't a score: use RangeInput",
+    "Yes or no: use Toggle or Choice"
+  ],
+  "accessibility": {
+    "role": "radiogroup of radios named '1 star' to 'N stars' when it can be given; an image named '4.6 out of 5' when read-only",
+    "requirements": [
+      "Every star is a real control at size.target.min when the person can rate",
+      "The current value is announced; half values are said as such",
+      "Read-only ratings carry the score as text, not only as filled shapes"
+    ]
+  },
+  "agent": "Reads the score and the count; sets a score by choosing '<n> stars'.",
+  "rendering": [
+    "Filled shapes use color.status.warning.emphasis; empty ones use color.border.default",
+    "The readout ('4.6') is shown after the shapes in tabular figures, with the count in color.text.muted",
+    "A rating that can be given shows the label above, like every input"
+  ],
+  "mappings": {
+    "web": "Radix RadioGroup (no shadcn rating)",
+    "ios": "HStack of Image(systemName: star) buttons",
+    "android": "Row of IconButton"
+  },
+  "a2ui": "Row of Icon",
+  "sources": ["WAI-ARIA rating pattern (radio group)"]
+}

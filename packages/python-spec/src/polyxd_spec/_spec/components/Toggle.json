@@ -1,0 +1,51 @@
+{
+  "name": "Toggle",
+  "category": "input",
+  "summary": "An on/off setting.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "Boolean in host data"
+    },
+    "description": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "action": {
+      "$ref": "#/$defs/Action",
+      "description": "Set when the change applies immediately (a setting); omit inside a Form"
+    }
+  },
+  "required": [
+    "label",
+    "value"
+  ],
+  "whenToUse": [
+    "Settings that take effect immediately",
+    "A single yes/no inside a form"
+  ],
+  "whenNotToUse": [
+    "Choosing between named options: use Choice"
+  ],
+  "accessibility": {
+    "role": "switch (immediate) / checkbox (in a form)",
+    "requirements": [
+      "Label says what 'on' means"
+    ]
+  },
+  "agent": "Toggle by label; state is exposed as on/off.",
+  "rendering": [
+    "With 'action' it renders as a switch; inside a Form without action, as a checkbox"
+  ],
+  "mappings": {
+    "web": "shadcn Switch / Checkbox",
+    "ios": "Toggle",
+    "android": "Switch / Checkbox"
+  },
+  "a2ui": "CheckBox",
+  "sources": [
+    "Nielsen: match between system and the real world"
+  ]
+}

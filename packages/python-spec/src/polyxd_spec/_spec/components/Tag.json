@@ -1,0 +1,63 @@
+{
+  "name": "Tag",
+  "category": "content",
+  "summary": "A short label, status or count attached to something else.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "The word or two it shows: 'Past due', 'Beta', 'Design'"
+    },
+    "kind": {
+      "enum": ["label", "status", "count"],
+      "default": "label",
+      "description": "'status' is the state of the thing it sits on and is coloured by tone; 'count' is a number, with the label as its accessible name"
+    },
+    "tone": {
+      "$ref": "#/$defs/Tone",
+      "default": "neutral",
+      "description": "Meaning, not decoration: a status tag's tone says whether the state is fine, a warning or a problem"
+    },
+    "count": {
+      "$ref": "#/$defs/DynamicNumber",
+      "description": "For kind 'count': the number, bound to host data"
+    },
+    "remove": {
+      "$ref": "#/$defs/Action",
+      "description": "Present when the person can take the tag off (a filter chip, a chosen recipient): the capability that removes it"
+    }
+  },
+  "required": ["label"],
+  "whenToUse": [
+    "The state of a record, next to its name: 'Past due', 'Draft', 'Live'",
+    "A category or label a thing carries",
+    "How many of something, on a navigation item or a section heading",
+    "Chosen items a person can take off again"
+  ],
+  "whenNotToUse": [
+    "A whole sentence of feedback: use Status",
+    "Something the person switches on or off: use Toggle",
+    "A metric the person came for: use Metric"
+  ],
+  "accessibility": {
+    "role": "text; for 'count', the label is the accessible name of the number; for a removable tag, a button named 'Remove <label>'",
+    "requirements": [
+      "Tone is conveyed by the label, never only by colour",
+      "A count reads as '<label>: <count>' to a screen reader",
+      "The remove control is at least size.target.min and named for what it removes"
+    ]
+  },
+  "agent": "Reads label, tone and count; can activate the remove control by its name.",
+  "rendering": [
+    "status uses color.status.<tone>.background and .foreground; label and count use neutral tokens",
+    "count is set in tabular figures",
+    "A tag never wraps: long labels are truncated with the full text on hover and in the accessible name",
+    "Fits inline with text and in a Card header; radius.small unless the pack sets a pill"
+  ],
+  "mappings": {
+    "web": "shadcn Badge",
+    "ios": "Text with capsule background",
+    "android": "AssistChip / Badge"
+  },
+  "a2ui": "Text",
+  "sources": ["WCAG 1.4.1 use of color"]
+}

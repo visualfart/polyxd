@@ -1,0 +1,42 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "delete-project",
+    "title": "Delete project",
+    "intent": "tasks.project.delete",
+    "pattern": "confirm-destructive"
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "id": "confirm",
+      "component": "Confirm",
+      "title": "Delete “Website relaunch”?",
+      "severity": "destructive",
+      "consequence": "All 34 tasks and their comments are deleted for everyone. This can't be undone.",
+      "typeToConfirm": {
+        "path": "/project/name"
+      },
+      "confirm": {
+        "label": "Delete project",
+        "action": {
+          "event": {
+            "name": "project.delete",
+            "context": {
+              "id": {
+                "path": "/project/id"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "data": {
+    "project": {
+      "id": "pr_7",
+      "name": "Website relaunch"
+    }
+  }
+}

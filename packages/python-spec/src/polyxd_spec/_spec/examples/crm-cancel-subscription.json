@@ -1,0 +1,137 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "cancel-subscription",
+    "title": "Cancel this subscription?",
+    "intent": "subscription.cancel",
+    "pattern": "confirm-destructive"
+  },
+  "root": "confirm",
+  "components": [
+    {
+      "id": "confirm",
+      "component": "Confirm",
+      "title": "Cancel this subscription?",
+      "severity": "destructive",
+      "subject": {
+        "title": {
+          "path": "/account/name"
+        },
+        "subtitle": {
+          "path": "/account/plan"
+        },
+        "avatar": {
+          "path": "/account/initials"
+        }
+      },
+      "amount": {
+        "value": {
+          "path": "/account/mrr"
+        },
+        "format": {
+          "type": "currency",
+          "currency": "GBP"
+        }
+      },
+      "consequences": [
+        {
+          "icon": "clock",
+          "title": "Access until 12 October",
+          "detail": "The subscription runs to the end of the paid period"
+        },
+        {
+          "icon": "lock",
+          "title": "48 people lose access",
+          "detail": "Their work stays, but they can't sign in"
+        },
+        {
+          "icon": "trash",
+          "title": "Data erased after 90 days",
+          "detail": "Exports are available until then"
+        },
+        {
+          "icon": "mail",
+          "title": "Acme is told",
+          "detail": "We email the billing contact"
+        }
+      ],
+      "consequence": "Cancelling ends £4,200 of monthly revenue and can't be undone from here.",
+      "typeToConfirm": "CANCEL",
+      "summary": "terms",
+      "confirm": {
+        "label": "Cancel subscription",
+        "action": {
+          "event": {
+            "name": "subscription.cancel",
+            "context": {
+              "account": {
+                "path": "/account/id"
+              }
+            }
+          }
+        }
+      },
+      "cancel": {
+        "label": "Keep subscription",
+        "action": {
+          "event": {
+            "name": "ui.dismiss"
+          }
+        }
+      }
+    },
+    {
+      "id": "terms",
+      "component": "DetailList",
+      "variant": "receipt",
+      "items": [
+        {
+          "key": "plan",
+          "label": "Plan",
+          "value": {
+            "path": "/account/plan"
+          }
+        },
+        {
+          "key": "seats",
+          "label": "Seats",
+          "value": {
+            "path": "/account/seats"
+          }
+        },
+        {
+          "key": "until",
+          "label": "Access until",
+          "value": {
+            "path": "/account/until"
+          }
+        },
+        {
+          "key": "refund",
+          "label": "Refund",
+          "value": {
+            "path": "/account/refund"
+          },
+          "format": {
+            "type": "currency",
+            "currency": "GBP"
+          },
+          "total": true
+        }
+      ]
+    }
+  ],
+  "data": {
+    "account": {
+      "id": "a1",
+      "name": "Acme Corp",
+      "plan": "Enterprise, annual",
+      "initials": "AC",
+      "mrr": 4200,
+      "seats": "48 of 50",
+      "until": "12 October 2026",
+      "refund": 0
+    }
+  }
+}

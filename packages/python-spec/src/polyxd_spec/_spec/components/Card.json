@@ -1,0 +1,92 @@
+{
+  "name": "Card",
+  "category": "structure",
+  "summary": "One self-contained entity (an account, an order, a place), optionally actionable as a whole.",
+  "props": {
+    "title": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Name of the entity"
+    },
+    "subtitle": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "media": {
+      "$ref": "#/$defs/Id",
+      "description": "Optional Media component id"
+    },
+    "badge": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/DynamicString"
+        },
+        "tone": {
+          "$ref": "#/$defs/Tone"
+        }
+      },
+      "additionalProperties": false
+    },
+    "children": {
+      "$ref": "#/$defs/ChildList"
+    },
+    "action": {
+      "$ref": "#/$defs/Action",
+      "description": "Activating the card as a whole (e.g. open details)"
+    },
+    "progress": {
+      "type": "object",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/Binding",
+          "description": "Number from 0 to 1 in host data"
+        },
+        "label": {
+          "$ref": "#/$defs/DynamicString",
+          "description": "Optional text, e.g. '120 of 320 pages'; the percentage is shown otherwise"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Progress through the entity (reading, a course, a goal)"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "whenToUse": [
+    "Items in a Collection that each represent an entity",
+    "A single entity summary in a larger surface"
+  ],
+  "whenNotToUse": [
+    "Plain grouping: use Group",
+    "Tabular data with many attributes: use Table"
+  ],
+  "accessibility": {
+    "role": "article (or link/button when it has an action)",
+    "requirements": [
+      "Title is the accessible name",
+      "When actionable, the title is the card's one link; controls inside it (a Toggle, an Action) stay separate targets with their own names"
+    ]
+  },
+  "agent": "Activate the card by its title; use controls inside it by their own labels.",
+  "rendering": [
+    "If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own",
+    "Uses surface.raised and radius.default",
+    "'progress' renders a progress bar with its label or percentage"
+  ],
+  "mappings": {
+    "web": "shadcn Card (CardHeader/CardTitle/CardContent/CardFooter)",
+    "ios": "GroupBox, or a Button/NavigationLink with card styling in lists",
+    "android": "Card / ElevatedCard / OutlinedCard (onClick variant when actionable)"
+  },
+  "a2ui": "Card",
+  "sources": [
+    "Material 3 cards",
+    "Nielsen: recognition over recall"
+  ]
+}

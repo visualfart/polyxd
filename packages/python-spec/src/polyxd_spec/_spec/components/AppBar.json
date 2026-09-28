@@ -1,0 +1,42 @@
+{
+  "name": "AppBar",
+  "category": "shell",
+  "shell": true,
+  "summary": "The bar at the top of the product: brand or title, a leading action, search, trailing actions and the account.",
+  "props": {
+    "title": { "$ref": "#/$defs/DynamicString", "description": "The product's name, or the current screen's title on compact layouts" },
+    "brand": { "$ref": "#/$defs/DynamicString", "description": "A media reference for the logo, or initials; rendered before the title" },
+    "leading": { "$ref": "#/$defs/Id", "description": "An Action at the start: back, or the menu button the renderer adds itself when the navigation is a drawer" },
+    "search": { "$ref": "#/$defs/Id", "description": "A TextInput of kind 'search' (or a command palette opener: an Action with a shortcut)" },
+    "actions": { "$ref": "#/$defs/Id", "description": "An ActionBar at the end: notifications, help, the primary action of the product" },
+    "account": { "$ref": "#/$defs/Id", "description": "An Identity (the signed-in person) or an ActionMenu opened from it" },
+    "variant": { "enum": ["standard", "large", "compact"], "default": "standard", "description": "'large' puts the title under the bar on its own line on wide screens; 'compact' is 48px for dense tools" },
+    "sticky": { "type": "boolean", "default": true }
+  },
+  "required": ["title"],
+  "whenToUse": ["The header region of a Frame", "A product that needs a persistent place for search, notifications and the account"],
+  "whenNotToUse": ["Inside a generated surface: the frame owns the header", "A page's own title and actions: that is the surface header (surface.title, surface.actions)"],
+  "accessibility": {
+    "role": "banner",
+    "requirements": [
+      "The title is the product's name, not a heading; the screen's h1 stays in main",
+      "The menu button (when present) names the navigation it opens and reports expanded state",
+      "Search is a labelled search landmark when present",
+      "Trailing icon actions have visible tooltips and accessible names"
+    ]
+  },
+  "agent": "Finds the product's search and account here; opens the navigation on compact layouts through the menu button.",
+  "rendering": [
+    "Height 64px (standard), 48px (compact); large variant adds a 56px title row on wide screens",
+    "Background color.surface.default with a bottom border; elevation.raised once content scrolls under it",
+    "Leading action, brand and title at the start; search grows in the middle on wide layouts and becomes an icon on compact; actions and account at the end",
+    "On compact layouts the title shows the current screen's title when the Frame provides one"
+  ],
+  "mappings": {
+    "web": "Polaris TopBar, Carbon Header, Fluent Nav header, shadcn sidebar header",
+    "ios": "Navigation bar with toolbar items",
+    "android": "TopAppBar"
+  },
+  "a2ui": "custom",
+  "sources": ["Material 3 top app bar", "Polaris TopBar", "Carbon UI Shell header"]
+}

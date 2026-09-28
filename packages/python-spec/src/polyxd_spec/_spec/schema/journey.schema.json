@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polyxd.com/schema/0.3/journey.schema.json",
+  "title": "Polyxd journey",
+  "description": "A goal with required checkpoints and a done-condition. The same format serves as a flow spec (PM/design), acceptance tests, and agent benchmark tasks.",
+  "type": "object",
+  "required": ["id", "goal", "mode", "done"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9.-]*$" },
+    "goal": { "type": "string", "description": "What the user is trying to achieve, in their words" },
+    "intent": { "type": "string", "description": "Surface intent key(s) that belong to this journey" },
+    "mode": {
+      "enum": ["fixed", "guided", "open"],
+      "description": "fixed: exact surfaces (regulated flows); guided: checkpoints required, layout generated; open: only goal and done are fixed"
+    },
+    "capabilities": { "type": "array", "items": { "type": "string" } },
+    "checkpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "description"],
+        "properties": {
+          "key": { "type": "string" },
+          "description": { "type": "string" },
+          "rule": { "$ref": "check.schema.json#/$defs/Check", "description": "Must hold on the surface where the checkpoint happens" },
+          "event": { "type": "string", "description": "Capability event that marks the checkpoint as reached" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "done": {
+      "type": "object",
+      "required": ["event"],
+      "properties": { "event": { "type": "string", "description": "Capability event that completes the journey" } },
+      "additionalProperties": false
+    },
+    "acceptance": {
+      "type": "array",
+      "description": "PM acceptance criteria, checked on every direction, pattern or model change",
+      "items": { "$ref": "check.schema.json#/$defs/Rule" }
+    },
+    "task": {
+      "type": "object",
+      "description": "Benchmark/agent test: what a simulated user is asked to do and with what data",
+      "properties": {
+        "instruction": { "type": "string" },
+        "inputs": { "type": "object" },
+        "maxSteps": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

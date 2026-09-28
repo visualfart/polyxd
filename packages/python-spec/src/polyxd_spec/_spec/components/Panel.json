@@ -1,0 +1,71 @@
+{
+  "name": "Panel",
+  "category": "structure",
+  "summary": "Content over the current view: a dialog, a drawer, a bottom sheet or a popover, opened from an action and dismissed to return.",
+  "props": {
+    "kind": {
+      "enum": ["dialog", "drawer", "sheet", "popover"],
+      "default": "dialog",
+      "description": "'dialog' centres and blocks; 'drawer' slides from the side for a form or a record; 'sheet' rises from the bottom on phones; 'popover' floats by its opener for a small choice"
+    },
+    "title": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "children": {
+      "$ref": "#/$defs/ChildList",
+      "description": "What the panel holds"
+    },
+    "actions": {
+      "$ref": "#/$defs/Id",
+      "description": "An ActionBar in the panel's footer: its primary action and a Cancel"
+    },
+    "open": {
+      "$ref": "#/$defs/DynamicBoolean",
+      "description": "Bound to host data: true shows the panel; the renderer writes false on dismiss. Open when absent"
+    },
+    "dismissible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Escape, the close control and the backdrop dismiss it; false for a panel that must be completed"
+    },
+    "size": {
+      "enum": ["small", "default", "large"],
+      "default": "default"
+    }
+  },
+  "required": ["title", "children"],
+  "whenToUse": [
+    "A short task on top of the page: edit one thing, pick one thing, see one record",
+    "Detail the person asked for that shouldn't replace where they are",
+    "A small set of options next to the control that opened them (popover)"
+  ],
+  "whenNotToUse": [
+    "Confirming a consequential action: use Confirm, which is a dialog with the right words and order",
+    "A whole flow of several steps: use Steps on its own surface",
+    "Passing feedback: use Status"
+  ],
+  "accessibility": {
+    "role": "dialog (aria-modal for dialog, drawer and sheet) named by the title; popover is a non-modal dialog",
+    "requirements": [
+      "Focus moves into the panel on open and back to the opener on close",
+      "Tab stays inside a modal panel; Escape dismisses a dismissible one",
+      "The page behind a modal panel is inert",
+      "A sheet can be dismissed by dragging down as well as by the close control"
+    ]
+  },
+  "agent": "Opens, reads the content and closes it by name; the footer actions are exposed like any ActionBar.",
+  "rendering": [
+    "A backdrop of color.surface.inverse at opacity.overlay for modal kinds",
+    "dialog: max 560px on desktop, full width with space.inset.default on phones; drawer: 420px from the end edge; sheet: from the bottom with radius.large on the top corners; popover: color.surface.overlay with elevation.overlay and an arrow",
+    "The title is type.heading.medium with the close control at the end of the header",
+    "The action bar sits in a footer; on phones it is fixed to the bottom, full width",
+    "Motion uses motion.duration.default and motion.easing.standard; reduced motion fades instead"
+  ],
+  "mappings": {
+    "web": "shadcn Dialog, Sheet, Drawer, Popover",
+    "ios": ".sheet, .popover, NavigationStack push",
+    "android": "ModalBottomSheet, AlertDialog, DropdownMenu"
+  },
+  "a2ui": "Modal",
+  "sources": ["WAI-ARIA APG dialog (modal) pattern"]
+}

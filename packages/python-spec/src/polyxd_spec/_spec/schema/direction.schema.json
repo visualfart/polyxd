@@ -1,0 +1,312 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polyxd.com/schema/0.3/direction.schema.json",
+  "title": "Polyxd Design Direction",
+  "description": "A company's taste, as a versioned package: profile, voice, pattern preferences, rules and exemplars. Tokens live in the design-system pack it references. Precedence: accessibility floor > user accessibility needs > rules > profile/voice/patterns > user preferences > model defaults.",
+  "type": "object",
+  "required": [
+    "name",
+    "version",
+    "profile"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "version": {
+      "type": "string"
+    },
+    "designSystem": {
+      "type": "string",
+      "description": "Design-system pack name (e.g. 'material3')"
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "density": {
+          "enum": [
+            "compact",
+            "comfortable",
+            "spacious"
+          ],
+          "default": "comfortable"
+        },
+        "emphasisBudget": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3,
+          "default": 1,
+          "description": "Primary actions allowed per view (the accessibility floor still caps this at 1 for most platforms)"
+        },
+        "dataDisplay": {
+          "enum": [
+            "auto",
+            "prefer-charts",
+            "prefer-tables",
+            "prefer-metrics"
+          ],
+          "default": "auto"
+        },
+        "motion": {
+          "enum": [
+            "none",
+            "subtle",
+            "expressive"
+          ],
+          "default": "subtle"
+        },
+        "disclosure": {
+          "enum": [
+            "show-everything",
+            "progressive"
+          ],
+          "default": "progressive",
+          "description": "How eagerly secondary detail goes behind Disclosure"
+        },
+        "freedom": {
+          "enum": [
+            "strict",
+            "guided",
+            "open"
+          ],
+          "default": "guided",
+          "description": "strict: approved patterns only; guided: new layouts from approved components; open: anything that passes the verifier"
+        }
+      },
+      "additionalProperties": false
+    },
+    "voice": {
+      "type": "object",
+      "description": "Copy and tone: how the product sounds. Machine-checkable settings compile into rules (compileVoice) the verifier runs; everything is also given to the generator.",
+      "properties": {
+        "guidelines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Plain-language copy guidance given to the generator"
+        },
+        "tone": {
+          "type": "object",
+          "properties": {
+            "formality": {
+              "enum": [
+                "formal",
+                "neutral",
+                "casual"
+              ],
+              "default": "neutral"
+            },
+            "energy": {
+              "enum": [
+                "calm",
+                "neutral",
+                "upbeat"
+              ],
+              "default": "neutral"
+            },
+            "warmth": {
+              "enum": [
+                "reserved",
+                "friendly",
+                "warm"
+              ],
+              "default": "friendly"
+            },
+            "humor": {
+              "enum": [
+                "none",
+                "light"
+              ],
+              "default": "none"
+            }
+          },
+          "additionalProperties": false
+        },
+        "person": {
+          "enum": [
+            "you",
+            "we-and-you",
+            "impersonal"
+          ],
+          "default": "you",
+          "description": "How the product addresses people: 'you' only, 'we' and 'you', or neither"
+        },
+        "readingLevel": {
+          "type": "object",
+          "properties": {
+            "maxGrade": {
+              "type": "number",
+              "minimum": 3,
+              "maximum": 16,
+              "description": "Highest US school grade (Flesch\u2013Kincaid) for running text"
+            }
+          },
+          "additionalProperties": false
+        },
+        "casing": {
+          "enum": [
+            "sentence",
+            "title"
+          ],
+          "default": "sentence"
+        },
+        "spelling": {
+          "enum": [
+            "en-GB",
+            "en-US"
+          ],
+          "description": "Regional spelling to use"
+        },
+        "punctuation": {
+          "type": "object",
+          "properties": {
+            "exclamation": {
+              "enum": [
+                "never",
+                "allowed"
+              ],
+              "default": "allowed"
+            },
+            "emoji": {
+              "enum": [
+                "never",
+                "allowed"
+              ],
+              "default": "never"
+            }
+          },
+          "additionalProperties": false
+        },
+        "labels": {
+          "type": "object",
+          "properties": {
+            "maxWords": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12,
+              "description": "Longest button label"
+            },
+            "verbFirst": {
+              "type": "boolean",
+              "default": true,
+              "description": "Buttons start with what they do"
+            }
+          },
+          "additionalProperties": false
+        },
+        "glossary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "use"
+            ],
+            "properties": {
+              "use": {
+                "type": "string"
+              },
+              "insteadOf": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "avoid": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Words and phrases never to use (e.g. 'simply', 'oops', 'invalid')"
+        },
+        "situations": {
+          "type": "object",
+          "description": "How to write for recurring moments; given to the generator as guidance",
+          "properties": {
+            "empty": {
+              "type": "string"
+            },
+            "error": {
+              "type": "string"
+            },
+            "success": {
+              "type": "string"
+            },
+            "confirm": {
+              "type": "string"
+            },
+            "loading": {
+              "type": "string"
+            },
+            "destructive": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "patterns": {
+      "type": "object",
+      "properties": {
+        "prefer": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "disallow": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "custom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Paths to the company's own pattern files (same format as core patterns); these take precedence"
+        }
+      },
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "check.schema.json#/$defs/Rule"
+      }
+    },
+    "exemplars": {
+      "type": "array",
+      "description": "Approved 'this is how we'd do it' examples, retrieved at generation time",
+      "items": {
+        "type": "object",
+        "required": [
+          "request",
+          "document"
+        ],
+        "properties": {
+          "request": {
+            "type": "string"
+          },
+          "document": {
+            "type": "string",
+            "description": "Path to a UI document"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

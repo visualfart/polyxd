@@ -1,0 +1,69 @@
+{
+  "name": "Choice",
+  "category": "input",
+  "summary": "Pick one or several options from a known set. The renderer chooses the control.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "options": {
+      "$ref": "#/$defs/Options"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "Two-way binding into host data"
+    },
+    "mode": {
+      "enum": [
+        "single",
+        "multiple"
+      ],
+      "default": "single"
+    },
+    "help": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "label",
+    "options",
+    "value"
+  ],
+  "whenToUse": [
+    "Any choice from a known set of options"
+  ],
+  "whenNotToUse": [
+    "On/off setting: use Toggle",
+    "Picking between rich entities by comparing attributes: use Comparison"
+  ],
+  "accessibility": {
+    "role": "radiogroup / group of checkboxes / listbox / combobox (depends on rendering)",
+    "requirements": [
+      "Visible group label",
+      "Every option has a text label"
+    ]
+  },
+  "agent": "Select options by label.",
+  "rendering": [
+    "single, 2–4 short options → segmented control or radios",
+    "single, 5–10 → radios (or select on compact screens)",
+    "single, > 10 → searchable select",
+    "multiple, ≤ 10 → checkboxes; > 10 → searchable multi-select",
+    "Option order comes from host data or remembers the last order used"
+  ],
+  "mappings": {
+    "web": "shadcn ToggleGroup / RadioGroup / Select / Combobox (Command + Popover) / Checkbox",
+    "ios": "Picker (.segmented / .inline / .menu) or multi-select List",
+    "android": "SegmentedButton / RadioButton rows / ExposedDropdownMenuBox / Checkbox rows"
+  },
+  "a2ui": "ChoicePicker",
+  "sources": [
+    "Hick's law",
+    "GOV.UK radios and checkboxes guidance",
+    "Material 3 selection controls"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "name": "ActionBar",
+  "category": "action",
+  "summary": "The set of actions for a surface or section; the renderer places it where that platform expects.",
+  "props": {
+    "children": {
+      "$ref": "#/$defs/ChildList",
+      "description": "Action component ids, in order of importance"
+    }
+  },
+  "required": [
+    "children"
+  ],
+  "whenToUse": [
+    "Two or more actions that apply to the whole surface or section"
+  ],
+  "whenNotToUse": [
+    "A single action inline with content: use Action directly"
+  ],
+  "accessibility": {
+    "role": "toolbar / group",
+    "requirements": [
+      "Order in the accessibility tree is order of importance"
+    ]
+  },
+  "agent": "Actions are listed together.",
+  "rendering": [
+    "Web: bottom of the section, primary last on desktop and first on mobile stacks",
+    "iOS/Android: toolbar or bottom bar on compact screens"
+  ],
+  "mappings": {
+    "web": "Flex row of shadcn Buttons (DialogFooter-style)",
+    "ios": ".toolbar or .safeAreaInset(edge: .bottom)",
+    "android": "BottomAppBar or Row of Buttons"
+  },
+  "a2ui": "Row of Button",
+  "sources": [
+    "Platform conventions for action placement (Jakob's law)"
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "name": "RangeInput",
+  "category": "input",
+  "summary": "A number, or a range between two numbers, within known bounds.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "Number in host data, or [min, max] when mode is 'range'"
+    },
+    "min": {
+      "type": "number"
+    },
+    "max": {
+      "type": "number"
+    },
+    "step": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "format": {
+      "$ref": "#/$defs/Format"
+    },
+    "mode": {
+      "enum": [
+        "single",
+        "range"
+      ],
+      "default": "single",
+      "description": "'range' picks a lower and upper bound; value is then [min, max]"
+    }
+  },
+  "required": [
+    "label",
+    "value",
+    "min",
+    "max"
+  ],
+  "whenToUse": [
+    "Approximate values within a range (budget cap, volume)",
+    "A price or date range for filtering (mode 'range')"
+  ],
+  "whenNotToUse": [
+    "Exact values: use TextInput with kind 'number' or 'currency'"
+  ],
+  "accessibility": {
+    "role": "slider",
+    "requirements": [
+      "Current value is shown as text",
+      "Keyboard arrows change the value by step"
+    ]
+  },
+  "agent": "Set the value directly by label.",
+  "rendering": [
+    "Shows min, max and the current formatted value",
+    "mode 'range' shows two thumbs and min/max fields that stay in sync"
+  ],
+  "mappings": {
+    "web": "shadcn Slider",
+    "ios": "Slider",
+    "android": "Slider"
+  },
+  "a2ui": "Slider",
+  "sources": [
+    "Fitts's law: large thumb target"
+  ]
+}

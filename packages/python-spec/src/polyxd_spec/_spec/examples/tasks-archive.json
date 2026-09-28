@@ -1,0 +1,124 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "tasks-archive",
+    "title": "Tasks",
+    "intent": "tasks.list",
+    "pattern": "undo-over-confirm"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "list",
+        "archived"
+      ]
+    },
+    {
+      "id": "list",
+      "component": "Collection",
+      "key": "tasks",
+      "label": "Today",
+      "layout": "list",
+      "items": {
+        "path": "/tasks",
+        "componentId": "task"
+      },
+      "empty": "none-left"
+    },
+    {
+      "id": "task",
+      "component": "Card",
+      "title": {
+        "path": "title"
+      },
+      "subtitle": {
+        "path": "due"
+      },
+      "children": [
+        "archive"
+      ]
+    },
+    {
+      "id": "archive",
+      "component": "Action",
+      "key": "archive_task",
+      "label": {
+        "path": "archiveLabel"
+      },
+      "emphasis": "tertiary",
+      "action": {
+        "event": {
+          "name": "task.archive",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "none-left",
+      "component": "Status",
+      "kind": "empty",
+      "icon": "check",
+      "title": "Nothing left today",
+      "message": "Archived tasks stay searchable for 30 days."
+    },
+    {
+      "id": "archived",
+      "component": "Status",
+      "kind": "undo",
+      "title": {
+        "path": "/lastArchived/message"
+      },
+      "action": "undo-archive"
+    },
+    {
+      "id": "undo-archive",
+      "component": "Action",
+      "key": "undo_archive",
+      "label": "Undo",
+      "action": {
+        "event": {
+          "name": "task.unarchive",
+          "context": {
+            "id": {
+              "path": "/lastArchived/id"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "data": {
+    "lastArchived": {
+      "id": "t9",
+      "message": "Archived “Send invoice to Globex”"
+    },
+    "tasks": [
+      {
+        "id": "t1",
+        "title": "Pay the studio rent",
+        "due": "Due today",
+        "archiveLabel": "Archive: Pay the studio rent"
+      },
+      {
+        "id": "t2",
+        "title": "Reply to Priya about the brief",
+        "due": "Due tomorrow",
+        "archiveLabel": "Archive: Reply to Priya about the brief"
+      },
+      {
+        "id": "t3",
+        "title": "Book the team lunch",
+        "due": "Friday",
+        "archiveLabel": "Archive: Book the team lunch"
+      }
+    ]
+  }
+}

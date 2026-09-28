@@ -1,0 +1,79 @@
+{
+  "name": "Text",
+  "category": "content",
+  "summary": "A run of text.",
+  "props": {
+    "text": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "variant": {
+      "enum": [
+        "body",
+        "supporting",
+        "caption",
+        "rich",
+        "list",
+        "quote"
+      ],
+      "default": "body",
+      "description": "'rich' allows **bold**, *italic*, `code` and [links](href) in the text; 'list' is a bulleted or numbered list of 'items'; 'quote' is a quotation with an optional 'cite'"
+    },
+    "format": {
+      "$ref": "#/$defs/Format",
+      "description": "Only when 'text' is bound to a non-string value"
+    },
+    "items": {
+      "$ref": "#/$defs/Binding",
+      "description": "For 'list': array in host data, one entry per item; 'text' introduces the list"
+    },
+    "itemPath": {
+      "$ref": "#/$defs/Path",
+      "description": "For 'list': relative path in each entry to the text shown, when the entries are objects"
+    },
+    "ordered": {
+      "type": "boolean",
+      "default": false,
+      "description": "For 'list': numbered rather than bulleted"
+    },
+    "cite": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "For 'quote': who or what is quoted"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "whenToUse": [
+    "Explanations, instructions, messages"
+  ],
+  "whenNotToUse": [
+    "Headings: use Section title",
+    "Label/value pairs: use DetailList",
+    "Key figures: use Metric"
+  ],
+  "accessibility": {
+    "role": "text",
+    "requirements": [
+      "Body text is at least 16px (type.body.default)",
+      "Line length is capped by measure.max"
+    ]
+  },
+  "agent": "Read as text.",
+  "rendering": [
+    "'supporting' uses color.text.muted",
+    "No inline styling; emphasis comes from structure",
+    "'rich' renders only the four markup forms, as real elements; anything else, including HTML, is shown as typed, and only http, https, mailto and tel links are live",
+    "'list' renders a ul or ol; entries are shown as text, or by 'itemPath' when they are objects",
+    "'quote' is a blockquote, the cite on its own line after it",
+    "format 'color' shows a swatch of the value beside it; 'bytes' shows a size like 1.2 MB"
+  ],
+  "mappings": {
+    "web": "<p> with type tokens",
+    "ios": "Text",
+    "android": "Text"
+  },
+  "a2ui": "Text",
+  "sources": [
+    "Readability: line length and size"
+  ]
+}

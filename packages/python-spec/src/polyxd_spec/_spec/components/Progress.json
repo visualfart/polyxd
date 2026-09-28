@@ -1,0 +1,82 @@
+{
+  "name": "Progress",
+  "category": "content",
+  "summary": "How far along something is, or how much of a bounded amount is used: a bar, a ring or a meter.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "What is being measured: 'Storage used', 'Upload', 'Goal'"
+    },
+    "value": {
+      "$ref": "#/$defs/DynamicNumber",
+      "description": "Bound to host data. A fraction from 0 to 1, or an amount when max is given"
+    },
+    "max": {
+      "$ref": "#/$defs/DynamicNumber",
+      "description": "The whole, when value is an amount rather than a fraction: 200 for '180 of 200 GB'"
+    },
+    "kind": {
+      "enum": ["bar", "ring", "meter"],
+      "default": "bar",
+      "description": "'bar' and 'ring' show progress towards done; 'meter' shows a measured amount within bounds, with tone by threshold"
+    },
+    "caption": {
+      "$ref": "#/$defs/DynamicString",
+      "description": "Text beside the readout: '180 of 200 GB', '3 days left'. The readout itself is derived from value"
+    },
+    "format": {
+      "$ref": "#/$defs/Format",
+      "description": "How the readout is shown; percent without it"
+    },
+    "tone": {
+      "$ref": "#/$defs/Tone",
+      "description": "Fixed tone; a meter without one takes warning past thresholds.warning and danger past thresholds.danger"
+    },
+    "thresholds": {
+      "type": "object",
+      "properties": {
+        "warning": { "type": "number", "minimum": 0, "maximum": 1 },
+        "danger": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false,
+      "description": "Fractions at which a meter changes tone"
+    },
+    "indeterminate": {
+      "$ref": "#/$defs/DynamicBoolean",
+      "description": "The task is running and how far along isn't known"
+    }
+  },
+  "required": ["label", "value"],
+  "whenToUse": [
+    "A task that takes time, with a known share done",
+    "How much of a quota, budget or capacity is used",
+    "Progress towards a goal (pages read, steps walked)"
+  ],
+  "whenNotToUse": [
+    "A number the person came to see: use Metric",
+    "Steps of a task the person moves through: use Steps",
+    "A short wait with nothing to measure: Status 'loading'"
+  ],
+  "accessibility": {
+    "role": "progressbar (bar, ring) or meter, named by the label, with aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext",
+    "requirements": [
+      "The readout is real text next to the graphic, never only the fill",
+      "A meter's tone is also said in text ('nearly full'), not only shown by colour",
+      "Indeterminate progress has no value attributes and is announced as busy"
+    ]
+  },
+  "agent": "Reads label, value and max as text.",
+  "rendering": [
+    "The track uses color.surface.subtle; the fill uses color.action.primary.background, or color.status.<tone>.emphasis for a toned meter",
+    "Height is size.control.small / 3 for a bar; a ring is size.control.default across",
+    "Readout in tabular figures, type.body.small, after the label",
+    "The bar's length means the fraction: never used for an amount with no bound"
+  ],
+  "mappings": {
+    "web": "shadcn Progress; meter as a native <meter>",
+    "ios": "ProgressView, Gauge",
+    "android": "LinearProgressIndicator, CircularProgressIndicator"
+  },
+  "a2ui": "Text",
+  "sources": ["WAI-ARIA progressbar and meter roles"]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "Frame",
+  "category": "shell",
+  "shell": true,
+  "summary": "The product's frame: the regions around its screens (header, navigation, main, aside, footer, banner), with an outlet where screens and generated surfaces appear.",
+  "props": {
+    "header": { "$ref": "#/$defs/Id", "description": "An AppBar" },
+    "navigation": { "$ref": "#/$defs/Id", "description": "A Navigation of kind 'main'; its placement decides rail, bar, drawer or side" },
+    "main": {
+      "$ref": "#/$defs/Id",
+      "description": "The outlet: a component the host replaces with the current screen. Usually an Outlet; may be a Group holding a fixed screen"
+    },
+    "aside": { "$ref": "#/$defs/Id", "description": "A secondary column beside main on wide layouts (help, context, activity)" },
+    "footer": { "$ref": "#/$defs/Id", "description": "A Footer" },
+    "banner": { "$ref": "#/$defs/Id", "description": "A Status shown above everything (a phase banner, an outage, a trial ending)" },
+    "skipTarget": { "type": "boolean", "default": true, "description": "The renderer adds a skip link to main" },
+    "width": { "enum": ["full", "contained"], "default": "contained", "description": "'contained' centres main at measure.max × 1.6; 'full' lets dense tools use the whole viewport" }
+  },
+  "required": ["main"],
+  "whenToUse": [
+    "The root of a shell document: the product's frame, authored once, that every screen sits in",
+    "A product whose navigation, header and footer should render in its design system like everything else"
+  ],
+  "whenNotToUse": [
+    "In a generated document: a surface lives inside a frame and never draws one (the validator refuses it)",
+    "A dialog or a sheet over a screen: use Panel"
+  ],
+  "accessibility": {
+    "role": "landmarks: banner (header), navigation, main, complementary (aside), contentinfo (footer)",
+    "requirements": [
+      "Exactly one main; a skip link to it is the first focusable thing",
+      "Each landmark is labelled when there is more than one of its kind",
+      "Regions keep their reading order at every width: banner, header, navigation, main, aside, footer",
+      "The navigation's current item is marked; the document title follows the current screen"
+    ]
+  },
+  "agent": "Reads the landmarks to know where it is; moves between screens through the navigation by name; acts on what is in main.",
+  "rendering": [
+    "Wide (≥ 1024px): header on top, navigation at the start edge as a side column or a rail, main and aside as columns, footer below",
+    "Medium (≥ 640px): navigation becomes a rail; aside stacks below main",
+    "Compact: navigation becomes a bottom bar (up to 5 items) or a drawer behind a menu button in the header; the footer's groups collapse",
+    "Region backgrounds use color.surface.default for main and color.surface.subtle for navigation; borders are color.border.default at border.width.default",
+    "The outlet is where PolyxdSurface documents render: they never repeat the frame's regions"
+  ],
+  "mappings": {
+    "web": "Polaris Frame, Carbon UI Shell, Fluent App layout, shadcn Sidebar layout",
+    "ios": "NavigationSplitView / TabView with a NavigationStack",
+    "android": "Scaffold with TopAppBar, NavigationRail or NavigationBar, and content"
+  },
+  "a2ui": "custom",
+  "sources": ["WAI-ARIA landmark regions", "Material 3 navigation rail, bar and drawer", "Polaris Frame"]
+}

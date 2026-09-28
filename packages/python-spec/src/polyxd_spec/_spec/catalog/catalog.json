@@ -1,0 +1,1598 @@
+{
+  "catalogId": "https://polyxd.com/catalog/0.1",
+  "specVersion": "0.3.0",
+  "description": "Polyxd semantic component catalog: when to use each component, accessibility and agent requirements, rendering rules and platform mappings. Generated file.",
+  "components": {
+    "Action": {
+      "category": "action",
+      "summary": "A button that triggers a host capability.",
+      "whenToUse": [
+        "Anything the user can do that isn't typing or choosing"
+      ],
+      "whenNotToUse": [
+        "Navigating between views: use Views",
+        "Confirming something destructive: wrap in Confirm"
+      ],
+      "accessibility": {
+        "role": "button",
+        "requirements": [
+          "Label describes the outcome",
+          "Target at least size.target.min",
+          "Disabled actions explain why nearby",
+          "A shortcut is a hint, never the only way: the button itself stays clickable and focusable"
+        ]
+      },
+      "agent": "Activate by label.",
+      "rendering": [
+        "At most one primary action visible at a time",
+        "danger tone uses color.action.danger.*",
+        "'description' sits under the label in type.body.small, muted; the button's accessible description",
+        "ui.copy is handled by the renderer: it copies 'copy' (or the context's 'text') and announces 'Copied' politely",
+        "'shortcut' shows as a keyboard hint (kbd) beside the label, with mod written as ⌘ or Ctrl for the platform; it fires only while focus is inside the surface, never over the host page, and never on a disabled action"
+      ],
+      "mappings": {
+        "web": "shadcn Button (default / secondary / ghost / destructive)",
+        "ios": "Button with .borderedProminent / .bordered / .borderless; role: .destructive",
+        "android": "Button / FilledTonalButton / OutlinedButton / TextButton"
+      },
+      "a2ui": "Button",
+      "sources": [
+        "Fitts's law",
+        "Material 3 button hierarchy"
+      ]
+    },
+    "ActionBar": {
+      "category": "action",
+      "summary": "The set of actions for a surface or section; the renderer places it where that platform expects.",
+      "whenToUse": [
+        "Two or more actions that apply to the whole surface or section"
+      ],
+      "whenNotToUse": [
+        "A single action inline with content: use Action directly"
+      ],
+      "accessibility": {
+        "role": "toolbar / group",
+        "requirements": [
+          "Order in the accessibility tree is order of importance"
+        ]
+      },
+      "agent": "Actions are listed together.",
+      "rendering": [
+        "Web: bottom of the section, primary last on desktop and first on mobile stacks",
+        "iOS/Android: toolbar or bottom bar on compact screens"
+      ],
+      "mappings": {
+        "web": "Flex row of shadcn Buttons (DialogFooter-style)",
+        "ios": ".toolbar or .safeAreaInset(edge: .bottom)",
+        "android": "BottomAppBar or Row of Buttons"
+      },
+      "a2ui": "Row of Button",
+      "sources": [
+        "Platform conventions for action placement (Jakob's law)"
+      ]
+    },
+    "ActionMenu": {
+      "category": "action",
+      "summary": "Secondary actions behind one control: an overflow menu, a dropdown, a split button or a context menu.",
+      "whenToUse": [
+        "Three or more secondary actions on a row, a card or a page header",
+        "One usual action with rarer alternatives (split: 'Save' with 'Save as draft')",
+        "Actions that belong to the thing under the pointer (context)"
+      ],
+      "whenNotToUse": [
+        "One or two actions: use Action or ActionBar, where they are visible",
+        "The main thing to do on the surface: never hidden in a menu",
+        "Navigation between views: use Views or Navigation"
+      ],
+      "accessibility": {
+        "role": "a menu button (aria-haspopup, aria-expanded) opening a menu of menuitems; a split's main part is a plain button",
+        "requirements": [
+          "Every action is reachable by keyboard: arrows move, Enter activates, Escape closes and returns focus",
+          "An overflow control is named for what it holds ('More actions for Acme Corp'), never just '…'",
+          "A context menu's actions are also reachable another way (an overflow control), since right-click and long-press aren't discoverable"
+        ]
+      },
+      "agent": "Opens the menu by its name and activates an action by its label.",
+      "rendering": [
+        "The menu uses color.surface.overlay with elevation.overlay and radius.default; items are size.control.default tall with space.inset.default",
+        "A danger-toned Action shows in color.status.danger.emphasis after a divider",
+        "The overflow control is an icon-only button at size.target.min with the label as its accessible name; a dropdown shows the label with a chevron",
+        "A split's two parts share one outline; the menu part is at least size.target.min wide"
+      ],
+      "mappings": {
+        "web": "shadcn DropdownMenu, ContextMenu; split as a ButtonGroup",
+        "ios": "Menu, contextMenu",
+        "android": "DropdownMenu, combinedClickable for context"
+      },
+      "a2ui": "Custom (no Basic equivalent)",
+      "sources": [
+        "WAI-ARIA APG menu button pattern"
+      ]
+    },
+    "AppBar": {
+      "category": "shell",
+      "shell": true,
+      "summary": "The bar at the top of the product: brand or title, a leading action, search, trailing actions and the account.",
+      "whenToUse": [
+        "The header region of a Frame",
+        "A product that needs a persistent place for search, notifications and the account"
+      ],
+      "whenNotToUse": [
+        "Inside a generated surface: the frame owns the header",
+        "A page's own title and actions: that is the surface header (surface.title, surface.actions)"
+      ],
+      "accessibility": {
+        "role": "banner",
+        "requirements": [
+          "The title is the product's name, not a heading; the screen's h1 stays in main",
+          "The menu button (when present) names the navigation it opens and reports expanded state",
+          "Search is a labelled search landmark when present",
+          "Trailing icon actions have visible tooltips and accessible names"
+        ]
+      },
+      "agent": "Finds the product's search and account here; opens the navigation on compact layouts through the menu button.",
+      "rendering": [
+        "Height 64px (standard), 48px (compact); large variant adds a 56px title row on wide screens",
+        "Background color.surface.default with a bottom border; elevation.raised once content scrolls under it",
+        "Leading action, brand and title at the start; search grows in the middle on wide layouts and becomes an icon on compact; actions and account at the end",
+        "On compact layouts the title shows the current screen's title when the Frame provides one"
+      ],
+      "mappings": {
+        "web": "Polaris TopBar, Carbon Header, Fluent Nav header, shadcn sidebar header",
+        "ios": "Navigation bar with toolbar items",
+        "android": "TopAppBar"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "Material 3 top app bar",
+        "Polaris TopBar",
+        "Carbon UI Shell header"
+      ]
+    },
+    "Card": {
+      "category": "structure",
+      "summary": "One self-contained entity (an account, an order, a place), optionally actionable as a whole.",
+      "whenToUse": [
+        "Items in a Collection that each represent an entity",
+        "A single entity summary in a larger surface"
+      ],
+      "whenNotToUse": [
+        "Plain grouping: use Group",
+        "Tabular data with many attributes: use Table"
+      ],
+      "accessibility": {
+        "role": "article (or link/button when it has an action)",
+        "requirements": [
+          "Title is the accessible name",
+          "When actionable, the title is the card's one link; controls inside it (a Toggle, an Action) stay separate targets with their own names"
+        ]
+      },
+      "agent": "Activate the card by its title; use controls inside it by their own labels.",
+      "rendering": [
+        "If 'action' is set, the whole card opens it; controls in children (e.g. a habit's done Toggle) sit above that target and act on their own",
+        "Uses surface.raised and radius.default",
+        "'progress' renders a progress bar with its label or percentage"
+      ],
+      "mappings": {
+        "web": "shadcn Card (CardHeader/CardTitle/CardContent/CardFooter)",
+        "ios": "GroupBox, or a Button/NavigationLink with card styling in lists",
+        "android": "Card / ElevatedCard / OutlinedCard (onClick variant when actionable)"
+      },
+      "a2ui": "Card",
+      "sources": [
+        "Material 3 cards",
+        "Nielsen: recognition over recall"
+      ]
+    },
+    "Chart": {
+      "category": "content",
+      "summary": "A visual summary of data, always paired with a text summary.",
+      "whenToUse": [
+        "A trend, comparison, share or spread matters more than exact values"
+      ],
+      "whenNotToUse": [
+        "Exact values matter most: use Table or Metric",
+        "A single number: use Metric"
+      ],
+      "accessibility": {
+        "role": "img (figure) with the summary as description, plus a data-table alternative",
+        "requirements": [
+          "'summary' states the takeaway in words",
+          "Series are distinguishable without color (labels, markers)",
+          "The underlying data is available as a table"
+        ]
+      },
+      "agent": "Reads the summary, and the data through the table alternative.",
+      "rendering": [
+        "trend → line, comparison → bar, composition → stacked bar (pie only for ≤ 4 parts), distribution → histogram",
+        "relationship → scatter (x is a measure too), flow → stacked flows from each x value to each series, hierarchy → treemap of the first series, matrix → heatmap of x values by series, range → bars from the first series to the second",
+        "Series colors use color.data.categorical.N in order; a matrix shades one color by value and prints the value in each cell"
+      ],
+      "mappings": {
+        "web": "shadcn Chart (Recharts)",
+        "ios": "Swift Charts (Chart)",
+        "android": "Third-party (e.g. Vico) or Canvas; no built-in M3 chart"
+      },
+      "a2ui": "No equivalent in the Basic catalog; exports as Text(summary) + List",
+      "sources": [
+        "Data visualization: choosing the form by intent",
+        "WCAG 1.1.1"
+      ]
+    },
+    "Choice": {
+      "category": "input",
+      "summary": "Pick one or several options from a known set. The renderer chooses the control.",
+      "whenToUse": [
+        "Any choice from a known set of options"
+      ],
+      "whenNotToUse": [
+        "On/off setting: use Toggle",
+        "Picking between rich entities by comparing attributes: use Comparison"
+      ],
+      "accessibility": {
+        "role": "radiogroup / group of checkboxes / listbox / combobox (depends on rendering)",
+        "requirements": [
+          "Visible group label",
+          "Every option has a text label"
+        ]
+      },
+      "agent": "Select options by label.",
+      "rendering": [
+        "single, 2–4 short options → segmented control or radios",
+        "single, 5–10 → radios (or select on compact screens)",
+        "single, > 10 → searchable select",
+        "multiple, ≤ 10 → checkboxes; > 10 → searchable multi-select",
+        "Option order comes from host data or remembers the last order used"
+      ],
+      "mappings": {
+        "web": "shadcn ToggleGroup / RadioGroup / Select / Combobox (Command + Popover) / Checkbox",
+        "ios": "Picker (.segmented / .inline / .menu) or multi-select List",
+        "android": "SegmentedButton / RadioButton rows / ExposedDropdownMenuBox / Checkbox rows"
+      },
+      "a2ui": "ChoicePicker",
+      "sources": [
+        "Hick's law",
+        "GOV.UK radios and checkboxes guidance",
+        "Material 3 selection controls"
+      ]
+    },
+    "Code": {
+      "category": "content",
+      "summary": "Code, a command or preformatted text, shown as written and copyable.",
+      "whenToUse": [
+        "A command to run, a snippet to paste, an identifier to copy",
+        "Structured text whose spacing matters"
+      ],
+      "whenNotToUse": [
+        "Prose: use Text",
+        "Something the person types: use TextInput"
+      ],
+      "accessibility": {
+        "role": "region named by the label, holding a code element; the copy control is a button named 'Copy <label>'",
+        "requirements": [
+          "Text is real text: selectable and read by screen readers line by line",
+          "Copying is announced ('Copied')",
+          "A secret is masked with the same length, with a 'Show' control"
+        ]
+      },
+      "agent": "Reads the text verbatim; can activate Copy.",
+      "rendering": [
+        "type.mono at type.body.small on color.surface.subtle, with radius.control",
+        "Overflow scrolls sideways unless wrap is set; never clipped",
+        "The copy control sits in the top-right corner and says 'Copied' for two seconds after use"
+      ],
+      "mappings": {
+        "web": "pre > code with a Copy button",
+        "ios": "Text with monospaced design in a rounded rectangle",
+        "android": "Text with FontFamily.Monospace in a Surface"
+      },
+      "a2ui": "Text",
+      "sources": [
+        "WCAG 1.3.1 info and relationships"
+      ]
+    },
+    "CodeInput": {
+      "category": "input",
+      "summary": "A one-time code or PIN, typed into one box per character.",
+      "whenToUse": [
+        "A verification code from email or SMS",
+        "A PIN or a short recovery code"
+      ],
+      "whenNotToUse": [
+        "A password: the host's own sign-in flow, never a generated screen",
+        "Any text longer than twelve characters: use TextInput"
+      ],
+      "accessibility": {
+        "role": "a group named by the label; one text input per character, each named 'Digit N of M'",
+        "requirements": [
+          "Typing moves focus forward; Backspace moves it back; pasting the whole code fills every box",
+          "The numeric kind opens the numeric keyboard and accepts autofill of one-time codes",
+          "Errors are said against the group, not one box"
+        ]
+      },
+      "agent": "Reads the label and length; enters the code.",
+      "rendering": [
+        "Boxes are size.control.large squares with radius.control, type.heading.small, centred, in type.mono",
+        "The active box shows color.border.focus; a filled box shows color.border.strong",
+        "Boxes are grouped in threes or fours by a wider gap past six characters"
+      ],
+      "mappings": {
+        "web": "shadcn InputOTP",
+        "ios": "TextField with .oneTimeCode content type",
+        "android": "BasicTextField with KeyboardType.NumberPassword"
+      },
+      "a2ui": "Custom (no Basic equivalent)",
+      "sources": [
+        "WCAG 1.3.5 identify input purpose"
+      ]
+    },
+    "Collection": {
+      "category": "content",
+      "summary": "A list of items from host data, each rendered with the same template.",
+      "whenToUse": [
+        "Browsing a set of similar entities",
+        "Search results"
+      ],
+      "whenNotToUse": [
+        "Attributes compared across items: use Table or Comparison",
+        "Choosing an option in a form: use Choice"
+      ],
+      "accessibility": {
+        "role": "list / listitem (listbox when selectable)",
+        "requirements": [
+          "Announces the item count",
+          "An empty state is provided"
+        ]
+      },
+      "agent": "Items are enumerated with their titles; each item exposes its own actions.",
+      "rendering": [
+        "Long lists are virtualized by the renderer",
+        "Items keep their order from host data",
+        "grid: 2 columns on phones, more as width allows; list: one item per row",
+        "auto: grid when the item template is a Card with media, otherwise list",
+        "'timeline' marks each item on a line, newest first, for activity feeds",
+        "'carousel' scrolls horizontally with snap points, Previous and Next buttons and an 'N of M' readout; every item stays reachable by keyboard",
+        "'calendar' is a month grid with the items on their days; Previous and Next move a month at a time",
+        "Paging shows items per page, the range and the total, as a Table does",
+        "Selection shows the bulk-action bar, naming how many items are selected, while any are",
+        "reorderable: a drag handle per item, plus Move up / Move down buttons; the new order is written to 'order'"
+      ],
+      "mappings": {
+        "web": "List markup with Card or row template; ScrollArea for long lists",
+        "ios": "List + ForEach",
+        "android": "LazyColumn + items"
+      },
+      "a2ui": "List (templated children)",
+      "sources": [
+        "Recognition over recall",
+        "Hick's law: filter before long lists"
+      ]
+    },
+    "ColorInput": {
+      "category": "input",
+      "summary": "Pick a colour: from swatches the host offers, or any colour.",
+      "whenToUse": [
+        "A colour for a label, a tag, a calendar, a theme",
+        "Choosing from a set of brand colours"
+      ],
+      "whenNotToUse": [
+        "A choice that happens to be shown as colours (a plan, a size): use Choice"
+      ],
+      "accessibility": {
+        "role": "swatches are a radiogroup of radios named by their labels; the free picker is a native color input plus a text field for the value",
+        "requirements": [
+          "Every swatch has a name; colour alone is never the only identification",
+          "The value is editable as text, so it can be typed and read",
+          "The chosen colour is shown beside its text value"
+        ]
+      },
+      "agent": "Reads the swatch names; picks one by name or types a value.",
+      "rendering": [
+        "Swatches are size.control.default squares with radius.control and a 1px color.border.default ring; the chosen one shows color.border.focus",
+        "The free picker is the platform's, with the text value beside it in type.mono"
+      ],
+      "mappings": {
+        "web": "input type=color + Radix RadioGroup for swatches",
+        "ios": "ColorPicker",
+        "android": "Custom (no Material picker)"
+      },
+      "a2ui": "Custom (no Basic equivalent)",
+      "sources": [
+        "WCAG 1.4.1 use of color"
+      ]
+    },
+    "Columns": {
+      "category": "structure",
+      "summary": "Side-by-side columns that collapse to a stack on compact layouts: a main column with a narrower one beside it, or equal halves.",
+      "whenToUse": [
+        "A form with help beside it; a record with a summary beside it; a list beside a preview",
+        "Anywhere a wide screen should use its width without the compact screen paying for it"
+      ],
+      "whenNotToUse": [
+        "Metrics in a row: use Group with arrangement 'inline'",
+        "A master–detail pair that keeps both alive: use Split"
+      ],
+      "accessibility": {
+        "role": "none (layout only)",
+        "requirements": [
+          "Reading order is the children's order at every width",
+          "Collapsing never reorders content"
+        ]
+      },
+      "agent": "Invisible: reads the children in order.",
+      "rendering": [
+        "Gutter space.inline.loose between columns; stacked with space.stack.loose",
+        "Column widths follow the layout; 'sidebar-*' columns never shrink below 16rem",
+        "Collapses at the surface's width, not the viewport's"
+      ],
+      "mappings": {
+        "web": "GOV.UK grid row, Polaris Layout, Carbon Grid, Bootstrap row/col",
+        "ios": "HStack with .layoutPriority",
+        "android": "Row with weights"
+      },
+      "a2ui": "Row",
+      "sources": [
+        "GOV.UK grid",
+        "Polaris Layout"
+      ]
+    },
+    "Comparison": {
+      "category": "flow",
+      "summary": "Compare a few options across the same attributes, and choose one.",
+      "whenToUse": [
+        "Choosing between 2–4 plans, products, routes or offers"
+      ],
+      "whenNotToUse": [
+        "More than ~5 items: use Table with sorting",
+        "No decision needed: use Table"
+      ],
+      "accessibility": {
+        "role": "table (items as columns on wide screens) or list of cards",
+        "requirements": [
+          "Attribute names are headers",
+          "'better' is conveyed in text, not only color"
+        ]
+      },
+      "agent": "Reads attributes per item; choose actions are named with the item title.",
+      "rendering": [
+        "Wide: items as columns; compact: one card per item with the same attribute order",
+        "Best values per attribute are marked when 'better' is set",
+        "Exactly one item may be recommended; its badge carries recommendedReason",
+        "Attributes with the same group sit under one heading",
+        "Boolean values render as a check or a dash with text alternatives ('Included' / 'Not included')",
+        "On compact surfaces the recommended item comes first"
+      ],
+      "mappings": {
+        "web": "shadcn Table or Cards grid",
+        "ios": "Grid / Table on regular width; List of GroupBox on compact",
+        "android": "LazyRow of Cards or Column of Cards"
+      },
+      "a2ui": "No direct equivalent; exports as List of Card",
+      "sources": [
+        "Hick's law",
+        "Choice architecture"
+      ]
+    },
+    "Confirm": {
+      "category": "flow",
+      "summary": "Asks the user to confirm a consequential or destructive action, showing what will happen.",
+      "whenToUse": [
+        "Moving money, deleting data, sending on someone's behalf, anything irreversible"
+      ],
+      "whenNotToUse": [
+        "Routine reversible actions (prefer undo)",
+        "Information only: use Status"
+      ],
+      "accessibility": {
+        "role": "alertdialog",
+        "requirements": [
+          "Focus starts on the least destructive option",
+          "Confirm label repeats the action verb",
+          "Escape cancels"
+        ]
+      },
+      "agent": "Reads title and consequence; confirm and cancel are named buttons.",
+      "rendering": [
+        "destructive uses color.action.danger.*",
+        "Capabilities with high risk level must use Confirm (enforced by the verifier)",
+        "the consequence sits directly above the confirm button",
+        "amount and subject lead the dialog when set",
+        "consequences render as an icon list, two columns on wide surfaces"
+      ],
+      "mappings": {
+        "web": "shadcn AlertDialog",
+        "ios": ".confirmationDialog / .alert with role: .destructive",
+        "android": "AlertDialog"
+      },
+      "a2ui": "Modal with Text and Buttons",
+      "sources": [
+        "Nielsen: error prevention",
+        "Material 3 dialogs"
+      ]
+    },
+    "Custom": {
+      "category": "shell",
+      "shell": true,
+      "summary": "A slot for a component the host implements itself: a logo, a brand moment, a bespoke widget. The document names it and gives it props; the product renders it, and a fallback stands in when it can't.",
+      "whenToUse": [
+        "The parts of a product that are truly its own: a logo, an illustration system, a map, a chart type the spec doesn't have",
+        "Only in authored documents: a shell or a screen a person wrote for that product"
+      ],
+      "whenNotToUse": [
+        "Anything a spec component can express: a Custom is invisible to the verifier beyond its fallback",
+        "In a generated document: a generator can't know a host's components (the validator refuses it)"
+      ],
+      "accessibility": {
+        "role": "whatever the host component provides; the fallback carries its own",
+        "requirements": [
+          "The host component is responsible for its own accessibility; the verifier audits the rendered result",
+          "A decorative Custom is hidden from assistive tech; a meaningful one has a name"
+        ]
+      },
+      "agent": "Reads the host component if it exposes a role and name; otherwise reads the fallback.",
+      "rendering": [
+        "The renderer looks the name up in the host's registry (the same one that overrides components); found, it renders it with the resolved props",
+        "Not found, it renders the fallback and notes the missing name in development",
+        "Never renders the raw props"
+      ],
+      "mappings": {
+        "web": "the host's own component",
+        "ios": "the host's own view",
+        "android": "the host's own composable"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "Server-driven UI practice: escape hatches with fallbacks"
+      ]
+    },
+    "DateInput": {
+      "category": "input",
+      "summary": "A date, time, date-time or date range.",
+      "whenToUse": [
+        "Any date or time entry"
+      ],
+      "whenNotToUse": [
+        "Relative choices like 'This month / Last month': use Choice"
+      ],
+      "accessibility": {
+        "role": "group of spinbuttons or a date picker dialog",
+        "requirements": [
+          "Typing the date is always possible, not only picking from a calendar"
+        ]
+      },
+      "agent": "Fill by label with an ISO date.",
+      "rendering": [
+        "Memorable dates (birthdays) use separate day/month/year fields; near dates use a calendar",
+        "'month' and 'year' take only that part; the year field is typed, four digits",
+        "multiple: each chosen date becomes a chip with a remove control; the field adds another"
+      ],
+      "mappings": {
+        "web": "shadcn Calendar + Popover (Date Picker)",
+        "ios": "DatePicker",
+        "android": "DatePicker / DateRangePicker"
+      },
+      "a2ui": "DateTimeInput",
+      "sources": [
+        "GOV.UK date input"
+      ]
+    },
+    "DetailList": {
+      "category": "content",
+      "summary": "Label/value pairs describing one thing (a summary, a receipt, a review step).",
+      "whenToUse": [
+        "Reviewing before submitting",
+        "Showing the attributes of one entity",
+        "Receipts",
+        "Fees, prices and totals before someone commits (variant 'receipt')"
+      ],
+      "whenNotToUse": [
+        "Many entities with the same attributes: use Table",
+        "Comparing entities: use Comparison"
+      ],
+      "accessibility": {
+        "role": "list of term/definition pairs (dl)",
+        "requirements": [
+          "Label and value are programmatically associated"
+        ]
+      },
+      "agent": "Read each label with its value.",
+      "rendering": [
+        "Keeps the item order stable across generations (keys are remembered)",
+        "receipt: values right-aligned in tabular figures, the total row emphasised; people read amounts from the right",
+        "'grid' lays fields out in columns by width, label above value",
+        "rowAction: each row ends with a 'Change' link whose accessible name includes the row's label; the total row has none"
+      ],
+      "mappings": {
+        "web": "<dl> with semantic tokens",
+        "ios": "LabeledContent rows in a Form/List section",
+        "android": "ListItem(headlineContent, trailingContent) rows"
+      },
+      "a2ui": "Column of Row(Text, Text)",
+      "sources": [
+        "GOV.UK summary list"
+      ]
+    },
+    "Disclosure": {
+      "category": "structure",
+      "summary": "Progressive disclosure: secondary content hidden behind a toggle.",
+      "whenToUse": [
+        "Details most people don't need (fees breakdown, advanced options, help text)"
+      ],
+      "whenNotToUse": [
+        "Content everyone needs to complete the task",
+        "Primary navigation"
+      ],
+      "accessibility": {
+        "role": "button (aria-expanded) + region",
+        "requirements": [
+          "Summary is a button with expanded state",
+          "Hidden content is not in the tab order while closed"
+        ]
+      },
+      "agent": "Expand by the summary text; state is exposed as expanded/collapsed.",
+      "rendering": [
+        "Never hide required inputs or the primary action inside a closed Disclosure"
+      ],
+      "mappings": {
+        "web": "shadcn Collapsible (or Accordion for several)",
+        "ios": "DisclosureGroup",
+        "android": "Expandable ListItem / AnimatedVisibility with a toggle row"
+      },
+      "a2ui": "No direct equivalent; exports as Column (content always shown)",
+      "sources": [
+        "Progressive disclosure",
+        "GOV.UK details component"
+      ]
+    },
+    "FileInput": {
+      "category": "input",
+      "summary": "Choose or drop files to attach or upload.",
+      "whenToUse": [
+        "Attaching a document, a receipt, a photo",
+        "Importing a file the product reads"
+      ],
+      "whenNotToUse": [
+        "Taking a photo with the camera: the host's own flow",
+        "Pasting text: use TextInput"
+      ],
+      "accessibility": {
+        "role": "a native file input, labelled; the drop zone is a large target for the same input",
+        "requirements": [
+          "Keyboard opens the chooser; drag-and-drop is an addition, never the only way",
+          "Chosen files are listed as text with a 'Remove <name>' button each",
+          "Type and size limits are said before choosing and in any refusal"
+        ]
+      },
+      "agent": "Reads the label and limits; attaches files through the host.",
+      "rendering": [
+        "A dashed drop zone on color.surface.subtle with radius.control, the chooser control inside it",
+        "Each chosen file shows name, size and a remove control; a progress bar while the host uploads",
+        "Refusals use color.status.danger text under the zone"
+      ],
+      "mappings": {
+        "web": "shadcn Input type=file with a drop zone",
+        "ios": "fileImporter / PhotosPicker",
+        "android": "ActivityResultContracts.GetContent"
+      },
+      "a2ui": "Custom (no Basic equivalent)",
+      "sources": [
+        "WCAG 2.5.7 dragging movements"
+      ]
+    },
+    "FilterPanel": {
+      "category": "layout",
+      "summary": "Filters for a list of results, with the result count.",
+      "whenToUse": [
+        "Browsing results people narrow by several attributes",
+        "More than two filters, or filters that take space (ranges, long lists)"
+      ],
+      "whenNotToUse": [
+        "One or two quick filters: put a Choice (chips) above the results",
+        "Filling in information: use Form"
+      ],
+      "accessibility": {
+        "role": "region (filters) plus the results",
+        "requirements": [
+          "The result count is announced politely when it changes",
+          "Each active filter can be removed with a named button ('Remove filter: Desk')"
+        ]
+      },
+      "agent": "Set filter inputs by label; read the result count; remove filters by their Remove buttons.",
+      "rendering": [
+        "Wide: filters in a sidebar beside the results",
+        "Compact: a 'Filters · n' button opens a bottom sheet whose action says 'Show n results'",
+        "Active filters show as removable chips above the results",
+        "Filters apply as they change (no separate Apply on wide)"
+      ],
+      "mappings": {
+        "web": "Sidebar + Sheet (shadcn)",
+        "ios": "List with a filter sheet",
+        "android": "Side sheet / modal bottom sheet"
+      },
+      "a2ui": "Column",
+      "sources": [
+        "Baymard: product list filtering",
+        "NN/g: filters vs facets"
+      ]
+    },
+    "Footer": {
+      "category": "shell",
+      "shell": true,
+      "summary": "The bar at the bottom of the product: link groups, the legal line, locale or status.",
+      "whenToUse": [
+        "The footer region of a Frame",
+        "Public services and marketing-adjacent products where legal and help links belong at the bottom"
+      ],
+      "whenNotToUse": [
+        "Dense tools where nothing lives below the fold: leave the Frame's footer out",
+        "Inside a generated surface"
+      ],
+      "accessibility": {
+        "role": "contentinfo",
+        "requirements": [
+          "Groups are navigation regions named by their headings",
+          "Links are links, not buttons, when they leave the current screen",
+          "The legal line is readable text, not an image"
+        ]
+      },
+      "agent": "Reads the legal line and reaches help, privacy and terms by name.",
+      "rendering": [
+        "Groups as columns on wide layouts, stacked on compact; headings in type.label.default",
+        "Background color.surface.subtle with a top border; the legal row in type.body.small, color.text.muted",
+        "Never sticky"
+      ],
+      "mappings": {
+        "web": "GOV.UK footer, Polaris FooterHelp, Bootstrap footer",
+        "ios": "n/a (settings screen)",
+        "android": "n/a"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "GOV.UK Design System footer",
+        "WAI-ARIA contentinfo"
+      ]
+    },
+    "Form": {
+      "category": "input",
+      "summary": "Collects inputs and submits them together.",
+      "whenToUse": [
+        "Any set of inputs that are submitted together"
+      ],
+      "whenNotToUse": [
+        "Settings that apply immediately: use Toggles with actions",
+        "Several distinct stages: use Steps"
+      ],
+      "accessibility": {
+        "role": "form",
+        "requirements": [
+          "Submit is a real submit button",
+          "On submit errors, focus moves to an error summary that links to each field"
+        ]
+      },
+      "agent": "Fill fields by label, then activate the submit button by its label.",
+      "rendering": [
+        "One column; labels above fields",
+        "Submit is the primary action; cancel is secondary",
+        "Submit context is built from the form's input bindings",
+        "'horizontal' becomes stacked on compact surfaces",
+        "'aside' sits beside the form on wide surfaces; on compact ones it comes first, before the fields, so people read what they are agreeing to"
+      ],
+      "mappings": {
+        "web": "shadcn Form (react-hook-form + zod)",
+        "ios": "Form",
+        "android": "Column of fields + Button (no Form primitive)"
+      },
+      "a2ui": "Column + Button",
+      "sources": [
+        "GOV.UK question pages and error summary",
+        "Nielsen: error prevention"
+      ]
+    },
+    "Frame": {
+      "category": "shell",
+      "shell": true,
+      "summary": "The product's frame: the regions around its screens (header, navigation, main, aside, footer, banner), with an outlet where screens and generated surfaces appear.",
+      "whenToUse": [
+        "The root of a shell document: the product's frame, authored once, that every screen sits in",
+        "A product whose navigation, header and footer should render in its design system like everything else"
+      ],
+      "whenNotToUse": [
+        "In a generated document: a surface lives inside a frame and never draws one (the validator refuses it)",
+        "A dialog or a sheet over a screen: use Panel"
+      ],
+      "accessibility": {
+        "role": "landmarks: banner (header), navigation, main, complementary (aside), contentinfo (footer)",
+        "requirements": [
+          "Exactly one main; a skip link to it is the first focusable thing",
+          "Each landmark is labelled when there is more than one of its kind",
+          "Regions keep their reading order at every width: banner, header, navigation, main, aside, footer",
+          "The navigation's current item is marked; the document title follows the current screen"
+        ]
+      },
+      "agent": "Reads the landmarks to know where it is; moves between screens through the navigation by name; acts on what is in main.",
+      "rendering": [
+        "Wide (≥ 1024px): header on top, navigation at the start edge as a side column or a rail, main and aside as columns, footer below",
+        "Medium (≥ 640px): navigation becomes a rail; aside stacks below main",
+        "Compact: navigation becomes a bottom bar (up to 5 items) or a drawer behind a menu button in the header; the footer's groups collapse",
+        "Region backgrounds use color.surface.default for main and color.surface.subtle for navigation; borders are color.border.default at border.width.default",
+        "The outlet is where PolyxdSurface documents render: they never repeat the frame's regions"
+      ],
+      "mappings": {
+        "web": "Polaris Frame, Carbon UI Shell, Fluent App layout, shadcn Sidebar layout",
+        "ios": "NavigationSplitView / TabView with a NavigationStack",
+        "android": "Scaffold with TopAppBar, NavigationRail or NavigationBar, and content"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "WAI-ARIA landmark regions",
+        "Material 3 navigation rail, bar and drawer",
+        "Polaris Frame"
+      ]
+    },
+    "Group": {
+      "category": "structure",
+      "summary": "Visually groups closely related items without a heading (proximity).",
+      "whenToUse": [
+        "A few items that belong together (a key figure and its caption, several metrics)"
+      ],
+      "whenNotToUse": [
+        "The group needs a heading: use Section",
+        "Choosing between items: use Choice or Comparison"
+      ],
+      "accessibility": {
+        "role": "group",
+        "requirements": [
+          "Has an accessible name when it contains interactive items"
+        ]
+      },
+      "agent": "Treated as one unit when its label is present.",
+      "rendering": [
+        "'inline' collapses to a stack below the compact breakpoint",
+        "Gap uses space.stack.default or space.inline.default"
+      ],
+      "mappings": {
+        "web": "<div role=group> with flex/grid and semantic spacing tokens",
+        "ios": "VStack / HStack / Grid (ViewThatFits for inline)",
+        "android": "Column / Row / FlowRow"
+      },
+      "a2ui": "Column or Row",
+      "sources": [
+        "Gestalt: proximity"
+      ]
+    },
+    "Identity": {
+      "category": "content",
+      "summary": "A person, team or organisation: picture, name and details, or several of them together.",
+      "whenToUse": [
+        "Who something belongs to, was sent by or is assigned to",
+        "The recipient on a payment, the owner on a record, the members on a team",
+        "A list of people where the face helps recognition"
+      ],
+      "whenNotToUse": [
+        "Choosing a person from a list: use Choice with avatarPath",
+        "A person's full record: use Card or DetailList"
+      ],
+      "accessibility": {
+        "role": "group named by the name; the picture is decorative and the name is text",
+        "requirements": [
+          "The name is real text, never only an image or initials",
+          "A group's accessible name lists the first names and how many more",
+          "With an action, the whole element is one button or link named by the name"
+        ]
+      },
+      "agent": "Reads the name and detail; a group exposes every member's name.",
+      "rendering": [
+        "Initials come from the name's first letters, on a neutral surface with color.text.default; a pack may derive a stable colour from the name",
+        "Sizes: small 24px, default 40px, large 64px; the name uses type.body.default or type.heading.small for large",
+        "A group overlaps pictures by a quarter, with a '+N' tag for the rest",
+        "Images are never stretched; missing images fall back to initials, never to a broken image"
+      ],
+      "mappings": {
+        "web": "shadcn Avatar",
+        "ios": "AsyncImage in a Circle + Text",
+        "android": "AsyncImage with CircleShape + Text"
+      },
+      "a2ui": "Row of Image + Text",
+      "sources": [
+        "Recognition over recall"
+      ]
+    },
+    "Media": {
+      "category": "content",
+      "summary": "An image, video, audio clip, gallery or QR code supplied by the host.",
+      "whenToUse": [
+        "Photos or illustrations that help identify something (a product, a place, a person)",
+        "A recording people play, or a code they scan"
+      ],
+      "whenNotToUse": [
+        "Decoration with no information",
+        "Icons for actions (renderer supplies those)"
+      ],
+      "accessibility": {
+        "role": "img (video / audio players, list for a gallery)",
+        "requirements": [
+          "Has alt text unless decorative (then hidden from assistive technology)",
+          "Video and audio have native controls and offer a transcript",
+          "A QR code's alt says what scanning it does"
+        ]
+      },
+      "agent": "Reads the alt text; a gallery's images by their own alt text; a QR code's value.",
+      "rendering": [
+        "Images never convey information that is not also in text",
+        "'video' shows 'poster' until played; 'audio' is a compact player; both put 'transcript' under a disclosure",
+        "'gallery' is a grid of the items' images, each with its own alt text",
+        "'qr' is drawn on a canvas at a size that scans from a phone, with the alt as its accessible name"
+      ],
+      "mappings": {
+        "web": "<img> / <video> / <audio> / shadcn AspectRatio; QR on <canvas>",
+        "ios": "AsyncImage / VideoPlayer / CoreImage CIQRCodeGenerator",
+        "android": "AsyncImage (Coil) / Media3 PlayerView / ZXing"
+      },
+      "a2ui": "Image (video, audio and gallery export as Image + Text; a QR code as Text of its value)",
+      "sources": [
+        "WCAG 1.1.1",
+        "WCAG 1.2.1 audio-only and video-only"
+      ]
+    },
+    "Metric": {
+      "category": "content",
+      "summary": "A key figure with a label, and optionally its change.",
+      "whenToUse": [
+        "One to four headline numbers the user asked about"
+      ],
+      "whenNotToUse": [
+        "Many numbers: use Table or DetailList",
+        "Trends over time: use Chart"
+      ],
+      "accessibility": {
+        "role": "group (label + value)",
+        "requirements": [
+          "Change direction is conveyed in text as well as color",
+          "Screen readers read label, value and change as one sentence"
+        ]
+      },
+      "agent": "Read label and value.",
+      "rendering": [
+        "Value uses type.numeric.display",
+        "Change uses color.data.positive / negative according to 'favorable'"
+      ],
+      "mappings": {
+        "web": "Card-like block with semantic tokens (no dedicated shadcn primitive)",
+        "ios": "LabeledContent or a VStack; Gauge for bounded values",
+        "android": "Column with Text styles"
+      },
+      "a2ui": "Column of Text",
+      "sources": [
+        "Pre-attentive processing",
+        "WCAG 1.4.1 use of color"
+      ]
+    },
+    "Navigation": {
+      "category": "layout",
+      "summary": "The product's main navigation.",
+      "whenToUse": [
+        "Software with sections people move between (B2B apps, dashboards)",
+        "Only when the host doesn't already provide navigation"
+      ],
+      "whenNotToUse": [
+        "Steps of one task: use Steps",
+        "Sections of one record: use Views",
+        "A surface embedded in a host that has its own navigation"
+      ],
+      "accessibility": {
+        "role": "navigation",
+        "requirements": [
+          "The current item carries aria-current=\"page\"",
+          "Badges say what they count ('12 overdue')"
+        ]
+      },
+      "agent": "Move between sections by activating items by their labels.",
+      "rendering": [
+        "Wide: a side navigation with grouped items",
+        "Compact: a menu button that opens the navigation",
+        "Badges sit at the end of their item",
+        "'breadcrumb' is an ordered trail ending with the current item (aria-current=\"page\"), never behind a menu button",
+        "'nested' shows each group as an expandable section; the group holding the current item starts open",
+        "'toc' lists the page's sections as anchors, the section in view highlighted",
+        "'local' lays the items out as tabs, the current one marked",
+        "'placement' fixes the layout a Frame gives the main navigation: side (240px column), rail (80px, icons with labels), bar (bottom, up to 5 items), drawer (behind the AppBar's menu button)"
+      ],
+      "mappings": {
+        "web": "Sidebar navigation (shadcn Sidebar)",
+        "ios": "TabView or a sidebar on iPad",
+        "android": "NavigationRail / NavigationDrawer"
+      },
+      "a2ui": "Column",
+      "sources": [
+        "Carbon UI shell",
+        "Material 3 navigation drawer",
+        "NN/g: navigation should show where you are"
+      ]
+    },
+    "Outlet": {
+      "category": "shell",
+      "shell": true,
+      "summary": "Where the current screen renders inside a Frame: the host fills it with a screen document or a generated surface.",
+      "whenToUse": [
+        "The main region of a Frame"
+      ],
+      "whenNotToUse": [
+        "Anywhere else: an outlet is the frame's, and a document has at most one"
+      ],
+      "accessibility": {
+        "role": "main",
+        "requirements": [
+          "The screen's h1 is the first heading inside it",
+          "Focus moves to the screen's heading when the outlet's content changes on navigation"
+        ]
+      },
+      "agent": "Everything it can act on is here; the frame around it is for getting elsewhere.",
+      "rendering": [
+        "Takes the main region's width; padding space.inset.comfortable (compact: default)",
+        "While loading, a skeleton shaped by the coming screen's pattern"
+      ],
+      "mappings": {
+        "web": "the router's outlet",
+        "ios": "NavigationStack content",
+        "android": "NavHost"
+      },
+      "a2ui": "custom",
+      "sources": []
+    },
+    "Panel": {
+      "category": "structure",
+      "summary": "Content over the current view: a dialog, a drawer, a bottom sheet or a popover, opened from an action and dismissed to return.",
+      "whenToUse": [
+        "A short task on top of the page: edit one thing, pick one thing, see one record",
+        "Detail the person asked for that shouldn't replace where they are",
+        "A small set of options next to the control that opened them (popover)"
+      ],
+      "whenNotToUse": [
+        "Confirming a consequential action: use Confirm, which is a dialog with the right words and order",
+        "A whole flow of several steps: use Steps on its own surface",
+        "Passing feedback: use Status"
+      ],
+      "accessibility": {
+        "role": "dialog (aria-modal for dialog, drawer and sheet) named by the title; popover is a non-modal dialog",
+        "requirements": [
+          "Focus moves into the panel on open and back to the opener on close",
+          "Tab stays inside a modal panel; Escape dismisses a dismissible one",
+          "The page behind a modal panel is inert",
+          "A sheet can be dismissed by dragging down as well as by the close control"
+        ]
+      },
+      "agent": "Opens, reads the content and closes it by name; the footer actions are exposed like any ActionBar.",
+      "rendering": [
+        "A backdrop of color.surface.inverse at opacity.overlay for modal kinds",
+        "dialog: max 560px on desktop, full width with space.inset.default on phones; drawer: 420px from the end edge; sheet: from the bottom with radius.large on the top corners; popover: color.surface.overlay with elevation.overlay and an arrow",
+        "The title is type.heading.medium with the close control at the end of the header",
+        "The action bar sits in a footer; on phones it is fixed to the bottom, full width",
+        "Motion uses motion.duration.default and motion.easing.standard; reduced motion fades instead"
+      ],
+      "mappings": {
+        "web": "shadcn Dialog, Sheet, Drawer, Popover",
+        "ios": ".sheet, .popover, NavigationStack push",
+        "android": "ModalBottomSheet, AlertDialog, DropdownMenu"
+      },
+      "a2ui": "Modal",
+      "sources": [
+        "WAI-ARIA APG dialog (modal) pattern"
+      ]
+    },
+    "Progress": {
+      "category": "content",
+      "summary": "How far along something is, or how much of a bounded amount is used: a bar, a ring or a meter.",
+      "whenToUse": [
+        "A task that takes time, with a known share done",
+        "How much of a quota, budget or capacity is used",
+        "Progress towards a goal (pages read, steps walked)"
+      ],
+      "whenNotToUse": [
+        "A number the person came to see: use Metric",
+        "Steps of a task the person moves through: use Steps",
+        "A short wait with nothing to measure: Status 'loading'"
+      ],
+      "accessibility": {
+        "role": "progressbar (bar, ring) or meter, named by the label, with aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext",
+        "requirements": [
+          "The readout is real text next to the graphic, never only the fill",
+          "A meter's tone is also said in text ('nearly full'), not only shown by colour",
+          "Indeterminate progress has no value attributes and is announced as busy"
+        ]
+      },
+      "agent": "Reads label, value and max as text.",
+      "rendering": [
+        "The track uses color.surface.subtle; the fill uses color.action.primary.background, or color.status.<tone>.emphasis for a toned meter",
+        "Height is size.control.small / 3 for a bar; a ring is size.control.default across",
+        "Readout in tabular figures, type.body.small, after the label",
+        "The bar's length means the fraction: never used for an amount with no bound"
+      ],
+      "mappings": {
+        "web": "shadcn Progress; meter as a native <meter>",
+        "ios": "ProgressView, Gauge",
+        "android": "LinearProgressIndicator, CircularProgressIndicator"
+      },
+      "a2ui": "Text",
+      "sources": [
+        "WAI-ARIA progressbar and meter roles"
+      ]
+    },
+    "RangeInput": {
+      "category": "input",
+      "summary": "A number, or a range between two numbers, within known bounds.",
+      "whenToUse": [
+        "Approximate values within a range (budget cap, volume)",
+        "A price or date range for filtering (mode 'range')"
+      ],
+      "whenNotToUse": [
+        "Exact values: use TextInput with kind 'number' or 'currency'"
+      ],
+      "accessibility": {
+        "role": "slider",
+        "requirements": [
+          "Current value is shown as text",
+          "Keyboard arrows change the value by step"
+        ]
+      },
+      "agent": "Set the value directly by label.",
+      "rendering": [
+        "Shows min, max and the current formatted value",
+        "mode 'range' shows two thumbs and min/max fields that stay in sync"
+      ],
+      "mappings": {
+        "web": "shadcn Slider",
+        "ios": "Slider",
+        "android": "Slider"
+      },
+      "a2ui": "Slider",
+      "sources": [
+        "Fitts's law: large thumb target"
+      ]
+    },
+    "Rating": {
+      "category": "input",
+      "summary": "A score out of N: given by the person, or shown as others gave it.",
+      "whenToUse": [
+        "Asking how something went, out of five",
+        "Showing a product's or place's rating with the count behind it"
+      ],
+      "whenNotToUse": [
+        "A number within bounds that isn't a score: use RangeInput",
+        "Yes or no: use Toggle or Choice"
+      ],
+      "accessibility": {
+        "role": "radiogroup of radios named '1 star' to 'N stars' when it can be given; an image named '4.6 out of 5' when read-only",
+        "requirements": [
+          "Every star is a real control at size.target.min when the person can rate",
+          "The current value is announced; half values are said as such",
+          "Read-only ratings carry the score as text, not only as filled shapes"
+        ]
+      },
+      "agent": "Reads the score and the count; sets a score by choosing '<n> stars'.",
+      "rendering": [
+        "Filled shapes use color.status.warning.emphasis; empty ones use color.border.default",
+        "The readout ('4.6') is shown after the shapes in tabular figures, with the count in color.text.muted",
+        "A rating that can be given shows the label above, like every input"
+      ],
+      "mappings": {
+        "web": "Radix RadioGroup (no shadcn rating)",
+        "ios": "HStack of Image(systemName: star) buttons",
+        "android": "Row of IconButton"
+      },
+      "a2ui": "Row of Icon",
+      "sources": [
+        "WAI-ARIA rating pattern (radio group)"
+      ]
+    },
+    "Section": {
+      "category": "structure",
+      "summary": "A titled region of the surface that groups related content under a heading.",
+      "whenToUse": [
+        "The surface has two or more distinct topics (e.g. 'Recipient' and 'Amount')",
+        "Content would otherwise exceed one screen and needs signposting"
+      ],
+      "whenNotToUse": [
+        "Only one topic: put content directly under the root",
+        "Visual grouping without a heading: use Group"
+      ],
+      "accessibility": {
+        "role": "region (with heading)",
+        "requirements": [
+          "Title is rendered as a real heading; nesting depth sets the heading level",
+          "Title is the region's accessible name"
+        ]
+      },
+      "agent": "Navigate by heading; the title names the region.",
+      "rendering": [
+        "Heading level follows nesting depth, never chosen by the model",
+        "Spacing between sections uses space.stack.section"
+      ],
+      "mappings": {
+        "web": "<section> + heading; shadcn has no Section primitive (plain markup with semantic tokens)",
+        "ios": "Section(header:) inside List/Form, or VStack with .accessibilityAddTraits(.isHeader) on the title",
+        "android": "Column with a Text heading marked Modifier.semantics { heading() }"
+      },
+      "a2ui": "No direct equivalent; exports as Column with a Text(variant: h2) first child",
+      "sources": [
+        "Gestalt: common region",
+        "Material 3 layout guidance",
+        "GOV.UK headings"
+      ]
+    },
+    "Split": {
+      "category": "structure",
+      "summary": "Master and detail side by side: a list that stays while the chosen item's detail shows beside it; on compact layouts the detail replaces the list.",
+      "whenToUse": [
+        "Mail, tickets, messages, files: a list people move through while reading",
+        "Settings with many sections on wide screens"
+      ],
+      "whenNotToUse": [
+        "Under about 640px of surface width: it becomes a list then a page, so don't use it for a single record",
+        "Two unrelated things side by side: use Columns"
+      ],
+      "accessibility": {
+        "role": "none; the primary and detail keep their own roles",
+        "requirements": [
+          "Selection in the list moves focus to the detail on compact layouts and announces the item's name",
+          "A Back control returns to the list on compact layouts",
+          "The list keeps its scroll position and selection while the detail changes"
+        ]
+      },
+      "agent": "Selects an item in the primary by name and reads the detail; on compact layouts it goes back to choose another.",
+      "rendering": [
+        "Wide: two panes with a border between; the list scrolls independently",
+        "Compact: the list, then the detail as a page with a back control when an item is selected",
+        "Selection state in the list uses color.selection.*",
+        "Resizable splits keep the handle at size.target.min wide with a visible focus ring"
+      ],
+      "mappings": {
+        "web": "Fluent SplitView, Carbon side panel, shadcn Resizable",
+        "ios": "NavigationSplitView",
+        "android": "ListDetailPaneScaffold"
+      },
+      "a2ui": "custom",
+      "sources": [
+        "Apple HIG split views",
+        "Material 3 canonical layouts: list-detail"
+      ]
+    },
+    "Status": {
+      "category": "feedback",
+      "summary": "Feedback about state: info, success, warning, error, empty or loading.",
+      "whenToUse": [
+        "Results of an action",
+        "Empty collections",
+        "Errors with a way to recover",
+        "Loading states",
+        "'undo': after a reversible action ran, say what happened and offer Undo instead of asking first"
+      ],
+      "whenNotToUse": [
+        "Validation errors on a field: inputs show their own errors",
+        "Confirmation before acting: use Confirm"
+      ],
+      "accessibility": {
+        "role": "status or alert (live region)",
+        "requirements": [
+          "success/info/loading are polite live regions; error is assertive",
+          "Meaning is in text, not only color or icon"
+        ]
+      },
+      "agent": "Reads the title and message; the recovery action is exposed.",
+      "rendering": [
+        "error and warning use color.status.* tokens and an icon",
+        "empty states explain why and what to do next",
+        "loading shows a skeleton when layout is known, otherwise a progress indicator",
+        "'undo' renders as a snackbar at the bottom of the surface, announced politely, with the Undo action",
+        "Empty states may carry an ActionBar: one primary and one secondary action",
+        "'inline' renders a bordered notice with its action on the right"
+      ],
+      "mappings": {
+        "web": "shadcn Alert / Skeleton / Sonner toast",
+        "ios": "ContentUnavailableView / ProgressView / inline Label",
+        "android": "Snackbar / Card with status color / CircularProgressIndicator"
+      },
+      "a2ui": "Text + Icon",
+      "sources": [
+        "Nielsen: visibility of system status; help users recover from errors"
+      ]
+    },
+    "Steps": {
+      "category": "flow",
+      "summary": "A task split into ordered steps with visible progress.",
+      "whenToUse": [
+        "Tasks with dependent stages or too many inputs for one view (checkout, onboarding)"
+      ],
+      "whenNotToUse": [
+        "Independent views: use Views",
+        "Under ~6 inputs: a single Form"
+      ],
+      "accessibility": {
+        "role": "group with step progress (aria-current on the current step)",
+        "requirements": [
+          "Current step and total are announced",
+          "Back never loses entered data"
+        ]
+      },
+      "agent": "Reads 'step N of M'; next/back are exposed as buttons.",
+      "rendering": [
+        "Renderer provides Back (ui.back) and Next (ui.next); the last step shows 'finish'",
+        "Each step validates before moving on",
+        "'tasklist' is a list of tasks with a status tag each (GOV.UK task list); a task opens its content in place, and 'finish' follows the list, saying how many are done",
+        "'guide' shows every step's title and content in a numbered list, with 'finish' after the last"
+      ],
+      "mappings": {
+        "web": "Progress + step content (no shadcn stepper primitive)",
+        "ios": "NavigationStack pushes or a paged view with a ProgressView",
+        "android": "Custom stepper Row + content; LinearProgressIndicator"
+      },
+      "a2ui": "No direct equivalent; exports as Column of the current step",
+      "sources": [
+        "GOV.UK one thing per page",
+        "Nielsen: visibility of system status"
+      ]
+    },
+    "Table": {
+      "category": "content",
+      "summary": "Tabular data: many items sharing the same attributes.",
+      "whenToUse": [
+        "Scanning or comparing many rows by several attributes",
+        "Records people scan, sort, select and act on in bulk (B2B lists)"
+      ],
+      "whenNotToUse": [
+        "One entity: use DetailList",
+        "A few entities where the user must choose: use Comparison"
+      ],
+      "accessibility": {
+        "role": "table with caption and column headers",
+        "requirements": [
+          "Has a caption",
+          "Column headers are real header cells",
+          "Numeric columns are right-aligned by format",
+          "Sortable headers carry aria-sort and say what sorting does",
+          "The select-all checkbox is mixed when some rows are selected",
+          "The bulk-action bar names how many rows are selected, announced politely",
+          "Each row's action menu is named after its row"
+        ]
+      },
+      "agent": "Read by row and column headers; rows with rowAction are activatable. Sort by activating a column header; select rows by their checkboxes; act in bulk from the bar that appears.",
+      "rendering": [
+        "On compact screens, rows become stacked cards with label/value pairs",
+        "Alignment follows the column format, never chosen by the model",
+        "Numbers and currency are right-aligned with tabular figures; 'status' renders as a tag using 'tones'",
+        "On compact surfaces the table becomes a list of rows: the entity, the key fields in one line, and the status",
+        "Selection replaces the toolbar with the bulk-action bar while rows are selected",
+        "Paging shows rows per page, the range and the total",
+        "expandable: each row starts with a toggle (aria-expanded) named after the row; the open row's 'detail' spans the table beneath it"
+      ],
+      "mappings": {
+        "web": "shadcn Table (optionally Data Table with TanStack)",
+        "ios": "Table on regular width; List of rows on compact width",
+        "android": "LazyColumn of rows with a header row (no built-in M3 table)"
+      },
+      "a2ui": "No direct equivalent; exports as List of Row",
+      "sources": [
+        "GOV.UK tables",
+        "WAI data tables"
+      ]
+    },
+    "Tag": {
+      "category": "content",
+      "summary": "A short label, status or count attached to something else.",
+      "whenToUse": [
+        "The state of a record, next to its name: 'Past due', 'Draft', 'Live'",
+        "A category or label a thing carries",
+        "How many of something, on a navigation item or a section heading",
+        "Chosen items a person can take off again"
+      ],
+      "whenNotToUse": [
+        "A whole sentence of feedback: use Status",
+        "Something the person switches on or off: use Toggle",
+        "A metric the person came for: use Metric"
+      ],
+      "accessibility": {
+        "role": "text; for 'count', the label is the accessible name of the number; for a removable tag, a button named 'Remove <label>'",
+        "requirements": [
+          "Tone is conveyed by the label, never only by colour",
+          "A count reads as '<label>: <count>' to a screen reader",
+          "The remove control is at least size.target.min and named for what it removes"
+        ]
+      },
+      "agent": "Reads label, tone and count; can activate the remove control by its name.",
+      "rendering": [
+        "status uses color.status.<tone>.background and .foreground; label and count use neutral tokens",
+        "count is set in tabular figures",
+        "A tag never wraps: long labels are truncated with the full text on hover and in the accessible name",
+        "Fits inline with text and in a Card header; radius.small unless the pack sets a pill"
+      ],
+      "mappings": {
+        "web": "shadcn Badge",
+        "ios": "Text with capsule background",
+        "android": "AssistChip / Badge"
+      },
+      "a2ui": "Text",
+      "sources": [
+        "WCAG 1.4.1 use of color"
+      ]
+    },
+    "Text": {
+      "category": "content",
+      "summary": "A run of text.",
+      "whenToUse": [
+        "Explanations, instructions, messages"
+      ],
+      "whenNotToUse": [
+        "Headings: use Section title",
+        "Label/value pairs: use DetailList",
+        "Key figures: use Metric"
+      ],
+      "accessibility": {
+        "role": "text",
+        "requirements": [
+          "Body text is at least 16px (type.body.default)",
+          "Line length is capped by measure.max"
+        ]
+      },
+      "agent": "Read as text.",
+      "rendering": [
+        "'supporting' uses color.text.muted",
+        "No inline styling; emphasis comes from structure",
+        "'rich' renders only the four markup forms, as real elements; anything else, including HTML, is shown as typed, and only http, https, mailto and tel links are live",
+        "'list' renders a ul or ol; entries are shown as text, or by 'itemPath' when they are objects",
+        "'quote' is a blockquote, the cite on its own line after it",
+        "format 'color' shows a swatch of the value beside it; 'bytes' shows a size like 1.2 MB"
+      ],
+      "mappings": {
+        "web": "<p> with type tokens",
+        "ios": "Text",
+        "android": "Text"
+      },
+      "a2ui": "Text",
+      "sources": [
+        "Readability: line length and size"
+      ]
+    },
+    "TextInput": {
+      "category": "input",
+      "summary": "A single text-like value: text, number, email, phone, currency, search or long text.",
+      "whenToUse": [
+        "Free-form values the user types"
+      ],
+      "whenNotToUse": [
+        "A value from a known set: use Choice",
+        "Dates: use DateInput",
+        "Secrets (passwords, card numbers): not generated; hosts provide their own secure flows"
+      ],
+      "accessibility": {
+        "role": "textbox / searchbox / spinbutton",
+        "requirements": [
+          "Visible label, never placeholder-only",
+          "Help and errors are associated with the field",
+          "Kind sets the right keyboard and autocomplete"
+        ]
+      },
+      "agent": "Fill by label.",
+      "rendering": [
+        "Width suggests expected length",
+        "Errors appear after the user leaves the field or submits, not while typing",
+        "kind 'search' renders as a pill search field with an icon; the label stays as its accessible name",
+        "size 'hero' renders a large centred amount with the currency symbol dimmed",
+        "'suggestions' and 'mentions' are comboboxes: the list opens as you type, arrow keys move through it, Enter takes an option, Escape closes it",
+        "'richtext' is an editable area with Bold, Italic and List controls; the value is text with **bold**, *italic* and '- ' items",
+        "'tags' shows each value as a chip with a remove control; Enter or a comma adds what was typed, Backspace in an empty field removes the last chip; the value is a list of strings",
+        "'code' uses type.numeric (monospace) and turns off autocorrect, autocapitalize and spellcheck",
+        "'masked' fills the mask's literal characters as you type and stores the text as shown",
+        "'inline' renders the value as text with an Edit control; Enter saves, Escape restores the previous value"
+      ],
+      "mappings": {
+        "web": "shadcn Input / Textarea with Label and FormMessage",
+        "ios": "TextField / TextEditor with .keyboardType and .textContentType",
+        "android": "OutlinedTextField with KeyboardOptions"
+      },
+      "a2ui": "TextField",
+      "sources": [
+        "GOV.UK text input and question pages",
+        "WCAG 3.3.2 labels"
+      ]
+    },
+    "Toggle": {
+      "category": "input",
+      "summary": "An on/off setting.",
+      "whenToUse": [
+        "Settings that take effect immediately",
+        "A single yes/no inside a form"
+      ],
+      "whenNotToUse": [
+        "Choosing between named options: use Choice"
+      ],
+      "accessibility": {
+        "role": "switch (immediate) / checkbox (in a form)",
+        "requirements": [
+          "Label says what 'on' means"
+        ]
+      },
+      "agent": "Toggle by label; state is exposed as on/off.",
+      "rendering": [
+        "With 'action' it renders as a switch; inside a Form without action, as a checkbox"
+      ],
+      "mappings": {
+        "web": "shadcn Switch / Checkbox",
+        "ios": "Toggle",
+        "android": "Switch / Checkbox"
+      },
+      "a2ui": "CheckBox",
+      "sources": [
+        "Nielsen: match between system and the real world"
+      ]
+    },
+    "Tree": {
+      "category": "content",
+      "summary": "A hierarchy people expand, browse and pick from: folders, an org chart, nested categories.",
+      "whenToUse": [
+        "Things that contain things: folders and files, an organisation, nested categories",
+        "Picking a place in a hierarchy (move to folder, choose a category)"
+      ],
+      "whenNotToUse": [
+        "A flat list, however long: use Collection or Table",
+        "Nested navigation of the product itself: use Navigation",
+        "Progressive disclosure of one section: use Disclosure"
+      ],
+      "accessibility": {
+        "role": "tree with treeitem nodes; aria-expanded on nodes with children, aria-selected when selectable",
+        "requirements": [
+          "Arrow keys move and expand; Home and End jump; typing jumps to a label",
+          "Level and position are exposed (aria-level, aria-setsize, aria-posinset)",
+          "Expanded state is announced; selection is announced"
+        ]
+      },
+      "agent": "Reads every node by label and level; expands a node by name and selects or activates one by name.",
+      "rendering": [
+        "Indent per level uses space.inline.default; the expander is a chevron at size.target.min",
+        "Leaves have no expander and align with siblings' labels",
+        "Selection uses color.selection.background; the focused node shows color.border.focus",
+        "Beyond 200 nodes the renderer virtualises rows"
+      ],
+      "mappings": {
+        "web": "Radix Accordion primitives (no shadcn tree)",
+        "ios": "OutlineGroup / List with children",
+        "android": "LazyColumn with expandable rows"
+      },
+      "a2ui": "Nested Column of Text",
+      "sources": [
+        "WAI-ARIA APG tree view pattern"
+      ]
+    },
+    "Views": {
+      "category": "structure",
+      "summary": "Switch between alternative views of the same subject (tabs).",
+      "whenToUse": [
+        "2–6 peer views of the same data (Overview / Transactions / Settings)"
+      ],
+      "whenNotToUse": [
+        "Sequential steps: use Steps",
+        "Filtering one list: use Choice"
+      ],
+      "accessibility": {
+        "role": "tablist / tab / tabpanel",
+        "requirements": [
+          "Each tab has a visible label",
+          "Arrow keys move between tabs"
+        ]
+      },
+      "agent": "Select a view by its label.",
+      "rendering": [
+        "More than 4 views on compact screens become a menu or scrollable tabs",
+        "Counts sit beside their labels and are part of the tab's accessible name"
+      ],
+      "mappings": {
+        "web": "shadcn Tabs",
+        "ios": "Picker(.segmented) switching content, or TabView for top-level",
+        "android": "PrimaryTabRow + content"
+      },
+      "a2ui": "Tabs",
+      "sources": [
+        "WAI-ARIA tabs pattern",
+        "Material 3 tabs"
+      ]
+    }
+  }
+}

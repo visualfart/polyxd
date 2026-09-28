@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://polyxd.com/schema/0.3/capabilities.schema.json",
+  "title": "Polyxd capability registry",
+  "description": "What the product can do. Generated UIs may only trigger registered capabilities; risk levels drive required patterns. Owned by PM + engineering.",
+  "type": "object",
+  "required": ["name", "capabilities"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": { "type": "string" },
+    "capabilities": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-zA-Z0-9]*(\\.[a-z][a-zA-Z0-9]*)+$" },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["description", "risk"],
+        "properties": {
+          "description": { "type": "string" },
+          "risk": {
+            "enum": ["none", "low", "consequential", "destructive"],
+            "description": "destructive: only from a Confirm. consequential: from a Confirm, a review-and-submit surface, or the finish of Steps whose last step is a review"
+          },
+          "inputs": { "type": "object", "description": "JSON Schema of the event context this capability accepts" },
+          "preconditions": { "type": "array", "items": { "type": "string" } },
+          "sideEffects": { "type": "array", "items": { "type": "string" } },
+          "undo": { "type": "string", "description": "Capability that reverses this one. Reversible, low-risk actions run straight away and offer Undo instead of a confirmation" },
+          "flag": { "type": "string", "description": "OpenFeature flag key; when the flag is off the capability cannot appear" },
+          "agentMayInvoke": { "type": "boolean", "default": true, "description": "Whether an AI agent may trigger it without a human confirming" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

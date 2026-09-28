@@ -1,0 +1,62 @@
+{
+  "name": "ColorInput",
+  "category": "input",
+  "summary": "Pick a colour: from swatches the host offers, or any colour.",
+  "props": {
+    "label": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "value": {
+      "$ref": "#/$defs/Binding",
+      "description": "The colour in host data, as CSS text in the chosen format"
+    },
+    "swatches": {
+      "$ref": "#/$defs/Options",
+      "description": "Named colours to pick from (value is the colour, label its name); without them the full picker shows"
+    },
+    "format": {
+      "enum": ["hex", "rgb", "hsl"],
+      "default": "hex"
+    },
+    "alpha": {
+      "type": "boolean",
+      "default": false,
+      "description": "Let the person set opacity too"
+    },
+    "help": {
+      "$ref": "#/$defs/DynamicString"
+    },
+    "required": {
+      "$ref": "#/$defs/DynamicBoolean",
+      "default": false
+    }
+  },
+  "required": ["label", "value"],
+  "whenToUse": [
+    "A colour for a label, a tag, a calendar, a theme",
+    "Choosing from a set of brand colours"
+  ],
+  "whenNotToUse": [
+    "A choice that happens to be shown as colours (a plan, a size): use Choice"
+  ],
+  "accessibility": {
+    "role": "swatches are a radiogroup of radios named by their labels; the free picker is a native color input plus a text field for the value",
+    "requirements": [
+      "Every swatch has a name; colour alone is never the only identification",
+      "The value is editable as text, so it can be typed and read",
+      "The chosen colour is shown beside its text value"
+    ]
+  },
+  "agent": "Reads the swatch names; picks one by name or types a value.",
+  "rendering": [
+    "Swatches are size.control.default squares with radius.control and a 1px color.border.default ring; the chosen one shows color.border.focus",
+    "The free picker is the platform's, with the text value beside it in type.mono"
+  ],
+  "mappings": {
+    "web": "input type=color + Radix RadioGroup for swatches",
+    "ios": "ColorPicker",
+    "android": "Custom (no Material picker)"
+  },
+  "a2ui": "Custom (no Basic equivalent)",
+  "sources": ["WCAG 1.4.1 use of color"]
+}

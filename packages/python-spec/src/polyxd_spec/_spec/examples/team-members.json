@@ -1,0 +1,222 @@
+{
+  "$schema": "https://polyxd.com/schema/0.3/ui.schema.json",
+  "specVersion": "0.3.0",
+  "surface": {
+    "id": "billing-team",
+    "title": "Billing team",
+    "intent": "team.members",
+    "subtitle": "Finance workspace",
+    "actions": "team-actions"
+  },
+  "root": "root",
+  "components": [
+    {
+      "id": "team-actions",
+      "component": "ActionBar",
+      "children": [
+        "invite"
+      ]
+    },
+    {
+      "id": "invite",
+      "component": "Action",
+      "label": "Invite to team",
+      "emphasis": "primary",
+      "action": {
+        "event": {
+          "name": "team.inviteStart",
+          "context": {
+            "team": {
+              "path": "/team/id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "root",
+      "component": "Group",
+      "children": [
+        "team-header",
+        "members"
+      ]
+    },
+    {
+      "id": "team-header",
+      "component": "Identity",
+      "key": "team",
+      "kind": "team",
+      "size": "large",
+      "name": {
+        "path": "/team/name"
+      },
+      "detail": {
+        "path": "/team/summary"
+      },
+      "group": {
+        "path": "/members",
+        "namePath": "name",
+        "imagePath": "image",
+        "max": 4
+      }
+    },
+    {
+      "id": "members",
+      "component": "Collection",
+      "key": "members",
+      "label": "Members",
+      "layout": "list",
+      "items": {
+        "path": "/members",
+        "componentId": "member"
+      },
+      "empty": "no-members"
+    },
+    {
+      "id": "no-members",
+      "component": "Status",
+      "kind": "empty",
+      "icon": "inbox",
+      "title": "No one is on this team yet",
+      "message": "Invite someone and they'll appear here."
+    },
+    {
+      "id": "member",
+      "component": "Group",
+      "label": {
+        "path": "name"
+      },
+      "arrangement": "inline",
+      "children": [
+        "member-identity",
+        "member-active",
+        "member-invited",
+        "member-menu"
+      ]
+    },
+    {
+      "id": "member-identity",
+      "component": "Identity",
+      "kind": "person",
+      "name": {
+        "path": "name"
+      },
+      "detail": {
+        "path": "role"
+      },
+      "image": {
+        "path": "image"
+      }
+    },
+    {
+      "id": "member-active",
+      "component": "Tag",
+      "kind": "status",
+      "tone": "success",
+      "label": "Active",
+      "visible": {
+        "path": "active"
+      }
+    },
+    {
+      "id": "member-invited",
+      "component": "Tag",
+      "kind": "status",
+      "tone": "warning",
+      "label": "Invited",
+      "visible": {
+        "path": "invited"
+      }
+    },
+    {
+      "id": "member-menu",
+      "component": "ActionMenu",
+      "kind": "overflow",
+      "label": "Member actions",
+      "children": [
+        "change-role",
+        "remove-member"
+      ]
+    },
+    {
+      "id": "change-role",
+      "component": "Action",
+      "label": "Change role",
+      "action": {
+        "event": {
+          "name": "team.roleStart",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "remove-member",
+      "component": "Action",
+      "label": "Remove from team",
+      "tone": "danger",
+      "action": {
+        "event": {
+          "name": "team.removeStart",
+          "context": {
+            "id": {
+              "path": "id"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "data": {
+    "team": {
+      "id": "team_billing",
+      "name": "Billing team",
+      "summary": "5 members · owned by Priya Nair"
+    },
+    "members": [
+      {
+        "id": "usr_4a91",
+        "name": "Priya Nair",
+        "role": "Team lead",
+        "image": "img_priya_nair",
+        "active": true,
+        "invited": false
+      },
+      {
+        "id": "usr_2c07",
+        "name": "Tom Walsh",
+        "role": "Billing specialist",
+        "image": "img_tom_walsh",
+        "active": true,
+        "invited": false
+      },
+      {
+        "id": "usr_7e33",
+        "name": "Hannah Okafor",
+        "role": "Billing specialist",
+        "image": "img_hannah_okafor",
+        "active": true,
+        "invited": false
+      },
+      {
+        "id": "usr_9b12",
+        "name": "Marcus Feld",
+        "role": "Finance analyst",
+        "image": "img_marcus_feld",
+        "active": true,
+        "invited": false
+      },
+      {
+        "id": "usr_c5d8",
+        "name": "Sofia Reyes",
+        "role": "Accounts assistant",
+        "image": "img_sofia_reyes",
+        "active": false,
+        "invited": true
+      }
+    ]
+  }
+}
