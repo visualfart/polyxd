@@ -9,7 +9,7 @@ One 1200 × 630 card per page of polyxd.com, shown when a link is shared.
   without the slashes (`/` is `home`, `/docs/reference/tokens/` is `docs-reference-tokens`), and
   `scripts/build.ts` points each page's `og:image` at its file, or at the home card when a page
   has none. The four demo products' cards go to `apps/demos/public/<name>/og.png`, where their
-  pages already point.
+  pages already point; `apps/demos/scripts/og.ts` renders the same cards there too.
 
 Nothing on a card is smaller than 24px, since a feed shows it at about half size.
 

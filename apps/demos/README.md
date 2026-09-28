@@ -47,7 +47,7 @@ the drawer), and types. The generator prompt is built from the spec by `@polyxd/
 npm run dev -w @polyxd/demos                 # all four at http://localhost:5174/demos/
 node scripts/snapshot.ts [product] [intent]  # put a data snapshot from the seed into each document
 node scripts/verify.ts [product] [intent]    # verify every document in 13 packs; writes reports/
-node scripts/og.ts                           # social images and touch icons into public/
+node scripts/og.ts                           # social images (the site's cards) and touch icons into public/
 node scripts/shots.ts [origin] [outDir]      # phone-size screenshots of a running Halden
 npm test -w @polyxd/demos                    # ask matching, slots, snapshots
 ```
