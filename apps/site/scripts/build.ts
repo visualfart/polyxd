@@ -909,6 +909,15 @@ const ICONS: Record<string, string> = {
   team: `<circle cx="7.5" cy="7" r="2.5" ${ICON_STROKE}/><circle cx="13.5" cy="8" r="2" ${ICON_STROKE}/><path d="M3 16c.5-2.8 2.3-4.2 4.5-4.2S11.5 13.2 12 16M12.5 12.3c2.2-.4 4 .8 4.5 3.2" ${ICON_STROKE}/>`,
   layers: `<path d="M10 3l7 3.5-7 3.5-7-3.5z" ${ICON_STROKE}/><path d="M3 10l7 3.5 7-3.5M3 13.5L10 17l7-3.5" ${ICON_STROKE}/>`,
   free: `<path d="M4 10.5l4 4 8-9" ${ICON_STROKE}/>`,
+  open: `<rect x="4" y="9" width="12" height="8.5" rx="2" ${ICON_STROKE}/><path d="M7 9V6.5a3 3 0 0 1 5.8-1.1" ${ICON_STROKE}/><path d="M10 12.3v2" ${ICON_STROKE}/>`,
+  editor: `<rect x="2.5" y="3.5" width="15" height="13" rx="2.5" ${ICON_STROKE}/><path d="M2.5 7h15M6.5 10.2l-1.6 1.6 1.6 1.6M10 13.4h3" ${ICON_STROKE}/>`,
+  phone: `<rect x="5.5" y="2.5" width="9" height="15" rx="2.5" ${ICON_STROKE}/><path d="M9 15h2" ${ICON_STROKE}/>`,
+  cube: `<path d="M10 2.5l6.5 3.7v7.6L10 17.5l-6.5-3.7V6.2z" ${ICON_STROKE}/><path d="M3.5 6.2L10 10l6.5-3.8M10 10v7.5" ${ICON_STROKE}/>`,
+  // Framework marks, drawn simply in each project's own colours.
+  react: `<g fill="none" stroke="#149ECA" stroke-width="1.1"><ellipse cx="10" cy="10" rx="8.6" ry="3.3"/><ellipse cx="10" cy="10" rx="8.6" ry="3.3" transform="rotate(60 10 10)"/><ellipse cx="10" cy="10" rx="8.6" ry="3.3" transform="rotate(120 10 10)"/></g><circle cx="10" cy="10" r="1.7" fill="#149ECA"/>`,
+  vue: `<path d="M1.2 3h3.9L10 11.4 14.9 3h3.9L10 18z" fill="#41B883"/><path d="M5.1 3h3.1L10 6.1 11.8 3h3.1L10 11.4z" fill="#35495E"/>`,
+  svelte: `<path d="M13.6 4.2c-1.9-1.4-4.5-.9-5.9 1L5.6 8.1c-1.3 1.8-.8 4.2 1.1 5.1M6.4 15.8c1.9 1.4 4.5.9 5.9-1l2.1-2.9c1.3-1.8.8-4.2-1.1-5.1" fill="none" stroke="#FF3E00" stroke-width="2.4" stroke-linecap="round"/>`,
+  webc: `<path d="M6.5 5L2.5 10l4 5M13.5 5l4 5-4 5" fill="none" stroke="#2A8CD6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="8" y="7.2" width="4" height="5.6" rx="1.2" fill="#2A8CD6"/>`,
   server: `<rect x="3" y="3.5" width="14" height="5.5" rx="1.5" ${ICON_STROKE}/><rect x="3" y="11" width="14" height="5.5" rx="1.5" ${ICON_STROKE}/><path d="M6 6.25h.01M6 13.75h.01" ${ICON_STROKE} stroke-width="2.2"/>`,
 };
 const icon = (name: string, size = 22) => `<svg class="ico-svg" width="${size}" height="${size}" viewBox="0 0 20 20" aria-hidden="true">${ICONS[name] ?? ""}</svg>`;
