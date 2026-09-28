@@ -1,7 +1,12 @@
 /** One fetch wrapper: JSON in, JSON out, errors as messages a person can read. */
 export class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  status: number;
+  /** The whole answer, for errors that carry more than a message (a Direction's schema issues). */
+  data: Record<string, unknown>;
+  constructor(status: number, message: string, data: Record<string, unknown> = {}) {
     super(message);
+    this.status = status;
+    this.data = data;
   }
 }
 
@@ -15,7 +20,7 @@ export async function api<T = unknown>(method: string, path: string, body?: unkn
   const r = await fetch(path, init);
   const text = await r.text();
   const data = text ? JSON.parse(text) : {};
-  if (!r.ok) throw new ApiError(r.status, data.error ?? `${r.status} ${r.statusText}`);
+  if (!r.ok) throw new ApiError(r.status, data.error ?? `${r.status} ${r.statusText}`, data);
   return data as T;
 }
 
@@ -95,4 +100,27 @@ export interface TemplateSummary {
   radius: string;
   font: string;
   extras: boolean;
+}
+
+export interface DirectionRow {
+  id: string;
+  key: string;
+  name: string;
+  status: "draft" | "published";
+  created_at: string;
+  updated_at: string;
+  versions: number;
+  published: number | null;
+  /** The latest version's `version` field, e.g. 1.2.0 */
+  version: string | null;
+}
+
+export interface DirectionVersionRow {
+  id: string;
+  number: number;
+  status: "draft" | "published";
+  notes: string;
+  created_at: string;
+  author: string;
+  version: string;
 }

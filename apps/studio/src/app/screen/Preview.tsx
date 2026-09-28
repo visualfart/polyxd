@@ -7,8 +7,13 @@
  * it, with a stand-in screen in its Outlet: a placeholder, or one of the workspace's published
  * screens. The Frame measures its own width, so the phone, tablet and desktop widths show the
  * navigation as a bar, a rail or a side column.
+ *
+ * A surface wider than the canvas is shown whole, scaled down the way the gallery does it (CSS zoom
+ * keeps its layout at the width it says). A shell isn't scaled: the Frame picks its layout from
+ * its measured width, which zoom would shrink into a phone's. It fills the canvas's height rather
+ * than the browser's, so its footer is in view, and the canvas scrolls both ways for the rest.
  */
-import { Component, useMemo, useState, type CSSProperties, type ErrorInfo, type ReactNode } from "react";
+import { Component, useEffect, useMemo, useRef, useState, type CSSProperties, type ErrorInfo, type ReactNode } from "react";
 import { PolyxdFrame, PolyxdSurface, type ActionEvent, type UIDocument } from "@polyxd/react";
 import { isShell, type Doc } from "../../screens/schema.ts";
 
@@ -49,12 +54,39 @@ export function Preview({ doc, dataKey, selected, hovered, onSelect, onHover, th
   const inOutlet = standIn ?? STAND_IN;
   // Remount when the data changes, so the surface starts again from the document's copy.
   const key = `${dataKey}:${theme.base}:${!!theme.vars}:${mode}:${shell ? inOutlet.surface.id : ""}`;
-  // A shell at desktop width gets at least the width a Frame needs for its side navigation (1024px),
-  // so the canvas scrolls sideways in a narrow window rather than showing a rail and calling it desktop.
-  const style = useMemo(() => ({ ...(theme.vars ?? {}), width: width ?? "100%", ...(shell && width === null ? { minWidth: 1100, maxWidth: "none" } : {}) }) as CSSProperties, [theme.vars, width, shell]);
+  // A shell at desktop width lays out at the width a Frame needs for its side navigation (1024px and
+  // up), so a narrow window scrolls sideways rather than showing a rail and calling it desktop. A
+  // surface wider than the canvas is zoomed to fit (not below half size; past that it scrolls).
+  const canvas = useRef<HTMLDivElement>(null);
+  const [room, setRoom] = useState<{ width: number; height: number } | null>(null);
+  useEffect(() => {
+    const el = canvas.current;
+    if (!el) return;
+    const measure = () => {
+      const cs = getComputedStyle(el);
+      setRoom({ width: el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), height: el.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const lays = width ?? (shell ? Math.max(SHELL_DESKTOP, room?.width ?? 0) : null);
+  const fit = !shell && lays && room && room.width > 0 ? Math.max(0.5, Math.min(1, room.width / lays)) : 1;
+  const wider = !!lays && !!room && lays > room.width + 1 && fit === 1;
+  const style = useMemo(() => ({
+    ...(theme.vars ?? {}),
+    width: lays ?? "100%",
+    ...(lays ? { maxWidth: "none", flexShrink: 0 } : {}),
+    ...(fit < 1 ? { zoom: fit } : {}),
+    // The shell fills what the canvas shows, in the frame's own (unzoomed) pixels.
+    ...(shell && room ? { "--scr-fill": `${Math.floor(room.height / fit) - 2}px` } : {}),
+  }) as CSSProperties, [theme.vars, lays, fit, shell, room]);
   const themeProp = theme.vars ? undefined : theme.base;
   return (
-    <div className="scr-canvas" data-mode={mode} data-interact={interact} onMouseLeave={() => onHover(null)}>
+    <div className="scr-canvas" ref={canvas} data-mode={mode} data-interact={interact} onMouseLeave={() => onHover(null)}>
+      {fit < 1 && <span className="scr-fit" title={`Laid out at ${lays}px, shown at ${Math.round(fit * 100)}% to fit`}>{lays}px · {Math.round(fit * 100)}%</span>}
+      {wider && <span className="scr-fit" title="Wider than the canvas: scroll sideways for the rest">{lays}px · scroll for the rest</span>}
       <div
         className="scr-frame"
         data-pxd-theme={theme.base}
@@ -88,6 +120,9 @@ export function Preview({ doc, dataKey, selected, hovered, onSelect, onHover, th
     </div>
   );
 }
+
+/** How wide the frame lays out: the chosen width, or for a shell at desktop the 1100px its side navigation needs. */
+const SHELL_DESKTOP = 1100;
 
 /** The navigation item the shell's sample data says is current, so the preview marks it. */
 function currentNav(doc: Doc): string | undefined {

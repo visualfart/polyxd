@@ -16,11 +16,12 @@ Run it yourself on your own Cloudflare account, or use the hosted one at studio.
 - **Export** a version for code, in six shapes (below), from the Export button or `GET /api/w/<workspace>/design-systems/<id>/versions/<version>/export?format=…` with a session or an API key. A published version exports as is; a draft carries a banner at the top of every file.
 - Browse your own tokens by tier and group, with what each resolves to and what references it.
 - Components: which are on for generators, guidance the generator reads, and your own implementation per component.
-- Rules: yours, as verifier checks, with severity and an on/off switch.
+- Rules: yours, as verifier checks, with severity and an on/off switch. The starters Studio suggests are checks from the spec's vocabulary, so a Direction can carry them.
+- **Directions**: a whole Design Direction (`packages/spec/schema/direction.schema.json`) edited in Studio, several per workspace, each with a key. Profile as cards with a drawing per choice; voice (guidelines, tone sliders, person, casing, spelling, reading grade, exclamation marks and emoji, button labels, words to use and to avoid, moments) with a sample heading, sentence and button checked as you type by the spec's own copy checks (`@polyxd/spec/checks`, the rules `compileVoice` makes); the spec's six patterns preferred, allowed or ruled out, and the team's own written in the pattern format; the workspace's screens attached as exemplars with the request each answers, drawn small with `@polyxd/react`. The workspace's rules are the Direction's rules (carried as they are when it is saved) and its components sit beside them, the same lists as the Rules and Components pages. Every change is checked against the schema without ajv (`src/direction/schema.ts`), each problem beside its control; the Worker refuses to save one that doesn't fit. Versions with notes and the file's own version number; a field-by-field diff of the editor against the published version or any saved one; publish, unpublish; export as `<key>.direction.json` and import from a file.
 - Screens: surfaces a designer authors rather than generates, and the **shell** they sit in. A screen is a Polyxd document edited as a tree of components (all 44, with the spec's guidance), drawn live with `@polyxd/react` in your published design system (or any built-in theme; light and dark; phone, tablet and desktop; three densities), with a property panel made from the schema, a sample-data tab for bindings, and the JSON always within reach. It is checked as you edit, the way a generated screen is: schema, references, bindings against the sample data, the spec's shell rules, and your rules. Save keeps versions with notes; Publish makes one the document your product fetches by key. Start from one of the spec's examples, blank, pasted JSON, or the Shell template.
-- Shells: New screen → Shell starts from the spec's `shell-product.json`, named after your product: a Frame with an AppBar, a main Navigation, the Outlet, an aside with a `Custom` logo slot, and a Footer. The tree shows the Frame's regions as labelled slots (banner, header, navigation, main, aside, footer; empty ones can be filled). The preview draws it with `PolyxdFrame`, as your product will, with a stand-in in the Outlet (a placeholder, or any published screen of the workspace, from the toolbar), at phone, tablet and desktop, so the navigation's bar, rail and side forms show. The surface's `kind` and `origin` are edited from the Surface row at the top of the tree. The checker applies the spec's shell rules exactly as `@polyxd/spec` does: shell components (Frame, AppBar, Footer, Outlet, Custom) only in a shell, which is authored, with a Frame at the root and exactly one Outlet reachable from its main; a `Custom`'s fallback is never a shell part; `Navigation.placement` outside a Frame is a warning. The picker and the reference fields refuse shell components in a surface with the same message.
+- Shells: New screen → Shell starts from the spec's `shell-product.json`, named after your product: a Frame with an AppBar, a main Navigation, the Outlet, an aside with a `Custom` logo slot, and a Footer. The tree shows the Frame's regions as labelled slots (banner, header, navigation, main, aside, footer; empty ones can be filled). The preview draws it with `PolyxdFrame`, as your product will, with a stand-in in the Outlet (a placeholder, or any published screen of the workspace, from the toolbar), at phone, tablet and desktop, so the navigation's bar, rail and side forms show; the shell fills the preview's height (not the window's), and a frame wider than the preview scrolls both ways, while a surface wider than it is scaled to fit. The surface's `kind` and `origin` are edited from the Surface row at the top of the tree. The checker applies the spec's shell rules exactly as `@polyxd/spec` does: shell components (Frame, AppBar, Footer, Outlet, Custom) only in a shell, which is authored, with a Frame at the root and exactly one Outlet reachable from its main; a `Custom`'s fallback is never a shell part; `Navigation.placement` outside a Frame is a warning. The picker and the reference fields refuse shell components in a surface with the same message.
 
-Reviews, releases, insights and the flow map come once screens flow in through the SDK.
+Reviews, releases, insights and the flow map come once screens flow in through the SDK. Components aren't in the Direction file: the schema has no place for them yet.
 
 ## Deliver a screen to your product
 
@@ -45,6 +46,16 @@ const shell = await fetch(`${STUDIO}/api/w/acme/screens/shell`, { headers: { aut
 ```
 
 The response carries `X-Polyxd-Screen-Version`; an unpublished screen answers 404. `GET …/screens` lists the workspace's screens with their published version and `kind`, and `GET …/screens/<key>/versions` the history. Fetch on the server or at build time and keep the document with your bundle: a screen changes when someone publishes, not on every request.
+
+## Deliver a Direction
+
+A published Direction is fetched by its key (its `name` in the file) with the same kind of API key:
+
+```sh
+curl -H "Authorization: Bearer $POLYXD_STUDIO_KEY" https://studio.polyxd.com/api/w/<workspace>/directions/<key>
+```
+
+The answer is the Direction, valid against `direction.schema.json`, with `X-Polyxd-Direction-Version` (Studio's version number); an unpublished one answers 404. Its rules are the workspace's rules that were on when the version was saved. Paths in it are relative to that address: the team's own patterns are listed in `patterns.custom` as `<key>/patterns/<id>.json` and served at `GET …/directions/<key>/patterns/<id>.json`, and an exemplar that is one of the workspace's screens is `../screens/<screen>`, the screen's own delivery address (published screens only). `GET …/directions` lists the workspace's Directions, `GET …/directions/<key>/versions` the history and `GET …/directions/<key>/versions/<n>` one version. Hold a document to it with `directionRules(direction)` from `@polyxd/spec`.
 
 ## Deliver a design system to your code
 
@@ -79,7 +90,7 @@ npm run db:migrate -w @polyxd/studio
 npm run dev -w @polyxd/studio     # builds the app, then wrangler dev on http://localhost:8789
 ```
 
-Create an account with any email: locally no email goes out, so it works at once. Tests: `npm test -w @polyxd/studio`.
+Create an account with any email: locally no email goes out, so it works at once. Tests: `npm test -w @polyxd/studio`; `test/*.worker.test.ts` run the Worker itself in Node (`test/support/worker.ts`: D1 as an in-memory SQLite database with every migration applied, sign-up through better-auth, requests through `app.request`).
 
 The landing's product images are captured from a running Studio: against a local one with a database of its own (`--persist-to` a scratch directory for both the migration and `wrangler dev`), `node apps/studio/scripts/landing-shots.ts` makes a test account and the Harbourline workspace (the Sketch pack imported, a Mono-based design system rebranded and published, the spec's screens and the shell) and writes `public/landing/*.png`. `node apps/studio/scripts/og.ts` then writes the social image, `public/og.png`, from the brand and one of those images.
 
@@ -105,9 +116,10 @@ The hosted one at studio.polyxd.com is this same configuration.
 | `src/templates/` | The twelve template packs bundled as JSON (`packs.ts`), their extras stylesheets as text (`extras.ts`), and each as a graph with a swatch summary |
 | `src/tokens/` | Editing: a pack as a graph, edits applied with aliases re-checked, the OKLCH ramp and rebrand, values as CSS and as one line |
 | `src/export/` | The six export formats |
-| `src/worker/` | The API on Workers: auth, workspaces, design systems, templates, editing, export, components, rules, screens |
+| `src/worker/` | The API on Workers: auth, workspaces, design systems, templates, editing, export, components, rules, screens, Directions |
 | `src/screens/` | Screens, shared by the Worker and the app: the schema read without ajv (Workers refuse generated code), the checker with the spec's shell rules, the tree edits |
-| `src/app/` | The React app; `src/app/screen/` is the editor's tree, preview, property panel and themes; `pages/TokensEditor.tsx` the tokens editor; `pages/Landing.tsx` and `landing.css` the landing, `pages/SignIn.tsx` and `signin.css` the sign-in |
+| `src/direction/` | Directions, shared by the Worker and the app: what a version stores and what a product gets (`model.ts`), the schema check without ajv (`schema.ts`), the field-by-field diff (`diff.ts`), the voice sample (`voice.ts`), and every setting's words (`labels.ts`) |
+| `src/app/` | The React app; `src/app/screen/` is the editor's tree, preview, property panel and themes; `pages/Direction.tsx` and `src/app/direction/` the Direction editor; `pages/TokensEditor.tsx` the tokens editor; `pages/Landing.tsx` and `landing.css` the landing, `pages/SignIn.tsx` and `signin.css` the sign-in |
 | `migrations/` | D1 schema |
 | `scripts/` | `landing-shots.ts` (the landing's images, from a seeded local Studio) and `og.ts` (the social image) |
 | `../../design/studio` | The design every screen here follows |

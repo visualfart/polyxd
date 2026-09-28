@@ -1,0 +1,136 @@
+/* The Direction editor: sections as cards, choices as cards with a drawing, the voice sample
+   beside the settings, exemplars drawn small, and diffs read as a redline. Studio's tokens only. */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.dir-stack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.dir-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+.dir-card { gap: 16px; padding: 20px 24px; }
+.dir-card-head { display: flex; gap: 12px; align-items: flex-start; }
+.dir-card-head h2 { font-family: var(--display); font-weight: 400; font-size: 20px; line-height: 26px; letter-spacing: -0.01em; }
+.dir-card-head p { margin-top: 4px; max-width: 680px; }
+.dir-label { font-size: 15px; font-weight: 600; display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.dir-link { border: 0; background: transparent; color: var(--signal-ink); font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; padding: 0 0 0 8px; min-height: 24px; }
+.dir-link:hover { text-decoration: underline; }
+.dir-readonly { display: flex; align-items: center; background: var(--sunk); color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dir-panel-actions { display: flex; justify-content: flex-end; }
+.dir-panel-actions:empty { display: none; }
+.dir-tabs { margin-top: -4px; }
+.dir-count { margin-left: 6px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--radius-pill); background: var(--bad-bg); color: var(--bad); font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
+
+/* profile: each setting a row of choice cards, each with its drawing */
+.dir-field { display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid var(--soft); }
+.dir-card > .dir-field:first-of-type { border-top: 0; padding-top: 0; }
+.dir-field-head { display: flex; flex-direction: column; gap: 2px; }
+.dir-field-head .help { font-size: 13px; line-height: 19px; color: var(--muted); }
+.dir-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.dir-option { flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; font: inherit; color: var(--ink); min-height: 44px; }
+.dir-option .dir-glyph { color: var(--ink-2); margin-bottom: 4px; }
+.dir-option[data-on="true"] .dir-glyph { color: var(--ink); }
+.dir-option span { font-size: 13px; line-height: 19px; }
+.dir-option:disabled { cursor: default; opacity: 0.75; }
+.dir-default { font-weight: 400; color: var(--muted); }
+.dir-glyph { display: block; }
+
+/* voice: settings on the left, the sample on the right */
+.dir-voice { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
+.dir-sample { position: sticky; top: 16px; gap: 12px; }
+.dir-sample-preview { border: 1px solid var(--line); border-radius: var(--radius-small); corner-shape: squircle; padding: 14px 16px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; }
+.dir-sample-preview p { color: var(--ink-2); }
+.dir-sample-h { font-size: 17px; line-height: 24px; }
+.dir-sample-btn { align-self: flex-start; margin-top: 4px; min-height: 36px; padding: 7px 16px; border-radius: var(--radius-pill); background: var(--ink); color: var(--ground); font-weight: 600; font-size: 14px; line-height: 22px; }
+.dir-mark { background: var(--warn-bg); color: var(--warn); text-decoration: underline wavy; text-underline-offset: 3px; border-radius: 3px; padding: 0 1px; }
+.dir-sample-btn .dir-mark { color: inherit; background: color-mix(in srgb, var(--signal) 40%, transparent); }
+.dir-results { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.dir-results li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--soft); font-size: 14px; line-height: 20px; }
+.dir-results li .dot { margin: 6px 6px 0; }
+.dir-results li .pxb-mark { flex-shrink: 0; }
+.dir-results li[data-pass="true"] b { font-weight: 500; color: var(--ink-2); }
+.dir-sliders { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 28px; }
+.dir-slider input[type="range"], .dir-card input[type="range"] { width: 100%; accent-color: var(--ink); margin: 0; height: 28px; }
+.dir-slider-ends { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); }
+.dir-slider-ends span[data-on="true"] { color: var(--ink); font-weight: 600; }
+.dir-seg { max-width: 100%; overflow-x: auto; }
+.dir-toggle { display: flex; gap: 12px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--soft); }
+.dir-toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dir-stepper { display: inline-flex; align-items: center; gap: 4px; border: 1.5px solid var(--border); border-radius: var(--radius-pill); align-self: flex-start; padding: 0 2px; }
+.dir-stepper .num { min-width: 80px; text-align: center; }
+.dir-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+.dir-lines { display: flex; flex-direction: column; gap: 8px; }
+.dir-line { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.dir-line .input { flex: 1 1 240px; }
+.dir-line .err { flex-basis: 100%; }
+.dir-add { align-self: flex-start; padding: 0 12px; }
+.dir-words { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 44px; }
+.dir-chip { display: inline-flex; align-items: center; gap: 2px; height: 32px; padding: 0 2px 0 12px; border-radius: var(--radius-pill); background: var(--soft); font-size: 14px; font-weight: 500; }
+.dir-chip.bad span { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--bad) 70%, transparent); }
+.dir-chip button { width: 28px; height: 28px; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; font-size: 16px; line-height: 1; position: relative; }
+.dir-chip button::after { content: ""; position: absolute; inset: -8px; }
+.dir-chip button:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.dir-word-input { flex: 1 1 160px; width: auto; min-width: 140px; }
+.dir-glossary { width: 100%; }
+.dir-glossary th { height: 28px; padding: 0 8px 4px 0; }
+.dir-glossary td { padding: 6px 8px 6px 0; height: auto; vertical-align: top; border-bottom: 1px solid var(--soft); }
+.dir-glossary td:first-child { width: 200px; }
+.dir-glossary td:last-child { width: 48px; padding-right: 0; }
+
+/* patterns */
+.dir-patterns { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.dir-patterns li { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--soft); flex-wrap: wrap; }
+.dir-patterns li:first-child { border-top: 0; }
+.dir-pattern-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+.dir-structure { list-style: decimal inside; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.dir-structure li { display: flex; align-items: center; gap: 8px; padding: 0 0 0 14px; border: 1px solid var(--line); border-radius: var(--radius-small); min-height: 44px; background: var(--surface); }
+.dir-choices { display: flex; flex-direction: column; gap: 6px; max-height: 360px; overflow: auto; }
+.dir-choices .choice-card { text-align: left; font: inherit; color: var(--ink); align-items: center; }
+
+/* exemplars: the screen drawn small, the request beside it */
+.dir-exemplars { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.dir-exemplar { display: flex; gap: 14px; align-items: flex-start; border: 1px solid var(--line); border-radius: var(--radius-card); corner-shape: squircle; padding: 12px; background: var(--paper); }
+.dir-exemplar-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1; }
+/* A 390px phone at 40%: 156 x 280. */
+.dir-thumb { width: 156px; height: 280px; flex-shrink: 0; overflow: hidden; border: 1px solid var(--rule); border-radius: 12px; background: #fff; position: relative; }
+.dir-thumb[aria-busy="true"] { background: var(--sunk); }
+.dir-thumb-empty { display: flex; align-items: center; justify-content: center; text-align: center; padding: 12px; background: var(--sunk); }
+.dir-thumb-frame { width: 390px; transform: scale(0.4); transform-origin: 0 0; pointer-events: none; background: var(--pxd-color-surface-default, #fff); min-height: 700px; }
+.drawer .dir-thumb { align-self: center; }
+
+/* diffs: what it was, struck through; what it is now */
+.dir-changes { display: flex; flex-direction: column; gap: 14px; }
+.dir-changes-h { font: var(--text-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--ink-2); margin: 0 0 4px; }
+.dir-changes ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.dir-change { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--soft); }
+.dir-change .tag { flex-shrink: 0; width: 84px; justify-content: center; }
+.dir-change-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dir-change-body b { font-weight: 600; }
+.dir-change-values { font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.dir-change-values del { color: var(--bad); text-decoration-color: color-mix(in srgb, var(--bad) 70%, transparent); }
+.dir-change-values ins { text-decoration: none; background: var(--ok-bg); color: var(--ok); padding: 0 3px; border-radius: 3px; }
+.dir-save { width: 620px; max-height: calc(100vh - 48px); }
+.dir-save-changes { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow: auto; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-small); background: var(--sunk); }
+
+/* JSON */
+.dir-json { margin: 0; max-height: 560px; overflow: auto; padding: 14px 16px; border-radius: var(--radius-small); background: var(--sunk); border: 1px solid var(--line); font-family: var(--mono); font-size: 13px; line-height: 20px; }
+.dir-issues { list-style: none; margin: 0; padding: 0; }
+.dir-issues li { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--soft); }
+.dir-issues li > span:nth-child(2) { flex: 1; min-width: 0; }
+
+@media (max-width: 1180px) {
+  .dir-voice { grid-template-columns: minmax(0, 1fr); }
+  .dir-sample { position: static; }
+}
+@media (max-width: 900px) {
+  .dir-sliders, .dir-grid-2 { grid-template-columns: minmax(0, 1fr); }
+  .dir-exemplars { grid-template-columns: minmax(0, 1fr); }
+  .dir-tabs { overflow-x: auto; flex-wrap: nowrap; }
+  .dir-card { padding: 16px; }
+  .dir-glossary td:first-child { width: 40%; }
+}
+/* An icon button: 44 x 44, fully round (as the screen editor's, which this page doesn't load). */
+.dir-x { width: 44px; height: 44px; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--muted); font-size: 18px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; flex-shrink: 0; }
+.dir-x:hover { background: var(--soft); color: var(--ink); }
+.dir-x:disabled { opacity: 0.3; cursor: default; }
+/* A problem beside its control, as a field shows one (the schema's words). */
+.dir-card .err, .dir-stack .err, .drawer .err { font-size: 13px; line-height: 19px; color: var(--bad); font-weight: 600; }
+@media (max-width: 900px) {
+  /* The editor's six actions wrap on a phone rather than push the page sideways. */
+  .page-head:has(+ .dir-tabs) .actions { flex-shrink: 1; min-width: 0; }
+}

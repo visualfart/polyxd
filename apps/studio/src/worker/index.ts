@@ -18,6 +18,8 @@ import { BLANK, TEMPLATE_NAMES, TEMPLATE_PACKS, allTemplates, isStartName, templ
 import { TEMPLATE_EXTRAS } from "../templates/extras.ts";
 import { applyChanges, checkChanges } from "../tokens/edit.ts";
 import { FORMATS, exportDesignSystem, isFormat } from "../export/index.ts";
+import { blankDirection, rulesFromWorkspace, toExport, type CompanyPattern, type Direction, type DirectionRule, type Snapshot } from "../direction/model.ts";
+import { checkDirection } from "../direction/schema.ts";
 
 type Vars = { user: User | null; apiWorkspace: string | null };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -29,8 +31,10 @@ const CAN_EDIT_SCREENS = new Set(["owner", "design-system", "designer", "product
 const secretsKey = (env: Env) => env.SECRETS_KEY ?? (isLocal(env) ? "dev-only-not-a-secret" : "");
 
 class Fail extends Error {
-  constructor(public status: number, message: string) {
+  status: number;
+  constructor(status: number, message: string) {
     super(message);
+    this.status = status;
   }
 }
 app.onError((e, c) => {
@@ -98,14 +102,14 @@ async function ws(c: Ctx, allowed?: ReadonlySet<string>): Promise<Workspace> {
   if (!row) throw new Fail(404, "No such workspace, or you're not in it");
   // An API key is scoped to one workspace, and to what a machine does: whatever its creator can
   // do in the app, a key kept in CI can push token packages and read design systems, and a key
-  // in a product can fetch its published screens, nothing else.
+  // in a product can fetch its published screens and Directions, nothing else.
   const api = c.get("apiWorkspace");
   if (api) {
     if (api !== row.id) throw new Fail(403, "This key belongs to another workspace");
     const path = new URL(c.req.url).pathname;
     const importing = c.req.method === "POST" && path.endsWith("/design-systems/import");
-    const reading = c.req.method === "GET" && (path.includes("/design-systems") || path.includes("/screens"));
-    if (!importing && !reading) throw new Fail(403, "An API key can import and read design systems, and read screens, only");
+    const reading = c.req.method === "GET" && (path.includes("/design-systems") || path.includes("/screens") || path.includes("/directions"));
+    if (!importing && !reading) throw new Fail(403, "An API key can import and read design systems, and read screens and Directions, only");
   }
   if (allowed && !allowed.has(row.role)) throw new Fail(403, `Your role (${row.role}) can't do that`);
   return row;
@@ -945,6 +949,202 @@ app.post("/api/w/:slug/screens/:key/unpublish", async (c) => {
   await c.env.DB.batch([
     c.env.DB.prepare("UPDATE screen_versions SET status = 'draft' WHERE screen_id = ?").bind(s.id),
     c.env.DB.prepare("UPDATE screens SET status = 'draft', updated_at = ? WHERE id = ?").bind(now(), s.id),
+  ]);
+  return c.json({ ok: true });
+});
+
+// ---------------------------------------------------------------- directions
+
+interface DirectionRow {
+  id: string;
+  key: string;
+  name: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+interface DirectionVersionRow {
+  id: string;
+  number: number;
+  direction_json: string;
+  patterns_json: string;
+  notes: string;
+  status: string;
+  created_at: string;
+  author: string;
+}
+const MAX_DIRECTION = 500_000;
+const CAN_EDIT_DIRECTION = CAN_EDIT_RULES;
+
+async function directionByKey(c: Ctx, w: Workspace): Promise<DirectionRow> {
+  const d = await c.env.DB.prepare("SELECT id, key, name, status, created_at, updated_at FROM directions WHERE workspace_id = ? AND key = ?").bind(w.id, c.req.param("key")).first<DirectionRow>();
+  if (!d) throw new Fail(404, "No such Direction here");
+  return d;
+}
+
+/** The workspace's rules that are on, as a Direction carries them. */
+async function directionRulesOf(env: Env, workspaceId: string): Promise<DirectionRule[]> {
+  const rows = await env.DB.prepare("SELECT name, severity, check_json, enabled, created_at FROM rules WHERE workspace_id = ?").bind(workspaceId).all<{ name: string; severity: "error" | "warning"; check_json: string; enabled: number; created_at: string }>();
+  return rulesFromWorkspace(rows.results.map((r) => ({ ...r, check: JSON.parse(r.check_json) })));
+}
+
+/** A request's Direction and patterns: objects of plausible size. Whether they fit the schema is checkSnapshot's business. */
+function parseSnapshot(b: { direction?: unknown; patterns?: unknown }): Snapshot {
+  if (!b.direction || typeof b.direction !== "object" || Array.isArray(b.direction)) throw new Fail(400, "direction: a Design Direction (an object with a version and a profile)");
+  if (b.patterns !== undefined && !Array.isArray(b.patterns)) throw new Fail(400, "patterns: a list of your own patterns");
+  if (JSON.stringify(b).length > MAX_DIRECTION) throw new Fail(413, "That Direction is over 500 KB");
+  return { direction: b.direction as Direction, patterns: (b.patterns ?? []) as CompanyPattern[] };
+}
+
+/** What a version stores, and everything in it the schemas refuse (src/direction/schema.ts, which the editor runs too). */
+const checkSnapshot = checkDirection;
+const refuse = (issues: { message: string }[]) =>
+  new Response(JSON.stringify({ error: `The Direction doesn't fit the schema: ${issues.slice(0, 3).map((i) => i.message).join("; ")}${issues.length > 3 ? `; and ${issues.length - 3} more` : ""}`, issues }), { status: 422, headers: { "content-type": "application/json", "cache-control": "no-store" } });
+
+const DV_COLS = "v.id, v.number, v.direction_json, v.patterns_json, v.notes, v.status, v.created_at, COALESCE(NULLIF(u.name, ''), u.email) AS author";
+const dvSummary = (v: DirectionVersionRow) => ({ id: v.id, number: v.number, status: v.status, notes: v.notes, created_at: v.created_at, author: v.author, version: (JSON.parse(v.direction_json) as Direction).version });
+const snapshotOf = (v: { direction_json: string; patterns_json: string }): Snapshot => ({ direction: JSON.parse(v.direction_json), patterns: JSON.parse(v.patterns_json) });
+
+app.get("/api/w/:slug/directions", async (c) => {
+  const w = await ws(c as Ctx);
+  const rows = await c.env.DB.prepare(
+    `SELECT d.id, d.key, d.name, d.status, d.created_at, d.updated_at,
+       (SELECT COUNT(*) FROM direction_versions v WHERE v.direction_id = d.id) AS versions,
+       (SELECT v.number FROM direction_versions v WHERE v.direction_id = d.id AND v.status = 'published') AS published,
+       (SELECT json_extract(v.direction_json, '$.version') FROM direction_versions v WHERE v.direction_id = d.id ORDER BY v.number DESC LIMIT 1) AS version
+     FROM directions d WHERE d.workspace_id = ? ORDER BY d.updated_at DESC`,
+  ).bind(w.id).all();
+  return c.json({ directions: rows.results });
+});
+
+app.post("/api/w/:slug/directions", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_DIRECTION);
+  const user = need(c as Ctx);
+  const b = await body<{ name?: string; key?: string; direction?: unknown; patterns?: unknown; notes?: string }>(c as Ctx);
+  if (!b.name?.trim()) throw new Fail(400, "A Direction needs a name");
+  text(b.name, 120, "Name");
+  const key = slugOf(b.key ?? b.name);
+  if (!SCREEN_KEY.test(key)) throw new Fail(400, "A key is letters, digits and dashes, like halden");
+  if (b.notes !== undefined) text(b.notes, 500, "Notes");
+  const taken = await c.env.DB.prepare("SELECT 1 FROM directions WHERE workspace_id = ? AND key = ?").bind(w.id, key).first();
+  if (taken) throw new Fail(409, `A Direction with the key ${key} already exists`);
+  const snapshot = b.direction === undefined ? { direction: blankDirection(key), patterns: [] } : parseSnapshot(b);
+  const { stored, issues } = checkSnapshot(snapshot, key, await directionRulesOf(c.env, w.id));
+  if (issues.length) return refuse(issues);
+  const id = crypto.randomUUID();
+  await c.env.DB.batch([
+    c.env.DB.prepare("INSERT INTO directions (id, workspace_id, key, name, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, 'draft', ?, ?, ?)").bind(id, w.id, key, b.name.trim(), user.id, now(), now()),
+    c.env.DB.prepare("INSERT INTO direction_versions (id, direction_id, number, direction_json, patterns_json, notes, status, created_by, created_at) VALUES (?, ?, 1, ?, ?, ?, 'draft', ?, ?)").bind(crypto.randomUUID(), id, JSON.stringify(stored.direction), JSON.stringify(stored.patterns), b.notes ?? "", user.id, now()),
+  ]);
+  return c.json({ id, key, number: 1 }, 201);
+});
+
+/**
+ * The delivery path: a product fetches its published Direction by key, valid against
+ * direction.schema.json. Paths inside it (the team's pattern files, exemplar screens) are
+ * relative to this address.
+ */
+app.get("/api/w/:slug/directions/:key", async (c) => {
+  const w = await ws(c as Ctx);
+  const d = await directionByKey(c as Ctx, w);
+  const v = await c.env.DB.prepare("SELECT direction_json, patterns_json, number FROM direction_versions WHERE direction_id = ? AND status = 'published'").bind(d.id).first<{ direction_json: string; patterns_json: string; number: number }>();
+  if (!v) throw new Fail(404, `${d.name} has no published version yet`);
+  c.header("X-Polyxd-Direction-Version", String(v.number));
+  return c.json(toExport(snapshotOf(v), d.key));
+});
+
+/** One of the team's own patterns in the published Direction, as the file its `patterns.custom` names. */
+app.get("/api/w/:slug/directions/:key/patterns/:file", async (c) => {
+  const w = await ws(c as Ctx);
+  const d = await directionByKey(c as Ctx, w);
+  const v = await c.env.DB.prepare("SELECT patterns_json, number FROM direction_versions WHERE direction_id = ? AND status = 'published'").bind(d.id).first<{ patterns_json: string; number: number }>();
+  if (!v) throw new Fail(404, `${d.name} has no published version yet`);
+  const id = c.req.param("file").replace(/\.json$/, "");
+  const p = (JSON.parse(v.patterns_json) as CompanyPattern[]).find((x) => x.id === id);
+  if (!p) throw new Fail(404, `${d.name} v${v.number} has no pattern ${id}`);
+  c.header("X-Polyxd-Direction-Version", String(v.number));
+  return c.json({ $schema: "https://polyxd.com/schema/0.3/pattern.schema.json", ...p });
+});
+
+app.put("/api/w/:slug/directions/:key", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_DIRECTION);
+  const d = await directionByKey(c as Ctx, w);
+  const b = await body<{ name?: string; key?: string }>(c as Ctx);
+  if (b.name !== undefined) text(b.name, 120, "Name");
+  const key = b.key !== undefined ? slugOf(b.key) : d.key;
+  if (!SCREEN_KEY.test(key)) throw new Fail(400, "A key is letters, digits and dashes, like halden");
+  if (key !== d.key) {
+    const taken = await c.env.DB.prepare("SELECT 1 FROM directions WHERE workspace_id = ? AND key = ?").bind(w.id, key).first();
+    if (taken) throw new Fail(409, `A Direction with the key ${key} already exists`);
+  }
+  await c.env.DB.prepare("UPDATE directions SET name = ?, key = ?, updated_at = ? WHERE id = ?").bind(b.name?.trim() || d.name, key, now(), d.id).run();
+  return c.json({ ok: true, key });
+});
+
+app.delete("/api/w/:slug/directions/:key", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_DIRECTION);
+  const d = await directionByKey(c as Ctx, w);
+  await c.env.DB.prepare("DELETE FROM directions WHERE id = ?").bind(d.id).run();
+  return c.json({ ok: true });
+});
+
+app.get("/api/w/:slug/directions/:key/versions", async (c) => {
+  const w = await ws(c as Ctx);
+  const d = await directionByKey(c as Ctx, w);
+  const rows = await c.env.DB.prepare(`SELECT ${DV_COLS} FROM direction_versions v JOIN user u ON u.id = v.created_by WHERE v.direction_id = ? ORDER BY v.number DESC`).bind(d.id).all<DirectionVersionRow>();
+  return c.json({ direction: d, versions: rows.results.map(dvSummary) });
+});
+
+app.get("/api/w/:slug/directions/:key/versions/:n", async (c) => {
+  const w = await ws(c as Ctx);
+  const d = await directionByKey(c as Ctx, w);
+  const v = await c.env.DB.prepare(`SELECT ${DV_COLS} FROM direction_versions v JOIN user u ON u.id = v.created_by WHERE v.direction_id = ? AND v.number = ?`).bind(d.id, Number(c.req.param("n"))).first<DirectionVersionRow>();
+  if (!v) throw new Fail(404, "No such version");
+  const snapshot = snapshotOf(v);
+  return c.json({ ...dvSummary(v), snapshot, export: toExport(snapshot, d.key) });
+});
+
+/** Saves a version. Unlike a screen's, a Direction that doesn't fit the schema isn't kept: a product may fetch any version once it's published. */
+app.post("/api/w/:slug/directions/:key/versions", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_DIRECTION);
+  const user = need(c as Ctx);
+  const d = await directionByKey(c as Ctx, w);
+  const b = await body<{ direction?: unknown; patterns?: unknown; notes?: string }>(c as Ctx);
+  if (b.notes !== undefined) text(b.notes, 500, "Notes");
+  const { stored, issues } = checkSnapshot(parseSnapshot(b), d.key, await directionRulesOf(c.env, w.id));
+  if (issues.length) return refuse(issues);
+  const last = await c.env.DB.prepare("SELECT MAX(number) AS n FROM direction_versions WHERE direction_id = ?").bind(d.id).first<{ n: number | null }>();
+  const number = (last?.n ?? 0) + 1;
+  await c.env.DB.batch([
+    c.env.DB.prepare("INSERT INTO direction_versions (id, direction_id, number, direction_json, patterns_json, notes, status, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, ?)").bind(crypto.randomUUID(), d.id, number, JSON.stringify(stored.direction), JSON.stringify(stored.patterns), b.notes ?? "", user.id, now()),
+    c.env.DB.prepare("UPDATE directions SET updated_at = ? WHERE id = ?").bind(now(), d.id),
+  ]);
+  return c.json({ number, snapshot: stored }, 201);
+});
+
+app.post("/api/w/:slug/directions/:key/versions/:n/publish", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_DIRECTION);
+  const d = await directionByKey(c as Ctx, w);
+  const v = await c.env.DB.prepare("SELECT id, number, direction_json, patterns_json FROM direction_versions WHERE direction_id = ? AND number = ?").bind(d.id, Number(c.req.param("n"))).first<{ id: string; number: number; direction_json: string; patterns_json: string }>();
+  if (!v) throw new Fail(404, "No such version");
+  // Checked again: a version was valid when saved, and a product gets exactly what it holds.
+  const snapshot = snapshotOf(v);
+  const { issues } = checkSnapshot(snapshot, d.key, snapshot.direction.rules ?? []);
+  if (issues.length) return refuse(issues);
+  await c.env.DB.batch([
+    c.env.DB.prepare("UPDATE direction_versions SET status = 'draft' WHERE direction_id = ? AND status = 'published'").bind(d.id),
+    c.env.DB.prepare("UPDATE direction_versions SET status = 'published' WHERE id = ?").bind(v.id),
+    c.env.DB.prepare("UPDATE directions SET status = 'published', updated_at = ? WHERE id = ?").bind(now(), d.id),
+  ]);
+  return c.json({ ok: true, published: v.number, url: `${c.env.APP_URL}/api/w/${w.slug}/directions/${d.key}` });
+});
+
+app.post("/api/w/:slug/directions/:key/unpublish", async (c) => {
+  const w = await ws(c as Ctx, CAN_EDIT_DIRECTION);
+  const d = await directionByKey(c as Ctx, w);
+  await c.env.DB.batch([
+    c.env.DB.prepare("UPDATE direction_versions SET status = 'draft' WHERE direction_id = ?").bind(d.id),
+    c.env.DB.prepare("UPDATE directions SET status = 'draft', updated_at = ? WHERE id = ?").bind(now(), d.id),
   ]);
   return c.json({ ok: true });
 });

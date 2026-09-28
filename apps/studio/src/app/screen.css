@@ -41,6 +41,8 @@
 .scr-center { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--sunk); container-type: inline-size; }
 .scr-toolbar { min-height: 56px; flex-shrink: 0; padding: 6px 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; border-bottom: 1px solid var(--line); background: var(--paper); }
 .scr-toolbar .select { width: auto; max-width: 280px; padding: 0 10px 0 14px; }
+/* The design system is named in full: the select takes the width its name needs (the toolbar wraps). */
+.scr-toolbar .select.scr-ds { max-width: 100%; }
 .scr-toolbar .segmented button { padding: 0 12px; }
 /* When the toolbar takes two rows: what the screen is drawn in, and the pointer, first; its size and fill below. */
 @container (max-width: 760px) {
@@ -150,3 +152,13 @@
 .scr-node-empty:hover { background: transparent; }
 /* a shell fills its frame edge to edge, like a product's page */
 .scr-frame[data-shell="true"] { min-height: 480px; }
+/* In the preview a shell fills the canvas, not the browser window (the renderer's 100dvh would put
+   its footer a window's height down); taller content scrolls the canvas. */
+.scr-frame[data-shell="true"] .pxd-surface-shell { min-height: var(--scr-fill, 480px); }
+/* The canvas scrolls both ways; its scrollbars stay visible so that it's plain it does. */
+.scr-canvas { position: relative; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--ink) 30%, transparent) transparent; }
+.scr-canvas::-webkit-scrollbar { width: 10px; height: 10px; }
+.scr-canvas::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--ink) 30%, transparent); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
+.scr-canvas::-webkit-scrollbar-corner { background: transparent; }
+/* What a scaled frame lays out at, and how far it is scaled. */
+.scr-fit { position: absolute; left: 8px; top: 2px; z-index: 1; height: 24px; padding: 0 9px; border-radius: var(--radius-pill); background: var(--paper); border: 1px solid var(--rule); font-family: var(--mono); font-size: 12px; line-height: 22px; color: var(--ink-2); white-space: nowrap; }

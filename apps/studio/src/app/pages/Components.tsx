@@ -1,10 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { api } from "../api.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 
 interface Comp { name: string; kind: "builtin" | "custom"; category: string; summary: string; whenToUse: string[]; whenNotToUse: string[]; enabled: boolean; renderer: { package: string; export: string } | null; updatedAt: string | null }
 
 export function Components({ ws }: { ws: Ws }) {
+  return (
+    <ComponentsPanel
+      ws={ws}
+      frame={(body) => (
+        <Page crumbs={[ws.name, "Foundations", "Components"]} title="Components" lede="What generated screens are built from. Use Polyxd's renderer for any of them, connect your own, and tell generators when to use each.">
+          {body}
+        </Page>
+      )}
+    />
+  );
+}
+
+/** Which components generators may use, with guidance and your own renderer: the Components page, and the Direction editor's Components. */
+export function ComponentsPanel({ ws, frame }: { ws: Ws; frame: (body: ReactNode) => ReactNode }) {
   const { toast } = useSession();
   const [list, setList] = useState<Comp[]>([]);
   const [open, setOpen] = useState<Comp | null>(null);
@@ -34,8 +48,8 @@ export function Components({ ws }: { ws: Ws }) {
     load();
   };
   const groups = [...new Set(list.map((c) => c.category))];
-  return (
-    <Page crumbs={[ws.name, "Foundations", "Components"]} title="Components" lede="What generated screens are built from. Use Polyxd's renderer for any of them, connect your own, and tell generators when to use each.">
+  return frame(
+    <>
       <table>
         <thead><tr><th>Component</th><th>Rendered with</th><th>Generators may use it</th><th></th></tr></thead>
         <tbody>
@@ -64,7 +78,7 @@ export function Components({ ws }: { ws: Ws }) {
           </div>
         </>
       )}
-    </Page>
+    </>,
   );
 }
 

@@ -36,6 +36,8 @@ export function loadTheme(id: string): Promise<unknown> {
 
 export interface WorkspaceTheme {
   name: string;
+  /** The template pack its live version started from (mono, sketch, …), for the pack's logo. */
+  template?: string;
   /** --pxd-* variables per mode; dark is absent when the design system has no dark mode. */
   light: Record<string, string>;
   dark?: Record<string, string>;
@@ -46,7 +48,7 @@ export async function workspaceTheme(slug: string): Promise<WorkspaceTheme | nul
   const { designSystems } = await api<{ designSystems: { id: string; name: string; is_default: number }[] }>("GET", `/api/w/${slug}/design-systems`);
   const ds = designSystems.find((d) => d.is_default) ?? designSystems[0];
   if (!ds) return null;
-  const detail = await api<{ versions: { id: string; status: string }[] }>("GET", `/api/w/${slug}/design-systems/${ds.id}`);
+  const detail = await api<{ versions: { id: string; status: string; template: string | null }[] }>("GET", `/api/w/${slug}/design-systems/${ds.id}`);
   const live = detail.versions.find((v) => v.status === "live");
   if (!live) return null;
   const { rows, modes } = await api<{ rows: RoleRow[]; modes: string[] }>("GET", `/api/w/${slug}/design-systems/${ds.id}/versions/${live.id}/mapping`);
@@ -60,5 +62,5 @@ export async function workspaceTheme(slug: string): Promise<WorkspaceTheme | nul
     }
     return out;
   };
-  return { name: ds.name, light: vars(lightMode), dark: darkMode ? vars(darkMode) : undefined };
+  return { name: ds.name, template: live.template ?? undefined, light: vars(lightMode), dark: darkMode ? vars(darkMode) : undefined };
 }
