@@ -2,6 +2,8 @@
 
 # Polyxd
 
+[![@polyxd/react](https://img.shields.io/npm/v/@polyxd/react?label=%40polyxd%2Freact&color=FF6E40)](https://www.npmjs.com/package/@polyxd/react) [![@polyxd/web](https://img.shields.io/npm/v/@polyxd/web?label=%40polyxd%2Fweb&color=FF6E40)](https://www.npmjs.com/package/@polyxd/web) [![@polyxd/spec](https://img.shields.io/npm/v/@polyxd/spec?label=%40polyxd%2Fspec&color=FF6E40)](https://www.npmjs.com/package/@polyxd/spec) [![@polyxd/verifier](https://img.shields.io/npm/v/@polyxd/verifier?label=%40polyxd%2Fverifier&color=FF6E40)](https://www.npmjs.com/package/@polyxd/verifier) [![polyxd](https://img.shields.io/npm/v/polyxd?label=polyxd&color=FF6E40)](https://www.npmjs.com/package/polyxd) [![npm scope](https://img.shields.io/badge/npm-%40polyxd-141413)](https://www.npmjs.com/search?q=%40polyxd) [![Licence](https://img.shields.io/badge/licence-Apache--2.0-141413)](LICENSE)
+
 **An open spec, renderer and verifier for interfaces generated on demand** — rendered natively in your design system, operable by people and agents alike, and checked before anyone sees them.
 
 A request comes in. Something — a model, a backend, a rules engine, a person — writes a **UI document**: a small JSON file of semantic components ("a choice", "a confirmation", "a table") bound to data your app provides. A renderer turns it into your design system's components. A verifier checks it for accessibility, safety and whether an agent can operate it. Then it's used, and thrown away.
@@ -17,6 +19,24 @@ request ──► generator (any model or program that emits spec-valid JSON)
 ```
 
 **Site and docs:** [polyxd.com](https://polyxd.com) · **Live gallery:** [polyxd.com/gallery](https://polyxd.com/gallery/)
+
+## Packages on npm
+
+Everything is on npm under [`@polyxd`](https://www.npmjs.com/search?q=%40polyxd), plus the `polyxd` CLI and a `@polyxd/ds-*` package per design system.
+
+| Package | What it is | Version |
+|---|---|---|
+| [`@polyxd/spec`](https://www.npmjs.com/package/@polyxd/spec) | The spec: components, patterns, the action registry and the JSON Schema | [![@polyxd/spec](https://img.shields.io/npm/v/@polyxd/spec?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/spec) |
+| [`@polyxd/react`](https://www.npmjs.com/package/@polyxd/react) | The React renderer | [![@polyxd/react](https://img.shields.io/npm/v/@polyxd/react?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/react) |
+| [`@polyxd/web`](https://www.npmjs.com/package/@polyxd/web) | The Web Components renderer (Vue and Svelte adapters in its README) | [![@polyxd/web](https://img.shields.io/npm/v/@polyxd/web?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/web) |
+| [`@polyxd/core`](https://www.npmjs.com/package/@polyxd/core) | What both renderers share | [![@polyxd/core](https://img.shields.io/npm/v/@polyxd/core?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/core) |
+| [`@polyxd/verifier`](https://www.npmjs.com/package/@polyxd/verifier) | The verifier: schema, patterns, accessibility, contrast and agent tasks | [![@polyxd/verifier](https://img.shields.io/npm/v/@polyxd/verifier?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/verifier) |
+| [`polyxd`](https://www.npmjs.com/package/polyxd) | The CLI: `pack`, `check`, `dev`, `studio push` | [![polyxd](https://img.shields.io/npm/v/polyxd?label=&color=FF6E40)](https://www.npmjs.com/package/polyxd) |
+| [`@polyxd/runtime`](https://www.npmjs.com/package/@polyxd/runtime) | Generates a document with the model you choose | [![@polyxd/runtime](https://img.shields.io/npm/v/@polyxd/runtime?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/runtime) |
+| [`@polyxd/server`](https://www.npmjs.com/package/@polyxd/server) | A generation server around the runtime (also `ghcr.io/visualfart/polyxd-server`) | [![@polyxd/server](https://img.shields.io/npm/v/@polyxd/server?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/server) |
+| [`@polyxd/mcp`](https://www.npmjs.com/package/@polyxd/mcp) | An MCP server: the spec, checks and live screens for a host's model | [![@polyxd/mcp](https://img.shields.io/npm/v/@polyxd/mcp?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/mcp) |
+| [`@polyxd/a2ui`](https://www.npmjs.com/package/@polyxd/a2ui) | Export to A2UI | [![@polyxd/a2ui](https://img.shields.io/npm/v/@polyxd/a2ui?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/a2ui) |
+| [`@polyxd/analytics`](https://www.npmjs.com/package/@polyxd/analytics) | Adapters for the renderers' semantic events | [![@polyxd/analytics](https://img.shields.io/npm/v/@polyxd/analytics?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/analytics) |
 
 ## What works today
 
