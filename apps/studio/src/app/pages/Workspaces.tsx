@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api.ts";
 import { useSession } from "../App.tsx";
-import { Mark } from "../mark.tsx";
+import { StudioLockup } from "../mark.tsx";
 
 export function Workspaces() {
   const { me, refresh } = useSession();
@@ -25,8 +25,8 @@ export function Workspaces() {
   return (
     <div className="auth">
       <main>
-        <div style={{ height: 72, padding: "0 48px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span className="brand"><Mark /><span className="name">Polyxd Studio</span></span>
+        <div className="auth-top">
+          <StudioLockup size={26} />
           <span className="small muted">{me.user?.email}</span>
         </div>
         <div className="form" style={{ width: 560 }}>
@@ -39,9 +39,9 @@ export function Workspaces() {
               <div className="field"><label htmlFor="pname">Product name</label><input id="pname" className="input" value={name} onChange={(e) => { setName(e.target.value); if (!slug) setSlug(""); }} required autoFocus /></div>
               <div className="field">
                 <label htmlFor="pslug">Workspace address</label>
-                <div style={{ display: "flex", alignItems: "center", gap: 0, border: "1px solid var(--line)", borderRadius: 8, height: 36 }}>
-                  <span className="small muted" style={{ padding: "0 0 0 10px" }}>studio.polyxd.com/</span>
-                  <input id="pslug" className="input" style={{ border: 0, height: 34 }} value={slug} placeholder={name.toLowerCase().replace(/[^a-z0-9]+/g, "-")} onChange={(e) => setSlug(e.target.value)} />
+                <div style={{ display: "flex", alignItems: "center", gap: 0, border: "1.5px solid var(--border)", borderRadius: "var(--radius-pill)", height: 40, background: "var(--surface)" }}>
+                  <span className="small muted" style={{ padding: "0 0 0 14px" }}>studio.polyxd.com/</span>
+                  <input id="pslug" className="input" style={{ border: 0, height: 36, background: "transparent", paddingLeft: 2 }} value={slug} placeholder={name.toLowerCase().replace(/[^a-z0-9]+/g, "-")} onChange={(e) => setSlug(e.target.value)} />
                 </div>
                 <span className="help">Your team signs in here.</span>
               </div>

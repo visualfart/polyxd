@@ -11,6 +11,7 @@ import "@polyxd/react/styles.css";
 import "../screen.css";
 import { api, type ScreenVersionRow } from "../api.ts";
 import { useSession, type Ws } from "../App.tsx";
+import { Mark } from "../mark.tsx";
 import { checkDocument, issueIndex, type Issue, type Rule } from "../../screens/validate.ts";
 import { addChild, duplicateNode, makeNodes, moveNode, pointers, removeNode, visibleOrder } from "../../screens/tree.ts";
 import { isShell, type Doc } from "../../screens/schema.ts";
@@ -295,7 +296,7 @@ export function Screen({ ws }: { ws: Ws }) {
           {shell && <span className="tag ink">Shell</span>}
           {publishedVersion ? <span className="tag ok">v{publishedVersion.number} published</span> : <span className="tag signal">Not published</span>}
           {dirty ? <span className="tag warn">Unsaved changes</span> : <span className="tag">v{loadedFrom}</span>}
-          {errors.length ? <button type="button" className="tag bad" style={{ border: 0, cursor: "pointer" }} onClick={() => setDock("issues")}>{errors.length} error{errors.length === 1 ? "" : "s"}</button> : warnings.length ? <button type="button" className="tag warn" style={{ border: 0, cursor: "pointer" }} onClick={() => setDock("issues")}>{warnings.length} warning{warnings.length === 1 ? "" : "s"}</button> : <span className="tag ok">Checked · no issues</span>}
+          {errors.length ? <button type="button" className="tag bad" style={{ border: 0, cursor: "pointer" }} onClick={() => setDock("issues")}>{errors.length} error{errors.length === 1 ? "" : "s"}</button> : warnings.length ? <button type="button" className="tag warn" style={{ border: 0, cursor: "pointer" }} onClick={() => setDock("issues")}>{warnings.length} warning{warnings.length === 1 ? "" : "s"}</button> : <span className="tag ok"><Mark size={18} state="checked" />Checked · no issues</span>}
         </div>
         <div className="segmented scr-panes" role="tablist" aria-label="Panel">
           {(["tree", "preview", "props"] as const).map((p) => <button key={p} type="button" role="tab" aria-pressed={pane === p} onClick={() => setPane(p)}>{p === "tree" ? "Tree" : p === "preview" ? "Preview" : "Props"}</button>)}
@@ -345,7 +346,7 @@ export function Screen({ ws }: { ws: Ws }) {
           {themeReady[builtin] ? (
             <Preview doc={doc} dataKey={dataKey} selected={selected} hovered={hovered} onSelect={(id) => id && setSelected(id)} onHover={setHovered} theme={theme} mode={mode} width={width} density={density} interact={interact} onAction={onAction} standIn={standInKey ? standIn : null} />
           ) : (
-            <div className="scr-canvas"><p className="muted small">Loading the theme…</p></div>
+            <div className="scr-canvas"><p className="muted small scr-loading"><Mark size={24} state="thinking" />Loading the theme…</p></div>
           )}
           <div className="scr-dock" data-open={dock !== null}>
             <div className="tabs" role="tablist">

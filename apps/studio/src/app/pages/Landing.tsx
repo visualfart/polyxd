@@ -13,7 +13,7 @@ import "@polyxd/react/themes/shadcn.css";
 import "@polyxd/react/themes/govuk.css";
 import sendMoney from "../../../../../packages/spec/examples/money-send-form.json" with { type: "json" };
 import { useSession } from "../App.tsx";
-import { Mark } from "../mark.tsx";
+import { Mark, StudioLockup } from "../mark.tsx";
 import "../landing.css";
 
 const PACKS: { id: string; name: string }[] = [
@@ -35,9 +35,7 @@ export function Landing() {
       <header className="l-header">
         <div className="l-wrap">
           <Link className="l-brand" to={signedIn ? "/welcome" : "/"} aria-label="Polyxd Studio">
-            <Mark size={30} />
-            <span className="l-wordmark">Polyxd</span>
-            <span className="l-product">Studio</span>
+            <StudioLockup size={30} />
           </Link>
           <nav className="l-nav" aria-label="Main">
             <a className="l-nav-wide" href={DOCS}>Docs</a>
@@ -47,7 +45,7 @@ export function Landing() {
             ) : (
               <>
                 <Link to="/signin">Sign in</Link>
-                <Link className="l-btn l-btn-signal l-btn-small" to="/signin?mode=signup">Create a workspace</Link>
+                <Link className="l-btn l-btn-line l-btn-small" to="/signin?mode=signup">Create a workspace</Link>
               </>
             )}
           </nav>
@@ -128,7 +126,7 @@ export function Landing() {
             <div className="l-source-cards">
               <div className="l-card">
                 <h3>Run it yourself</h3>
-                <pre className="l-code" tabIndex={0}><code>{"git clone https://github.com/visualfart/polyxd && cd polyxd && npm install\nnpm run db:migrate -w @polyxd/studio\nnpm run dev -w @polyxd/studio      "}<span className="l-comment"># http://localhost:8789</span></code></pre>
+                <pre className="l-code" data-theme="dark" tabIndex={0}><code>{"git clone https://github.com/visualfart/polyxd && cd polyxd && npm install\nnpm run db:migrate -w @polyxd/studio\nnpm run dev -w @polyxd/studio      "}<span className="l-comment"># http://localhost:8789</span></code></pre>
               </div>
               <div className="l-card">
                 <h3>Hosted</h3>
@@ -143,9 +141,7 @@ export function Landing() {
       <footer className="l-footer">
         <div className="l-wrap">
           <Link className="l-brand" to={signedIn ? "/welcome" : "/"} aria-label="Polyxd Studio">
-            <Mark size={26} />
-            <span className="l-wordmark">Polyxd</span>
-            <span className="l-product">Studio</span>
+            <StudioLockup size={26} />
           </Link>
           <nav aria-label="Footer">
             <a href={DOCS}>Docs</a>
@@ -209,7 +205,7 @@ function Hero() {
           ))}
         </div>
         <span className="l-checked">
-          <Mark size={18} state="checked" />
+          <Mark size={28} state="checked" />
           Checked in 13 design systems · no issues
         </span>
       </figcaption>
@@ -266,7 +262,7 @@ function Feature({ n, title, image, second, code, children }: { n: number; title
 
 function Delivery() {
   return (
-    <pre className="l-code l-code-tall" tabIndex={0}>
+    <pre className="l-code l-code-tall" data-theme="dark" tabIndex={0}>
       <code>
         <span className="l-comment"># Fetch a published screen by key</span>
         {"\n"}curl -H <span className="l-string">"Authorization: Bearer $POLYXD_STUDIO_KEY"</span> \{"\n"}

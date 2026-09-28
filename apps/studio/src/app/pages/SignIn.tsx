@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useSession } from "../App.tsx";
-import { Mark } from "../mark.tsx";
+import { Mark, StudioLockup } from "../mark.tsx";
 import "../signin.css";
 
 type Mode = "signin" | "signup" | "forgot" | "reset";
@@ -86,9 +86,7 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
       <main className="signin-main">
         <div className="signin-top">
           <Link className="signin-brand" to="/welcome" aria-label="Polyxd Studio">
-            <Mark size={28} />
-            <span className="signin-wordmark">Polyxd</span>
-            <span className="signin-product">Studio</span>
+            <StudioLockup size={28} />
           </Link>
           <Link className="signin-back" to="/welcome">
             <span aria-hidden="true">← </span>Back to studio.polyxd.com
@@ -158,7 +156,8 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
       </main>
       <aside className="signin-panel" aria-label="About Polyxd">
         <div className="signin-panel-inner">
-          <Mark size={104} state="looking" ink="var(--ink)" title="The Polyxd mark, looking toward the form" />
+          {/* The mark looks toward the form; it thinks while the form is sent, and asks for attention when something went wrong. */}
+          <Mark size={104} state={busy ? "thinking" : error ? "attention" : "looking"} title="The Polyxd mark, looking toward the form" />
           <p className="signin-claim">Screens written on demand, in your design system, checked before anyone sees them.</p>
           <p className="signin-products"><span>Spec</span><span>Renderer</span><span>Verifier</span></p>
         </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api.ts";
 import { Page, type Ws } from "../App.tsx";
+import { Mark } from "../mark.tsx";
 
 interface DS { id: string; name: string; is_default: number; status: string | null; scan: { total: number } | null }
 
@@ -36,7 +37,7 @@ export function Home({ ws }: { ws: Ws }) {
           <ol className="list">
             {steps.map((s) => (
               <li key={s.title}>
-                <span className={`dot ${s.done ? "ok" : ""}`} aria-hidden="true" style={{ width: 22, height: 22, border: s.done ? 0 : "2px solid var(--line)", background: s.done ? "var(--ok)" : "transparent" }} />
+                {s.done ? <Mark size={26} state="checked" /> : <span className="dot" aria-hidden="true" style={{ width: 22, height: 22, margin: 2, border: "1.5px solid var(--border)", background: "transparent" }} />}
                 <div style={{ flexGrow: 1 }}>
                   <div style={{ fontWeight: 600, color: s.done ? "var(--muted)" : "var(--ink)" }}>{s.done ? <><span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>Done: </span>{s.title}</> : s.title}</div>
                   <div className="small muted">{s.sub}</div>

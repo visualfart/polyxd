@@ -51,7 +51,7 @@ export async function sendEmail(env: Env, to: string, subject: string, html: str
 }
 
 const page = (title: string, body: string, cta?: { text: string; url: string }) =>
-  `<div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #141414;"><h2 style="font-size: 20px; margin: 0 0 12px;">${title}</h2><p style="font-size: 15px; line-height: 22px; margin: 0 0 20px;">${body}</p>${cta ? `<p><a href="${cta.url}" style="display: inline-block; background: #141414; color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600;">${cta.text}</a></p><p style="font-size: 12px; color: #5e5c55;">Or paste this into your browser: ${cta.url}</p>` : ""}</div>`;
+  `<div style="font-family: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #141413;"><h2 style="font-size: 20px; margin: 0 0 12px;">${title}</h2><p style="font-size: 15px; line-height: 22px; margin: 0 0 20px;">${body}</p>${cta ? `<p><a href="${cta.url}" style="display: inline-block; background: #FF6E40; color: #141413; padding: 12px 22px; border-radius: 999px; text-decoration: none; font-weight: 600;">${cta.text}</a></p><p style="font-size: 12px; color: #5E5A52;">Or paste this into your browser: ${cta.url}</p>` : ""}</div>`;
 
 /** One auth instance per request: the D1 binding is per request on Workers. */
 export function makeAuth(env: Env) {

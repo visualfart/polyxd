@@ -1,5 +1,5 @@
 import { createContext, lazy, Suspense, useContext, useEffect, useState, type ReactNode } from "react";
-import { Navigate, NavLink, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, NavLink, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { api, type Me } from "./api.ts";
 import { SignIn } from "./pages/SignIn.tsx";
 import { Workspaces } from "./pages/Workspaces.tsx";
@@ -13,7 +13,7 @@ import { Components } from "./pages/Components.tsx";
 import { Rules } from "./pages/Rules.tsx";
 import { Team } from "./pages/Team.tsx";
 import { Invite } from "./pages/Invite.tsx";
-import { Mark } from "./mark.tsx";
+import { Mark, StudioLockup } from "./mark.tsx";
 // The screen pages carry the renderer, the schema and the spec's examples; they load when opened.
 const Screens = lazy(() => import("./pages/Screens.tsx").then((m) => ({ default: m.Screens })));
 const Screen = lazy(() => import("./pages/Screen.tsx").then((m) => ({ default: m.Screen })));
@@ -56,6 +56,7 @@ export function App() {
       </Routes>
       {toast && (
         <div className={`toast ${toast.tone === "bad" ? "bad" : ""}`} role="status">
+          {toast.tone === "ok" && <Mark size={24} state="checked" />}
           {toast.text}
         </div>
       )}
@@ -85,13 +86,10 @@ function Shell() {
   return (
     <div className="shell">
       <aside className="sidebar">
-        <div className="brand">
-          <Mark />
-          <div>
-            <div className="name">Polyxd Studio</div>
-            <div className="ws">{ws.name}</div>
-          </div>
-        </div>
+        <Link className="brand" to={`/w/${slug}`} aria-label={`Polyxd Studio, ${ws.name} home`}>
+          <StudioLockup size={24} />
+          <span className="ws">{ws.name}</span>
+        </Link>
         <nav className="nav" aria-label="Studio">
           {NAV.map((g, i) => (
             <div key={i}>

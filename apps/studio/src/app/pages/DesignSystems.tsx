@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type Scan, type TemplateSummary } from "../api.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
+import { Mark } from "../mark.tsx";
 import "../tokens.css";
 
 interface DS { id: string; name: string; source: string; is_default: number; versions: number; status: string | null; scan: Scan | null; latest_version_id: string | null; created_at: string }
@@ -92,7 +93,7 @@ export function DesignSystems({ ws }: { ws: Ws }) {
           <div className="drawer" role="dialog" aria-modal="true" aria-label="Start from a template" style={{ width: 720 }}>
             <header><div style={{ flexGrow: 1 }}><h2>Start from a template</h2><p className="small muted" style={{ marginTop: 4 }}>Twelve original designs and a blank. The one you pick becomes a design system of this workspace, its tokens copied and every role mapped; edit anything, then export it for your code.</p></div><button type="button" className="btn ghost sm" onClick={() => setChoosing(false)}>Close</button></header>
             <div className="body">
-              {!templates && <p className="muted small">Loading the templates…</p>}
+              {!templates && <p className="muted small" style={{ display: "flex", alignItems: "center", gap: 8 }}><Mark size={24} state="thinking" />Loading the templates…</p>}
               {templates && (
                 <div className="tpl-grid" role="listbox" aria-label="Templates">
                   {templates.map((t) => (

@@ -1,17 +1,11 @@
 /*
- * The landing, in polyxd.com's look: paper, ink, the accent only on the mark and one button.
- * Loaded with the page, never with the app. Dark follows the system, with Studio's variables
- * redefined for the page alone.
+ * The landing, in the 2026 brand: paper, ink, signal only on the mark and the primary button.
+ * Loaded with the page, never with the app. Colours are brand/tokens.css (via styles.css), so
+ * dark follows the system; the code blocks are night islands (data-theme="dark").
  */
 .landing {
   --l-gutter: clamp(16px, 5vw, 64px);
   --l-max: 1180px;
-  --l-night: #141413;
-  --l-night-text: #f4f1ea;
-  --l-night-muted: #cfcbc0;
-  --l-code-string: #ffb08f;
-  --l-code-comment: #a9a69d;
-  --l-signal-text: #141413;
   min-height: 100%;
   background: var(--ground);
   color: var(--ink);
@@ -23,47 +17,38 @@
 body:has(.landing) {
   background: var(--ground);
 }
-@media (prefers-color-scheme: dark) {
-  .landing {
-    --ground: #141413;
-    --paper: #1f1e1c;
-    --sunk: #1a1918;
-    --ink: #f4f1ea;
-    --ink-2: #cfcbc0;
-    --muted: #a9a69d;
-    --line: #3a3935;
-    --soft: #262523;
-    --signal-ink: #ff8f61;
-    --l-night: #0d0d0c;
-    color-scheme: dark;
-  }
-}
 .landing a {
   color: inherit;
 }
 .landing code {
   font-family: var(--mono);
-  font-size: 0.92em;
+  font-size: 0.88em;
   padding: 0.05em 0.35em;
-  border-radius: 5px;
+  border-radius: 6px;
   background: var(--soft);
 }
-.landing h1,
-.landing h2,
-.landing h3 {
+/* Young Serif has one weight: 400, tracking -1.5%. Not inside the hero's stage: that form is drawn in its own design system. */
+.landing h1:not(.l-stage *),
+.landing h2:not(.l-stage *),
+.landing h3:not(.l-stage *) {
   font-family: var(--display);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.02;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
   margin: 0;
   text-wrap: balance;
 }
-.landing h2 {
+.landing h2:not(.l-stage *) {
   font-size: clamp(28px, 3.6vw, 40px);
+  letter-spacing: -0.01em;
 }
-.landing h3 {
-  font-size: 20px;
-  letter-spacing: -0.02em;
+.landing h3:not(.l-stage *) {
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.landing :focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 .landing p {
   margin: 0;
@@ -89,51 +74,60 @@ body:has(.landing) {
 }
 .l-eyebrow {
   font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.04em;
+  font-size: 12px;
+  line-height: 1.3;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--signal-ink);
+  color: var(--signal-text);
 }
 
-/* Buttons: the site's pill, ink or accent; the accent only once on the page. */
+/* Buttons: the design system's Button. Primary is signal with on-signal (ink) text, never white. */
 .l-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 50px;
+  min-height: 48px;
   padding: 0 24px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 16px;
+  line-height: 1.2;
   text-decoration: none;
   border: 1.5px solid transparent;
   white-space: nowrap;
   cursor: pointer;
-  transition: transform 120ms ease;
+  transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
 .l-btn:hover {
-  transform: translateY(-1px);
   text-decoration: none;
 }
 .landing .l-btn-signal {
   background: var(--signal);
-  border-color: var(--signal);
-  color: var(--l-signal-text);
+  color: var(--on-signal);
+}
+.landing .l-btn-signal:hover {
+  background: color-mix(in srgb, var(--signal) 88%, var(--on-signal));
 }
 .landing .l-btn-ink {
   background: var(--ink);
-  border-color: var(--ink);
   color: var(--ground);
 }
+.landing .l-btn-ink:hover {
+  background: color-mix(in srgb, var(--ink) 88%, var(--ground));
+}
 .landing .l-btn-line {
-  border-color: var(--ink);
+  border-color: var(--border);
   color: var(--ink);
   background: transparent;
 }
+.landing .l-btn-line:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
 .l-btn-small {
-  min-height: 42px;
-  padding: 0 18px;
+  min-height: 44px;
+  padding: 0 20px;
   font-size: 15px;
 }
 .l-cta-row {
@@ -149,7 +143,7 @@ body:has(.landing) {
   z-index: 50;
   background: color-mix(in srgb, var(--ground) 88%, transparent);
   backdrop-filter: saturate(1.4) blur(12px);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--rule);
 }
 .l-header .l-wrap {
   display: flex;
@@ -161,27 +155,11 @@ body:has(.landing) {
 .l-brand {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
   text-decoration: none;
   color: var(--ink);
-  font-family: var(--display);
-  font-size: 22px;
-  line-height: 1;
 }
 .l-brand:hover {
   text-decoration: none;
-}
-.l-brand svg {
-  flex: none;
-}
-.l-wordmark {
-  font-weight: 800;
-  letter-spacing: -0.04em;
-}
-.l-product {
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  margin-left: -3px;
 }
 .l-nav {
   display: flex;
@@ -196,7 +174,7 @@ body:has(.landing) {
   white-space: nowrap;
 }
 .l-nav a:not(.l-btn):hover {
-  color: var(--signal-ink);
+  color: var(--signal-text);
 }
 @media (max-width: 560px) {
   /* Docs and Polyxd stay in the footer; the header keeps Sign in and the one button. */
@@ -211,17 +189,22 @@ body:has(.landing) {
     font-size: 14px;
   }
   .l-nav .l-btn-small {
-    min-height: 38px;
-    padding: 0 12px;
+    padding: 0 14px;
     font-size: 14px;
   }
-  .l-header .l-brand {
-    font-size: 18px;
-    gap: 7px;
-  }
-  .l-header .l-brand svg {
+  /* The lockup at 24px: the word stays beside the mark, only smaller. */
+  .l-header .l-brand .pxb-mark {
     width: 24px;
     height: 24px;
+  }
+  .l-header .l-brand .pxb-lockup {
+    gap: 4px !important;
+  }
+  .l-header .l-brand .pxb-word {
+    font-size: 19px !important;
+  }
+  .l-header .l-brand .studio-product {
+    display: none;
   }
 }
 
@@ -243,14 +226,15 @@ body:has(.landing) {
   flex-direction: column;
   gap: 24px;
 }
-.landing h1 {
-  font-size: clamp(38px, 6vw, 66px);
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+.landing h1:not(.l-stage *) {
+  font-size: clamp(38px, 6vw, 64px);
+  letter-spacing: -0.015em;
+  line-height: 1.02;
 }
 .l-lede {
   font-size: clamp(17px, 1.4vw, 20px);
-  color: var(--ink-2);
+  line-height: 1.5;
+  color: var(--muted);
   max-width: 52ch;
 }
 .l-hero-visual {
@@ -264,11 +248,11 @@ body:has(.landing) {
   display: grid;
   width: min(100%, 460px);
   margin-inline: auto;
-  border: 1px solid var(--line);
-  border-radius: 18px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
   overflow: hidden;
-  background: var(--paper);
-  box-shadow: 0 1px 2px rgb(20 20 19 / 0.06), 0 24px 48px -32px rgb(20 20 19 / 0.25);
+  background: var(--surface);
 }
 .l-layer {
   grid-area: 1 / 1;
@@ -304,37 +288,38 @@ body:has(.landing) {
   display: inline-flex;
   gap: 2px;
   padding: 3px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--soft);
 }
 .l-packs button {
-  height: 30px;
+  min-height: 32px;
   padding: 0 12px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: transparent;
   color: var(--ink-2);
   font: 500 13px/1 var(--body);
   cursor: pointer;
 }
 .l-packs button[aria-pressed="true"] {
-  background: var(--paper);
+  background: var(--surface);
   color: var(--ink);
   font-weight: 600;
-  box-shadow: 0 1px 2px rgb(20 20 19 / 0.12);
+  box-shadow: inset 0 0 0 1px var(--rule);
 }
+/* The design system's CheckedBadge: the mark ticked, on ink, with a short sentence. */
 .l-checked {
-  flex-basis: 100%;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.01em;
-  color: var(--ink-2);
-}
-.l-checked svg {
-  color: var(--ink);
+  gap: 10px;
+  padding: 8px 16px 8px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--ground);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 /* Features: one column; words beside the image from 900px, sides alternating. */
@@ -355,7 +340,7 @@ body:has(.landing) {
   gap: 14px;
 }
 .l-feature-words p {
-  color: var(--ink-2);
+  color: var(--muted);
   max-width: 54ch;
 }
 .l-feature-visual {
@@ -366,11 +351,11 @@ body:has(.landing) {
 }
 .l-frame {
   margin: 0;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
   overflow: hidden;
-  background: var(--paper);
-  box-shadow: 0 1px 2px rgb(20 20 19 / 0.05);
+  background: var(--surface);
 }
 .l-frame img {
   display: block;
@@ -382,13 +367,15 @@ body:has(.landing) {
   align-self: flex-end;
 }
 
-/* Code, on ink like the site's */
+/* Code: a night island (data-theme="dark" in the markup), so it reads the dark tokens on either page theme. */
 .l-code {
   margin: 0;
   padding: 18px 20px;
-  border-radius: 14px;
-  background: var(--l-night);
-  color: var(--l-night-text);
+  border-radius: var(--radius-small);
+  corner-shape: squircle;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink);
   font-family: var(--mono);
   font-size: 13.5px;
   line-height: 1.6;
@@ -405,16 +392,16 @@ body:has(.landing) {
   padding: 24px 26px;
 }
 .l-string {
-  color: var(--l-code-string);
+  color: var(--signal-text);
 }
 .l-comment {
-  color: var(--l-code-comment);
+  color: var(--muted);
 }
 
 /* For teams */
 .l-teams {
-  border-block: 1px solid var(--line);
-  background: var(--paper);
+  border-block: 1px solid var(--rule);
+  background: var(--surface);
 }
 .l-teams .l-wrap {
   padding-block: clamp(56px, 7vw, 96px);
@@ -423,7 +410,7 @@ body:has(.landing) {
   gap: 14px;
 }
 .l-section-lede {
-  color: var(--ink-2);
+  color: var(--muted);
   max-width: 60ch;
 }
 .l-columns {
@@ -437,14 +424,15 @@ body:has(.landing) {
 }
 .l-columns dt {
   font-family: var(--display);
-  font-weight: 700;
-  font-size: 20px;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   margin-bottom: 8px;
 }
 .l-columns dd {
   margin: 0;
-  color: var(--ink-2);
+  color: var(--muted);
   font-size: 16px;
 }
 
@@ -460,10 +448,11 @@ body:has(.landing) {
   gap: 16px;
 }
 .l-source-grid > div:first-child p {
-  color: var(--ink-2);
+  color: var(--muted);
   max-width: 50ch;
 }
 .l-source-grid a:not(.l-btn) {
+  color: var(--signal-text);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -477,10 +466,11 @@ body:has(.landing) {
   flex-direction: column;
   align-items: flex-start;
   gap: 14px;
-  padding: 22px 24px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--paper);
+  padding: 24px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
+  background: var(--surface);
   min-width: 0;
 }
 .l-card .l-code {
@@ -488,7 +478,7 @@ body:has(.landing) {
   font-size: 13px;
 }
 .l-card p {
-  color: var(--ink-2);
+  color: var(--muted);
 }
 
 /* Footer */
@@ -505,9 +495,7 @@ body:has(.landing) {
   font-size: 15px;
   color: var(--muted);
 }
-.l-footer .l-brand {
-  font-size: 19px;
-}
+
 .l-footer nav {
   display: flex;
   flex-wrap: wrap;
@@ -517,7 +505,7 @@ body:has(.landing) {
   text-decoration: none;
 }
 .l-footer nav a:hover {
-  color: var(--signal-ink);
+  color: var(--signal-text);
 }
 
 @media (min-width: 900px) {
