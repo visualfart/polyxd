@@ -107,14 +107,14 @@ class R2 {
 
 export const APP_URL = "http://localhost:8789";
 
-/** A fresh Worker with its own empty database, and a caller that keeps a session's cookie. */
-export async function startWorker() {
-  const { default: app } = await import("../../src/worker/index.ts");
+/** A fresh Worker with its own empty database, and a caller that keeps a session's cookie. `vars` are extra env (BILLING, Stripe's). */
+export async function startWorker(vars: Record<string, unknown> = {}) {
+  const { app, default: worker } = await import("../../src/worker/index.ts");
   const DB = new D1();
   const migrations = new URL("../../migrations/", import.meta.url);
   for (const f of readdirSync(migrations).filter((f) => f.endsWith(".sql")).sort()) DB.db.exec(readFileSync(new URL(f, migrations), "utf8"));
   // A secret made for this run only, so sessions sign as they would anywhere.
-  const env = { DB, FILES: new R2(), ASSETS: { fetch: async () => new Response("", { status: 404 }) }, APP_URL, AUTH_SECRET: randomBytes(32).toString("hex") };
+  const env = { DB, FILES: new R2(), ASSETS: { fetch: async () => new Response("", { status: 404 }) }, APP_URL, AUTH_SECRET: randomBytes(32).toString("hex"), ...vars };
   const silence = console.log;
 
   /** One caller: a browser session (cookies kept) or an API key (a bearer header). */
@@ -149,5 +149,16 @@ export async function startWorker() {
     if (w.status !== 201) throw new Error(`workspace: ${w.status} ${JSON.stringify(w.body)}`);
     return person;
   };
-  return { app, env, client, signUp };
+  /** Runs the cron handler once, as the scheduler would. */
+  const scheduled = async () => {
+    const waits: Promise<unknown>[] = [];
+    console.log = () => undefined;
+    try {
+      await worker.scheduled({} as ScheduledController, env as never, { waitUntil: (p: Promise<unknown>) => waits.push(p), passThroughOnException: () => undefined } as unknown as ExecutionContext);
+      await Promise.all(waits);
+    } finally {
+      console.log = silence;
+    }
+  };
+  return { app, env, client, signUp, scheduled };
 }

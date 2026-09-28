@@ -23,6 +23,8 @@ import { checkDirection } from "../direction/schema.ts";
 import { capture, ingest, posthogConfig, type Properties } from "./analytics.ts";
 import { CORS, ingestEvents, newIngestKey, preflight } from "./insights.ts";
 import { RANGES, RETENTION_DAYS, detail, range, summarise, type StoredRow } from "../insights/report.ts";
+import { PlanLimit, assertCanCreate, assertCanEdit, billingOn, countFetch, isEditor, planSummary, pruneHistory, rollUp } from "./plans.ts";
+import { StripeError, applySubscription, checkoutParams, isPaidPlan, priceFor, stripe, stripeOn, syncSeats, verifySignature, type Subscription } from "./billing.ts";
 
 type Vars = { user: User | null; apiWorkspace: string | null };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -42,6 +44,7 @@ class Fail extends Error {
 }
 app.onError((e, c) => {
   if (e instanceof Fail) return c.json({ error: e.message }, e.status as 500);
+  if (e instanceof PlanLimit) return c.json({ error: e.message, ...e.data }, 402);
   console.error(e);
   return c.json({ error: "Something went wrong on our side" }, 500);
 });
@@ -132,6 +135,8 @@ interface Workspace {
   slug: string;
   name: string;
   role: string;
+  plan: string;
+  over_quota_since: string | null;
 }
 
 /** The workspace in the URL, and the caller's role in it. */
@@ -139,7 +144,7 @@ async function ws(c: Ctx, allowed?: ReadonlySet<string>): Promise<Workspace> {
   const user = need(c);
   const slug = c.req.param("slug");
   const row = await c.env.DB.prepare(
-    "SELECT w.id, w.slug, w.name, m.role FROM workspaces w JOIN memberships m ON m.workspace_id = w.id WHERE w.slug = ? AND m.user_id = ?",
+    "SELECT w.id, w.slug, w.name, m.role, w.plan, w.over_quota_since FROM workspaces w JOIN memberships m ON m.workspace_id = w.id WHERE w.slug = ? AND m.user_id = ?",
   ).bind(slug, user.id).first<Workspace>();
   if (!row) throw new Fail(404, "No such workspace, or you're not in it");
   // An API key is scoped to one workspace, and to what a machine does: whatever its creator can
@@ -154,7 +159,26 @@ async function ws(c: Ctx, allowed?: ReadonlySet<string>): Promise<Workspace> {
     if (!importing && !reading) throw new Fail(403, "An API key can import and read design systems, and read screens and Directions, only");
   }
   if (allowed && !allowed.has(row.role)) throw new Fail(403, `Your role (${row.role}) can't do that`);
+  // Over the fetch quota for longer than the grace period: reading and paying still work, changes don't.
+  if (c.req.method !== "GET" && !new URL(c.req.url).pathname.includes("/billing/")) assertCanEdit(c.env, row);
   return row;
+}
+
+/** Work that may finish after the answer (a seat sync): handed to the runtime when there is one. */
+const later = async (c: Ctx, p: Promise<unknown>) => {
+  try {
+    c.executionCtx.waitUntil(p);
+  } catch {
+    await p;
+  }
+};
+
+/** A pruned design-system version's files, after its rows. */
+async function dropVersionFiles(env: Env, ids: string[]) {
+  for (const id of ids) {
+    const list = await env.FILES.list({ prefix: `versions/${id}/` });
+    for (const o of list.objects) await env.FILES.delete(o.key);
+  }
 }
 
 // ---------------------------------------------------------------- sign in and out
@@ -162,12 +186,13 @@ async function ws(c: Ctx, allowed?: ReadonlySet<string>): Promise<Workspace> {
 app.get("/api/me", async (c) => {
   const user = c.get("user");
   const signIn = { google: !!(c.env.GOOGLE_CLIENT_ID && c.env.GOOGLE_CLIENT_SECRET), emailVerification: !isLocal(c.env) };
-  if (!user) return c.json({ user: null, workspaces: [], signIn });
-  const workspaces = await c.env.DB.prepare("SELECT w.id, w.slug, w.name, m.role FROM workspaces w JOIN memberships m ON m.workspace_id = w.id WHERE m.user_id = ? ORDER BY w.name")
+  // billing: whether this Studio has plans at all (the hosted one); a self-hosted one shows none.
+  if (!user) return c.json({ user: null, workspaces: [], signIn, billing: billingOn(c.env) });
+  const workspaces = await c.env.DB.prepare("SELECT w.id, w.slug, w.name, m.role, w.plan FROM workspaces w JOIN memberships m ON m.workspace_id = w.id WHERE m.user_id = ? ORDER BY w.name")
     .bind(user.id).all<Workspace>();
   // The app's analytics are on only for signed-in people, and only when the Worker has a key (the public one).
   const config = posthogConfig(c.env);
-  return c.json({ user, workspaces: workspaces.results, signIn, ...(config ? { analytics: { key: config.key, ui: config.ui } } : {}) });
+  return c.json({ user, workspaces: workspaces.results, signIn, billing: billingOn(c.env), ...(config ? { analytics: { key: config.key, ui: config.ui } } : {}) });
 });
 
 // ---------------------------------------------------------------- workspaces, members, invites
@@ -180,6 +205,7 @@ app.post("/api/workspaces", async (c) => {
   if (!name?.trim() || !/^[a-z0-9][a-z0-9-]{1,39}$/.test(s)) throw new Fail(400, "A name, and an address of letters, digits and dashes");
   const taken = await c.env.DB.prepare("SELECT 1 FROM workspaces WHERE slug = ?").bind(s).first();
   if (taken) throw new Fail(409, `studio.polyxd.com/${s} is taken`);
+  await assertCanCreate(c.env, null, { kind: "workspace", userId: user.id });
   const id = crypto.randomUUID();
   await c.env.DB.batch([
     c.env.DB.prepare("INSERT INTO workspaces (id, slug, name, created_at) VALUES (?, ?, ?, ?)").bind(id, s, name.trim(), now()),
@@ -208,6 +234,8 @@ app.post("/api/w/:slug/invites", async (c) => {
   const members = await c.env.DB.prepare("SELECT u.email FROM memberships m JOIN user u ON u.id = m.user_id WHERE m.workspace_id = ?").bind(w.id).all<{ email: string }>();
   const already = list.filter((e) => members.results.some((m) => m.email === e));
   if (already.length) throw new Fail(409, `${already.join(", ")} ${already.length === 1 ? "is" : "are"} already in this workspace`);
+  // An editor invite holds a seat until it is used or expires; viewers are always free.
+  if (isEditor(role)) await assertCanCreate(c.env, w, { kind: "editors", adding: list.length, pending: true });
   const made = [];
   for (const email of list) {
     const id = crypto.randomUUID();
@@ -239,12 +267,36 @@ app.post("/api/invites/:id/accept", async (c) => {
   if (inv.email !== user.email) throw new Fail(403, "This invite is for a different email address");
   const member = await c.env.DB.prepare("SELECT role FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(inv.workspace_id, user.id).first();
   if (member) throw new Fail(409, "You're already in this workspace; an invite can't change your role");
+  const w = await c.env.DB.prepare("SELECT id, slug, plan, over_quota_since FROM workspaces WHERE id = ?").bind(inv.workspace_id).first<{ id: string; slug: string; plan: string; over_quota_since: string | null }>();
+  // Checked again on accepting: the plan may have changed, or other invites been used, since.
+  if (w && isEditor(inv.role)) await assertCanCreate(c.env, w, { kind: "editors", adding: 1, pending: false });
   await c.env.DB.batch([
     c.env.DB.prepare("INSERT INTO memberships (workspace_id, user_id, role, created_at) VALUES (?, ?, ?, ?)").bind(inv.workspace_id, user.id, inv.role, now()),
     c.env.DB.prepare("UPDATE invites SET accepted_at = ? WHERE id = ?").bind(now(), inv.id),
   ]);
-  const w = await c.env.DB.prepare("SELECT slug FROM workspaces WHERE id = ?").bind(inv.workspace_id).first<{ slug: string }>();
+  if (isEditor(inv.role)) await later(c as Ctx, syncSeats(c.env, inv.workspace_id));
   return c.json({ slug: w?.slug });
+});
+
+/** An open invite withdrawn, which frees the seat it held. */
+app.delete("/api/w/:slug/invites/:id", async (c) => {
+  const w = await ws(c as Ctx, new Set(["owner", "design-system"]));
+  await c.env.DB.prepare("DELETE FROM invites WHERE id = ? AND workspace_id = ? AND accepted_at IS NULL").bind(c.req.param("id"), w.id).run();
+  return c.json({ ok: true });
+});
+
+/** Someone taken out of the workspace by an owner. The last owner stays. */
+app.delete("/api/w/:slug/members/:user", async (c) => {
+  const w = await ws(c as Ctx, new Set(["owner"]));
+  const m = await c.env.DB.prepare("SELECT role FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(w.id, c.req.param("user")).first<{ role: string }>();
+  if (!m) throw new Fail(404, "They're not in this workspace");
+  if (m.role === "owner") {
+    const owners = await c.env.DB.prepare("SELECT COUNT(*) AS n FROM memberships WHERE workspace_id = ? AND role = 'owner'").bind(w.id).first<{ n: number }>();
+    if ((owners?.n ?? 0) <= 1) throw new Fail(409, "A workspace needs an owner; make someone else owner first");
+  }
+  await c.env.DB.prepare("DELETE FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(w.id, c.req.param("user")).run();
+  if (isEditor(m.role)) await later(c as Ctx, syncSeats(c.env, w.id));
+  return c.json({ ok: true });
 });
 
 // ---------------------------------------------------------------- registries and API keys
@@ -436,6 +488,7 @@ app.post("/api/w/:slug/design-systems/import", async (c) => {
     const last = await c.env.DB.prepare("SELECT MAX(number) AS n FROM ds_versions WHERE design_system_id = ?").bind(into).first<{ n: number | null }>();
     number = (last?.n ?? 0) + 1;
   } else {
+    await assertCanCreate(c.env, w, { kind: "designSystem" });
     const first = await c.env.DB.prepare("SELECT COUNT(*) AS n FROM design_systems WHERE workspace_id = ?").bind(w.id).first<{ n: number }>();
     statements.push(
       c.env.DB.prepare("INSERT INTO design_systems (id, workspace_id, name, source, is_default, created_at) VALUES (?, ?, ?, ?, ?, ?)")
@@ -449,6 +502,7 @@ app.post("/api/w/:slug/design-systems/import", async (c) => {
   await c.env.FILES.put(graphKey(versionId), JSON.stringify(graph), { httpMetadata: { contentType: "application/json" } });
   if (original) await c.env.FILES.put(`versions/${versionId}/original`, original.bytes, { customMetadata: { name: original.name } });
   await c.env.DB.batch(statements);
+  if (into) await dropVersionFiles(c.env, await pruneHistory(c.env, w, "ds_versions", dsId));
   return c.json({ designSystemId: dsId, versionId, number, scan: { ...summary, picked }, url: `${c.env.APP_URL}/w/${w.slug}/design-systems/${dsId}/versions/${versionId}/scan` }, 201);
 });
 
@@ -573,6 +627,7 @@ app.post("/api/w/:slug/design-systems/from-template", async (c) => {
   const { template, name } = await body<{ template?: string; name?: string }>(c as Ctx);
   if (!isStartName(template)) throw new Fail(400, `Which template? One of ${[BLANK, ...TEMPLATE_NAMES].join(", ")}`);
   if (name !== undefined) text(name, 80, "Name");
+  await assertCanCreate(c.env, w, { kind: "designSystem" });
   const graph = templateGraph(template);
   const summary = scan(graph);
   const display = template === BLANK ? "Blank" : (TEMPLATE_PACKS[template].manifest.displayName ?? template);
@@ -635,6 +690,7 @@ app.post("/api/w/:slug/design-systems/:id/versions/:v/edit", async (c) => {
       .bind(versionId, ds.id, number, `edited in Studio from v${v.number}`, JSON.stringify({ ...summary, picked: [], edited: changes.length, from: v.number }), v.package_name, v.package_version, b.notes?.trim() || `${changes.length} token${changes.length === 1 ? "" : "s"} changed`, v.template, user.id, now()),
     ...carried.map((o) => c.env.DB.prepare("INSERT INTO role_overrides (version_id, role, token_path, decided_by, decided_at) VALUES (?, ?, ?, ?, ?)").bind(versionId, o.role, o.token, user.id, now())),
   ]);
+  await dropVersionFiles(c.env, await pruneHistory(c.env, w, "ds_versions", ds.id));
   const rows = mapRoles(next, CONTRACT, carried);
   return c.json({ versionId, number, changes: changes.length, fails: rows.filter((r) => r.status === "fails").length, scan: summary, url: `${c.env.APP_URL}/w/${w.slug}/design-systems/${ds.id}/versions/${versionId}/edit` }, 201);
 });
@@ -653,6 +709,7 @@ app.get("/api/w/:slug/design-systems/:id/versions/:v/export", async (c) => {
   const mapping = Object.fromEntries(rows.map((r) => [r.role, r.status === "off" ? null : r.token]));
   const extras = await c.env.FILES.get(extrasKey(v.id));
   const file = exportDesignSystem(format, { name: ds.name, version: v.number, status: v.status, graph, mapping, contract: CONTRACT, extras: extras ? await extras.text() : undefined });
+  if (c.get("apiWorkspace")) countFetch(c.env, w.id, "tokens");
   c.header("Content-Type", file.contentType);
   c.header("Content-Disposition", `${c.req.query("download") === "1" ? "attachment" : "inline"}; filename="${file.fileName}"`);
   c.header("X-Polyxd-Design-System-Version", String(v.number));
@@ -936,6 +993,7 @@ app.get("/api/w/:slug/screens/:key", async (c) => {
   const doc = JSON.parse(v.document_json) as Doc;
   // A screen a person made says so, so the mark a product shows can too.
   doc.surface.origin ??= "authored";
+  if (c.get("apiWorkspace")) countFetch(c.env, w.id, "screen");
   c.header("X-Polyxd-Screen-Version", String(v.number));
   return c.json(doc);
 });
@@ -995,6 +1053,7 @@ app.post("/api/w/:slug/screens/:key/versions", async (c) => {
     c.env.DB.prepare("INSERT INTO screen_versions (id, screen_id, number, document_json, notes, status, issues_json, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'draft', ?, ?, ?)").bind(crypto.randomUUID(), s.id, number, JSON.stringify(document), b.notes ?? "", JSON.stringify(result), user.id, now()),
     c.env.DB.prepare("UPDATE screens SET intent = ?, updated_at = ? WHERE id = ?").bind(intent, now(), s.id),
   ]);
+  await pruneHistory(c.env, w, "screen_versions", s.id);
   return c.json({ number, ...result }, 201);
 });
 
@@ -1007,6 +1066,7 @@ app.post("/api/w/:slug/screens/:key/versions/:n/publish", async (c) => {
   const result = checkDocument(JSON.parse(v.document_json), { rules: await workspaceRules(c.env, w.id) });
   const errors = result.issues.filter((i) => i.severity === "error");
   if (errors.length) throw new Fail(409, `v${v.number} has ${errors.length} error${errors.length === 1 ? "" : "s"}: ${errors.slice(0, 3).map((e) => e.message).join("; ")}${errors.length > 3 ? "; …" : ""}. Fix them before publishing.`);
+  await assertCanCreate(c.env, w, { kind: "publishedScreen", screenId: s.id });
   await c.env.DB.batch([
     c.env.DB.prepare("UPDATE screen_versions SET status = 'draft', issues_json = ? WHERE screen_id = ? AND status = 'published'").bind(JSON.stringify(result), s.id),
     c.env.DB.prepare("UPDATE screen_versions SET status = 'published', issues_json = ? WHERE id = ?").bind(JSON.stringify(result), v.id),
@@ -1102,6 +1162,7 @@ app.post("/api/w/:slug/directions", async (c) => {
   if (b.notes !== undefined) text(b.notes, 500, "Notes");
   const taken = await c.env.DB.prepare("SELECT 1 FROM directions WHERE workspace_id = ? AND key = ?").bind(w.id, key).first();
   if (taken) throw new Fail(409, `A Direction with the key ${key} already exists`);
+  await assertCanCreate(c.env, w, { kind: "direction" });
   const snapshot = b.direction === undefined ? { direction: blankDirection(key), patterns: [] } : parseSnapshot(b);
   const { stored, issues } = checkSnapshot(snapshot, key, await directionRulesOf(c.env, w.id));
   if (issues.length) return refuse(issues);
@@ -1123,6 +1184,7 @@ app.get("/api/w/:slug/directions/:key", async (c) => {
   const d = await directionByKey(c as Ctx, w);
   const v = await c.env.DB.prepare("SELECT direction_json, patterns_json, number FROM direction_versions WHERE direction_id = ? AND status = 'published'").bind(d.id).first<{ direction_json: string; patterns_json: string; number: number }>();
   if (!v) throw new Fail(404, `${d.name} has no published version yet`);
+  if (c.get("apiWorkspace")) countFetch(c.env, w.id, "direction");
   c.header("X-Polyxd-Direction-Version", String(v.number));
   return c.json(toExport(snapshotOf(v), d.key));
 });
@@ -1193,6 +1255,7 @@ app.post("/api/w/:slug/directions/:key/versions", async (c) => {
     c.env.DB.prepare("INSERT INTO direction_versions (id, direction_id, number, direction_json, patterns_json, notes, status, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, ?)").bind(crypto.randomUUID(), d.id, number, JSON.stringify(stored.direction), JSON.stringify(stored.patterns), b.notes ?? "", user.id, now()),
     c.env.DB.prepare("UPDATE directions SET updated_at = ? WHERE id = ?").bind(now(), d.id),
   ]);
+  await pruneHistory(c.env, w, "direction_versions", d.id);
   return c.json({ number, snapshot: stored }, 201);
 });
 
@@ -1269,7 +1332,95 @@ app.delete("/api/w/:slug/insights", async (c) => {
   return c.json({ ok: true, deleted: r.meta.changes });
 });
 
+// ---------------------------------------------------------------- plans and billing (hosted Studio only)
+
+const OWNERS = new Set(["owner"]);
+
+/** The workspace's plan and what it uses, for the Billing page; { enabled: false } on a self-hosted Studio. */
+app.get("/api/w/:slug/billing", async (c) => {
+  const w = await ws(c as Ctx);
+  if (!billingOn(c.env)) return c.json({ enabled: false });
+  return c.json({ ...(await planSummary(c.env, w.id)), canManage: w.role === "owner" });
+});
+
+const needStripe = (env: Env) => {
+  if (!billingOn(env)) throw new Fail(404, "This Studio has no billing: it runs without plans or limits");
+  if (!stripeOn(env)) throw new Fail(503, "Billing isn't set up on this Studio yet");
+};
+
+app.post("/api/w/:slug/billing/checkout", async (c) => {
+  const w = await ws(c as Ctx, OWNERS);
+  const user = need(c as Ctx);
+  needStripe(c.env);
+  const { plan, interval } = await body<{ plan?: string; interval?: string }>(c as Ctx);
+  if (!isPaidPlan(plan)) throw new Fail(400, "plan: pro or team");
+  if (interval !== "month" && interval !== "year") throw new Fail(400, "interval: month or year");
+  const price = priceFor(c.env, plan, interval);
+  if (!price) throw new Fail(503, `No ${plan} price is set up for paying by the ${interval}`);
+  const row = await c.env.DB.prepare("SELECT stripe_customer_id, stripe_subscription_id, plan_status FROM workspaces WHERE id = ?").bind(w.id).first<{ stripe_customer_id: string | null; stripe_subscription_id: string | null; plan_status: string | null }>();
+  if (row?.stripe_subscription_id) throw new Fail(409, "This workspace already has a plan. Change it from Manage billing.");
+  const editors = (await c.env.DB.prepare("SELECT COUNT(*) AS n FROM memberships WHERE workspace_id = ? AND role != 'viewer'").bind(w.id).first<{ n: number }>())?.n ?? 1;
+  if (plan === "pro" && editors > 1) throw new Fail(409, `Pro is for one editor, and this workspace has ${editors}. Team fits, or make the others viewers first.`);
+  const params = (coupon: boolean) => checkoutParams(c.env, { workspaceId: w.id, slug: w.slug, plan, interval, seats: editors, customer: row?.stripe_customer_id ?? null, email: user.email, coupon });
+  let session: { url: string };
+  try {
+    session = await stripe<{ url: string }>(c.env, "POST", "/checkout/sessions", params(true));
+  } catch (e) {
+    // The founding coupon runs out after 100 workspaces; then it's the full price.
+    if (!(e instanceof StripeError) || !c.env.STRIPE_COUPON_FOUNDING || e.status >= 500) throw e;
+    session = await stripe<{ url: string }>(c.env, "POST", "/checkout/sessions", params(false));
+  }
+  return c.json({ url: session.url });
+});
+
+app.post("/api/w/:slug/billing/portal", async (c) => {
+  const w = await ws(c as Ctx, OWNERS);
+  needStripe(c.env);
+  const row = await c.env.DB.prepare("SELECT stripe_customer_id FROM workspaces WHERE id = ?").bind(w.id).first<{ stripe_customer_id: string | null }>();
+  if (!row?.stripe_customer_id) throw new Fail(409, "This workspace hasn't paid for a plan yet; pick one first");
+  const session = await stripe<{ url: string }>(c.env, "POST", "/billing_portal/sessions", { customer: row.stripe_customer_id, return_url: `${c.env.APP_URL}/w/${w.slug}/billing` });
+  return c.json({ url: session.url });
+});
+
+/** Stripe tells Studio what changed. The only way a workspace's plan changes, besides by hand for Enterprise. */
+app.post("/api/billing/webhook", async (c) => {
+  if (!billingOn(c.env) || !c.env.STRIPE_WEBHOOK_SECRET) throw new Fail(404, "No such endpoint");
+  const payload = await c.req.text();
+  if (!(await verifySignature(payload, c.req.header("stripe-signature"), c.env.STRIPE_WEBHOOK_SECRET))) throw new Fail(400, "Bad signature");
+  const event = JSON.parse(payload) as { type: string; data: { object: Record<string, unknown> } };
+  const o = event.data.object;
+  switch (event.type) {
+    case "checkout.session.completed": {
+      if (o.mode !== "subscription" || typeof o.subscription !== "string") break;
+      const id = (o.client_reference_id as string | null) ?? (o.metadata as Record<string, string> | undefined)?.workspace_id;
+      if (!id) break;
+      await c.env.DB.prepare("UPDATE workspaces SET stripe_customer_id = ?, stripe_subscription_id = ? WHERE id = ?").bind(o.customer, o.subscription, id).run();
+      await applySubscription(c.env, await stripe<Subscription>(c.env, "GET", `/subscriptions/${o.subscription}`), id);
+      break;
+    }
+    case "customer.subscription.created":
+    case "customer.subscription.updated":
+      await applySubscription(c.env, o as unknown as Subscription);
+      break;
+    case "customer.subscription.deleted":
+      await applySubscription(c.env, o as unknown as Subscription, undefined, true);
+      break;
+    case "invoice.payment_failed":
+      // Stripe retries and says so again with customer.subscription.updated; this shows it at once.
+      if (typeof o.customer === "string") await c.env.DB.prepare("UPDATE workspaces SET plan_status = 'past_due' WHERE stripe_customer_id = ? AND stripe_subscription_id IS NOT NULL").bind(o.customer).run();
+      break;
+  }
+  return c.json({ received: true });
+});
+
 app.get("/api/contract", (c) => c.json({ roles: Object.keys(CONTRACT.tokens).length, contrastPairs: CONTRACT.contrast.length }));
 app.all("/api/*", (c) => c.json({ error: "No such endpoint" }, 404));
 
-export default app;
+export { app };
+export default {
+  fetch: app.fetch,
+  /** The cron (wrangler.jsonc triggers): fetches rolled up into usage, and quotas checked. Does nothing without BILLING. */
+  async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
+    ctx.waitUntil(rollUp(env).then((r) => console.log(`usage rollup: ${r.workspaces} workspaces counted, ${r.over} over quota`)));
+  },
+} satisfies ExportedHandler<Env>;
