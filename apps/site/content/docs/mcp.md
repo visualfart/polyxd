@@ -23,6 +23,8 @@ The hosted server is at this address:
 https://mcp.polyxd.com/mcp
 ```
 
+It is listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=com.polyxd) as `com.polyxd/mcp`, so apps that read the registry can find it by name.
+
 It needs no account and no sign-in. Every tool is read-only. The server keeps nothing between requests, and it never sees your conversation, only the documents the model sends to its tools.
 
 **Claude.** In claude.ai, open **Customize > Connectors** and click **Add custom connector**. Paste the URL, choose **No sign-in** if Claude asks about authentication, and click **Add**. Then turn the connector on for a chat from **+ > Connectors**. On the Free plan you can add one custom connector.
