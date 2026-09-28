@@ -4,7 +4,9 @@
 !dist/webview/polyxd.js
 !dist/webview/polyxd.css
 !schema/ui.schema.json
+!schema/file.schema.json
 !README.md
 !LICENSE
 !package.json
 !icon.png
+!CHANGELOG.md
