@@ -1,7 +1,7 @@
 /**
  * Which registries still need this version of the extension. The release workflow runs it before
- * packaging: a registry is skipped, with a notice, when its token isn't set (VSCE_PAT for the
- * Visual Studio Marketplace, OVSX_PAT for Open VSX) or when it already has this version. The
+ * packaging: a registry is skipped, with a notice, when it has no credentials (the AZURE_CLIENT_ID
+ * variable or VSCE_PAT for the Visual Studio Marketplace, OVSX_PAT for Open VSX) or when it already has this version. The
  * lookups are public and need no token. A lookup that fails stops the release rather than guess.
  *
  *   node apps/vscode/scripts/published.ts
@@ -38,9 +38,9 @@ async function onOpenVsx(): Promise<boolean> {
 
 const notice = (message: string) => console.log(process.env.GITHUB_ACTIONS ? `::notice title=VS Code extension::${message}` : message);
 
-async function need(registry: string, secret: string, has: () => Promise<boolean>): Promise<boolean> {
-  if (!process.env[secret]) {
-    notice(`${registry}: skipped, the ${secret} secret isn't set (apps/vscode/PUBLISHING.md)`);
+async function need(registry: string, secrets: string[], has: () => Promise<boolean>): Promise<boolean> {
+  if (!secrets.some((name) => process.env[name])) {
+    notice(`${registry}: skipped, none of ${secrets.join(" or ")} is set (apps/vscode/PUBLISHING.md)`);
     return false;
   }
   if (await has()) {
@@ -51,8 +51,8 @@ async function need(registry: string, secret: string, has: () => Promise<boolean
   return true;
 }
 
-const marketplace = await need("Visual Studio Marketplace", "VSCE_PAT", async () => (await marketplaceVersions()).includes(version));
-const openvsx = await need("Open VSX", "OVSX_PAT", onOpenVsx);
+const marketplace = await need("Visual Studio Marketplace", ["AZURE_CLIENT_ID", "VSCE_PAT"], async () => (await marketplaceVersions()).includes(version));
+const openvsx = await need("Open VSX", ["OVSX_PAT"], onOpenVsx);
 const outputs = { marketplace, openvsx, any: marketplace || openvsx, vsix: `${pkg.name}-${version}.vsix` };
 if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, Object.entries(outputs).map(([k, v]) => `${k}=${v}\n`).join(""));
 else console.log(outputs);

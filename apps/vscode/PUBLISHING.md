@@ -12,22 +12,29 @@ Everything below is done once, by the owner, in a browser. Nothing here has been
 ## 1. Visual Studio Marketplace
 
 1. **Create an Azure DevOps organisation.** Go to [dev.azure.com](https://dev.azure.com) and sign in with the Microsoft account that will own the extension. Follow [Create an organization](https://learn.microsoft.com/azure/devops/organizations/accounts/create-organization). Any name will do.
-2. **Create a Personal Access Token.** In Azure DevOps, open **User settings → Personal access tokens → New Token**. Set:
+2. **Create a Personal Access Token** (only if you don't set up "Publish without a token" below, and only until 1 December 2026). In Azure DevOps, open **User settings → Personal access tokens → New Token**. Set:
    - Name: `polyxd marketplace`
    - Organization: **All accessible organizations**
    - Expiration: the longest it offers
    - Scopes: **Custom defined**, then **Show all scopes**, then **Marketplace → Manage**
 
-   Copy the token. You won't see it again. (Read "Before 1 December 2026" below.)
+   Copy the token. You won't see it again.
 3. **Create the `polyxd` publisher.** Go to [marketplace.visualstudio.com/manage](https://marketplace.visualstudio.com/manage), signed in with the same Microsoft account. Choose **Create publisher**. Set **ID** to `polyxd` and **Name** to `Polyxd`. The ID can never change. If `polyxd` is taken, stop and tell us: `publisher` in `apps/vscode/package.json` must match the ID you get.
-4. **Check the token works** (optional). In `apps/vscode`, run `npx vsce login polyxd` and paste the token.
+4. **Check the token works** (optional, token route only). In `apps/vscode`, run `npx vsce login polyxd` and paste the token.
 5. **Verify polyxd.com for the publisher** (later, see the note). In the publisher's **Details** tab, under **Verified domain**, enter `polyxd.com`. Choose **Save**, then **Verify**. The dialog gives you a DNS TXT record. Add it to polyxd.com's DNS in Cloudflare, then choose **Verify** again. Microsoft reviews it within 5 business days. The listing then shows a verified badge.
 
    The Marketplace only accepts a domain registered at least 6 months ago, for a publisher that has had extensions published for at least 6 months. polyxd.com was registered on 19 September 2026. So this step can be done from about 19 March 2027, and not before 6 months after the first publish.
 
-### Before 1 December 2026
+### Publish without a token (recommended)
 
-Microsoft retires "All accessible organizations" tokens on **1 December 2026**. After that date, `VSCE_PAT` stops working. The replacement is Microsoft Entra ID sign-in with no stored secret ([Secure automated publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#secure-automated-publishing-to-visual-studio-marketplace)). In outline: create a managed identity in Azure with a federated credential for this repository's release workflow, add that identity to the `polyxd` publisher as a Contributor, then change the job's publish step to sign in with `azure/login` and run `vsce publish --azure-credential`. Ask us to make that change to the workflow when the identity exists.
+Microsoft retires "All accessible organizations" tokens on **1 December 2026**. After that date, `VSCE_PAT` stops working. The release job already supports the replacement: Microsoft Entra ID sign-in, with no Marketplace token stored anywhere ([Secure automated publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#secure-automated-publishing-to-visual-studio-marketplace)). Set it up once:
+
+1. In the Azure portal, create a **user-assigned managed identity** (any resource group in any subscription; a free subscription is enough). Note its **Client ID**, your **Tenant ID** and the **Subscription ID**.
+2. On the identity, open **Federated credentials**, add one for **GitHub Actions deploying Azure resources**, and fill in: organisation `visualfart`, repository `polyxd`, entity **Environment**, environment name `vscode-marketplace`.
+3. At [marketplace.visualstudio.com/manage](https://marketplace.visualstudio.com/manage), open the `polyxd` publisher, **Members**, and add the managed identity by its resource ID with the **Contributor** role.
+4. In GitHub, **Settings → Secrets and variables → Actions → Variables**, add three repository variables (they are identifiers, not secrets): `AZURE_CLIENT_ID`, `AZURE_TENANT_ID` and `AZURE_SUBSCRIPTION_ID`.
+
+When `AZURE_CLIENT_ID` is set, the job signs in with the identity and runs `vsce publish --azure-credential`. When it isn't, it falls back to `VSCE_PAT`. The job runs in a GitHub environment called `vscode-marketplace`, which GitHub creates on the first run; you can add required reviewers to it if you want to approve each Marketplace release.
 
 ## 2. Open VSX
 
