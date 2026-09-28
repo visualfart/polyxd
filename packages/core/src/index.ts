@@ -26,3 +26,7 @@ export { type ActiveFilter, FILTER_COMPACT_PX, activeFilters, resultCountText } 
 export { qrEncode } from "./qr.ts";
 export { MORE_ACTIONS, TRIGGER_FALLBACK, minShown, fitActions, menuOrder } from "./actionbar.ts";
 export { type Surface, type SurfaceOptions, createSurface, a11yAttributes } from "./surface.ts";
+export {
+  type SemanticEvent, type SemanticEventType, type EventSurface, type EventActor, type EventComponent, type EventRating, type EventJourney, type SurfaceEventOptions, type SurfaceEvents, type ValidityLike,
+  SEMANTIC_EVENT_TYPES, EVENT_PROPERTIES, EVENT_SURFACE_PROPERTIES, EVENT_ACTOR_PROPERTIES, EVENT_COMPONENT_PROPERTIES, createSurfaceEvents, validityReason, fileRefusalReason,
+} from "./events.ts";

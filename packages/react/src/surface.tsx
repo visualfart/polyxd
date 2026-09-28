@@ -1,6 +1,6 @@
-import { useCallback, useContext, useEffect, useMemo, useState, type ComponentType } from "react";
+import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState, type ComponentType, type Ref } from "react";
 import { SurfaceContext, ScopeContext, StepsContext, useSurface, type ActionEvent, type Node, type UIDocument, type SurfaceContextValue } from "./context.tsx";
-import { dispatchAction } from "@polyxd/core";
+import { createSurfaceEvents, dispatchAction, validityReason, type EventRating, type SemanticEvent, type SurfaceEventOptions } from "@polyxd/core";
 import { ROOT_SCOPE, resolve, set, type Data, type Scope } from "./data.ts";
 import { registry, type ComponentRenderer } from "./components/index.ts";
 import { Avatar } from "./components/avatar.tsx";
@@ -37,33 +37,85 @@ export interface PolyxdSurfaceProps {
    */
   components?: Partial<Record<string, ComponentRenderer | ComponentType<any>>>;
   className?: string;
+  /**
+   * Semantic analytics events (schema/event.schema.json): shown, actions, checkpoints, completion,
+   * abandonment, input errors, statuses, undo. Keys and codes only, never what anyone typed. Off
+   * unless this is passed. They go to this handler and nowhere else.
+   */
+  onEvent?: (event: SemanticEvent) => void;
+  /** What the events say beyond the document: a session id, the actor, the journey, the generator, the Direction, experiment variants. Read when the surface is shown. */
+  events?: SurfaceEventOptions;
+  /** The host's side of the events: a rating, or that the person asked for this surface again. */
+  ref?: Ref<PolyxdSurfaceHandle>;
+}
+
+/** What a host can tell a surface's events from outside it. Does nothing while events are off. */
+export interface PolyxdSurfaceHandle {
+  /** The events' session id, while events are on. */
+  readonly sessionId: string | undefined;
+  /** feedback: the person rated this surface -1, 0 or 1, with an optional reason code. */
+  feedback: (rating: EventRating, reason?: string) => void;
+  /** surface.regenerated: the person asked again, and this surface is being replaced. */
+  regenerated: (reason?: string) => void;
 }
 
 /** Renders one Polyxd UI document. */
-export function PolyxdSurface({ document: doc, data: initial, onAction, onDataChange, derive, onDismiss, theme, mode, density, disclosure = "progressive", locale = "en-GB", resolveMedia, components: overrides, className }: PolyxdSurfaceProps) {
+export function PolyxdSurface({ document: doc, data: initial, onAction, onDataChange, derive, onDismiss, theme, mode, density, disclosure = "progressive", locale = "en-GB", resolveMedia, components: overrides, className, onEvent, events: eventOptions, ref }: PolyxdSurfaceProps) {
   const [data, setData] = useState<Data>(() => initial ?? doc.data ?? {});
   const [portal, setPortal] = useState<HTMLElement | null>(null);
   const [root, setRoot] = useState<HTMLElement | null>(null);
   const byId = useMemo(() => new Map(doc.components.map((c) => [c.id, c])), [doc]);
   const components = useMemo(() => ({ ...registry, ...overrides }) as Record<string, ComponentRenderer>, [overrides]);
 
+  // Semantic events: one emitter per document while the host listens; none at all otherwise.
+  const listener = useRef(onEvent);
+  listener.current = onEvent;
+  const options = useRef(eventOptions);
+  options.current = eventOptions;
+  const listening = Boolean(onEvent);
+  const events = useMemo(() => (listening ? createSurfaceEvents(doc, (e) => listener.current?.(e), options.current) : undefined), [doc, listening]);
+  const previous = useRef<typeof events>(undefined);
+  useEffect(() => {
+    if (!events) return;
+    // A new document: the last surface's ending is said before this one is shown.
+    if (previous.current !== events) previous.current?.unmounted(false);
+    previous.current = events;
+    events.shown();
+    // Deferred: a remount in the same tick (StrictMode) calls shown() again, which cancels it.
+    return () => events.unmounted();
+  }, [events]);
+  // Every control that fails validation fires 'invalid' (a Form's checkValidity, a Steps' submit): heard once, at the surface.
+  useEffect(() => {
+    if (!events || !root) return;
+    const invalid = (e: Event) => {
+      const control = e.target as (Element & { validity?: ValidityState }) | null;
+      const id = control?.closest?.("[data-pxd-id]")?.getAttribute("data-pxd-id");
+      if (id) events.inputError(byId.get(id) ?? id, validityReason(control?.validity));
+    };
+    root.addEventListener("invalid", invalid, true);
+    return () => root.removeEventListener("invalid", invalid, true);
+  }, [events, root, byId]);
+  useImperativeHandle(ref, () => ({ sessionId: events?.sessionId, feedback: (rating, reason) => events?.feedback(rating, reason), regenerated: (reason) => events?.regenerated(reason) }), [events]);
+
   const setValue = useCallback(
-    (pointer: string, value: unknown) =>
+    (pointer: string, value: unknown) => {
+      events?.edited(pointer);
       setData((d) => {
         const written = set(d, pointer, value);
         const next = derive?.(written) ?? written;
         onDataChange?.(next);
         return next;
-      }),
-    [onDataChange, derive],
+      });
+    },
+    [onDataChange, derive, events],
   );
 
   const dispatch = useCallback<SurfaceContextValue["dispatch"]>(
-    (action, scope, source) => dispatchAction(action, scope, source, data, { onAction, onDismiss }),
-    [data, onAction, onDismiss],
+    (action, scope, source) => dispatchAction(action, scope, source, data, { onAction, onDismiss, events }),
+    [data, onAction, onDismiss, events],
   );
 
-  const value: SurfaceContextValue = { doc, byId, data, setValue, dispatch, locale, resolveMedia, portal, root, components, disclosure };
+  const value: SurfaceContextValue = { doc, byId, data, setValue, dispatch, locale, resolveMedia, portal, root, components, disclosure, events };
   const rootIsDialog = byId.get(doc.root)?.component === "Confirm";
   // A shell has no surface header and places its own navigation: the Frame draws the regions.
   const shell = doc.surface.kind === "shell";

@@ -52,7 +52,7 @@ These rules make a Polyxd surface safe to embed in other software:
 
 ## What's in the box today
 
-Everything here is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) scope, from one [open-source monorepo](https://github.com/visualfart/polyxd), except the Python package `polyxd-spec`, which is in the repository only for now.
+Everything here is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) scope, from one [open-source monorepo](https://github.com/visualfart/polyxd), except the Python package `polyxd-spec` and `@polyxd/analytics`, which are in the repository only for now.
 
 | Package | What it does |
 |---|---|
@@ -60,6 +60,7 @@ Everything here is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd
 | `@polyxd/core` | The framework-free heart of rendering: document types, JSON Pointer bindings, localised formatting, every decision the renderer makes instead of the model, and a headless surface model. No DOM, no dependencies; both renderers are built on it |
 | `@polyxd/react` | React renderer for all 44 components, built on Radix primitives and styled only by token CSS variables, with theme CSS for every pack |
 | `@polyxd/web` | Web Components renderer: `<polyxd-surface>` and `<polyxd-frame>`, no framework, no shadow DOM, the same DOM and ARIA as the React renderer, so the same styles and checks apply; Vue and Svelte adapters as files to copy |
+| `@polyxd/analytics` | Sends the renderers' [semantic events](/docs/product#semantic-analytics-events) (shown, actions, completion, abandonment, input errors and more, never what anyone typed) to your own PostHog, Segment, Google Analytics 4 or endpoint, through an allow-list guard. Polyxd receives none of them. In the repository at `packages/analytics`; not yet on npm |
 | `@polyxd/ds-*` | Thirteen design-system packs as DTCG tokens: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend and Chakra UI; and twelve original templates to start your own from |
 | `polyxd` | The `polyxd pack` command, which makes a pack from your own tokens. See [Your design system](/docs/your-design-system) |
 | `@polyxd/a2ui` | Exports UI documents to A2UI v1.0 (release candidate) messages, with a Polyxd A2UI catalog |

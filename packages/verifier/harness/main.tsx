@@ -3,7 +3,7 @@
  * The verifier injects window.__PXD__ = { document, theme, mode } before the page loads.
  */
 import { createRoot } from "react-dom/client";
-import { PolyxdFrame, PolyxdSurface, type ActionEvent, type UIDocument } from "@polyxd/react";
+import { PolyxdFrame, PolyxdSurface, type ActionEvent, type SemanticEvent, type UIDocument } from "@polyxd/react";
 import "@polyxd/react/styles.css";
 
 import.meta.glob("../../react/themes/*.css", { eager: true });
@@ -13,12 +13,14 @@ declare global {
     __PXD__: { document: UIDocument; theme: string; mode: "light" | "dark" };
     __pxdActions: ActionEvent[];
     __pxdDismissed: number;
+    __pxdEvents: SemanticEvent[];
     __pxdReady: boolean;
   }
 }
 
 window.__pxdActions = [];
 window.__pxdDismissed = 0;
+window.__pxdEvents = [];
 const { document: doc, theme, mode } = window.__PXD__;
 
 const shared = {
@@ -26,6 +28,8 @@ const shared = {
   theme,
   mode,
   onAction: (e: ActionEvent) => window.__pxdActions.push(e),
+  // Semantic events are on in the harness, so every rendered check runs with them listening.
+  onEvent: (e: SemanticEvent) => window.__pxdEvents.push(e),
   resolveMedia: (ref: string) => `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect width="10" height="10" fill="#999"/><title>${ref}</title></svg>`)}`,
 };
 

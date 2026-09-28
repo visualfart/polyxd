@@ -22,7 +22,7 @@ import "@polyxd/react/themes/material3.css"; // one file per pack: carbon.css, p
 
 | Export | What it is |
 |---|---|
-| `PolyxdSurface` | Renders one document: a screen, panel or dialog. Props above, plus `derive` (derived data after each input change), `density`, `disclosure`, `locale`, `components`. |
+| `PolyxdSurface` | Renders one document: a screen, panel or dialog. Props above, plus `derive` (derived data after each input change), `density`, `disclosure`, `locale`, `components`, and `onEvent`, `events` and `ref` for semantic events (below). |
 | `PolyxdFrame` | Renders a **shell document** (the product's frame: AppBar, Navigation, Outlet, aside, Footer) with your screens as children in the Outlet; `current={{ key, title }}` marks the navigation and titles the page. |
 | `PolyxdSkeleton` | A loading state shaped by a pattern or a shape, for a document that has not arrived. |
 | `useFrame()` | The layout the frame chose (`side`, `rail`, `bar`, `drawer`; `compact`) for a host's own screens. |
@@ -30,6 +30,20 @@ import "@polyxd/react/themes/material3.css"; // one file per pack: carbon.css, p
 | `registry` | The default renderer map, to wrap or replace per component; also where a `Custom`'s host components go, by namespaced name. |
 | `formatValue`, `getPointer`, `setPointer` | Formatting and JSON Pointer helpers, re-exported from `@polyxd/core`. |
 | `preview/polyxd.js` | A self-contained browser bundle (`window.Polyxd.mount`) used by `polyxd dev` and the editor extension. |
+
+## Semantic events
+
+Pass `onEvent` and the surface emits semantic analytics events (`schema/event.schema.json`): `surface.shown`, `action.taken`, `checkpoint.reached`, `task.completed`, `task.abandoned`, `surface.dismissed`, `input.error`, `status.shown`, `undo`, and from you through the `ref`, `feedback` and `surface.regenerated`. They carry ids, keys, capability names and short codes, never what anyone typed. Without `onEvent` nothing is made. They go to your handler and nowhere else; `@polyxd/analytics` sends them on to PostHog, Segment, GA4 or your endpoint.
+
+```tsx
+import { toPostHog } from "@polyxd/analytics";
+
+const surface = useRef<PolyxdSurfaceHandle>(null);
+<PolyxdSurface ref={surface} document={doc} onEvent={toPostHog(posthog)} events={{ journey, generator: "my-model@3" }} />;
+surface.current?.feedback(1);
+```
+
+When each event fires and what it carries: [Capabilities, journeys and events](https://polyxd.com/docs/product/#semantic-analytics-events).
 
 ## What the renderer decides (not the model)
 

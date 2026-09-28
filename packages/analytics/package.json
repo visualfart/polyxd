@@ -1,7 +1,7 @@
 {
-  "name": "@polyxd/core",
+  "name": "@polyxd/analytics",
   "version": "0.4.0",
-  "description": "The framework-free heart of Polyxd rendering: document types, JSON Pointer bindings, localised formatting, the renderer's decisions, and a headless surface model every renderer walks the same way",
+  "description": "Sends Polyxd's semantic events to your own analytics: PostHog, Segment, Google Analytics 4 or your endpoint, with an allow-list guard. No dependencies; Polyxd receives nothing",
   "license": "Apache-2.0",
   "type": "module",
   "main": "dist/index.js",
@@ -23,17 +23,18 @@
     "build": "tsc -b",
     "test": "node --test \"test/**/*.test.ts\""
   },
+  "devDependencies": {
+    "@polyxd/core": "^0.4.0",
+    "ajv": "^8.20.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/visualfart/polyxd.git",
-    "directory": "packages/core"
+    "directory": "packages/analytics"
   },
   "homepage": "https://polyxd.com",
   "bugs": "https://github.com/visualfart/polyxd/issues",
   "publishConfig": {
     "access": "public"
-  },
-  "devDependencies": {
-    "ajv": "^8.20.0"
   }
 }

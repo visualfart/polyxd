@@ -6,6 +6,7 @@
 export const PACKAGES = [
   "polyxd",
   "@polyxd/a2ui",
+  "@polyxd/analytics",
   "@polyxd/core",
   "@polyxd/ds-antd",
   "@polyxd/ds-bootstrap",

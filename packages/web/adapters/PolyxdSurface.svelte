@@ -5,7 +5,7 @@
    *   import "@polyxd/web/styles.css"; import "@polyxd/web/themes/material3.css";
    */
   import { defineElements, type PolyxdSurfaceElement } from "@polyxd/web";
-  import type { ActionEvent, Data, UIDocument } from "@polyxd/core";
+  import type { ActionEvent, Data, SemanticEvent, SurfaceEventOptions, UIDocument } from "@polyxd/core";
 
   defineElements();
 
@@ -23,6 +23,8 @@
     onaction,
     ondatachange,
     ondismiss,
+    onevent,
+    events,
   }: {
     document: UIDocument;
     data?: Data;
@@ -37,6 +39,9 @@
     onaction?: (event: ActionEvent) => void;
     ondatachange?: (data: Data) => void;
     ondismiss?: () => void;
+    /** Semantic analytics events, off unless given. */
+    onevent?: (event: SemanticEvent) => void;
+    events?: SurfaceEventOptions;
   } = $props();
 
   let el: PolyxdSurfaceElement | undefined = $state();
@@ -49,6 +54,8 @@
     el.resolveMedia = resolveMedia;
     el.derive = derive;
     el.components = components;
+    el.events = events;
+    el.onEvent = onevent ?? null;
   });
 </script>
 

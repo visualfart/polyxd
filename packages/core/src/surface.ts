@@ -9,6 +9,7 @@ import { ROOT_SCOPE, absolute, resolve, resolveContext, set, type Data, type Sco
 import type { Action, ActionEvent, Node, UIDocument } from "./document.ts";
 import { indexById } from "./document.ts";
 import { formatValue, resolveFormat, type Format } from "./format.ts";
+import type { SurfaceEvents } from "./events.ts";
 
 export interface SurfaceOptions {
   /** Host data. Defaults to document.data. */
@@ -25,6 +26,8 @@ export interface SurfaceOptions {
   onDataChange?: (data: Data) => void;
   /** Called for ui.dismiss (Cancel on a dialog, closing the surface). */
   onDismiss?: () => void;
+  /** Semantic events (createSurfaceEvents): told about every action and every input write. Off when absent. */
+  events?: SurfaceEvents;
 }
 
 export interface Surface {
@@ -68,6 +71,7 @@ export function createSurface(document: UIDocument, options: SurfaceOptions = {}
     locale,
     setValue(pointer, value) {
       const written = set(data, pointer, value);
+      options.events?.edited(pointer);
       data = options.derive?.(written) ?? written;
       options.onDataChange?.(data);
       notify();

@@ -1,7 +1,7 @@
 import { useId, useRef, useState, type ChangeEvent, type ClipboardEvent, type DragEvent, type KeyboardEvent } from "react";
 import { RadioGroup } from "radix-ui";
 import { useBindings, useSurface, type Node, type SurfaceContextValue } from "../context.tsx";
-import { clamp, colorPlaceholder, contextWithValue, fileLimits, formatBytes, formatColor, parseColor, refuseFile, sameColor, toHex6, type ColorFormat, type RGBA } from "@polyxd/core";
+import { clamp, colorPlaceholder, contextWithValue, fileLimits, fileRefusalReason, formatBytes, formatColor, parseColor, refuseFile, sameColor, toHex6, type ColorFormat, type RGBA } from "@polyxd/core";
 import { useA11y } from "../surface.tsx";
 import { optionsOf } from "@polyxd/core";
 import { Icon } from "./avatar.tsx";
@@ -72,8 +72,10 @@ export function FileInput({ node }: { node: Node }) {
     const refused: string[] = [];
     for (const f of multiple ? chosen : chosen.slice(0, 1)) {
       const why = refuseFile(f, accept, maxSize, s.locale);
-      if (why) refused.push(why);
-      else accepted.push({ name: f.name, size: f.size, type: f.type, ref: URL.createObjectURL(f) });
+      if (why) {
+        refused.push(why);
+        s.events?.inputError(node, fileRefusalReason(f, maxSize));
+      } else accepted.push({ name: f.name, size: f.size, type: f.type, ref: URL.createObjectURL(f) });
     }
     setError(refused.length ? refused.join(" ") : null);
     if (accepted.length === 0) return;

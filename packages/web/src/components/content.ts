@@ -417,6 +417,7 @@ export function Status(node: Node, ctx: Ctx): VNode {
   const b = ctx.b;
   const urgent = node.kind === "error";
   const a11y = ctx.a11y(node);
+  ctx.r.statusDrawn(node, ctx.scope);
   if (node.kind === "undo") {
     return h("div", { class: "pxd-snackbar", role: "status", ...a11y }, h("p", { class: "pxd-snackbar-text" }, b.text(node.title), node.message !== undefined && h("span", { class: "pxd-snackbar-message" }, ` ${b.text(node.message)}`)), node.action && ctx.render(node.action));
   }

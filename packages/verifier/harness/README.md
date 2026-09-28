@@ -24,9 +24,10 @@ The verifier renders a document by opening a **harness**: a page that draws one 
    ```ts
    window.__pxdActions = [];           // every ActionEvent, in order: { name, context, source }
    window.__pxdDismissed = 0;          // incremented on each ui.dismiss
+   window.__pxdEvents = [];            // optional: every semantic event (schema/event.schema.json), in order
    ```
 
-   The agent tasks check `__pxdActions` for the expected capability event with the expected (resolved) context.
+   The agent tasks check `__pxdActions` for the expected capability event with the expected (resolved) context. The shipped harnesses also pass `onEvent`, so every rendered check runs with semantic events on, and the verifier's tests compare the events both renderers emit for the same clicks.
 
 4. **Say when it is ready.** After the first paint, set `window.__pxdReady = true`. The shipped harnesses do it two animation frames after mounting. The verifier then waits for any finite CSS animation to finish (an entrance fade) before measuring, so a renderer need not avoid them.
 

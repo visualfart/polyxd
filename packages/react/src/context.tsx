@@ -1,9 +1,9 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { resolve, resolveContext, set, absolute, type Data, type Scope } from "./data.ts";
 import { formatValue, resolveFormat, type Format } from "./format.ts";
-import type { ActionEvent, FrameLayout, NavigationPlacement, Node, UIDocument } from "@polyxd/core";
+import type { ActionEvent, FrameLayout, NavigationPlacement, Node, SurfaceEvents, UIDocument } from "@polyxd/core";
 
-export type { ActionEvent, FrameLayout, NavigationPlacement, Node, UIDocument };
+export type { ActionEvent, FrameLayout, NavigationPlacement, Node, SurfaceEvents, UIDocument };
 
 export interface SurfaceContextValue {
   doc: UIDocument;
@@ -21,6 +21,8 @@ export interface SurfaceContextValue {
   components: Record<string, React.ComponentType<any>>;
   /** Design Direction's profile.disclosure: whether secondary detail starts hidden. */
   disclosure: "progressive" | "show-everything";
+  /** The surface's semantic events while the host listens (onEvent); undefined otherwise. A host's own component may report feedback through it. */
+  events?: SurfaceEvents;
 }
 
 export const SurfaceContext = createContext<SurfaceContextValue | null>(null);

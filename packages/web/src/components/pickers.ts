@@ -1,4 +1,4 @@
-import { clamp, colorPlaceholder, contextWithValue, fileLimits, formatBytes, formatColor, optionsOf, parseColor, refuseFile, sameColor, toHex6, type ColorFormat, type Node, type RGBA } from "@polyxd/core";
+import { clamp, colorPlaceholder, contextWithValue, fileLimits, fileRefusalReason, formatBytes, formatColor, optionsOf, parseColor, refuseFile, sameColor, toHex6, type ColorFormat, type Node, type RGBA } from "@polyxd/core";
 import { h, type VNode } from "../dom.ts";
 import type { Ctx } from "../renderer.ts";
 import { RadioGroup, RadioItem } from "../primitives.ts";
@@ -54,8 +54,10 @@ export function FileInput(node: Node, ctx: Ctx): VNode {
     const refused: string[] = [];
     for (const f of multiple ? chosen : chosen.slice(0, 1)) {
       const why = refuseFile(f, accept, maxSize, r.locale);
-      if (why) refused.push(why);
-      else accepted.push({ name: f.name, size: f.size, type: f.type, ref: URL.createObjectURL(f) });
+      if (why) {
+        refused.push(why);
+        r.events?.inputError(node, fileRefusalReason(f, maxSize));
+      } else accepted.push({ name: f.name, size: f.size, type: f.type, ref: URL.createObjectURL(f) });
     }
     setError(refused.length ? refused.join(" ") : null);
     if (accepted.length === 0) return;
