@@ -235,7 +235,7 @@ body {
   color: var(--muted);
 }
 
-/* Design-system picker: each option carries that pack's own colour and typeface. */
+/* Design-system picker: each option carries that pack's logo beside its name. */
 .g-picker {
   position: relative;
 }
@@ -280,16 +280,27 @@ body {
   font-size: 11px;
   color: var(--muted);
 }
-.g-specimen {
+/* A pack's logo: the owner's file, unaltered, on a white squircle tile with a hairline, white in
+   both themes (as the mark's window is) so every logo keeps its own colours. */
+.g-logo {
   flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-pill);
-  background: var(--ink);
-  color: #fff;
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-icon);
+  corner-shape: squircle;
+  background: var(--mark-window);
+}
+.g-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.g-logo-none {
+  border-color: transparent;
+  background: none;
 }
 .g-listbox {
   position: absolute;

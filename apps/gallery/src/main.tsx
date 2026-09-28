@@ -12,6 +12,9 @@ import { Cluster, Icon, PackPicker, Segmented, type Pack } from "./ui.tsx";
 // Every theme pack the renderer has compiled, and every example UI document in the spec.
 const themeFiles = import.meta.glob("../../../packages/react/themes/*.css", { eager: true });
 const exampleFiles = import.meta.glob<{ default: UIDocument }>("../../../packages/spec/examples/*.json", { eager: true });
+// Each pack's logo, as its manifest names it: the owner's official file, or a template's Polyxd mark.
+const logoFiles = import.meta.glob<string>("../../../packages/ds-*/logo.{svg,png}", { eager: true, query: "?url", import: "default" });
+const logoOf = (key: string) => Object.entries(logoFiles).find(([path]) => path.includes(`/ds-${key}/logo.`))?.[1];
 
 type Density = "compact" | "comfortable" | "spacious";
 
@@ -24,7 +27,7 @@ const domainOf = (file: string) => file.split("-")[0];
 const WIDTHS = { phone: 390, tablet: 768, desktop: 1100 } as const;
 type Width = keyof typeof WIDTHS;
 
-/** Who each pack comes from. Its colour and typeface come from the pack's own tokens at runtime. */
+/** Who each pack comes from. Its logo is the pack's own logo file. */
 const PACK_INFO: Record<string, { name: string; by: string }> = {
   material3: { name: "Material 3", by: "Google · Roboto" },
   carbon: { name: "Carbon", by: "IBM · IBM Plex Sans" },
@@ -37,7 +40,7 @@ const PACK_INFO: Record<string, { name: string; by: string }> = {
   polaris: { name: "Shopify Polaris", by: "Shopify · Inter" },
   primer: { name: "GitHub Primer", by: "GitHub · Mona Sans" },
   spectrum: { name: "Adobe Spectrum 2", by: "Adobe · Source Sans" },
-  govuk: { name: "GOV.UK Frontend", by: "GDS · one theme, no dark" },
+  govuk: { name: "GOV.UK Design System", by: "GDS · one theme, no dark" },
   chakra: { name: "Chakra UI 3", by: "Chakra · Inter" },
 };
 /** Original Polyxd templates: not reproductions of anyone's system, meant to be copied and changed. Listed after the real systems, under their own heading. */
@@ -56,8 +59,8 @@ const TEMPLATE_INFO: Record<string, { name: string; by: string }> = {
   mono: { name: "Mono", by: "One hue in every role · indigo" },
 };
 const packs: Pack[] = [
-  ...themes.filter((key) => !(key in TEMPLATE_INFO)).map((key) => ({ key, group: "Design systems", ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) })),
-  ...Object.keys(TEMPLATE_INFO).filter((key) => themes.includes(key)).map((key) => ({ key, group: "Templates", ...TEMPLATE_INFO[key] })),
+  ...themes.filter((key) => !(key in TEMPLATE_INFO)).map((key) => ({ key, group: "Design systems", logo: logoOf(key), ...(PACK_INFO[key] ?? { name: key, by: "Design system pack" }) })),
+  ...Object.keys(TEMPLATE_INFO).filter((key) => themes.includes(key)).map((key) => ({ key, group: "Templates", logo: logoOf(key), ...TEMPLATE_INFO[key] })),
 ];
 
 /** Example files are named <domain>-<thing>; these are the words people use for those domains. */

@@ -31,47 +31,28 @@ export interface Pack {
   by: string;
   /** Packs with the same group sit under one heading in the picker: real design systems, then templates. */
   group?: string;
+  /** The pack's logo file (packages/ds-<key>/logo.svg, as its manifest names it); none for GOV.UK. */
+  logo?: string;
 }
 
-/** A pack's own primary colour and body typeface, read from the theme it compiled. */
-export function usePackStyles(packs: Pack[]): Record<string, { color: string; family: string }> {
-  const [styles, setStyles] = useState<Record<string, { color: string; family: string }>>({});
-  useEffect(() => {
-    const probe = document.createElement("div");
-    probe.className = "pxd-surface";
-    probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none";
-    document.body.append(probe);
-    const out: Record<string, { color: string; family: string }> = {};
-    for (const p of packs) {
-      probe.dataset.pxdTheme = p.key;
-      probe.dataset.pxdMode = "light";
-      const cs = getComputedStyle(probe);
-      out[p.key] = {
-        color: cs.getPropertyValue("--pxd-color-action-primary-background").trim() || "#141414",
-        family: cs.getPropertyValue("--pxd-type-body-default-family").trim() || "inherit",
-      };
-    }
-    probe.remove();
-    setStyles(out);
-  }, [packs]);
-  return styles;
-}
-
-/** The pack's colour and typeface as an "Aa" specimen: what changes when you switch. */
-function Specimen({ style, size }: { style?: { color: string; family: string }; size: number }) {
+/**
+ * A pack's logo on a white squircle tile: the owner's file, unaltered, for a real design system; a
+ * Polyxd-made mark for a template. Decorative, since the name beside it is the label. GOV.UK's
+ * crown and logotype are protected, so it has no logo, and gets an empty space the same size.
+ */
+function PackLogo({ src, size }: { src?: string; size: number }) {
   return (
-    <span className="g-specimen" aria-hidden="true" style={{ width: size, height: size, background: style?.color, fontFamily: style?.family, fontSize: Math.round(size * 0.46) }}>
-      Aa
+    <span className={`g-logo${src ? "" : " g-logo-none"}`} aria-hidden="true" style={{ width: size, height: size, padding: Math.round(size * 0.15) }}>
+      {src && <img src={src} alt="" width={size} height={size} decoding="async" />}
     </span>
   );
 }
 
 /**
- * Design-system picker: a listbox, so each option can carry that pack's own colour and type.
+ * Design-system picker: a listbox, so each option can carry that pack's logo beside its name.
  * Arrow keys move, Enter and Space choose, Escape closes, and focus returns to the button.
  */
 export function PackPicker({ packs, value, onChange }: { packs: Pack[]; value: string; onChange: (key: string) => void }) {
-  const styles = usePackStyles(packs);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(() => Math.max(0, packs.findIndex((p) => p.key === value)));
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -116,7 +97,7 @@ export function PackPicker({ packs, value, onChange }: { packs: Pack[]; value: s
           }
         }}
       >
-        <Specimen style={styles[current.key]} size={26} />
+        <PackLogo src={current.logo} size={30} />
         <span className="g-picker-text">
           <span className="g-picker-name">{current.name}</span>
           <span className="g-picker-by">{current.by}</span>
@@ -156,7 +137,7 @@ export function PackPicker({ packs, value, onChange }: { packs: Pack[]; value: s
                 onMouseEnter={() => setActive(i)}
                 onClick={() => choose(i)}
               >
-                <Specimen style={styles[p.key]} size={32} />
+                <PackLogo src={p.logo} size={32} />
                 <span className="g-picker-text">
                   <span className="g-picker-name">{p.name}</span>
                   <span className="g-picker-by">{p.by}</span>
