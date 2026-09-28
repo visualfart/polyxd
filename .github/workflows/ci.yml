@@ -27,5 +27,9 @@ jobs:
       # @polyxd/spec before spec has emitted and keeps that failure for the rest of the build.
       - run: npm run typecheck
       - run: npm run test:all
+      # The Python spec package (packages/python-spec): its copies of the schemas are current, and
+      # it gives the same verdicts, paths and messages as the TypeScript validator.
+      - uses: astral-sh/setup-uv@v6
+      - run: npm run test:python
       - run: npm run check:licences
       - run: npm run release:check

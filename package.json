@@ -12,6 +12,7 @@
     "typecheck": "tsc -b packages/spec && tsc -b",
     "check:licences": "node scripts/check-licences.ts",
     "test:all": "node scripts/test-all.ts",
+    "test:python": "uv run --directory packages/python-spec --extra test pytest -q",
     "release:check": "node scripts/release.ts",
     "release:publish": "node scripts/release.ts --publish",
     "release:first": "node scripts/first-publish.ts"

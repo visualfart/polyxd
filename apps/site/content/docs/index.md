@@ -64,6 +64,7 @@ Everything is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) sco
 | `polyxd` | The `polyxd pack` command, which makes a pack from your own tokens. See [Your design system](/docs/your-design-system) |
 | `@polyxd/a2ui` | Exports UI documents to A2UI v1.0 (release candidate) messages, with a Polyxd A2UI catalog |
 | `@polyxd/verifier` | The `polyxd-verify` CLI and library: document checks, rendered accessibility and layout checks, scripted agent tasks, and a consistency score |
+| `polyxd-spec` (Python) | The spec's schemas, component catalogue and validator for Python, with the same verdicts and messages as `@polyxd/spec`, and a `polyxd-spec validate` command. In the repository at `packages/python-spec`; not yet on PyPI |
 
 The repository also holds the benchmark (`bench/`: 50 requests, multi-turn sequences, agent tasks and a gold set) and the [gallery](/gallery/).
 

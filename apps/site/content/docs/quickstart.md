@@ -106,6 +106,23 @@ npx polyxd-validate my-ui.json
     error /components/1/value/path: relative path "draft/title" used outside a repeated item
 ```
 
+### From Python
+
+The Python package `polyxd-spec` runs the same checks and reports the same paths and messages. It is not on PyPI yet, so install it from a clone of the repository:
+
+```bash
+pip install ./packages/python-spec
+polyxd-spec validate my-ui.json
+```
+
+```python
+from polyxd_spec import validate_document
+
+result = validate_document(doc)
+for issue in result.errors:
+    print(issue.path, issue.message, issue.hint)
+```
+
 ## 3. Verify it
 
 The verifier renders the document in headless Chromium, in each design system, mode and width, and checks it the way it will actually be used. It needs Playwright's Chromium.
