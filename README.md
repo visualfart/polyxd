@@ -2,7 +2,7 @@
 
 # Polyxd
 
-[![@polyxd/react](https://img.shields.io/npm/v/@polyxd/react?label=%40polyxd%2Freact&color=FF6E40)](https://www.npmjs.com/package/@polyxd/react) [![@polyxd/web](https://img.shields.io/npm/v/@polyxd/web?label=%40polyxd%2Fweb&color=FF6E40)](https://www.npmjs.com/package/@polyxd/web) [![@polyxd/spec](https://img.shields.io/npm/v/@polyxd/spec?label=%40polyxd%2Fspec&color=FF6E40)](https://www.npmjs.com/package/@polyxd/spec) [![@polyxd/verifier](https://img.shields.io/npm/v/@polyxd/verifier?label=%40polyxd%2Fverifier&color=FF6E40)](https://www.npmjs.com/package/@polyxd/verifier) [![polyxd](https://img.shields.io/npm/v/polyxd?label=polyxd&color=FF6E40)](https://www.npmjs.com/package/polyxd) [![npm scope](https://img.shields.io/badge/npm-%40polyxd-141413)](https://www.npmjs.com/search?q=%40polyxd) [![Licence](https://img.shields.io/badge/licence-Apache--2.0-141413)](LICENSE)
+[![@polyxd/react](https://img.shields.io/npm/v/@polyxd/react?label=%40polyxd%2Freact&color=FF6E40)](https://www.npmjs.com/package/@polyxd/react) [![@polyxd/web](https://img.shields.io/npm/v/@polyxd/web?label=%40polyxd%2Fweb&color=FF6E40)](https://www.npmjs.com/package/@polyxd/web) [![@polyxd/spec](https://img.shields.io/npm/v/@polyxd/spec?label=%40polyxd%2Fspec&color=FF6E40)](https://www.npmjs.com/package/@polyxd/spec) [![@polyxd/verifier](https://img.shields.io/npm/v/@polyxd/verifier?label=%40polyxd%2Fverifier&color=FF6E40)](https://www.npmjs.com/package/@polyxd/verifier) [![polyxd](https://img.shields.io/npm/v/polyxd?label=polyxd&color=FF6E40)](https://www.npmjs.com/package/polyxd) [![npm scope](https://img.shields.io/badge/npm-%40polyxd-141413)](https://www.npmjs.com/org/polyxd) [![Licence](https://img.shields.io/badge/licence-Apache--2.0-141413)](LICENSE)
 
 **An open spec, renderer and verifier for interfaces generated on demand** — rendered natively in your design system, operable by people and agents alike, and checked before anyone sees them.
 
@@ -22,7 +22,7 @@ request ──► generator (any model or program that emits spec-valid JSON)
 
 ## Packages on npm
 
-Everything is on npm under [`@polyxd`](https://www.npmjs.com/search?q=%40polyxd), plus the `polyxd` CLI and a `@polyxd/ds-*` package per design system.
+All 37 packages are on npm under the [`@polyxd` organisation](https://www.npmjs.com/org/polyxd): the twelve below, the `polyxd` CLI among them, then [thirteen design-system packs](#the-design-systems) and [twelve templates](#the-templates).
 
 | Package | What it is | Version |
 |---|---|---|
@@ -37,6 +37,7 @@ Everything is on npm under [`@polyxd`](https://www.npmjs.com/search?q=%40polyxd)
 | [`@polyxd/mcp`](https://www.npmjs.com/package/@polyxd/mcp) | An MCP server: the spec, checks and live screens for a host's model | [![@polyxd/mcp](https://img.shields.io/npm/v/@polyxd/mcp?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/mcp) |
 | [`@polyxd/a2ui`](https://www.npmjs.com/package/@polyxd/a2ui) | Export to A2UI | [![@polyxd/a2ui](https://img.shields.io/npm/v/@polyxd/a2ui?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/a2ui) |
 | [`@polyxd/analytics`](https://www.npmjs.com/package/@polyxd/analytics) | Adapters for the renderers' semantic events | [![@polyxd/analytics](https://img.shields.io/npm/v/@polyxd/analytics?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/analytics) |
+| [`@polyxd/ds-kit`](https://www.npmjs.com/package/@polyxd/ds-kit) | Builds design-system packs, including yours with `polyxd pack` | [![@polyxd/ds-kit](https://img.shields.io/npm/v/@polyxd/ds-kit?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-kit) |
 
 ## What works today
 
@@ -54,23 +55,42 @@ All 24 examples score 100 across **1,248 renders** (13 packs × 2 widths × ligh
 
 ### The design systems
 
-| | Design system | Pack |
-|---|---|---|
-| <img src="packages/ds-material3/logo.svg" height="20" alt=""> | Material 3 | [`@polyxd/ds-material3`](packages/ds-material3/) |
-| <img src="packages/ds-carbon/logo.svg" height="20" alt=""> | IBM Carbon | [`@polyxd/ds-carbon`](packages/ds-carbon/) |
-| <img src="packages/ds-antd/logo.svg" height="20" alt=""> | Ant Design | [`@polyxd/ds-antd`](packages/ds-antd/) |
-| <img src="packages/ds-fluent/logo.svg" height="20" alt=""> | Microsoft Fluent 2 | [`@polyxd/ds-fluent`](packages/ds-fluent/) |
-| <img src="packages/ds-shadcn/logo.svg" height="20" alt=""> | shadcn/ui | [`@polyxd/ds-shadcn`](packages/ds-shadcn/) |
-| <picture><source media="(prefers-color-scheme: dark)" srcset="packages/ds-bootstrap/logo-white.svg"><img src="packages/ds-bootstrap/logo.svg" height="20" alt=""></picture> | Bootstrap 5 | [`@polyxd/ds-bootstrap`](packages/ds-bootstrap/) |
-| <img src="packages/ds-mantine/logo.svg" height="20" alt=""> | Mantine 8 | [`@polyxd/ds-mantine`](packages/ds-mantine/) |
-| <picture><source media="(prefers-color-scheme: dark)" srcset="packages/ds-radix/logo-white.svg"><img src="packages/ds-radix/logo.svg" height="20" alt=""></picture> | Radix Themes 3 | [`@polyxd/ds-radix`](packages/ds-radix/) |
-| <img src="packages/ds-polaris/logo.svg" height="20" alt=""> | Shopify Polaris | [`@polyxd/ds-polaris`](packages/ds-polaris/) |
-| <img src="packages/ds-primer/logo.svg" height="20" alt=""> | GitHub Primer | [`@polyxd/ds-primer`](packages/ds-primer/) |
-| <img src="packages/ds-spectrum/logo.svg" height="20" alt=""> | Adobe Spectrum 2 | [`@polyxd/ds-spectrum`](packages/ds-spectrum/) |
-|  | GOV.UK Design System | [`@polyxd/ds-govuk`](packages/ds-govuk/) |
-| <img src="packages/ds-chakra/logo.svg" height="20" alt=""> | Chakra UI 3 | [`@polyxd/ds-chakra`](packages/ds-chakra/) |
+| | Design system | Pack | Version |
+|---|---|---|---|
+| <img src="packages/ds-material3/logo.svg" height="20" alt=""> | Material 3 | [`@polyxd/ds-material3`](packages/ds-material3/) | [![@polyxd/ds-material3](https://img.shields.io/npm/v/@polyxd/ds-material3?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-material3) |
+| <img src="packages/ds-carbon/logo.svg" height="20" alt=""> | IBM Carbon | [`@polyxd/ds-carbon`](packages/ds-carbon/) | [![@polyxd/ds-carbon](https://img.shields.io/npm/v/@polyxd/ds-carbon?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-carbon) |
+| <img src="packages/ds-antd/logo.svg" height="20" alt=""> | Ant Design | [`@polyxd/ds-antd`](packages/ds-antd/) | [![@polyxd/ds-antd](https://img.shields.io/npm/v/@polyxd/ds-antd?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-antd) |
+| <img src="packages/ds-fluent/logo.svg" height="20" alt=""> | Microsoft Fluent 2 | [`@polyxd/ds-fluent`](packages/ds-fluent/) | [![@polyxd/ds-fluent](https://img.shields.io/npm/v/@polyxd/ds-fluent?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-fluent) |
+| <img src="packages/ds-shadcn/logo.svg" height="20" alt=""> | shadcn/ui | [`@polyxd/ds-shadcn`](packages/ds-shadcn/) | [![@polyxd/ds-shadcn](https://img.shields.io/npm/v/@polyxd/ds-shadcn?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-shadcn) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="packages/ds-bootstrap/logo-white.svg"><img src="packages/ds-bootstrap/logo.svg" height="20" alt=""></picture> | Bootstrap 5 | [`@polyxd/ds-bootstrap`](packages/ds-bootstrap/) | [![@polyxd/ds-bootstrap](https://img.shields.io/npm/v/@polyxd/ds-bootstrap?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-bootstrap) |
+| <img src="packages/ds-mantine/logo.svg" height="20" alt=""> | Mantine 8 | [`@polyxd/ds-mantine`](packages/ds-mantine/) | [![@polyxd/ds-mantine](https://img.shields.io/npm/v/@polyxd/ds-mantine?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-mantine) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="packages/ds-radix/logo-white.svg"><img src="packages/ds-radix/logo.svg" height="20" alt=""></picture> | Radix Themes 3 | [`@polyxd/ds-radix`](packages/ds-radix/) | [![@polyxd/ds-radix](https://img.shields.io/npm/v/@polyxd/ds-radix?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-radix) |
+| <img src="packages/ds-polaris/logo.svg" height="20" alt=""> | Shopify Polaris | [`@polyxd/ds-polaris`](packages/ds-polaris/) | [![@polyxd/ds-polaris](https://img.shields.io/npm/v/@polyxd/ds-polaris?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-polaris) |
+| <img src="packages/ds-primer/logo.svg" height="20" alt=""> | GitHub Primer | [`@polyxd/ds-primer`](packages/ds-primer/) | [![@polyxd/ds-primer](https://img.shields.io/npm/v/@polyxd/ds-primer?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-primer) |
+| <img src="packages/ds-spectrum/logo.svg" height="20" alt=""> | Adobe Spectrum 2 | [`@polyxd/ds-spectrum`](packages/ds-spectrum/) | [![@polyxd/ds-spectrum](https://img.shields.io/npm/v/@polyxd/ds-spectrum?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-spectrum) |
+|  | GOV.UK Design System | [`@polyxd/ds-govuk`](packages/ds-govuk/) | [![@polyxd/ds-govuk](https://img.shields.io/npm/v/@polyxd/ds-govuk?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-govuk) |
+| <img src="packages/ds-chakra/logo.svg" height="20" alt=""> | Chakra UI 3 | [`@polyxd/ds-chakra`](packages/ds-chakra/) | [![@polyxd/ds-chakra](https://img.shields.io/npm/v/@polyxd/ds-chakra?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-chakra) |
 
 Each logo is its owner's own file, unaltered, used to identify the design system a pack is modelled on (where a system has no mark of its own, its company's logo). Several owners' guidelines restrict logo use without permission; each pack's README records the source and the guidelines. GOV.UK's crown and logotype are protected, so it is named in words alone. Twelve original templates (`sketch`, `wireframe`, `editorial`, `brutalist`, `glass`, `terminal`, `pastel`, `civic`, `finance`, `health`, `neon`, `mono`) sit beside them, each with a mark drawn from its own tokens.
+
+### The templates
+
+Twelve original packs, made to be copied and changed.
+
+| Template | Pack | Version |
+|---|---|---|
+| Brutalist | [`@polyxd/ds-brutalist`](packages/ds-brutalist/) | [![@polyxd/ds-brutalist](https://img.shields.io/npm/v/@polyxd/ds-brutalist?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-brutalist) |
+| Civic | [`@polyxd/ds-civic`](packages/ds-civic/) | [![@polyxd/ds-civic](https://img.shields.io/npm/v/@polyxd/ds-civic?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-civic) |
+| Editorial | [`@polyxd/ds-editorial`](packages/ds-editorial/) | [![@polyxd/ds-editorial](https://img.shields.io/npm/v/@polyxd/ds-editorial?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-editorial) |
+| Finance | [`@polyxd/ds-finance`](packages/ds-finance/) | [![@polyxd/ds-finance](https://img.shields.io/npm/v/@polyxd/ds-finance?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-finance) |
+| Glass | [`@polyxd/ds-glass`](packages/ds-glass/) | [![@polyxd/ds-glass](https://img.shields.io/npm/v/@polyxd/ds-glass?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-glass) |
+| Health | [`@polyxd/ds-health`](packages/ds-health/) | [![@polyxd/ds-health](https://img.shields.io/npm/v/@polyxd/ds-health?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-health) |
+| Mono | [`@polyxd/ds-mono`](packages/ds-mono/) | [![@polyxd/ds-mono](https://img.shields.io/npm/v/@polyxd/ds-mono?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-mono) |
+| Neon | [`@polyxd/ds-neon`](packages/ds-neon/) | [![@polyxd/ds-neon](https://img.shields.io/npm/v/@polyxd/ds-neon?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-neon) |
+| Pastel | [`@polyxd/ds-pastel`](packages/ds-pastel/) | [![@polyxd/ds-pastel](https://img.shields.io/npm/v/@polyxd/ds-pastel?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-pastel) |
+| Sketch | [`@polyxd/ds-sketch`](packages/ds-sketch/) | [![@polyxd/ds-sketch](https://img.shields.io/npm/v/@polyxd/ds-sketch?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-sketch) |
+| Terminal | [`@polyxd/ds-terminal`](packages/ds-terminal/) | [![@polyxd/ds-terminal](https://img.shields.io/npm/v/@polyxd/ds-terminal?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-terminal) |
+| Wireframe | [`@polyxd/ds-wireframe`](packages/ds-wireframe/) | [![@polyxd/ds-wireframe](https://img.shields.io/npm/v/@polyxd/ds-wireframe?label=&color=FF6E40)](https://www.npmjs.com/package/@polyxd/ds-wireframe) |
 
 ## Try it
 
