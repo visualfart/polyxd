@@ -21,6 +21,8 @@ import { FORMATS, exportDesignSystem, isFormat } from "../export/index.ts";
 import { blankDirection, rulesFromWorkspace, toExport, type CompanyPattern, type Direction, type DirectionRule, type Snapshot } from "../direction/model.ts";
 import { checkDirection } from "../direction/schema.ts";
 import { capture, ingest, posthogConfig, type Properties } from "./analytics.ts";
+import { CORS, ingestEvents, newIngestKey, preflight } from "./insights.ts";
+import { RANGES, RETENTION_DAYS, detail, range, summarise, type StoredRow } from "../insights/report.ts";
 
 type Vars = { user: User | null; apiWorkspace: string | null };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -74,6 +76,18 @@ function track(c: Ctx, event: string, who: { distinctId?: string; workspace?: st
 
 // The app's analytics, through Studio's own address (src/worker/analytics.ts). A 404 without POSTHOG_KEY.
 app.all("/ingest/*", (c) => ingest(c.req.raw, c.env));
+
+// Insights' ingest endpoint (src/worker/insights.ts), ahead of the /api/* checks below: products
+// call it from any origin with a publishable ingest key. No cookie or API key is read here.
+app.options("/api/w/:slug/events", () => preflight());
+app.post("/api/w/:slug/events", async (c) => {
+  try {
+    return await ingestEvents(c.req.raw, c.env, c.req.param("slug"));
+  } catch (e) {
+    console.error(e);
+    return new Response(JSON.stringify({ error: "Something went wrong on our side" }), { status: 500, headers: { ...CORS, "content-type": "application/json", "cache-control": "no-store" } });
+  }
+});
 
 app.on(["GET", "POST"], "/api/auth/*", (c) => makeAuth(c.env, { onSignUp: (id, method) => track(c as Ctx, "signed_up", { distinctId: id, properties: { method } }) }).handler(c.req.raw));
 
@@ -289,6 +303,34 @@ app.post("/api/w/:slug/api-keys", async (c) => {
 app.delete("/api/w/:slug/api-keys/:id", async (c) => {
   const w = await ws(c as Ctx, new Set(["owner", "engineer", "design-system"]));
   await c.env.DB.prepare("DELETE FROM api_keys WHERE id = ? AND workspace_id = ?").bind(c.req.param("id"), w.id).run();
+  return c.json({ ok: true });
+});
+
+// Ingest keys: publishable, for a product's pages, and able only to send events to Insights
+// (src/worker/insights.ts). Shown again whenever asked: they aren't secrets.
+const CAN_MANAGE_INGEST = new Set(["owner", "engineer", "design-system", "product"]);
+
+app.get("/api/w/:slug/ingest-keys", async (c) => {
+  const w = await ws(c as Ctx);
+  const rows = await c.env.DB.prepare("SELECT id, name, key, created_at, last_used_at FROM ingest_keys WHERE workspace_id = ? ORDER BY created_at").bind(w.id).all();
+  return c.json({ keys: rows.results });
+});
+
+app.post("/api/w/:slug/ingest-keys", async (c) => {
+  const w = await ws(c as Ctx, CAN_MANAGE_INGEST);
+  const user = need(c as Ctx);
+  const { name } = await body<{ name?: string }>(c as Ctx);
+  if (name !== undefined) text(name, 80, "Name");
+  const key = newIngestKey();
+  const id = crypto.randomUUID();
+  await c.env.DB.prepare("INSERT INTO ingest_keys (id, workspace_id, name, key, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)")
+    .bind(id, w.id, name?.trim() || "Product events", key, user.id, now()).run();
+  return c.json({ id, key }, 201);
+});
+
+app.delete("/api/w/:slug/ingest-keys/:id", async (c) => {
+  const w = await ws(c as Ctx, CAN_MANAGE_INGEST);
+  await c.env.DB.prepare("DELETE FROM ingest_keys WHERE id = ? AND workspace_id = ?").bind(c.req.param("id"), w.id).run();
   return c.json({ ok: true });
 });
 
@@ -1180,6 +1222,51 @@ app.post("/api/w/:slug/directions/:key/unpublish", async (c) => {
     c.env.DB.prepare("UPDATE directions SET status = 'draft', updated_at = ? WHERE id = ?").bind(now(), d.id),
   ]);
   return c.json({ ok: true });
+});
+
+// ---------------------------------------------------------------- insights
+
+/** The range asked for: 7, 30 or 90 days ending today (UTC). */
+function insightRange(c: Ctx) {
+  const days = Number(c.req.query("days") ?? 30);
+  if (!RANGES.includes(days as (typeof RANGES)[number])) throw new Fail(400, `days: one of ${RANGES.join(", ")}`);
+  return { days, ...range(days) };
+}
+const insightRows = async (env: Env, workspaceId: string, from: string, to: string, intent?: string) =>
+  (await env.DB.prepare(`SELECT * FROM insight_counts WHERE workspace_id = ? AND day >= ? AND day <= ?${intent === undefined ? "" : " AND intent = ?"}`)
+    .bind(...[workspaceId, from, to, ...(intent === undefined ? [] : [intent])]).all<StoredRow>()).results;
+
+/** The workspace's screens by intent, so a row of Insights can link to the screen it is about. */
+async function screensByIntent(env: Env, workspaceId: string): Promise<Record<string, { key: string; name: string }[]>> {
+  const rows = await env.DB.prepare("SELECT key, name, intent FROM screens WHERE workspace_id = ? AND intent != '' ORDER BY name").bind(workspaceId).all<{ key: string; name: string; intent: string }>();
+  const out: Record<string, { key: string; name: string }[]> = {};
+  for (const r of rows.results) (out[r.intent] ??= []).push({ key: r.key, name: r.name });
+  return out;
+}
+
+app.get("/api/w/:slug/insights", async (c) => {
+  const w = await ws(c as Ctx);
+  const { days, from, to } = insightRange(c as Ctx);
+  const rows = await insightRows(c.env, w.id, from, to);
+  const keys = await c.env.DB.prepare("SELECT COUNT(*) AS n, MAX(last_used_at) AS last FROM ingest_keys WHERE workspace_id = ?").bind(w.id).first<{ n: number; last: string | null }>();
+  const ever = rows.length ? true : !!(await c.env.DB.prepare("SELECT 1 FROM insight_counts WHERE workspace_id = ? LIMIT 1").bind(w.id).first());
+  return c.json({ days, from, to, retentionDays: RETENTION_DAYS, ingestKeys: keys?.n ?? 0, lastReceived: keys?.last ?? null, ever, ...summarise(rows), screens: await screensByIntent(c.env, w.id) });
+});
+
+app.get("/api/w/:slug/insights/:intent", async (c) => {
+  const w = await ws(c as Ctx);
+  const { days, from, to } = insightRange(c as Ctx);
+  const intent = c.req.param("intent");
+  const rows = await insightRows(c.env, w.id, from, to, intent);
+  const screens = await screensByIntent(c.env, w.id);
+  return c.json({ days, from, to, retentionDays: RETENTION_DAYS, ...detail(intent, rows, from, to), screens: screens[intent] ?? [] });
+});
+
+/** Every count the workspace holds, gone. The owner's call: the counts are theirs. */
+app.delete("/api/w/:slug/insights", async (c) => {
+  const w = await ws(c as Ctx, new Set(["owner"]));
+  const r = await c.env.DB.prepare("DELETE FROM insight_counts WHERE workspace_id = ?").bind(w.id).run();
+  return c.json({ ok: true, deleted: r.meta.changes });
 });
 
 app.get("/api/contract", (c) => c.json({ roles: Object.keys(CONTRACT.tokens).length, contrastPairs: CONTRACT.contrast.length }));

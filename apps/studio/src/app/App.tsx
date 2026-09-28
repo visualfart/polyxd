@@ -21,6 +21,9 @@ const Screen = lazy(() => import("./pages/Screen.tsx").then((m) => ({ default: m
 // The Direction editor draws exemplar screens with the renderer; it loads when opened.
 const Directions = lazy(() => import("./pages/Directions.tsx").then((m) => ({ default: m.Directions })));
 const DirectionEditor = lazy(() => import("./pages/Direction.tsx").then((m) => ({ default: m.DirectionEditor })));
+// Insights draws its daily chart with the renderer; it loads when opened.
+const Insights = lazy(() => import("./pages/Insights.tsx").then((m) => ({ default: m.Insights })));
+const InsightDetail = lazy(() => import("./pages/Insights.tsx").then((m) => ({ default: m.InsightDetail })));
 // The tokens editor carries the mapper and the contract; it loads when opened.
 const TokensEditor = lazy(() => import("./pages/TokensEditor.tsx").then((m) => ({ default: m.TokensEditor })));
 // The landing carries the renderer, three themes and its own stylesheet; it loads only when shown.
@@ -77,7 +80,7 @@ const NAV: { group?: string; items: { to: string; label: string }[] }[] = [
   { items: [{ to: "", label: "Home" }] },
   { group: "Foundations", items: [{ to: "design-systems", label: "Design systems" }, { to: "components", label: "Components" }] },
   { group: "Direction", items: [{ to: "directions", label: "Directions" }, { to: "rules", label: "Rules" }] },
-  { group: "Product", items: [{ to: "screens", label: "Screens" }] },
+  { group: "Product", items: [{ to: "screens", label: "Screens" }, { to: "insights", label: "Insights" }] },
   { group: "Workspace", items: [{ to: "team", label: "Team" }] },
 ];
 
@@ -139,6 +142,8 @@ function Shell() {
           <Route path="rules" element={<Rules ws={ws} />} />
           <Route path="screens" element={<Suspense fallback={null}><Screens ws={ws} /></Suspense>} />
           <Route path="screens/:key" element={<Suspense fallback={null}><Screen ws={ws} /></Suspense>} />
+          <Route path="insights" element={<Suspense fallback={null}><Insights ws={ws} /></Suspense>} />
+          <Route path="insights/:intent" element={<Suspense fallback={null}><InsightDetail ws={ws} /></Suspense>} />
           <Route path="team" element={<Team ws={ws} />} />
           <Route path="*" element={<div className="empty"><h2>That page isn't here</h2><p>The link may be from another workspace.</p></div>} />
         </Routes>

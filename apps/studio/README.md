@@ -21,7 +21,9 @@ Run it yourself on your own Cloudflare account, or use the hosted one at studio.
 - Screens: surfaces a designer authors rather than generates, and the **shell** they sit in. A screen is a Polyxd document edited as a tree of components (all 44, with the spec's guidance), drawn live with `@polyxd/react` in your published design system (or any built-in theme; light and dark; phone, tablet and desktop; three densities), with a property panel made from the schema, a sample-data tab for bindings, and the JSON always within reach. It is checked as you edit, the way a generated screen is: schema, references, bindings against the sample data, the spec's shell rules, and your rules. Save keeps versions with notes; Publish makes one the document your product fetches by key. Start from one of the spec's examples, blank, pasted JSON, or the Shell template.
 - Shells: New screen → Shell starts from the spec's `shell-product.json`, named after your product: a Frame with an AppBar, a main Navigation, the Outlet, an aside with a `Custom` logo slot, and a Footer. The tree shows the Frame's regions as labelled slots (banner, header, navigation, main, aside, footer; empty ones can be filled). The preview draws it with `PolyxdFrame`, as your product will, with a stand-in in the Outlet (a placeholder, or any published screen of the workspace, from the toolbar), at phone, tablet and desktop, so the navigation's bar, rail and side forms show; the shell fills the preview's height (not the window's), and a frame wider than the preview scrolls both ways, while a surface wider than it is scaled to fit. The surface's `kind` and `origin` are edited from the Surface row at the top of the tree. The checker applies the spec's shell rules exactly as `@polyxd/spec` does: shell components (Frame, AppBar, Footer, Outlet, Custom) only in a shell, which is authored, with a Frame at the root and exactly one Outlet reachable from its main; a `Custom`'s fallback is never a shell part; `Navigation.placement` outside a Frame is a warning. The picker and the reference fields refuse shell components in a surface with the same message.
 
-Reviews, releases, insights and the flow map come once screens flow in through the SDK. Components aren't in the Direction file: the schema has no place for them yet.
+- **Insights**: how the workspace's screens do in its products, from the semantic events the renderers emit (`packages/spec/schema/event.schema.json`). A product sends them with `toFetch` from `@polyxd/analytics` and a workspace **ingest key** (below); Studio keeps daily counts only. The Insights page lists intents over 7, 30 or 90 days (shown, completed, abandoned, completion rate, time to complete as the median's range and the mean, input errors with the top component and reason, Statuses, undo, feedback), and a page per intent draws its days with Polyxd's own Chart in the workspace's design system, the steps from shown to completed, input errors by component key, and generated screens beside authored ones. With no events yet it shows how to send them.
+
+Reviews, releases and the flow map come later. Components aren't in the Direction file: the schema has no place for them yet.
 
 ## Deliver a screen to your product
 
@@ -46,6 +48,18 @@ const shell = await fetch(`${STUDIO}/api/w/acme/screens/shell`, { headers: { aut
 ```
 
 The response carries `X-Polyxd-Screen-Version`; an unpublished screen answers 404. `GET …/screens` lists the workspace's screens with their published version and `kind`, and `GET …/screens/<key>/versions` the history. Fetch on the server or at build time and keep the document with your bundle: a screen changes when someone publishes, not on every request.
+
+## Send events to Insights
+
+An ingest key (Team → Ingest keys, or the Insights page) is publishable: it goes in a product's pages and can send events to its own workspace, nothing else. It is not an API key or a session, reads nothing, and is kept as it is so Studio can show it again.
+
+```ts
+import { toFetch } from "@polyxd/analytics";
+const studio = toFetch("https://studio.polyxd.com/api/w/<workspace>/events", { headers: { "x-polyxd-key": "<ingest key>" } });
+<PolyxdSurface document={doc} onEvent={studio} events={{ generator: "my-model@3" }} />
+```
+
+`POST /api/w/<workspace>/events` takes `{ "events": [...] }`, at most 100 events and 64 KB, from any origin (CORS without credentials), and answers `202 { accepted, dropped, why: { invalid, duplicate, uncoded } }`. Requests are limited to 120 a minute per address and 1,200 a minute per key, in each isolate's memory (the address as a short hash, never stored). Each event is held to the schema by hand (`src/insights/events.ts`; the tests hold that check to the schema with Ajv) and dropped whole if it has anything the schema doesn't define, then passes `redact`, then adds to a row of `insight_counts` for the day (UTC) it arrived: by intent, surface id, pattern, type, component key (or id), capability, reason, generated or authored (whether the event names a generator) and actor, with the sum of completion times, a count in eight time ranges, and the sum of ratings. Every dimension must be a code (letters, digits, `.`, `_`, `:`, `-`, at least one letter), and reasons the renderers only send from a fixed list keep only that list. Nothing else of an event is stored: no session id, timestamp, value, experiment, Direction or generator name. A workspace past 20,000 rows in a day has new combinations folded into `(other)`. Counts older than 90 days are cleared (every workspace, as Studio has no plans), and the owner can delete them all. Reading them (`GET /api/w/<workspace>/insights?days=7|30|90`, `…/insights/<intent>`) needs a signed-in member; API keys and ingest keys can't.
 
 ## Deliver a Direction
 
@@ -116,8 +130,9 @@ The hosted one at studio.polyxd.com is this same configuration.
 | `src/templates/` | The twelve template packs bundled as JSON (`packs.ts`), their extras stylesheets as text (`extras.ts`), and each as a graph with a swatch summary |
 | `src/tokens/` | Editing: a pack as a graph, edits applied with aliases re-checked, the OKLCH ramp and rebrand, values as CSS and as one line |
 | `src/export/` | The six export formats |
-| `src/worker/` | The API on Workers: auth, workspaces, design systems, templates, editing, export, components, rules, screens, Directions |
+| `src/worker/` | The API on Workers: auth, workspaces, design systems, templates, editing, export, components, rules, screens, Directions, and Insights' ingest endpoint (`insights.ts`) |
 | `src/screens/` | Screens, shared by the Worker and the app: the schema read directly (the editor's shapes, and problems placed at the prop they are about), the checker with the spec's shell rules, the tree edits |
+| `src/insights/` | Insights, shared by the Worker and the app: the event check and the counting (`events.ts`), and the report the page reads (`report.ts`) |
 | `src/direction/` | Directions, shared by the Worker and the app: what a version stores and what a product gets (`model.ts`), the schema check in plain words (`schema.ts`), the field-by-field diff (`diff.ts`), the voice sample (`voice.ts`), and every setting's words (`labels.ts`) |
 | `src/app/` | The React app; `src/app/screen/` is the editor's tree, preview, property panel and themes; `pages/Direction.tsx` and `src/app/direction/` the Direction editor; `pages/TokensEditor.tsx` the tokens editor; `pages/Landing.tsx` and `landing.css` the landing, `pages/SignIn.tsx` and `signin.css` the sign-in |
 | `migrations/` | D1 schema |

@@ -53,7 +53,7 @@ export function Home({ ws }: { ws: Ws }) {
         <div className="aside card">
           <h2>What Studio does</h2>
           <p style={{ color: "var(--ink-2)" }}>Your generator writes screens as Polyxd documents. Studio holds what they are allowed to look like: your tokens mapped to Polyxd's roles, which components are yours, and the rules every screen is checked against.</p>
-          <p style={{ color: "var(--ink-2)" }}>Screens designers author here are checked the same way and delivered to your product by key. Reviews, releases and insights arrive once generated screens are flowing in.</p>
+          <p style={{ color: "var(--ink-2)" }}>Screens designers author here are checked the same way and delivered to your product by key. Insights counts how every screen does, generated or authored, once your product sends its events. Reviews and releases come later.</p>
         </div>
       </div>
     </Page>
