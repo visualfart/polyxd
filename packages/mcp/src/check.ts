@@ -44,7 +44,8 @@ function componentAt(doc: unknown, pointer: string): { id?: string; type?: strin
   if (!m) return undefined;
   const c = valueAt(doc, `/components/${m[1]}`) as any;
   if (!c || typeof c !== "object") return undefined;
-  return { id: typeof c.id === "string" ? c.id : undefined, type: typeof c.component === "string" ? c.component : undefined };
+  // No keys set to undefined: the reports are tool results, checked against the tools' output schemas.
+  return { ...(typeof c.id === "string" ? { id: c.id } : {}), ...(typeof c.component === "string" ? { type: c.component } : {}) };
 }
 
 function distance(a: string, b: string): number {
@@ -114,13 +115,11 @@ export function hintFor(doc: unknown, issue: { at: string; message: string; code
 export function validate(document: unknown, data?: unknown): ValidationReport {
   const doc = withData(document, data);
   const result = validateDocument(doc);
-  const issues = result.issues.map((i) => ({
-    severity: i.severity,
-    pointer: i.at,
-    component: componentAt(doc, i.at),
-    message: i.message,
-    hint: hintFor(doc, i),
-  }));
+  const issues = result.issues.map((i): ReportedIssue => {
+    const component = componentAt(doc, i.at);
+    const hint = hintFor(doc, i);
+    return { severity: i.severity, pointer: i.at, ...(component ? { component } : {}), message: i.message, ...(hint ? { hint } : {}) };
+  });
   const errors = issues.filter((i) => i.severity === "error").length;
   return { valid: errors === 0, errors, warnings: issues.length - errors, issues };
 }
@@ -159,10 +158,13 @@ export function verify(document: unknown, opts: { data?: unknown; direction?: un
     // Findings from the validator carry "<pointer>: <message>"; the same hints apply.
     const m = /^(\/[^:]*|\/): (.*)$/.exec(f.message);
     const hint = m ? hintFor(doc, { at: m[1], message: m[2], code: f.check }) : undefined;
-    return { severity: f.severity, check: f.check, message: f.message, ...(hint ? { hint } : {}) };
+    // A direction passed as an object is not schema-checked, so its rules' severities are taken as error or warning.
+    const severity: "error" | "warning" = f.severity === "error" ? "error" : "warning";
+    return { severity, check: f.check, message: f.message, ...(hint ? { hint } : {}) };
   });
   const errors = findings.filter((f) => f.severity === "error").length;
-  return { errors, warnings: findings.length - errors, findings, direction: direction?.name, rules: rules?.length ?? 0 };
+  const name = typeof direction?.name === "string" ? direction.name : undefined;
+  return { errors, warnings: findings.length - errors, findings, ...(name ? { direction: name } : {}), rules: rules?.length ?? 0 };
 }
 
 export function formatVerify(r: VerifyReport): string {
