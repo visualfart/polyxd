@@ -9,6 +9,7 @@ updated: "29 September 2026"
 - polyxd.com counts visits and clicks on its buttons with PostHog, without cookies or local storage. It has no advertising and no tracking cookies. If your browser sends Do Not Track or Global Privacy Control, the analytics don't load at all.
 - The demos keep their data in your browser. If live generation is switched on, an ask the demos can't answer from their library goes to an AI model provider. We count how asks were answered, never what you asked.
 - Studio keeps what it needs to run your account and your workspaces, and sends email through Resend. It records the main steps you take in Studio, tied to a random user id, never your name or email address.
+- If a team sends its own product's usage events to Studio Insights, Studio keeps only daily counts of them for that team. It never keeps the events, anything people typed, or session ids.
 - The hosted MCP server has no accounts. It works on what your AI assistant sends it, answers, and keeps a one-line log of each request. It counts tool calls anonymously, never what was in them.
 - The open-source packages, the local MCP server, the generation server, the runtime and the VS Code extension send nothing to us.
 - We never sell your data, and we don't use it for advertising.
@@ -102,9 +103,18 @@ Each event is tied to your user id, a random id Studio made for your account, an
 - design systems: the token files and packages you import (including the original file), scan results, role mappings and edits;
 - components, rules, screens and their versions (including any sample data you add), and Design Directions;
 - API keys, stored only as a SHA-256 hash;
+- ingest keys for Insights. These go in a team's product pages, where anyone can read them, and can only send events, so they are stored as they are and shown again in Studio;
+- Insights counts, described below;
 - private package registry addresses and tokens. Tokens are encrypted before they are stored and are never shown again.
 
 When you import a package, Studio fetches it from the npm registry or from the private registry you named, using the token you saved.
+
+**Insights.** A workspace can have its own products send Studio the semantic events their screens emit, with an ingest key. These events describe what people did with a screen in the team's product: that it was shown, which action was taken, that a task was completed or abandoned, which input was refused and why, and a rating if one was given. They carry codes and keys, such as `money.send` or `required`, not what anyone typed. They also carry a random session id and a time.
+
+- **What Studio keeps.** Daily counts, and nothing else. For each day, Studio adds 1 to a count filed by the screen's intent, id and pattern, the event type, the component's key, the action's name, the reason code, whether the screen was generated or authored, and whether a person or an agent used it. It also keeps sums of how long tasks took and of ratings. Each of these must be a short code; anything else, such as a sentence, an email address or a number, is left out. Studio never stores the events themselves, session ids, the times they carry, or any value.
+- **What Studio doesn't keep.** An event with anything the schema doesn't allow is dropped whole. The request's IP address is used only to limit how often it can call, as a short code kept in memory for minutes, never written to storage.
+- **Who controls it.** The events come from the people using the team's product, not from Studio's users. The workspace's owner decides whether to send them and controls the counts. We process them only on the owner's instructions, to show them in that workspace. The team is responsible for telling its own users, in its own privacy notice.
+- **How long.** Counts are kept for 90 days, then deleted. The workspace owner can delete them all at any time from the Insights page. Deleting a workspace deletes them too.
 
 **Emails.** Studio sends email through Resend: email verification, password resets, and workspace invitations. An invitation goes to the address you enter and includes your name or email address, the workspace name, the role and your message. Resend processes the recipient's address and the content of the email to deliver it.
 
@@ -141,6 +151,7 @@ We collect personal information only when we need it for one of these purposes, 
 | What | Why |
 |---|---|
 | Studio accounts, workspaces and their emails | To provide Studio to you |
+| Studio Insights counts | To show a workspace how its screens do, on the workspace owner's instructions |
 | Server logs, security cookies and rate limits | To keep the services working, secure and fair |
 | Live generation in the demos | To answer the ask you typed |
 | Hosted MCP server requests | To answer the tool calls your assistant makes |
@@ -179,6 +190,7 @@ Our providers are based in the USA and may store and process data there or elsew
 | Analytics events in PostHog | Up to 12 months |
 | Studio account and workspace data | While your account exists. After you ask us to delete it, within one month, and gone from Cloudflare's database backups within 30 days after that |
 | Studio sessions | 30 days from your last use |
+| Studio Insights counts | 90 days, or until the workspace owner deletes them. The events themselves are not kept |
 | The early-access list | Until early access opens, or until you ask to be removed |
 | Emails you send us | Up to two years after our last exchange |
 
@@ -202,7 +214,7 @@ If you are unhappy with how we handle your information, please email us first so
 
 ## Security
 
-All our services use HTTPS. Studio stores passwords as salted hashes and API keys as hashes, encrypts registry tokens, and marks its sign-in cookies as secure and not readable by scripts. No system is perfectly secure. If we learn of a breach that puts you at risk, we will tell you, and the OAIC where the law requires it.
+All our services use HTTPS. Studio stores passwords as salted hashes and API keys as hashes, encrypts registry tokens, keeps Insights as counts only, and marks its sign-in cookies as secure and not readable by scripts. No system is perfectly secure. If we learn of a breach that puts you at risk, we will tell you, and the OAIC where the law requires it.
 
 ## Children
 

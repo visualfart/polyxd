@@ -1,6 +1,6 @@
 # @polyxd/analytics
 
-Sends Polyxd's semantic events to your own analytics. The renderers emit them (`onEvent` on `<PolyxdSurface>`, `polyxd-event` on `<polyxd-surface>`); this package turns each one into a call to PostHog, Segment, Google Analytics 4 or your own endpoint. No dependencies. Polyxd itself receives none of these events.
+Sends Polyxd's semantic events to your own analytics. The renderers emit them (`onEvent` on `<PolyxdSurface>`, `polyxd-event` on `<polyxd-surface>`); this package turns each one into a call to PostHog, Segment, Google Analytics 4 or your own endpoint. No dependencies. Polyxd itself receives none of these events, unless you point `toFetch` at Studio Insights (below).
 
 ```ts
 import posthog from "posthog-js";
@@ -24,6 +24,16 @@ const onEvent = toPostHog(posthog);
 A client that throws never breaks the surface: the adapter catches it.
 
 Which events there are, when each fires and what it carries: [Capabilities, journeys and events](https://polyxd.com/docs/product/#semantic-analytics-events).
+
+## Studio Insights
+
+[Polyxd Studio](https://polyxd.com/docs/studio/#insights) counts these events for a workspace, if you send them there. Make an ingest key in Studio, then:
+
+```ts
+const studio = toFetch("https://studio.polyxd.com/api/w/<workspace>/events", { headers: { "x-polyxd-key": "<ingest key>" } });
+```
+
+Studio keeps daily counts only: never the events, the values, session ids or timestamps.
 
 ## Tests
 

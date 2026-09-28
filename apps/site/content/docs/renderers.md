@@ -49,7 +49,7 @@ Two adapters ship as files to copy, in `@polyxd/web`'s `adapters/` folder: `Poly
 
 ## Semantic events
 
-Both renderers emit the semantic analytics events described in [Capabilities, journeys and events](/docs/product#semantic-analytics-events): `surface.shown`, `action.taken`, `checkpoint.reached`, `task.completed`, `task.abandoned`, `surface.dismissed`, `input.error`, `status.shown`, `undo`, and `feedback` and `surface.regenerated` when you report them. They are off until you pass a handler, and then they go to that handler and nowhere else. Polyxd receives none of them.
+Both renderers emit the semantic analytics events described in [Capabilities, journeys and events](/docs/product#semantic-analytics-events): `surface.shown`, `action.taken`, `checkpoint.reached`, `task.completed`, `task.abandoned`, `surface.dismissed`, `input.error`, `status.shown`, `undo`, and `feedback` and `surface.regenerated` when you report them. They are off until you pass a handler, and then they go to that handler and nowhere else. Polyxd receives none of them, unless you send them to [Studio Insights](/docs/studio#insights).
 
 In React, pass `onEvent`. The `ref` gives you `feedback(rating, reason?)`, `regenerated(reason?)` and the `sessionId`:
 
