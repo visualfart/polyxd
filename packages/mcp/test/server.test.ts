@@ -38,8 +38,9 @@ test("only polyxd_show links to the MCP App, in the spec's _meta.ui.resourceUri 
   for (const key of ["openai/toolInvocation/invoking", "openai/toolInvocation/invoked"]) assert.ok(((show._meta as any)[key] ?? "").length <= 64, key);
   assert.match(VIEW_URI, /^ui:\/\//);
   for (const t of tools.filter((t) => t.name !== "polyxd_show")) assert.equal((t._meta as any)?.ui, undefined, t.name);
-  const packs = (show.inputSchema as any).properties.pack.enum;
-  assert.deepEqual(packs, PACKS.map((p) => p.name));
+  const pack = (show.inputSchema as any).properties.pack;
+  assert.equal(pack.enum, undefined, "names like \"Carbon\" must reach the server, not fail the schema");
+  for (const p of PACKS) assert.ok(pack.description.includes(p.name), p.name);
 });
 
 test("polyxd_guide is the demos' generator prompt with the MCP notes in front", async () => {

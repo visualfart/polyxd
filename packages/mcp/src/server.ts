@@ -33,6 +33,31 @@ export interface ServerOptions {
 const text = (t: string): CallToolResult["content"] => [{ type: "text", text: t }];
 const packNames = PACKS.map((p) => p.name);
 
+/** Lower case, letters and digits only: "IBM Carbon" → "ibmcarbon", "GOV.UK" → "govuk". */
+const squash = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+const VENDORS = /^(google|ibm|microsoft|shopify|github|adobe)\s+/i;
+
+/**
+ * The pack a model means. Models write what people say ("Carbon", "shadcn/ui", "Material 3", "IBM
+ * Carbon") as often as the pack's id, and an id-only enum made hosts drop the argument and fall back
+ * to the default. Exact names first, then a display name with or without its vendor and version, then
+ * an unambiguous prefix. Unknown names are an error, never a silent default.
+ */
+export function resolvePack(input: string): (typeof PACKS)[number] | undefined {
+  const q = squash(input);
+  if (!q) return undefined;
+  const keys = (p: (typeof PACKS)[number]) => {
+    const display = p.displayName.split(/\s+on\s+/i)[0];
+    const bare = display.replace(VENDORS, "");
+    return [p.name, display, bare, bare.replace(/\s*\d+$/, ""), display.replace(/\s*\d+$/, "")].map(squash);
+  };
+  const exact = PACKS.filter((p) => keys(p).includes(q));
+  if (exact.length === 1) return exact[0];
+  // A leading part of a name ("mater", "shad"), never a longer one: "bootstrap4" is not Bootstrap 5.
+  const near = PACKS.filter((p) => keys(p).some((k) => q.length >= 4 && k.startsWith(q)));
+  return near.length === 1 ? near[0] : undefined;
+}
+
 const documentSchema = {
   type: "object",
   description: "A Polyxd UI document: {specVersion, surface, root, components, data?}. polyxd_guide explains the format.",
@@ -165,7 +190,7 @@ export function createServer(options: ServerOptions): McpServer {
         properties: {
           document: documentSchema,
           data: dataSchema,
-          pack: { type: "string", enum: packNames, description: `The design-system pack to draw the screen in. Default ${DEFAULT_PACK}.` },
+          pack: { type: "string", description: `The design-system pack to draw the screen in, by id: ${packNames.join(", ")}. Names like "Carbon" or "shadcn/ui" work too. Pass it whenever the user names a design system. Default ${DEFAULT_PACK}.` },
           mode: { type: "string", enum: ["light", "dark"], description: "Light or dark. Leave out to follow the host's theme." },
         },
         required: ["document"],
@@ -183,8 +208,8 @@ export function createServer(options: ServerOptions): McpServer {
       },
     },
     async ({ document, data, pack = DEFAULT_PACK, mode }) => {
-      const chosen = PACKS.find((p) => p.name === pack);
-      if (!chosen) return { isError: true, content: text(`No pack named "${pack}". Packs: ${packNames.join(", ")}.`) };
+      const chosen = resolvePack(pack);
+      if (!chosen) return { isError: true, content: text(`No pack named "${pack}". Packs: ${packNames.join(", ")}. Ask the user which to use, or pick the nearest and say so.`) };
       const report = validate(document, data);
       const meta = { ui: { resourceUri: VIEW_URI } };
       if (!report.valid) {
