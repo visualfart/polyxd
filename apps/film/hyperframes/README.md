@@ -170,3 +170,51 @@ Google Fonts).
 `apps/film/out/hyperframes/`: `polyxd-b1-token-morph.mp4` (73.8 s), `polyxd-b2-shared-morph.mp4`
 (69.0 s), `polyxd-b3-combined.mp4` (69.0 s), a `*-sheet.png` contact sheet each, and six stills
 each in `stills/`.
+
+## Film B4: "Can I return these shoes?" (`film-b4-return-the-shoes/`)
+
+The story in `STORY-B4.md`, directed as a motion-designed film: a virtual camera (macro, pull-back
+reveal, push-ins, punch-ins, a 3D tilt settling flat, whip pans), hand-drawn doodles from the
+HyperFrames registry (`hw-callout-circle`, `hw-arrow`, `hw-underline`, `hw-boil`, installed with
+`hyperframes add` into `film-b4-return-the-shoes/compositions/components/`, helpers copied into
+`shared/hw-kit.js`), captions revealed per word (`caption-clip-wipe`) or through a line mask
+(`line-swap`), B3's intro, outro and morphs, and a score with sound design from the HeyGen audio
+catalogue. 66.2 s. Scene-by-scene notes with the skills and techniques used: `film-b4-return-the-shoes/STORYBOARD.md`.
+
+```sh
+node apps/film/hyperframes/music-b4.mjs    # the score, edited on its bars to the story
+node apps/film/hyperframes/make-b4.mjs     # index.html, assets, sound cues (from shared/film-b4-timings.json)
+cd apps/film/hyperframes/film-b4-return-the-shoes
+npx hyperframes check
+npx hyperframes render --quality delivery --output ../../out/hyperframes/polyxd-b4-return-the-shoes.mp4
+```
+
+Output: `apps/film/out/hyperframes/polyxd-b4-return-the-shoes.mp4` (66.2 s, −14.1 LUFS, −1.4 dBTP),
+`polyxd-b4-return-the-shoes-sheet.png`, ten stills in `stills/`.
+
+### Credits (film B4)
+
+All retrieved from the **HeyGen audio catalogue** through media-use's HeyGen route
+(`/v3/audio/sounds`, the owner's signed-in HeyGen account), then frozen into the project with
+`npx hyperframes media-use resolve --from …` (`.media/manifest.jsonl`). They are used under the
+HeyGen account's terms for catalogue audio; the catalogue does not attach a per-item licence
+string, so confirm commercial use in the HeyGen account terms before publishing.
+
+| Use | Item (catalogue id) | Name |
+|---|---|---|
+| Score (edited: `music-b4.mjs`) | 789f931a… | "Astral Generated Music: 789f931a" — inspiring sophisticated instrumental, cinematic build, modern corporate (120 bpm, 95 s) |
+| Whip pans, sting | 00caa739… | Quick Whoosh |
+| The reveal, the montage | 128d8419… | Cinematic Sub Bass Hit |
+| Send, tap, montage cuts | 19bd1766… | Soft muted tap |
+| The crumple | 25bf9c03… | Paper crumple |
+| Parts arriving | 4558aa13… | UI Pop |
+| Punch-ins, push-ins | 72d0b143… | Fast whoosh |
+| The swap's sparkle, token blends | 7a885578… | Ascending chime sparkle |
+| Doodles drawing, scribbles | 9b77ef76… | Page turn |
+| The paper ball flying off, montage end | a4855a82… | Fast airy whoosh |
+| Typing | e401e115… | Keyboard Typing |
+| Step counter, check ticks | e7945ed1… | Sharp click |
+| The toast, the mark's check | ef870618… | Bright electronic chime |
+| Into the reveal | f6995a68… | Deep whoosh riser |
+
+Fonts: Young Serif, DM Mono, Hanken Grotesk (SIL OFL); Caveat (SIL OFL, installed by the registry).

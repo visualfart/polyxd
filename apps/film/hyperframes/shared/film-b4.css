@@ -1,0 +1,232 @@
+/*
+ * Film B4, "Can I return these shoes?": the camera rig, the hand-drawn layer, the captions and the
+ * turn. On top of kit.css and film-b.css (the docked button, the home indicator, the desktop
+ * window, the morph layer).
+ */
+
+/* ——— The camera ———
+   #persp gives the 3D tilt its depth; #rig is the world the camera moves (transform-origin 0 0:
+   the camera writes translate(vx − s·fx, vy − s·fy) scale(s) plus rotations about the focus). */
+#persp {
+  position: absolute;
+  inset: 0;
+  perspective: 2200px;
+  perspective-origin: 50% 50%;
+}
+#rig,
+#mrig {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+#rig .phone {
+  box-shadow: 0 40px 90px rgba(20, 20, 19, 0.16);
+}
+.whip-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #ff6e40;
+  opacity: 0;
+}
+
+/* ——— The hand-drawn layer (registry hw family, in the brand's colours) ——— */
+#ink {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --hw-ink: #141413;
+  --hw-accent: #ff6e40;
+  --hw-accent-warm: #ff6e40;
+  --hw-font-print: "Caveat", cursive;
+}
+.hw-arrow,
+.hw-callout,
+.hw-mark,
+.hw-draw {
+  position: absolute;
+  pointer-events: none;
+}
+.hw-arrow svg,
+.hw-callout svg,
+.hw-mark svg,
+.hw-draw svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.hw-arrow path {
+  fill: none;
+  stroke: var(--hw-arrow-color, #ff6e40);
+  stroke-width: var(--hw-arrow-w, 7);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.hw-callout .hw-co-boil,
+.hw-callout .hw-co-deform,
+.hw-callout .hw-co-conn-layer,
+.hw-callout .hw-co-pop {
+  position: absolute;
+  inset: 0;
+}
+.hw-callout .hw-co-pop {
+  opacity: 0;
+}
+.hw-callout path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.hw-callout .hw-co-outline {
+  stroke: #ff6e40;
+  stroke-width: 6;
+}
+.hw-callout .hw-co-connector {
+  stroke: #141413;
+  stroke-width: 4;
+}
+.hw-callout .hw-co-label {
+  position: absolute;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 50px;
+  color: #141413;
+  white-space: nowrap;
+}
+.hw-mark path {
+  fill: none;
+  stroke: var(--hw-mark-color, #ff6e40);
+  stroke-width: var(--hw-mark-w, 8);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.hw-draw path {
+  fill: none;
+  stroke: var(--hw-draw-color, #ff6e40);
+  stroke-width: var(--hw-draw-w, 9);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Handwriting: written on left to right (a clip wipe), always in ink on paper. */
+.hand {
+  position: absolute;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  color: #141413;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* ——— Captions: large, Young Serif, revealed per word or through a line mask ——— */
+.b4cap {
+  position: absolute;
+  left: 150px;
+  top: 0;
+  bottom: 0;
+  width: 700px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+.b4cap.centre {
+  left: 0;
+  right: 0;
+  width: auto;
+  justify-content: center;
+  text-align: center;
+}
+.b4cap .mask {
+  overflow: hidden;
+  padding: 0.06em 0 0.14em;
+}
+.b4cap .line {
+  display: block;
+  margin: 0;
+  font-family: "Young Serif", serif;
+  font-weight: 400;
+  font-size: 78px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: #141413;
+  text-wrap: balance;
+}
+.b4cap .w {
+  display: inline-block;
+  clip-path: inset(-10% 100% -20% 0);
+}
+
+/* ——— The turn: paper, the mark alone, one question ——— */
+#turn {
+  position: absolute;
+  inset: 0;
+  background: #f3f1ec;
+  opacity: 0;
+}
+#turn-mark {
+  position: absolute;
+  left: 50%;
+  top: 330px;
+  width: 170px;
+  height: 170px;
+  margin-left: -85px;
+}
+
+/* ——— Inside the phone ——— */
+.order-row .bubble {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px 10px 10px;
+}
+.thumb {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: var(--pxd-color-surface-default);
+  border: 1px solid var(--pxd-color-border-default);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.order-row .t1 {
+  font-weight: 600;
+  font-size: 16px;
+}
+.order-row .t2 {
+  font-size: 14px;
+  color: var(--pxd-color-text-muted);
+  margin-top: 2px;
+}
+.reply .words .ph {
+  /* the phrases the doodles point at; styled as the rest of the text */
+}
+#scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: #ff6e40;
+  box-shadow: 0 0 18px 4px rgba(255, 110, 64, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+#crumple {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 50%;
+  opacity: 0;
+}
+#crumple .clone {
+  position: absolute;
+  left: 0;
+  top: 0;
+}

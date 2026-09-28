@@ -16,3 +16,6 @@ model/weights/
 packages/*/LICENSE
 packages/*/NOTICE
 .dev.vars
+
+# Film B4: the HeyGen catalogue score and effects (re-download by the ids in apps/film/hyperframes/README.md)
+apps/film/hyperframes/film-b4-return-the-shoes/.media/
