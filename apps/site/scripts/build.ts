@@ -885,6 +885,107 @@ const counts = {
   EXAMPLECOUNT: String((await readdir(join(REPO, "packages/spec/examples"))).filter((f) => f.endsWith(".json")).length),
   COMPONENTCOUNT: String((await readdir(join(REPO, "packages/spec/components"))).filter((f) => f.endsWith(".json")).length),
 };
+// ---------- Studio: one button, followed from four places to one product ----------
+/** Line icons for the Studio pages: one stroke, drawn on a 20px grid, in currentColor. */
+const ICON_STROKE = 'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"';
+const ICONS: Record<string, string> = {
+  import: `<path d="M10 3v9M6 8.5l4 4 4-4M3.5 13.5v3h13v-3" ${ICON_STROKE}/>`,
+  check: `<path d="M10 2.8l6 2.4v4.3c0 3.7-2.6 6.3-6 7.7-3.4-1.4-6-4-6-7.7V5.2z" ${ICON_STROKE}/><path d="M7.3 10l1.9 1.9 3.6-3.8" ${ICON_STROKE}/>`,
+  design: `<rect x="3" y="3.5" width="14" height="13" rx="3" ${ICON_STROKE}/><path d="M3 7.5h14M8 7.5v9" ${ICON_STROKE}/>`,
+  export: `<path d="M7 6l-4 4 4 4M13 6l4 4-4 4M11 4.5l-2 11" ${ICON_STROKE}/>`,
+  colour: `<path d="M10 3c3 3.8 5 6.4 5 8.9a5 5 0 0 1-10 0C5 9.4 7 6.8 10 3z" ${ICON_STROKE}/>`,
+  space: `<rect x="2.5" y="7" width="15" height="6" rx="1.5" ${ICON_STROKE}/><path d="M6 7v2.5M9 7v3.5M12 7v2.5M15 7v3.5" ${ICON_STROKE}/>`,
+  type: `<text x="10" y="14.5" text-anchor="middle" font-family="Young Serif, Georgia, serif" font-size="12" fill="currentColor">Aa</text>`,
+  number: `<path d="M7.5 3.5l-1.5 13M13.5 3.5l-1.5 13M4 7.5h13M3 12.5h13" ${ICON_STROKE}/>`,
+  shadow: `<rect x="3" y="3" width="10" height="10" rx="2.5" ${ICON_STROKE}/><path d="M16 7v6.5a3 3 0 0 1-3 3H7" ${ICON_STROKE}/>`,
+  motion: `<path d="M3 15.5C8 15.5 11 4.5 17 4.5" ${ICON_STROKE}/><circle cx="17" cy="4.5" r="1.4" fill="currentColor"/>`,
+  radius: `<path d="M4 16V9a5 5 0 0 1 5-5h7" ${ICON_STROKE}/>`,
+  border: `<rect x="3.5" y="3.5" width="13" height="13" rx="3" ${ICON_STROKE}/><rect x="6.5" y="6.5" width="7" height="7" rx="1.5" ${ICON_STROKE} stroke-dasharray="2 2"/>`,
+  package: `<path d="M10 2.5l7 3.5v8l-7 3.5-7-3.5V6z" ${ICON_STROKE}/><path d="M3 6l7 3.5L17 6M10 9.5v8" ${ICON_STROKE}/>`,
+  file: `<path d="M5 2.5h6.5L15 6v11.5H5z" ${ICON_STROKE}/><path d="M11.5 2.5V6H15" ${ICON_STROKE}/>`,
+  braces: `<path d="M7.5 3.5C5.5 3.5 5.5 5 5.5 7s-1.5 3-2 3c.5 0 2 1 2 3s0 3.5 2 3.5M12.5 3.5c2 0 2 1.5 2 3.5s1.5 3 2 3c-.5 0-2 1-2 3s0 3.5-2 3.5" ${ICON_STROKE}/>`,
+  template: `<rect x="3" y="3" width="6" height="6" rx="1.5" ${ICON_STROKE}/><rect x="11" y="3" width="6" height="6" rx="1.5" ${ICON_STROKE}/><rect x="3" y="11" width="6" height="6" rx="1.5" ${ICON_STROKE}/><rect x="11" y="11" width="6" height="6" rx="1.5" ${ICON_STROKE}/>`,
+  key: `<circle cx="7" cy="10" r="3.5" ${ICON_STROKE}/><path d="M10.5 10H17M14.5 10v3M17 10v2" ${ICON_STROKE}/>`,
+  team: `<circle cx="7.5" cy="7" r="2.5" ${ICON_STROKE}/><circle cx="13.5" cy="8" r="2" ${ICON_STROKE}/><path d="M3 16c.5-2.8 2.3-4.2 4.5-4.2S11.5 13.2 12 16M12.5 12.3c2.2-.4 4 .8 4.5 3.2" ${ICON_STROKE}/>`,
+  layers: `<path d="M10 3l7 3.5-7 3.5-7-3.5z" ${ICON_STROKE}/><path d="M3 10l7 3.5 7-3.5M3 13.5L10 17l7-3.5" ${ICON_STROKE}/>`,
+  free: `<path d="M4 10.5l4 4 8-9" ${ICON_STROKE}/>`,
+  server: `<rect x="3" y="3.5" width="14" height="5.5" rx="1.5" ${ICON_STROKE}/><rect x="3" y="11" width="14" height="5.5" rx="1.5" ${ICON_STROKE}/><path d="M6 6.25h.01M6 13.75h.01" ${ICON_STROKE} stroke-width="2.2"/>`,
+};
+const icon = (name: string, size = 22) => `<svg class="ico-svg" width="${size}" height="${size}" viewBox="0 0 20 20" aria-hidden="true">${ICONS[name] ?? ""}</svg>`;
+
+/**
+ * The Continue button as a redline: the button drawn at 1.5x, and every token it uses measured
+ * or pointed at, in one SVG so it scales as a whole. Mono text is 0.6em a character, so the
+ * chips are sized from their text.
+ */
+function redlineSvg(): string {
+  const CH = 6.6;
+  const chip = (x: number, y: number, text: string, value: string, glyph = "", mark = false) => {
+    const pre = glyph ? 20 : 0;
+    const chars = value.length + (text ? text.length + 1 : 0);
+    const w = Math.round(18 + pre + chars * CH);
+    const t = value && text ? (mark ? `<tspan class="rl-v">${esc(value)}</tspan> ${esc(text)}` : `${esc(text)} <tspan class="rl-v">${esc(value)}</tspan>`) : esc(text || value);
+    return `<g class="rl-chip${mark ? " rl-m" : ""}" transform="translate(${x} ${y})"><rect width="${w}" height="24" rx="7"/>${glyph ? `<g transform="translate(9 5)">${glyph}</g>` : ""}<text x="${9 + pre}" y="16">${t}</text></g>`;
+  };
+  const g = {
+    radius: `<path d="M1 13V7a6 6 0 0 1 6-6h6" fill="none" stroke="#FF6E40" stroke-width="2"/>`,
+    type: `<text x="7" y="11.5" text-anchor="middle" class="rl-serif">Aa</text>`,
+    bg: `<rect width="14" height="14" rx="4" fill="#2F5BEA"/>`,
+    border: `<rect x="1" y="1" width="12" height="12" rx="3.5" fill="none" stroke="#2448C0" stroke-width="2"/>`,
+    shadow: `<rect x="0" y="1" width="14" height="10" rx="3" class="rl-fill" filter="url(#rl-sh)"/>`,
+  };
+  return `<svg class="redline" viewBox="0 0 620 330" role="img" aria-labelledby="rl-t">
+<title id="rl-t">The Continue button, measured: its padding, corner radius, label type, background, border and shadow, each pointing to the token it uses.</title>
+<defs><pattern id="rl-grid" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M12 0H0V12" fill="none" class="rl-gridline"/></pattern>
+<filter id="rl-sh" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="3" stdDeviation="2" flood-opacity=".35"/></filter>
+<filter id="rl-btn" x="-30%" y="-40%" width="160%" height="200%"><feDropShadow dx="0" dy="9" stdDeviation="7" flood-color="#2F5BEA" flood-opacity=".55"/></filter></defs>
+<rect class="rl-panel" x=".5" y=".5" width="619" height="329" rx="24"/>
+<rect x=".5" y=".5" width="619" height="329" rx="24" fill="url(#rl-grid)"/>
+<text x="20" y="28" class="rl-title">BUTTON · PRIMARY · 1.5×</text>
+<g class="rl-button"><rect x="220.75" y="128.75" width="188.5" height="64.5" rx="14.25" fill="#2F5BEA" stroke="#2448C0" stroke-width="1.5" filter="url(#rl-btn)"/>
+<text x="315" y="169" text-anchor="middle" class="rl-label">Continue</text></g>
+<g class="rl-dim"><path d="M220 100v26M262 100v26M190 128h28M190 143h28" stroke-dasharray="2 2" stroke-width="1"/><path d="M220 108h42M220 103v10M262 103v10M196 128v15M191 128h10M191 143h10" stroke-width="1.5"/></g>
+<path class="rl-arc" d="M394 128.8 A15 15 0 0 1 409.2 144"/>
+<g class="rl-lead"><path d="M405 133 L446 102M318 150V56M244 180v82M410 172h60M392 208l78 40"/>
+<ellipse cx="315" cy="206" rx="86" ry="7" stroke-dasharray="3 3"/>
+<circle cx="405" cy="133" r="3" class="rl-dot"/><circle cx="318" cy="150" r="3" class="rl-ring"/><circle cx="244" cy="180" r="3" class="rl-ring"/><circle cx="410" cy="172" r="3" class="rl-dot"/><circle cx="392" cy="208" r="3" class="rl-dot"/></g>
+${chip(118, 72, "button.padding.x", "28", "", true)}
+${chip(40, 123, "button.padding.y", "10", "", true)}
+${chip(446, 78, "radius.control", "10", g.radius)}
+${chip(236, 32, "type.label", "16/24 · 600", g.type)}
+${chip(152, 262, "action.primary", "#2F5BEA", g.bg)}
+${chip(470, 160, "border.strong", "1", g.border)}
+${chip(470, 236, "shadow.raised", "", g.shadow)}
+</svg>`;
+}
+
+/** The tokens editor, small: the three tiers, every type, a colour ramp and a card per type. */
+const TOKENS_WINDOW = `<div class="tw" aria-hidden="true">
+<div class="browser-bar"><i></i><i></i><i></i><span class="browser-url">studio.polyxd.com/w/acme/tokens</span></div>
+<div class="tw-body">
+<div class="tw-head"><span class="tw-tiers"><span class="on">Primitive</span><span>Semantic</span><span>Component</span></span><span class="tw-types">${["colour", "type", "space", "radius", "border", "shadow", "motion"].map((k) => icon(k, 18)).join("")}</span></div>
+<div class="tw-ramp">${["#EEF2FE", "#DCE4FD", "#B9C9FB", "#8FA8F6", "#5F80F0", "#2F5BEA", "#2448C0", "#1C3896", "#15296E", "#0E1B48"].map((c, i) => `<i style="background:${c}"${i === 5 ? ' class="on"' : ""}></i>`).join("")}</div>
+<div class="tw-cards">
+<span class="tw-space"><i></i><i></i><i></i><i class="on"></i><i></i></span>
+<span class="tw-radius"><i></i><i class="on"></i><i></i></span>
+<span class="tw-type"><b>Aa</b><span>Aa</span><small>Aa</small></span>
+<span class="tw-shadow"><i></i><i></i></span>
+</div>
+</div>
+</div>`;
+
+const sendForm = JSON.parse(await readFile(join(REPO, "packages/spec/examples/money-send-form.json"), "utf8")) as UIDocument;
+const acme = (inner: string, cls = "") => `<div class="acme${cls ? ` ${cls}` : ""}">${inner}</div>`;
+const STUDIO: Record<string, string> = {
+  ST_REDLINE: redlineSvg(),
+  ST_WINDOW: TOKENS_WINDOW,
+  ST_TUNE_PHONE: acme(phoneHtml(surfaceHtml(sendForm, "mono"), "tune", "light", false)),
+  ST_TUNE_DESK: acme(browserHtml(surfaceHtml(sendForm, "mono"), "acme.app")),
+  ST_DESIGN_SCREEN: acme(surfaceHtml(sendForm, "mono"), "tuned"),
+  ST_DELIVER_PHONE: acme(phoneHtml(surfaceHtml(sendForm, "mono"), "deliver", "light", false), "tuned"),
+  ROLE_DOTS: Array.from({ length: 87 }, (_, i) => `<i style="--n:${i}"></i>`).join(""),
+};
+
 async function replaceAsync(s: string, re: RegExp, fn: (...m: string[]) => Promise<string>): Promise<string> {
   const parts = await Promise.all([...s.matchAll(re)].map((m) => fn(...(m as unknown as string[]))));
   let i = 0;
@@ -896,7 +997,7 @@ async function fill(html: string, { title, description, path, current = "home" }
   html = await replaceAsync(html, /<!--SCENE:([a-z]+)-->/g, async (_, name: string) => readFile(join(SITE, "src/scenes", `${name}.html`), "utf8"));
   html = html.replace(/<!--PHONE:(\w+):(\w+)-->([\s\S]*?)<!--\/PHONE-->/g, (_, name: string, mode: string, inner: string) => phoneHtml(inner, name, mode));
   let out = html
-    .replace("<!--HEAD-->", head({ title, description, path, css: ["/assets/themes.css", "/assets/renderer.css", "/assets/home.css"] }))
+    .replace("<!--HEAD-->", head({ title, description, path, css: ["/assets/themes.css", "/assets/renderer.css", "/assets/home.css", "/assets/studio.css"] }))
     .replace("<!--HEADER-->", header(current))
     .replace("<!--FOOTER-->", footer)
     .replace("<!--HERO_CHIPS-->", hero.chips)
@@ -911,8 +1012,9 @@ async function fill(html: string, { title, description, path, current = "home" }
   if (out.includes("<!--SHOWCASE-->")) out = out.replace("<!--SHOWCASE-->", await showcaseHtml());
   if (out.includes("<!--LOGO_BAND-->")) out = out.replace("<!--LOGO_BAND-->", await logoBandHtml());
   if (out.includes("<!--SCENARIOS-->")) out = out.replace("<!--SCENARIOS-->", await scenariosHtml(demo.packs));
-  for (const [k, v] of Object.entries({ ...counts, ...SCREENS, GAP_APP })) out = out.replaceAll(`<!--${k}-->`, v);
+  for (const [k, v] of Object.entries({ ...counts, ...SCREENS, ...STUDIO, GAP_APP })) out = out.replaceAll(`<!--${k}-->`, v);
   return out
+    .replace(/<!--ICON:([a-z]+)(?::(\d+))?-->/g, (_, name: string, size?: string) => icon(name, size ? Number(size) : 22))
     .replace(/<!--PACKLOGO:([a-z0-9]+)(?::(\d+))?-->/g, (_, key: string, size?: string) => packLogo(key, size ? Number(size) : 24))
     // <!--MARK:state:size:class--> places the living mark (only its pupil moves).
     .replace(/<!--MARK:(\w+):(\d+)(?::([\w-]+))?-->/g, (_, state: MarkState, size: string, className?: string) => livingMark({ state, size: Number(size), className }));
@@ -1102,17 +1204,8 @@ const LANDING_PAGES: LandingPage[] = [
   },
 ];
 
-// Studio has its own film: one window, seven steps (src/studio.html).
-{
-  const notifications = JSON.parse(await readFile(join(REPO, "packages/spec/examples/settings-notifications.json"), "utf8")) as UIDocument;
-  const dots = Array.from({ length: 87 }, (_, i) => `<i style="--n:${i}"></i>`).join("");
-  const studio = (await readFile(join(SITE, "src/studio.html"), "utf8"))
-    .replace("<!--ROLE_DOTS-->", dots)
-    .replace("<!--ROLE_DOTS_STATIC-->", `<span class="st-dots-static">${dots}</span>`)
-    .replace("<!--STUDIO_TUNE_PREVIEW-->", phoneHtml(surfaceHtml(send.intent.document, "mono"), "tune", "light", false))
-    .replace("<!--STUDIO_SCREEN_PREVIEW-->", surfaceHtml(notifications, "shadcn"));
-  await write(join(DIST, "studio", "index.html"), await fill(studio, { title: "Studio · Polyxd", description: "Import your design system, map it to 87 roles with contrast measured, tune it, write screens and the shell, and export to six formats.", path: "/studio/", current: "studio" }));
-}
+// Studio follows one button, from four places to one product (src/studio.html).
+await write(join(DIST, "studio", "index.html"), await fill(await readFile(join(SITE, "src/studio.html"), "utf8"), { title: "Studio · Polyxd", description: "Set up your design system once and use it everywhere: import your tokens at every tier, check them against 87 roles, design screens with them, and export to six formats.", path: "/studio/", current: "studio" }));
 
 const template = await readFile(join(SITE, "src/page.html"), "utf8");
 for (const pg of LANDING_PAGES) {

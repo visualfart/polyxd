@@ -296,28 +296,22 @@
     set("--tv-q", clamp((pgone - .22) / .7));
   };
 
-  // ---------- Steps: one pinned scene played in steps (the Studio film) ----------
-  const stepScenes = $$("[data-steps]").map((sec) => {
-    const n = Number(sec.dataset.steps);
-    const mapped = $(".st-mapped", sec);
-    const apply = (i, q) => {
-      if (sec.dataset.step !== String(i)) {
-        sec.dataset.step = String(i);
-        $$("[data-goto]", sec).forEach((b) => b.setAttribute("aria-current", String(Number(b.dataset.goto) === i)));
-      }
-      sec.style.setProperty("--q", q.toFixed(4));
-      if (i === 3) sec.dataset.width = String(Math.min(2, Math.floor(q * 3)));
-      if (i === 5) sec.dataset.tab = String(Math.min(5, Math.floor(q * 6)));
-      if (mapped) mapped.textContent = String(i === 1 ? Math.min(87, Math.round(q * 120)) : 87);
-    };
-    $$("[data-goto]", sec).forEach((b) => b.addEventListener("click", () => {
-      const i = Number(b.dataset.goto);
-      if (motion()) jump(sec, (i + .8) / n);
-      else apply(i, .95);
-    }));
-    apply(0, .95);
-    return { sec, n, apply };
-  });
+  // ---------- Studio: the roles counted as they fill, and the preview's width named ----------
+  const roleScene = $('[data-scene="sroles"]');
+  const roleCount = roleScene && $(".sr-count", roleScene);
+  const design = $('[data-scene="sdesign"]');
+  const studio = () => {
+    if (roleCount) {
+      const m = clamp(((last.get(roleScene) ?? 0) - .05) / .6);
+      const s = String(Math.min(87, Math.floor(m * 95)));
+      if (roleCount.textContent !== s) roleCount.textContent = s;
+    }
+    if (design) {
+      const w = clamp(((last.get(design) ?? 0) - .44) / .44);
+      const i = String(w < .3 ? 0 : w < .75 ? 1 : 2);
+      if (design.dataset.width !== i) design.dataset.width = i;
+    }
+  };
 
   const last = new Map();
   let lastTool = 0, lastWipe = 0;
@@ -343,11 +337,7 @@
       if (i !== lastTool) { lastTool = i; selectTool(i); }
     }
     travel();
-    for (const st of stepScenes) {
-      const f = (last.get(st.sec) ?? 0) * st.n;
-      const i = clamp(Math.floor(f), 0, st.n - 1);
-      st.apply(i, clamp(f - i));
-    }
+    studio();
     const check = $('[data-scene="check"]');
     const c = clamp(((last.get(check) ?? 0) - .3) / .5);
     const e = 1 - Math.pow(1 - c, 3);
@@ -366,6 +356,8 @@
     if (!mq.matches) {
       root.classList.remove("travelling");
       scenes.forEach((el) => el.style.removeProperty("--p"));
+      if (roleCount) roleCount.textContent = "";
+      if (design) design.dataset.width = "2";
       counters.forEach((el) => (el.textContent = Number(el.dataset.count).toLocaleString("en-GB")));
     }
   });
