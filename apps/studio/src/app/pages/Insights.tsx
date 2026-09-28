@@ -257,8 +257,9 @@ const dayMonth = (day: string, month: boolean) => new Date(`${day}T00:00:00Z`).t
 
 /**
  * The range as a Polyxd document: one trend Chart, drawn by @polyxd/react in the workspace's design
- * system. Up to 30 days a point is a day; 90 days are summed by week, so the axis stays legible
- * (the Chart labels every point). A label names the month on the first point and where it changes.
+ * system. Up to 30 days a point is a day; 90 days are summed by week, as ninety daily points read
+ * as noise. (The Chart thins its own axis labels when they don't fit.) A label names the month on
+ * the first point and where it changes.
  */
 function chartDocument(d: Detail): UIDocument {
   const weekly = d.series.length > 31;
