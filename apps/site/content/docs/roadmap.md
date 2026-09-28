@@ -22,7 +22,7 @@ Polyxd has no fixed timeline. Work is split into phases ordered by dependency, a
 
 Polyxd does not depend on a model of its own. The spec, renderer and verifier work with any generator, and the verifier is what lets you compare generators on equal terms.
 
-The [runtime SDK](/docs/runtime), `@polyxd/runtime`, the [MCP server](/docs/mcp/), `@polyxd/mcp`, and the [generation server](/docs/server/), `@polyxd/server`, are built. The runtime generates a document with the model you choose and applies a Design Direction as it does. The MCP server lets a chat app's own model write, check and show a screen. The generation server puts the runtime behind an HTTP API with streaming, with a Dockerfile to build its image. All three are in the repository and not on npm yet, and the server's image is not on GitHub Container Registry yet. **Next:** publishing them. **Later:** SwiftUI and Compose renderers (the spec already maps every component to both), a design-system generator, and an importer for Figma variables (Studio already imports Tokens Studio, DTCG and CSS files and npm packages).
+The [runtime SDK](/docs/runtime), `@polyxd/runtime`, the [MCP server](/docs/mcp/), `@polyxd/mcp`, and the [generation server](/docs/server/), `@polyxd/server`, are on npm since 0.4.0. The runtime generates a document with the model you choose and applies a Design Direction as it does. The MCP server lets a chat app's own model write, check and show a screen. The generation server puts the runtime behind an HTTP API with streaming, with a Dockerfile to build its image. **Next:** the Python runtime and PyPI. **Later:** SwiftUI and Compose renderers (the spec already maps every component to both), a design-system generator, and an importer for Figma variables (Studio already imports Tokens Studio, DTCG and CSS files and npm packages).
 
 ### Release milestones
 
@@ -31,7 +31,7 @@ The [runtime SDK](/docs/runtime), `@polyxd/runtime`, the [MCP server](/docs/mcp/
 | v0.1 | Phase 3 | Spec, design-system packs, React renderer, verifier. Works with any LLM. The first npm release | Released |
 | v0.2 | | Authored screens, more components, the demos, Studio's first version | Released |
 | v0.3 | | The shell components, `@polyxd/core`, the Web Components renderer, twelve templates, `polyxd dev` | Released |
-| next | | Runtime SDK, MCP server, generation server | In progress. All three are built and not yet published |
+| v0.4 | | Runtime SDK, MCP server (local and hosted at mcp.polyxd.com), generation server, precompiled spec validators, `@polyxd/verifier/static` | Released |
 | v1.0 | | Spec frozen, then native renderers | Planned |
 
 Before v1.0 the spec may break. Every document carries `specVersion`, releases follow semver, and breaking changes will come with migration notes.
@@ -46,9 +46,9 @@ Each layer ships as its own package, so nobody has to adopt all of it. What exis
 | Design-system packs | `@polyxd/ds-material3`, `ds-carbon`, `ds-antd` | npm | Exist |
 | Web renderer | `@polyxd/react` | npm | Exists |
 | Verifier and benchmark | `polyxd-verify` CLI, dataset | npm, Hugging Face Datasets | Verifier exists; dataset in progress |
-| Runtime SDK (generator, memory, validation, streaming) | `@polyxd/runtime`, `polyxd` (Python) | npm, PyPI | `@polyxd/runtime` exists in the repository, not on npm yet; Python planned |
-| Agent integration | MCP server (MCP Apps compatible) and A2UI export | npm (`npx @polyxd/mcp`) | A2UI export exists; the MCP server ([`@polyxd/mcp`](/docs/mcp/)) is hosted at `mcp.polyxd.com` but not yet on npm |
-| Server | Generation server and HTTP API with streaming, pointed at the model endpoint you choose | Docker image on GitHub Container Registry, and npm (`npx @polyxd/server`) | Built ([`@polyxd/server`](/docs/server/)), with a Dockerfile. Not on npm, and no image on GitHub Container Registry yet |
+| Runtime SDK (generator, memory, validation, streaming) | `@polyxd/runtime`, `polyxd` (Python) | npm, PyPI | `@polyxd/runtime` on npm; Python planned |
+| Agent integration | MCP server (MCP Apps compatible) and A2UI export | npm (`npx @polyxd/mcp`) | A2UI export exists; the MCP server ([`@polyxd/mcp`](/docs/mcp/)) is on npm and hosted at `mcp.polyxd.com` |
+| Server | Generation server and HTTP API with streaming, pointed at the model endpoint you choose | Docker image on GitHub Container Registry, and npm (`npx @polyxd/server`) | [`@polyxd/server`](/docs/server/) on npm, with a Dockerfile to build the image |
 | Native renderers | Swift package, Compose library | SPM, Maven Central | Later |
 
 The runtime points at any generator: Claude, GPT or Gemini through their APIs, or a model on your own machine or server behind an OpenAI-compatible endpoint. Interface memory is stored on the client. There is no telemetry.

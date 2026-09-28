@@ -11,7 +11,7 @@ section: Guides
 
 Use it when the model key must stay on a server, or when the code that wants a screen isn't JavaScript. It keeps no state between requests and logs nothing from them but the method, path, status and duration.
 
-It is new in the repository. It is not on npm, and there is no image on GitHub Container Registry yet. Until there is, build it from a clone.
+It is on npm as `@polyxd/server`. Run it with `npx @polyxd/server`, or build its Docker image from a clone.
 
 ## Run it with Docker
 

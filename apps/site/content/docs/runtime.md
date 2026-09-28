@@ -9,7 +9,6 @@ section: Guides
 
 `@polyxd/runtime` turns an ask into a UI document with the model you choose. It builds the prompt from the spec and your [Design Direction](/docs/design-direction), checks the answer, sends any problems back to the model to fix, streams as it goes, and remembers the screen shown for each intent. It uses `fetch` only and has no model SDK dependencies. It runs in Node, in browsers and in Cloudflare Workers as it is. The spec's schema checks come compiled ahead of time, so nothing turns text into code at run time, which Workers forbid.
 
-It is new in the repository and not on npm yet.
 
 ## Install
 

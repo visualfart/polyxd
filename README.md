@@ -100,9 +100,9 @@ It reads your CSS custom properties, maps what it can onto the contract, writes 
 | [`@polyxd/verifier`](https://www.npmjs.com/package/@polyxd/verifier) | `polyxd-verify`: static, rendered and agent checks |
 | `polyxd-spec` (Python) | The schemas, component catalogue and validator for Python, with the same results as `@polyxd/spec`; `polyxd-spec validate`. In [`packages/python-spec`](packages/python-spec), not yet on PyPI |
 | [`@polyxd/a2ui`](https://www.npmjs.com/package/@polyxd/a2ui) | Export to A2UI v1.0 |
-| [`@polyxd/runtime`](packages/runtime/) | Generates a document for an ask with the model you choose, with your Design Direction applied: validation and repair, streaming, and interface memory on the client. In the repository, not on npm yet |
-| [`@polyxd/mcp`](https://www.npmjs.com/package/@polyxd/mcp) | MCP server (`npx -y @polyxd/mcp`): the spec for the host's model, validation and verification, and an MCP App that shows the screen in any pack. Hosted at `https://mcp.polyxd.com/mcp`; not yet on npm |
-| [`@polyxd/server`](packages/server/) | Generation server: the runtime behind an HTTP API (`POST /v1/generate`, JSON or server-sent events), pointed at the model you choose; a Docker image or `npx @polyxd/server`. In the repository, not on npm and not on GHCR yet |
+| [`@polyxd/runtime`](https://www.npmjs.com/package/@polyxd/runtime) | Generates a document for an ask with the model you choose, with your Design Direction applied: validation and repair, streaming, and interface memory on the client |
+| [`@polyxd/mcp`](https://www.npmjs.com/package/@polyxd/mcp) | MCP server (`npx -y @polyxd/mcp`): the spec for the host's model, validation and verification, and an MCP App that shows the screen in any pack. Also hosted at `https://mcp.polyxd.com/mcp` |
+| [`@polyxd/server`](https://www.npmjs.com/package/@polyxd/server) | Generation server: the runtime behind an HTTP API (`POST /v1/generate`, JSON or server-sent events), pointed at the model you choose; a Docker image or `npx @polyxd/server` |
 | [`polyxd`](https://www.npmjs.com/package/polyxd) | The `polyxd` command: `pack` and `check` |
 | [`@polyxd/ds-kit`](https://www.npmjs.com/package/@polyxd/ds-kit) | The library behind `polyxd pack` |
 | `@polyxd/ds-*` | The thirteen packs as DTCG tokens, for building your own themes, plus twelve original templates to start from (`sketch`, `wireframe`, `editorial`, `brutalist`, `glass`, `terminal`, `pastel`, `civic`, `finance`, `health`, `neon`, `mono`). The renderer already includes their CSS |
@@ -136,9 +136,9 @@ Not for: a handful of intents in one design system (hand-build them), or the fla
 
 Polyxd ships no model. Any model or program that emits spec-valid JSON drives it: Claude, GPT, Gemini, a model you run yourself, a template, or plain code. Give the generator the spec and the data, take the UI document it writes, and pass it to the renderer. The verifier checks what it wrote, in every pack, mode and width, before anyone sees it. Taste comes from [Design Direction](https://polyxd.com/docs/design-direction/), which a designer sets once and the verifier holds every surface to.
 
-[`@polyxd/runtime`](packages/runtime/) does the generating part for you: it builds the prompt from the spec and your Direction, calls Claude, GPT, Gemini or a local model behind an OpenAI-compatible endpoint, checks the answer and sends problems back for repair, streams, and remembers the screen shown for each intent. It is in the repository and not on npm yet. See [Runtime](https://polyxd.com/docs/runtime/).
+[`@polyxd/runtime`](packages/runtime/) does the generating part for you: it builds the prompt from the spec and your Direction, calls Claude, GPT, Gemini or a local model behind an OpenAI-compatible endpoint, checks the answer and sends problems back for repair, streams, and remembers the screen shown for each intent. See [Runtime](https://polyxd.com/docs/runtime/).
 
-[`@polyxd/server`](packages/server/) puts the runtime behind an HTTP API with streaming, for when the model key has to stay on a server or the code that wants a screen isn't JavaScript. Build its Docker image from a clone; it isn't on npm or GitHub Container Registry yet. See [Generation server](https://polyxd.com/docs/server/).
+[`@polyxd/server`](packages/server/) puts the runtime behind an HTTP API with streaming, for when the model key has to stay on a server or the code that wants a screen isn't JavaScript. Run it with `npx @polyxd/server`, or build its Docker image from a clone. See [Generation server](https://polyxd.com/docs/server/).
 
 ## Repository
 

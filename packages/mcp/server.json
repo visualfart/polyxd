@@ -11,13 +11,35 @@
     "subfolder": "packages/mcp"
   },
   "icons": [
-    { "src": "https://polyxd.com/icon-512.png", "mimeType": "image/png", "sizes": ["512x512"] },
-    { "src": "https://polyxd.com/icon-192.png", "mimeType": "image/png", "sizes": ["192x192"] }
+    {
+      "src": "https://polyxd.com/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    },
+    {
+      "src": "https://polyxd.com/icon-192.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "192x192"
+      ]
+    }
   ],
   "remotes": [
     {
       "type": "streamable-http",
       "url": "https://mcp.polyxd.com/mcp"
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@polyxd/mcp",
+      "version": "0.4.0",
+      "transport": {
+        "type": "stdio"
+      }
     }
   ]
 }
