@@ -170,10 +170,37 @@
         color: var(--muted);
       }
       .demo .ds {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 24px;
         font: var(--text-label);
         letter-spacing: var(--tracking-label);
         text-transform: uppercase;
         color: var(--muted);
+      }
+      /* The product's design system, by its logo: the owner's file, unaltered, on a white squircle tile
+         with a hairline, white in both themes (as the mark's window is) so the logo keeps its colours.
+         Decorative: the name beside it is the label. A system whose owner doesn't allow its logo
+         (GOV.UK's crown is protected; Google and Shopify need permission) is named in words alone. */
+      .ds-logo {
+        flex: none;
+        box-sizing: border-box;
+        display: inline-grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        padding: 3px;
+        border: 1px solid var(--rule);
+        border-radius: var(--radius-icon);
+        corner-shape: squircle;
+        background: var(--mark-window);
+      }
+      .ds-logo img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
       }
       /* On night, the darker products' letters (Foundry, Quay) keep a hairline so the square still reads. */
       @media (prefers-color-scheme: dark) {
@@ -202,25 +229,25 @@
         <div class="demos">
           <a class="demo" href="/demos/halden/">
             <span class="demo-mark" style="background: #65558f" aria-hidden="true">h</span>
-            <span class="ds">Material 3 · phone first</span>
+            <span class="ds"><span>Material 3 · phone first</span></span>
             <h2>Halden</h2>
             <p>A current account. Ask it to send money, explain a charge, set a budget or freeze the card.</p>
           </a>
           <a class="demo" href="/demos/foundry/">
             <span class="demo-mark" style="background: #18181b" aria-hidden="true">f</span>
-            <span class="ds">shadcn/ui · dense desktop</span>
+            <span class="ds"><span class="ds-logo" aria-hidden="true"><img src="../../packages/ds-shadcn/logo.svg" alt="" width="24" height="24" /></span><span>shadcn/ui · dense desktop</span></span>
             <h2>Foundry</h2>
             <p>A customer-success desk for a SaaS. Renewals, tickets, plan changes and hand-overs, keyboard first.</p>
           </a>
           <a class="demo" href="/demos/wexley/">
             <span class="demo-mark" style="background: #1d70b8" aria-hidden="true">w</span>
-            <span class="ds">GOV.UK · forms and plain words</span>
+            <span class="ds"><span>GOV.UK Design System · forms and plain words</span></span>
             <h2>Wexley Borough Council</h2>
             <p>A resident's account: permits, council tax, repairs and appeals, as services rather than screens.</p>
           </a>
           <a class="demo" href="/demos/quay/">
             <span class="demo-mark" style="background: #303030" aria-hidden="true">q</span>
-            <span class="ds">Polaris · store admin</span>
+            <span class="ds"><span>Shopify Polaris · store admin</span></span>
             <h2>Quay</h2>
             <p>A candle brand's store admin. Ask why sales dropped, what's about to sell out, or to refund an order.</p>
           </a>

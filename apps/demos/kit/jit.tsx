@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { PolyxdSkeleton, PolyxdSurface, type ActionEvent, type ComponentRenderer, type Data, type UIDocument } from "@polyxd/react";
 import type { IntentFile, ReportSummary } from "./types.ts";
+import { PackLogo } from "./logos.tsx";
 
 /**
  * A just-in-time surface inside a product: the document rendered in the product's design system,
@@ -218,13 +219,16 @@ function Hood({ intent, report, data, theme, mode, locale, packs, loadPack, reso
             <p className="jit-note">Same document, another design system: only the pack changes. Nothing in the JSON knows what it looks like.</p>
             <label className="jit-pack">
               Design system
-              <select value={pack} onChange={(e) => setPack(e.target.value)}>
-                {packs.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+              <span className="jit-pack-row">
+                <PackLogo id={pack} size={32} />
+                <select value={pack} onChange={(e) => setPack(e.target.value)}>
+                  {packs.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </span>
             </label>
             <div className="jit-preview">{ready[pack] ? <PolyxdSurface key={pack} document={doc} data={data} theme={pack} mode={mode} locale={locale} onAction={() => undefined} onDismiss={() => undefined} resolveMedia={resolveMedia} /> : <PolyxdSkeleton title={doc.surface.title} pattern={doc.surface.pattern} theme={theme} mode={mode} />}</div>
           </Panel>

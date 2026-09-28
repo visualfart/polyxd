@@ -202,6 +202,33 @@
   font-size: var(--pxd-type-body-small-size);
   color: var(--pxd-color-text-muted);
 }
+.jit-pack-row {
+  display: flex;
+  align-items: center;
+  gap: var(--pxd-space-inline-default);
+}
+.jit-pack-row select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* The chosen pack's logo: the owner's file, unaltered, on a white squircle tile with a hairline,
+   white in both modes so the logo keeps its own colours. */
+.jit-logo {
+  flex: none;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--pxd-color-border-default);
+  border-radius: 22.5%;
+  corner-shape: squircle;
+  background: #ffffff;
+}
+.jit-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .jit-pack select {
   min-height: var(--pxd-size-target-min);
   padding: 0 var(--pxd-space-inset-default);
