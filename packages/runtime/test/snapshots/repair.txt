@@ -1,0 +1,5 @@
+The document you wrote has these problems:
+- [spec] /components/0/summary: references unknown component "missing"
+- [rule:voice-no-exclamation] No exclamation marks
+
+Fix every one and output the whole corrected JSON document again, and nothing else.

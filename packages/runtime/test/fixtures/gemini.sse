@@ -1,0 +1,6 @@
+data: {"candidates":[{"content":{"parts":[{"text":"{\"specVersion\":\"0.3.0\",\"surface\":{\"id\":\"pay\",\"title\":\"Pay £5\"},"}],"role":"model"},"index":0}],"usageMetadata":{"promptTokenCount":4812,"candidatesTokenCount":14,"totalTokenCount":4826},"modelVersion":"gemini-test"}
+
+data: {"candidates":[{"content":{"parts":[{"text":"\"root\":\"t\",\"components\":[{\"id\":\"t\",\"component\":\"Text\","}],"role":"model"},"index":0}],"usageMetadata":{"promptTokenCount":4812,"candidatesTokenCount":28,"totalTokenCount":4840},"modelVersion":"gemini-test"}
+
+data: {"candidates":[{"content":{"parts":[{"text":"\"text\":\"You're about to pay £5.\"}]}"}],"role":"model"},"finishReason":"STOP","index":0}],"usageMetadata":{"promptTokenCount":4812,"candidatesTokenCount":41,"totalTokenCount":4853},"modelVersion":"gemini-test"}
+
