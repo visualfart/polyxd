@@ -1,0 +1,52 @@
+{
+  "_": "Film B's three versions. Seconds. make-b.mjs writes film-b*/index.html from this file (pictures and sound-effect cues). The cuts sit on a 100 bpm grid (bar n starts at t0 + n × bar) for the score to land on.",
+  "grid": { "t0": 0.6, "bar": 2.4 },
+  "common": {
+    "sting": 0, "stingDur": 5.4, "hit0": 0.6,
+    "g1In": 5.4, "read1": 6.1, "type": 6.4, "send": 8.1, "dots": 8.5, "stream": 9.4, "streamTo": 14.0, "g1Out": 15.0,
+    "lineIn": 15.8, "lineOut": 20.6,
+    "g2In": 21.2, "think": 22.2, "look": 24.15, "reveal": 24.6, "partsEvery": 0.6,
+    "cap1In": 27.8, "tap": 29.4, "toast": 30.2, "blink": 31.2, "cap1Out": 32.6, "toastOut": 33.3
+  },
+  "versions": {
+    "b1": {
+      "id": "film-b1-token-morph",
+      "label": "B1 · design tokens morph, same screen through five design systems",
+      "steps": [
+        { "kind": "token", "layer": "return", "at": 34.2, "dur": 1.2, "to": "material3", "app": "halden" },
+        { "kind": "swap", "from": "return", "to": "send", "at": 35.8, "dur": 0.8 },
+        { "kind": "token", "layer": "send", "at": 38.4, "dur": 1.2, "to": "carbon", "app": "ledger" },
+        { "kind": "token", "layer": "send", "at": 40.2, "dur": 1.2, "to": "polaris", "app": "tidings" },
+        { "kind": "token", "layer": "send", "at": 42.0, "dur": 1.2, "to": "govuk", "app": "wexley" },
+        { "kind": "swap", "from": "send", "to": "address", "at": 43.8, "dur": 0.8 }
+      ],
+      "cap2In": 37.0, "cap2Out": 45.4, "checked": 46.2, "cap3In": 47.0, "cap3Out": 50.4, "g2Out": 51.1,
+      "montage": 53.4, "shot": 1.2, "shots": 10, "capMIn": 54.0, "capMOut": 64.7, "montageEnd": 65.4,
+      "outro": 66.0, "final": 70.2, "end": 73.8
+    },
+    "b2": {
+      "id": "film-b2-shared-morph",
+      "label": "B2 · shared-element morph between different apps' screens",
+      "steps": [
+        { "kind": "shared", "from": "return", "to": "send", "at": 34.2, "dur": 1.2 },
+        { "kind": "shared", "from": "send", "to": "address", "at": 39.0, "dur": 1.2 }
+      ],
+      "cap2In": 35.8, "cap2Out": 41.4, "checked": 42.2, "cap3In": 43.0, "cap3Out": 46.4, "g2Out": 47.1,
+      "montage": 48.6, "shot": 1.2, "shots": 10, "capMIn": 49.2, "capMOut": 59.9, "montageEnd": 60.6,
+      "outro": 61.2, "final": 65.4, "end": 69.0
+    },
+    "b3": {
+      "id": "film-b3-combined",
+      "label": "B3 · shared-element morph between apps, with a token morph through two more design systems",
+      "steps": [
+        { "kind": "shared", "from": "return", "to": "send", "at": 34.2, "dur": 1.2 },
+        { "kind": "token", "layer": "send", "at": 37.2, "dur": 1.0, "to": "carbon", "app": "ledger" },
+        { "kind": "token", "layer": "send", "at": 38.4, "dur": 1.0, "to": "polaris", "app": "tidings" },
+        { "kind": "shared", "from": "send", "to": "address", "at": 39.6, "dur": 1.2 }
+      ],
+      "cap2In": 35.8, "cap2Out": 41.6, "checked": 42.2, "cap3In": 43.0, "cap3Out": 46.4, "g2Out": 47.1,
+      "montage": 48.6, "shot": 1.2, "shots": 10, "capMIn": 49.2, "capMOut": 59.9, "montageEnd": 60.6,
+      "outro": 61.2, "final": 65.4, "end": 69.0
+    }
+  }
+}

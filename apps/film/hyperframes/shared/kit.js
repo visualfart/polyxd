@@ -88,12 +88,14 @@
    *   o.reply      the app's reply bubble: its "thinking" dots, then these words (the timeline
    *                switches between them and may fill the words in as they stream)
    *   o.toast      a message after the action
+   *   o.dock       dock the form's primary button at the bottom of the phone (film B)
+   *   o.home       draw the home indicator (film B)
    *   o.where      the label at the right of the app bar (default "Assistant")
    *   o.crossfades this screen cross-fades with another one in the same phone
    */
   function appScreen(o) {
     const el = document.createElement("div");
-    el.className = "app";
+    el.className = "app" + (o.dock ? " cta-dock" : "");
     el.setAttribute("data-pxd-theme", o.app.theme);
     el.setAttribute("data-pxd-mode", "light");
     el.innerHTML =
@@ -105,7 +107,8 @@
       (o.doc ? `<div class="answer"></div>` : "") +
       `</div>` +
       (o.composer ? `<div class="composer"><div class="field"><span class="typed"></span><span class="caret"></span><span class="ph">Ask anything</span></div><div class="send">${ARROW}</div></div>` : "") +
-      (o.toast ? `<div class="toast${o.composer ? " above" : ""}">${TICK}<span>${esc(o.toast)}</span></div>` : "");
+      (o.toast ? `<div class="toast${o.composer ? " above" : ""}${o.dock ? " docked" : ""}">${TICK}<span>${esc(o.toast)}</span></div>` : "") +
+      (o.home ? `<div class="home-bar"></div>` : "");
     const handles = { el };
     if (o.doc) {
       const host = el.querySelector(".answer");
@@ -208,5 +211,13 @@
     tl.fromTo(h.bar, { "--finger": 1 }, { "--finger": 0, duration: 0.25, ease, immediateRender: false }, at + 0.45);
   }
 
-  window.Film = { APPS, SEND, SEND_DATA, RETURN, ADDRESS, appScreen, revealParts, typed, converse, inn, out, assemble, hide, tap, ease, esc };
+  /** Film B's press on a docked button: the finger lands, the button dips and darkens, both lift (0.7 s). */
+  function press(tl, h, at) {
+    tl.fromTo(h.button, { "--finger": 0 }, { "--finger": 1, duration: 0.18, ease, immediateRender: false }, at);
+    tl.fromTo(h.button, { "--press": 0 }, { "--press": 1, duration: 0.14, ease, immediateRender: false }, at + 0.14);
+    tl.fromTo(h.button, { "--press": 1 }, { "--press": 0, duration: 0.3, ease, immediateRender: false }, at + 0.42);
+    tl.fromTo(h.button, { "--finger": 1 }, { "--finger": 0, duration: 0.25, ease, immediateRender: false }, at + 0.46);
+  }
+
+  window.Film = { APPS, SEND, SEND_DATA, RETURN, ADDRESS, appScreen, revealParts, typed, converse, inn, out, assemble, hide, tap, press, ease, esc };
 })();

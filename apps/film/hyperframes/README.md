@@ -1,4 +1,4 @@
-# The three launch films, in HyperFrames
+# The launch films, in HyperFrames
 
 One film per script option in [`../SCRIPT-OPTIONS.md`](../SCRIPT-OPTIONS.md), each a HyperFrames project
 (HTML compositions rendered by the `hyperframes` CLI). 1920×1080, 30 fps, H.264 + AAC.
@@ -70,3 +70,103 @@ renderer changes, rebuild its browser bundle first: `node packages/web/scripts/b
   logo; mastered to -16 LUFS. Sound effects: a soft tap on Send, a tick on the check, and a very
   quiet blink. The rendered films measure -16.0 / -16.1 / -16.2 LUFS integrated, true peak
   -1.8 / -1.3 / -1.3 dBTP.
+
+## Film B, second pass: three versions (`film-b1-*`, `film-b2-*`, `film-b3-*`)
+
+The owner chose option B and asked for: a more crafted intro, a logo outro, real morphs between
+design systems (in several versions), a better call to action on the phone, and a montage of what
+else Polyxd can draw. `film-b-show-dont-tell/` is the first pass, kept as it was.
+
+| Version | Project | Length | How one design system becomes another |
+|---|---|---|---|
+| B1 | `film-b1-token-morph/` | 73.8 s | **Token interpolation.** One live screen; every `--pxd-*` design token (colours, radii, spacing, type sizes and weights, borders) is interpolated from one pack's value to the next and the real renderer re-lays the screen out each frame. The send-money screen passes shadcn → Material 3 → Carbon → Polaris → GOV.UK (the app bar renames itself Fernly → Halden → Ledger → Tidings → Wexley Council); where the document changes (return form → send form → address form) only the conversation's content leaves and arrives, the chrome stays. |
+| B2 | `film-b2-shared-morph/` | 69.0 s | **Shared-element morph** between different apps' screens (Fernly/shadcn return form → Halden/Material 3 send form → Wexley/GOV.UK address form). Paired parts travel and reshape into their counterparts: the screen, app bar, app icon, question bubble, surface, action bar and primary button are drawn by a morph layer whose rect, colour, corner radius and border interpolate; the title, labels, status bar and fields travel along the same path (FLIP) and hand over; parts only one screen has fade out early or in late. |
+| B3 | `film-b3-combined/` | 69.0 s | Both: shared-element morph Fernly → Halden, a token morph of the same send screen Material 3 → Carbon → Polaris, then a shared-element morph into Wexley's GOV.UK address form. |
+
+All three share: a new intro sting (`shared/sting-b.html`: on the first hit the p is built one shape at
+a time, bowl, stem, window; the pupil drops in, reads, looks, blinks; the mark moves aside and the
+wordmark settles), a new outro (`shared/outro-b.html`: the mark returns alone, its pupil turns into
+the tick and opens again, the mark moves aside for the wordmark and polyxd.com, a last blink on the
+final hit, then it holds), the docked call to action (full width, 50 px, sticky at the bottom above
+the home indicator, a press that dips and darkens under a soft finger mark; checked in shadcn,
+Material 3, Carbon, Polaris and GOV.UK), and a 12 s montage cut on the beat (1.2 s a screen, hard
+cuts, one caption): Halden budgets (Material 3), Quay "why sales dropped" (Polaris), Wexley bins
+(GOV.UK), Foundry account overview (shadcn), order status (Fluent), compare plans (Carbon), find a
+time (Primer), CRM account (Ant Design), trip overview (Spectrum), storage (Mantine), all drawn live
+by the renderer from `apps/demos/*/authored|intents/*.json` and `packages/spec/examples/*.json`
+(`montage.mjs`).
+
+### Build and render
+
+```sh
+node apps/film/hyperframes/make-b.mjs          # writes film-b1/2/3: index.html from shared/film-b-timings.json,
+                                               # assets, montage documents, and the sound effects (media-use)
+cd apps/film/hyperframes/film-b2-shared-morph
+npx hyperframes check
+npx hyperframes render --quality delivery --output ../../out/hyperframes/polyxd-b2-shared-morph.mp4
+```
+
+Timings for all three versions live in `shared/film-b-timings.json`; the code in `shared/film-b.js`
+(the film), `shared/morph.js` (the two morph mechanisms) and `shared/film-b.css` (docked CTA,
+home indicator, desktop window, morph layer). Edit those and run `make-b.mjs` again; the
+`index.html` files are generated.
+
+### Sound
+
+The mix is built with the HyperFrames audio engine: two buses (`<hf-audio-group>` "Music" and "Sound
+design"), each with a 30 Hz high-pass and a −2 dB limiter; the score, when present, has a volume lane
+that dips it under the sting's hit, the reveal and the final chord.
+
+**Music is not in these renders yet.** The owner asked for a produced score through media-use rather
+than Apple Loops. media-use's music routes need one of: a HeyGen sign-in (catalogue retrieval,
+10k+ licensed tracks), a Gemini key (Lyria generation), or local MusicGen (needs ~300 MB of Python
+packages and model weights, and the model is licensed CC-BY-NC, so not cleared for a commercial
+launch film). None is set up on this machine and signing in is the owner's step:
+
+```sh
+npx hyperframes auth login          # browser sign-in to HeyGen (free-usage path), writes ~/.heygen
+# or install the HeyGen CLI (developers.heygen.com/cli), then: heygen auth login --oauth
+```
+
+Then, for each version, resolve a score and rebuild:
+
+```sh
+cd apps/film/hyperframes/film-b2-shared-morph
+npx hyperframes media-use resolve --type bgm --intent "cinematic confident modern, steady pulse, building strings, hit and lift, driving, big resolving final chord, no vocals, 100-120 bpm" --project .
+cp .media/audio/bgm/bgm_001.* assets/music.mp3       # (the resolved file)
+npx hyperframes beats . --json                        # read the score's beat grid; adjust shared/film-b-timings.json so the hits land on it
+node ../make-b.mjs b2 && npx hyperframes render --quality delivery --output ../../out/hyperframes/polyxd-b2-shared-morph.mp4
+```
+
+`make-b.mjs` places `assets/music.mp3` (or `.wav`) automatically when it exists and lowers the sound
+design bus to 0.7 under it.
+
+### Credits (film B versions)
+
+Sound effects, resolved through media-use's bundled library (`npx hyperframes media-use resolve
+--type sfx`, recorded in each project's `.media/manifest.jsonl`), all from Pixabay under the Pixabay
+Content License (free for commercial use, no attribution required):
+
+| Effect | Used for |
+|---|---|
+| whoosh-short | into the sting's first hit; each shared or content morph; the montage's end |
+| impact-bass-1 | the sting's first hit (low, tonal); the montage's first cut |
+| chime | the wordmark settling in the sting; the final resolve |
+| typing | the question being typed |
+| click-soft | sending; each montage cut (very quiet) |
+| riser | the build into the reveal |
+| impact-bass-2 | the reveal (the answer becomes a screen); the outro's final hit |
+| sparkle | the reveal; each token morph |
+| click | the tap on the docked button |
+| pop | the toast |
+| ping | the check (the pupil becomes a tick), in the film and in the outro |
+| whoosh-cinematic | the sweep into the montage |
+
+Music: none yet (see above). Fonts: Young Serif and DM Mono (SIL OFL), Hanken Grotesk (SIL OFL, from
+Google Fonts).
+
+### Output (film B versions)
+
+`apps/film/out/hyperframes/`: `polyxd-b1-token-morph.mp4` (73.8 s), `polyxd-b2-shared-morph.mp4`
+(69.0 s), `polyxd-b3-combined.mp4` (69.0 s), a `*-sheet.png` contact sheet each, and six stills
+each in `stills/`.

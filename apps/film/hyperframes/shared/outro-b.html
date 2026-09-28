@@ -1,0 +1,103 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[{"id":"url","type":"string","label":"Address line","default":"polyxd.com"},{"id":"dur","type":"number","label":"Length","default":7.8}]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Film B's outro: the intro in reverse order of ideas. Needs shared/mark.js on the host page. -->
+  </head>
+  <body>
+    <template id="outro-b-template">
+      <style>
+        #outro-b-root {
+          position: absolute;
+          inset: 0;
+          background: #f3f1ec;
+        }
+        #outro-b-mark {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 200px;
+          height: 200px;
+          margin: -150px 0 0 -100px;
+          opacity: 0;
+        }
+        #outro-b-word {
+          position: absolute;
+          top: 50%;
+          margin-top: -142px;
+          font-family: "Young Serif", serif;
+          font-weight: 400;
+          font-size: 160px;
+          line-height: 1;
+          letter-spacing: -0.015em;
+          color: #141413;
+          opacity: 0;
+          white-space: nowrap;
+        }
+        #outro-b-url {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 50%;
+          margin-top: 110px;
+          text-align: center;
+          font-family: "Hanken Grotesk", sans-serif;
+          font-weight: 500;
+          font-size: 40px;
+          letter-spacing: 0.005em;
+          color: #5e5a52;
+          opacity: 0;
+        }
+      </style>
+      <div id="outro-b-root" data-composition-id="outro-b" data-width="1920" data-height="1080" data-duration="7.8">
+        <div id="outro-b-mark"></div>
+        <div id="outro-b-word">polyxd</div>
+        <div id="outro-b-url" data-var-text="url">polyxd.com</div>
+      </div>
+      <script>
+        (function () {
+          // The mark returns alone, centre; its pupil becomes the tick (checked), then opens again;
+          // the mark moves aside, the wordmark and the address arrive; a last blink lands on the
+          // final chord (4.2 s in) and the lockup holds.
+          const M = window.PolyxdMark;
+          const S = 200;
+          const vars = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+          const D = Number(vars.dur) || 7.8;
+          document.getElementById("outro-b-mark").innerHTML = M.svg("outro-b-svg", S);
+          const word = document.getElementById("outro-b-word");
+          const set = M.driver(document.getElementById("outro-b-svg"), [
+            { t: 0.9, state: "checked" },
+            { t: 1.9, state: "idle" },
+            { t: 4.2, state: "blink" },
+          ]);
+          const build = () => {
+            // Measured off a canvas: the clip may not be laid out yet when this runs.
+            const c = document.createElement("canvas").getContext("2d");
+            c.font = '400 160px "Young Serif"';
+            const wordW = c.measureText("polyxd").width * 0.985;
+            const gap = (S * 5) / 32;
+            const total = S + gap + wordW;
+            const markLeft = 960 - total / 2;
+            const shift = markLeft - (960 - S / 2);
+            word.style.left = `${markLeft + S + gap}px`;
+            const e = M.ease;
+            const tl = gsap.timeline({ paused: true });
+            tl.fromTo("#outro-b-mark", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.6, ease: e }, 0.1);
+            tl.fromTo("#outro-b-mark", { x: 0 }, { x: shift, duration: 0.5, ease: e, immediateRender: false }, 2.4);
+            tl.fromTo(word, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.55, ease: e }, 2.95);
+            tl.fromTo("#outro-b-url", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: e }, 3.55);
+            const clock = { t: 0 };
+            tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => set(clock.t) }, 0);
+            set(0);
+            window.__timelines["outro-b"] = tl;
+            if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
+          };
+          document.fonts.ready.then(build);
+        })();
+      </script>
+    </template>
+  </body>
+</html>

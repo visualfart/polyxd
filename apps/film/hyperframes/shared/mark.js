@@ -114,10 +114,10 @@
   function svg(id, size) {
     return (
       `<svg id="${id}" class="pxd-mark" width="${size}" height="${size}" viewBox="0 0 32 32" aria-label="Polyxd" role="img" style="display:block;overflow:visible">` +
-      `<path d="${BOWL}" fill="${SIGNAL}"/>` +
-      `<path d="${STEM}" fill="${SIGNAL}"/>` +
-      `<path d="${WINDOW}" fill="#FFFFFF"/>` +
-      `<rect class="pxd-pupil" x="13.6" y="13.6" width="4.8" height="4.8" rx="2.4" ry="2.4" fill="${INK}"/>` +
+      `<path class="pxd-bowl" d="${BOWL}" fill="${SIGNAL}"/>` +
+      `<path class="pxd-stem" d="${STEM}" fill="${SIGNAL}"/>` +
+      `<path class="pxd-window" d="${WINDOW}" fill="#FFFFFF"/>` +
+      `<g class="pxd-pupil-g"><rect class="pxd-pupil" x="13.6" y="13.6" width="4.8" height="4.8" rx="2.4" ry="2.4" fill="${INK}"/></g>` +
       `<path class="pxd-tick" d="${TICK}" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" fill="none" stroke="${INK}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>` +
       `</svg>`
     );

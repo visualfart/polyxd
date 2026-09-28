@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Film B's intro sting. Needs shared/mark.js on the host page. -->
+  </head>
+  <body>
+    <template id="sting-b-template">
+      <style>
+        #sting-b-root {
+          position: absolute;
+          inset: 0;
+          background: #f3f1ec;
+        }
+        #sting-b-mark {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 200px;
+          height: 200px;
+          margin: -100px 0 0 -100px;
+        }
+        #sting-b-word {
+          position: absolute;
+          top: 50%;
+          font-family: "Young Serif", serif;
+          font-weight: 400;
+          font-size: 160px;
+          line-height: 1;
+          letter-spacing: -0.015em;
+          color: #141413;
+          opacity: 0;
+          white-space: nowrap;
+        }
+        #sting-b-mark .pxd-bowl,
+        #sting-b-mark .pxd-stem,
+        #sting-b-mark .pxd-window,
+        #sting-b-mark .pxd-pupil-g {
+          opacity: 0;
+        }
+      </style>
+      <div id="sting-b-root" data-composition-id="sting-b" data-width="1920" data-height="1080" data-duration="5.4">
+        <div id="sting-b-all">
+          <div id="sting-b-mark"></div>
+          <div id="sting-b-word">polyxd</div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          // The p is built one shape at a time on the first hit, the pupil drops into the window and
+          // looks around, blinks, and the mark moves aside for the wordmark. One thing at a time.
+          const M = window.PolyxdMark;
+          const S = 200; // the mark's size; the wordmark is 0.8 of it, 5/32 of it away
+          document.getElementById("sting-b-mark").innerHTML = M.svg("sting-b-svg", S);
+          const svg = document.getElementById("sting-b-svg");
+          const q = (c) => svg.querySelector(c);
+          const word = document.getElementById("sting-b-word");
+          const set = M.driver(svg, [
+            { t: 2.0, state: "reading" },
+            { t: 2.4, state: "looking" },
+            { t: 2.8, state: "blink" },
+            { t: 3.15, state: "idle" },
+          ]);
+          const build = () => {
+            // Lockup geometry: mark and wordmark centred together; the mark starts centred alone.
+            // Measured off a canvas: the clip may not be laid out yet when this runs.
+            const c = document.createElement("canvas").getContext("2d");
+            c.font = '400 160px "Young Serif"';
+            const wordW = c.measureText("polyxd").width * 0.985;
+            const gap = (S * 5) / 32;
+            const total = S + gap + wordW;
+            const markLeft = 960 - total / 2;
+            const shift = markLeft - (960 - S / 2);
+            word.style.left = `${markLeft + S + gap}px`;
+            word.style.marginTop = `${-S * 0.46}px`;
+            const e = M.ease;
+            const tl = gsap.timeline({ paused: true });
+            tl.fromTo(q(".pxd-bowl"), { opacity: 0, scale: 0.55, svgOrigin: "16 16" }, { opacity: 1, scale: 1, svgOrigin: "16 16", duration: 0.45, ease: e }, 0.6);
+            tl.fromTo(q(".pxd-stem"), { opacity: 0, scaleY: 0, svgOrigin: "8.5 14" }, { opacity: 1, scaleY: 1, svgOrigin: "8.5 14", duration: 0.35, ease: e }, 0.98);
+            tl.fromTo(q(".pxd-window"), { opacity: 0, scale: 0.2, svgOrigin: "16 16" }, { opacity: 1, scale: 1, svgOrigin: "16 16", duration: 0.35, ease: e }, 1.3);
+            tl.fromTo(q(".pxd-pupil-g"), { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.38, ease: e }, 1.6);
+            tl.fromTo("#sting-b-mark", { x: 0 }, { x: shift, duration: 0.5, ease: e }, 3.3);
+            tl.fromTo(word, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.55, ease: e }, 3.85);
+            tl.fromTo("#sting-b-all", { opacity: 1 }, { opacity: 0, duration: 0.5, ease: e, immediateRender: false }, 4.8);
+            const clock = { t: 0 };
+            tl.to(clock, { t: 5.4, duration: 5.4, ease: "none", onUpdate: () => set(clock.t) }, 0);
+            set(0);
+            window.__timelines["sting-b"] = tl;
+            if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
+          };
+          document.fonts.ready.then(build);
+        })();
+      </script>
+    </template>
+  </body>
+</html>
