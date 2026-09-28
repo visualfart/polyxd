@@ -2,6 +2,9 @@ import { StrictMode, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { PolyxdSurface, type ActionEvent, type UIDocument } from "@polyxd/react";
 import "@polyxd/react/styles.css";
+// Polyxd's own tokens (paper and night) and the mark's state CSS, straight from brand/.
+import "../../../brand/tokens.css";
+import "../../../brand/mark.css";
 import "./gallery.css";
 import { RankPage } from "./rank.tsx";
 import { Cluster, Icon, PackPicker, Segmented, type Pack } from "./ui.tsx";
@@ -209,7 +212,7 @@ function Gallery() {
               Reset
             </button>
           </div>
-          <div className="g-frame" style={{ width: WIDTHS[width] }}>
+          <div className="g-frame" style={{ width: WIDTHS[width], colorScheme: mode }}>
             {surface}
           </div>
           </div>
@@ -250,12 +253,19 @@ function Gallery() {
   );
 }
 
-/** The Polyxd mark, as drawn in brand/build.ts. */
+/**
+ * The Polyxd mark at rest, as brand/build.ts draws it: an orange p, a white window and an ink pupil
+ * drawn on top. The colours are the tokens' (--signal, --mark-window, --mark-pupil), which are the
+ * same on paper and night.
+ */
+const MARK_SIZE = 32;
 const LOGO = (
-  <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-    <path fillRule="evenodd" d="M13 6h6a7 7 0 0 1 7 7v6a7 7 0 0 1-7 7h-6a7 7 0 0 1-7-7v-6a7 7 0 0 1 7-7zM13.6 16a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0 -4.8 0z" fill="currentColor" />
-    <rect x="6" y="14" width="5" height="14" rx="2.5" fill="currentColor" />
-    <path fillRule="evenodd" d="M16 11.2C19.504 11.2 20.8 12.496 20.8 16S19.504 20.8 16 20.8 11.2 19.504 11.2 16 12.496 11.2 16 11.2zM13.6 16a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0 -4.8 0z" fill="#ff5a1f" />
+  <svg className="pxb-mark" data-state="idle" width={MARK_SIZE} height={MARK_SIZE} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+    <path d="M13 6H19C22.864 6 26 9.136 26 13V19C26 22.864 22.864 26 19 26H13C9.136 26 6 22.864 6 19V13C6 9.136 9.136 6 13 6Z" fill="var(--signal)" />
+    <path d="M8.5 14H8.5C9.88 14 11 15.12 11 16.5V25.5C11 26.88 9.88 28 8.5 28H8.5C7.12 28 6 26.88 6 25.5V16.5C6 15.12 7.12 14 8.5 14Z" fill="var(--signal)" />
+    <path d="M16 11.2H16C20.224 11.2 20.8 11.776 20.8 16V16C20.8 20.224 20.224 20.8 16 20.8H16C11.776 20.8 11.2 20.224 11.2 16V16C11.2 11.776 11.776 11.2 16 11.2Z" fill="var(--mark-window)" />
+    <circle className="pxb-pupil" cx="16" cy="16" r="2.4" fill="var(--mark-pupil)" />
+    <path className="pxb-tick" d="M13.9 16.3l1.5 1.5 2.8-3.1" pathLength={1} fill="none" stroke="var(--mark-pupil)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -263,9 +273,10 @@ const LOGO = (
 function SiteHeader() {
   return (
     <header className="g-header">
-      <a className="g-brand" href="/" aria-label="Polyxd home">
+      {/* The lockup: the word beside the mark, 5/32 of the mark apart, at 0.8 of its size. */}
+      <a className="g-brand" href="/" aria-label="Polyxd home" style={{ gap: Math.round((MARK_SIZE * 5) / 32), fontSize: Math.round(MARK_SIZE * 0.8) }}>
         {LOGO}
-        <span>polyxd</span>
+        <span className="g-word" aria-hidden="true">polyxd</span>
       </a>
       <nav className="g-nav" aria-label="Main">
         <a className="g-nav-optional" href="/#how">How it works</a>

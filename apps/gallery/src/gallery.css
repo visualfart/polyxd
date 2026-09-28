@@ -1,17 +1,9 @@
-/* Gallery chrome, in polyxd.com's visual language. Surfaces are styled by @polyxd/react + the selected theme. */
+/* Gallery chrome, in Polyxd's own brand: brand/tokens.css (imported in main.tsx) for colour, type,
+   shape and focus, paper or night as the visitor prefers. Surfaces are styled by @polyxd/react and
+   the selected pack, and keep their own light or dark mode. */
 :root {
-  --ground: #f4f1ea;
-  --paper: #ffffff;
-  --ink: #141414;
-  --ink-2: #3f3e3a;
-  --muted: #56554f;
-  --line: #ddd8cc;
-  --line-soft: #ece8de;
-  --signal: #ff5a1f;
-  --signal-ink: #b8350a;
-  --display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --body: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* A quiet tint for hovers, the stage and segmented tracks, mixed from the tokens in both themes. */
+  --tint: color-mix(in srgb, var(--ink) 6%, var(--ground));
   --header: 72px;
 }
 *,
@@ -23,16 +15,15 @@ body {
   margin: 0;
   background: var(--ground);
   color: var(--ink);
-  font-family: var(--body);
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
-:where(.g-header, .g-app) :focus-visible {
-  outline: 3px solid var(--signal);
-  outline-offset: 2px;
-  border-radius: 6px;
+:where(.g-header, .g-app, .r-page) :focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
-/* Header: identical to the site's */
+/* Header: the site's, in the brand: the lockup, the nav, one primary button. */
 .g-header {
   position: sticky;
   top: 0;
@@ -45,18 +36,26 @@ body {
   padding: 0 clamp(20px, 3vw, 40px);
   background: color-mix(in srgb, var(--ground) 90%, transparent);
   backdrop-filter: saturate(1.4) blur(12px);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--rule);
 }
 .g-brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   color: var(--ink);
   text-decoration: none;
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: 24px;
-  letter-spacing: -0.02em;
+  border-radius: var(--radius-small);
+}
+/* The mark reads the word beside it when you point at it (only the pupil moves). */
+.g-brand:is(:hover, :focus-visible) .pxb-mark[data-state="idle"] .pxb-pupil {
+  transform: translate(1.3px, -1.1px);
+}
+/* The wordmark: Young Serif 400, lowercase, tracking -1.5%; size and gap are set from the mark's. */
+.g-word {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1;
+  margin-top: -1px;
 }
 .g-nav {
   display: flex;
@@ -65,6 +64,12 @@ body {
   font-size: 15px;
   font-weight: 500;
 }
+/* A little room either side, so the focus ring doesn't touch the words. */
+.g-nav a:not(.g-cta) {
+  margin-inline: -8px;
+  padding-inline: 8px;
+  border-radius: var(--radius-pill);
+}
 .g-nav a {
   color: var(--ink);
   text-decoration: none;
@@ -72,20 +77,24 @@ body {
 }
 .g-nav a:hover,
 .g-nav a[aria-current="page"] {
-  color: var(--signal-ink);
+  color: var(--signal-text);
 }
+/* The primary button: signal with ink text (never white), fully round. */
 .g-nav .g-cta {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 0 18px;
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--ground);
+  padding: 0 22px;
+  border-radius: var(--radius-pill);
+  background: var(--signal);
+  color: var(--on-signal);
+  font-weight: 600;
   white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-standard);
 }
 .g-nav .g-cta:hover {
-  color: var(--ground);
+  background: color-mix(in srgb, var(--signal) 88%, var(--on-signal));
+  color: var(--on-signal);
 }
 @media (max-width: 1000px) {
   .g-nav-optional {
@@ -102,13 +111,13 @@ body {
 .g-sidebar {
   overflow-y: auto;
   padding: 16px 12px;
-  border-right: 1px solid var(--line);
+  border-right: 1px solid var(--rule);
 }
 .g-panel {
   overflow-y: auto;
   padding: 20px 16px;
-  border-left: 1px solid var(--line);
-  background: var(--paper);
+  border-left: 1px solid var(--rule);
+  background: var(--surface);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -119,16 +128,16 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 36px;
-  padding: 0 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--paper);
+  height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
   color: var(--muted);
 }
 .g-search:focus-within {
-  border-color: var(--ink);
   color: var(--ink);
+  box-shadow: var(--focus-ring);
 }
 .g-search input {
   flex: 1;
@@ -148,7 +157,7 @@ body {
 .g-group + .g-group {
   margin-top: 18px;
   padding-top: 14px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--rule);
 }
 .g-group-head {
   display: flex;
@@ -158,14 +167,13 @@ body {
 }
 .g-group-head h2 {
   margin: 0;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font: var(--text-label);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--ink);
 }
 .g-count {
-  font: 11px var(--mono);
+  font: 11px var(--font-mono);
   color: var(--muted);
 }
 .g-group ul {
@@ -181,7 +189,7 @@ body {
   width: 100%;
   height: 36px;
   padding: 0 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   font-size: 14px;
   color: var(--ink);
@@ -190,7 +198,7 @@ body {
   text-overflow: ellipsis;
 }
 .g-group button:hover {
-  background: var(--line-soft);
+  background: var(--tint);
 }
 .g-group button[aria-current="page"] {
   background: var(--ink);
@@ -198,8 +206,7 @@ body {
   font-weight: 600;
 }
 .g-group button:focus-visible {
-  outline: 2px solid var(--signal);
-  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px var(--focus), inset 0 0 0 4px var(--ground);
 }
 
 /* Toolbar: one labelled row of control clusters. */
@@ -213,7 +220,7 @@ body {
   align-items: flex-end;
   gap: 18px;
   padding: 18px 28px 20px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--rule);
   font-size: 14px;
 }
 .g-cluster {
@@ -222,9 +229,8 @@ body {
   gap: 7px;
 }
 .g-cluster-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.09em;
+  font: var(--text-label);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -241,10 +247,10 @@ body {
   gap: 10px;
   height: 48px;
   min-width: 244px;
-  padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--paper);
+  padding: 0 18px 0 8px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
   cursor: pointer;
   color: var(--ink);
 }
@@ -254,8 +260,8 @@ body {
 }
 .g-picker-button:focus-visible,
 .g-listbox:focus-visible {
-  outline: 2px solid var(--signal);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 .g-picker-button > svg:last-child {
   margin-left: auto;
@@ -279,7 +285,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
   background: var(--ink);
   color: #fff;
   font-weight: 500;
@@ -294,33 +300,32 @@ body {
   margin: 0;
   padding: 8px;
   list-style: none;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--paper);
-  box-shadow: 0 18px 40px rgb(20 20 20 / 16%);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
+  background: var(--surface);
 }
 .g-option {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 10px 14px 10px 10px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
 }
 .g-option-active,
 .g-option[aria-selected="true"] {
-  background: var(--line-soft);
+  background: var(--tint);
 }
 .g-option > svg:last-child {
   margin-left: auto;
 }
 .g-listbox-group {
   margin: 8px 6px 2px;
-  padding: 6px 8px 4px;
-  border-top: 1px solid var(--line-soft);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  padding: 10px 8px 4px;
+  border-top: 1px solid var(--rule);
+  font: var(--text-label);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -331,7 +336,7 @@ body {
 .g-listbox-note {
   margin: 4px 6px 2px;
   padding-top: 8px;
-  border-top: 1px solid var(--line-soft);
+  border-top: 1px solid var(--rule);
   font-size: 12px;
   color: var(--muted);
 }
@@ -341,9 +346,9 @@ body {
   display: inline-flex;
   gap: 4px;
   padding: 4px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--line-soft);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  background: var(--tint);
 }
 .g-seg button {
   all: unset;
@@ -355,11 +360,12 @@ body {
   height: 40px;
   min-width: 44px;
   padding: 0 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: var(--ink-2);
+  color: var(--muted);
+  transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
 .g-seg button:hover {
   color: var(--ink);
@@ -370,8 +376,7 @@ body {
   color: var(--ground);
 }
 .g-seg button:focus-visible {
-  outline: 2px solid var(--signal);
-  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px var(--focus), inset 0 0 0 4px var(--ground);
 }
 
 /* The caption above the preview says what you are looking at, and resets it. */
@@ -380,7 +385,7 @@ body {
   align-items: center;
   flex-wrap: wrap;
   gap: 8px 12px;
-  font: 12px var(--mono);
+  font: 12px var(--font-mono);
   color: var(--muted);
 }
 .g-caption-width {
@@ -392,18 +397,20 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  height: 34px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--paper);
+  height: 36px;
+  padding: 0 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: transparent;
   cursor: pointer;
-  font: 500 13px var(--body);
-  color: var(--ink-2);
+  font: 600 13px var(--font-body);
+  color: var(--ink);
 }
 .g-reset:hover {
-  color: var(--ink);
-  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.g-reset:focus-visible {
+  box-shadow: var(--focus-ring);
 }
 
 .g-stage {
@@ -411,7 +418,7 @@ body {
   min-width: 0;
   overflow: auto;
   padding: 32px 24px 40px;
-  background: var(--line-soft);
+  background: var(--tint);
 }
 /* The preview keeps the width it says it has: a "desktop 1100" frame stays 1100 and the stage
    scrolls, rather than squeezing the surface into a narrower box and changing what it renders. */
@@ -425,11 +432,11 @@ body {
 }
 .g-frame {
   flex: none;
-  border-radius: 20px;
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
   overflow: hidden;
-  border: 1px solid var(--line);
-  box-shadow: 0 1px 2px rgb(20 20 20 / 0.06), 0 12px 32px rgb(20 20 20 / 0.08);
-  transition: width 200ms ease;
+  border: 1px solid var(--rule);
+  transition: width var(--duration-fast) var(--ease-standard);
 }
 .g-frame .pxd-surface {
   min-height: 520px;
@@ -454,15 +461,15 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font: 12.5px/1.55 var(--mono);
+  font: 12.5px/1.55 var(--font-mono);
 }
 .g-log li {
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-small);
   background: var(--ground);
   word-break: break-word;
 }
@@ -482,22 +489,23 @@ body {
 }
 .g-log-context {
   font-size: 11px;
-  color: var(--ink-2);
+  color: var(--muted);
 }
 .g-log .g-empty {
   background: none;
   border: 0;
   padding: 0;
-  font: 14px/1.55 var(--body);
+  font: 14px/1.55 var(--font-body);
   color: var(--muted);
 }
 .g-json {
   margin: 0;
   padding: 16px;
-  background: #141414;
-  color: #e6e2d8;
-  border-radius: 14px;
-  font: 12px/1.55 var(--mono);
+  background: var(--ground);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-small);
+  font: 12px/1.55 var(--font-mono);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -519,7 +527,7 @@ body {
   }
   .g-sidebar {
     border-right: 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--rule);
     max-height: 30vh;
   }
   /* The four controls don't fit one phone row, so they wrap and each one takes the width it needs. */
@@ -540,6 +548,9 @@ body {
   }
   /* The phone preview fits the phone: at 375px a 390px frame scrolls sideways for 15px of nothing.
      A wider preview still keeps the width it says it has, and still scrolls, because that is the point. */
+  .g-stage-inner[data-width="phone"] {
+    width: 100%;
+  }
   .g-stage-inner[data-width="phone"] .g-frame,
   .g-stage-inner[data-width="phone"] .g-caption {
     max-width: 100%;
@@ -548,9 +559,6 @@ body {
 @media (max-width: 480px) {
   .g-nav a[aria-current="page"] {
     display: none;
-  }
-  .g-brand {
-    font-size: 22px;
   }
   .g-toolbar {
     padding: 12px;
@@ -589,17 +597,17 @@ body {
 }
 .r-title h1 {
   margin: 0 0 10px;
-  font-family: var(--display);
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-weight: 400;
   font-size: clamp(36px, 4vw, 52px);
-  line-height: 1;
-  letter-spacing: -0.03em;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
 }
 .r-title p {
   margin: 0;
   font-size: 16px;
   line-height: 1.6;
-  color: var(--ink-2);
+  color: var(--muted);
 }
 .r-rater {
   display: flex;
@@ -610,11 +618,12 @@ body {
 }
 .r-rater input {
   min-height: 44px;
-  padding: 0 16px;
-  border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  background: var(--paper);
-  font: 16px var(--body);
+  padding: 0 18px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  font: 16px var(--font-body);
 }
 .r-groups {
   display: flex;
@@ -625,15 +634,15 @@ body {
 .r-groups button {
   width: 44px;
   height: 44px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--paper);
-  font: 600 15px var(--body);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font: 600 15px var(--font-body);
   color: var(--ink);
   cursor: pointer;
 }
 .r-groups button.r-done {
-  background: var(--line-soft);
+  background: var(--tint);
   color: var(--muted);
 }
 .r-groups button.r-done::after {
@@ -645,7 +654,7 @@ body {
 }
 .r-progress {
   margin-left: 8px;
-  font: 13px var(--mono);
+  font: 13px var(--font-mono);
   color: var(--muted);
 }
 .r-toolbar {
@@ -654,7 +663,7 @@ body {
   align-items: center;
   gap: 12px;
   padding: 12px 0;
-  border-block: 1px solid var(--line);
+  border-block: 1px solid var(--rule);
   text-transform: none;
 }
 .r-toolbar strong {
@@ -688,29 +697,30 @@ body {
 }
 .r-option-head h2 {
   margin: 0;
-  font-family: var(--display);
+  font-family: var(--font-display);
+  font-weight: 400;
   font-size: 24px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 .r-choose {
   min-height: 44px;
   padding: 0 18px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--signal);
-  font: 600 15px var(--body);
-  color: var(--ink);
+  font: 600 15px var(--font-body);
+  color: var(--on-signal);
   cursor: pointer;
 }
 .r-badge {
   padding: 8px 16px;
-  border-radius: 999px;
-  font: 600 14px var(--body);
+  border-radius: var(--radius-pill);
+  font: 600 14px var(--font-body);
   background: var(--ink);
   color: var(--ground);
 }
 .r-badge-1 {
-  background: var(--line-soft);
+  background: var(--tint);
   color: var(--ink);
 }
 .r-badge-2 {
@@ -720,10 +730,12 @@ body {
 }
 .r-frame {
   max-width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 20px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgb(20 20 20 / 0.06), 0 12px 32px rgb(20 20 20 / 0.08);
+  /* Ranked surfaces are drawn in light mode, whatever the page's own theme. */
+  color-scheme: light;
 }
 .r-picked .r-frame {
   border-color: var(--ink);
@@ -743,9 +755,9 @@ body {
   min-height: 44px;
   padding: 0 20px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--ink);
-  font: 600 15px var(--body);
+  font: 600 15px var(--font-body);
   color: var(--ground);
   cursor: pointer;
 }
@@ -756,16 +768,17 @@ body {
 }
 .r-finished {
   padding: 16px 20px;
-  background: var(--paper);
+  background: var(--surface);
   border: 1.5px solid var(--ink);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
+  corner-shape: squircle;
   font-size: 16px;
 }
 .r-error {
   padding: 16px;
-  background: #fff1ea;
-  border: 1px solid #ffc3ab;
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--danger);
+  border-radius: var(--radius-small);
 }
 @media (max-width: 1250px) {
   .r-options {
@@ -785,18 +798,17 @@ body {
 }
 .r-note textarea {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--paper);
-  font: 15px/1.5 var(--body);
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  font: 15px/1.5 var(--font-body);
   color: var(--ink);
   resize: vertical;
 }
 .r-note textarea:focus-visible {
-  outline: 3px solid var(--signal);
-  outline-offset: 1px;
-  border-color: var(--ink);
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 .r-annotate-bar {
   display: flex;
@@ -809,10 +821,10 @@ body {
 .r-annotate {
   min-height: 36px;
   padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--paper);
-  font: 600 13px var(--body);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font: 600 13px var(--font-body);
   color: var(--ink);
   cursor: pointer;
 }
@@ -839,7 +851,7 @@ body {
   border-radius: 6px;
 }
 .r-hover {
-  background: rgb(255 90 31 / 0.08);
+  background: color-mix(in srgb, var(--signal) 8%, transparent);
   box-shadow: inset 0 0 0 2px var(--signal);
 }
 .r-box {
@@ -858,7 +870,7 @@ body {
   border-radius: 50%;
   background: var(--ink);
   color: var(--ground);
-  font: 600 12px var(--body);
+  font: 600 12px var(--font-body);
 }
 .r-marks {
   list-style: none;
@@ -878,16 +890,17 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 600 13px var(--body);
+  font: 600 13px var(--font-body);
 }
 .r-marks textarea {
   grid-column: 1 / -1;
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--paper);
-  font: 14px/1.5 var(--body);
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--ink);
+  font: 14px/1.5 var(--font-body);
   resize: vertical;
 }
 .r-mark-remove {
@@ -895,8 +908,8 @@ body {
   grid-row: 1;
   border: 0;
   background: none;
-  font: 13px var(--body);
-  color: var(--signal-ink);
+  font: 13px var(--font-body);
+  color: var(--signal-text);
   text-decoration: underline;
   cursor: pointer;
 }
