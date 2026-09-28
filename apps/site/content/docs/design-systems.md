@@ -203,4 +203,4 @@ It exits with 0 and prints "Design system satisfies the semantic token contract.
 
 **4. Compile it to CSS.** Put the pack in `packages/ds-<name>/` and run `npm run build:themes -w @polyxd/react`, or pass manifest paths to `scripts/build-themes.ts` directly.
 
-An importer for Figma variables and Tokens Studio is planned but does not exist yet.
+[Studio](/docs/studio) imports a design system as it is: an npm package, a `.tgz`, a Tokens Studio file, a W3C DTCG file or CSS custom properties. An importer for Figma variables is planned.

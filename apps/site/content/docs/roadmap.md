@@ -15,29 +15,30 @@ Polyxd has no fixed timeline. Work is split into phases ordered by dependency, a
 |---|---|---|
 | 0 | **Setup and grounding.** Monorepo, research on A2UI, design tokens and prior work. Decision 0001: own schema, exported to A2UI and MCP Apps | Done |
 | 1 | **Spec v0.** 24 components, UI schema and validator, 5 patterns and the check vocabulary, capability, journey, event and Design Direction schemas, 20 examples, the Material 3 pack, A2UI export | Done |
-| 2 | **Web renderer and theming.** `@polyxd/react`, the theme compiler, Carbon and Ant Design packs, the gallery. Decision 0002 on Astryx | Done |
+| 2 | **Web renderer and theming.** `@polyxd/react`, the theme compiler, thirteen design-system packs and twelve templates, the gallery; then `@polyxd/core` and the Web Components renderer `@polyxd/web`, held to each other by a conformance suite. Decision 0002 on Astryx | Done |
 | 3 | **Verifier and benchmark.** Document, rendered, agent and consistency checks; 50 requests, 10 multi-turn sequences and a gold set | In progress. The verifier is done (20 of 20 injected defects caught). The benchmark is in progress: the requests, sequences and gold documents exist, and the designer ranking that the gold-set exit test needs is still to do |
 | 4–6 | **Generator experiments.** Baselines and tuning of small local models, scored by the verifier | Paused. Polyxd ships no model; any generator that emits spec-valid JSON drives it |
-| 7 | **Demo and release.** A demo app (ask, a UI appears, it goes away, ask again, it's recognisable), and publishing the spec and benchmark with a write-up | Planned |
+| 7 | **Demo and release.** Four demo products (ask, a UI appears, it goes away, ask again, it's recognisable), every package on npm, and Studio at studio.polyxd.com. The write-up waits on the benchmark | Done, except the write-up |
 
 Polyxd does not depend on a model of its own. The spec, renderer and verifier work with any generator, and the verifier is what lets you compare generators on equal terms.
 
-**Later:** SwiftUI and Compose renderers (the spec already maps every component to both), a design-system generator, and an importer for Figma variables and Tokens Studio.
+**Next:** the runtime SDK, which generates a document with the model you choose and applies a Design Direction as it does; an MCP server; a generation server. **Later:** SwiftUI and Compose renderers (the spec already maps every component to both), a design-system generator, and an importer for Figma variables (Studio already imports Tokens Studio, DTCG and CSS files and npm packages).
 
 ### Release milestones
 
-| Release | After | Contents |
-|---|---|---|
-| v0.1 | Phase 3 | Spec, design-system packs, React renderer, verifier and benchmark. Works with any LLM. The first npm release |
-| v0.2 | | Runtime SDK, MCP server |
-| v0.3 | | Docker server, playground |
-| v1.0 | | Spec frozen, then native renderers |
+| Release | After | Contents | Status |
+|---|---|---|---|
+| v0.1 | Phase 3 | Spec, design-system packs, React renderer, verifier. Works with any LLM. The first npm release | Released |
+| v0.2 | | Authored screens, more components, the demos, Studio's first version | Released |
+| v0.3 | | The shell components, `@polyxd/core`, the Web Components renderer, twelve templates, `polyxd dev` | Released |
+| next | | Runtime SDK, MCP server, generation server | Planned |
+| v1.0 | | Spec frozen, then native renderers | Planned |
 
 Before v1.0 the spec may break. Every document carries `specVersion`, releases follow semver, and breaking changes will come with migration notes.
 
 ## Distribution
 
-Each layer is planned to ship as its own package, so nobody has to adopt all of it. Only the first rows exist today, and none is published yet.
+Each layer ships as its own package, so nobody has to adopt all of it. The first rows exist and are on npm; the rest are planned.
 
 | Layer | Planned package | Channel | Today |
 |---|---|---|---|
@@ -54,4 +55,4 @@ The runtime is meant to point at any generator: a hosted API such as Claude, GPT
 
 ## Open core
 
-The spec, design-system packs, React renderer, runtime, MCP server, verifier and benchmark are meant to be free and open: code under Apache-2.0, and the spec and docs under CC-BY-4.0. A paid Studio for teams, where designers and PMs set Design Direction, review generated UIs and publish changes, is being considered, but nothing about it is decided and it does not exist yet. The intent is that anything that runs inside someone else's product stays free, with no usage metering.
+The spec, design-system packs, React renderer, runtime, MCP server, verifier and benchmark are meant to be free and open: code under Apache-2.0, and the spec and docs under CC-BY-4.0. [Studio](/docs/studio) exists for teams (hosted at studio.polyxd.com, free for one workspace, and open source to run yourself): design systems, what generated screens may use, rules, authored screens and delivery. Reviewing generated screens there, and editing a whole Design Direction, are planned. Whether a paid tier comes later is not decided. The intent is that anything that runs inside someone else's product stays free, with no usage metering.

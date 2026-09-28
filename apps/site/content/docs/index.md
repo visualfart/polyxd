@@ -60,7 +60,7 @@ Everything is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) sco
 | `@polyxd/core` | The framework-free heart of rendering: document types, JSON Pointer bindings, localised formatting, every decision the renderer makes instead of the model, and a headless surface model. No DOM, no dependencies; both renderers are built on it |
 | `@polyxd/react` | React renderer for all 44 components, built on Radix primitives and styled only by token CSS variables, with theme CSS for every pack |
 | `@polyxd/web` | Web Components renderer: `<polyxd-surface>` and `<polyxd-frame>`, no framework, no shadow DOM, the same DOM and ARIA as the React renderer, so the same styles and checks apply; Vue and Svelte adapters as files to copy |
-| `@polyxd/ds-*` | Thirteen design-system packs as DTCG tokens: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend and Chakra UI |
+| `@polyxd/ds-*` | Thirteen design-system packs as DTCG tokens: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend and Chakra UI; and twelve original templates to start your own from |
 | `polyxd` | The `polyxd pack` command, which makes a pack from your own tokens. See [Your design system](/docs/your-design-system) |
 | `@polyxd/a2ui` | Exports UI documents to A2UI v1.0 (release candidate) messages, with a Polyxd A2UI catalog |
 | `@polyxd/verifier` | The `polyxd-verify` CLI and library: document checks, rendered accessibility and layout checks, scripted agent tasks, and a consistency score |
@@ -78,7 +78,7 @@ Polyxd is an **early preview**. The spec is at `specVersion` 0.3 and may still c
 | 2: Web renderer and theming | Done: React and Web Components renderers on one core, held to each other by a [conformance suite](/docs/renderers/) |
 | 3: Verifier and benchmark | In progress. The verifier is done; the benchmark is in progress |
 | 4–6: Generator experiments | Paused |
-| 7: Demo and release | Done: [three demo products](/demos/), packages at 0.2 |
+| 7: Demo and release | Done: [four demo products](/demos/), every package on npm at 0.3, and [Studio](/docs/studio) |
 
 **There is no bundled model.** Today you write or generate UI documents with any generator, validate them, render them in thirteen design systems, and verify them. See the [roadmap](/docs/roadmap).
 

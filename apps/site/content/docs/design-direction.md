@@ -9,7 +9,7 @@ section: Concepts
 
 Tokens control how things look. Taste goes further: how dense a screen is, how much gets emphasised, how the copy sounds, which patterns a team prefers, and what to leave out. A **Design Direction** holds a company's taste as one versioned JSON package next to its design-system pack.
 
-The goal is that designers shape generated UI without writing prompts or JSON by hand, and without retraining a model. Today the Direction **schema** exists (`schema/direction.schema.json`), with two example directions, and its rules run in the verifier. Applying a Direction during generation is planned, as is Studio, the tool designers would use to edit it.
+The goal is that designers shape generated UI without writing prompts or JSON by hand, and without retraining a model. Today the Direction **schema** exists (`schema/direction.schema.json`), with two example directions, and its rules and checkable voice settings run in the verifier. [Studio](/docs/studio) holds a team's rules and which components generated screens may use, with guidance for each. Applying the rest of a Direction during generation (profile, patterns, exemplars) is planned, with the runtime.
 
 ## What a Direction contains
 
@@ -157,6 +157,6 @@ The glossary entry shows how voice becomes a check. `compileVoice` turns `{ "use
 
 On the balance overview example, calm-finance flags "Recent transactions" with this rule, and playful-personal passes the same surface.
 
-## Studio (planned)
+## In Studio
 
-Studio is a planned web app where designers would set a Direction through visual controls, preview a company's typical requests under it, approve, reject or edit generated UIs, and publish Direction changes with a before-and-after diff. Approvals would become exemplars, and repeated corrections would be suggested as new rules. None of it exists yet. See the [roadmap](/docs/roadmap).
+[Studio](/docs/studio) is where a team's designers keep their taste today: which components generated screens may use and the guidance for each, and the team's rules as checks with a severity, run on every screen saved in Studio and in the verifier. Still planned: editing the profile, voice, patterns and exemplars there, previewing a company's typical requests under a Direction, reviewing generated screens (approve, reject, edit, with approvals becoming exemplars and repeated corrections suggested as rules), and publishing Direction changes with a before-and-after diff. See the [roadmap](/docs/roadmap).
