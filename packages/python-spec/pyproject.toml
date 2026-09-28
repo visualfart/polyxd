@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "polyxd-spec"
 # Kept equal to @polyxd/spec's version (tests/test_package.py checks).
-version = "0.3.0"
+version = "0.4.0"
 description = "Polyxd spec: JSON Schemas, the component catalogue and a validator for just-in-time interfaces"
 readme = "README.md"
 requires-python = ">=3.10"
