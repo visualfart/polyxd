@@ -1,0 +1,75 @@
+<!-- 10 · The platform -->
+<section class="scene scene-platform" id="platform" data-scene="platform" data-kind="pin" style="--len:3.4" aria-labelledby="platform-title">
+<div class="stick"><div class="wrap scene-inner platform-grid">
+<div>
+<h2 class="display scene-title" id="platform-title">More than a screen on demand.</h2>
+<ul class="tools" data-tools>
+<li><button type="button" data-tool="0" aria-pressed="true">Bring your design system</button></li>
+<li><button type="button" data-tool="1" aria-pressed="false">Studio</button></li>
+<li><button type="button" data-tool="2" aria-pressed="false">Screens and the shell</button></li>
+<li><button type="button" data-tool="3" aria-pressed="false">Verify on every change</button></li>
+<li><button type="button" data-tool="4" aria-pressed="false">In your editor</button></li>
+<li><button type="button" data-tool="5" aria-pressed="false">Every pack, by its own logo</button></li>
+<li><button type="button" data-tool="6" aria-pressed="false">Open by default</button></li>
+</ul>
+</div>
+<div class="panel">
+<article class="tool-panel" data-panel="0">
+<p class="eyebrow">polyxd CLI</p><h3 class="panel-title">One command reads your tokens and tells you what fails.</h3>
+<pre class="term mono"><span class="dim">$</span> npx polyxd pack ./tokens.css
+--brand-600   → <em>action.primary</em>
+--gray-50     → <em>surface.base</em>
+--gray-900    → <em>text.primary</em>
+--radius-md   → <em>shape.control</em>
+<span class="dim">…every guess written to pack.notes.md</span>
+
+<span class="dim">$</span> npx polyxd check</pre>
+<a class="panel-link" href="/docs/your-design-system/">Bring your design system</a>
+</article>
+<article class="tool-panel" data-panel="1" hidden>
+<p class="eyebrow">studio.polyxd.com</p><h3 class="panel-title">Map your tokens to 87 roles. Nothing publishes until every pair passes.</h3>
+<div class="roles-table">
+<div><code>action.primary</code><i style="background:#2F5BEA"></i><span>5.9:1</span></div>
+<div><code>text.primary</code><i style="background:#151A24"></i><span>16.1:1</span></div>
+<div class="fail"><code>text.muted</code><i style="background:#8A93A6"></i><span>3.9:1</span></div>
+<div><code>border.control</code><i style="background:#7C8496"></i><span>3.4:1</span></div>
+</div>
+<p class="formats mono">CSS · DTCG · Tailwind · Style Dictionary · Swift · Compose</p>
+<a class="panel-link" href="/studio/">Studio</a>
+</article>
+<article class="tool-panel" data-panel="2" hidden>
+<p class="eyebrow">Studio · Screens</p><h3 class="panel-title">Write screens, and the frame around them, in the same format.</h3>
+<div class="shell-sketch" aria-hidden="true"><i class="shell-bar"></i><div><i class="shell-nav"></i><i class="shell-slot"><span class="mono">Any screen goes here</span></i></div><i class="shell-foot"></i></div>
+<a class="panel-link" href="/docs/shell/">The shell as a document</a>
+</article>
+<article class="tool-panel" data-panel="3" hidden>
+<p class="eyebrow">polyxd-verify · in CI</p><h3 class="panel-title">Every pack, light and dark, phone and desktop.</h3>
+<pre class="term mono">polyxd-verify ./screens
+schema ........... <em>pass</em>
+patterns ......... <em>pass</em>
+actions .......... <em>pass</em>
+axe, contrast .... <em>pass</em>
+agent tasks ...... <em>pass</em></pre>
+<a class="panel-link" href="/verify/">Verify</a>
+</article>
+<article class="tool-panel" data-panel="4" hidden>
+<p class="eyebrow">VS Code · Cursor · Windsurf</p><h3 class="panel-title">Write a screen and see it in <!--PACKCOUNTNUM--> design systems as you type.</h3>
+<pre class="term mono">polyxd dev ./screens
+<span class="dim">watching 12 documents</span>
+preview → http://localhost:4321</pre>
+<a class="panel-link" href="/docs/your-design-system/#in-your-editor">In your editor</a>
+</article>
+<article class="tool-panel" data-panel="5" hidden>
+<p class="eyebrow">Gallery</p><h3 class="panel-title">From Material 3 to GOV.UK, each by its own logo.</h3>
+<!--PACK_WALL_SYSTEMS-->
+<a class="panel-link" href="/gallery/">Browse the gallery</a>
+</article>
+<article class="tool-panel" data-panel="6" hidden>
+<p class="eyebrow">Open source</p><h3 class="panel-title">Four renderers. Any model, or none.</h3>
+<ul class="renderers"><li>React</li><li>Web Components</li><li>Vue</li><li>Svelte</li></ul>
+<p class="licence"><b>Apache-2.0</b> code · <b>CC-BY-4.0</b> spec · exports to A2UI</p>
+<a class="panel-link" href="/open-source/">Open source</a>
+</article>
+</div>
+</div></div>
+</section>
