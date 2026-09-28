@@ -13,7 +13,7 @@
   // Remembers which days were sent, the last totals, and the history cache. Create it with
   //   npx wrangler kv namespace create STATS
   // and put the id it prints here (see README.md).
-  "kv_namespaces": [{ "binding": "STATS", "id": "REPLACE_WITH_STATS_KV_NAMESPACE_ID" }],
+  "kv_namespaces": [{ "binding": "STATS", "id": "94b0f4ad5f2e442db8d227431bb53e79" }],
   // An EU PostHog project uses https://eu.i.posthog.com. The key is a secret: wrangler secret put POSTHOG_KEY.
   "vars": { "POSTHOG_HOST": "https://us.i.posthog.com" },
   // The Worker writes one summary line per run. Cloudflare's invocation logs, traces and Issues are
