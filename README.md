@@ -101,7 +101,7 @@ It reads your CSS custom properties, maps what it can onto the contract, writes 
 | `polyxd-spec` (Python) | The schemas, component catalogue and validator for Python, with the same results as `@polyxd/spec`; `polyxd-spec validate`. In [`packages/python-spec`](packages/python-spec), not yet on PyPI |
 | [`@polyxd/a2ui`](https://www.npmjs.com/package/@polyxd/a2ui) | Export to A2UI v1.0 |
 | [`@polyxd/runtime`](packages/runtime/) | Generates a document for an ask with the model you choose, with your Design Direction applied: validation and repair, streaming, and interface memory on the client. In the repository, not on npm yet |
-| [`@polyxd/mcp`](https://www.npmjs.com/package/@polyxd/mcp) | MCP server (`npx -y @polyxd/mcp`): the spec for the host's model, validation and verification, and an MCP App that shows the screen in any pack. Built, not yet on npm |
+| [`@polyxd/mcp`](https://www.npmjs.com/package/@polyxd/mcp) | MCP server (`npx -y @polyxd/mcp`): the spec for the host's model, validation and verification, and an MCP App that shows the screen in any pack. Hosted at `https://mcp.polyxd.com/mcp`; not yet on npm |
 | [`@polyxd/server`](packages/server/) | Generation server: the runtime behind an HTTP API (`POST /v1/generate`, JSON or server-sent events), pointed at the model you choose; a Docker image or `npx @polyxd/server`. In the repository, not on npm and not on GHCR yet |
 | [`polyxd`](https://www.npmjs.com/package/polyxd) | The `polyxd` command: `pack` and `check` |
 | [`@polyxd/ds-kit`](https://www.npmjs.com/package/@polyxd/ds-kit) | The library behind `polyxd pack` |
@@ -157,6 +157,7 @@ Polyxd ships no model. Any model or program that emits spec-valid JSON drives it
 | `packages/mcp` | The MCP server and its MCP App |
 | `packages/server` | The generation server: the runtime behind an HTTP API with streaming, and its Dockerfile |
 | `apps/gallery`, `apps/site` | The gallery and polyxd.com |
+| `apps/mcp` | The hosted MCP server at mcp.polyxd.com: `packages/mcp` over Streamable HTTP in a Cloudflare Worker |
 | `bench/` | Benchmark requests, agent tasks, the gold set and the designer's rankings |
 | `model/` | Training and evaluation experiments (paused; see research/report.md) |
 | `design/flows` | Source of the approved flow designs the spec and renderer are built against |

@@ -9,7 +9,7 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "typecheck": "tsc -b packages/spec && tsc -b",
+    "typecheck": "tsc -b packages/spec && tsc -b && tsc -p apps/mcp",
     "check:licences": "node scripts/check-licences.ts",
     "test:all": "node scripts/test-all.ts",
     "test:python": "uv run --directory packages/python-spec --extra test pytest -q",

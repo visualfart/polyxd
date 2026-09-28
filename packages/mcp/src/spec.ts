@@ -1,12 +1,9 @@
 /**
- * What the server reads from @polyxd/spec's published files: the component definitions, the
- * example documents and the example Design Directions. Read once, on first use.
+ * What the server serves from @polyxd/spec: the component definitions, the example documents and
+ * the example Design Directions. They arrive as JSON modules (src/spec-files.generated.ts), not
+ * from the file system, so the same code runs in Node and in a Cloudflare Worker.
  */
-import { readdirSync, readFileSync, existsSync } from "node:fs";
-import { createRequire } from "node:module";
-import { dirname, join } from "node:path";
-
-const SPEC_DIR = dirname(createRequire(import.meta.url).resolve("@polyxd/spec/package.json"));
+import { COMPONENT_FILES, DIRECTION_FILES, EXAMPLE_FILES } from "./spec-files.generated.ts";
 
 export interface ComponentDefinition {
   name: string;
@@ -30,12 +27,9 @@ export interface Example {
   json: string;
 }
 
-const readJson = (p: string) => JSON.parse(readFileSync(p, "utf8"));
-const jsonFiles = (dir: string) => (existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".json")).sort() : []);
-
 let components: ComponentDefinition[] | undefined;
 export function componentDefinitions(): ComponentDefinition[] {
-  return (components ??= jsonFiles(join(SPEC_DIR, "components")).map((f) => readJson(join(SPEC_DIR, "components", f))));
+  return (components ??= COMPONENT_FILES.map(([, json]) => json as ComponentDefinition));
 }
 
 export function componentNamed(name: string): ComponentDefinition | undefined {
@@ -43,12 +37,13 @@ export function componentNamed(name: string): ComponentDefinition | undefined {
   return componentDefinitions().find((c) => c.name.toLowerCase() === lower);
 }
 
+const text = (json: unknown) => `${JSON.stringify(json, null, 2)}\n`;
+
 let examples: Example[] | undefined;
 /** The spec's example UI documents, served as polyxd://examples/<name>.json. */
 export function exampleDocuments(): Example[] {
-  return (examples ??= jsonFiles(join(SPEC_DIR, "examples")).map((f) => {
-    const json = readFileSync(join(SPEC_DIR, "examples", f), "utf8");
-    const doc = JSON.parse(json);
+  return (examples ??= EXAMPLE_FILES.map(([f, json]) => {
+    const doc = json as any;
     const name = f.replace(/\.json$/, "");
     const kind = doc.surface?.kind === "shell" ? "shell" : "surface";
     return {
@@ -56,7 +51,7 @@ export function exampleDocuments(): Example[] {
       uri: `polyxd://examples/${f}`,
       title: doc.surface?.title ?? name,
       description: `Example Polyxd UI document (${kind}${doc.surface?.pattern ? `, ${doc.surface.pattern} pattern` : ""}${doc.surface?.intent ? `, intent ${doc.surface.intent}` : ""}).`,
-      json,
+      json: text(doc),
     };
   }));
 }
@@ -64,9 +59,8 @@ export function exampleDocuments(): Example[] {
 let directions: Example[] | undefined;
 /** The spec's example Design Directions, served as polyxd://directions/<name>.json and accepted by name by polyxd_verify. */
 export function exampleDirections(): Example[] {
-  return (directions ??= jsonFiles(join(SPEC_DIR, "examples", "directions")).map((f) => {
-    const json = readFileSync(join(SPEC_DIR, "examples", "directions", f), "utf8");
+  return (directions ??= DIRECTION_FILES.map(([f, json]) => {
     const name = f.replace(/\.json$/, "");
-    return { name, uri: `polyxd://directions/${f}`, title: name, description: "Example Design Direction: the voice, rules and emphasis budget a product holds its screens to.", json };
+    return { name, uri: `polyxd://directions/${f}`, title: name, description: "Example Design Direction: the voice, rules and emphasis budget a product holds its screens to.", json: text(json) };
   }));
 }

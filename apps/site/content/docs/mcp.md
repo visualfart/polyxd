@@ -9,13 +9,59 @@ section: Guides
 
 `@polyxd/mcp` is an [MCP](https://modelcontextprotocol.io) server. The model in the host is the generator. The server gives it the spec as instructions and checks the documents it writes. Then it shows each one to the user as an **MCP App**: a real screen, drawn by the Polyxd renderer in the design-system pack the model picks. When the user presses a button in that screen, the model hears about it.
 
-It runs over stdio:
+It runs two ways. Polyxd hosts it at `https://mcp.polyxd.com/mcp`, so you can connect by URL. Or you run it on your own machine over stdio:
 
 ```sh
 npx -y @polyxd/mcp
 ```
 
-## Add it to a host
+## Connect by URL
+
+The hosted server is at this address:
+
+```
+https://mcp.polyxd.com/mcp
+```
+
+It needs no account and no sign-in. Every tool is read-only. The server keeps nothing between requests, and it never sees your conversation, only the documents the model sends to its tools.
+
+**Claude.** In claude.ai, open **Customize > Connectors** and click **Add custom connector**. Paste the URL, choose **No sign-in** if Claude asks about authentication, and click **Add**. Then turn the connector on for a chat from **+ > Connectors**. On the Free plan you can add one custom connector.
+
+**Claude Desktop.** Claude Desktop uses the connectors on your claude.ai account, so add it in claude.ai as above and it shows up in the app too.
+
+**Claude Code.**
+
+```sh
+claude mcp add --transport http polyxd https://mcp.polyxd.com/mcp
+```
+
+**ChatGPT.** Custom servers need developer mode. Open **Settings > Security and login** and turn on **Developer mode**. Then go to [chatgpt.com/plugins](https://chatgpt.com/plugins) and select the plus button. Give it a name, such as Polyxd, and enter the URL under **Connection**. The server needs no authentication. Your workspace's policy decides whether developer mode is available to you.
+
+**Cursor.** Add this to `~/.cursor/mcp.json`, or to `.cursor/mcp.json` in a project:
+
+```json
+{
+  "mcpServers": {
+    "polyxd": { "url": "https://mcp.polyxd.com/mcp" }
+  }
+}
+```
+
+**VS Code.** Add this to `.vscode/mcp.json` in a workspace, or run **MCP: Add Server** and choose HTTP:
+
+```json
+{
+  "servers": {
+    "polyxd": { "type": "http", "url": "https://mcp.polyxd.com/mcp" }
+  }
+}
+```
+
+**Other clients.** Any client that speaks MCP's Streamable HTTP transport can use the URL. A client that can only start local commands can run the stdio server instead, below.
+
+The hosted server takes request bodies up to 1 MB and answers within 15 seconds. One address can make 600 requests a minute. For each request it logs the method, the path, the status and how long it took. It never logs what you send.
+
+## Run it on your machine
 
 **Claude Desktop.** Add the server to `claude_desktop_config.json`, then restart Claude Desktop:
 
@@ -60,7 +106,7 @@ The server also lists the spec's example documents as resources (`polyxd://examp
 
 `polyxd_show` points at one UI resource, `ui://polyxd/surface.html`, in its `_meta.ui.resourceUri`. That is how the [MCP Apps](https://github.com/modelcontextprotocol/ext-apps) extension links a tool to a screen. The host loads the page in a sandboxed iframe.
 
-The page holds the [Web Components renderer](/docs/renderers/), its stylesheet and every pack's theme. Nothing loads from anywhere else, so the host's strictest content rules are enough.
+The page holds the [Web Components renderer](/docs/renderers/), its stylesheet and every pack's theme. Nothing loads from anywhere else, so the host's strictest content rules are enough. The resource says so: its `_meta.ui.csp` lists no domains at all. It also asks for a border (`prefersBorder`). ChatGPT reads its own names for the same things (`openai/widgetCSP`, `openai/widgetDomain` and the rest), and the resource carries those too, so the screen shows there as well.
 
 The page talks to the host over `postMessage`, as the MCP Apps spec says. It sends `ui/initialize` and `ui/notifications/initialized`. It renders the document from the tool result, in the chosen pack. It follows the host's light or dark theme unless the model set `mode`. It tells the host its height so the frame fits.
 
