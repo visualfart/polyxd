@@ -1,8 +1,10 @@
 /**
  * The preview panel's HTML: the chrome in the editor's colours (VS Code's --vscode-* variables),
  * the surface in the pack's. The script and the renderer bundle come from dist/webview/ through
- * webview URIs; a nonce and a content-security policy keep everything else out ('unsafe-eval'
- * stays because the bundle's validator, ajv, compiles the schema with new Function). The same page,
+ * webview URIs; a nonce and a content-security policy keep everything else out. There is no
+ * 'unsafe-eval': the spec's validator in the renderer bundle is compiled ahead of time, so nothing
+ * builds code from strings (test/bundle.test.ts checks the bundles, and the editor smoke test
+ * renders under this policy and fails on any violation the page reports). The same page,
  * with a fake acquireVsCodeApi, is what scripts/build.ts writes as standalone.html for checking
  * the panel in a browser.
  */
@@ -22,7 +24,7 @@ export function previewPage(a: PageAssets): string {
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${a.cspSource} 'unsafe-inline'; script-src 'nonce-${a.nonce}' 'unsafe-eval'; img-src ${a.cspSource} data: https:; font-src ${a.cspSource} data:;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${a.cspSource} 'unsafe-inline'; script-src 'nonce-${a.nonce}'; img-src ${a.cspSource} data: https:; font-src ${a.cspSource} data:;">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Polyxd preview</title>
 <link rel="stylesheet" href="${a.polyxdCss}">

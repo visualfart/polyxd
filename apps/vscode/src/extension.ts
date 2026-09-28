@@ -9,12 +9,17 @@ import * as vscode from "vscode";
 import { insertComponent, openInStudio, pushToStudio, setStudioKey, verify } from "./commands.ts";
 import { publish } from "./diagnostics.ts";
 import { isDataFile, loadDocument, siblingDataPath, type Loaded } from "./documents.ts";
-import { Preview } from "./preview.ts";
+import { Preview, type PreviewHealth } from "./preview.ts";
 import { DocumentsView } from "./tree.ts";
 
 const JSON_LANGUAGES = new Set(["json", "jsonc"]);
 
-export function activate(context: vscode.ExtensionContext): void {
+/** What activate returns: read by the editor smoke test (test/smoke/editor-suite.cjs), nothing else. */
+export interface PolyxdExtension {
+  previewHealth(): PreviewHealth;
+}
+
+export function activate(context: vscode.ExtensionContext): PolyxdExtension {
   const diagnostics = vscode.languages.createDiagnosticCollection("polyxd");
   const loaded = new Map<string, Loaded>();
   const timers = new Map<string, NodeJS.Timeout>();
@@ -126,6 +131,7 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   for (const d of vscode.workspace.textDocuments) void check(d);
+  return { previewHealth: () => preview.health };
 }
 
 export function deactivate(): void {}

@@ -17,6 +17,11 @@ export interface Shown {
   loaded: Loaded;
 }
 
+export interface PreviewHealth {
+  rendered?: { file: string; components: number };
+  problems: string[];
+}
+
 export class Preview {
   private panel: vscode.WebviewPanel | undefined;
   private ready = false;
@@ -25,6 +30,8 @@ export class Preview {
   private pack: PackCss | undefined;
   private context: vscode.ExtensionContext;
   private editorFor: (uri: vscode.Uri) => vscode.TextEditor | undefined;
+  /** What the open panel's page last reported: its component count, and anything blocked or thrown. */
+  health: PreviewHealth = { problems: [] };
 
   constructor(context: vscode.ExtensionContext, editorFor: (uri: vscode.Uri) => vscode.TextEditor | undefined) {
     this.context = context;
@@ -58,8 +65,18 @@ export class Preview {
     this.ready = false;
     const uri = (f: string) => panel.webview.asWebviewUri(vscode.Uri.joinPath(root, f)).toString();
     panel.webview.html = previewPage({ polyxdJs: uri("polyxd.js"), polyxdCss: uri("polyxd.css"), mainJs: uri("main.js"), cspSource: panel.webview.cspSource, nonce: randomBytes(16).toString("base64") });
-    panel.webview.onDidReceiveMessage((m: { type: string; id?: string }) => {
-      if (m.type === "ready") {
+    this.health = { problems: [] };
+    let warned = false;
+    panel.webview.onDidReceiveMessage((m: { type: string; id?: string; file?: string; components?: number; kind?: string; message?: string }) => {
+      if (m.type === "rendered") this.health.rendered = { file: m.file ?? "", components: m.components ?? 0 };
+      else if (m.type === "problem") {
+        this.health.problems.push(`${m.kind}: ${m.message}`);
+        // A blocked script means the preview itself is broken; say so once rather than render blank.
+        if (m.kind === "csp" && !warned) {
+          warned = true;
+          void vscode.window.showWarningMessage(`Polyxd preview: ${m.message}. Please report this at https://github.com/visualfart/polyxd/issues.`);
+        }
+      } else if (m.type === "ready") {
         this.ready = true;
         this.post({ type: "init", themes: THEMES, theme: vscode.workspace.getConfiguration("polyxd").get<string>("defaultPack") || "material3", mode: modeOf(vscode.window.activeColorTheme), pack: this.pack });
         if (this.shown) this.send(this.shown);
