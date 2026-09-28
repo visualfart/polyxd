@@ -10,7 +10,8 @@
     "directory": "./dist",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
-    "run_worker_first": ["/api/*"]
+    // /ingest/* is the analytics proxy (src/worker/analytics.ts): a 404 until POSTHOG_KEY is set.
+    "run_worker_first": ["/api/*", "/ingest/*"]
   },
   // Development gets its own database and bucket, so nothing run without --env can touch
   // production data, and no workers.dev host serves either environment.

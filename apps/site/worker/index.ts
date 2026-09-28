@@ -2,12 +2,14 @@
  * polyxd.com Worker: serves the static site from ./dist, handles the early-access waitlist, and
  * answers the demos' live endpoint (/demos/api/*, apps/demos/server/live.ts).
  * Waitlist entries are stored in KV keyed by email; nothing else about the visitor is kept.
+ * With POSTHOG_KEY set, it also proxies the pages' analytics at /ingest/* (worker/analytics.ts).
  */
 import type { LiveEnv } from "../../demos/server/live.ts";
+import { demoGeneration, ingest, type AnalyticsEnv } from "./analytics.ts";
 
 const MCP_REGISTRY_AUTH = "v=MCPv1; k=ed25519; p=GVC7yJA/uF9BRXCxBfCBN+0BZXehPACU4rTI6cUtF4w=";
 
-interface Env extends LiveEnv {
+interface Env extends LiveEnv, AnalyticsEnv {
   ASSETS: Fetcher;
   WAITLIST: KVNamespace;
 }
@@ -16,12 +18,13 @@ interface Env extends LiveEnv {
  * The demos' live endpoint, loaded on its first request so the rest of the site never evaluates it.
  * It is off (503) until a model key is set as a secret: `wrangler secret put ANTHROPIC_API_KEY`.
  */
-let live: Promise<(request: Request, env: LiveEnv, ctx: ExecutionContext) => Promise<Response>> | undefined;
+let live: Promise<(request: Request, env: Env, ctx: ExecutionContext) => Promise<Response>> | undefined;
 const off = () => json({ live: false }, 503);
 async function demosApi(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   // No key, no fake: answer without loading the endpoint at all.
   if (!env.ANTHROPIC_API_KEY && !env.POLYXD_API_KEY && env.POLYXD_DEMOS_FAKE !== "1") return off();
-  live ??= import("../../demos/server/live.ts").then((m) => m.createLiveApi());
+  // Each generation's counts go to PostHog as demo_live_generation when POSTHOG_KEY is set too.
+  live ??= import("../../demos/server/live.ts").then((m) => m.createLiveApi<Env>({ onGeneration: (summary, e) => demoGeneration(e, summary) }));
   try {
     return await (await live)(request, env, ctx);
   } catch (err) {
@@ -64,6 +67,7 @@ export default {
     // The line is the public half of an Ed25519 key; the private half stays with the owner.
     if (url.pathname === "/.well-known/mcp-registry-auth") return new Response(MCP_REGISTRY_AUTH, { headers: { "content-type": "text/plain; charset=utf-8" } });
     if (url.pathname.startsWith("/demos/api/")) return demosApi(request, env, ctx);
+    if (url.pathname === "/ingest" || url.pathname.startsWith("/ingest/")) return ingest(request, env);
     if (url.hostname === "www.polyxd.com") return Response.redirect(`https://polyxd.com${url.pathname}${url.search}`, 301);
     // Studio's sign-up links to /privacy and /terms without the slash; send them to the pages for good.
     if (url.pathname === "/privacy" || url.pathname === "/terms") return Response.redirect(`${url.origin}${url.pathname}/${url.search}`, 301);

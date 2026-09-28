@@ -25,7 +25,23 @@ export interface LiveEnv {
   POLYXD_DEMOS_FAKE?: string;
 }
 
-export interface LiveApiOptions {
+/** A finished generation, as counts: what the log line says, and all an `onGeneration` hook gets. */
+export interface GenerationSummary {
+  product: string;
+  outcome: string;
+  attempts?: number;
+  inputTokens?: number;
+  outputTokens?: number;
+  ms: number;
+}
+
+export interface LiveApiOptions<E extends LiveEnv = LiveEnv> {
+  /**
+   * Called once per generation, after it ends, with counts only (never the ask, the data or the
+   * screen). The site's Worker sends it to its analytics when POSTHOG_KEY is set. A promise it
+   * returns is kept alive with the request's waitUntil; a throw or a rejection is ignored.
+   */
+  onGeneration?: (summary: GenerationSummary, env: E) => Promise<unknown> | void;
   products?: Record<string, LiveProduct>;
   /** Picks the generator for a request. Default: from the environment (see LiveEnv). */
   generator?: (env: LiveEnv, url: URL, product: string) => Generator | undefined;
@@ -98,7 +114,7 @@ function previousOf(v: unknown): UIDocument | undefined {
   return JSON.stringify(doc).length <= PREVIOUS_MAX ? (doc as UIDocument) : undefined;
 }
 
-export function createLiveApi(options: LiveApiOptions = {}) {
+export function createLiveApi<E extends LiveEnv = LiveEnv>(options: LiveApiOptions<E> = {}) {
   const products: Record<string, LiveProduct> = options.products ?? PRODUCTS;
   const pick = options.generator ?? generatorFromEnv;
   const now = options.now ?? Date.now;
@@ -106,7 +122,7 @@ export function createLiveApi(options: LiveApiOptions = {}) {
   const log = options.log ?? ((line) => console.log(JSON.stringify(line)));
   const configured = (env: LiveEnv, url: URL) => pick(env, url, "halden") !== undefined;
 
-  return async function handle(request: Request, env: LiveEnv, ctx?: LiveContext): Promise<Response> {
+  return async function handle(request: Request, env: E, ctx?: LiveContext): Promise<Response> {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, "");
 
@@ -210,10 +226,20 @@ export function createLiveApi(options: LiveApiOptions = {}) {
         summary = { ...summary, outcome: "failed" };
         await send({ type: "not-yet", reason: "failed" });
       } finally {
+        const ms = Math.round(now() - started);
         try {
-          log({ at: "demos.live", ...summary, ms: Math.round(now() - started) });
+          log({ at: "demos.live", ...summary, ms });
         } catch {
           /* logging never breaks a stream */
+        }
+        try {
+          const counted = options.onGeneration?.(
+            { product: product.spec.product, outcome: String(summary.outcome), attempts: summary.attempts as number | undefined, inputTokens: summary.inputTokens as number | undefined, outputTokens: summary.outputTokens as number | undefined, ms },
+            env,
+          );
+          if (counted) ctx?.waitUntil(Promise.resolve(counted).catch(() => undefined));
+        } catch {
+          /* nor does counting */
         }
         await writer.close().catch(() => undefined);
       }

@@ -201,3 +201,37 @@ test("bad requests are refused before any model is called", async () => {
   }
   assert.equal(calls, 0);
 });
+
+test("each generation is reported to onGeneration as counts only, and the site sends it to PostHog only with a key", async () => {
+  const { demoGeneration } = await import("../../site/worker/analytics.ts");
+  const reported: Record<string, unknown>[] = [];
+  const waited: Promise<unknown>[] = [];
+  const ctx = { waitUntil: (p: Promise<unknown>) => void waited.push(p) };
+  const { handle } = api((p) => fakeGenerator(p), { onGeneration: (s) => void reported.push({ ...s }) });
+  const ask = "zq split the dinner with Priya Venkataraman";
+  await events(await handle(post({ product: "halden", ask }), KEYED, ctx));
+  await Promise.all(waited);
+  assert.equal(reported.length, 1);
+  const summary = reported[0];
+  assert.deepEqual(Object.keys(summary).sort(), ["attempts", "inputTokens", "ms", "outcome", "outputTokens", "product"]);
+  assert.equal(summary.product, "halden");
+  assert.equal(summary.outcome, "done");
+  assert.ok(!JSON.stringify(summary).includes("zq"), "never the ask");
+
+  // The site's Worker: nothing without a key, one anonymous event with one.
+  const sent: { url: string; body: any }[] = [];
+  const fetcher = (async (url: string | URL | Request, init?: RequestInit) => (sent.push({ url: String(url), body: JSON.parse(String(init?.body)) }), new Response("{}"))) as typeof fetch;
+  assert.equal(demoGeneration({}, summary as never, fetcher), undefined);
+  await demoGeneration({ POSTHOG_KEY: "phc_testkey0123456789" }, summary as never, fetcher);
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].url, "https://us.i.posthog.com/i/v0/e/");
+  assert.equal(sent[0].body.event, "demo_live_generation");
+  const props = sent[0].body.properties;
+  assert.deepEqual(
+    { product: props.product, outcome: props.outcome, attempts: props.attempts, repaired: props.repaired, anonymous: props.$process_person_profile, geo: props.$geoip_disable },
+    { product: "halden", outcome: "done", attempts: summary.attempts, repaired: (summary.attempts as number) > 1, anonymous: false, geo: true },
+  );
+  assert.equal(props.tokens, props.input_tokens + props.output_tokens);
+  assert.equal(typeof props.ms, "number");
+  assert.ok(!JSON.stringify(sent[0].body).includes("zq"), "never the ask");
+});

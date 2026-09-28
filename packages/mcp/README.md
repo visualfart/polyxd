@@ -109,7 +109,7 @@ The transport is the SDK's `createMcpHandler`, stateless: a fresh server per req
 
 ## The hosted server
 
-`https://mcp.polyxd.com/mcp` is `apps/mcp`, a Cloudflare Worker: `/mcp` is the handler above, `/health` answers JSON, and `/` redirects to the docs. The view is bundled into the Worker as text (about 2.4 MB in all, 385 KB gzipped). Its rate limit is Cloudflare's rate limiting binding, 600 requests a minute per IP address. That binding counts per Cloudflare location, so it guards against floods rather than enforcing an exact quota. Claude and ChatGPT call from their own servers, which is why the limit is generous. Cloudflare's invocation logs, traces and Issues are off in `wrangler.jsonc`, so the Worker's own lines are all that is kept.
+`https://mcp.polyxd.com/mcp` is `apps/mcp`, a Cloudflare Worker: `/mcp` is the handler above, `/health` answers JSON, and `/` redirects to the docs. The view is bundled into the Worker as text (about 2.4 MB in all, 385 KB gzipped). Its rate limit is Cloudflare's rate limiting binding, 600 requests a minute per IP address. That binding counts per Cloudflare location, so it guards against floods rather than enforcing an exact quota. Claude and ChatGPT call from their own servers, which is why the limit is generous. Cloudflare's invocation logs, traces and Issues are off in `wrangler.jsonc`, so the Worker's own lines are all that is kept. With a `POSTHOG_KEY` secret set, the hosted Worker also counts initializes and tool calls anonymously (`apps/mcp/src/analytics.ts`): names and counts only, never a document, its data or an address. This package, and `npx @polyxd/mcp`, send nothing anywhere.
 
 ```sh
 npm run dev -w @polyxd/mcp-remote                        # wrangler dev on http://127.0.0.1:8787/mcp

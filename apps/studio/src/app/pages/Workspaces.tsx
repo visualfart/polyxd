@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api.ts";
+import { track } from "../analytics.ts";
 import { useSession } from "../App.tsx";
 import { StudioLockup } from "../mark.tsx";
 
@@ -15,7 +16,8 @@ export function Workspaces() {
     e.preventDefault();
     setError("");
     try {
-      const w = await api<{ slug: string }>("POST", "/api/workspaces", { name, slug: slug || name });
+      const w = await api<{ id: string; slug: string }>("POST", "/api/workspaces", { name, slug: slug || name });
+      track("workspace_created", {}, w.id);
       await refresh();
       navigate(`/w/${w.slug}/design-systems/import`);
     } catch (err) {

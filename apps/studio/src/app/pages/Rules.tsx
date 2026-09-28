@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { api } from "../api.ts";
+import { track } from "../analytics.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 
 interface Rule { id: string; name: string; why: string; severity: "error" | "warning"; check: { check: string; [k: string]: unknown }; enabled: number; owner: string; created_at: string }
@@ -56,7 +57,10 @@ export function RulesPanel({ ws, frame, onChange }: { ws: Ws; frame: (actions: R
     }
     try {
       if (open.id) await api("PUT", `/api/w/${ws.slug}/rules/${open.id}`, { name: open.name, why: open.why, severity: open.severity, check });
-      else await api("POST", `/api/w/${ws.slug}/rules`, { name: open.name, why: open.why, severity: open.severity ?? "warning", check });
+      else {
+        await api("POST", `/api/w/${ws.slug}/rules`, { name: open.name, why: open.why, severity: open.severity ?? "warning", check });
+        track("rule_added", { severity: open.severity ?? "warning", from: "rules" }, ws.id);
+      }
       toast(`Saved “${open.name}”`);
       setOpen(null);
       changed();

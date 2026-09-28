@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.ts";
+import { track } from "../analytics.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 
 interface Member { id: string; email: string; name: string; role: string; created_at: string }
@@ -36,6 +37,7 @@ export function Team({ ws }: { ws: Ws }) {
   };
   const makeKey = async () => {
     const r = await api<{ key: string }>("POST", `/api/w/${ws.slug}/api-keys`, { name: "polyxd studio push" });
+    track("api_key_created", {}, ws.id);
     setNewKey(r.key);
     load();
   };

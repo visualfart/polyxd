@@ -9,6 +9,7 @@ import { useLocation, useNavigate, useParams, useSearchParams } from "react-rout
 import "@polyxd/react/styles.css";
 import "../direction.css";
 import { api, ApiError, type DirectionVersionRow } from "../api.ts";
+import { track } from "../analytics.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 import { Mark } from "../mark.tsx";
 import { fromImport, rulesFromWorkspace, toExport, toStored, type DirectionRule, type Snapshot, type WorkspaceRule } from "../../direction/model.ts";
@@ -223,7 +224,10 @@ export function DirectionEditor({ ws }: { ws: Ws }) {
   };
   const addRules = async () => {
     try {
-      for (const r of newRules) await api("POST", `/api/w/${ws.slug}/rules`, { name: r.description, why: "", severity: r.severity, check: r.rule });
+      for (const r of newRules) {
+        await api("POST", `/api/w/${ws.slug}/rules`, { name: r.description, why: "", severity: r.severity, check: r.rule });
+        track("rule_added", { severity: r.severity, from: "direction" }, ws.id);
+      }
       toast(`Added ${newRules.length} rule${newRules.length === 1 ? "" : "s"} to the workspace`);
       setNewRules([]);
       loadRules();

@@ -14,7 +14,8 @@
   // The privacy policy promises that the hosted server logs a request's method, path, status and
   // duration, and nothing else. The Worker writes exactly that line (packages/mcp/src/http.ts,
   // src/app.ts). Cloudflare's invocation logs, traces and Issues would add the full URL, headers,
-  // the client's address or error details, so all three are off.
+  // the client's address or error details, so all three are off. The anonymous counts in PostHog
+  // (src/analytics.ts) are separate from the log, and on only with a POSTHOG_KEY secret.
   "observability": {
     "enabled": true,
     "redact_query_string": true,

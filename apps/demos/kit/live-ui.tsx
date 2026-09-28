@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ActionEvent } from "@polyxd/react";
 import { allowAction, createLiveClient, routeAsk, type LiveEvent, type LiveOutcome, type LiveSpec } from "./live.ts";
 import type { IntentFile } from "./types.ts";
+import { track } from "./track.ts";
 
 /**
  * Live generation in a product: the library answers first; when it has nothing and the site has a
@@ -68,8 +69,16 @@ export function useLive(spec: LiveSpec) {
   const route = useCallback(
     async <M,>(text: string, match: (text: string) => M | null, on: LiveHandlers<M>) => {
       const where = await routeAsk(text, match, client);
-      if (where.kind === "library") return on.library(where.match);
-      if (where.kind === "miss") return on.miss("off");
+      // Which way the ask went, never what it said.
+      const answered = (outcome: "library" | "live" | "not_yet") => track("demo_ask", { product: spec.product, outcome });
+      if (where.kind === "library") {
+        answered("library");
+        return on.library(where.match);
+      }
+      if (where.kind === "miss") {
+        answered("not_yet");
+        return on.miss("off");
+      }
       running.current?.abort();
       const controller = new AbortController();
       running.current = controller;
@@ -79,10 +88,11 @@ export function useLive(spec: LiveSpec) {
       if (controller.signal.aborted) return;
       running.current = null;
       setPending(null);
+      answered(out.kind === "live" ? "live" : "not_yet");
       if (out.kind === "live") on.live({ intent: out.intent, capabilities: out.capabilities });
       else on.miss(out.reason);
     },
-    [client],
+    [client, spec],
   );
 
   /** Stop waiting (the sheet was closed). The stream is dropped and nothing is shown. */

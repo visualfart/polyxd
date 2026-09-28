@@ -166,4 +166,4 @@ This example is from `packages/spec/examples/events/`. The generator name in it 
 
 ### Privacy
 
-Events carry keys and semantics, **never field values or personal data**. `reason` is a short code, never free text from the user. Events go to the host's own analytics through adapters (PostHog, Amplitude, Segment or OpenTelemetry are the planned targets). **Polyxd itself collects nothing** and has no telemetry.
+Events carry keys and semantics, **never field values or personal data**. `reason` is a short code, never free text from the user. Events go to the host's own analytics through adapters (PostHog, Amplitude, Segment or OpenTelemetry are the planned targets). **The runtime and the renderers collect nothing** for Polyxd and have no telemetry: these events are yours alone.

@@ -8,8 +8,9 @@ import type { Context } from "hono";
 import { betterAuth } from "better-auth";
 import { D1Dialect } from "kysely-d1";
 import { sha256 } from "./crypto.ts";
+import type { AnalyticsEnv } from "./analytics.ts";
 
-export interface Env {
+export interface Env extends AnalyticsEnv {
   DB: D1Database;
   FILES: R2Bucket;
   ASSETS: Fetcher;
@@ -53,10 +54,26 @@ export async function sendEmail(env: Env, to: string, subject: string, html: str
 const page = (title: string, body: string, cta?: { text: string; url: string }) =>
   `<div style="font-family: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #141413;"><h2 style="font-size: 20px; margin: 0 0 12px;">${title}</h2><p style="font-size: 15px; line-height: 22px; margin: 0 0 20px;">${body}</p>${cta ? `<p><a href="${cta.url}" style="display: inline-block; background: #FF6E40; color: #141413; padding: 12px 22px; border-radius: 999px; text-decoration: none; font-weight: 600;">${cta.text}</a></p><p style="font-size: 12px; color: #5E5A52;">Or paste this into your browser: ${cta.url}</p>` : ""}</div>`;
 
-/** One auth instance per request: the D1 binding is per request on Workers. */
-export function makeAuth(env: Env) {
+/**
+ * One auth instance per request: the D1 binding is per request on Workers. `onSignUp` hears of
+ * each new account, by its id and how it was made (the analytics' signed_up).
+ */
+export function makeAuth(env: Env, hooks: { onSignUp?: (userId: string, method: "email" | "google") => void } = {}) {
   const local = isLocal(env);
   return betterAuth({
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (user, ctx) => {
+            try {
+              hooks.onSignUp?.(user.id, /google|callback/.test(ctx?.path ?? "") ? "google" : "email");
+            } catch {
+              // Counting never stops a sign-up.
+            }
+          },
+        },
+      },
+    },
     baseURL: env.APP_URL,
     basePath: "/api/auth",
     secret: env.AUTH_SECRET ?? (local ? "dev-only-not-a-secret-change-me" : undefined),

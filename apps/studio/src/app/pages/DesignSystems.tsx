@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { PackLogo } from "../packlogo.tsx";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type Scan, type TemplateSummary } from "../api.ts";
+import { track } from "../analytics.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 import { Mark } from "../mark.tsx";
 import "../tokens.css";
@@ -31,6 +32,7 @@ export function DesignSystems({ ws }: { ws: Ws }) {
     setBusy(true);
     try {
       const r = await api<{ designSystemId: string; versionId: string; mapped: number; fails: number; scan: Scan }>("POST", `/api/w/${ws.slug}/design-systems/from-template`, { template, name: tplName.trim() || undefined });
+      track("design_system_imported", { source: "template" }, ws.id);
       toast(`${r.scan.total} tokens scanned, ${r.mapped} of 87 roles mapped${r.fails ? `, ${r.fails} fail contrast` : ", every pair passes contrast"}. Tune it, then publish.`);
       setChoosing(false);
       navigate(`/w/${ws.slug}/design-systems/${r.designSystemId}/versions/${r.versionId}/edit`);
