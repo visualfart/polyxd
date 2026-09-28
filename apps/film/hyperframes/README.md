@@ -218,3 +218,22 @@ string, so confirm commercial use in the HeyGen account terms before publishing.
 | Into the reveal | f6995a68… | Deep whoosh riser |
 
 Fonts: Young Serif, DM Mono, Hanken Grotesk (SIL OFL); Caveat (SIL OFL, installed by the registry).
+
+## Film B5 (`film-b5-return-the-shoes/`)
+
+B4 re-paced so every line can be read (rule: words × 0.3 s + 1 s after appearing; captions ≥ 2.5 s),
+with a new beat that answers "whose design?": the 13 design systems' logos and the 12 Polyxd
+templates, one per 8th of the score, each re-theming the phone's screen through the real renderer.
+78.2 s. What changed: `film-b5-return-the-shoes/STORYBOARD.md`.
+
+```sh
+node apps/film/hyperframes/music-b5.mjs    # the same score, re-cut on its bars for B5
+node apps/film/hyperframes/make-b5.mjs     # index.html, assets (incl. logos from packages/ds-*/logo.svg), sound cues
+cd apps/film/hyperframes/film-b5-return-the-shoes && npx hyperframes check && \
+  npx hyperframes render --quality delivery --output ../../out/hyperframes/polyxd-b5-return-the-shoes.mp4
+```
+
+Output: `apps/film/out/hyperframes/polyxd-b5-return-the-shoes.mp4` (78.2 s, −14.2 LUFS, −1.4 dBTP),
+`polyxd-b5-return-the-shoes-sheet.png`, ten stills in `stills/`. No new catalogue items: the score
+and every sound effect are B4's (see B4's credits). The logos are the design systems' own marks as
+shipped in `packages/ds-*/logo.svg` (their owners' trademarks); GOV.UK is shown as words only.
