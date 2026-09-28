@@ -1,0 +1,18 @@
+{
+  "name": "@polyxd/stats",
+  "version": "0.0.0",
+  "private": true,
+  "description": "An internal scheduled Worker that records Polyxd's adoption numbers (npm, Open VSX, the VS Marketplace, GitHub, the MCP Registry) into PostHog once a day",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc -p .",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "backfill": "node scripts/backfill.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260919.1",
+    "wrangler": "^4.135.0"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "results": [
+    {
+      "extensions": [
+        {
+          "publisher": {
+            "publisherId": "f0af36e9-b03e-490f-b208-d8f346394aa3",
+            "publisherName": "Polyxd",
+            "displayName": "Polyxd",
+            "flags": "verified",
+            "domain": "https://polyxd.com",
+            "isDomainVerified": false
+          },
+          "extensionId": "50b162d4-739a-4eb1-857a-19e292995a70",
+          "extensionName": "polyxd-vscode",
+          "displayName": "Polyxd",
+          "flags": "validated, public",
+          "lastUpdated": "2026-09-28T12:46:11.67Z",
+          "publishedDate": "2026-09-28T12:39:57.81Z",
+          "releaseDate": "2026-09-28T12:39:57.81Z",
+          "shortDescription": "Write Polyxd UI documents with completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away.",
+          "deploymentType": 0
+        }
+      ],
+      "pagingToken": null,
+      "resultMetadata": [
+        {
+          "metadataType": "ResultCount",
+          "metadataItems": [
+            {
+              "name": "TotalCount",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

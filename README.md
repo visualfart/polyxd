@@ -158,6 +158,7 @@ Polyxd ships no model. Any model or program that emits spec-valid JSON drives it
 | `packages/server` | The generation server: the runtime behind an HTTP API with streaming, and its Dockerfile |
 | `apps/gallery`, `apps/site` | The gallery and polyxd.com |
 | `apps/mcp` | The hosted MCP server at mcp.polyxd.com: `packages/mcp` over Streamable HTTP in a Cloudflare Worker |
+| `apps/stats` | An internal scheduled Worker that records adoption (npm, the editor stores, GitHub, the MCP Registry) into PostHog daily |
 | `bench/` | Benchmark requests, agent tasks, the gold set and the designer's rankings |
 | `model/` | Training and evaluation experiments (paused; see research/report.md) |
 | `design/flows` | Source of the approved flow designs the spec and renderer are built against |

@@ -1,0 +1,8 @@
+{
+  "objects": [
+    { "package": { "name": "@polyxd/spec", "scope": "polyxd", "version": "0.4.0" } },
+    { "package": { "name": "@polyxd/brand-new", "scope": "polyxd", "version": "0.1.0" } },
+    { "package": { "name": "polyxd-lookalike", "scope": "unscoped", "version": "1.0.0" } }
+  ],
+  "total": 3
+}

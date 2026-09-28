@@ -1,0 +1,3 @@
+# Written by `npm run backfill -- --ledger-out`, for `wrangler kv bulk put`
+ledger*.json
+.dev.vars
