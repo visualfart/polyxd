@@ -1,12 +1,12 @@
 ---
 title: Terms of use
 description: The rules for using polyxd.com, the demos, Polyxd Studio and the hosted MCP server, and how they relate to Polyxd's open-source licences.
-updated: "[date on approval]"
+updated: "28 September 2026"
 ---
 
 ## Who we are
 
-Polyxd is run by Neelank Sachan, an individual developer based in the United Kingdom ("we", "us"). Contact: [hello@polyxd.com](mailto:hello@polyxd.com). Post: [postal address].
+Polyxd is run by Neelank Sachan, an individual developer based in New South Wales, Australia ("we", "us"). Contact: [hello@polyxd.com](mailto:hello@polyxd.com).
 
 These terms cover the services we run:
 
@@ -77,13 +77,15 @@ Polyxd checks screens against its specification and your rules, but checks can't
 
 ## No warranty
 
-We provide the services free and "as is". We don't promise they will always be available, free of errors, or right for your purpose. Nothing here affects your legal rights as a consumer.
+We provide the services free and "as is". We don't promise they will always be available, free of errors, or right for your purpose.
+
+Nothing in these terms excludes, restricts or changes any consumer guarantee, right or remedy you have under the Australian Consumer Law, or any similar law where you live, that can't lawfully be excluded.
 
 ## Our liability
 
 - Nothing in these terms limits our liability for death or personal injury caused by our negligence, for fraud, or for anything else the law does not allow us to limit.
-- If you use the services as a consumer, we are responsible for loss you suffer that was a foreseeable result of our breaking these terms or failing to use reasonable care. We are not responsible for loss that was not foreseeable.
-- If you use the services for a business, we are not liable for any loss of profit, revenue, business, goodwill or data, or for any indirect or consequential loss. Our total liability to you for everything connected with the services is limited to £100.
+- Where the Australian Consumer Law lets us limit our liability for failing to meet a consumer guarantee, our liability is limited to supplying the service again or paying the cost of having it supplied again.
+- To the extent the law allows, we are not liable for any loss of profit, revenue, business, goodwill or data, or for any indirect or consequential loss. Our total liability to you for everything connected with the services is limited to AUD 100.
 
 ## Changes to these terms
 
@@ -97,7 +99,7 @@ We may change these terms. We will update this page and the "Last updated" date 
 
 ## Law and courts
 
-These terms are governed by the law of England and Wales. Disputes go to the courts of England and Wales. If you are a consumer living in Scotland or Northern Ireland, you can also bring a claim in your local courts.
+These terms are governed by the law of New South Wales, Australia. Disputes go to the courts of New South Wales. If you are a consumer, you keep any right the law where you live gives you to bring a claim in your local courts.
 
 ## Contact
 

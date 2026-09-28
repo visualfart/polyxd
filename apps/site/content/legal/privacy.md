@@ -1,7 +1,7 @@
 ---
 title: Privacy policy
 description: What Polyxd collects on each of its services, why, who else sees it, how long it is kept, and your rights.
-updated: "[date on approval]"
+updated: "28 September 2026"
 ---
 
 ## The short version
@@ -15,11 +15,11 @@ updated: "[date on approval]"
 
 ## Who we are
 
-Polyxd is run by Neelank Sachan, an individual developer based in the United Kingdom. In this policy, "we" and "us" means him. We are the controller of the personal data described here.
+Polyxd is run by Neelank Sachan, an individual developer based in New South Wales, Australia. In this policy, "we" and "us" means him. We are responsible for the personal information described here, and we handle it in line with the Australian Privacy Principles in the Privacy Act 1988.
 
-Contact: [hello@polyxd.com](mailto:hello@polyxd.com). Post: [postal address].
+Contact: [hello@polyxd.com](mailto:hello@polyxd.com).
 
-ICO registration number: [ICO registration number].
+You can use the site, the docs, the demos and the hosted MCP server without telling us who you are.
 
 This policy covers polyxd.com (the site, the docs, the gallery and the demos), Polyxd Studio at studio.polyxd.com, and the hosted MCP server at mcp.polyxd.com. It also says what the software you run yourself does and doesn't send.
 
@@ -80,7 +80,7 @@ When you import a package, Studio fetches it from the npm registry or from the p
 
 **Emails.** Studio sends email through Resend: email verification, password resets, and workspace invitations. An invitation goes to the address you enter and includes your name or email address, the workspace name, the role and your message. Resend processes the recipient's address and the content of the email to deliver it.
 
-**Where it is stored.** On Cloudflare: the database on Cloudflare D1 and files on Cloudflare R2. Cloudflare decides where in its network to keep them, which may be outside the UK.
+**Where it is stored.** On Cloudflare: the database on Cloudflare D1 and files on Cloudflare R2. Cloudflare decides where in its network to keep them, which may be outside Australia.
 
 **Deleting.** You can delete design systems, screens, Directions, rules, API keys and registries in Studio at any time. Deleting a design system deletes its files too. To delete your account or a whole workspace, email us from the address on the account. We will do it within one month and confirm when it is done.
 
@@ -105,21 +105,19 @@ The npm packages (`@polyxd/*`), the local MCP server (`npx @polyxd/mcp`), the ge
 - `polyxd studio push` sends your design tokens to the Studio workspace you name, when you run it.
 - Downloading packages from npm or code from GitHub is covered by their own privacy policies.
 
-## Why we use your data (lawful basis)
+## Why we use your data
 
-Under UK data protection law (UK GDPR and the Data Protection Act 2018) we must have a lawful basis for using personal data.
+We collect personal information only when we need it for one of these purposes, and we use it only for that purpose or one you would reasonably expect.
 
-| What | Why | Lawful basis |
-|---|---|---|
-| Studio accounts, workspaces and their emails | To provide Studio to you | Contract |
-| Server logs, security cookies and rate limits | To keep the services working, secure and fair | Legitimate interests |
-| Live generation in the demos | To answer the ask you typed | Legitimate interests |
-| Hosted MCP server requests | To answer the tool calls your assistant makes | Legitimate interests |
-| The early-access list | To tell you about early access, as you asked | Consent |
-| Emails you send us | To reply to you | Legitimate interests |
-| Records we must keep by law | To meet legal obligations | Legal obligation |
-
-Where we rely on legitimate interests, we have weighed them against your rights. You can object at any time (see below).
+| What | Why |
+|---|---|
+| Studio accounts, workspaces and their emails | To provide Studio to you |
+| Server logs, security cookies and rate limits | To keep the services working, secure and fair |
+| Live generation in the demos | To answer the ask you typed |
+| Hosted MCP server requests | To answer the tool calls your assistant makes |
+| The early-access list | To tell you about early access, as you asked |
+| Emails you send us | To reply to you |
+| Records we must keep by law | To meet legal obligations |
 
 ## Who else sees your data
 
@@ -135,9 +133,9 @@ Two Google services work differently. Web fonts on the site, the demos and Studi
 
 We may also share data if the law requires it, or to protect our rights or someone's safety. If the services pass to someone else, your data would go with them under this policy. We don't sell personal data.
 
-## International transfers
+## Overseas disclosure
 
-Our providers are based in the USA and may process data outside the UK. When they do, we rely on the safeguards UK law allows: the UK Extension to the EU-US Data Privacy Framework for providers certified under it, or the International Data Transfer Addendum to the EU standard contractual clauses in their data processing agreements.
+Our providers are based in the USA and may store and process data there or elsewhere in their networks, outside Australia. Before we share personal information with a provider overseas, we take reasonable steps to make sure it handles that information in line with the Australian Privacy Principles, through its data processing agreement and security commitments.
 
 ## How long we keep it
 
@@ -154,27 +152,25 @@ Our providers are based in the USA and may process data outside the UK. When the
 
 ## Your rights
 
-You have the right to:
+You can ask us to:
 
-- get a copy of your personal data;
-- have wrong data corrected;
-- have your data deleted;
-- restrict how we use it;
-- object to us using it on the basis of legitimate interests;
-- get the data you gave us in a format a machine can read, and have it sent to someone else;
-- withdraw your consent at any time, where we rely on it.
+- give you a copy of the personal information we hold about you;
+- correct information that is wrong, out of date or incomplete;
+- delete your information;
+- stop using it for a purpose, or take you off the early-access list;
+- send you the data you gave us in a format a machine can read.
 
-To use any of these, email [hello@polyxd.com](mailto:hello@polyxd.com). We will reply within one month. We may ask you to confirm who you are first.
+To do any of these, email [hello@polyxd.com](mailto:hello@polyxd.com). We will reply within 30 days, and it costs nothing. We may ask you to confirm who you are first. If we can't do what you ask, we will tell you why.
 
 Much of what the demos and the hosted MCP server handle never reaches us in a form we can link to you. If you ask about it, we will tell you what we hold, which may be nothing.
 
 ## Complaints
 
-If you are unhappy with how we use your data, please tell us first so we can put it right. You can also complain to the Information Commissioner's Office (ICO), the UK's data protection regulator: [ico.org.uk/make-a-complaint](https://ico.org.uk/make-a-complaint/), or 0303 123 1113.
+If you are unhappy with how we handle your information, please email us first so we can put it right. We will reply within 30 days. If you are not satisfied with our answer, you can complain to the Office of the Australian Information Commissioner (OAIC): [oaic.gov.au/privacy/privacy-complaints](https://www.oaic.gov.au/privacy/privacy-complaints), or 1300 363 992.
 
 ## Security
 
-All our services use HTTPS. Studio stores passwords as salted hashes and API keys as hashes, encrypts registry tokens, and marks its sign-in cookies as secure and not readable by scripts. No system is perfectly secure. If we learn of a breach that puts you at risk, we will tell you and the ICO as the law requires.
+All our services use HTTPS. Studio stores passwords as salted hashes and API keys as hashes, encrypts registry tokens, and marks its sign-in cookies as secure and not readable by scripts. No system is perfectly secure. If we learn of a breach that puts you at risk, we will tell you, and the OAIC where the law requires it.
 
 ## Children
 
