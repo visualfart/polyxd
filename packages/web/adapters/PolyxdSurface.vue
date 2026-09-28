@@ -9,7 +9,7 @@
  */
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { defineElements, type PolyxdSurfaceElement } from "@polyxd/web";
-import type { ActionEvent, Data, UIDocument } from "@polyxd/core";
+import type { ActionEvent, Data, SemanticEvent, SurfaceEventOptions, UIDocument } from "@polyxd/core";
 
 defineElements();
 
@@ -24,6 +24,9 @@ const props = defineProps<{
   resolveMedia?: (ref: string) => string | undefined;
   derive?: (data: Data) => Data | void;
   components?: PolyxdSurfaceElement["components"];
+  /** Semantic analytics events, off unless given, e.g. `:on-event="send"` with `const send = toPostHog(posthog)`. */
+  onEvent?: (event: SemanticEvent) => void;
+  events?: SurfaceEventOptions;
 }>();
 const emit = defineEmits<{ action: [event: ActionEvent]; datachange: [data: Data]; dismiss: [] }>();
 
@@ -40,6 +43,8 @@ const apply = () => {
   s.resolveMedia = props.resolveMedia;
   s.derive = props.derive;
   s.components = props.components;
+  s.events = props.events;
+  s.onEvent = props.onEvent ?? null;
 };
 
 onMounted(() => {
@@ -48,7 +53,7 @@ onMounted(() => {
   el.value?.addEventListener("polyxd-datachange", onDataChange);
   el.value?.addEventListener("polyxd-dismiss", onDismiss);
 });
-watch(() => [props.document, props.data, props.resolveMedia, props.derive, props.components], apply);
+watch(() => [props.document, props.data, props.resolveMedia, props.derive, props.components, props.onEvent, props.events], apply);
 onBeforeUnmount(() => {
   el.value?.removeEventListener("polyxd-action", onAction);
   el.value?.removeEventListener("polyxd-datachange", onDataChange);

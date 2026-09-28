@@ -3,7 +3,7 @@ import { Dialog } from "radix-ui";
 import { resolveFormat, useBindings, useSurface, type Node } from "../context.tsx";
 import { asList, absolute, childPointer, get, type Scope } from "../data.ts";
 import { formatValue, safeColor } from "../format.ts";
-import { STATUS_ICON, calendarMonth, collectionItemValue, collectionLayout, dateParts, monthToShow, moveItem, nearestSlide, orderedIndices, qrEncode, richText, shiftMonth as shiftMonthBy, type RichToken } from "@polyxd/core";
+import { STATUS_ICON, type SurfaceEvents, calendarMonth, collectionItemValue, collectionLayout, dateParts, monthToShow, moveItem, nearestSlide, orderedIndices, qrEncode, richText, shiftMonth as shiftMonthBy, type RichToken } from "@polyxd/core";
 import { Render, useA11y } from "../surface.tsx";
 import { Icon } from "./avatar.tsx";
 import { Heading } from "./structure.tsx";
@@ -600,8 +600,16 @@ function QRCode({ text, alt, a11y }: { text: string; alt: string; a11y: Record<s
  */
 export function Status({ node }: { node: Node }) {
   const b = useBindings();
+  const s = useSurface();
   const urgent = node.kind === "error";
   const a11y = useA11y(node);
+  // status.shown once per appearance: a remount in StrictMode keeps the ref, so it isn't said twice.
+  const told = useRef<SurfaceEvents | undefined>(undefined);
+  useEffect(() => {
+    if (!s.events || told.current === s.events) return;
+    told.current = s.events;
+    s.events.statusShown(node);
+  }, [s.events, node]);
   if (node.kind === "undo") {
     return (
       <div className="pxd-snackbar" role="status" {...a11y}>

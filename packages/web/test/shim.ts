@@ -167,6 +167,11 @@ export class FakeElement extends FakeNode {
   dispatch(type: string, event: Record<string, unknown> = {}) {
     for (const fn of this.listeners[type] ?? []) fn({ type, target: this, currentTarget: this, preventDefault() {}, stopPropagation() {}, ...event });
   }
+  /** A real Event on this element's own listeners (no propagation). */
+  dispatchEvent(event: Event): boolean {
+    for (const fn of this.listeners[event.type] ?? []) fn(event);
+    return true;
+  }
   focus() {}
   setCustomValidity() {}
   closest(selector: string): FakeElement | null {
@@ -177,10 +182,12 @@ export class FakeElement extends FakeNode {
     }
     return null;
   }
-  /** Tag and class selectors only, which is all the renderer asks after a draw. */
+  /** Tag and class selectors, and one attribute's presence (`[data-pxd-id]`): all the renderer asks after a draw. */
   matches(selector: string): boolean {
     const parts = selector.split(",").map((s) => s.trim());
     return parts.some((sel) => {
+      const attr = /^\[([\w-]+)\]$/.exec(sel);
+      if (attr) return this.hasAttribute(attr[1]);
       const m = /^([a-z0-9#-]+)?((?:\.[\w-]+)*)$/i.exec(sel);
       if (!m) return false;
       const [, tag, classes] = m;

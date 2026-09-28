@@ -31,9 +31,9 @@ for (const n of new Set(stated)) if (n !== components.length && n > 20) problems
 const valueExports = (src: string) => [...src.matchAll(/export \{([^}]+)\}/g)].flatMap((m) => m[1].split(",").map((s) => s.trim())).filter((s) => s && !s.startsWith("type ")).map((s) => s.split(" as ").pop()!.trim());
 const exported = valueExports(await read("packages/react/src/index.ts")).filter((n) => /^[A-Z]|^use[A-Z]/.test(n));
 for (const name of exported) if (!all.includes(name)) problems.push(`renderer export ${name} is not mentioned in the docs`);
-// Every public export of @polyxd/core, @polyxd/web, @polyxd/runtime and @polyxd/server, whatever its case: a renderer, runtime or server user reads about it here.
+// Every public export of @polyxd/core, @polyxd/web, @polyxd/analytics, @polyxd/runtime and @polyxd/server, whatever its case: a renderer, analytics, runtime or server user reads about it here.
 const shared: string[] = [];
-for (const pkg of ["core", "web", "runtime", "server"]) {
+for (const pkg of ["core", "web", "analytics", "runtime", "server"]) {
   for (const name of valueExports(await read(`packages/${pkg}/src/index.ts`))) {
     shared.push(name);
     if (!new RegExp(`\\b${name}\\b`).test(all)) problems.push(`@polyxd/${pkg} export ${name} is not mentioned in the docs`);
@@ -65,4 +65,4 @@ if (problems.length) {
   console.error(`Docs are out of date:\n  ${problems.join("\n  ")}`);
   process.exit(1);
 }
-console.log(`docs check: ${components.length} components, ${exported.length} renderer exports, ${shared.length} core, web, runtime and server exports, 4 CLI commands, ${demos.length} demos, ${real} packs all documented`);
+console.log(`docs check: ${components.length} components, ${exported.length} renderer exports, ${shared.length} core, web, analytics, runtime and server exports, 4 CLI commands, ${demos.length} demos, ${real} packs all documented`);

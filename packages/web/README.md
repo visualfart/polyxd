@@ -38,8 +38,10 @@ Without a bundler, `preview/polyxd-web.js` and `preview/polyxd-web.css` are a se
 | `derive` | | `(data) => data`: derived data after each input change (a receipt, a total), pure. |
 | `components` | | Renderer overrides by component name (`(node, ctx) => element`), and the host's own components a `Custom` names by a namespaced key (`"brand.logo"`: `(props) => element`). |
 | `onAction`, `onDataChange`, `onDismiss` | | Callback properties, called before the events below. |
+| `onEvent` | | Semantic analytics events (`SemanticEvent`), called before `polyxd-event`. Setting it switches them on. |
+| `events` | | What the events say beyond the document: `{ sessionId, actor, journey, generator, direction, experiment }`. Setting it switches them on too. |
 
-Events, all bubbling and composed: `polyxd-action` (`detail` is the `ActionEvent`: `{ name, context, source }`), `polyxd-datachange` (`detail` is the new data) and `polyxd-dismiss`. The renderer handles `ui.back` and `ui.next` inside `Steps`, and `ui.copy`; every other action name reaches the host.
+Events, all bubbling and composed: `polyxd-action` (`detail` is the `ActionEvent`: `{ name, context, source }`), `polyxd-datachange` (`detail` is the new data), `polyxd-dismiss`, and `polyxd-event` (`detail` is a `SemanticEvent`). Semantic events are off until the host listens: sets `onEvent` or `events`, or adds a `polyxd-event` listener to the element itself. They carry ids, keys, capability names and short codes, never what anyone typed, and go nowhere but the host. `el.feedback(rating, reason?)` and `el.regenerated(reason?)` report the host's side. The renderer handles `ui.back` and `ui.next` inside `Steps`, and `ui.copy`; every other action name reaches the host.
 
 ## `<polyxd-frame>`
 
@@ -62,11 +64,11 @@ A shell adopts each new `data` object the host passes, so a badge count changes 
 
 ## `mount(el, props)`
 
-For hosts whose DOM is owned by something else, `mount(element, { document, data, theme, onAction, … })` renders without the custom elements and returns `{ update(props), unmount(), data }`. `props` are the surface's properties above as one object, plus `outlet`, `current` and `loading` for a shell.
+For hosts whose DOM is owned by something else, `mount(element, { document, data, theme, onAction, … })` renders without the custom elements and returns `{ update(props), unmount(), data, feedback(rating), regenerated(reason) }`. `props` are the surface's properties above as one object, plus `outlet`, `current` and `loading` for a shell.
 
 ## Vue and Svelte
 
-Thin wrappers to copy into a project, in `adapters/`: [`PolyxdSurface.vue`](./adapters/PolyxdSurface.vue) (Vue 3, `<script setup>`) and [`PolyxdSurface.svelte`](./adapters/PolyxdSurface.svelte) (Svelte 5 runes). Each takes the same props, forwards the element's events as `action`, `datachange` and `dismiss`, and stays a few dozen lines because the element does the work. They are documented, not published as packages.
+Thin wrappers to copy into a project, in `adapters/`: [`PolyxdSurface.vue`](./adapters/PolyxdSurface.vue) (Vue 3, `<script setup>`) and [`PolyxdSurface.svelte`](./adapters/PolyxdSurface.svelte) (Svelte 5 runes). Each takes the same props (and `onEvent`/`events`, or `onevent` in Svelte, for semantic events), forwards the element's events as `action`, `datachange` and `dismiss`, and stays a few dozen lines because the element does the work. They are documented, not published as packages.
 
 ## What the renderer decides (not the model)
 

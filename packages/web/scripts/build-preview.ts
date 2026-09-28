@@ -8,7 +8,8 @@
  *
  * The script also honours the verifier harness's protocol: with `window.__PXD__ = { document,
  * theme, mode }` set before it loads, it renders into `#root` and records actions on
- * `window.__pxdActions`, so the same page verifies either renderer.
+ * `window.__pxdActions` and semantic events on `window.__pxdEvents`, so the same page verifies
+ * either renderer.
  *
  *   node scripts/build-preview.ts
  */
@@ -45,8 +46,9 @@ if (typeof window !== "undefined") {
   if (window.__PXD__ && root) {
     window.__pxdActions = [];
     window.__pxdDismissed = 0;
+    window.__pxdEvents = [];
     const { document: doc, theme, mode } = window.__PXD__;
-    const shared = { document: doc, theme, mode, onAction: (e) => window.__pxdActions.push(e), resolveMedia: placeholderMedia };
+    const shared = { document: doc, theme, mode, onAction: (e) => window.__pxdActions.push(e), onEvent: (e) => window.__pxdEvents.push(e), resolveMedia: placeholderMedia };
     if (doc.surface.kind === "shell") {
       // A shell renders with a stand-in screen in its outlet: the frame is what is being checked.
       const screen = document.createElement("div");

@@ -3,9 +3,10 @@
  * stylesheet and the themes apply as they are, scoped by data-pxd-theme on the surface. The
  * document and data are properties; the string settings are also attributes; what the surface
  * sends is dispatched as DOM events (polyxd-action, polyxd-datachange, polyxd-dismiss) as well as
- * the on* callback properties.
+ * the on* callback properties. Semantic analytics events are polyxd-event and onEvent, and are off
+ * until the host listens: sets onEvent, sets `events`, or adds a polyxd-event listener to the element.
  */
-import type { ActionEvent, Data, UIDocument } from "@polyxd/core";
+import type { ActionEvent, Data, EventRating, SemanticEvent, SurfaceEventOptions, UIDocument } from "@polyxd/core";
 import { Renderer, type Density, type HostComponent, type Mode, type SurfaceProps } from "./renderer.ts";
 import type { ComponentRenderer } from "./components/index.ts";
 
@@ -15,6 +16,7 @@ export interface PolyxdEvents {
   "polyxd-action": CustomEvent<ActionEvent>;
   "polyxd-datachange": CustomEvent<Data>;
   "polyxd-dismiss": CustomEvent<void>;
+  "polyxd-event": CustomEvent<SemanticEvent>;
 }
 
 /** The properties shared by both elements. */
@@ -29,10 +31,48 @@ export class PolyxdSurfaceElement extends HTMLElement {
   #resolveMedia: SurfaceProps["resolveMedia"];
   #components: SurfaceProps["components"];
   #scheduled = false;
+  #onEvent: ((event: SemanticEvent) => void) | null = null;
+  #events: SurfaceEventOptions | undefined;
+  #listening = false;
 
   onAction: ((event: ActionEvent) => void) | null = null;
   onDataChange: ((data: Data) => void) | null = null;
   onDismiss: (() => void) | null = null;
+
+  /** Semantic analytics events (also dispatched as polyxd-event). Setting it switches them on. */
+  get onEvent(): ((event: SemanticEvent) => void) | null {
+    return this.#onEvent;
+  }
+  set onEvent(fn: ((event: SemanticEvent) => void) | null) {
+    this.#onEvent = fn;
+    this.#update();
+  }
+  /** What the events say beyond the document (session id, actor, journey, generator, Direction, experiment). Setting it switches them on, for hosts that listen for polyxd-event further up the page. */
+  get events(): SurfaceEventOptions | undefined {
+    return this.#events;
+  }
+  set events(options: SurfaceEventOptions | undefined) {
+    this.#events = options;
+    this.#update();
+  }
+
+  /** A polyxd-event listener on the element switches the events on. */
+  addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
+    super.addEventListener(type, listener, options);
+    if (type === "polyxd-event" && !this.#listening) {
+      this.#listening = true;
+      this.#update();
+    }
+  }
+
+  /** feedback: the person rated this surface -1, 0 or 1, with an optional reason code. Does nothing while events are off. */
+  feedback(rating: EventRating, reason?: string): void {
+    this.#renderer?.feedback(rating, reason);
+  }
+  /** surface.regenerated: the person asked again, and this surface is being replaced. Does nothing while events are off. */
+  regenerated(reason?: string): void {
+    this.#renderer?.regenerated(reason);
+  }
 
   get document(): UIDocument | null {
     return this.#document;
@@ -142,6 +182,14 @@ export class PolyxdSurfaceElement extends HTMLElement {
         this.onDismiss?.();
         this.dispatchEvent(new CustomEvent("polyxd-dismiss", { bubbles: true, composed: true }));
       },
+      events: this.#events,
+      onEvent:
+        this.#onEvent || this.#events || this.#listening
+          ? (e) => {
+              this.#onEvent?.(e);
+              this.dispatchEvent(new CustomEvent("polyxd-event", { detail: e, bubbles: true, composed: true }));
+            }
+          : undefined,
     };
   }
 
@@ -244,6 +292,10 @@ export interface Mounted {
   update: (props: Partial<SurfaceProps>) => void;
   unmount: () => void;
   readonly data: Data;
+  /** feedback: the person rated this surface -1, 0 or 1. Does nothing while events are off. */
+  feedback: (rating: EventRating, reason?: string) => void;
+  /** surface.regenerated: the person asked again, and this surface is being replaced. Does nothing while events are off. */
+  regenerated: (reason?: string) => void;
 }
 
 /**
@@ -264,5 +316,7 @@ export function mount(el: HTMLElement, props: SurfaceProps): Mounted {
     get data() {
       return renderer.data;
     },
+    feedback: (rating, reason) => renderer.feedback(rating, reason),
+    regenerated: (reason) => renderer.regenerated(reason),
   };
 }

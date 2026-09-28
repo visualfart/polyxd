@@ -2,10 +2,13 @@
 import { absolute, isBinding, resolve, resolveContext, type Scope } from "./data.ts";
 import type { Action, ActionEvent, Node } from "./document.ts";
 import { RENDERER_ACTIONS } from "./document.ts";
+import type { SurfaceEvents } from "./events.ts";
 
 export interface DispatchHandlers {
   onAction?: (event: ActionEvent) => void;
   onDismiss?: () => void;
+  /** The surface's semantic events, when the host asked for them: told about every action first. */
+  events?: SurfaceEvents;
 }
 
 export const isRendererAction = (name: string): boolean => (RENDERER_ACTIONS as readonly string[]).includes(name);
@@ -18,6 +21,7 @@ export const isRendererAction = (name: string): boolean => (RENDERER_ACTIONS as 
 export function dispatchAction(action: Action | undefined, scope: Scope, source: string, data: unknown, handlers: DispatchHandlers): void {
   if (!action) return;
   const { name, context } = action.event;
+  handlers.events?.action(action, source);
   if (name === "ui.dismiss") return handlers.onDismiss?.();
   handlers.onAction?.({ name, context: resolveContext(context, data, scope), source });
 }

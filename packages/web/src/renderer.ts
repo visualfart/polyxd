@@ -5,8 +5,8 @@
  * Frame) and return elements, the way the React components do with hooks and providers.
  */
 import {
-  a11yAttributes, absolute, createSurface, mainNavigation, resolve, resolveContext, resolveFormat, formatValue, ROOT_SCOPE,
-  type Action, type ActionEvent, type Data, type Format, type Node, type Scope, type Surface, type UIDocument,
+  a11yAttributes, absolute, createSurface, createSurfaceEvents, mainNavigation, resolve, resolveContext, resolveFormat, formatValue, validityReason, ROOT_SCOPE,
+  type Action, type ActionEvent, type Data, type Format, type Node, type Scope, type SemanticEvent, type Surface, type SurfaceEventOptions, type SurfaceEvents, type UIDocument,
 } from "@polyxd/core";
 import { adopt, h, render as patch, unmount, type VChild, type VNode } from "./dom.ts";
 import { registry, type ComponentRenderer } from "./components/index.ts";
@@ -37,6 +37,13 @@ export interface SurfaceProps {
   outlet?: Element | null;
   current?: { key?: string; title?: string };
   loading?: boolean;
+  /**
+   * Semantic analytics events (schema/event.schema.json). Keys and codes only, never what anyone
+   * typed. Off unless this is passed; they go to this handler and nowhere else.
+   */
+  onEvent?: (event: SemanticEvent) => void;
+  /** What the events say beyond the document: a session id, the actor, the journey, the generator, the Direction, experiment variants. Read when the surface is shown. */
+  events?: SurfaceEventOptions;
 }
 
 /** A host's own component: gets the Custom's resolved props and the node, returns an element (or a description of one). */
@@ -109,16 +116,32 @@ export class Renderer {
   private drawing = false;
   /** Set by the surface once the first draw is done, so shortcut listeners can be attached once. */
   private disposers: (() => void)[] = [];
+  /** The surface's semantic events while the host listens (onEvent); undefined otherwise. */
+  events: SurfaceEvents | undefined;
+  /** Status components drawn in this draw and the last, by scope and id: a new one is status.shown. */
+  private statuses = new Map<string, Node>();
+  private statusesBefore = new Map<string, Node>();
 
   constructor(host: HTMLElement, props: SurfaceProps) {
     this.host = host;
     this.props = props;
     this.components = { ...registry, ...(props.components ?? {}) };
     this.surface = this.makeSurface(props);
+    this.events = this.makeEvents(props);
     this.unsubscribe = this.surface.subscribe(() => this.schedule());
+    // Every control that fails validation fires 'invalid' (a Form's checkValidity, a Steps' submit): heard once, at the host.
+    const invalid = (e: Event) => {
+      if (!this.events) return;
+      const control = e.target as (Element & { validity?: ValidityState }) | null;
+      const id = control?.closest?.("[data-pxd-id]")?.getAttribute("data-pxd-id");
+      if (id) this.events.inputError(this.byId.get(id) ?? id, validityReason(control?.validity));
+    };
+    host.addEventListener("invalid", invalid, true);
+    this.disposers.push(() => host.removeEventListener("invalid", invalid, true));
   }
 
   private makeSurface(props: SurfaceProps): Surface {
+    const r = this;
     return createSurface(props.document, {
       data: props.data,
       locale: props.locale ?? "en-GB",
@@ -126,7 +149,20 @@ export class Renderer {
       onAction: (e) => this.props.onAction?.(e),
       onDataChange: (d) => this.props.onDataChange?.(d),
       onDismiss: () => this.props.onDismiss?.(),
+      // Read when used, so events switched on after the surface was made are heard.
+      get events() {
+        return r.events;
+      },
     });
+  }
+
+  private makeEvents(props: SurfaceProps): SurfaceEvents | undefined {
+    return props.onEvent ? createSurfaceEvents(props.document, (e) => this.props.onEvent?.(e), props.events) : undefined;
+  }
+
+  /** Called by Status as it draws, so a Status that appears is status.shown once for that appearance. */
+  statusDrawn(node: Node, scope: Scope) {
+    if (this.events) this.statuses.set(`${scope.pointer}#${node.id}`, node);
   }
 
   get locale(): string {
@@ -150,7 +186,18 @@ export class Renderer {
     const previous = this.props;
     this.props = props;
     this.components = { ...registry, ...(props.components ?? {}) };
-    if (props.document !== previous.document || (props.locale ?? "en-GB") !== previous.locale) {
+    const newDocument = props.document !== previous.document;
+    if (newDocument) {
+      // A new document is a new surface: the old one ends now, and the new one is shown after its draw.
+      this.events?.unmounted(false);
+      this.events = undefined;
+    }
+    // The host started or stopped listening (stopping says nothing more).
+    if (Boolean(props.onEvent) !== Boolean(this.events)) {
+      this.events = this.makeEvents(props);
+      this.statusesBefore.clear();
+    }
+    if (newDocument || (props.locale ?? "en-GB") !== previous.locale) {
       this.unsubscribe();
       this.states.clear();
       this.surface = this.makeSurface(props);
@@ -164,6 +211,9 @@ export class Renderer {
   }
 
   dispose() {
+    // Taken down: the surface ends now, and nothing after this (a draw already scheduled) is an event.
+    this.events?.unmounted(false);
+    this.events = undefined;
     this.unsubscribe();
     for (const d of this.disposers) d();
     for (const o of this.observers.values()) o.disconnect();
@@ -271,6 +321,7 @@ export class Renderer {
     this.effects = [];
     this.portals = [];
     this.modals = 0;
+    this.statuses = new Map();
     try {
       const tree = this.surfaceTree();
       patch(this.host, [tree]);
@@ -279,9 +330,24 @@ export class Renderer {
       const effects = this.effects;
       this.effects = [];
       for (const e of effects) e();
+      if (this.events) {
+        this.events.shown();
+        for (const [key, node] of this.statuses) if (!this.statusesBefore.has(key)) this.events.statusShown(node);
+        this.statusesBefore = this.statuses;
+      }
     } finally {
       this.drawing = false;
     }
+  }
+
+  /** feedback: the person rated this surface -1, 0 or 1. Does nothing while events are off. */
+  feedback(rating: -1 | 0 | 1, reason?: string) {
+    this.events?.feedback(rating, reason);
+  }
+
+  /** surface.regenerated: the person asked again, and this surface is being replaced. Does nothing while events are off. */
+  regenerated(reason?: string) {
+    this.events?.regenerated(reason);
   }
 
   private surfaceTree(): VNode {

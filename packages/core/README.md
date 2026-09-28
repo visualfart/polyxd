@@ -28,6 +28,7 @@ surface.subscribe((data) => render());
 | Bindings | `get`, `set`, `resolve`, `resolveContext`, `resolveDeep`, `absolute`, `childPointer`, `asList`, `isBinding`, `itemScopes`, `ROOT_SCOPE` |
 | Formatting | `formatValue`, `resolveFormat`, `safeColor`, `currencySymbol`, `formatCount`, `formatPercent` |
 | Surface | `createSurface`, `a11yAttributes`, `dispatchAction`, `contextWithValue`, `copyText`, `rowChangeAction`, `isRendererAction` |
+| Semantic events | `createSurfaceEvents` (the emitter a renderer tells what happened; it decides which events that makes), `validityReason`, `fileRefusalReason`, `SEMANTIC_EVENT_TYPES`, `EVENT_PROPERTIES`, `EVENT_SURFACE_PROPERTIES`, `EVENT_ACTOR_PROPERTIES`, `EVENT_COMPONENT_PROPERTIES`, and the `SemanticEvent` type, all checked against `schema/event.schema.json` |
 | Choice | `optionsOf`, `planChoice` (chips, people or list; searchable past 10), `optionKey`, `matchesQuery`, `partitionRecent`, `toggleSelection`, `isSelected`, `searchPlaceholder`, `idOf` |
 | State machines | `stepsReducer`, `initialStep`, `isLastStep`, `stepsProgress`, `taskStatus`, `tasklistReducer`, `tasklistProgress`; `selectedView`, `viewsReducer`; `splitReducer`, `initialSplit`, `splitPanes`, `splitSelection`, `splitItemValue`, `clampShare` |
 | Layout rules | `frameWidth`, `placementFor`, `appBarTitle`, `documentTitle` (the Frame); `TABLE_COMPACT_PX`, `stackedColumns`, `isNumericColumn`, `paging`, `rowValue`, `nextSort`, `columnCount` (Table); `fitActions`, `minShown`, `menuOrder` (ActionBar); `collectionLayout`, `orderedIndices`, `moveItem`, `calendarMonth` (Collection); `treeRows`, `treeKey`, `typeAheadTarget`, `visibleWindow` (Tree); `activeFilters` (FilterPanel) |
@@ -40,4 +41,4 @@ Every renderer that uses these makes the same decisions from the same document: 
 
 ## Tests
 
-`npm test -w @polyxd/core` runs the unit tests: pointer resolution, formatting per locale, the reducers, control selection, the layout rules, shortcuts, and the headless surface.
+`npm test -w @polyxd/core` runs the unit tests: pointer resolution, formatting per locale, the reducers, control selection, the layout rules, shortcuts, the headless surface, and the semantic events (each one validated against the spec's schema).

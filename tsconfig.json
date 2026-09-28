@@ -17,6 +17,9 @@
       "path": "packages/web"
     },
     {
+      "path": "packages/analytics"
+    },
+    {
       "path": "packages/verifier"
     },
     {
