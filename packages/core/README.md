@@ -35,7 +35,7 @@ surface.subscribe((data) => render());
 | Loading | `skeletonShape`, `SKELETON_SHAPES`, `PATTERN_SHAPE`, `skeletonStatus` |
 | Shortcuts | `parseShortcut`, `shortcutMatches`, `unmodified`, `isApplePlatform` |
 | Small marks | `metricChange`, `gaugeState`, `meterHint`, `starsLabel`, `ratingSaid`, `maskSecret`, `groupSummary`, `avatarTone`, `initialsOf`, `iconPath` |
-| Content | `richText` (tokens for `**bold**`, `*italic*`, `` `code` ``, `[text](href)`), `qrEncode`, chart geometry (`niceMax`, `axisLabel`, `treemap`, `verticalScale`, `flowLayout`, `markerShape`), `applyMask`, colour parsing (`parseColor`, `formatColor`), file limits (`formatBytes`, `refuseFile`, `fileLimits`) |
+| Content | `richText` (tokens for `**bold**`, `*italic*`, `` `code` ``, `[text](href)`), `qrEncode`, chart geometry (`niceMax`, `axisLabel`, `axisLabelStep`, `treemap`, `verticalScale`, `flowLayout`, `markerShape`), `applyMask`, colour parsing (`parseColor`, `formatColor`), file limits (`formatBytes`, `refuseFile`, `fileLimits`) |
 
 Every renderer that uses these makes the same decisions from the same document: a `Choice` with three short options is chips everywhere, a Table stacks below 720px everywhere, `ui.dismiss` closes everywhere. The conformance suite in `@polyxd/verifier` checks that it does.
 
