@@ -1,5 +1,5 @@
 {
-  "prompt": "Split Friday's dinner at Dishoom with Priya, Sam and Jo. The bill was £126.40 and I'd like to add a 10% tip. Show it in Material 3.",
+  "prompt": "Split Friday's dinner with Priya, Sam and Jo. The bill was £126.40 and I'd like to add a 10% tip. Show it in Material 3.",
   "pack": "material3",
   "mode": "light",
   "document": {
@@ -58,7 +58,7 @@
       }
     ],
     "data": {
-      "bill": { "place": "Dishoom, Friday 25 September. You paid.", "total": 126.4, "tip": 12.64, "people": 4, "share": 34.76, "owed": 104.28 },
+      "bill": { "place": "Curry night, Friday 25 September. You paid.", "total": 126.4, "tip": 12.64, "people": 4, "share": 34.76, "owed": 104.28 },
       "friends": [
         { "id": "u_priya", "name": "Priya Shah", "initials": "PS" },
         { "id": "u_sam", "name": "Sam Okafor", "initials": "SO" },

@@ -253,7 +253,7 @@ headless Chromium, after the document passed `@polyxd/spec`'s validator, `polyxd
 
 | # | Screenshot | Paired prompt | Pack, mode |
 |---|---|---|---|
-| 1 | `screenshots/1-split-dinner-material3.png` | Split Friday's dinner at Dishoom with Priya, Sam and Jo. The bill was £126.40 and I'd like to add a 10% tip. Show it in Material 3. | Material 3, light |
+| 1 | `screenshots/1-split-dinner-material3.png` | Split Friday's dinner with Priya, Sam and Jo. The bill was £126.40 and I'd like to add a 10% tip. Show it in Material 3. | Material 3, light |
 | 2 | `screenshots/2-return-shoes-carbon.png` | I need to return the running shoes from order #4821, they're too small. Use Carbon. | IBM Carbon, light |
 | 3 | `screenshots/3-change-address-govuk.png` | Help me tell the council I've moved house. Make it a GOV.UK form. | GOV.UK, light |
 | 4 | `screenshots/4-support-dashboard-dark.png` | Here's this week's helpdesk export. Show my support team's week as a dashboard, in dark mode. | shadcn/ui, dark |
@@ -285,7 +285,7 @@ for the first four cases are in `screenshots/documents/`, valid and verified.
 
 **P1. Split a bill in Material 3**
 
-- Prompt: "Split Friday's dinner at Dishoom with Priya, Sam and Jo. The bill was £126.40 and I'd like to add a 10% tip. Show it in Material 3."
+- Prompt: "Split Friday's dinner with Priya, Sam and Jo. The bill was £126.40 and I'd like to add a 10% tip. Show it in Material 3."
 - Expected tools: `polyxd_guide` (first use in the conversation), `polyxd_validate` until valid, then `polyxd_show` with `pack: "material3"`.
 - Expected result: `polyxd_show` returns `structuredContent.shown: true`, `pack: "material3"`. The screen is a form with the three friends chosen, "Equally" selected, a 10% tip toggle, and a receipt: bill £126.40, tip £12.64, each person pays £34.76, you get back £104.28. Buttons "Not now" and "Review requests". Pressing "Review requests" sends a chat message naming `split.review` with the chosen people. No money moves.
 - Fixture: `screenshots/documents/1-split-dinner-material3.json`.

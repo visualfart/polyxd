@@ -1281,6 +1281,18 @@ textarea.pxd-input {
 .pxd-person-row[data-state="checked"] .pxd-option-description {
   color: inherit;
 }
+/* On a selected row the avatar's own tone can match the selection colour, so the face would vanish
+   into the row. Tones built from the selection or neutral surfaces move to the plain surface, and
+   every face gets a surface ring to keep its edge. */
+.pxd-person-row[data-state="checked"] .pxd-avatar {
+  box-shadow: 0 0 0 var(--pxd-border-width-strong) var(--pxd-color-surface-default);
+}
+.pxd-person-row[data-state="checked"] .pxd-avatar-primary,
+.pxd-person-row[data-state="checked"] .pxd-avatar-secondary,
+.pxd-person-row[data-state="checked"] .pxd-avatar-tertiary {
+  background: var(--pxd-color-surface-default);
+  color: var(--pxd-color-text-default);
+}
 .pxd-person-text {
   flex: 1;
   display: flex;
