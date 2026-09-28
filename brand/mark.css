@@ -1,0 +1,16 @@
+/* The Polyxd mark's pupil states. Written by brand/build.ts from the design system's Mark; do not edit. */
+.pxb-mark{display:inline-block;flex-shrink:0;vertical-align:middle}
+.pxb-mark .pxb-pupil{transform-box:view-box;transform-origin:16px 16px;transition:transform var(--duration-base,320ms) var(--ease-standard,cubic-bezier(0.2,0,0,1)),opacity var(--duration-base,320ms) var(--ease-standard,cubic-bezier(0.2,0,0,1))}
+.pxb-mark .pxb-tick{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset var(--duration-base,320ms) var(--ease-standard,cubic-bezier(0.2,0,0,1))}
+.pxb-mark[data-state="idle"] .pxb-pupil{transform:none}
+.pxb-mark[data-state="reading"] .pxb-pupil{transform:translate(1.3px,-1.1px)}
+.pxb-mark[data-state="looking"] .pxb-pupil{transform:translate(-1.3px,1.1px)}
+.pxb-mark[data-state="attention"] .pxb-pupil{transform:scale(1.25)}
+.pxb-mark[data-state="asleep"] .pxb-pupil{transform:translate(0,1.4px) scale(1.08,0.33);opacity:.4}
+.pxb-mark[data-state="checked"] .pxb-pupil{transform:scale(0);opacity:0}
+.pxb-mark[data-state="checked"] .pxb-tick{stroke-dashoffset:0}
+.pxb-mark[data-state="thinking"] .pxb-pupil{animation:pxb-orbit var(--duration-orbit,1600ms) linear infinite}
+.pxb-mark[data-state="blink"] .pxb-pupil{animation:pxb-blink var(--duration-blink,280ms) var(--ease-standard,cubic-bezier(0.2,0,0,1)) 1}
+@keyframes pxb-orbit{0%{transform:rotate(0deg) translate(1.1px,0) rotate(0deg)}100%{transform:rotate(360deg) translate(1.1px,0) rotate(-360deg)}}
+@keyframes pxb-blink{0%,100%{transform:none}50%{transform:scale(1.08,0.33)}}
+@media (prefers-reduced-motion:reduce){.pxb-mark .pxb-pupil,.pxb-mark .pxb-tick{transition:none}.pxb-mark[data-state="thinking"] .pxb-pupil,.pxb-mark[data-state="blink"] .pxb-pupil{animation:none}}
