@@ -38,8 +38,9 @@ void main(){
   float sd=box(g,B); float inside=1.-smoothstep(-4.,4.,sd); float halo=exp(-max(sd,0.)/38.)*(1.-inside);
   // The letters: m is 1 on a glyph and falls to 0 a few pixels outside it.
   float m=texture2D(TX,g/TS).a;
-  float clear=1.-smoothstep(.06,.42,m);
-  float outline=smoothstep(.015,.08,m)*(1.-smoothstep(.16,.42,m));
+  // Only a dot that would touch a stroke goes; the rest of the field runs right up to the words.
+  float clear=1.-smoothstep(.2,.5,m);
+  float outline=smoothstep(.03,.12,m)*(1.-smoothstep(.22,.5,m));
   float trace=outline*pull;
   float dens=smoothstep(.42,.86,flow)*.95*DEN+pull*.85*clear+trace*1.4;
   float condensed=max(inside*.92,halo*.9*(.6+.4*sin(T*3.+sd*.08)));
@@ -77,7 +78,7 @@ void main(){
         ctx.save();
         ctx.translate(r.left, y);
         ctx.scale(r.width / (me.width || r.width), 1);
-        ctx.strokeText(word, 0, 0);
+        if (ctx.lineWidth > 0) ctx.strokeText(word, 0, 0);
         ctx.fillText(word, 0, 0);
         ctx.restore();
       }
@@ -116,8 +117,15 @@ void main(){
     let size = [1, 1];
 
     const ds = canvas.dataset;
-    const REST = rgb(ds.rest || token("--ink", "#141413"));
-    const ACT = rgb(ds.active || token("--signal", "#FF6E40"));
+    // Colours follow the theme: read again when the switch or the system changes it.
+    let REST, ACT;
+    const readColors = () => {
+      REST = rgb(ds.rest || token("--ink", "#141413"));
+      ACT = rgb(ds.active || token("--signal", "#FF6E40"));
+    };
+    readColors();
+    new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", readColors);
     const RA = Number(ds.restAlpha ?? .2);
     const DEN = Number(ds.density ?? 1);
     const scope = canvas.parentElement;
@@ -133,8 +141,8 @@ void main(){
       sctx.setTransform(SCALE, 0, 0, SCALE, -base.left * SCALE, -base.top * SCALE);
       sctx.fillStyle = sctx.strokeStyle = "#000";
       sctx.lineJoin = "round";
-      // A little weight around each glyph, so the dots keep a breath from the strokes.
-      sctx.lineWidth = blur ? 5 : 12;
+      // The letters as they are: no padding, so no patch of clear ground forms behind a word.
+      sctx.lineWidth = blur ? 0 : 1;
       if (ds.quiet) for (const el of document.querySelectorAll(ds.quiet)) {
         const r = el.getBoundingClientRect();
         if (r.bottom < base.top - 60 || r.top > base.bottom + 60) continue;
@@ -145,11 +153,11 @@ void main(){
         if (r.width < 1 || el.closest("[hidden]")) continue;
         const rad = Math.min(r.height / 2, parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0);
         sctx.beginPath();
-        sctx.roundRect ? sctx.roundRect(r.left - 3, r.top - 3, r.width + 6, r.height + 6, rad + 3) : sctx.rect(r.left - 3, r.top - 3, r.width + 6, r.height + 6);
+        sctx.roundRect ? sctx.roundRect(r.left, r.top, r.width, r.height, rad) : sctx.rect(r.left, r.top, r.width, r.height);
         sctx.fill();
       }
       fctx.clearRect(0, 0, W, H);
-      if (blur) fctx.filter = "blur(4px)";
+      if (blur) fctx.filter = "blur(1.5px)";
       fctx.drawImage(sharp, 0, 0);
       fctx.filter = "none";
       gl.bindTexture(gl.TEXTURE_2D, tex);

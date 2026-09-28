@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio · Polyxd</title>
+<meta name="description" content="Import your design system, map it to 87 roles with contrast measured, tune it, write screens and the shell, and export to six formats.">
+<!--HEAD-->
+<script>
+(() => {
+  const root = document.documentElement;
+  root.classList.add("js");
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches && matchMedia("(min-width: 900px) and (min-height: 600px)").matches) root.classList.add("motion");
+})();
+</script>
+</head>
+<body class="home page studio-page">
+<a class="skip" href="#main">Skip to content</a>
+<!--HEADER-->
+<main id="main">
+
+<section class="hero page-hero" data-scene="hero" data-kind="hero" aria-labelledby="page-title">
+<canvas class="field" data-field data-quiet=".site-header .brand, .site-header .site-nav a, [data-quiet] .hero-eyebrow, [data-quiet] .hero-title, [data-quiet] .hero-lead" data-solid="[data-quiet] .cta-row .btn" aria-hidden="true"></canvas>
+<div class="hero-wash" aria-hidden="true"></div>
+<div class="wrap hero-grid">
+<div class="hero-copy" data-quiet>
+<p class="eyebrow hero-eyebrow"><span class="dot" aria-hidden="true"></span>Studio · free for one workspace</p>
+<h1 class="display hero-title page-title" id="page-title">Where your design system and your screens live.</h1>
+<p class="hero-lead">Bring your tokens, keep them honest, write the screens that matter, and hand every product the same system.</p>
+<p class="cta-row"><a class="btn btn-signal" href="https://studio.polyxd.com">Try Studio</a><a class="btn btn-line" href="/docs/studio/">Read about Studio</a></p>
+</div>
+<div class="page-art studio-hero-art" aria-hidden="true">
+<div class="st-cards">
+<span class="st-card" style="--i:0"><code>@acme/tokens</code><b>npm</b></span>
+<span class="st-card" style="--i:1"><code>tokens.json</code><b>Tokens Studio</b></span>
+<span class="st-card" style="--i:2"><code>*.tokens.json</code><b>W3C DTCG</b></span>
+<span class="st-card" style="--i:3"><code>--brand-600</code><b>CSS variables</b></span>
+</div>
+<svg class="st-arrow" width="80" height="24" viewBox="0 0 80 24"><path d="M2 12h72M64 4l10 8-10 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div class="st-roles"><!--ROLE_DOTS_STATIC--><span class="mono">87 roles</span></div>
+</div>
+</div>
+</section>
+
+<!--LOGO_BAND-->
+
+<!-- The Studio film: one window, seven steps, played by the scroll -->
+<section class="scene scene-studio" id="tour" data-scene="studio" data-kind="pin" data-steps="7" data-step="0" style="--len:7" aria-labelledby="tour-title">
+<div class="stick"><div class="wrap scene-inner studio-grid">
+<div class="st-copy">
+<h2 class="sr-only" id="tour-title">What Studio does</h2>
+<ol class="st-steps">
+<li><button type="button" data-goto="0"><span class="mono">01</span><b>Import it as it is</b><span>From npm, a tarball, Tokens Studio, W3C DTCG or CSS. Or start from a template.</span></button></li>
+<li><button type="button" data-goto="1"><span class="mono">02</span><b>Map it to 87 roles</b><span>Contrast measured in every mode. Nothing publishes while a pair fails.</span></button></li>
+<li><button type="button" data-goto="2"><span class="mono">03</span><b>Tune it, or rebrand it</b><span>Every alias follows an edit. One hue turns a template’s whole brand ramp.</span></button></li>
+<li><button type="button" data-goto="3"><span class="mono">04</span><b>Write the screens that matter</b><span>A component tree, a property panel from the spec, a live preview at any width.</span></button></li>
+<li><button type="button" data-goto="4"><span class="mono">05</span><b>Author the frame around them</b><span>The header, navigation and footer as a document a generator can never touch.</span></button></li>
+<li><button type="button" data-goto="5"><span class="mono">06</span><b>Export to six formats</b><span>CSS, DTCG, Tailwind, Style Dictionary, Swift and Compose.</span></button></li>
+<li><button type="button" data-goto="6"><span class="mono">07</span><b>Deliver it, together</b><span>Products fetch published screens by key. Roles for everyone who shapes them.</span></button></li>
+</ol>
+</div>
+
+<div class="st-window-wrap">
+<div class="browser st-window">
+<div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span class="browser-url">studio.polyxd.com/w/acme</span></div>
+<div class="browser-view st-view"><div class="fit" data-w="960">
+<div class="st-app">
+<aside class="st-side" aria-hidden="true">
+<div class="st-ws"><!--MARK:idle:22--><b>Acme</b></div>
+<p class="st-side-h">Design system</p>
+<span data-nav="0">Import</span><span data-nav="1">Roles</span><span data-nav="2">Tokens</span><span data-nav="5">Export</span>
+<p class="st-side-h">Direction</p>
+<span>Components</span><span>Rules</span>
+<p class="st-side-h">Screens</p>
+<span data-nav="3">Screens</span><span data-nav="4">Shell</span>
+<p class="st-side-h">Team</p>
+<span data-nav="6">Members and keys</span>
+</aside>
+<div class="st-main">
+
+<!-- 0 · Import -->
+<section class="st-pane" data-pane="0" aria-hidden="true">
+<h3>Import a design system</h3>
+<div class="st-sources">
+<span class="on"><b>npm package</b><code>@acme/tokens</code></span>
+<span><b>Tarball</b><code>acme-tokens-4.2.0.tgz</code></span>
+<span><b>Tokens Studio</b><code>tokens.json</code></span>
+<span><b>W3C DTCG</b><code>*.tokens.json</code></span>
+<span><b>CSS variables</b><code>--brand-600</code></span>
+<span><b>A template</b><code>Mono, Civic, Sketch…</code></span>
+</div>
+<div class="st-progress"><i></i></div>
+<div class="st-scan">
+<span><b>214</b> tokens</span><span><b>3</b> modes</span><span><b>41</b> aliases</span><span class="warn"><b>2</b> broken references</span>
+</div>
+</section>
+
+<!-- 1 · Map -->
+<section class="st-pane" data-pane="1" aria-hidden="true">
+<div class="st-pane-head"><h3>Map 87 roles</h3><span class="st-count mono"><span class="st-mapped"></span> / 87 mapped</span></div>
+<div class="st-map">
+<div class="st-dots"><!--ROLE_DOTS--></div>
+<div class="st-pairs">
+<div><code>action.primary</code><i style="background:#2F5BEA"></i><span>5.9:1</span></div>
+<div><code>text.primary</code><i style="background:#151A24"></i><span>16.1:1</span></div>
+<div class="st-fix"><code>text.muted</code><i class="st-swatch-fix"></i><span class="st-bad">3.9:1 fails</span><span class="st-good">4.6:1</span></div>
+<div><code>border.control</code><i style="background:#7C8496"></i><span>3.4:1</span></div>
+</div>
+</div>
+<div class="st-publish"><span class="st-publish-note"><span class="st-bad">Publishing waits: 1 pair fails</span><span class="st-good">Every pair passes</span></span><span class="st-publish-btn">Publish</span></div>
+</section>
+
+<!-- 2 · Tune -->
+<section class="st-pane" data-pane="2" aria-hidden="true">
+<div class="st-pane-head"><h3>Rebrand</h3><span class="mono st-muted">Mono template · one hue, every step’s lightness kept</span></div>
+<div class="st-tune">
+<div class="st-tune-left">
+<div class="st-ramp"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="st-slider"><span class="st-track"><i class="st-thumb"></i></span><span class="mono">Hue</span></div>
+<p class="st-muted st-small">Contrast is measured again at every step, not assumed.</p>
+</div>
+<div class="st-tune-preview"><!--STUDIO_TUNE_PREVIEW--></div>
+</div>
+</section>
+
+<!-- 3 · Screens -->
+<section class="st-pane" data-pane="3" aria-hidden="true">
+<div class="st-pane-head"><h3>Notifications</h3><span class="st-widths mono"><span data-w="0">Phone</span><span data-w="1">Tablet</span><span data-w="2">Desktop</span></span></div>
+<div class="st-editor">
+<ul class="st-tree">
+<li style="--n:0">Surface</li><li class="in" style="--n:1">Heading</li><li class="in" style="--n:2">Toggle · Product news</li><li class="in" style="--n:3">Toggle · Security alerts</li><li class="in" style="--n:4">Choice · Quiet hours</li><li class="in" style="--n:5">Button · Save</li>
+</ul>
+<div class="st-canvas"><div class="st-preview"><!--STUDIO_SCREEN_PREVIEW--></div></div>
+<div class="st-props">
+<p class="st-side-h">Choice</p>
+<label>label<span>Quiet hours</span></label>
+<label>options<span>Off · 10pm to 7am · Custom</span></label>
+<label>bind<span class="mono">/settings/quiet</span></label>
+<p class="st-issues"><!--MARK:checked:18--> No issues</p>
+</div>
+</div>
+</section>
+
+<!-- 4 · Shell -->
+<section class="st-pane" data-pane="4" aria-hidden="true">
+<div class="st-pane-head"><h3>Shell</h3><span class="mono st-muted">Authored once, verified like everything inside it</span></div>
+<div class="st-shell">
+<span class="st-region r-bar" style="--n:0">AppBar</span>
+<div class="st-shell-mid">
+<span class="st-region r-nav" style="--n:1">Navigation</span>
+<span class="st-region r-out" style="--n:2">Outlet<i class="st-drop"></i></span>
+<span class="st-region r-aside" style="--n:3">Aside</span>
+</div>
+<span class="st-region r-foot" style="--n:4">Footer</span>
+</div>
+</section>
+
+<!-- 5 · Export -->
+<section class="st-pane" data-pane="5" aria-hidden="true">
+<div class="st-pane-head"><h3>Export</h3><span class="mono st-muted">acme-ds · version 7</span></div>
+<div class="st-tabs"><span data-t="0">CSS</span><span data-t="1">DTCG</span><span data-t="2">Tailwind</span><span data-t="3">Style Dictionary</span><span data-t="4">Swift</span><span data-t="5">Compose</span></div>
+<div class="st-code">
+<pre data-t="0">[data-pxd-theme="acme"] {
+  --pxd-color-action-primary-background: #2F5BEA;
+  --pxd-color-action-primary-foreground: #FFFFFF;
+  --pxd-color-border-default: #D5DAE3;
+  --pxd-radius-control: 8px;
+}</pre>
+<pre data-t="1">{
+  "color": {
+    "action": { "primary": { "background": {
+      "$type": "color", "$value": "{brand.600}" } } }
+  }
+}</pre>
+<pre data-t="2">export default {
+  theme: { extend: { colors: {
+    "action-primary": "var(--pxd-color-action-primary-background)",
+  } } },
+};</pre>
+<pre data-t="3">{
+  "action": { "primary": {
+    "background": { "value": "{brand.600.value}" }
+  } }
+}</pre>
+<pre data-t="4">public enum AcmeTokens {
+  public static let actionPrimaryBackground =
+    Color(hex: 0x2F5BEA)
+}</pre>
+<pre data-t="5">object AcmeTokens {
+  val ActionPrimaryBackground = Color(0xFF2F5BEA)
+}</pre>
+</div>
+</section>
+
+<!-- 6 · Deliver and team -->
+<section class="st-pane" data-pane="6" aria-hidden="true">
+<div class="st-pane-head"><h3>Members and keys</h3><span class="mono st-muted">Keys read published screens and systems, nothing else</span></div>
+<div class="st-deliver">
+<pre class="st-term">$ curl -H "Authorization: Bearer $POLYXD_STUDIO_KEY" \
+  studio.polyxd.com/api/w/acme/screens/notifications
+
+<span class="st-dim">X-Polyxd-Screen-Version: 12</span>
+{ "surface": { "title": "Notifications", "origin": "authored" }, … }</pre>
+<ul class="st-team">
+<li><span class="st-av">DS</span><b>Design-system</b></li>
+<li><span class="st-av">DE</span><b>Designer</b></li>
+<li><span class="st-av">PM</span><b>Product</b></li>
+<li><span class="st-av">EN</span><b>Engineer</b></li>
+<li><span class="st-av">VI</span><b>Viewer</b></li>
+</ul>
+</div>
+</section>
+
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</div></div>
+</section>
+
+<section class="section block-points">
+<div class="wrap">
+<h2 class="display block-title">Yours to run.</h2>
+<ol class="points">
+<li><span class="mono point-n">01</span><h3>Free for one workspace</h3><p>Sign in with email or Google and start. A small fee may cover storage later.</p></li>
+<li><span class="mono point-n">02</span><h3>Run it yourself</h3><p>Studio is open source, like everything else here. <a href="/docs/studio/#run-it-yourself">Self-host it</a>.</p></li>
+<li><span class="mono point-n">03</span><h3>Push from CI</h3><p><code>npx polyxd studio push</code> lands each release of your tokens as a new version.</p></li>
+<li><span class="mono point-n">04</span><h3>Coming next</h3><p>Reviews, releases and insights are on the <a href="/docs/roadmap/">roadmap</a>, not shipped.</p></li>
+</ol>
+</div>
+</section>
+
+<!--SCENE:cta-->
+</main>
+<!--FOOTER-->
+<script src="/assets/site.js" defer></script>
+<script src="/assets/home.js" defer></script>
+</body>
+</html>

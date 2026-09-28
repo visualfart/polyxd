@@ -41,16 +41,20 @@
   };
   const show = (i) => {
     clearTimeout(timer);
-    answers.forEach((a) => (a.hidden = true));
+    answers.forEach((a) => { a.hidden = true; a.classList.remove("pending"); });
     chips.forEach((c, k) => c.setAttribute("aria-pressed", String(k === i)));
     const a = answers[i];
+    // Laid out but not yet shown, so the dots can gather into its device's own shape.
+    a.hidden = false;
+    a.classList.add("pending");
+    if (fieldCtl) fieldCtl.box = a.querySelector(".phone, .browser") || boxEl;
     stage.classList.add("asking");
     setMark(bigMark, "thinking");
     setMark(askMark, "thinking");
     status.textContent = `Drawing it in ${a.dataset.packName}`;
     field.formTarget = 1;
     timer = setTimeout(() => {
-      a.hidden = false;
+      a.classList.remove("pending");
       reset.hidden = false;
       setMark(bigMark, "checked");
       setMark(askMark, "idle");
@@ -59,7 +63,7 @@
   };
   const clear = () => {
     clearTimeout(timer);
-    answers.forEach((a) => (a.hidden = true));
+    answers.forEach((a) => { a.hidden = true; a.classList.remove("pending"); });
     chips.forEach((c) => c.setAttribute("aria-pressed", "false"));
     stage.classList.remove("asking");
     reset.hidden = true;
@@ -81,6 +85,15 @@
     reset.addEventListener("click", () => { clear(); touched = false; idle(); chips[current].focus(); });
     setTimeout(idle, 900);
   }
+
+  // ---------- Devices: the screen inside is scaled from a 390px (phone) or 1024px (desktop) layout ----------
+  const fitRO = new ResizeObserver((es) => {
+    for (const e of es) {
+      const w = Number(e.target.firstElementChild?.dataset.w) || 390;
+      if (e.contentRect.width) e.target.style.setProperty("--k", (e.contentRect.width / w).toFixed(4));
+    }
+  });
+  $$(".phone-view, .browser-view, .tablet-view").forEach((v) => fitRO.observe(v));
 
   // ---------- The dot field (assets/field.js) ----------
   // The hero's field gathers into the answer's box when something is asked.
@@ -119,10 +132,10 @@
     let seed = 7;
     const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
     const frag = document.createDocumentFragment();
-    for (let y = 4; y < 556; y += 16) for (let x = 4; x < 288; x += 16) {
+    for (let y = 4; y < 588; y += 16) for (let x = 4; x < 292; x += 16) {
       const i = document.createElement("i");
       const r1 = rnd(), r2 = rnd(), r3 = rnd();
-      i.style.cssText = `left:${x}px;top:${y}px;--dx:${Math.round((x - 146) * 1.8 + (r1 - .5) * 420)};--dy:${Math.round((y - 280) * 1.1 - r2 * 320)}`;
+      i.style.cssText = `left:${x}px;top:${y}px;--dx:${Math.round((x - 148) * 1.8 + (r1 - .5) * 420)};--dy:${Math.round((y - 296) * 1.1 - r2 * 320)}`;
       if (r3 > .72) i.className = "ink";
       frag.append(i);
     }
@@ -156,6 +169,16 @@
     if (motion()) jump(wipe, wipeP(i));
     else { wipe.style.setProperty("--p", wipeP(i).toFixed(4)); selectWipe(i); }
   }));
+
+  // The showcase's rows slide past each other; each travels its own overflow.
+  const showcase = $('[data-scene="show"]');
+  const setShow = () => {
+    if (!showcase) return;
+    $$(".show-row", showcase).forEach((row, i) => showcase.style.setProperty(`--t${i}`, `${Math.max(0, row.scrollWidth - innerWidth)}px`));
+  };
+  setShow();
+  addEventListener("resize", setShow);
+  document.fonts?.ready.then(setShow);
 
   const setTravel = () => {
     const track = roles?.querySelector(".roles-track");
@@ -222,10 +245,34 @@
     const pgone = gi >= 0 && a >= gi ? pOf("gone") : 0;
     const f = clamp((pgone - .12) / .18);
     set("--tv-o", 1 - f);
+    set("--tv-f", f);
     set("--tv-app", (1 - clamp((c - .85) / .15)) * (1 - f));
     set("--tv-do", clamp((pgone - .08) / .12) * (1 - clamp((pgone - .5) / .45)));
     set("--tv-q", clamp((pgone - .22) / .7));
   };
+
+  // ---------- Steps: one pinned scene played in steps (the Studio film) ----------
+  const stepScenes = $$("[data-steps]").map((sec) => {
+    const n = Number(sec.dataset.steps);
+    const mapped = $(".st-mapped", sec);
+    const apply = (i, q) => {
+      if (sec.dataset.step !== String(i)) {
+        sec.dataset.step = String(i);
+        $$("[data-goto]", sec).forEach((b) => b.setAttribute("aria-current", String(Number(b.dataset.goto) === i)));
+      }
+      sec.style.setProperty("--q", q.toFixed(4));
+      if (i === 3) sec.dataset.width = String(Math.min(2, Math.floor(q * 3)));
+      if (i === 5) sec.dataset.tab = String(Math.min(5, Math.floor(q * 6)));
+      if (mapped) mapped.textContent = String(i === 1 ? Math.min(87, Math.round(q * 120)) : 87);
+    };
+    $$("[data-goto]", sec).forEach((b) => b.addEventListener("click", () => {
+      const i = Number(b.dataset.goto);
+      if (motion()) jump(sec, (i + .8) / n);
+      else apply(i, .95);
+    }));
+    apply(0, .95);
+    return { sec, n, apply };
+  });
 
   const last = new Map();
   let lastTool = 0, lastWipe = 0;
@@ -251,6 +298,11 @@
       if (i !== lastTool) { lastTool = i; selectTool(i); }
     }
     travel();
+    for (const st of stepScenes) {
+      const f = (last.get(st.sec) ?? 0) * st.n;
+      const i = clamp(Math.floor(f), 0, st.n - 1);
+      st.apply(i, clamp(f - i));
+    }
     const check = $('[data-scene="check"]');
     const c = clamp(((last.get(check) ?? 0) - .3) / .5);
     const e = 1 - Math.pow(1 - c, 3);

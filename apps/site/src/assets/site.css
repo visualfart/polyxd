@@ -605,3 +605,54 @@ select:focus-visible {
   border-color: transparent;
   background: none;
 }
+
+/* The theme switch: one icon until it's opened, then System, Light and Dark. */
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 1px;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink);
+}
+.theme-switch button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.theme-switch button:hover {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.theme-options {
+  display: flex;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: max-width var(--duration-base) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard), visibility 0s linear var(--duration-base);
+}
+.theme-switch[data-open] .theme-toggle {
+  display: none;
+}
+.theme-switch[data-open] .theme-options {
+  max-width: 110px;
+  opacity: 1;
+  visibility: visible;
+  transition: max-width var(--duration-base) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard);
+}
+.theme-options button[aria-checked="true"] {
+  background: var(--ink);
+  color: var(--ground);
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-options { transition: none; }
+}
