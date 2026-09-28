@@ -28,6 +28,8 @@ export interface DesignSystemManifest {
   layout?: Record<string, string>;
   /** A stylesheet, relative to the manifest, that the theme compiler appends verbatim; see the schema. */
   extras?: string;
+  /** The pack's logo: the owner's official file for a real design system, a Polyxd-made mark for a template; see the schema. */
+  logo?: { file?: string; dark?: string; source?: string; text?: string; guidelines?: string; colours?: string[]; note?: string };
 }
 
 export interface ContractIssue {

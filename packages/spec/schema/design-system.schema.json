@@ -38,6 +38,21 @@
       "pattern": "\\.css$",
       "description": "Optional stylesheet, relative to the manifest, that the theme compiler appends verbatim to the pack's theme CSS: the few things tokens can't express, such as a hand-drawn pack's uneven radii or a wireframe's dashed borders. Every rule must be scoped by [data-pxd-theme=\"<name>\"], and it may name no colour of its own — only var(--pxd-…) tokens — so the compiler rejects it otherwise."
     },
+    "logo": {
+      "type": "object",
+      "description": "The pack's logo, shown beside its name wherever the pack is listed. A pack that reproduces a real design system ships that system's official logo, unaltered, from the owner's own site or repository; a template ships a Polyxd-made mark drawn from its own tokens; a system whose marks are protected has text instead of a file.",
+      "anyOf": [{ "required": ["file", "source"] }, { "required": ["text", "note"] }],
+      "properties": {
+        "file": { "type": "string", "pattern": "\\.(svg|png)$", "description": "The logo file, relative to the manifest. SVG where the owner publishes one." },
+        "dark": { "type": "string", "pattern": "\\.(svg|png)$", "description": "The owner's own version for dark grounds, when the owner publishes one. Never a recolour of file." },
+        "source": { "type": "string", "description": "The official URL the file was downloaded from, or \"Polyxd\" for a template's own mark." },
+        "text": { "type": "string", "description": "For a system whose marks may not be used: the plain words to set in the host's own type instead of a logo. note says why." },
+        "guidelines": { "type": "string", "description": "The owner's brand or trademark guidelines for using the logo." },
+        "colours": { "type": "array", "items": { "type": "string" }, "description": "The colours the file is drawn in, as the owner provides them." },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
     "provenance": {
       "type": "array",
       "description": "Where the values came from, so packs stay auditable",
