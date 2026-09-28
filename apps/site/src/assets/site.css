@@ -438,3 +438,50 @@ select:focus-visible {
   color: var(--ink-2);
   font-size: 14px;
 }
+.demo-card .demo-card-ds,
+.demo-card .demo-card-ds span {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+.demo-card .demo-card-ds {
+  margin-top: 4px;
+}
+
+/* A design system's logo beside its name. The logo is the owner's file, unaltered, on a white
+   squircle tile with a hairline: white in both themes (as the mark's window is), so every logo keeps
+   the colours its owner drew it in. It is decorative; the name beside it is the label. A pack with
+   words instead of a logo (GOV.UK) gets an empty space in a column, so names still line up. */
+.ds-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  vertical-align: middle;
+}
+.ds-logo {
+  --ds-logo: 20px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--ds-logo);
+  height: var(--ds-logo);
+  padding: calc(var(--ds-logo) * 0.14);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-icon);
+  corner-shape: squircle;
+  background: var(--mark-window);
+}
+.ds-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.ds-name code {
+  white-space: nowrap;
+}
+.ds-logo-none {
+  border-color: transparent;
+  background: none;
+}

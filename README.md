@@ -31,6 +31,26 @@ All 24 examples score 100 across **1,248 renders** (13 packs × 2 widths × ligh
 
 **There is no bundled model.** Any generator that emits spec-valid JSON drives Polyxd. See [Bring your generator](#bring-your-generator).
 
+### The design systems
+
+| | Design system | Pack |
+|---|---|---|
+|  | Material 3 | [`@polyxd/ds-material3`](packages/ds-material3/) |
+|  | IBM Carbon | [`@polyxd/ds-carbon`](packages/ds-carbon/) |
+| <img src="packages/ds-antd/logo.svg" height="20" alt=""> | Ant Design | [`@polyxd/ds-antd`](packages/ds-antd/) |
+|  | Microsoft Fluent 2 | [`@polyxd/ds-fluent`](packages/ds-fluent/) |
+| <img src="packages/ds-shadcn/logo.svg" height="20" alt=""> | shadcn/ui | [`@polyxd/ds-shadcn`](packages/ds-shadcn/) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="packages/ds-bootstrap/logo-white.svg"><img src="packages/ds-bootstrap/logo.svg" height="20" alt=""></picture> | Bootstrap 5 | [`@polyxd/ds-bootstrap`](packages/ds-bootstrap/) |
+| <img src="packages/ds-mantine/logo.svg" height="20" alt=""> | Mantine 8 | [`@polyxd/ds-mantine`](packages/ds-mantine/) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="packages/ds-radix/logo-white.svg"><img src="packages/ds-radix/logo.svg" height="20" alt=""></picture> | Radix Themes 3 | [`@polyxd/ds-radix`](packages/ds-radix/) |
+|  | Shopify Polaris | [`@polyxd/ds-polaris`](packages/ds-polaris/) |
+|  | GitHub Primer | [`@polyxd/ds-primer`](packages/ds-primer/) |
+|  | Adobe Spectrum 2 | [`@polyxd/ds-spectrum`](packages/ds-spectrum/) |
+|  | GOV.UK Design System | [`@polyxd/ds-govuk`](packages/ds-govuk/) |
+| <img src="packages/ds-chakra/logo.svg" height="20" alt=""> | Chakra UI 3 | [`@polyxd/ds-chakra`](packages/ds-chakra/) |
+
+A logo appears only where its owner's guidelines don't forbid it, and only as the owner's own file; the others are named in words. Each pack's README says which, and why. Twelve original templates (`sketch`, `wireframe`, `editorial`, `brutalist`, `glass`, `terminal`, `pastel`, `civic`, `finance`, `health`, `neon`, `mono`) sit beside them, each with a mark drawn from its own tokens.
+
 ## Try it
 
 ```sh

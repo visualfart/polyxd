@@ -43,7 +43,7 @@
   const parts = $$(":scope > *", card);
   const send = $(".b1", card);
   const plates = $$(".plate", stack);
-  const packs = $$(".packname span");
+  const packs = $$(".packname > span");
   const hud = Object.fromEntries($$(".hud i").map((el) => [el.dataset.hud, el]));
   const askChars = new SplitText($(".ask-text"), { type: "chars" }).chars;
   const chips = $$(".chip");

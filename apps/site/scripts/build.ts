@@ -43,6 +43,50 @@ const slugify = (s: string) =>
     .replace(/^-|-$/g, "");
 const href = (slug: string) => (slug ? `/docs/${slug}/` : "/docs/");
 
+// ---------- Pack logos ----------
+
+/**
+ * Each pack's logo, as its manifest records it: the owner's official file for a real design
+ * system, a Polyxd-made mark for a template, or (GOV.UK, whose crown and logotype are protected)
+ * no image at all. The files are copied to /assets/packs/ and sit beside the pack's name, which
+ * stays the label: the logo is decorative (alt="").
+ */
+const PACK_LOGOS = new Map<string, { src?: string; text?: string }>();
+async function copyPackLogos() {
+  for (const dir of (await readdir(join(REPO, "packages"))).filter((d) => d.startsWith("ds-") && existsSync(join(REPO, "packages", d, "manifest.json")))) {
+    const m = JSON.parse(await readFile(join(REPO, "packages", dir, "manifest.json"), "utf8"));
+    if (!m.logo) continue;
+    if (!m.logo.file) {
+      PACK_LOGOS.set(m.name, { text: m.logo.text });
+      continue;
+    }
+    const file = `${m.name}${m.logo.file.slice(m.logo.file.lastIndexOf("."))}`;
+    await mkdir(join(DIST, "assets/packs"), { recursive: true });
+    await copyFile(join(REPO, "packages", dir, m.logo.file), join(DIST, "assets/packs", file));
+    PACK_LOGOS.set(m.name, { src: `/assets/packs/${file}` });
+  }
+}
+/**
+ * A pack's logo on its tile, `size` px square. A pack with words instead of a logo gets nothing, or
+ * in a column of names (`spacer`) an empty space the same size, so the names still line up.
+ */
+function packLogo(key: string, size: number | string = 20, spacer = false): string {
+  const logo = PACK_LOGOS.get(key);
+  if (!logo) return "";
+  const box = typeof size === "number" ? `${size}px` : size;
+  if (!logo.src) return spacer ? `<span class="ds-logo ds-logo-none" style="--ds-logo:${box}" aria-hidden="true"></span>` : "";
+  const px = typeof size === "number" ? size : 40;
+  return `<span class="ds-logo" style="--ds-logo:${box}" aria-hidden="true"><img src="${logo.src}" alt="" width="${px}" height="${px}" decoding="async"></span>`;
+}
+/** The logo, then the name as real text. */
+const packName = (key: string, name: string, size: number | string = 20) => `<span class="ds-name">${packLogo(key, size)}<span>${esc(name)}</span></span>`;
+/** Coverage and prose name a system in full; these are the packs those names mean. */
+const PACK_BY_NAME: Record<string, string> = {
+  "Material 3": "material3", "IBM Carbon": "carbon", Carbon: "carbon", "Ant Design": "antd", "Ant Design v5": "antd", "Fluent 2": "fluent", "shadcn/ui": "shadcn",
+  "Bootstrap 5": "bootstrap", "Bootstrap 5.3": "bootstrap", Mantine: "mantine", "Radix Themes": "radix", "Shopify Polaris": "polaris", Polaris: "polaris", "GitHub Primer": "primer",
+  "Adobe Spectrum 2": "spectrum", "GOV.UK Frontend": "govuk", "GOV.UK": "govuk", "Chakra UI v3": "chakra",
+};
+
 // ---------- Shared chrome ----------
 
 import { mark, svg as markSvg, markSvg as livingMark, FONTS_URL, PAPER, NIGHT, type MarkState } from "../../../brand/build.ts";
@@ -113,7 +157,11 @@ function renderMarkdown(md: string): { html: string; toc: Page["toc"] } {
       },
     },
   });
-  const html = (marked.parse(md) as string).replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, "</table></div>");
+  const html = (marked.parse(md) as string)
+    .replace(/<table>/g, '<div class="table-wrap"><table>')
+    .replace(/<\/table>/g, "</table></div>")
+    // A table row that names a pack by its package gets that pack's logo beside the name.
+    .replace(/<td><code>@polyxd\/ds-([a-z0-9]+)<\/code>/g, (whole, key: string) => (PACK_LOGOS.has(key) ? `<td><span class="ds-name">${packLogo(key, 24, true)}<code>@polyxd/ds-${key}</code></span>` : whole));
   return { html, toc };
 }
 
@@ -281,7 +329,7 @@ async function coveragePage(): Promise<Page> {
     `<p>Search a name you know from your design system to see what Polyxd calls it.</p>`,
     `<div class="cov-tools"><input id="cov-q" type="search" placeholder="Search: segmented, snackbar, persona…" aria-label="Search components"><label>System <select id="cov-sys"><option value="">All ${N}</option>${data.systems.map((s, i) => `<option value="${i}">${esc(s)}</option>`).join("")}</select></label><label>Status <select id="cov-st"><option value="">All</option><option value="0">Covered</option><option value="3">Not a component</option></select></label><span id="cov-count"></span></div>`,
     `<div class="table-wrap cov-table"><table><thead><tr><th>System</th><th>Their component</th><th>Polyxd</th><th>Variant</th><th>Status</th></tr></thead><tbody id="cov-rows"></tbody></table></div>`,
-    `<script id="cov-data" type="application/json">${JSON.stringify({ systems: data.systems, rows: data.rows }).replace(/</g, "\\u003c")}</script>`,
+    `<script id="cov-data" type="application/json">${JSON.stringify({ systems: data.systems, logos: data.systems.map((s) => packLogo(PACK_BY_NAME[s] ?? "", 20)), rows: data.rows }).replace(/</g, "\\u003c")}</script>`,
     `<script>(() => {
   const D = JSON.parse(document.getElementById("cov-data").textContent);
   const q = document.getElementById("cov-q"), sys = document.getElementById("cov-sys"), st = document.getElementById("cov-st"), out = document.getElementById("cov-rows"), count = document.getElementById("cov-count");
@@ -294,7 +342,7 @@ async function coveragePage(): Promise<Page> {
     out.innerHTML = rows.slice(0, 400).map((r) => {
       const t = r[2].startsWith("renderer:") ? "renderer" : r[2].startsWith("out:") ? "out of scope" : r[2];
       const v = r[2].startsWith("renderer:") ? r[2].slice(9) : r[2].startsWith("out:") ? r[2].slice(4) : r[3];
-      return "<tr><td>" + esc(D.systems[r[0]]) + "</td><td>" + esc(r[1]) + "</td><td><code>" + esc(t) + "</code></td><td><code>" + esc(v) + "</code></td><td class='cov-st-" + r[4] + "'>" + LABEL[r[4]] + "</td></tr>";
+      return "<tr><td><span class='ds-name'>" + (D.logos[r[0]] || "") + "<span>" + esc(D.systems[r[0]]) + "</span></span></td><td>" + esc(r[1]) + "</td><td><code>" + esc(t) + "</code></td><td><code>" + esc(v) + "</code></td><td class='cov-st-" + r[4] + "'>" + LABEL[r[4]] + "</td></tr>";
     }).join("") + (rows.length > 400 ? "<tr><td colspan='5'>Showing the first 400. Narrow the search to see the rest.</td></tr>" : "");
   }
   [q, sys, st].forEach((el) => el.addEventListener("input", render));
@@ -332,7 +380,7 @@ async function tokensPage(): Promise<Page> {
     `<p>The semantic tier every design-system pack must provide, in every mode. Generated UIs and renderers only ever reference these names. Values below are each pack's light mode, resolved through its own primitive and system tiers.</p>`,
     `<p>The contract also requires ${contract.contrast.length} contrast pairs (WCAG 2.2 1.4.3 for text, 1.4.11 for graphics) and ${contract.constraints.length} constraints, such as body text of at least 16px. Check a pack with <code>npm run check-ds -w @polyxd/spec -- path/to/manifest.json</code>.</p>`,
     ...[...groups].map(
-      ([g, names]) => `<h2 id="${g}">${g}</h2><div class="table-wrap"><table><thead><tr><th>Token</th><th>Material 3</th><th>Carbon</th><th>Ant Design</th></tr></thead><tbody>${names
+      ([g, names]) => `<h2 id="${g}">${g}</h2><div class="table-wrap"><table><thead><tr><th>Token</th>${packs.map((p, i) => `<th>${packName(p, ["Material 3", "Carbon", "Ant Design"][i], 20)}</th>`).join("")}</tr></thead><tbody>${names
         .map((n) => `<tr><td><code>${n}</code><br><small>${esc(contract.tokens[n].description)}</small></td>${light.map((set) => `<td>${show(set.get(n))}</td>`).join("")}</tr>`)
         .join("")}</tbody></table></div>`,
     ),
@@ -469,7 +517,7 @@ async function scenariosHtml(packs: { key: string; name: string }[]): Promise<st
       const doc = JSON.parse(await readFile(join(REPO, "packages/spec/examples", `${sc.file}.json`), "utf8")) as UIDocument;
       const surface = renderToStaticMarkup(createElement(PolyxdSurface, { document: doc, theme: sc.pack }));
       return `<li class="specimen" style="--w:${sc.width}px">
-<a class="specimen-link" href="/gallery/?example=${sc.file}&amp;theme=${sc.pack}"><span class="specimen-ask">${esc(sc.ask)}</span><span class="specimen-pack">${esc(name(sc.pack))}</span></a>
+<a class="specimen-link" href="/gallery/?example=${sc.file}&amp;theme=${sc.pack}"><span class="specimen-ask">${esc(sc.ask)}</span><span class="specimen-pack">${packName(sc.pack, name(sc.pack), 20)}</span></a>
 <div class="specimen-frame" data-pxd-theme="${sc.pack}" data-pxd-mode="light" inert aria-hidden="true">${surface}</div>
 </li>`;
     }),
@@ -498,6 +546,7 @@ for (const f of ["icon-180.png", "icon-192.png", "icon-512.png", "og.png"]) awai
 // The brand's tokens and the mark's states, as brand/build.ts writes them.
 for (const f of ["tokens.css", "mark.css"]) await copyFile(join(REPO, "brand", f), join(DIST, "assets", f));
 
+await copyPackLogos();
 const demo = await demoHtml();
 await write(join(DIST, "assets/themes.css"), demo.themes);
 await cp(join(REPO, "packages/react/src/styles.css"), join(DIST, "assets/renderer.css"));
@@ -508,7 +557,9 @@ const landing = (await readFile(join(SITE, "src/index.html"), "utf8"))
   .replace("<!--DEMO-->", demo.html)
   .replace("<!--PACKCOUNT-->", spelled[demo.count - 1] ?? String(demo.count))
   // The story's "any design system" act rolls through every pack by name; story.js reads the keys off these spans.
-  .replace("<!--PACKNAMES-->", demo.packs.map((p) => `<span data-pack="${p.key}">${esc(p.name)}</span>`).join(""))
+  .replace("<!--PACKNAMES-->", demo.packs.map((p) => `<span data-pack="${p.key}">${packName(p.key, p.name, "0.8em")}</span>`).join(""))
+  // A demo card names its product's design system with that system's logo.
+  .replace(/<!--PACKLOGO:([a-z0-9]+)-->/g, (_, key: string) => packLogo(key, 24))
   .replace("<!--SCENARIOS-->", await scenariosHtml(demo.packs))
   .replace("<!--EXAMPLECOUNT-->", String((await readdir(join(REPO, "packages/spec/examples"))).filter((f) => f.endsWith(".json")).length))
   .replace("<!--COMPONENTCOUNT-->", String((await readdir(join(REPO, "packages/spec/components"))).filter((f) => f.endsWith(".json")).length))

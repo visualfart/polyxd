@@ -244,7 +244,7 @@
   color: var(--text);
   opacity: 0;
 }
-.packname span {
+.packname > span {
   display: block;
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -1095,6 +1095,9 @@
 }
 .specimen-ask::after {
   content: "”";
+}
+.specimen-pack .ds-name {
+  gap: 8px;
 }
 .specimen-pack {
   font: 11px var(--mono);
