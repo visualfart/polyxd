@@ -1,0 +1,423 @@
+/*
+ * The furniture shared by the three films: paper, the phone, the app chrome around the real
+ * renderer, one line of words. Brand values from brand/BRAND-2026.md.
+ */
+/* The brand's faces are declared in each film's own <style> (root-relative asset paths). */
+
+:root {
+  --paper: #f3f1ec;
+  --ink: #141413;
+  --signal: #ff6e40;
+  --signal-text: #b14c2c;
+  --white: #ffffff;
+  --muted: #5e5a52;
+  --rule: #dad5ca;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--paper);
+}
+#root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Hanken Grotesk", sans-serif;
+}
+
+/* Sub-composition slots fill the frame. */
+#root > div[data-composition-src] {
+  position: absolute;
+  inset: 0;
+}
+
+/* ——— The stage: the phone and the mark beside it, faded as one group ——— */
+.group {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+/* The phone: an ink shell around a 390×844 screen drawn at 900 px tall (a real phone's viewport). */
+.phone {
+  position: absolute;
+  left: 928px;
+  top: 77px;
+  width: 442px;
+  height: 926px;
+  padding: 13px;
+  border-radius: 64px;
+  background: var(--ink);
+}
+.phone-glass {
+  position: relative;
+  width: 416px;
+  height: 900px;
+  border-radius: 51px;
+  overflow: hidden;
+  background: var(--white);
+}
+.phone-screen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 390px;
+  height: 844px;
+  transform: scale(1.06635);
+  transform-origin: 0 0;
+}
+/* The films show still frames of a live UI: nothing inside may animate on its own clock. */
+.phone-screen *,
+.phone-screen *::before,
+.phone-screen *::after {
+  transition: none !important;
+  animation: none !important;
+  caret-color: transparent !important;
+}
+
+/* The mark sits to the right of the phone, level with the app bar, looking down-left into it. */
+.seat {
+  position: absolute;
+  left: 1426px;
+  top: 150px;
+  width: 132px;
+  height: 132px;
+}
+
+/* ——— One line of words ——— */
+.caption {
+  position: absolute;
+  left: 150px;
+  top: 0;
+  bottom: 0;
+  width: 660px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+}
+.caption p {
+  margin: 0;
+  font-family: "Young Serif", serif;
+  font-weight: 400;
+  font-size: 66px;
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.paperline {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 240px;
+  opacity: 0;
+}
+.paperline p {
+  margin: 0;
+  font-family: "Young Serif", serif;
+  font-weight: 400;
+  font-size: 84px;
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* A two-sentence line: each sentence on its own line. */
+.paperline .l {
+  display: block;
+}
+
+/* ——— Inside the phone: an invented app in its own design system ——— */
+.layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+.app {
+  position: absolute;
+  inset: 0;
+  background: var(--pxd-color-surface-default);
+  color: var(--pxd-color-text-default);
+  font-family: var(--pxd-type-body-default-family);
+}
+.app-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100px;
+  border-bottom: 1px solid var(--pxd-color-border-default);
+  background: var(--pxd-color-surface-default);
+}
+.status {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 34px 0;
+  font-weight: 600;
+  font-size: 15px;
+}
+.battery {
+  width: 22px;
+  height: 11px;
+  border-radius: 3px;
+  border: 1.5px solid currentColor;
+  opacity: 0.75;
+}
+.bar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+}
+.app-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--pxd-radius-default);
+  background: var(--pxd-color-action-primary-background);
+  color: var(--pxd-color-action-primary-foreground);
+  display: grid;
+  place-items: center;
+  font-family: var(--pxd-type-title-item-family);
+  font-weight: 700;
+  font-size: 17px;
+}
+.app-name {
+  font-family: var(--pxd-type-title-section-family);
+  font-weight: 700;
+  font-size: 18px;
+}
+.app-where {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--pxd-color-text-muted);
+}
+.chat {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100px;
+  bottom: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.chat.with-composer {
+  bottom: 84px;
+}
+/* A conversation that outgrows the screen keeps its newest words in view. */
+.chat.to-bottom {
+  justify-content: flex-end;
+  padding-bottom: 10px;
+}
+.row {
+  display: flex;
+  padding: 8px 16px;
+  flex: none;
+}
+.row.me {
+  justify-content: flex-end;
+  padding-top: 16px;
+}
+.bubble {
+  max-width: 282px;
+  padding: 11px 15px;
+  border-radius: 20px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.chat .bubble {
+  font-size: 18px;
+}
+.me .bubble {
+  border-bottom-right-radius: 6px;
+  background: var(--pxd-color-action-primary-background);
+  color: var(--pxd-color-action-primary-foreground);
+}
+.them .bubble {
+  max-width: 300px;
+  border-bottom-left-radius: 6px;
+  background: var(--pxd-color-surface-subtle);
+  color: var(--pxd-color-text-default);
+  line-height: 1.45;
+}
+.dots {
+  display: inline-flex;
+  gap: 5px;
+  padding: 5px 2px;
+}
+.dots i {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 7px;
+  background: currentColor;
+  opacity: 0.3;
+}
+.answer {
+  flex: none;
+}
+.q ~ .answer {
+  margin-top: -8px;
+}
+.composer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 84px;
+  padding: 10px 14px 28px;
+  border-top: 1px solid var(--pxd-color-border-default);
+  background: var(--pxd-color-surface-default);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.field {
+  flex: 1;
+  height: 44px;
+  border-radius: 22px;
+  border: 1px solid var(--pxd-color-border-default);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--pxd-color-text-default);
+}
+.field .ph {
+  color: var(--pxd-color-text-muted);
+}
+.field .caret {
+  display: inline-block;
+  width: 2px;
+  height: 20px;
+  margin-left: 1px;
+  background: var(--pxd-color-text-default);
+}
+.send {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: var(--pxd-color-surface-subtle);
+  color: var(--pxd-color-text-muted);
+}
+.send.ready {
+  background: var(--pxd-color-action-primary-background);
+  color: var(--pxd-color-action-primary-foreground);
+}
+.toast {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 30px;
+  padding: 14px 18px;
+  border-radius: var(--pxd-radius-default);
+  background: var(--pxd-color-surface-inverse);
+  color: var(--pxd-color-text-inverse);
+  font-size: 15px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  opacity: 0;
+}
+.toast.above {
+  bottom: 96px;
+}
+/* A finger on the submit button, drawn by the action bar itself (the renderer owns its children):
+   the timeline tweens --finger from 0 to 1 and back. */
+.phone-screen .pxd-action-bar .pxd-button-primary {
+  position: relative;
+  overflow: visible;
+}
+.phone-screen .pxd-action-bar .pxd-button-primary::after {
+  content: "";
+  position: absolute;
+  left: 80%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-radius: 23px;
+  background: rgba(20, 20, 19, 0.22);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  opacity: var(--finger, 0);
+  transform: scale(calc(1.1 - 0.1 * var(--finger, 0)));
+  pointer-events: none;
+}
+
+/* Film C: the screen as a plain list of its parts. */
+.parts {
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  padding: 118px 30px 0;
+  font-family: "Hanken Grotesk", sans-serif;
+  color: var(--ink);
+}
+.parts .part {
+  padding: 20px 0 21px;
+  border-bottom: 1.5px solid var(--rule);
+}
+.parts .kind {
+  font-family: "DM Mono", monospace;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--signal-text);
+}
+.parts .val {
+  margin-top: 8px;
+  font-weight: 500;
+  font-size: 30px;
+  letter-spacing: -0.01em;
+}
+.parts .ask {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 40px;
+  display: flex;
+  opacity: 0;
+}
+/* The question, typed into a plain input above the list. */
+.parts .ask .input {
+  flex: 1;
+  height: 48px;
+  border-radius: 24px;
+  border: 1.5px solid var(--rule);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  font-size: 18px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.parts .ask .caret {
+  display: inline-block;
+  width: 2px;
+  height: 21px;
+  margin-left: 1px;
+  background: var(--ink);
+}

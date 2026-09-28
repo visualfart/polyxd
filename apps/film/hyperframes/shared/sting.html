@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- The intro sting shared by all three films. Needs shared/mark.js on the host page. -->
+  </head>
+  <body>
+    <template id="sting-template">
+      <style>
+        #sting-root {
+          position: absolute;
+          inset: 0;
+          background: #f3f1ec;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        #sting-lockup {
+          opacity: 0;
+        }
+      </style>
+      <div id="sting-root" data-composition-id="sting" data-width="1920" data-height="1080" data-duration="2.8">
+        <div id="sting-lockup"></div>
+      </div>
+      <script>
+        (function () {
+          // Paper; the lockup arrives; the pupil glances at the word, blinks, and the sting clears.
+          const M = window.PolyxdMark;
+          const box = document.getElementById("sting-lockup");
+          box.innerHTML = M.lockup("sting-mark", 180);
+          const set = M.driver(document.getElementById("sting-mark"), [
+            { t: 1.05, state: "reading" },
+            { t: 1.75, state: "blink" },
+          ]);
+          set(0);
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(box, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, ease: M.ease }, 0.1);
+          tl.fromTo(box, { opacity: 1 }, { opacity: 0, duration: 0.55, ease: M.ease, immediateRender: false }, 2.2);
+          const clock = { t: 0 };
+          tl.to(clock, { t: 2.8, duration: 2.8, ease: "none", onUpdate: () => set(clock.t) }, 0);
+          window.__timelines["sting"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

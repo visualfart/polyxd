@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Polyxd · A · The ask</title>
+    <!--
+      Film A, "The ask" (apps/film/SCRIPT-OPTIONS.md). One person asks their bank for something it
+      was never built to do, and is refused; asks again, and this time the screen is made for them.
+
+      MUSIC (scripts/music-hf.ts, "Longing" 82 bpm): lift 24.0 s (the screen appears),
+      full 33.1 s (the other designs), ring 45.8 s (the end card), end 50.0 s.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/polyxd/polyxd-web.css" />
+    <link rel="stylesheet" href="assets/shared/kit.css" />
+    <style>
+      @font-face {
+        font-family: "Young Serif";
+        src: url("assets/fonts/YoungSerif-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Hanken Grotesk";
+        src: url("assets/fonts/HankenGrotesk-latin.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "DM Mono";
+        src: url("assets/fonts/DMMono-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+      }
+      /* A fallback the renderer's stylesheet names for code; declared so it resolves to the system face. */
+      @font-face {
+        font-family: "SFMono-Regular";
+        src: local("SFMono-Regular"), local("SF Mono");
+      }
+    </style>
+    <script src="assets/polyxd/polyxd-web.js"></script>
+    <script src="assets/shared/mark.js"></script>
+    <script src="assets/shared/kit.js"></script>
+  </head>
+  <body>
+    <div id="root" data-composition-id="film-a" data-start="0" data-width="1920" data-height="1080" data-duration="50">
+      <div id="a-sting" data-composition-id="sting" data-composition-src="assets/shared/sting.html" data-start="0" data-duration="2.8" data-track-index="1"></div>
+
+      <!-- The first ask: refused. -->
+      <div id="a-g1" class="group">
+        <div class="phone"><div class="phone-glass"><div class="phone-screen" id="a-screen1"></div></div></div>
+        <div class="seat" id="a-seat1"></div>
+      </div>
+
+      <div id="a-line1" class="paperline"><p>Apps only have the screens someone built in advance.</p></div>
+
+      <!-- The second ask: the screen is made. -->
+      <div id="a-g2" class="group">
+        <div class="phone"><div class="phone-glass"><div class="phone-screen" id="a-screen2"></div></div></div>
+        <div class="seat" id="a-seat2"></div>
+      </div>
+
+      <div id="a-cap1" class="caption"><p>Polyxd lets AI build the screen you asked for.</p></div>
+      <div id="a-cap2" class="caption"><p>In your app’s own design.</p></div>
+      <div id="a-cap3" class="caption"><p>Checked before anyone sees it.</p></div>
+
+      <div id="a-end" data-composition-id="end-card" data-composition-src="assets/shared/end-card.html" data-start="45.8" data-duration="4.2" data-track-index="1" data-variable-values='{"url":"polyxd.com"}'></div>
+
+      <audio id="a-music" src="assets/music.wav" data-start="0" data-track-index="10" data-volume="1"></audio>
+      <audio id="a-tap" src="assets/sfx/ui-click.wav" data-start="28.8" data-track-index="11" data-volume="2"></audio>
+      <audio id="a-blink" src="assets/sfx/blink.wav" data-start="30.4" data-track-index="12" data-volume="1"></audio>
+      <audio id="a-tick" src="assets/sfx/tick.wav" data-start="40.25" data-track-index="13" data-volume="2"></audio>
+      <audio id="a-blink-end" src="assets/sfx/blink.wav" data-start="47.3" data-track-index="14" data-volume="1"></audio>
+    </div>
+
+    <script>
+      (function () {
+        const F = window.Film;
+        const M = window.PolyxdMark;
+        const D = 50;
+        const ASK = "Split dinner with Priya, £40";
+
+        // ——— Timings, in seconds. One thing moves at a time. ———
+        const T = {
+          g1In: 2.8, read1: 3.5, type1: 3.8, send1: 5.7, dots: 6.1, reply: 7.1, attention: 7.8, g1Out: 10.2,
+          lineIn: 11.0, lineOut: 16.1,
+          g2In: 16.8, read2: 17.5, type2: 17.8, send2: 19.7, think: 20.0, look: 23.55, screen: 24.0,
+          cap1In: 27.0, tap: 28.6, toast: 29.4, blink: 30.4, cap1Out: 32.4,
+          ledger: 33.1, cap2In: 34.1, tidings: 36.9, cap2Out: 39.2,
+          checked: 40.0, cap3In: 40.8, cap3Out: 44.4, g2Out: 45.1,
+        };
+
+        // ——— Build: the phones, drawn once by the real renderer ———
+        const s1 = F.appScreen({ app: F.APPS.halden, asked: ASK, reply: "Sorry, I can’t help with that.", composer: true });
+        document.getElementById("a-screen1").appendChild(Object.assign(s1.el, {}));
+
+        const layer = (h) => {
+          const d = document.createElement("div");
+          d.className = "layer";
+          d.appendChild(h.el);
+          document.getElementById("a-screen2").appendChild(d);
+          return d;
+        };
+        const s2 = F.appScreen({ app: F.APPS.halden, asked: ASK, doc: F.SEND, data: F.SEND_DATA, composer: true, toast: "£40.00 sent to Priya", crossfades: true });
+        const s3 = F.appScreen({ app: F.APPS.ledger, asked: ASK, doc: F.SEND, data: F.SEND_DATA, crossfades: true });
+        const s4 = F.appScreen({ app: F.APPS.tidings, asked: ASK, doc: F.SEND, data: F.SEND_DATA, crossfades: true });
+        const L2 = layer(s2), L3 = layer(s3), L4 = layer(s4);
+        L2.style.opacity = "1";
+
+        document.getElementById("a-seat1").innerHTML = M.svg("a-mark1", 132);
+        document.getElementById("a-seat2").innerHTML = M.svg("a-mark2", 132);
+        const mark1 = M.driver(document.getElementById("a-mark1"), [
+          { t: T.read1, state: "reading" },
+          { t: T.attention, state: "attention" },
+        ]);
+        const mark2 = M.driver(document.getElementById("a-mark2"), [
+          { t: T.read2, state: "reading" },
+          { t: T.think, state: "thinking", turns: 2 },
+          { t: T.look, state: "looking" },
+          { t: T.blink, state: "blink" },
+          { t: T.checked, state: "checked" },
+        ]);
+
+        // ——— Timeline ———
+        const tl = gsap.timeline({ paused: true });
+        const $ = (id) => document.getElementById(id);
+        F.hide(tl, [s1.question, s1.reply, s2.question, s2.toast, ...s2.parts]);
+
+        // The first ask.
+        F.inn(tl, $("a-g1"), T.g1In, 0.6, 0);
+        F.inn(tl, s1.question, T.send1, 0.35, 8);
+        F.inn(tl, s1.reply, T.dots, 0.3, 8);
+        F.out(tl, $("a-g1"), T.g1Out, 0.6);
+
+        // Plain paper, one line.
+        F.inn(tl, $("a-line1"), T.lineIn, 0.6, 14);
+        F.out(tl, $("a-line1"), T.lineOut, 0.5);
+
+        // The second ask, and the screen made for it.
+        F.inn(tl, $("a-g2"), T.g2In, 0.6, 0);
+        F.inn(tl, s2.question, T.send2, 0.35, 8);
+        F.assemble(tl, s2.parts, T.screen, 0.55, 0.5);
+        F.inn(tl, $("a-cap1"), T.cap1In);
+        F.tap(tl, s2, T.tap);
+        F.inn(tl, s2.toast, T.toast, 0.4, 10);
+        F.out(tl, $("a-cap1"), T.cap1Out);
+
+        // The same screen in two other apps' designs, one at a time.
+        F.inn(tl, L3, T.ledger, 0.8, 0);
+        tl.set(L2, { opacity: 0 }, T.ledger + 0.85);
+        F.inn(tl, $("a-cap2"), T.cap2In);
+        F.inn(tl, L4, T.tidings, 0.8, 0);
+        tl.set(L3, { opacity: 0 }, T.tidings + 0.85);
+        F.out(tl, $("a-cap2"), T.cap2Out);
+
+        // Checked; then the end card.
+        F.inn(tl, $("a-cap3"), T.cap3In);
+        F.out(tl, $("a-cap3"), T.cap3Out);
+        F.out(tl, $("a-g2"), T.g2Out, 0.6);
+
+        // Everything that is a function of time rather than a tween: typing, dots, the pupils.
+        const render = (t) => {
+          F.converse(s1, t, { text: ASK, typeFrom: T.type1, sendAt: T.send1, dotsFrom: T.dots, replyAt: T.reply });
+          F.converse(s2, t, { text: ASK, typeFrom: T.type2, sendAt: T.send2 });
+          mark1(t);
+          mark2(t);
+        };
+        const clock = { t: 0 };
+        tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => render(clock.t) }, 0);
+        render(0);
+
+        window.__timelines["film-a"] = tl;
+      })();
+    </script>
+  </body>
+</html>

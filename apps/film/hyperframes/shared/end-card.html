@@ -1,0 +1,58 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[{"id":"url","type":"string","label":"Address line","default":"polyxd.com"}]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- The end card shared by all three films. Needs shared/mark.js on the host page. -->
+  </head>
+  <body>
+    <template id="end-card-template">
+      <style>
+        #end-card-root {
+          position: absolute;
+          inset: 0;
+          background: #f3f1ec;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 56px;
+        }
+        #end-card-lockup,
+        #end-card-url {
+          opacity: 0;
+        }
+        #end-card-url {
+          font-family: "Hanken Grotesk", sans-serif;
+          font-weight: 500;
+          font-size: 38px;
+          letter-spacing: 0.005em;
+          color: #5e5a52;
+        }
+      </style>
+      <div id="end-card-root" data-composition-id="end-card" data-width="1920" data-height="1080" data-duration="4.2">
+        <div id="end-card-lockup"></div>
+        <div id="end-card-url" data-var-text="url">polyxd.com</div>
+      </div>
+      <script>
+        (function () {
+          // The lockup settles; the pupil blinks once; the address arrives underneath and holds.
+          const M = window.PolyxdMark;
+          const box = document.getElementById("end-card-lockup");
+          const url = document.getElementById("end-card-url");
+          box.innerHTML = M.lockup("end-card-mark", 170);
+          const set = M.driver(document.getElementById("end-card-mark"), [{ t: 1.5, state: "blink" }]);
+          set(0);
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(box, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, ease: M.ease }, 0.1);
+          tl.fromTo(url, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: M.ease }, 2.1);
+          const clock = { t: 0 };
+          tl.to(clock, { t: 4.2, duration: 4.2, ease: "none", onUpdate: () => set(clock.t) }, 0);
+          window.__timelines["end-card"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

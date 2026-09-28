@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Polyxd · B · Show, don't tell</title>
+    <!--
+      Film B, "Show, don't tell" (apps/film/SCRIPT-OPTIONS.md, the recommended option). A shop's
+      assistant answers a simple question with a wall of words; asked again, the answer is a screen.
+      Then two more apps, each in its own design.
+
+      MUSIC (scripts/music-hf.ts, "Rise Up" 81 bpm): lift 24.1 s (the screen appears),
+      full 33.0 s (the other apps), ring 47.8 s (the end card), end 52.0 s.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/polyxd/polyxd-web.css" />
+    <link rel="stylesheet" href="assets/shared/kit.css" />
+    <style>
+      @font-face {
+        font-family: "Young Serif";
+        src: url("assets/fonts/YoungSerif-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Hanken Grotesk";
+        src: url("assets/fonts/HankenGrotesk-latin.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "DM Mono";
+        src: url("assets/fonts/DMMono-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+      }
+      /* A fallback the renderer's stylesheet names for code; declared so it resolves to the system face. */
+      @font-face {
+        font-family: "SFMono-Regular";
+        src: local("SFMono-Regular"), local("SF Mono");
+      }
+    </style>
+    <script src="assets/polyxd/polyxd-web.js"></script>
+    <script src="assets/shared/mark.js"></script>
+    <script src="assets/shared/kit.js"></script>
+  </head>
+  <body>
+    <div id="root" data-composition-id="film-b" data-start="0" data-width="1920" data-height="1080" data-duration="52">
+      <div id="b-sting" data-composition-id="sting" data-composition-src="assets/shared/sting.html" data-start="0" data-duration="2.8" data-track-index="1"></div>
+
+      <!-- The question, answered in a paragraph. -->
+      <div id="b-g1" class="group">
+        <div class="phone"><div class="phone-glass"><div class="phone-screen" id="b-screen1"></div></div></div>
+        <div class="seat" id="b-seat1"></div>
+      </div>
+
+      <div id="b-line1" class="paperline"><p><span class="l">AI can answer anything.</span> <span class="l">But it answers in paragraphs.</span></p></div>
+
+      <!-- The same question, answered with a screen; then a bank, then a council. -->
+      <div id="b-g2" class="group">
+        <div class="phone"><div class="phone-glass"><div class="phone-screen" id="b-screen2"></div></div></div>
+        <div class="seat" id="b-seat2"></div>
+      </div>
+
+      <div id="b-cap1" class="caption"><p>Polyxd turns the answer into a screen.</p></div>
+      <div id="b-cap2" class="caption"><p>Any app. In its own design.</p></div>
+      <div id="b-cap3" class="caption"><p>Checked before anyone sees it.</p></div>
+
+      <div id="b-end" data-composition-id="end-card" data-composition-src="assets/shared/end-card.html" data-start="47.8" data-duration="4.2" data-track-index="1" data-variable-values='{"url":"polyxd.com"}'></div>
+
+      <audio id="b-music" src="assets/music.wav" data-start="0" data-track-index="10" data-volume="1"></audio>
+      <audio id="b-tap" src="assets/sfx/ui-click.wav" data-start="28.9" data-track-index="11" data-volume="2"></audio>
+      <audio id="b-blink" src="assets/sfx/blink.wav" data-start="30.5" data-track-index="12" data-volume="1"></audio>
+      <audio id="b-tick" src="assets/sfx/tick.wav" data-start="42.65" data-track-index="13" data-volume="2"></audio>
+      <audio id="b-blink-end" src="assets/sfx/blink.wav" data-start="49.3" data-track-index="14" data-volume="1"></audio>
+    </div>
+
+    <script>
+      (function () {
+        const F = window.Film;
+        const M = window.PolyxdMark;
+        const D = 52;
+        const ASK = "Can I return these shoes?";
+        const PARAGRAPH =
+          "Yes, you can return them within 30 days of delivery. To start a return, open the menu and go to Your orders. Find the order with the trail runners and tap View order. Scroll down to Items and tap the pair you want to send back, then choose Return or exchange. Pick a reason from the list. If you’d like a different size, choose Exchange and select your new size, then check it’s in stock. Next, choose how you’d like to send them back: drop-off point, locker or courier collection. If you choose drop-off, you’ll need to print the label we email you, or show the QR code at the counter. Once we receive them, your refund or exchange is processed within 3 to 5 working days, and you’ll get an email when";
+
+        // ——— Timings, in seconds. One thing moves at a time. ———
+        const T = {
+          g1In: 2.8, read1: 3.5, type: 3.8, send: 5.5, dots: 5.9, stream: 6.8, streamTo: 13.0, g1Out: 14.0,
+          lineIn: 14.8, lineOut: 20.2,
+          g2In: 20.9, think: 21.7, look: 23.65, screen: 24.1,
+          cap1In: 27.1, tap: 28.7, toast: 29.5, blink: 30.5, cap1Out: 32.3,
+          bank: 33.0, bankParts: 33.9, cap2In: 36.3, council: 37.9, councilParts: 38.8, cap2Out: 41.6,
+          checked: 42.4, cap3In: 43.2, cap3Out: 46.5, g2Out: 47.1,
+        };
+
+        // ——— Build ———
+        const s1 = F.appScreen({ app: F.APPS.fernly, asked: ASK, reply: PARAGRAPH, composer: true, toBottom: true });
+        document.getElementById("b-screen1").appendChild(s1.el);
+
+        const layer = (h) => {
+          const d = document.createElement("div");
+          d.className = "layer";
+          d.appendChild(h.el);
+          document.getElementById("b-screen2").appendChild(d);
+          return d;
+        };
+        const s2 = F.appScreen({ app: F.APPS.fernly, asked: ASK, doc: F.RETURN, toast: "Return started. Your label is in your email.", crossfades: true });
+        const s3 = F.appScreen({ app: F.APPS.halden, asked: "Send Priya £40 for dinner", doc: F.SEND, data: F.SEND_DATA, crossfades: true });
+        const s4 = F.appScreen({ app: F.APPS.wexley, asked: "I’ve moved", doc: F.ADDRESS, crossfades: true });
+        const L2 = layer(s2), L3 = layer(s3), L4 = layer(s4);
+        L2.style.opacity = "1";
+
+        document.getElementById("b-seat1").innerHTML = M.svg("b-mark1", 132);
+        document.getElementById("b-seat2").innerHTML = M.svg("b-mark2", 132);
+        const mark1 = M.driver(document.getElementById("b-mark1"), [{ t: T.read1, state: "reading" }]);
+        const mark2 = M.driver(document.getElementById("b-mark2"), [
+          { t: T.think, state: "thinking", turns: 1 },
+          { t: T.look, state: "looking" },
+          { t: T.blink, state: "blink" },
+          { t: T.checked, state: "checked" },
+        ]);
+
+        // ——— Timeline ———
+        const tl = gsap.timeline({ paused: true });
+        const $ = (id) => document.getElementById(id);
+        F.hide(tl, [s1.question, s1.reply, s2.toast, ...s2.parts, ...s3.parts, ...s4.parts]);
+
+        // A question, and a wall of words.
+        F.inn(tl, $("b-g1"), T.g1In, 0.6, 0);
+        F.inn(tl, s1.question, T.send, 0.35, 8);
+        F.inn(tl, s1.reply, T.dots, 0.3, 8);
+        F.out(tl, $("b-g1"), T.g1Out, 0.6);
+
+        F.inn(tl, $("b-line1"), T.lineIn, 0.6, 14);
+        F.out(tl, $("b-line1"), T.lineOut, 0.5);
+
+        // The same question; this time the answer is a screen.
+        F.inn(tl, $("b-g2"), T.g2In, 0.6, 0);
+        F.assemble(tl, s2.parts, T.screen, 0.55, 0.5);
+        F.inn(tl, $("b-cap1"), T.cap1In);
+        F.tap(tl, s2, T.tap);
+        F.inn(tl, s2.toast, T.toast, 0.4, 10);
+        F.out(tl, $("b-cap1"), T.cap1Out);
+
+        // A bank, then a council: each in its own design.
+        F.inn(tl, L3, T.bank, 0.7, 0);
+        tl.set(L2, { opacity: 0 }, T.bank + 0.75);
+        F.assemble(tl, s3.parts, T.bankParts, 0.4, 0.45);
+        F.inn(tl, $("b-cap2"), T.cap2In);
+        F.inn(tl, L4, T.council, 0.7, 0);
+        tl.set(L3, { opacity: 0 }, T.council + 0.75);
+        F.assemble(tl, s4.parts, T.councilParts, 0.4, 0.45);
+        F.out(tl, $("b-cap2"), T.cap2Out);
+
+        F.inn(tl, $("b-cap3"), T.cap3In);
+        F.out(tl, $("b-cap3"), T.cap3Out);
+        F.out(tl, $("b-g2"), T.g2Out, 0.6);
+
+        const render = (t) => {
+          F.converse(s1, t, { text: ASK, typeFrom: T.type, sendAt: T.send, dotsFrom: T.dots, replyAt: T.stream, streamTo: T.streamTo });
+          mark1(t);
+          mark2(t);
+        };
+        const clock = { t: 0 };
+        tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => render(clock.t) }, 0);
+        render(0);
+
+        window.__timelines["film-b"] = tl;
+      })();
+    </script>
+  </body>
+</html>
