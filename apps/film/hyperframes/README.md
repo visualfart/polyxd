@@ -301,3 +301,76 @@ catalogue attaches no per-item licence string, so confirm commercial use in the 
 | File chips landing | d9b59db7… | Airy pop (new) |
 
 Fonts: Young Serif, DM Mono, Hanken Grotesk (SIL OFL); Caveat (SIL OFL, installed by the registry).
+
+## Film D: "Ship the screen, not the backlog" (`film-d-ship-the-screen/`)
+
+The developer film (`STORY-DEV.md`), made the way B5 was. A developer's backlog fills with asks; one of
+them, "Pay Alex my rent share", becomes a screen as data: the spec's `money-send-confirm.json` is
+written and the real renderer draws it part by part, a hand-drawn arrow from each part of the JSON to
+the part it becomes; one component draws it in any design system (the quickstart's `<PolyxdSurface>`,
+the `theme` prop retyped, the phone re-theming); the host's `onAction` gets the tap's event;
+`validateDocument` and `polyxd-verify` check it (the default matrix of twelve renders ticking in a
+wave, then the agent's task through the accessibility tree); `npx polyxd pack` brings a design system in
+and `npx polyxd dev` previews in it, with the `$schema` squiggle fixed; `<polyxd-surface>` draws the
+same screen without React ("same fingerprint"). Then every note on the board flips into its real screen
+and ships. 98.2 s with B's intro and outro ("polyxd.com/docs · open source"). Scene by scene, with the
+skills, blueprints and registry items used: `film-d-ship-the-screen/STORYBOARD.md`.
+
+```sh
+node apps/film/hyperframes/music-d.mjs    # the score, cut on its bars
+node apps/film/hyperframes/make-d.mjs     # index.html, assets, the examples, sound cues
+cd apps/film/hyperframes/film-d-ship-the-screen && npx hyperframes check && \
+  npx hyperframes render --quality delivery --output ../../out/hyperframes/polyxd-d-ship-the-screen.mp4
+ffmpeg -i ../../out/hyperframes/polyxd-d-ship-the-screen.mp4 -c:v libx264 -crf 24 -preset slow \
+  -pix_fmt yuv420p -c:a copy -movflags +faststart ../../out/hyperframes/polyxd-d-ship-the-screen-share.mp4
+```
+
+Output: `apps/film/out/hyperframes/polyxd-d-ship-the-screen.mp4` (98.2 s, 60 MB, −14.0 LUFS,
+−1.6 dBTP), `polyxd-d-ship-the-screen-share.mp4` (CRF 24, 13 MB), `polyxd-d-ship-the-screen-sheet.png`,
+fourteen stills in `stills/`.
+
+What is on screen and where it came from:
+
+- **Screens:** `@polyxd/web`'s browser build, live. The document is `packages/spec/examples/money-send-confirm.json`
+  (as published, `$schema` and all); the board's other notes flip into one spec example each (and the
+  film's return and address forms from `shared/kit.js`).
+- **Code:** the docs' code, trimmed to fit 30 px lines: ui-documents (the JSON, excerpted with `…`),
+  quickstart (`npm install`, the `<PolyxdSurface>` block, `validateDocument`, `polyxd-verify`),
+  renderers (`<polyxd-surface>`), your-design-system (`polyxd pack`, `polyxd dev`, `$schema`).
+- **Terminal output:** printed by the commands, run in this repository on 28 September 2026, trimmed:
+  `npm install @polyxd/react @polyxd/spec` (in an empty app with React 19), `validateDocument` on the
+  example (`{ valid: true, issues: [] }`), `polyxd-verify money-send-confirm.json --tasks bench/tasks.json`
+  (100, agent 12/12), `polyxd pack ./acme.css` on `shared/film-d-acme/acme.css` and `polyxd dev ./screens
+  --pack ./ds-acme/manifest.json` (its compiled `pack.css` is the acme theme the browser draws). The
+  accessibility tree is the verifier's ARIA snapshot of the example (`verifyDocument(…, { fingerprint: true })`),
+  trimmed; the task is bench/tasks.json's; "same fingerprint" is `compareFingerprints` between the React
+  and web harnesses in Carbon (no differences). The film's two phones are both drawn by the web renderer.
+
+### Credits (film D)
+
+From the **HeyGen audio catalogue** through media-use's HeyGen library (`/v3/audio/sounds`, the owner's
+signed-in account), frozen into the project with `npx hyperframes media-use resolve --from …`
+(`.media/manifest.jsonl`, git-ignored; re-download by id). Used under the HeyGen account's terms for
+catalogue audio; the catalogue attaches no per-item licence string, so confirm commercial use in the
+account terms before publishing.
+
+| Use | Item (catalogue id) | Name |
+|---|---|---|
+| Score (cut: `music-d.mjs`) | caac63aa… | "Astral Generated Music: caac63aa" — modern upbeat tech background music, punchy but clean (120 bpm, 179 s) |
+| Each sticky note landing | 8639f575… | Quick Swipe Impact |
+| Pen on paper: every doodle, the flips | 9b77ef76… | Page turn |
+| Typing (JSON, commands, retypes) | fa6fa6ac… | Keyboard typing |
+| Enter | eada0ef7… | Sharp mechanical click |
+| Small camera moves, the veil, the peel | 5ae247cc… | Fast Whoosh |
+| Whip pans, the travel down, the flight home, re-themes | 68ce3485… | Fast synthetic whoosh |
+| The drop (the note becomes the editor) | 494a9f44… | Sub bass impact |
+| Into the drop | 3c4358ca… | Synthetic Sweeping Riser |
+| Parts arriving, the matrix | 4558aa13… | UI Pop |
+| The event landing, home | d9b59db7… | Airy pop |
+| The agent's event, the preview, the outro's check | fd8d6893… | Digital notification chime |
+| The tick wave, the payoff | 7a885578… | Ascending chime sparkle |
+| The agent walking the tree | 162db4c9… | Rapid Mechanical Clicks |
+| The tap, the blink | cf8c57bb… | Short Click |
+| Verify's result, the fix, same fingerprint, the clear board | 7e44f651… | Sharp click |
+
+Fonts: Young Serif, DM Mono, Hanken Grotesk (SIL OFL); Caveat (SIL OFL, installed by the registry).
