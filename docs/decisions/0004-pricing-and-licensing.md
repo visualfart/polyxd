@@ -1,6 +1,6 @@
 # 0004 — Pricing and licensing
 
-Status: **planned, not built** (28 Sep 2026). Build tonight in the order under [Build plan](#build-plan).
+Status: **being built** (29 Sep 2026): Studio plans, limits and billing (2 and 3) are built on `feat/studio-billing`; the rest in the order under [Build plan](#build-plan).
 
 ## Decision
 
@@ -79,31 +79,36 @@ Each workstream is its own branch **from `origin/main`**, not local main, becaus
 
 ### 2. Studio plans and limits
 
-- Migration `apps/studio/migrations/0007_plans.sql`:
-  - add to `workspaces`: `plan` (`free` | `pro` | `team` | `enterprise`, default `free`), `plan_status`, `stripe_customer_id`, `stripe_subscription_id`, `period_end`, `over_quota_since`
-  - `usage (workspace_id, metric, period, count)`: monthly totals rolled up from the fetch counter
-- `apps/studio/src/worker/plans.ts`: the single table of limits per plan and helpers (`limitsFor(plan)`, `assertCanCreate(ws, kind)`, `editorCount(ws)`). Roles map to seats: `viewer` is free; every other role is an editor.
-- Enforcement points in `apps/studio/src/worker/index.ts`:
-  - `POST /api/workspaces`: Free users own one workspace
-  - `POST /api/w/:slug/invites` and invite accept: editor seats (viewers always allowed)
-  - `POST …/design-systems/import` and `…/from-template`: custom design-system count
-  - `POST …/directions`: Direction count
-  - `POST …/screens/:key/versions/:n/publish`: published-screen count
-  - version-history pruning for Free
-- Fetch metering: count `GET` by API key for screens, Directions and tokens. Use Workers Analytics Engine for the raw count (no D1 write per request), and a scheduled Worker (cron) that rolls up into `usage` daily and sets `over_quota_since`.
-- Errors: a 402 with `{ code: "plan_limit", limit, plan }`, which the app turns into an upgrade prompt.
-- Tests beside the existing Studio worker tests.
+Built on `feat/studio-billing` (29 Sep 2026). Everything here applies only when the Worker's `BILLING` is `on`, which only the hosted Studio sets: a self-hosted Studio has no limits and no Billing page (tested both ways).
+
+- ~~Migration `apps/studio/migrations/0007_plans.sql`~~: done.
+  - `workspaces` gains `plan` (default `free`), `plan_status`, `billing_interval`, `seats`, `stripe_customer_id`, `stripe_subscription_id`, `period_end`, `over_quota_since`
+  - `usage (workspace_id, metric, period, count, updated_at)`: monthly totals, `period` as `YYYY-MM`
+- ~~`apps/studio/src/worker/plans.ts`~~: done. `LIMITS` (the one table), `limitsFor`, `editorCount`, `assertCanCreate`, `assertCanEdit`, `pruneHistory`, `planSummary` (what the Billing page shows). `viewer` is free; every other role is an editor.
+- ~~Enforcement points~~: done.
+  - `POST /api/workspaces`: a person may own as many workspaces as the most generous plan among the ones they own allows (Free 1, Pro 3)
+  - invites and invite accept: editor seats, with open editor invites holding a seat; viewers always allowed. New: `DELETE /api/w/:slug/invites/:id` and `DELETE /api/w/:slug/members/:user` (owners), so a seat can be freed
+  - design-system import (a new design system, not a new version of one) and from-template
+  - `POST …/directions`
+  - screen publish (republishing a published screen doesn't count)
+  - Free keeps the last 10 versions of each screen, Direction and design system on save; the published or live one is always kept
+- ~~Fetch metering~~: done. A `GET` by API key of a published screen, a Direction or a design-system export writes one Workers Analytics Engine data point (`FETCHES`, dataset `polyxd_studio_fetches`). The cron runs **hourly** (fresher warnings than daily, and the query is cheap), reads this month and last month back through the Analytics Engine SQL API into `usage`, and sets or clears `over_quota_since`. Seven days over: every change answers 402 `over_quota` until the workspace upgrades or the month turns; fetches, reads and billing keep working. The API key's `last_used_at` is now written at most hourly too.
+- ~~Errors~~: done. 402 `{ error, code: "plan_limit", limit, plan, current, max }`.
+- ~~Tests~~: done, `apps/studio/test/billing.worker.test.ts`.
+- Still to do: warning emails at 80% and 100% (the Billing page shows both); approval before publish and shared libraries (Team) are flags in the table, not features yet.
 
 ### 3. Billing (Stripe)
 
-- Worker routes:
-  - `POST /api/w/:slug/billing/checkout`: Stripe Checkout (Pro: one flat price; Team: quantity = editor seats; monthly or yearly; a founding coupon at 50% off, limited to 100 redemptions, `duration: forever`)
-  - `POST /api/w/:slug/billing/portal`: Stripe Customer Portal
-  - `POST /api/billing/webhook`: verify the signature; handle `checkout.session.completed`, `customer.subscription.updated|deleted`, `invoice.payment_failed`; set `plan`, `plan_status` and `period_end`
-- Seat sync: when editors are added or removed, update the subscription quantity (prorated).
-- App: a Billing page in workspace settings (plan, seats, usage bars, upgrade and manage buttons) and an upgrade dialog shown on any 402.
-- Build and test against **Stripe test mode** only.
-- **User:** create the Stripe account, the business details and tax settings, and the products and prices. Then run `wrangler secret put STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and the price IDs (or put the price IDs in `wrangler.jsonc` vars). We never enter keys.
+Built on `feat/studio-billing` (29 Sep 2026), with Stripe's REST API through fetch (no SDK), tested with Stripe stood in for; not yet run against Stripe test mode.
+
+- ~~Worker routes~~: done.
+  - `POST /api/w/:slug/billing/checkout` (owners): `{ plan: "pro" | "team", interval: "month" | "year" }`. Team's quantity is the editor count; Pro is refused for a workspace with more than one editor. The founding coupon (`STRIPE_COUPON_FOUNDING`) is applied while Stripe accepts it, then Checkout opens at full price with promotion codes allowed.
+  - `POST /api/w/:slug/billing/portal` (owners)
+  - `POST /api/billing/webhook`: `Stripe-Signature` checked with Web Crypto (HMAC-SHA256, constant-time, 5-minute tolerance); `checkout.session.completed`, `customer.subscription.created|updated|deleted`, `invoice.payment_failed`. Sets `plan`, `plan_status`, `billing_interval`, `seats` and `period_end` from the subscription's price; a deleted subscription puts the workspace back on Free. Enterprise is set by hand and left alone.
+  - `GET /api/w/:slug/billing`: the plan, limits and usage for the app
+- ~~Seat sync~~: done. An editor joining or leaving a Team workspace sets the subscription item's quantity, `proration_behavior: create_prorations`.
+- ~~App~~: done. Workspace → Billing (plan, seats, usage bars, notices for 80%, over quota, paused and past due, monthly or yearly, upgrade and manage for owners) and an upgrade dialog on any 402. Team has Remove and Withdraw.
+- **User:** create the Stripe account, the business details and tax settings; in test mode first, the products and prices (Pro $8/month and $80/year; Team per unit $12/month and $120/year), the founding coupon (50% off, `duration: forever`, max redemptions 100), the Customer Portal settings (switch between those prices, change quantity, cancel), and a webhook endpoint at `https://studio.polyxd.com/api/billing/webhook` for the five events above. A Cloudflare API token with Account Analytics Read. Then `wrangler secret put … --env production` for `BILLING` (`on`), `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_PRO_MONTH`, `STRIPE_PRICE_PRO_YEAR`, `STRIPE_PRICE_TEAM_MONTH`, `STRIPE_PRICE_TEAM_YEAR`, `STRIPE_COUPON_FOUNDING`, `CF_ACCOUNT_ID`, `CF_ANALYTICS_TOKEN`, and apply migration 0007 remotely. We never enter keys.
 
 ### 4. Site
 

@@ -64,12 +64,13 @@ const text = (v: unknown, max: number, what: string): string => {
 
 const MAX_UPLOAD = 25 * 1024 * 1024;
 
-/** Work that may finish after the answer: the Worker waits for it, a test just lets it run. */
-function later(c: Ctx, work: Promise<unknown>) {
+/** Work that may finish after the answer (analytics, a seat sync): handed to the runtime when
+ * there is one, and awaited when there isn't, so a test sees it finish. */
+async function later(c: Ctx, work: Promise<unknown>) {
   try {
     c.executionCtx.waitUntil(work);
   } catch {
-    void work;
+    await work;
   }
 }
 /** An analytics event from the Worker (src/worker/analytics.ts), when POSTHOG_KEY is set; otherwise nothing. */
@@ -163,15 +164,6 @@ async function ws(c: Ctx, allowed?: ReadonlySet<string>): Promise<Workspace> {
   if (c.req.method !== "GET" && !new URL(c.req.url).pathname.includes("/billing/")) assertCanEdit(c.env, row);
   return row;
 }
-
-/** Work that may finish after the answer (a seat sync): handed to the runtime when there is one. */
-const later = async (c: Ctx, p: Promise<unknown>) => {
-  try {
-    c.executionCtx.waitUntil(p);
-  } catch {
-    await p;
-  }
-};
 
 /** A pruned design-system version's files, after its rows. */
 async function dropVersionFiles(env: Env, ids: string[]) {

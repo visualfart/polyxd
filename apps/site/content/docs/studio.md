@@ -7,7 +7,7 @@ order: 23
 
 # Studio
 
-[Studio](https://studio.polyxd.com) is the team's side of Polyxd: source-available (the [Functional Source License](https://fsl.software), in `apps/studio`: free to run for your own team or company, not as a competing hosted service, and each version becomes Apache-2.0 after two years), running on Cloudflare Workers with D1 and R2, and the same code whether you use the hosted one or your own. The hosted Studio is free for one workspace; paid plans for bigger teams are coming, and will be published before they start.
+[Studio](https://studio.polyxd.com) is the team's side of Polyxd: source-available (the [Functional Source License](https://fsl.software), in `apps/studio`: free to run for your own team or company, not as a competing hosted service, and each version becomes Apache-2.0 after two years), running on Cloudflare Workers with D1 and R2, and the same code whether you use the hosted one or your own. The hosted Studio has a Free plan and paid ones ([Plans](#plans)); a Studio you run yourself has no plans and no limits.
 
 ## Your design system
 
@@ -97,7 +97,28 @@ An ingest key is publishable, like the key a web analytics tool puts in a page. 
 
 ## Team
 
-Workspaces, invites with roles (design-system, designer, product, engineer, viewer), sign-in through [better-auth](https://www.better-auth.com) (email and password with verification, Google when configured), API keys, and ingest keys for Insights.
+Workspaces, invites with roles (design-system, designer, product, engineer, viewer), sign-in through [better-auth](https://www.better-auth.com) (email and password with verification, Google when configured), API keys, and ingest keys for Insights. Owners can take someone out of a workspace, and an invite can be withdrawn before it is used.
+
+## Plans
+
+Plans apply to the hosted Studio only. You pay per editor: a viewer is always free, and every other role (owner, design-system, designer, product, engineer) is an editor.
+
+| | Free | Pro | Team | Enterprise |
+|---|---|---|---|---|
+| Price | $0 | $8 a month, or $80 a year | $12 per editor a month, or $120 a year | talk to us |
+| Workspaces you own | 1 | 3 | unlimited | unlimited |
+| Editors | 2 | 1 | unlimited | unlimited |
+| Design systems | 1 | unlimited | unlimited | unlimited |
+| Directions | 1 | unlimited | unlimited | unlimited |
+| Published screens | 10 | unlimited | unlimited | unlimited |
+| Fetches by key a month (screens, Directions, tokens) | 10,000 | 250,000 | 1,000,000 | 10 million or more |
+| Version history | last 10 | all | all | all |
+
+- **Reaching a limit** stops only the new thing: another design system, another published screen, another editor. Studio says which plan has room. Everything you already have keeps working.
+- **Going over your fetches never breaks your product.** Studio warns you at 80% and 100% on the Billing page. If a workspace stays over for 7 days, editing pauses until it upgrades or the month turns; products still get their screens, Directions and tokens.
+- **Billing** is under Workspace → Billing: your plan, your seats, what you've used this month, and the buttons to upgrade or manage your subscription (owners only; payment is through Stripe). On Team, adding or removing an editor changes your seats, prorated.
+- **The founding offer**: the first 100 paying workspaces pay half, for as long as they stay subscribed.
+- **You can always leave**: every design system, screen and Direction exports as JSON on every plan.
 
 ## Run it yourself
 
@@ -107,6 +128,6 @@ npm run db:migrate -w @polyxd/studio      # local D1
 npm run dev -w @polyxd/studio             # http://localhost:8789
 ```
 
-For production: a D1 database, an R2 bucket, `SECRETS_KEY` and `AUTH_SECRET` secrets, `RESEND_API_KEY` for email, and `npm run deploy -w @polyxd/studio`. The README in `apps/studio` has the exact steps.
+For production: a D1 database, an R2 bucket, `SECRETS_KEY` and `AUTH_SECRET` secrets, `RESEND_API_KEY` for email, and `npm run deploy -w @polyxd/studio`. The README in `apps/studio` has the exact steps. Your own Studio has no plans and no limits: as many editors, design systems, Directions, screens and fetches as you like, and no Billing page.
 
 The [licence](https://github.com/visualfart/polyxd/blob/main/apps/studio/LICENSE) lets you run Studio for your own team or company, change it, and share your changes. It does not let you offer Studio, or something substantially like it, as a service to others. Each version becomes Apache-2.0 two years after its release.
