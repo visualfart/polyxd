@@ -100,6 +100,7 @@ It reads your CSS custom properties, maps what it can onto the contract, writes 
 | [`@polyxd/verifier`](https://www.npmjs.com/package/@polyxd/verifier) | `polyxd-verify`: static, rendered and agent checks |
 | `polyxd-spec` (Python) | The schemas, component catalogue and validator for Python, with the same results as `@polyxd/spec`; `polyxd-spec validate`. In [`packages/python-spec`](packages/python-spec), not yet on PyPI |
 | [`@polyxd/a2ui`](https://www.npmjs.com/package/@polyxd/a2ui) | Export to A2UI v1.0 |
+| [`@polyxd/mcp`](https://www.npmjs.com/package/@polyxd/mcp) | MCP server (`npx -y @polyxd/mcp`): the spec for the host's model, validation and verification, and an MCP App that shows the screen in any pack. Built, not yet on npm |
 | [`polyxd`](https://www.npmjs.com/package/polyxd) | The `polyxd` command: `pack` and `check` |
 | [`@polyxd/ds-kit`](https://www.npmjs.com/package/@polyxd/ds-kit) | The library behind `polyxd pack` |
 | `@polyxd/ds-*` | The thirteen packs as DTCG tokens, for building your own themes, plus twelve original templates to start from (`sketch`, `wireframe`, `editorial`, `brutalist`, `glass`, `terminal`, `pastel`, `civic`, `finance`, `health`, `neon`, `mono`). The renderer already includes their CSS |
@@ -146,6 +147,7 @@ Polyxd ships no model. Any model or program that emits spec-valid JSON drives it
 | `packages/ds-*` | Thirteen design-system packs, each generated from vendored, version-pinned sources, plus twelve original templates (`"template": true` in the manifest) meant to be copied and changed |
 | `packages/ds-kit` | Builds packs — including the `polyxd pack` command for yours |
 | `packages/a2ui` | Export to A2UI v1.0 |
+| `packages/mcp` | The MCP server and its MCP App |
 | `apps/gallery`, `apps/site` | The gallery and polyxd.com |
 | `bench/` | Benchmark requests, agent tasks, the gold set and the designer's rankings |
 | `model/` | Training and evaluation experiments (paused; see research/report.md) |

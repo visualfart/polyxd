@@ -22,7 +22,7 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const publish = process.argv.includes("--publish");
 
 /** Dependency order: nothing is published before what it depends on. */
-const CORE = ["spec", "core", "ds-kit", "react", "web", "a2ui", "verifier"];
+const CORE = ["spec", "core", "ds-kit", "react", "web", "a2ui", "verifier", "mcp"];
 const PACKS = readdirSync(join(ROOT, "packages"))
   .filter((d) => d.startsWith("ds-") && d !== "ds-kit" && existsSync(join(ROOT, "packages", d, "manifest.json")))
   .sort();
@@ -81,6 +81,7 @@ for (const name of ORDER) {
     for (const licence of vendored) if (!files.has(licence)) mine.push(`derived from a source whose licence (${licence}) doesn't ship with it`);
   }
   if (name === "verifier" && ![...files].some((f) => f.startsWith("harness-dist/"))) mine.push("ships without harness-dist, so it can't render");
+  if (name === "mcp" && !files.has("dist/view.html")) mine.push("ships without dist/view.html, so polyxd_show has nothing to show");
 
   let onNpm = false;
   try {

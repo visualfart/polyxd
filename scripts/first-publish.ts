@@ -21,7 +21,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const REPO = "visualfart/polyxd";
 
-const CORE = ["spec", "core", "ds-kit", "react", "web", "a2ui", "verifier"];
+const CORE = ["spec", "core", "ds-kit", "react", "web", "a2ui", "verifier", "mcp"];
 const PACKS = readdirSync(join(ROOT, "packages"))
   .filter((d) => d.startsWith("ds-") && d !== "ds-kit" && existsSync(join(ROOT, "packages", d, "manifest.json")))
   .sort();

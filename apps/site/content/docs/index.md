@@ -63,6 +63,7 @@ Everything is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) sco
 | `@polyxd/ds-*` | Thirteen design-system packs as DTCG tokens: Material 3, Carbon, Ant Design, Fluent 2, shadcn/ui, Bootstrap 5, Mantine, Radix Themes, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, GOV.UK Frontend and Chakra UI; and twelve original templates to start your own from |
 | `polyxd` | The `polyxd pack` command, which makes a pack from your own tokens. See [Your design system](/docs/your-design-system) |
 | `@polyxd/a2ui` | Exports UI documents to A2UI v1.0 (release candidate) messages, with a Polyxd A2UI catalog |
+| `@polyxd/mcp` | An MCP server: gives the host's model the spec, validates and verifies what it writes, and shows it to the user as an MCP App in any pack. Built, not yet on npm. See [MCP server](/docs/mcp/) |
 | `@polyxd/verifier` | The `polyxd-verify` CLI and library: document checks, rendered accessibility and layout checks, scripted agent tasks, and a consistency score |
 | `polyxd-spec` (Python) | The spec's schemas, component catalogue and validator for Python, with the same verdicts and messages as `@polyxd/spec`, and a `polyxd-spec validate` command. In the repository at `packages/python-spec`; not yet on PyPI |
 
@@ -88,4 +89,5 @@ Polyxd is an **early preview**. The spec is at `specVersion` 0.3 and may still c
 - [Quickstart](/docs/quickstart): render, validate and verify a document.
 - [UI documents](/docs/ui-documents): how a document is put together.
 - [Renderers](/docs/renderers/): not React? The Web Components renderer, the shared core, and what a conformant renderer must do.
+- [MCP server](/docs/mcp/): let Claude or another MCP host write screens and show them to the user.
 - [Components reference](/docs/reference/components): every component and its props.

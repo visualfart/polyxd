@@ -79,9 +79,9 @@ Two things are dropped outright: `$schema`, and the `context` of a `ui.*` action
 - **No Basic-only fallback yet.** A lossy mode that flattens into Basic components, so stock renderers can show something, is not implemented.
 - Re-vendoring and re-testing are needed when A2UI v1.0 is final.
 
-## MCP Apps (planned)
+## MCP Apps
 
-MCP Apps is the MCP extension for interactive UIs, delivered as a `ui://` HTML resource in a sandboxed iframe. The planned `@polyxd/mcp` server would ship one prebuilt `@polyxd/react` bundle as that resource, pass the generated UI document as tool input, and map Polyxd's semantic tokens onto the CSS variables MCP hosts provide, so the surface inherits the host's theme. The generated content stays data; only Polyxd's renderer is code. None of this is built yet.
+MCP Apps is the MCP extension for interactive UIs: a `ui://` HTML resource that the host shows in a sandboxed iframe. [`@polyxd/mcp`](/docs/mcp/) is Polyxd's MCP server, and it ships that resource. The page is one prebuilt `@polyxd/web` bundle with every pack's theme. The document arrives in the tool result, and the page renders it in the pack the model chose. It follows the host's light or dark theme, but it does not take the host's CSS variables: the look comes from the pack. The generated content stays data; only Polyxd's renderer is code.
 
 ## Why Polyxd keeps its own schema
 

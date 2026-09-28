@@ -21,6 +21,9 @@
     },
     {
       "path": "packages/ds-kit"
+    },
+    {
+      "path": "packages/mcp"
     }
   ]
 }
