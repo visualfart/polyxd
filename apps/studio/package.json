@@ -15,9 +15,9 @@
     "deploy": "npm run build && wrangler deploy --env production"
   },
   "dependencies": {
-    "@polyxd/ds-kit": "^0.3.0",
-    "@polyxd/react": "^0.3.0",
-    "@polyxd/spec": "^0.3.0",
+    "@polyxd/ds-kit": "^0.4.0",
+    "@polyxd/react": "^0.4.0",
+    "@polyxd/spec": "^0.4.0",
     "better-auth": "^1.7.6",
     "hono": "^4.6.0",
     "kysely": "^0.28.17",

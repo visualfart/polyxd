@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/ds-kit",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Shared parts of building a Polyxd design-system pack, and the polyxd command: pack, check, studio push, dev",
   "license": "Apache-2.0",
   "type": "module",
@@ -24,7 +24,7 @@
     }
   },
   "devDependencies": {
-    "@polyxd/spec": "^0.3.0"
+    "@polyxd/spec": "^0.4.0"
   },
   "bin": {
     "polyxd": "dist/polyxd.js"
@@ -41,8 +41,8 @@
     "NOTICE"
   ],
   "dependencies": {
-    "@polyxd/spec": "^0.3.0",
-    "@polyxd/react": "^0.3.0"
+    "@polyxd/spec": "^0.4.0",
+    "@polyxd/react": "^0.4.0"
   },
   "repository": {
     "type": "git",

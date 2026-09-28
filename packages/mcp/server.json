@@ -3,7 +3,7 @@
   "name": "com.polyxd/mcp",
   "title": "Polyxd",
   "description": "Write Polyxd UI documents, check them, and show them as real screens in any design-system pack.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "websiteUrl": "https://polyxd.com/docs/mcp/",
   "repository": {
     "url": "https://github.com/visualfart/polyxd",

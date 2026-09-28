@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+- Built on the Polyxd 0.4.0 packages: the spec's validators are compiled ahead of time, and people's initials stay visible on a selected row in the preview.
+
 ## 0.3.0
 
 The first release for the Visual Studio Marketplace and Open VSX.

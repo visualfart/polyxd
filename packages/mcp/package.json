@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/mcp",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "MCP server for Polyxd: gives the host's model the spec, checks the UI documents it writes, and shows them as an MCP App in any design-system pack",
   "license": "Apache-2.0",
   "type": "module",
@@ -37,13 +37,13 @@
   ],
   "dependencies": {
     "@modelcontextprotocol/server": "^2.1.0",
-    "@polyxd/runtime": "^0.3.0",
-    "@polyxd/spec": "^0.3.0",
-    "@polyxd/verifier": "^0.3.0"
+    "@polyxd/runtime": "^0.4.0",
+    "@polyxd/spec": "^0.4.0",
+    "@polyxd/verifier": "^0.4.0"
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "^2.1.0",
-    "@polyxd/web": "^0.3.0",
+    "@polyxd/web": "^0.4.0",
     "ajv": "^8.20.0",
     "esbuild": "^0.28.1",
     "playwright": "^1.63.0"

@@ -7,6 +7,7 @@ import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { chromium, type Browser, type Page } from "playwright";
 import { viewHTML, validate } from "../src/index.ts";
+import { VERSION } from "../src/server.ts";
 
 let browser: Browser | undefined;
 before(async () => {
@@ -76,7 +77,7 @@ test("the view initializes per the MCP Apps spec, renders the shown document in 
 
   const init = (await received(page)).find((m) => m.method === "ui/initialize");
   assert.equal(init.params.protocolVersion, "2026-01-26");
-  assert.deepEqual(init.params.appInfo, { name: "Polyxd", version: "0.3.0" });
+  assert.deepEqual(init.params.appInfo, { name: "Polyxd", version: VERSION });
   assert.deepEqual(init.params.appCapabilities, { availableDisplayModes: ["inline"] });
   assert.ok((await received(page)).some((m) => m.method === "ui/notifications/initialized"));
 

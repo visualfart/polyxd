@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/spec",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Polyxd spec: JSON Schema and TypeScript types for just-in-time interfaces",
   "license": "Apache-2.0",
   "type": "module",
