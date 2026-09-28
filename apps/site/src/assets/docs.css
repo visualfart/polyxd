@@ -211,6 +211,8 @@
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: 6px;
+  /* A URL in inline code breaks at a phone's edge instead of widening the page. */
+  overflow-wrap: anywhere;
 }
 /* Code blocks are surfaces: a step up from the ground, set apart by a hairline. */
 .prose pre {
@@ -238,6 +240,14 @@
 }
 .prose blockquote p:last-child {
   margin: 0;
+}
+/* Screenshots: the width of the text, set apart by the same hairline as a code block. */
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-small);
 }
 .table-wrap {
   overflow-x: auto;

@@ -78,15 +78,7 @@ Data comes from the document's own `data`, from a `<name>.data.json` beside it, 
 
 ## In your editor
 
-The **Polyxd** extension for VS Code (it runs in Cursor and Windsurf too) puts the same things next to the file you're editing, without a server to start.
-
-- **The schema, without configuration.** Files matching `*.polyxd.json`, `authored/*.json`, `intents/*.json` and `screens/*.json` get completion, hover text from the spec's descriptions and squiggles from the bundled JSON Schema. A file anywhere else needs only the `$schema` line.
-- **The static check as you type.** The spec's validator runs on every edit and on save, against the document's own `data` or the `<name>.data.json` beside it. A structural problem is an error; a binding that reads nothing is a warning with a "did you mean". Each one is underlined at its line, not listed somewhere else.
-- **A preview beside the editor.** *Polyxd: Open preview* (or the icon in the title bar of a document file) renders the active document with the real renderer: any of the thirteen packs or your own with the `polyxd.pack` setting pointing at a `manifest.json` or theme stylesheet; light or dark, defaulting to your editor's theme; phone, tablet, desktop, or drag the edge; compact to spacious. It updates as you type and keeps the surface mounted, so what you typed into an input survives a keystroke in the JSON. Click a component in the preview and the cursor goes to its JSON; put the cursor in a component's JSON and the preview outlines it. Actions the surface dispatches log underneath with their context resolved.
-- **Commands.** *Verify document* runs `polyxd-verify` from your workspace in a task terminal, every pack, light and dark, 390 and 1100, and tells you how it went. *Insert component* offers the 44 components by category with the spec's one-line summary and drops a valid skeleton at the cursor, tab stops on the placeholders. *Open in Studio* copies the document and opens Studio, where "Paste JSON" makes a screen of it. *Push to Studio* runs `polyxd studio push` with a key from `POLYXD_STUDIO_KEY` or the editor's secret storage, never from a settings file.
-- **Polyxd documents** in the Explorer: every document in the workspace by folder, with the check's status as a dot.
-
-It's in the repository at `apps/vscode`; build it with `npm run build -w polyxd-vscode`, package it with `vsce package`, and install the `.vsix` with `code --install-extension` (or Extensions → Install from VSIX in Cursor and Windsurf).
+The **Polyxd** extension for VS Code, Cursor, VSCodium and Windsurf puts the same check and preview next to the file you're editing, without a server to start. Mistakes are underlined as you type, and the preview follows the cursor. See [VS Code extension](/docs/vscode/) to install it.
 
 ## Keep Studio in step
 

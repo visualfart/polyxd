@@ -78,6 +78,25 @@ async function copyAssets() {
   await copyFile(js, here("../dist/webview/polyxd.js"));
   await copyFile(js.replace(/\.js$/, ".css"), here("../dist/webview/polyxd.css"));
   await copyFile(resolveFile("@polyxd/spec/schema/ui.schema.json"), here("../schema/ui.schema.json"));
+  // The files jsonValidation matches are bare documents or intent files (authored/ and intents/
+  // hold intents, whose document sits under "document"). The spec's schema at the root of an
+  // intent would call every intent file broken, so the root gets this: the spec's schema for a
+  // bare document, and for an intent's "document". The $ref is relative, so nothing is fetched.
+  await writeFile(
+    here("../schema/file.schema.json"),
+    JSON.stringify(
+      {
+        $schema: "https://json-schema.org/draft/2020-12/schema",
+        title: "Polyxd document or intent file",
+        description: "A Polyxd UI document, or an intent file whose `document` is one.",
+        if: { type: "object", required: ["document"] },
+        then: { properties: { document: { $ref: "ui.schema.json" } } },
+        else: { $ref: "ui.schema.json" },
+      },
+      null,
+      2,
+    ) + "\n",
+  );
   const prelude = `window.acquireVsCodeApi = function () { var s; return { postMessage: function (m) { console.log("to extension", JSON.stringify(m)); window.__toExtension = (window.__toExtension || []).concat([m]); }, getState: function () { return s; }, setState: function (v) { s = v; } }; };`;
   await writeFile(here("../dist/webview/standalone.html"), previewPage({ polyxdJs: "polyxd.js", polyxdCss: "polyxd.css", mainJs: "main.js", cspSource: "'self'", nonce: "standalone", prelude }));
 }
@@ -90,5 +109,5 @@ if (watch) {
 } else {
   await Promise.all([build(extension), build(webview)]);
   const size = async (p: string) => `${Math.round((await readFile(p)).byteLength / 1024)} KB`;
-  console.log(`wrote dist/extension.cjs (${await size(here("../dist/extension.cjs"))}), dist/webview/main.js (${await size(here("../dist/webview/main.js"))}), dist/webview/polyxd.js (${await size(here("../dist/webview/polyxd.js"))}), schema/ui.schema.json`);
+  console.log(`wrote dist/extension.cjs (${await size(here("../dist/extension.cjs"))}), dist/webview/main.js (${await size(here("../dist/webview/main.js"))}), dist/webview/polyxd.js (${await size(here("../dist/webview/polyxd.js"))}), schema/ui.schema.json, schema/file.schema.json`);
 }

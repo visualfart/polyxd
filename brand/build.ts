@@ -13,11 +13,12 @@
  *   brand/mark-states.svg       the eight pupil states, as <symbol>s and laid out in a row
  *   brand/mark.css              the Mark's state CSS (data-state), from the design system
  *   brand/tokens.css            CSS custom properties for both themes, from tokens.json
- *   brand/icon-*.png            app icons (128, 180, 192, 512, 1024) on ink; icon-accent-1024.png on signal
+ *   brand/icon-*.png            app icons (128, 180, 192, 256, 512, 1024) on ink; icon-accent-1024.png on signal
  *   brand/og.png                1200×630 social image
  *   brand/favicon.ico           the mark alone at 16, 32 and 48px, for browsers and crawlers that ask for /favicon.ico
  * tokens.json is the design system's own file (Claude Design, "Polyxd Design System"), copied here.
  * Run with `node brand/build.ts`; the site, Studio, the demos and the editor extension copy from here.
+ * `node brand/icons.ts` writes only the app icons, and `--check` says whether they are current.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -202,6 +203,13 @@ ${colour("dark")}
 /** The Google Fonts stylesheet for the brand's three families. */
 export const FONTS_URL = "https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap";
 
+/** The app icons written as brand/icon-<size>.png. 256 is the editor extension's: 128 at 2x. */
+export const ICON_SIZES = [128, 180, 192, 256, 512, 1024];
+
+/** An app icon as a page to screenshot: the mark on the squircle tile (f 0.73) at radius-icon, 22.5% of its side. */
+export const iconTile = (bg: string, inner: string, size: number) =>
+  `<!doctype html><body style="margin:0;background:transparent"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><path d="${roundRect(0, 0, size, size, size * 0.225, 0.73)}" fill="${bg}"/><svg x="${size * 0.13}" y="${size * 0.13}" width="${size * 0.74}" height="${size * 0.74}" viewBox="0 0 32 32">${inner}</svg></svg></body>`;
+
 const dir = fileURLToPath(new URL("./", import.meta.url));
 
 if (import.meta.url === `file://${process.argv[1]}`) {
@@ -239,11 +247,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       await page.close();
       console.log(`wrote brand/${file}`);
     };
-    // The icon's tile is the squircle (f 0.73) at radius-icon, 22.5% of its side.
-    const tile = (bg: string, inner: string, size: number) =>
-      `<!doctype html><body style="margin:0;background:transparent"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><path d="${roundRect(0, 0, size, size, size * 0.225, 0.73)}" fill="${bg}"/><svg x="${size * 0.13}" y="${size * 0.13}" width="${size * 0.74}" height="${size * 0.74}" viewBox="0 0 32 32">${inner}</svg></svg></body>`;
-    for (const size of [128, 180, 192, 512, 1024]) await shot(tile(INK, mark(), size), size, size, `icon-${size}.png`);
-    await shot(tile(SIGNAL, mark({ colours: "ink" }), 1024), 1024, 1024, "icon-accent-1024.png");
+    for (const size of ICON_SIZES) await shot(iconTile(INK, mark(), size), size, size, `icon-${size}.png`);
+    await shot(iconTile(SIGNAL, mark({ colours: "ink" }), 1024), 1024, 1024, "icon-accent-1024.png");
     // favicon.ico: the mark alone, as the SVG favicon is, at three sizes, each a PNG inside the ICO.
     const sizes = [16, 32, 48];
     const pngs: Buffer[] = [];

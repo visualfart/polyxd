@@ -948,6 +948,8 @@ await write(join(DIST, "site.webmanifest"), JSON.stringify({
 for (const f of ["tokens.css", "mark.css"]) await copyFile(join(REPO, "brand", f), join(DIST, "assets", f));
 
 await copyPackLogos();
+// The editor extension's screenshots, for its docs page. apps/vscode/scripts/screenshots.ts takes them.
+await cp(join(REPO, "apps/vscode/images"), join(DIST, "vscode"), { recursive: true });
 const demo = await demoHtml();
 await write(join(DIST, "assets/themes.css"), demo.themes);
 await cp(join(REPO, "packages/react/src/styles.css"), join(DIST, "assets/renderer.css"));

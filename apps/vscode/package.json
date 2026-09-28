@@ -1,13 +1,18 @@
 {
   "name": "polyxd-vscode",
   "displayName": "Polyxd",
-  "icon": "icon.png",
-  "description": "Polyxd documents in your editor: schema completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away.",
+  "description": "Write Polyxd UI documents with completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away.",
   "version": "0.3.0",
   "publisher": "polyxd",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#F3F1EC",
+    "theme": "light"
+  },
+  "pricing": "Free",
   "engines": {
     "vscode": "^1.96.0",
     "node": ">=22"
@@ -20,17 +25,45 @@
   "keywords": [
     "polyxd",
     "design system",
+    "design systems",
+    "ui",
+    "generative ui",
+    "generated ui",
+    "ai",
+    "agents",
+    "llm",
+    "mcp",
+    "a2ui",
     "json",
-    "preview"
+    "json schema",
+    "preview",
+    "live preview",
+    "validator",
+    "linter",
+    "react",
+    "material",
+    "carbon",
+    "fluent",
+    "shadcn",
+    "bootstrap",
+    "mantine",
+    "radix",
+    "polaris",
+    "primer",
+    "spectrum",
+    "govuk"
   ],
-  "main": "./dist/extension.cjs",
+  "homepage": "https://polyxd.com/docs/vscode/",
+  "bugs": {
+    "url": "https://github.com/visualfart/polyxd/issues"
+  },
+  "qna": "https://github.com/visualfart/polyxd/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/visualfart/polyxd.git",
+    "url": "https://github.com/visualfart/polyxd.git",
     "directory": "apps/vscode"
   },
-  "homepage": "https://polyxd.com",
-  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "main": "./dist/extension.cjs",
   "activationEvents": [
     "onLanguage:json",
     "onLanguage:jsonc",
@@ -48,7 +81,7 @@
           "**/intents/*.json",
           "**/screens/*.json"
         ],
-        "url": "./schema/ui.schema.json"
+        "url": "./schema/file.schema.json"
       }
     ],
     "commands": [
@@ -185,15 +218,19 @@
     "build": "node scripts/build.ts",
     "watch": "node scripts/build.ts --watch",
     "test": "node --test \"test/*.test.ts\"",
-    "test:smoke": "node scripts/build.ts && node --test test/smoke/run.ts",
-    "package": "node scripts/build.ts && vsce package --no-dependencies --allow-missing-repository",
+    "test:smoke": "node scripts/build.ts && node --test test/smoke/run.ts test/smoke/editor.ts",
+    "readme": "node scripts/readme.ts",
+    "screenshots": "node scripts/package.ts && node scripts/screenshots.ts",
+    "package": "node scripts/package.ts",
     "vscode:prepublish": "node scripts/build.ts"
   },
   "devDependencies": {
     "@polyxd/react": "^0.3.0",
     "@polyxd/spec": "^0.3.0",
     "@types/vscode": "^1.96.0",
+    "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "playwright": "^1.63.0"
   }
 }

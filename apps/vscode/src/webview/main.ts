@@ -43,7 +43,10 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getEleme
 const P = (window as unknown as { Polyxd?: PolyxdApi }).Polyxd;
 const time = () => new Date().toLocaleTimeString("en-GB");
 
-const state: Required<PanelState> = { theme: "material3", mode: "light", width: 390, density: "comfortable", logOpen: true, ...vscode.getState() };
+// What this panel was left at, read once: the page saves its defaults as soon as it lays out, so a
+// later getState() can no longer tell a choice from a default.
+const saved = vscode.getState();
+const state: Required<PanelState> = { theme: "material3", mode: "light", width: 390, density: "comfortable", logOpen: true, ...saved };
 const save = () => vscode.setState(state);
 
 let themes: string[] = P?.themes ?? [];
@@ -168,7 +171,22 @@ function render() {
   }
   $("file").textContent = `${c.title || c.file} · ${c.file}${c.kind === "intent" ? " · intent file" : ""}${c.dataFrom === "none" ? " · no data" : c.dataFrom === "sibling" ? " · data: sibling" : ""}`;
   if (outlined) requestAnimationFrame(() => outline(outlined));
+  reportRendered();
 }
+
+// ---- what the page tells the extension about itself ----
+// How many components are on screen once React has committed, and anything the content-security
+// policy blocked or that threw. The extension warns about a blocked script; the editor smoke test
+// reads both.
+let reportTimer: ReturnType<typeof setTimeout> | undefined;
+function reportRendered() {
+  clearTimeout(reportTimer);
+  reportTimer = setTimeout(() => {
+    if (current) vscode.postMessage({ type: "rendered", file: current.file, components: $("surface").querySelectorAll("[data-pxd-id]").length });
+  }, 100);
+}
+document.addEventListener("securitypolicyviolation", (e) => vscode.postMessage({ type: "problem", kind: "csp", message: `the content-security policy blocked ${e.blockedURI || "a resource"} (${e.effectiveDirective})` }));
+window.addEventListener("error", (e) => vscode.postMessage({ type: "problem", kind: "error", message: e.message }));
 
 // ---- outline and selection, both ways ----
 function outline(id?: string) {
@@ -239,8 +257,8 @@ window.addEventListener("message", (e: MessageEvent<Incoming>) => {
   switch (m.type) {
     case "init":
       themes = m.themes.length ? m.themes : themes;
-      if (!vscode.getState()?.theme) state.theme = m.theme;
-      if (!vscode.getState()?.mode) state.mode = m.mode;
+      if (!saved?.theme) state.theme = m.theme;
+      if (!saved?.mode) state.mode = m.mode;
       pack = m.pack;
       $("packcss").textContent = pack?.css ?? "";
       paintThemes();

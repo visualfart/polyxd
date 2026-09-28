@@ -33,3 +33,15 @@ jobs:
       - run: npm run test:python
       - run: npm run check:licences
       - run: npm run release:check
+      # The VS Code extension as the .vsix a release would publish, kept with the run for a week so
+      # a pull request's build can be installed and tried (Extensions → … → Install from VSIX).
+      - name: Package the VS Code extension
+        run: |
+          npm run build:preview -w @polyxd/react
+          npm run package -w polyxd-vscode
+      - uses: actions/upload-artifact@v4
+        with:
+          name: polyxd-vscode
+          path: apps/vscode/*.vsix
+          retention-days: 7
+          if-no-files-found: error

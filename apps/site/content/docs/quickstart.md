@@ -69,7 +69,7 @@ Two more exports: `PolyxdSkeleton` shows a loading state shaped by the coming do
 
 ### Write documents with help
 
-Add `"$schema": "https://polyxd.com/schema/0.3/ui.schema.json"` to a document and VS Code, Cursor, Zed and JetBrains validate and complete it. `npx polyxd dev ./screens` previews a folder of documents in every pack as you edit (see [Your design system](/docs/your-design-system/#preview-documents-as-you-write-them)); the [Polyxd extension](/docs/your-design-system/#in-your-editor) adds a preview panel and diagnostics inside the editor.
+Add `"$schema": "https://polyxd.com/schema/0.3/ui.schema.json"` to a document and VS Code, Cursor, Zed and JetBrains validate and complete it. `npx polyxd dev ./screens` previews a folder of documents in every pack as you edit (see [Your design system](/docs/your-design-system/#preview-documents-as-you-write-them)); the [Polyxd extension](/docs/vscode/) adds a preview panel and diagnostics inside the editor.
 
 ### Try it without writing code
 
