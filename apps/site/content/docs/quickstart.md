@@ -128,7 +128,7 @@ for issue in result.errors:
 The verifier renders the document in headless Chromium, in each design system, mode and width, and checks it the way it will actually be used. It needs Playwright's Chromium.
 
 ```bash
-npm install -D @polyxd/verifier
+npm install -D @polyxd/verifier playwright
 npx playwright install chromium   # once
 
 npx polyxd-verify my-ui.json \

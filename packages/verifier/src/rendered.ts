@@ -1,12 +1,7 @@
 import type { Page } from "playwright";
+import type { Finding } from "./static.ts";
 
-export interface Finding {
-  severity: "error" | "warning";
-  check: string;
-  message: string;
-  /** How many elements are affected */
-  count?: number;
-}
+export type { Finding };
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 

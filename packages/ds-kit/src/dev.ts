@@ -258,7 +258,7 @@ export async function createDevServer(options: DevServerOptions): Promise<DevSer
     const cli = findVerifier();
     if (!cli) {
       send("line", { text: "The verifier isn't installed here. It renders in a real browser, so it's a separate package:" });
-      send("line", { text: "  npm install -D @polyxd/verifier && npx playwright install chromium" });
+      send("line", { text: "  npm install -D @polyxd/verifier playwright && npx playwright install chromium" });
       send("done", { code: 2 });
       return done();
     }
@@ -402,7 +402,7 @@ export async function main(argv: string[]): Promise<number> {
   const rel = relative(process.cwd(), absolute);
   const dir = rel === "" ? "." : rel.startsWith("..") ? absolute : rel;
   console.log(`polyxd dev  ${server.url}`);
-  console.log(`${docs.length} document${docs.length === 1 ? "" : "s"} in ${dir}, watching for changes${server.pack ? ` · pack ${server.pack.name} from --pack` : ""}${values.verify ? findVerifier() ? " · verifier ready" : " · verifier not installed (npm install -D @polyxd/verifier)" : ""}`);
+  console.log(`${docs.length} document${docs.length === 1 ? "" : "s"} in ${dir}, watching for changes${server.pack ? ` · pack ${server.pack.name} from --pack` : ""}${values.verify ? findVerifier() ? " · verifier ready" : " · verifier not installed (npm install -D @polyxd/verifier playwright)" : ""}`);
   if (!findBundle()) console.log("The renderer bundle isn't installed, so the page can list and check documents but not render them: npm install @polyxd/react");
   for (const d of docs) console.log(describe(d));
   for (const b of server.broken()) console.log(`  error  ${b.file.padEnd(32)} did not parse: ${b.message}`);

@@ -79,7 +79,7 @@ Validate and verify it:
 
 ```sh
 npx polyxd-validate my-ui.json                 # schema and structural rules, from @polyxd/spec
-npm install -D @polyxd/verifier && npx playwright install chromium
+npm install -D @polyxd/verifier playwright && npx playwright install chromium
 npx polyxd-verify my-ui.json --themes carbon   # rendered light and dark, phone and desktop; axe, contrast, layout
 ```
 

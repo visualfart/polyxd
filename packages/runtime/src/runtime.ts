@@ -23,8 +23,8 @@ export interface RuntimeOptions {
   /** The components generated screens may use. Default: every surface component in the spec. */
   components?: string[];
   /**
-   * Replaces the built-in document checks, e.g. with `staticAudit` from `@polyxd/verifier` in Node.
-   * It gets the same options the verifier takes. The generated-document checks still run.
+   * Replaces the default document checks (`staticAudit` from `@polyxd/verifier/static`) with your
+   * own. It gets the same options the verifier takes. The generated-document checks still run.
    */
   audit?: Audit;
   /** Privacy-safe events: counts, timings, validity and check ids. Never the ask, the data or the document. */
@@ -113,9 +113,9 @@ export function createRuntime(options: RuntimeOptions): Runtime {
 
   async function check(doc: Record<string, unknown>, ask: Ask): Promise<Finding[]> {
     const checked = ask.data !== undefined ? { ...doc, data: ask.data } : doc;
-    const auditOptions: AuditOptions = { rules, emphasisBudget: options.direction?.profile?.emphasisBudget };
+    const auditOptions: AuditOptions = { rules, emphasisBudget: options.direction?.profile?.emphasisBudget, missingData: ask.data !== undefined ? "error" : "warning" };
     if (ask.capabilities) auditOptions.registry = { name: "ask", capabilities: ask.capabilities };
-    const found = options.audit ? await options.audit(checked, auditOptions) : checkDocument(checked, { ...auditOptions, missingData: ask.data !== undefined ? "error" : "warning" });
+    const found = options.audit ? await options.audit(checked, auditOptions) : checkDocument(checked, auditOptions);
     return [...found, ...generatedChecks(doc, options.direction, options.components)];
   }
 

@@ -61,7 +61,7 @@ export async function verify(uri: vscode.Uri, loaded: Loaded): Promise<void> {
   const code = await runTask(`Verify ${basename(uri.fsPath)}`, command, cwd);
   const name = basename(uri.fsPath);
   if (code === 0) void vscode.window.showInformationMessage(`Polyxd: ${name} verified in ${THEMES.length} packs with no errors.`);
-  else if (code === undefined) void vscode.window.showWarningMessage("Polyxd: the verifier didn't start. Is @polyxd/verifier installed (npm install -D @polyxd/verifier && npx playwright install chromium)?");
+  else if (code === undefined) void vscode.window.showWarningMessage("Polyxd: the verifier didn't start. Is @polyxd/verifier installed (npm install -D @polyxd/verifier playwright && npx playwright install chromium)?");
   else void vscode.window.showWarningMessage(`Polyxd: the verifier found problems in ${name} (exit ${code}); see the terminal.`);
 }
 

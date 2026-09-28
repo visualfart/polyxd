@@ -6,11 +6,24 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./static": {
+      "types": "./dist/static.d.ts",
+      "default": "./dist/static.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
   "bin": {
     "polyxd-verify": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc -b",
+    "build:patterns": "node scripts/build-patterns.ts",
     "build:harness": "vite build --config harness/vite.config.ts && node scripts/build-harness-web.ts",
     "verify": "node src/cli.ts",
     "test": "npm run build:harness && node --test \"test/**/*.test.ts\"",
@@ -29,12 +42,20 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "vite": "^8.3.0",
-    "@polyxd/web": "^0.3.0"
+    "@polyxd/web": "^0.3.0",
+    "playwright": "^1.63.0"
   },
   "dependencies": {
     "@polyxd/spec": "^0.3.0",
-    "axe-core": "^4.13.0",
+    "axe-core": "^4.13.0"
+  },
+  "peerDependencies": {
     "playwright": "^1.63.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
   },
   "repository": {
     "type": "git",

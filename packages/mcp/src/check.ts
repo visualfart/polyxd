@@ -3,7 +3,7 @@
  * issue carries its JSON Pointer, the component it is in, and a hint saying what to change.
  */
 import { validateDocument, directionRules } from "@polyxd/spec";
-import { staticAudit } from "@polyxd/verifier/dist/static.js";
+import { staticAudit } from "@polyxd/verifier/static";
 import { componentDefinitions, componentNamed, exampleDirections } from "./spec.ts";
 
 export interface ReportedIssue {
@@ -171,6 +171,6 @@ export function formatVerify(r: VerifyReport): string {
     ? `Fails${scope}: ${r.errors} error${r.errors === 1 ? "" : "s"}, ${r.warnings} warning${r.warnings === 1 ? "" : "s"}.`
     : `Passes${scope}: no errors${r.warnings ? `, ${r.warnings} warning${r.warnings === 1 ? "" : "s"}` : ""}.`;
   const lines = r.findings.map((f) => `- ${f.severity} [${f.check}] ${f.message}${f.hint ? `\n  Fix: ${f.hint}` : ""}`);
-  const note = "These are the document checks. Rendered checks (accessibility, layout, agent tasks) need a browser: save the document and run `npx -p @polyxd/verifier polyxd-verify <file>`.";
+  const note = "These are the document checks. Rendered checks (accessibility, layout, agent tasks) need a browser: save the document, run `npx playwright install chromium` once, then `npx -p @polyxd/verifier -p playwright polyxd-verify <file>`.";
   return [head, ...lines, note].join("\n");
 }

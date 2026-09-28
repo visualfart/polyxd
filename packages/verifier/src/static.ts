@@ -1,8 +1,24 @@
-import { validateDocument } from "@polyxd/spec";
-import { checkPattern, evaluateRules, type Rule } from "@polyxd/spec/patterns";
+/**
+ * The document checks: everything the verifier can say without rendering. This module is also the
+ * `@polyxd/verifier/static` entry, so it imports nothing that needs a browser or a file system:
+ * the spec's browser-safe entries, and the pattern checks inlined at build time. It runs in Node,
+ * browsers and Workers.
+ */
+import { validateDocument } from "@polyxd/spec/browser";
+import type { Rule } from "@polyxd/spec/patterns";
 import { checkCapabilities, type CapabilityRegistry } from "@polyxd/spec/capabilities";
 import { childIds, readingOrder, runCheck } from "@polyxd/spec/checks";
-import type { Finding } from "./rendered.ts";
+import { PATTERN_CHECKS } from "./patterns.generated.ts";
+
+export type { Rule, CapabilityRegistry };
+
+export interface Finding {
+  severity: "error" | "warning";
+  check: string;
+  message: string;
+  /** How many elements are affected */
+  count?: number;
+}
 
 export interface StaticOptions {
   registry?: CapabilityRegistry;
@@ -10,6 +26,27 @@ export interface StaticOptions {
   rules?: Rule[];
   /** Primary actions allowed in one view (Design Direction's profile.emphasisBudget) */
   emphasisBudget?: number;
+  /**
+   * How a binding that reads nothing from `data` is reported (`data:missing-path`). Default
+   * "error": against the data the screen is shown with, it renders a blank. Use "warning" when the
+   * document is checked without the data it will get.
+   */
+  missingData?: "warning" | "error";
+}
+
+/** The ids of the spec's patterns, whose checks this module carries. */
+export const PATTERN_IDS = Object.keys(PATTERN_CHECKS);
+
+function evaluate(rules: Rule[], doc: any) {
+  return rules.map((r) => ({ id: r.id, description: r.description, severity: r.severity, ...runCheck(r.rule, doc) }));
+}
+
+function checkPattern(doc: any) {
+  const id = doc?.surface?.pattern;
+  if (!id) return [];
+  const checks = PATTERN_CHECKS[id];
+  if (!checks) return [{ id: "unknown-pattern", description: "Declared pattern exists", severity: "error" as const, pass: false, message: `unknown pattern "${id}"` }];
+  return evaluate(checks, doc);
 }
 
 const INPUTS = new Set(["TextInput", "Choice", "Toggle", "DateInput", "RangeInput", "Rating", "FileInput", "ColorInput", "CodeInput"]);
@@ -68,7 +105,7 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
   const out: Finding[] = [];
   // A binding that reads nothing renders a blank where the answer should be: against the data the
   // screen is shown with, that's an error, and one worth its own check id.
-  const v = validateDocument(doc, { emphasisBudget: opts.emphasisBudget, missingData: "error" });
+  const v = validateDocument(doc, { emphasisBudget: opts.emphasisBudget, missingData: opts.missingData ?? "error" });
   for (const i of v.issues) {
     // The shell's structure has a check of its own: shell components only in a shell document, a
     // shell authored with a Frame at the root and one Outlet under its main, placement under a Frame.
@@ -82,7 +119,7 @@ export function staticAudit(doc: any, opts: StaticOptions = {}): Finding[] {
 
   for (const r of checkPattern(doc)) if (!r.pass) out.push({ severity: r.severity, check: `pattern:${r.id}`, message: `${r.description}: ${r.message}` });
   if (opts.registry) for (const i of checkCapabilities(doc, opts.registry)) out.push({ severity: i.severity, check: "capability", message: `${i.at}: ${i.message}` });
-  if (opts.rules) for (const r of evaluateRules(opts.rules, doc)) if (!r.pass) out.push({ severity: r.severity, check: `rule:${r.id}`, message: `${r.description}: ${r.message}` });
+  if (opts.rules) for (const r of evaluate(opts.rules, doc)) if (!r.pass) out.push({ severity: r.severity, check: `rule:${r.id}`, message: `${r.description}: ${r.message}` });
 
   // Short views everywhere, not only in surfaces that declare the multi-step-form pattern.
   if (doc.surface?.pattern !== "multi-step-form") {

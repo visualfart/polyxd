@@ -21,7 +21,7 @@ It watches `dir` (default: the current folder) for documents: a JSON file with `
 
 The page at `http://localhost:4310/` lists the documents with a dot for the static check (green clean, amber warnings, red errors), renders the selected one with the real renderer, and lets you switch between all built-in packs (plus one of yours with `--pack`), light and dark, phone, tablet and desktop widths with a draggable edge, and density. Beside the surface: the static check's issues, run in the page with `@polyxd/spec/browser` against the data (a binding that reads nothing is a warning); the document JSON with a copy button; the data, and the data as edited in the surface; and a log of the actions the surface dispatches, with their context resolved. Save any file and the surface reloads in place, keeping your selection and controls.
 
-`--verify` adds a button that runs the full verifier for the selected document (13 packs × light/dark × 390/1100 with axe and the layout check) and streams its output into the panel. It needs `@polyxd/verifier` installed (`npm install -D @polyxd/verifier && npx playwright install chromium`).
+`--verify` adds a button that runs the full verifier for the selected document (13 packs × light/dark × 390/1100 with axe and the layout check) and streams its output into the panel. It needs `@polyxd/verifier` installed (`npm install -D @polyxd/verifier playwright && npx playwright install chromium`).
 
 The renderer comes from `@polyxd/react/preview`, a single script and stylesheet with React, the renderer, the validator and every theme, so nothing is built on your side. Everything else is Node: `http`, `fs.watch`, and server-sent events.
 

@@ -26,9 +26,7 @@
   },
   "dependencies": {
     "@polyxd/core": "^0.3.0",
-    "@polyxd/spec": "^0.3.0"
-  },
-  "devDependencies": {
+    "@polyxd/spec": "^0.3.0",
     "@polyxd/verifier": "^0.3.0"
   },
   "repository": {

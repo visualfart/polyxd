@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { staticAudit } from "@polyxd/verifier";
+import { staticAudit } from "@polyxd/verifier/static";
 import { createRuntime, GeneratorError, memoryStore, type Progress } from "../src/index.ts";
 import { brokenDoc, calmFinance, capabilities, confirmDoc, data, fake, fenced } from "./helpers.ts";
 
@@ -227,4 +227,13 @@ test("the verifier's staticAudit can replace the built-in checks", async () => {
   assert.ok(options.rules.some((r: any) => r.id === "money-moves-in-confirm"));
   assert.ok(options.rules.some((r: any) => r.id === "voice-no-exclamation"));
   assert.equal(options.emphasisBudget, 1);
+  assert.equal(options.missingData, "error", "the ask carries data");
+});
+
+test("the default checks are the verifier's document checks, agent-readiness included", async () => {
+  const doc = confirmDoc() as any;
+  doc.components[0].confirm.label = "Send the money to Alex for this month's rent";
+  const result = await createRuntime({ generator: fake([JSON.stringify(doc)]) }).generate(ask);
+  assert.equal(result.report.valid, true, "a warning doesn't block");
+  assert.deepEqual(result.report.findings.map((f) => f.check), ["copy:long-label"]);
 });
