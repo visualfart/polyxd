@@ -1,10 +1,34 @@
 /**
- * polyxd.com Worker: serves the static site from ./dist and handles the early-access waitlist.
+ * polyxd.com Worker: serves the static site from ./dist, handles the early-access waitlist, and
+ * answers the demos' live endpoint (/demos/api/*, apps/demos/server/live.ts).
  * Waitlist entries are stored in KV keyed by email; nothing else about the visitor is kept.
  */
-interface Env {
+import type { LiveEnv } from "../../demos/server/live.ts";
+
+interface Env extends LiveEnv {
   ASSETS: Fetcher;
   WAITLIST: KVNamespace;
+}
+
+/**
+ * The demos' live endpoint, loaded on its first request so the rest of the site never evaluates it.
+ * It is off (503) until a model key is set as a secret: `wrangler secret put ANTHROPIC_API_KEY`.
+ */
+let live: Promise<(request: Request, env: LiveEnv, ctx: ExecutionContext) => Promise<Response>> | undefined;
+const off = () => json({ live: false }, 503);
+async function demosApi(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  // No key, no fake: answer without loading the endpoint at all.
+  if (!env.ANTHROPIC_API_KEY && !env.POLYXD_API_KEY && env.POLYXD_DEMOS_FAKE !== "1") return off();
+  live ??= import("../../demos/server/live.ts").then((m) => m.createLiveApi());
+  try {
+    return await (await live)(request, env, ctx);
+  } catch (err) {
+    // The endpoint couldn't load or failed before streaming: the demos fall back to their library.
+    // Only the error's name and message are logged; the request body is never read here.
+    console.error(JSON.stringify({ at: "demos.live", outcome: "unavailable", error: `${(err as Error)?.name}: ${(err as Error)?.message}` }));
+    live = undefined;
+    return off();
+  }
 }
 
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
@@ -31,9 +55,10 @@ async function waitlist(request: Request, env: Env): Promise<Response> {
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     if (url.pathname === "/api/waitlist") return waitlist(request, env);
+    if (url.pathname.startsWith("/demos/api/")) return demosApi(request, env, ctx);
     if (url.hostname === "www.polyxd.com") return Response.redirect(`https://polyxd.com${url.pathname}${url.search}`, 301);
     const response = await env.ASSETS.fetch(request);
     // The demo products route on the client: any path under /demos/<name>/ is that product's page.

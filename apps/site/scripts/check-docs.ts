@@ -46,7 +46,7 @@ for (const cmd of ["pack", "check", "studio push", "dev"]) if (!cli.includes(cmd
 for (const cmd of ["polyxd pack", "polyxd check", "polyxd studio push", "polyxd dev"]) if (!all.includes(cmd)) problems.push(`docs do not mention "${cmd}"`);
 
 // Demo products: every product folder is linked from the docs.
-const demos = (await readdir(join(REPO, "apps/demos"), { withFileTypes: true })).filter((d) => d.isDirectory() && !["kit", "scripts", "test", "public", "node_modules", "dist"].includes(d.name)).map((d) => d.name);
+const demos = (await readdir(join(REPO, "apps/demos"), { withFileTypes: true })).filter((d) => d.isDirectory() && !["kit", "scripts", "server", "test", "test-shots", "public", "node_modules", "dist"].includes(d.name)).map((d) => d.name);
 for (const d of demos) if (!all.includes(`/demos/${d}/`)) problems.push(`docs do not link /demos/${d}/`);
 
 // Packs: the number of real design-system packs stated in the docs.
