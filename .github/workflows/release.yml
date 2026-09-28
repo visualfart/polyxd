@@ -25,6 +25,12 @@ permissions:
   contents: read
   id-token: write # npm trusted publishing and provenance
 
+# One release at a time for a tag: a second run for the same tag waits, then finds everything
+# already published and skips it, instead of racing the first to npm.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
