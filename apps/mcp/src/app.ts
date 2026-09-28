@@ -5,6 +5,7 @@
  *             tool is read-only and touches no account and no personal data
  *   /health   a small JSON answer for uptime checks
  *   /         a redirect to the docs
+ *   /.well-known/openai-apps-challenge   OpenAI's domain-verification token, when one is set
  *   /favicon.ico, /favicon.svg, /icon-512.png   redirects to polyxd.com's copies, so apps that look
  *             up a host's icon find the Polyxd mark
  *
@@ -23,6 +24,8 @@ export const RATE_LIMIT = 600;
 export interface Env {
   /** Cloudflare's rate limiting binding: counts per location, so it is a guard against floods, not an exact quota. */
   RATE_LIMITER?: { limit(options: { key: string }): Promise<{ success: boolean }> };
+  /** OpenAI's domain-verification token for the app directory, set with `wrangler secret put OPENAI_APPS_CHALLENGE`. */
+  OPENAI_APPS_CHALLENGE?: string;
 }
 
 export interface AppOptions {
@@ -63,6 +66,8 @@ export function createApp(options: AppOptions) {
         response = Response.redirect(DOCS_URL, 302);
       } else if (ICONS.has(pathname) && (request.method === "GET" || request.method === "HEAD")) {
         response = new Response(null, { status: 301, headers: { location: `https://polyxd.com${ICONS.get(pathname)}`, "cache-control": "public, max-age=86400" } });
+      } else if (pathname === "/.well-known/openai-apps-challenge" && env.OPENAI_APPS_CHALLENGE) {
+        response = new Response(env.OPENAI_APPS_CHALLENGE.trim(), { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" } });
       } else if (pathname === "/health") {
         response = Response.json({ ok: true, name: "polyxd", version: VERSION, endpoint: "/mcp" }, { headers: { "cache-control": "no-store", "access-control-allow-origin": "*" } });
       } else {

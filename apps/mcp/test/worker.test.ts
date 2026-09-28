@@ -54,6 +54,11 @@ test("/ redirects to the docs, /health answers, anything else is 404", async () 
     assert.equal(icon.headers.get("location"), `https://polyxd.com${target}`);
   }
 
+  assert.equal((await app.fetch(at("/.well-known/openai-apps-challenge"))).status, 404, "no token, no challenge");
+  const challenge = await app.fetch(at("/.well-known/openai-apps-challenge"), { OPENAI_APPS_CHALLENGE: "token-123\n" });
+  assert.equal(challenge.status, 200);
+  assert.equal(await challenge.text(), "token-123");
+
   assert.equal((await app.fetch(at("/mcp/extra"))).status, 404);
   assert.equal((await app.fetch(at("/.well-known/oauth-authorization-server"))).status, 404, "no authentication to discover");
 });
