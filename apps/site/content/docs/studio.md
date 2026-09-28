@@ -27,8 +27,16 @@ order: 23
 
 ## Direction
 
-- **Components**: which of the 44 are on for generators, guidance the generator reads, and your own implementation per component.
-- **Rules**: yours, as verifier checks with a severity and an on/off switch. They run on every screen saved in Studio and in the verifier when a product passes them.
+A [Design Direction](/docs/design-direction) is the team's taste as one versioned file. Studio edits a whole one, section by section, and products fetch the published one by key.
+
+- **Profile**: density, numbers and data, motion, secondary detail, freedom and primary actions per view, each as cards with a small drawing and a line on what it does; the schema's default is marked until you choose.
+- **Voice**: guidelines, tone as sliders (formality, energy, warmth, humour), who's talking, casing, spelling, the highest reading grade, exclamation marks and emoji, button labels, the words to use instead of others and the words never to say, and guidance for recurring moments (empty, error, success, confirm, loading, before something is lost). Beside it, a heading, a sentence and a button you type are checked as you type by the verifier's own copy checks, with the words it flags marked.
+- **Patterns**: prefer, allow or rule out each of the spec's six, and write your own: the situations it's for, how to handle them, and the components you prefer in reading order. Yours are pattern files of the Direction's own, in the spec's pattern format.
+- **Exemplars**: the workspace's screens, attached with the request each answers and drawn small with the renderer, in your design system.
+- **Rules**: yours, as verifier checks with a severity and an on/off switch. They run on every screen saved in Studio and in the verifier when a product passes them, and every Direction in the workspace carries the ones switched on when it is saved. The Rules page and the Direction's Rules tab are the same list.
+- **Components**: which of the 44 are on for generators, guidance the generator reads, and your own implementation per component. They are the workspace's, shown in the Direction editor too; the Direction file has no place for them yet.
+
+Every change is checked against the Direction schema (`direction.schema.json`, and the pattern schema for your own patterns), and a problem shows beside the control it's about; a Direction that doesn't fit isn't saved. **Save** keeps a version with a note and your own version number (Studio suggests the next one); **Changes** compares the editor with the published version, or any saved one, field by field ("Density: Comfortable → Compact", "Words to avoid: added “kindly”"); **Publish** makes a version the one products get. **Export** downloads the Direction as `<key>.direction.json`, valid against the schema; **Import** loads a Direction file into the editor as unsaved changes, keeps your own patterns it still lists, and offers any rules in it that the workspace lacks.
 
 ## Screens
 
@@ -44,7 +52,7 @@ Where designers author a product's surfaces, in the same format a generator writ
 
 ## Delivering a screen to a product
 
-A published screen is fetched by key, with an API key from Team → API keys (keys can import tokens and read design systems and screens, nothing else):
+A published screen is fetched by key, with an API key from Team → API keys (keys can import tokens and read design systems, screens and Directions, nothing else):
 
 ```sh
 curl -H "Authorization: Bearer $POLYXD_STUDIO_KEY" \
@@ -52,6 +60,17 @@ curl -H "Authorization: Bearer $POLYXD_STUDIO_KEY" \
 ```
 
 It returns the document with `surface.origin: "authored"` and an `X-Polyxd-Screen-Version` header. A key reads published screens and design systems and can't change anything; fetch on the server or at build time, since a screen changes when someone publishes, not on every request. Render it with `PolyxdSurface` (or `PolyxdFrame` for a shell) exactly like a generated one.
+
+## Delivering a Direction
+
+A published Direction is fetched the same way, by its key, which is also its `name` in the file:
+
+```sh
+curl -H "Authorization: Bearer $POLYXD_STUDIO_KEY" \
+  https://studio.polyxd.com/api/w/<workspace>/directions/<key>
+```
+
+It returns the Direction, valid against `direction.schema.json`, with an `X-Polyxd-Direction-Version` header (the Studio version number); an unpublished one answers 404. Paths inside it are relative to that address: your own patterns are listed in `patterns.custom` as `<key>/patterns/<id>.json`, fetched from `…/directions/<key>/patterns/<id>.json`, and an exemplar screen as `../screens/<screen>`, which is the screen's own delivery address. Hold a document to it with `directionRules(direction)` from `@polyxd/spec`, as in [Design Direction](/docs/design-direction). A key reads Directions and can't change them.
 
 ## Team
 

@@ -17,6 +17,9 @@ import { Mark, StudioLockup } from "./mark.tsx";
 // The screen pages carry the renderer, the schema and the spec's examples; they load when opened.
 const Screens = lazy(() => import("./pages/Screens.tsx").then((m) => ({ default: m.Screens })));
 const Screen = lazy(() => import("./pages/Screen.tsx").then((m) => ({ default: m.Screen })));
+// The Direction editor draws exemplar screens with the renderer; it loads when opened.
+const Directions = lazy(() => import("./pages/Directions.tsx").then((m) => ({ default: m.Directions })));
+const DirectionEditor = lazy(() => import("./pages/Direction.tsx").then((m) => ({ default: m.DirectionEditor })));
 // The tokens editor carries the mapper and the contract; it loads when opened.
 const TokensEditor = lazy(() => import("./pages/TokensEditor.tsx").then((m) => ({ default: m.TokensEditor })));
 // The landing carries the renderer, three themes and its own stylesheet; it loads only when shown.
@@ -67,7 +70,7 @@ export function App() {
 const NAV: { group?: string; items: { to: string; label: string }[] }[] = [
   { items: [{ to: "", label: "Home" }] },
   { group: "Foundations", items: [{ to: "design-systems", label: "Design systems" }, { to: "components", label: "Components" }] },
-  { group: "Direction", items: [{ to: "rules", label: "Rules" }] },
+  { group: "Direction", items: [{ to: "directions", label: "Directions" }, { to: "rules", label: "Rules" }] },
   { group: "Product", items: [{ to: "screens", label: "Screens" }] },
   { group: "Workspace", items: [{ to: "team", label: "Team" }] },
 ];
@@ -125,6 +128,8 @@ function Shell() {
           <Route path="design-systems/:id/versions/:v/edit" element={<Suspense fallback={null}><TokensEditor ws={ws} /></Suspense>} />
           <Route path="design-systems/:id/*" element={<DesignSystem ws={ws} />} />
           <Route path="components" element={<Components ws={ws} />} />
+          <Route path="directions" element={<Suspense fallback={null}><Directions ws={ws} /></Suspense>} />
+          <Route path="directions/:key" element={<Suspense fallback={null}><DirectionEditor ws={ws} /></Suspense>} />
           <Route path="rules" element={<Rules ws={ws} />} />
           <Route path="screens" element={<Suspense fallback={null}><Screens ws={ws} /></Suspense>} />
           <Route path="screens/:key" element={<Suspense fallback={null}><Screen ws={ws} /></Suspense>} />

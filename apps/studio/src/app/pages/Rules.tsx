@@ -1,21 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { api } from "../api.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 
 interface Rule { id: string; name: string; why: string; severity: "error" | "warning"; check: { check: string; [k: string]: unknown }; enabled: number; owner: string; created_at: string }
 
 const STARTERS: { name: string; why: string; severity: Rule["severity"]; check: Rule["check"] }[] = [
-  { name: "Destructive actions name what is lost", why: "People confirm what they can see. A title that names the thing stops the wrong one being deleted.", severity: "error", check: { check: "confirmNamesSubject" } },
-  { name: "Never ask “Are you sure”", why: "Say what will happen instead; a question with no information teaches people to click past it.", severity: "warning", check: { check: "textNotMatching", pattern: "are you sure" } },
+  // Checks from the spec's vocabulary (schema/check.schema.json), so a Direction can carry them.
+  { name: "Destructive confirmations say what is lost", why: "People confirm what they can see. Saying what goes, and whether it comes back, stops the wrong thing being deleted.", severity: "error", check: { check: "requires", component: "Confirm", where: { severity: "destructive" }, props: ["consequence"] } },
+  { name: "Never ask “Are you sure”", why: "Say what will happen instead; a question with no information teaches people to click past it.", severity: "warning", check: { check: "noLabelMatches", pattern: "are you sure", flags: "i" } },
   { name: "At most six inputs in one view", why: "Longer forms split into steps; short views finish.", severity: "error", check: { check: "maxInputsPerView", max: 6 } },
 ];
 
 export function Rules({ ws }: { ws: Ws }) {
+  return (
+    <RulesPanel
+      ws={ws}
+      frame={(actions, body) => (
+        <Page crumbs={[ws.name, "Direction", "Rules"]} title="Rules" lede="What every generated screen has to follow, on top of Polyxd's built-in checks. Each rule is a check the verifier runs; its pass rate appears once screens flow in. Every Direction in the workspace carries the ones switched on." actions={actions}>
+          {body}
+        </Page>
+      )}
+    />
+  );
+}
+
+/**
+ * The workspace's rules: the list, the starters, the editor. The Rules page frames it with its
+ * own head; the Direction editor shows it as the Direction's Rules, and hears when they change.
+ */
+export function RulesPanel({ ws, frame, onChange }: { ws: Ws; frame: (actions: ReactNode, body: ReactNode) => ReactNode; onChange?: () => void }) {
   const { toast } = useSession();
   const [rules, setRules] = useState<Rule[] | null>(null);
   const [open, setOpen] = useState<Partial<Rule> | null>(null);
   const [checkText, setCheckText] = useState("");
   const load = () => api<{ rules: Rule[] }>("GET", `/api/w/${ws.slug}/rules`).then((r) => setRules(r.rules));
+  const changed = () => {
+    load();
+    onChange?.();
+  };
   useEffect(() => {
     load();
   }, [ws.slug]);
@@ -37,24 +59,25 @@ export function Rules({ ws }: { ws: Ws }) {
       else await api("POST", `/api/w/${ws.slug}/rules`, { name: open.name, why: open.why, severity: open.severity ?? "warning", check });
       toast(`Saved “${open.name}”`);
       setOpen(null);
-      load();
+      changed();
     } catch (e) {
       toast((e as Error).message, "bad");
     }
   };
   const toggle = async (r: Rule) => {
     await api("PUT", `/api/w/${ws.slug}/rules/${r.id}`, { enabled: !r.enabled });
-    load();
+    changed();
   };
   const remove = async (r: Rule) => {
     await api("DELETE", `/api/w/${ws.slug}/rules/${r.id}`);
     toast(`Deleted “${r.name}”`);
     setOpen(null);
-    load();
+    changed();
   };
   if (!rules) return null;
-  return (
-    <Page crumbs={[ws.name, "Direction", "Rules"]} title="Rules" lede="What every generated screen has to follow, on top of Polyxd's built-in checks. Each rule is a check the verifier runs; its pass rate appears once screens flow in." actions={<button type="button" className="btn primary" onClick={() => start({ severity: "warning" })}>New rule</button>}>
+  return frame(
+    <button type="button" className="btn primary" onClick={() => start({ severity: "warning" })}>New rule</button>,
+    <>
       {!rules.length && (
         <div className="empty" style={{ maxWidth: 560 }}>
           <h2>No rules of your own yet</h2>
@@ -95,6 +118,6 @@ export function Rules({ ws }: { ws: Ws }) {
           </div>
         </>
       )}
-    </Page>
+    </>,
   );
 }

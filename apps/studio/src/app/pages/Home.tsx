@@ -11,16 +11,19 @@ export function Home({ ws }: { ws: Ws }) {
   const [rules, setRules] = useState<number | null>(null);
   const [components, setComponents] = useState<{ connected: number; total: number } | null>(null);
   const [screens, setScreens] = useState<{ total: number; published: number } | null>(null);
+  const [directions, setDirections] = useState<{ total: number; published: number } | null>(null);
   useEffect(() => {
     api<{ designSystems: DS[] }>("GET", `/api/w/${ws.slug}/design-systems`).then((r) => setDs(r.designSystems));
     api<{ rules: unknown[] }>("GET", `/api/w/${ws.slug}/rules`).then((r) => setRules(r.rules.length));
     api<{ components: { renderer: unknown }[] }>("GET", `/api/w/${ws.slug}/components`).then((r) => setComponents({ connected: r.components.filter((c) => c.renderer).length, total: r.components.length }));
     api<{ screens: { status: string }[] }>("GET", `/api/w/${ws.slug}/screens`).then((r) => setScreens({ total: r.screens.length, published: r.screens.filter((s) => s.status === "published").length }));
+    api<{ directions: { status: string }[] }>("GET", `/api/w/${ws.slug}/directions`).then((r) => setDirections({ total: r.directions.length, published: r.directions.filter((d) => d.status === "published").length }));
   }, [ws.slug]);
   const live = ds?.find((d) => d.status === "live");
   const steps = [
     { done: !!ds?.length, title: "Connect your design system", sub: ds?.length ? `${ds[0].name} · ${ds[0].scan?.total.toLocaleString()} tokens${live ? " · live" : " · draft"}` : "Import tokens from a package, Tokens Studio or CSS, or start from a template", to: "design-systems", cta: "Design systems" },
     { done: !!components?.connected, title: "Map your components", sub: components ? `${components.connected} of ${components.total} connected to your own` : "", to: "components", cta: "Components" },
+    { done: !!directions?.published, title: "Set your direction", sub: directions?.total ? `${directions.total} Direction${directions.total === 1 ? "" : "s"} · ${directions.published} published` : "Density, voice, patterns and exemplars, in one file products fetch", to: "directions", cta: "Directions" },
     { done: !!rules, title: "Write your rules", sub: rules ? `${rules} of yours, plus Polyxd's built-in checks` : "What every generated screen has to follow", to: "rules", cta: "Rules" },
     { done: !!screens?.total, title: "Design a screen", sub: screens?.total ? `${screens.total} screen${screens.total === 1 ? "" : "s"} · ${screens.published} published` : "Author a surface by hand, in your design system, checked like a generated one", to: "screens", cta: "Screens" },
     { done: false, title: "Invite your team", sub: "Designers review, engineers connect components", to: "team", cta: "Team" },
