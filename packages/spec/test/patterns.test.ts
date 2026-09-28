@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { loadPatterns, validatePatternFile, checkPattern } from "../src/patterns.ts";
+import { PATTERN_MUTATIONS } from "./mutations.ts";
 
 const patterns = loadPatterns();
 const load = (name: string) => JSON.parse(readFileSync(new URL(`../examples/${name}`, import.meta.url), "utf8"));
@@ -23,20 +24,7 @@ for (const [id, p] of patterns) {
   }
 }
 
-const cases: [string, string, (d: any) => void, string][] = [
-  ["generic confirm label", "money-send-confirm.json", (d) => (byId(d, "confirm").confirm.label = "OK"), "specific-confirm-label"],
-  ["no consequence", "money-send-confirm.json", (d) => delete byId(d, "confirm").consequence, "states-consequence"],
-  ["destructive without typed confirmation", "tasks-delete-project.json", (d) => delete byId(d, "confirm").typeToConfirm, "typed-for-destructive"],
-  ["too many inputs in one view", "money-send-form.json", (d) => {
-    for (let i = 0; i < 4; i++) d.components.push({ id: `x${i}`, component: "TextInput", label: `Extra ${i}`, value: { path: `/draft/x${i}` } });
-    byId(d, "form").children.push("x0", "x1", "x2", "x3");
-  }, "short-views"],
-  ["results before filters", "shop-browse-filter.json", (d) => (byId(d, "root").children = ["results", "filters"]), "filters-first"],
-  ["no empty state", "shop-browse-filter.json", (d) => delete byId(d, "results").empty, "empty-state"],
-  ["comparison without choose", "shop-compare-plans.json", (d) => delete byId(d, "root").choose, "can-choose"],
-  ["'Submit' on a review", "travel-booking-review.json", (d) => (byId(d, "form").submit.label = "Submit"), "commitment-label"],
-];
-for (const [name, file, fn, rule] of cases) {
+for (const [name, file, fn, rule] of PATTERN_MUTATIONS) {
   test(`pattern check fails: ${name}`, () => {
     const d = load(file);
     fn(d);

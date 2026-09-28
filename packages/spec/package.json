@@ -29,9 +29,8 @@
     "polyxd-check-ds": "dist/cli/check-design-system.js",
     "polyxd-validate": "dist/cli/validate.js"
   },
-  "dependencies": {
-    "ajv": "^8.20.0",
-    "ajv-formats": "^3.0.1"
+  "devDependencies": {
+    "ajv": "^8.20.0"
   },
   "exports": {
     ".": {

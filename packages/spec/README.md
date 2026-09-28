@@ -36,7 +36,7 @@ Inside the Polyxd repository:
 ```bash
 npm run validate -w @polyxd/spec -- examples/*.json
 
-# after editing components/*.json or schema/common.defs.json
+# after editing components/*.json, schema/common.defs.json, or the pattern or check schema
 npm run build:schema -w @polyxd/spec
 
 npm test -w @polyxd/spec
@@ -49,6 +49,12 @@ import { validateDocument, checkDesignSystem } from "@polyxd/spec";
 import { checkPattern, evaluateRules } from "@polyxd/spec/patterns";
 import { checkCapabilities } from "@polyxd/spec/capabilities";
 ```
+
+## Where it runs
+
+`@polyxd/spec/browser` has the parts that read no files: `validateDocument`, the tree form, colour and the reference table. It runs in Node, browsers and Cloudflare Workers. The root entry adds the token contract and design-system checks, which read files, so it belongs in Node.
+
+The schema checks are compiled ahead of time with Ajv's standalone output (`scripts/build-validators.ts`). So nothing generates code at run time: no `eval`, no `new Function`. That is what Workers and a strict content security policy require. The package doesn't need Ajv once it is built. `npm run build:schema` writes the compiled validators with everything else, and the tests fail when they are stale or give different errors from Ajv.
 
 ## Rules the validator enforces beyond the schema
 
