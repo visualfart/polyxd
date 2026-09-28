@@ -1,82 +1,102 @@
 /* The screen editor: tree, live preview, properties; issues, data and JSON docked under the preview. */
 .scr { height: 100vh; display: flex; flex-direction: column; min-width: 0; }
-.scr-head { height: 56px; flex-shrink: 0; padding: 0 20px 0 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); }
-.scr-head h1 { font-size: 20px; line-height: 26px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scr-head { min-height: 64px; flex-shrink: 0; padding: 8px 20px 8px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); }
+.scr-head h1 { font-size: 22px; line-height: 28px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .scr-head .tags { display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; }
 .scr-head .actions { margin-left: auto; }
-.scr-body { flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 264px minmax(0, 1fr) 344px; }
+.scr-body { flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 300px minmax(0, 1fr) 372px; }
 .scr-tree, .scr-props { display: flex; flex-direction: column; min-height: 0; background: var(--ground); }
 .scr-tree { border-right: 1px solid var(--line); }
 .scr-props { border-left: 1px solid var(--line); }
-.scr-panel-head { height: 44px; flex-shrink: 0; padding: 0 8px 0 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); font-weight: 600; font-size: 13px; }
+.scr-panel-head { height: 56px; flex-shrink: 0; padding: 0 6px 0 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); font-weight: 600; font-size: 15px; }
 .scr-panel-head .n { color: var(--muted); font-weight: 400; }
-.scr-tree-body { flex-grow: 1; overflow: auto; padding: 6px 0 24px; }
-.scr-tree-group { margin: 12px 14px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.scr-node { display: flex; align-items: center; gap: 4px; height: 30px; padding-right: 6px; cursor: pointer; border-radius: var(--radius-pill); margin: 0 6px; font-size: 13px; }
+.scr-tree-body { flex-grow: 1; overflow: auto; padding: 4px 0 24px; }
+.scr-tree-group { margin: 14px 16px 4px; font: var(--text-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--muted); }
+/* A row is a 44px target; its caret is a 36 x 44 one at the row's start. The row's own actions are in the bar above the tree. */
+.scr-node { display: flex; align-items: center; gap: 2px; min-height: 44px; padding-right: 10px; cursor: pointer; border-radius: var(--radius-pill); margin: 0 6px; font-size: 15px; }
 .scr-node:hover { background: var(--soft); }
 .scr-node[data-selected="true"] { background: var(--paper); box-shadow: inset 0 0 0 1px var(--rule); }
 .scr-node-main { display: flex; align-items: center; gap: 6px; min-width: 0; flex-grow: 1; }
 .scr-node-type { font-weight: 600; flex-shrink: 0; }
 .scr-node-text { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.scr-slot { font-family: var(--mono); font-size: 10px; color: var(--signal-ink); background: var(--signal-bg); padding: 1px 5px; border-radius: 4px; flex-shrink: 0; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.scr-node-actions { display: none; gap: 0; flex-shrink: 0; }
-.scr-node:hover .scr-node-actions, .scr-node[data-selected="true"] .scr-node-actions { display: inline-flex; }
-.scr-caret-btn { width: 18px; height: 18px; border: 0; background: transparent; padding: 0; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
-.scr-caret-gap { width: 18px; flex-shrink: 0; }
-.scr-caret { width: 0; height: 0; border-left: 5px solid var(--muted); border-top: 4px solid transparent; border-bottom: 4px solid transparent; display: inline-block; transition: transform 100ms; }
+.scr-slot { font-family: var(--mono); font-size: 12px; line-height: 18px; color: var(--signal-ink); background: var(--signal-bg); padding: 1px 7px; border-radius: var(--radius-pill); flex-shrink: 0; max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scr-node-actions { display: inline-flex; gap: 0; flex-shrink: 0; margin-right: -8px; }
+.scr-caret-btn { width: 36px; height: 44px; margin-right: -4px; border-radius: var(--radius-pill); color: var(--muted); border: 0; background: transparent; padding: 0; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.scr-caret-gap { width: 32px; flex-shrink: 0; }
+.scr-caret { width: 0; height: 0; border-left: 6px solid var(--muted); border-top: 5px solid transparent; border-bottom: 5px solid transparent; display: inline-block; transition: transform 100ms; }
 .scr-caret[data-open="true"], [aria-expanded="true"] > .scr-caret { transform: rotate(90deg); }
-.scr-x { width: 22px; height: 22px; border: 0; border-radius: 5px; background: transparent; color: var(--muted); font-size: 13px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; flex-shrink: 0; }
+/* An icon button: 44 x 44, fully round. */
+.scr-x { width: 44px; height: 44px; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--muted); font-size: 18px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; flex-shrink: 0; }
 .scr-x:hover { background: var(--soft); color: var(--ink); }
 .scr-x:disabled { opacity: 0.3; cursor: default; }
 
+/* The selected component's own actions, above the tree: add into it, duplicate, move, delete. */
+.scr-tree-bar { flex-shrink: 0; display: flex; align-items: center; gap: 2px; min-height: 52px; padding: 4px 6px 4px 16px; border-bottom: 1px solid var(--soft); }
+.scr-tree-bar .what { flex-grow: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--muted); }
+.scr-tree-bar .what b { color: var(--ink); font-weight: 600; }
+.scr-tree-bar .scr-x { color: var(--ink-2); border: 1.5px solid transparent; }
+.scr-tree-bar .scr-x:hover { border-color: var(--rule); }
+
 /* centre */
-.scr-center { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--sunk); }
-.scr-toolbar { min-height: 44px; flex-shrink: 0; padding: 6px 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; border-bottom: 1px solid var(--line); background: var(--paper); }
-.scr-toolbar .select { width: auto; max-width: 180px; height: 32px; font-size: 13px; padding: 0 10px; }
-.scr-toolbar .segmented button { height: 24px; padding: 0 9px; font-size: 12px; }
-.scr-canvas { flex-grow: 1; min-height: 0; overflow: auto; padding: 24px; display: flex; justify-content: center; align-items: flex-start; background: repeating-linear-gradient(0deg, transparent 0 7px, color-mix(in srgb, var(--ink) 3%, transparent) 7px 8px), repeating-linear-gradient(90deg, transparent 0 7px, color-mix(in srgb, var(--ink) 3%, transparent) 7px 8px); }
+.scr-center { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--sunk); container-type: inline-size; }
+.scr-toolbar { min-height: 56px; flex-shrink: 0; padding: 6px 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; border-bottom: 1px solid var(--line); background: var(--paper); }
+.scr-toolbar .select { width: auto; max-width: 280px; padding: 0 10px 0 14px; }
+.scr-toolbar .segmented button { padding: 0 12px; }
+/* When the toolbar takes two rows: what the screen is drawn in, and the pointer, first; its size and fill below. */
+@container (max-width: 760px) {
+  .scr-toolbar > * { order: 2; }
+  .scr-toolbar > :nth-child(-n + 2) { order: 0; }
+  .scr-toolbar > .scr-pointer { order: 1; }
+}
+/* safe: a frame wider than the canvas starts at its left edge and scrolls, never clipped on the left. */
+.scr-canvas { flex-grow: 1; min-height: 0; overflow: auto; padding: 24px; display: flex; justify-content: safe center; align-items: flex-start; background: repeating-linear-gradient(0deg, transparent 0 7px, color-mix(in srgb, var(--ink) 3%, transparent) 7px 8px), repeating-linear-gradient(90deg, transparent 0 7px, color-mix(in srgb, var(--ink) 3%, transparent) 7px 8px); }
 .scr-canvas[data-mode="dark"] { background: #1c1c1a; }
 .scr-canvas[data-interact="false"] .scr-frame { cursor: default; }
 .scr-loading { display: flex; align-items: center; gap: 8px; }
 .scr-frame { max-width: 100%; min-width: 320px; min-height: 200px; resize: horizontal; overflow: auto; background: var(--pxd-color-surface-default, #fff); border: 1px solid var(--rule); border-radius: 10px; }
 .scr-canvas[data-interact="false"] .scr-frame * { cursor: default !important; }
-.scr-dock { flex-shrink: 0; height: 240px; display: flex; flex-direction: column; border-top: 1px solid var(--line); background: var(--paper); }
-.scr-dock[data-open="false"] { height: 40px; }
-.scr-dock .tabs { padding: 0 12px; flex-shrink: 0; }
-.scr-dock .tabs button { height: 39px; margin-right: 18px; }
+.scr-dock { flex-shrink: 0; height: 248px; display: flex; flex-direction: column; border-top: 1px solid var(--line); background: var(--paper); }
+.scr-dock[data-open="false"] { height: 45px; }
+.scr-dock .tabs { padding: 0 6px 0 14px; flex-shrink: 0; flex-wrap: nowrap; }
+.scr-dock .tabs button { height: 44px; margin-right: 20px; }
 .scr-dock-body { flex-grow: 1; overflow: auto; min-height: 0; }
-.scr-dock textarea { width: 100%; height: 100%; border: 0; border-radius: 0; resize: none; padding: 10px 14px; font-family: var(--mono); font-size: 12px; line-height: 18px; }
+.scr-dock textarea { width: 100%; height: 100%; border: 0; border-radius: 0; resize: none; padding: 12px 16px; font-family: var(--mono); font-size: 14px; line-height: 21px; }
 .scr-dock textarea:focus-visible { outline-offset: -2px; }
-.scr-issue { display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 8px 14px; border: 0; border-bottom: 1px solid var(--soft); background: transparent; text-align: left; cursor: pointer; font-size: 13px; }
+.scr-issue { display: flex; gap: 10px; align-items: flex-start; width: 100%; min-height: 44px; padding: 10px 16px; border: 0; border-bottom: 1px solid var(--soft); background: transparent; text-align: left; cursor: pointer; }
 .scr-issue:hover { background: var(--sunk); }
-.scr-issue .dot { margin-top: 6px; }
-.scr-issue .at { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-.scr-json-bad { padding: 6px 14px; font-size: 12px; color: var(--bad); background: var(--bad-bg); flex-shrink: 0; }
+.scr-issue .dot { margin-top: 7px; }
+.scr-issue .at { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.scr-json-bad { padding: 8px 16px; font-size: 13px; color: var(--bad); background: var(--bad-bg); flex-shrink: 0; }
 
 /* properties */
-.scr-props-body { flex-grow: 1; overflow: auto; padding: 12px 14px 32px; display: flex; flex-direction: column; gap: 12px; }
+.scr-props-body { flex-grow: 1; overflow: auto; padding: 14px 16px 32px; display: flex; flex-direction: column; gap: 14px; }
+/* Fields keep their height when the panel scrolls, rather than shrinking to fit it. */
+.scr-props-body > * { flex-shrink: 0; }
 .scr-props-empty { padding: 16px; }
 .scr-props-head { display: flex; flex-direction: column; gap: 2px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
-.scr-props-common { margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
-.scr-field { display: flex; flex-direction: column; gap: 5px; }
-.scr-field .input, .scr-field .select, .scr-field .textarea { height: 34px; font-size: 13px; background: var(--paper); padding: 0 12px; }
-.scr-field .textarea { padding: 8px 12px; }
+.scr-props-common { margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 14px; }
+.scr-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.scr-field .input, .scr-field .select, .scr-field .textarea { background: var(--paper); padding: 0 14px; min-width: 0; }
+.scr-field .select { padding-right: 10px; }
+.scr-field .textarea { padding: 10px 14px; }
 .scr-field .textarea { height: auto; }
-.scr-field .help { font-size: 11px; color: var(--muted); line-height: 15px; }
-.scr-field .err { font-size: 11px; color: var(--bad); }
-.scr-field-label { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--ink-2); min-height: 18px; }
-.scr-object { display: flex; flex-direction: column; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--radius-small); background: color-mix(in srgb, var(--surface) 50%, transparent); }
-.scr-object .scr-field-label { font-size: 11px; }
+.scr-field .help { font-size: 13px; color: var(--muted); line-height: 19px; }
+.scr-field .err { font-size: 13px; line-height: 19px; color: var(--bad); }
+/* A label with a remove button takes the button's 44px; it hangs into the label's right edge. */
+.scr-field-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 15px; font-weight: 600; color: var(--ink); min-height: 22px; }
+.scr-field-label .scr-x { margin: -4px -10px -4px 0; }
+.scr-object { display: flex; flex-direction: column; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-small); background: color-mix(in srgb, var(--surface) 50%, transparent); }
+.scr-object .scr-field-label { font-weight: 500; color: var(--ink-2); }
 .scr-stack { display: flex; flex-direction: column; gap: 6px; }
 .scr-row { display: flex; align-items: center; gap: 6px; }
 .scr-row > .input, .scr-row > .select { min-width: 0; }
-.scr-add { height: 32px; font-size: 13px; color: var(--muted); }
-.chip.sm { height: 26px; padding: 0 9px; font-size: 12px; flex-shrink: 0; }
-.scr-rows { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.scr-add { color: var(--muted); }
+.chip.sm { padding: 0 14px; flex-shrink: 0; }
+.scr-rows { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .scr-rowitem { width: 100%; border: 1px solid var(--line); border-radius: var(--radius-small); background: var(--paper); }
 .scr-rowitem[data-open="true"] { border-color: var(--ink-2); }
-.scr-rowhead { display: flex; align-items: center; gap: 2px; padding: 2px 4px 2px 6px; }
-.scr-rowtoggle { flex-grow: 1; min-width: 0; height: 26px; display: flex; align-items: center; gap: 8px; border: 0; background: transparent; text-align: left; font-size: 13px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0; }
+.scr-rowhead { display: flex; align-items: center; gap: 0; padding: 0 0 0 12px; }
+.scr-rowtoggle { flex-grow: 1; min-width: 0; height: 44px; display: flex; align-items: center; gap: 8px; border: 0; background: transparent; text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0; }
 .scr-rowitem > .scr-object { border: 0; border-top: 1px solid var(--soft); border-radius: 0 0 var(--radius-small) var(--radius-small); }
 
 /* Overlays sit above the surface's own sticky parts (a form's submit bar). */
@@ -85,12 +105,12 @@
 /* picker and templates */
 .scr-picker { width: 560px; max-height: calc(100vh - 64px); }
 .scr-picker-list { overflow: auto; margin: 0 -8px; padding: 0 8px; max-height: 60vh; }
-.scr-pick { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; width: 100%; padding: 8px 12px; border: 0; border-radius: var(--radius-small); background: transparent; text-align: left; cursor: pointer; }
+.scr-pick { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 44px; padding: 10px 14px; border: 0; border-radius: var(--radius-small); background: transparent; text-align: left; cursor: pointer; }
 .scr-pick:hover, .scr-pick:focus-visible { background: var(--sunk); }
-.scr-pick span { font-size: 12px; color: var(--muted); }
+.scr-pick span { font-size: 13px; line-height: 19px; color: var(--muted); }
 .scr-templates { display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow: auto; }
-.scr-templates .choice-card { padding: 10px 12px; text-align: left; }
-.scr-templates .choice-card[data-on="true"] { padding: 9px 11px; }
+.scr-templates .choice-card { padding: 12px 14px; text-align: left; }
+.scr-templates .choice-card[data-on="true"] { padding: 11px 13px; }
 
 /* versions */
 .scr-version { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--soft); }
@@ -98,6 +118,10 @@
 
 /* narrower: the three columns become one, chosen with the switch in the head */
 .scr-head .scr-panes { display: none; }
+/* Between laptop and desktop the side panels give the preview room, above the 44px rules. */
+@media (max-width: 1440px) {
+  .scr-body { grid-template-columns: 280px minmax(0, 1fr) 340px; }
+}
 @media (max-width: 1100px) {
   .scr-body { grid-template-columns: minmax(0, 1fr); }
   .scr-body > * { display: none; }
@@ -105,16 +129,22 @@
   .scr-head .scr-panes { display: inline-flex; }
   .scr-head { padding: 0 12px; gap: 8px; }
   .scr-head .tags { display: none; }
+  .scr-tree-bar { padding-left: 12px; }
   .scr-tree, .scr-props { border: 0; }
 }
 @media (max-width: 900px) {
   .scr { height: 100dvh; }
-  .scr-head h1 { font-size: 15px; }
+  .scr-head h1 { font-size: 17px; flex: 1 1 auto; }
+  /* A phone: the name on the first row, the panel switch on the second, the actions on the third. */
+  .scr-head { flex-wrap: wrap; row-gap: 6px; }
+  .scr-head .scr-panes { order: 2; width: 100%; }
+  .scr-head .scr-panes button { flex: 1 1 0; }
+  .scr-head .actions { order: 3; width: 100%; justify-content: flex-end; margin-left: 0; }
   .scr-dock { height: 200px; }
 }
 
 /* the surface row above the tree, and a Frame's empty regions */
-.scr-node-surface { margin: 6px 6px 2px; border-bottom: 1px solid var(--soft); border-radius: var(--radius-small) var(--radius-small) 0 0; }
+.scr-node-surface { margin: 4px 6px 2px; border-bottom: 1px solid var(--soft); border-radius: var(--radius-small) var(--radius-small) 0 0; }
 .scr-node-empty { cursor: default; }
 .scr-node-empty .scr-node-text { font-style: italic; }
 .scr-node-empty:hover { background: transparent; }

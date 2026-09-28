@@ -91,7 +91,7 @@ export function Mapping({ ws }: { ws: Ws }) {
     <Page crumbs={[ws.name, "Design systems", name, "Map"]} title="Map to Polyxd's roles" lede="Your semantic tokens were matched to Polyxd's roles by name, type and value. Accept the exact ones in one go and look only at the rest."
       meta={<span className="small" style={{ color: "var(--ink-2)" }}><b>{s.mapped} of {s.total}</b> mapped · {s.exact} exact · {s.guessed} guessed · {s.missing} missing · {s.fails} fail contrast · {s.primitive} point at primitives · {s.off} unmapped on purpose</span>}
       actions={<><Link className="btn" to={`/w/${ws.slug}/design-systems/${id}`}>Save draft</Link><button type="button" className="btn primary" onClick={publish}>Publish</button></>}>
-      <div className="split" style={{ borderTop: "1px solid var(--line)", paddingTop: 16, margin: "0 -32px", paddingLeft: 24, paddingRight: 0 }}>
+      <div className="split map-split">
         <nav className="side-nav" aria-label="Role groups">
           {groups.map(([g, n]) => (
             <button type="button" key={g} aria-pressed={g === group} onClick={() => setGroup(g)}>
@@ -100,12 +100,12 @@ export function Mapping({ ws }: { ws: Ws }) {
           ))}
         </nav>
         <div className="grow" style={{ display: "flex", flexDirection: "column", gap: 12, paddingRight: 20 }}>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <input className="input" style={{ width: 220 }} placeholder="Search roles or tokens" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search roles or tokens" />
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+            <input className="input" style={{ width: 220, maxWidth: "100%" }} placeholder="Search roles or tokens" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search roles or tokens" />
             <button type="button" className="chip" aria-pressed={filter === "look"} onClick={() => setFilter(filter === "look" ? "all" : "look")}>Needs a look <span className="num">{s.guessed + s.missing + s.fails + s.primitive}</span></button>
             <button type="button" className="btn sm" style={{ marginLeft: "auto" }} onClick={acceptExact} disabled={!data.rows.some((r) => r.how === "named" && r.status === "exact")}>Accept {data.rows.filter((r) => r.how === "named" && r.status === "exact").length} exact</button>
           </div>
-          <table>
+          <table className="map-table">
             <thead><tr><th>Polyxd role</th><th>Your token</th><th>{data.modes.join(" · ")}</th><th>Match</th></tr></thead>
             <tbody>
               {rows.map((r) => (
@@ -120,7 +120,7 @@ export function Mapping({ ws }: { ws: Ws }) {
             </tbody>
           </table>
         </div>
-        <aside className="aside" aria-label="Selected role" style={{ borderLeft: "1px solid var(--line)", padding: "4px 24px 0", minHeight: 480, display: "flex", flexDirection: "column", gap: 14, background: "var(--sunk)", marginTop: -16, paddingTop: 20 }}>
+        <aside className="aside" aria-label="Selected role" style={{ width: 340, borderLeft: "1px solid var(--line)", padding: "4px 24px 0", minHeight: 480, display: "flex", flexDirection: "column", gap: 14, background: "var(--sunk)", marginTop: -16, paddingTop: 20 }}>
           {!row && <p className="muted">Pick a role to see what it reads, and what else it could.</p>}
           {row && (
             <>
@@ -138,13 +138,13 @@ export function Mapping({ ws }: { ws: Ws }) {
                 {cands.map((c) => (
                   <button type="button" key={c.token} className="choice-card" style={{ textAlign: "left", width: "100%", alignItems: "center" }} onClick={() => set(row.role, c.token)}>
                     <Swatch value={c.value} />
-                    <span style={{ flexGrow: 1, minWidth: 0 }}><b className="mono" style={{ fontWeight: 500, fontSize: 13 }}>{c.token}</b><span>{c.chain.length > 1 ? `→ ${c.chain[c.chain.length - 1]} · ` : ""}{c.tier}{c.contrast[0] ? ` · ${c.contrast[0].ratio}:1` : ""}</span></span>
+                    <span style={{ flexGrow: 1, minWidth: 0 }}><b className="mono" style={{ fontWeight: 500, fontSize: 14 }}>{c.token}</b><span>{c.chain.length > 1 ? `→ ${c.chain[c.chain.length - 1]} · ` : ""}{c.tier}{c.contrast[0] ? ` · ${c.contrast[0].ratio}:1` : ""}</span></span>
                     {c.contrast[0] && <span className={`tag ${c.contrast[0].passes ? "ok" : "bad"}`}>{c.contrast[0].passes ? "passes" : "fails"}</span>}
                   </button>
                 ))}
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: "auto", paddingBottom: 16 }}>
-                {row.token && row.how !== "manual" && <button type="button" className="btn primary" onClick={() => set(row.role, row.token)}>Accept</button>}
+                {row.token && row.how !== "manual" && <button type="button" className="btn" onClick={() => set(row.role, row.token)}>Accept</button>}
                 {row.how === "manual" && <button type="button" className="btn" onClick={() => set(row.role, null, true)}>Back to the guess</button>}
                 {row.status !== "off" && <button type="button" className="btn ghost" onClick={() => set(row.role, null)}>Leave unmapped</button>}
               </div>

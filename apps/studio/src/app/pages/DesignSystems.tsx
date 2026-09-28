@@ -61,7 +61,7 @@ export function DesignSystems({ ws }: { ws: Ws }) {
         <div className="empty">
           <h2>No design system yet</h2>
           <p>Import your tokens from an npm package, a Tokens Studio or DTCG file, or your CSS: Studio maps them onto Polyxd's roles and shows every guess before anything is used. Or start from one of twelve templates, tune it, and export it for your code.</p>
-          <div style={{ display: "flex", gap: 8 }}>{canEdit && <button type="button" className="btn" onClick={openChooser}>Start from a template</button>}<Link className="btn primary" to={`/w/${ws.slug}/design-systems/import`}>Import a design system</Link></div>
+          <div style={{ display: "flex", gap: 8 }}>{canEdit && <button type="button" className="btn" onClick={openChooser}>Start from a template</button>}<Link className="btn" to={`/w/${ws.slug}/design-systems/import`}>Import a design system</Link></div>
         </div>
       )}
       {!!list?.length && (

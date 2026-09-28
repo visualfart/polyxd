@@ -341,7 +341,7 @@ function TokenPanel({ token, graph, mode, byPath, uses, byRole, pending, origina
             <input id="tv" className="input mono" value={text} spellCheck={false} disabled={!canEdit} onFocus={() => (typing.current = true)} onBlur={() => (typing.current = false)} onChange={(e) => commit(e.target.value)} />
           </div>
         ) : (
-          <textarea id="tv" className="textarea mono" style={{ minHeight: 120, fontSize: 12 }} value={text} spellCheck={false} disabled={!canEdit} onFocus={() => (typing.current = true)} onBlur={() => (typing.current = false)} onChange={(e) => commit(e.target.value)} />
+          <textarea id="tv" className="textarea mono" style={{ minHeight: 120, fontSize: 14, lineHeight: "21px" }} value={text} spellCheck={false} disabled={!canEdit} onFocus={() => (typing.current = true)} onBlur={() => (typing.current = false)} onChange={(e) => commit(e.target.value)} />
         )}
         {bad && <span className="err">{bad}</span>}
         {token.alias && <span className="help">Points at <button type="button" className="tok-link" onClick={() => onPick(token.alias!)}>{token.alias}</button>{r.leaf ? <> → <span className="mono">{val}</span>. Edit that to move everything that reads it, or type a value here to cut the link.</> : <span style={{ color: "var(--bad)" }}>, which doesn't exist.</span>}</span>}

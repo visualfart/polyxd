@@ -30,7 +30,7 @@
 }
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
-body { font-family: var(--body); font-size: 14px; line-height: 20px; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
+body { font-family: var(--body); font-size: 15px; line-height: 22px; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
 a { color: var(--signal-ink); text-decoration: none; }
 a:hover { text-decoration: underline; }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -38,11 +38,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 h1, h2, h3 { margin: 0; text-wrap: balance; }
 h1 { font-family: var(--display); font-size: 28px; line-height: 34px; font-weight: 400; letter-spacing: -0.015em; }
-h2 { font-size: 15px; line-height: 22px; font-weight: 600; }
+h2 { font-size: 16px; line-height: 24px; font-weight: 600; }
 p { margin: 0; }
-.mono { font-family: var(--mono); font-size: 13px; }
+.mono { font-family: var(--mono); font-size: 14px; }
 .muted { color: var(--muted); }
-.small { font-size: 12px; }
+/* Captions, counts and hints only; anything a person reads through is 15px. */
+.small { font-size: 13px; line-height: 19px; }
+.mono.small, .small .mono { font-size: 13px; }
 .num { font-variant-numeric: tabular-nums; }
 
 /* shell */
@@ -55,26 +57,28 @@ p { margin: 0; }
 .studio-product { font-family: var(--font-body); font-weight: 500; line-height: 1; color: var(--muted); letter-spacing: 0; }
 .brand { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 6px 10px 14px; color: var(--ink); text-decoration: none; border-radius: var(--radius-small); }
 .brand:hover { text-decoration: none; }
-.brand .ws { font-size: 12px; color: var(--muted); }
-.nav-group { margin: 14px 10px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.nav a { height: 36px; display: flex; align-items: center; gap: 10px; padding: 0 12px; border-radius: var(--radius-pill); font-weight: 500; color: var(--ink-2); }
+.brand .ws { font-size: 13px; color: var(--muted); }
+/* The brand's label: DM Mono, 12px, tracked, upper case. */
+.nav-group { margin: 16px 12px 4px; font: var(--text-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--muted); }
+.nav a { min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 12px; border-radius: var(--radius-pill); font-weight: 500; color: var(--ink-2); }
 .nav a:hover { text-decoration: none; background: var(--soft); }
 .nav a[aria-current="page"] { color: var(--ink); background: var(--paper); font-weight: 600; box-shadow: inset 0 0 0 1px var(--rule); }
 .sidebar .bottom { margin-top: auto; display: flex; flex-direction: column; gap: 2px; }
-.account { display: flex; align-items: center; gap: 10px; padding: 10px 8px 2px; border: 0; border-top: 1px solid var(--line); margin-top: 8px; background: transparent; text-align: left; width: 100%; }
+.account { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 10px 12px 2px; cursor: pointer; border: 0; border-top: 1px solid var(--line); margin-top: 8px; background: transparent; text-align: left; width: 100%; }
 .main { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; }
-.topbar { height: 56px; flex-shrink: 0; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--rule); }
-.crumbs { display: flex; gap: 8px; font-size: 13px; color: var(--muted); }
+.topbar { height: 60px; flex-shrink: 0; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--rule); }
+.crumbs { display: flex; gap: 8px; flex-wrap: wrap; font-size: 15px; color: var(--muted); }
 .crumbs b { color: var(--ink); font-weight: 500; }
 .page { padding: 24px 32px 48px; display: flex; flex-direction: column; gap: 20px; }
-.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
-.page-head p { margin-top: 6px; color: var(--muted); max-width: 720px; }
+.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; }
+.page-head p { margin-top: 8px; color: var(--muted); max-width: 720px; }
 .meta { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
-.actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
 
 /* atoms */
-/* Buttons, after the design system's Button: fully round, 600, a border outline; primary is signal with ink (on-signal) text. */
-.btn { min-height: 40px; padding: 0 18px; border: 1.5px solid var(--border); border-radius: var(--radius-pill); background: transparent; color: var(--ink); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; cursor: pointer; transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard); }
+/* Buttons, after the design system's Button: fully round, 600, 15px, a border outline, 44px tall (the brand's touch
+   target); primary is signal with ink (on-signal) text, one to a view. */
+.btn { min-height: 44px; padding: 0 20px; font-size: 15px; line-height: 20px; border: 1.5px solid var(--border); border-radius: var(--radius-pill); background: transparent; color: var(--ink); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; cursor: pointer; transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard); }
 .btn:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); text-decoration: none; }
 .btn.primary, .btn.accent { background: var(--signal); border-color: transparent; color: var(--on-signal); }
 .btn.primary:hover, .btn.accent:hover { background: color-mix(in srgb, var(--signal) 88%, var(--on-signal)); }
@@ -82,51 +86,61 @@ p { margin: 0; }
 .btn.ghost:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--ink); }
 .btn.danger { background: var(--bad); border-color: transparent; color: var(--ground); }
 .btn.danger:hover { background: color-mix(in srgb, var(--bad) 88%, var(--ink)); }
-.btn.sm { min-height: 32px; padding: 0 12px; font-size: 13px; }
+/* sm is tighter, never smaller: the same 44px and 15px, less padding. */
+.btn.sm { min-height: 44px; padding: 0 14px; }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn:disabled:hover { background: transparent; }
 .btn.primary:disabled:hover { background: var(--signal); }
 .btn.danger:disabled:hover { background: var(--bad); }
-.tag { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 500; background: var(--soft); color: var(--ink-2); white-space: nowrap; }
+.tag { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 11px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 500; background: var(--soft); color: var(--ink-2); white-space: nowrap; }
 .tag.ok { background: var(--ok-bg); color: var(--ok); }
 .tag.warn { background: var(--warn-bg); color: var(--warn); }
 .tag.bad { background: var(--bad-bg); color: var(--bad); }
 .tag.info { background: var(--info-bg); color: var(--info); }
 .tag.signal { background: var(--signal-bg); color: var(--signal-ink); }
 .tag.ink { background: var(--ink); color: var(--ground); }
-.tag .pxb-mark { margin-left: -4px; }
+.tag .pxb-mark { margin-left: -5px; }
+/* A tag that is a button keeps its size and gains a 44px target around it. */
+button.tag { position: relative; border: 0; cursor: pointer; font-family: inherit; }
+button.tag::after { content: ""; position: absolute; inset: -8px -2px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field label { font-size: 13px; font-weight: 600; }
-.field .help { font-size: 12px; color: var(--muted); }
-.field .err { font-size: 12px; color: var(--bad); font-weight: 600; }
-/* Fields, after the design system's Field: fully round, a 1.5px border (border, never signal). */
-.input, .select, .textarea { height: 40px; border: 1.5px solid var(--border); border-radius: var(--radius-pill); background: var(--surface); padding: 0 14px; width: 100%; }
-.textarea { height: auto; min-height: 72px; padding: 10px 14px; resize: vertical; border-radius: var(--radius-small); }
+.field label { font-size: 15px; font-weight: 600; }
+.field .help { font-size: 13px; line-height: 19px; color: var(--muted); }
+.field .err { font-size: 13px; line-height: 19px; color: var(--bad); font-weight: 600; }
+/* Fields, after the design system's Field: fully round, a 1.5px border (border, never signal), 44px, 15px. */
+.input, .select, .textarea { height: 44px; border: 1.5px solid var(--border); border-radius: var(--radius-pill); background: var(--surface); padding: 0 16px; width: 100%; font-size: 15px; }
+.select { padding-right: 12px; }
+.textarea { height: auto; min-height: 88px; padding: 10px 16px; line-height: 22px; resize: vertical; border-radius: var(--radius-small); }
 .input[aria-invalid="true"] { border-color: var(--danger); }
-.input.mono { font-family: var(--mono); font-size: 13px; }
+.input.mono, .textarea.mono { font-family: var(--mono); font-size: 14px; }
 .card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-card); corner-shape: squircle; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
-.card h2 + p { color: var(--muted); font-size: 13px; }
+.card h2 + p { color: var(--muted); }
 .notice { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-radius: var(--radius-small); corner-shape: squircle; background: var(--info-bg); }
 .notice.warn { background: var(--warn-bg); } .notice.bad { background: var(--bad-bg); } .notice.ok { background: var(--ok-bg); } .notice.gray { background: var(--soft); } .notice.signal { background: var(--signal-bg); }
 .notice b { display: block; }
-.notice .body { flex-grow: 1; font-size: 13px; color: var(--ink-2); }
-.tabs { display: flex; border-bottom: 1px solid var(--line); }
-.tabs a, .tabs button { height: 40px; display: inline-flex; align-items: center; padding: 0 2px; margin-right: 22px; font-weight: 500; color: var(--muted); border: 0; background: transparent; border-bottom: 2px solid transparent; cursor: pointer; }
+.notice .body { flex-grow: 1; min-width: 0; color: var(--ink-2); }
+.tabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+.tabs a, .tabs button { height: 44px; display: inline-flex; align-items: center; padding: 0 2px; margin-right: 22px; font-weight: 500; color: var(--muted); border: 0; background: transparent; border-bottom: 2px solid transparent; cursor: pointer; }
 .tabs a[aria-current="page"], .tabs button[aria-selected="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--signal); }
-.tabs .n { margin-left: 6px; font-size: 12px; color: var(--muted); }
+.tabs .n { margin-left: 6px; font-size: 13px; color: var(--muted); }
 table { width: 100%; border-collapse: collapse; }
-th { text-align: left; font-size: 12px; font-weight: 500; color: var(--muted); padding: 0 12px; height: 36px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-td { padding: 8px 12px; border-bottom: 1px solid var(--soft); vertical-align: middle; }
+th { text-align: left; font-size: 13px; font-weight: 500; color: var(--muted); padding: 0 12px; height: 40px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 12px; height: 52px; border-bottom: 1px solid var(--soft); vertical-align: middle; }
+/* The mapping runs edge to edge under its head: roles, the table, the selected role. */
+.map-split { border-top: 1px solid var(--line); padding: 16px 0 0 24px; margin: 0 -32px; }
+/* The mapping's token paths break where they must rather than push the table past its column. */
+.map-table td.mono, .map-table td .mono { overflow-wrap: anywhere; }
 tr.selected td { background: var(--signal-bg); }
 tr.row-link { cursor: pointer; }
 tr.row-link:hover td { background: var(--sunk); }
 .swatch { width: 18px; height: 18px; border-radius: 5px; border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); display: inline-block; vertical-align: middle; flex-shrink: 0; }
-.chain { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; }
+.chain { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; font-family: var(--mono); font-size: 13px; }
 .chain .arrow { color: var(--muted); }
-.segmented { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--radius-pill); background: var(--soft); }
-.segmented button { height: 30px; padding: 0 12px; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--ink-2); font-size: 13px; font-weight: 500; cursor: pointer; }
-.segmented button[aria-pressed="true"] { background: var(--paper); color: var(--ink); font-weight: 600; box-shadow: inset 0 0 0 1px var(--rule); }
-.chip { height: 32px; padding: 0 12px; border-radius: var(--radius-pill); border: 1.5px solid var(--border); background: var(--surface); font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.segmented { display: inline-flex; flex-shrink: 0; border-radius: var(--radius-pill); background: var(--soft); }
+/* Each option is a 44px target; its 3px transparent border insets the pressed pill inside the track. */
+.segmented button { height: 44px; padding: 0 14px; border: 3px solid transparent; background-clip: padding-box; border-radius: var(--radius-pill); background-color: transparent; color: var(--ink-2); font-size: 15px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+.segmented button[aria-pressed="true"] { background-color: var(--paper); color: var(--ink); font-weight: 600; box-shadow: inset 0 0 0 1px var(--rule); }
+.chip { height: 44px; padding: 0 16px; border-radius: var(--radius-pill); border: 1.5px solid var(--border); background: var(--surface); font-size: 15px; white-space: nowrap; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--ground); }
 .meter { width: 120px; height: 6px; border-radius: 6px; background: var(--soft); overflow: hidden; display: inline-flex; vertical-align: middle; }
 .meter i { display: block; background: var(--ok); }
@@ -146,11 +160,13 @@ tr.row-link:hover td { background: var(--sunk); }
 .choice-card { border: 1px solid var(--line); border-radius: var(--radius-small); corner-shape: squircle; padding: 14px 16px; display: flex; gap: 14px; align-items: flex-start; background: var(--paper); cursor: pointer; }
 .choice-card[data-on="true"] { border: 2px solid var(--ink); padding: 13px 15px; }
 .choice-card b { display: block; }
-.choice-card span { font-size: 13px; color: var(--muted); }
-.switch { width: 38px; height: 22px; border: 0; border-radius: var(--radius-pill); background: var(--border); position: relative; padding: 0; cursor: pointer; flex-shrink: 0; }
-.switch[aria-checked="true"] { background: var(--ink); }
-.switch i { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--surface); transition: left var(--duration-fast) var(--ease-standard); }
-.switch[aria-checked="true"] i { left: 18px; }
+.choice-card span { color: var(--muted); }
+/* A switch: a 48 x 44 target around a 44 x 24 track. */
+.switch { width: 48px; height: 44px; border: 0; border-radius: var(--radius-pill); background: transparent; position: relative; padding: 0; cursor: pointer; flex-shrink: 0; }
+.switch::before { content: ""; position: absolute; left: 2px; right: 2px; top: 10px; height: 24px; border-radius: var(--radius-pill); background: var(--border); transition: background-color var(--duration-fast) var(--ease-standard); }
+.switch[aria-checked="true"]::before { background: var(--ink); }
+.switch i { position: absolute; top: 12px; left: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); transition: left var(--duration-fast) var(--ease-standard); }
+.switch[aria-checked="true"] i { left: 24px; }
 .drawer-scrim { position: fixed; inset: 0; background: var(--scrim); }
 .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 520px; max-width: 100%; background: var(--paper); display: flex; flex-direction: column; border-left: 1px solid var(--rule); }
 .drawer header { padding: 20px 24px; border-bottom: 1px solid var(--rule); display: flex; align-items: flex-start; gap: 12px; }
@@ -164,9 +180,9 @@ tr.row-link:hover td { background: var(--sunk); }
 .empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 64px 24px; max-width: 480px; margin: 0 auto; }
 .empty h2 { font-family: var(--display); font-size: 24px; line-height: 30px; font-weight: 400; letter-spacing: -0.01em; }
 .empty p { color: var(--muted); }
-.kbd { font-family: var(--mono); font-size: 11px; padding: 1px 5px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; color: var(--ink-2); background: var(--paper); }
+.kbd { font-family: var(--mono); font-size: 12px; padding: 1px 5px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; color: var(--ink-2); background: var(--paper); }
 .side-nav { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; }
-.side-nav a, .side-nav button { display: flex; justify-content: space-between; gap: 8px; padding: 8px 12px; border-radius: var(--radius-pill); color: var(--ink); font-weight: 500; border: 0; background: transparent; text-align: left; cursor: pointer; }
+.side-nav a, .side-nav button { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px; border-radius: var(--radius-pill); color: var(--ink); font-weight: 500; border: 0; background: transparent; text-align: left; cursor: pointer; }
 .side-nav a:hover, .side-nav button:hover { background: var(--soft); text-decoration: none; }
 .side-nav [aria-current="true"], .side-nav [aria-pressed="true"] { background: var(--soft); font-weight: 600; }
 .side-nav .n { color: var(--muted); font-weight: 400; }
@@ -185,7 +201,10 @@ tr.row-link:hover td { background: var(--sunk); }
   .auth aside { display: none; }
   .sidebar { display: none; }
   .grid-3, .grid-4 { grid-template-columns: 1fr; }
-  .split { flex-direction: column; }
+  .split { flex-direction: column; align-items: stretch; }
   .aside { width: 100%; }
   .page { padding: 16px; }
+  .map-split { margin: 0 -16px; padding: 16px 16px 0; }
+  /* A table keeps its columns on a phone and scrolls sideways inside itself, not the page. */
+  .page table { display: block; overflow-x: auto; white-space: nowrap; }
 }

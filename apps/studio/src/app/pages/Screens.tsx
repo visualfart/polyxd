@@ -91,7 +91,7 @@ export function Screens({ ws }: { ws: Ws }) {
         <div className="empty" style={{ maxWidth: 560 }}>
           <h2>No screens yet</h2>
           <p>A screen is a Polyxd document a person wrote: the same components, bindings and checks as a generated one, but designed on purpose. Start from one of the spec's examples and make it yours.</p>
-          {canEdit && <button type="button" className="btn primary" onClick={open}>New screen</button>}
+          {canEdit && <button type="button" className="btn" onClick={open}>New screen</button>}
         </div>
       )}
       {!!list.length && (
@@ -145,7 +145,7 @@ export function Screens({ ws }: { ws: Ws }) {
               {start === "paste" && (
                 <div className="field">
                   <label htmlFor="paste">Document</label>
-                  <textarea id="paste" className="textarea mono" style={{ minHeight: 160, fontFamily: "var(--mono)", fontSize: 12 }} value={pasted} onChange={(e) => setPasted(e.target.value)} placeholder='{ "specVersion": "0.2.0", "surface": { … }, "root": "…", "components": [ … ], "data": { … } }' />
+                  <textarea id="paste" className="textarea mono" style={{ minHeight: 160, fontFamily: "var(--mono)", fontSize: 14 }} value={pasted} onChange={(e) => setPasted(e.target.value)} placeholder='{ "specVersion": "0.2.0", "surface": { … }, "root": "…", "components": [ … ], "data": { … } }' />
                   {pastedCheck && (pastedCheck.doc ? <span className="help">{pastedCheck.errors ? `${pastedCheck.errors} error${pastedCheck.errors === 1 ? "" : "s"}; you can still save it as a draft.` : `Looks good${pastedCheck.warnings ? ` (${pastedCheck.warnings} warning${pastedCheck.warnings === 1 ? "" : "s"})` : ""}.`}</span> : <span className="err">That isn't valid JSON yet.</span>)}
                 </div>
               )}

@@ -157,7 +157,10 @@
   text-decoration: underline;
 }
 .signin-label-row .signin-link {
-  font-size: 14px;
+  font-size: 15px;
+  /* A 44px target that doesn't move the label row. */
+  padding: 11px 0;
+  margin: -11px 0;
 }
 .signin-terms {
   font-size: 13px;

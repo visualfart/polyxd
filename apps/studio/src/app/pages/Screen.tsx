@@ -15,7 +15,7 @@ import { Mark } from "../mark.tsx";
 import { checkDocument, issueIndex, type Issue, type Rule } from "../../screens/validate.ts";
 import { addChild, duplicateNode, makeNodes, moveNode, pointers, removeNode, visibleOrder } from "../../screens/tree.ts";
 import { isShell, type Doc } from "../../screens/schema.ts";
-import { Tree, Picker, targetFor, type Target } from "../screen/Tree.tsx";
+import { Tree, NodeBar, Picker, targetFor, type Target } from "../screen/Tree.tsx";
 import { Preview, WIDTHS, type PreviewTheme } from "../screen/Preview.tsx";
 import { Props, SURFACE, SurfaceProps } from "../screen/Props.tsx";
 import type { Ctx } from "../screen/Fields.tsx";
@@ -289,7 +289,7 @@ export function Screen({ ws }: { ws: Ws }) {
     <div className="scr">
       <datalist id="scr-pointers">{pointerList.map((p) => <option key={p} value={p} />)}</datalist>
       <header className="scr-head">
-        <Link to={`/w/${ws.slug}/screens`} className="small muted" style={{ flexShrink: 0 }}>Screens /</Link>
+        <Link to={`/w/${ws.slug}/screens`} className="muted" style={{ flexShrink: 0 }}>Screens /</Link>
         <h1 title={`${meta.screen.name} · ${meta.screen.key}${meta.screen.intent ? ` · ${meta.screen.intent}` : ""}`}>{meta.screen.name}</h1>
         {canEdit && <button type="button" className="btn ghost sm" onClick={() => setDetails({ name: meta.screen.name, key: meta.screen.key, intent: meta.screen.intent })}>Details</button>}
         <div className="tags">
@@ -318,11 +318,12 @@ export function Screen({ ws }: { ws: Ws }) {
       <div className="scr-body" data-pane={pane}>
         <aside className="scr-tree" aria-label="Component tree">
           <div className="scr-panel-head"><span style={{ flexGrow: 1 }}>Components <span className="n">{doc.components.length}</span></span>{canEdit && <button type="button" className="btn sm" onClick={() => openPicker(targetFor(doc, selected === SURFACE ? null : selected))} title="Add a component (Enter)">Add</button>}</div>
+          {canEdit && <NodeBar doc={doc} selected={selected} onAdd={setPicker} onRemove={remove} onMove={(id, by) => apply((d) => moveNode(d, id, by))} onDuplicate={duplicate} />}
           <div className="scr-node scr-node-surface" role="button" tabIndex={0} aria-pressed={selected === SURFACE} data-selected={selected === SURFACE} onClick={() => setSelected(SURFACE)} onKeyDown={(e) => e.key === "Enter" && setSelected(SURFACE)} title="The document's surface: title, kind, origin">
             <span className="scr-caret-gap" />
             <span className="scr-node-main"><span className="scr-node-type">Surface</span><span className="scr-node-text">{shell ? "shell" : "surface"} · {doc.surface.title}</span></span>
           </div>
-          <Tree doc={doc} selected={selected} issues={issueTone} onSelect={setSelected} onAdd={setPicker} onRemove={remove} onMove={(id, by) => apply((d) => moveNode(d, id, by))} onDuplicate={duplicate} />
+          <Tree doc={doc} selected={selected} issues={issueTone} onSelect={setSelected} onAdd={setPicker} />
         </aside>
         <section className="scr-center" aria-label="Preview">
           <div className="scr-toolbar">
@@ -341,7 +342,7 @@ export function Screen({ ws }: { ws: Ws }) {
                 {!published.length && <option value="" disabled>No published screens yet</option>}
               </select>
             )}
-            <div className="segmented" role="group" aria-label="Pointer" style={{ marginLeft: "auto" }}><button type="button" aria-pressed={!interact} onClick={() => setInteract(false)} title="Clicking picks the component">Select</button><button type="button" aria-pressed={interact} onClick={() => setInteract(true)} title="Clicking works the screen; actions are reported, not sent">Interact</button></div>
+            <div className="segmented scr-pointer" role="group" aria-label="Pointer" style={{ marginLeft: "auto" }}><button type="button" aria-pressed={!interact} onClick={() => setInteract(false)} title="Clicking picks the component">Select</button><button type="button" aria-pressed={interact} onClick={() => setInteract(true)} title="Clicking works the screen; actions are reported, not sent">Interact</button></div>
           </div>
           {themeReady[builtin] ? (
             <Preview doc={doc} dataKey={dataKey} selected={selected} hovered={hovered} onSelect={(id) => id && setSelected(id)} onHover={setHovered} theme={theme} mode={mode} width={width} density={density} interact={interact} onAction={onAction} standIn={standInKey ? standIn : null} />

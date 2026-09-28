@@ -334,7 +334,7 @@ export function JsonField({ value, onChange }: { value: unknown; onChange: (v: u
   const [bad, setBad] = useState(false);
   return (
     <div className="scr-stack">
-      <textarea className="textarea mono" style={{ minHeight: 80, fontFamily: "var(--mono)", fontSize: 12 }} value={text} spellCheck={false} onChange={(e) => {
+      <textarea className="textarea mono" style={{ minHeight: 80, fontFamily: "var(--mono)", fontSize: 14 }} value={text} spellCheck={false} onChange={(e) => {
         setText(e.target.value);
         try {
           onChange(JSON.parse(e.target.value));

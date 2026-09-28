@@ -38,7 +38,30 @@ export function targetFor(doc: Doc, selected: string | null): Target | null {
   return null;
 }
 
-export function Tree({ doc, selected, issues, onSelect, onAdd, onRemove, onMove, onDuplicate }: { doc: Doc; selected: string | null; issues: Map<string, "error" | "warning">; onSelect: (id: string) => void; onAdd: (target: Target) => void; onRemove: (id: string) => void; onMove: (id: string, by: -1 | 1) => void; onDuplicate: (id: string) => void }) {
+/**
+ * The selected component's actions, in a bar above the tree rather than on every row: each is a
+ * 44px target, which five to a row would not leave room for. The shortcuts in the titles still work.
+ */
+export function NodeBar({ doc, selected, onAdd, onRemove, onMove, onDuplicate }: { doc: Doc; selected: string | null; onAdd: (target: Target) => void; onRemove: (id: string) => void; onMove: (id: string, by: -1 | 1) => void; onDuplicate: (id: string) => void }) {
+  const node = doc.components.find((c) => c.id === selected);
+  if (!node) return null;
+  const list = refProps(node.component).find((r) => r.kind === "list");
+  const at = parentOf(doc, node.id);
+  const inList = at?.slot.kind === "list";
+  const last = inList && at!.slot.index !== undefined && Array.isArray(at!.parent[at!.slot.prop]) && at!.slot.index >= at!.parent[at!.slot.prop].length - 1;
+  return (
+    <div className="scr-tree-bar" role="toolbar" aria-label={`${node.component} ${node.id}`}>
+      <span className="what" title={`${node.component} ${node.id}`}><b>{node.component}</b></span>
+      {list && <button type="button" className="scr-x" title="Add a child" aria-label={`Add a child to ${node.id}`} onClick={() => onAdd({ parentId: node.id, prop: list.prop })}>+</button>}
+      {inList && <button type="button" className="scr-x" title="Duplicate (⌘D)" aria-label={`Duplicate ${node.id}`} onClick={() => onDuplicate(node.id)}>⧉</button>}
+      {inList && <button type="button" className="scr-x" title="Move up (⌥↑)" aria-label={`Move ${node.id} up`} disabled={at!.slot.index === 0} onClick={() => onMove(node.id, -1)}>↑</button>}
+      {inList && <button type="button" className="scr-x" title="Move down (⌥↓)" aria-label={`Move ${node.id} down`} disabled={last} onClick={() => onMove(node.id, 1)}>↓</button>}
+      {node.id !== doc.root && <button type="button" className="scr-x" title="Delete (⌫)" aria-label={`Delete ${node.id}`} onClick={() => onRemove(node.id)}>×</button>}
+    </div>
+  );
+}
+
+export function Tree({ doc, selected, issues, onSelect, onAdd }: { doc: Doc; selected: string | null; issues: Map<string, "error" | "warning">; onSelect: (id: string) => void; onAdd: (target: Target) => void }) {
   const tree = useMemo(() => buildTree(doc), [doc]);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const toggle = (id: string) => setCollapsed((s) => {
@@ -49,12 +72,10 @@ export function Tree({ doc, selected, issues, onSelect, onAdd, onRemove, onMove,
   const row = (item: TreeItem, depth: number) => {
     const isSel = item.id === selected;
     const tone = issues.get(item.id);
-    const canList = refProps(item.node.component).some((r) => r.kind === "list");
     const at = parentOf(doc, item.id);
-    const inList = at?.slot.kind === "list";
     return (
       <div key={item.id}>
-        <div className="scr-node" role="treeitem" tabIndex={isSel ? 0 : -1} aria-selected={isSel} aria-expanded={item.children.length ? !collapsed.has(item.id) : undefined} aria-label={`${item.node.component} ${item.id}`} data-selected={isSel} style={{ paddingLeft: 8 + depth * 14 }} onClick={() => onSelect(item.id)} onFocus={() => !isSel && onSelect(item.id)}>
+        <div className="scr-node" role="treeitem" tabIndex={isSel ? 0 : -1} aria-selected={isSel} aria-expanded={item.children.length ? !collapsed.has(item.id) : undefined} aria-label={`${item.node.component} ${item.id}`} data-selected={isSel} style={{ paddingLeft: depth * 16 }} onClick={() => onSelect(item.id)} onFocus={() => !isSel && onSelect(item.id)}>
           {item.children.length || item.node.component === "Frame" ? <button type="button" className="scr-caret-btn" aria-label={collapsed.has(item.id) ? "Expand" : "Collapse"} onClick={(e) => { e.stopPropagation(); toggle(item.id); }}><span className="scr-caret" data-open={!collapsed.has(item.id)} aria-hidden="true" /></button> : <span className="scr-caret-gap" />}
           <span className="scr-node-main">
             {item.slot && item.slot.prop !== "children" && <span className="scr-slot" title={`In ${item.slot.prop}`}>{item.slot.kind === "panels" && item.slot.label ? item.slot.label : (at?.parent.component === "Frame" && FRAME_REGIONS.find((r) => r.prop === item.slot!.prop)?.label) || item.slot.prop}</span>}
@@ -62,19 +83,12 @@ export function Tree({ doc, selected, issues, onSelect, onAdd, onRemove, onMove,
             <span className="scr-node-text">{summaryOf(item.node)}</span>
           </span>
           {tone && <span className={`dot ${tone === "error" ? "bad" : "warn"}`} title={tone === "error" ? "Has an error" : "Has a warning"} />}
-          <span className="scr-node-actions" onClick={(e) => e.stopPropagation()}>
-            {canList && <button type="button" className="scr-x" title="Add a child" aria-label={`Add a child to ${item.id}`} onClick={() => onAdd({ parentId: item.id, prop: refProps(item.node.component).find((r) => r.kind === "list")!.prop })}>+</button>}
-            {inList && <button type="button" className="scr-x" title="Duplicate (⌘D)" aria-label={`Duplicate ${item.id}`} onClick={() => onDuplicate(item.id)}>⧉</button>}
-            {inList && <button type="button" className="scr-x" title="Move up (⌥↑)" aria-label={`Move ${item.id} up`} disabled={at!.slot.index === 0} onClick={() => onMove(item.id, -1)}>↑</button>}
-            {inList && <button type="button" className="scr-x" title="Move down (⌥↓)" aria-label={`Move ${item.id} down`} onClick={() => onMove(item.id, 1)}>↓</button>}
-            {item.id !== doc.root && <button type="button" className="scr-x" title="Delete (⌫)" aria-label={`Delete ${item.id}`} onClick={() => onRemove(item.id)}>×</button>}
-          </span>
         </div>
         {!collapsed.has(item.id) && (item.children.length > 0 || item.node.component === "Frame") && (
           <div role="group">
             {item.children.map((c) => row(c, depth + 1))}
             {item.node.component === "Frame" && FRAME_REGIONS.filter((r) => typeof item.node[r.prop] !== "string").map((r) => (
-              <div key={r.prop} className="scr-node scr-node-empty" role="treeitem" aria-selected={false} aria-label={`${r.label}: empty`} style={{ paddingLeft: 8 + (depth + 1) * 14 }}>
+              <div key={r.prop} className="scr-node scr-node-empty" role="treeitem" aria-selected={false} aria-label={`${r.label}: empty`} style={{ paddingLeft: (depth + 1) * 16 }}>
                 <span className="scr-caret-gap" />
                 <span className="scr-node-main"><span className="scr-slot" title={`The Frame's ${r.prop}`}>{r.label}</span><span className="scr-node-text">{r.prop === "main" ? "nothing: a shell needs its Outlet here" : "empty"}</span></span>
                 <span className="scr-node-actions" style={{ display: "inline-flex" }}><button type="button" className="scr-x" title={`Add the ${r.label.toLowerCase()}`} aria-label={`Add the ${r.label.toLowerCase()}`} onClick={() => onAdd({ parentId: item.id, prop: r.prop })}>+</button></span>

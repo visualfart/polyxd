@@ -26,7 +26,7 @@ export function ExportMenu({ ws, dsId, version, onClose }: { ws: Ws; dsId: strin
         <div className="body" style={{ gap: 10 }}>
           {FORMAT_INFO.map((f) => (
             <a key={f.id} className="choice-card" href={`${base}?format=${f.id}&download=1`} download style={{ textDecoration: "none", alignItems: "center" }}>
-              <span style={{ flexGrow: 1, minWidth: 0 }}><b>{f.title} <span className="mono muted" style={{ fontWeight: 400, fontSize: 12 }}>{f.file}</span></b><span>{f.what}</span></span>
+              <span style={{ flexGrow: 1, minWidth: 0 }}><b>{f.title} <span className="mono muted" style={{ fontWeight: 400, fontSize: 13 }}>{f.file}</span></b><span>{f.what}</span></span>
               <span className="btn sm" aria-hidden="true">Download</span>
             </a>
           ))}

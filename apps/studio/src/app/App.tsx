@@ -108,7 +108,7 @@ function Shell() {
           </NavLink>
           <button type="button" className="account" onClick={signOut} title="Sign out">
             <span style={{ flexGrow: 1 }}>
-              <b style={{ display: "block", fontSize: 13 }}>{me.user?.name || me.user?.email}</b>
+              <b style={{ display: "block", fontSize: 15 }}>{me.user?.name || me.user?.email}</b>
               <span className="small muted">{ws.role}</span>
             </span>
             <span className="small muted">Sign out</span>
