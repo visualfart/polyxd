@@ -4,7 +4,7 @@
  * worth saying goes to stderr.
  */
 import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
-import { createServer } from "./server.ts";
+import { createServer } from "./index.ts";
 
 const server = createServer();
 await server.connect(new StdioServerTransport());

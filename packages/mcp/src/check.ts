@@ -2,7 +2,7 @@
  * Validation and static verification, reported for a model that has to fix what it wrote: each
  * issue carries its JSON Pointer, the component it is in, and a hint saying what to change.
  */
-import { validateDocument, directionRules } from "@polyxd/spec";
+import { validateDocument, directionRules } from "@polyxd/spec/browser";
 import { staticAudit } from "@polyxd/verifier/static";
 import { componentDefinitions, componentNamed, exampleDirections } from "./spec.ts";
 

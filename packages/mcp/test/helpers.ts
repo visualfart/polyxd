@@ -3,7 +3,7 @@ import { Client } from "@modelcontextprotocol/client";
 import { InMemoryTransport } from "@modelcontextprotocol/server";
 import { createServer } from "../src/index.ts";
 
-// @polyxd/spec does not export examples/, so read them from the workspace.
+// The examples as the spec's workspace holds them, to compare with what the server serves.
 const examplesDir = new URL("../../spec/examples/", import.meta.url);
 export const exampleFiles = readdirSync(examplesDir).filter((f) => f.endsWith(".json")).sort();
 export const loadExample = (f: string): any => JSON.parse(readFileSync(new URL(f, examplesDir), "utf8"));

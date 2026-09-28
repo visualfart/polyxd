@@ -2,7 +2,7 @@ import { test, after, before } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { connect, exampleFiles, loadExample, textOf } from "./helpers.ts";
-import { PACKS, SYSTEM_PROMPT, VIEW_URI, VIEW_MIME_TYPE, componentDefinitions } from "../src/index.ts";
+import { PACKS, SYSTEM_PROMPT, VERSION, VIEW_URI, VIEW_MIME_TYPE, WIDGET_DOMAIN, appResourceMeta, componentDefinitions } from "../src/index.ts";
 import { expected } from "../scripts/sync.ts";
 
 let session: Awaited<ReturnType<typeof connect>>;
@@ -22,10 +22,20 @@ test("the server lists six snake_case tools, each described for a model", async 
   }
 });
 
-test("only polyxd_show links to the MCP App, in the spec's _meta.ui.resourceUri", async () => {
+test("every tool has a title and says it is read-only, not destructive, idempotent and closed-world", async () => {
+  const { tools } = await session.client.listTools();
+  for (const t of tools) {
+    assert.ok(t.title && t.title.length > 5, `${t.name} has a title`);
+    assert.deepEqual(t.annotations, { title: t.title, readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }, t.name);
+  }
+});
+
+test("only polyxd_show links to the MCP App, in the spec's _meta.ui.resourceUri and ChatGPT's alias", async () => {
   const { tools } = await session.client.listTools();
   const show = tools.find((t) => t.name === "polyxd_show")!;
   assert.deepEqual((show._meta as any)?.ui, { resourceUri: VIEW_URI });
+  assert.equal((show._meta as any)?.["openai/outputTemplate"], VIEW_URI);
+  for (const key of ["openai/toolInvocation/invoking", "openai/toolInvocation/invoked"]) assert.ok(((show._meta as any)[key] ?? "").length <= 64, key);
   assert.match(VIEW_URI, /^ui:\/\//);
   for (const t of tools.filter((t) => t.name !== "polyxd_show")) assert.equal((t._meta as any)?.ui, undefined, t.name);
   const packs = (show.inputSchema as any).properties.pack.enum;
@@ -210,6 +220,32 @@ test("a document that isn't an object is refused before it reaches the validator
   assert.equal((r as any).isError, true);
 });
 
+test("server.json describes the hosted server for the MCP Registry, in step with package.json", () => {
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  const entry = JSON.parse(readFileSync(new URL("../server.json", import.meta.url), "utf8"));
+  assert.match(entry.$schema, /^https:\/\/static\.modelcontextprotocol\.io\/schemas\/\d{4}-\d{2}-\d{2}\/server\.schema\.json$/);
+  assert.equal(entry.name, "com.polyxd/mcp");
+  assert.equal(entry.name, pkg.mcpName, "npm checks the package's mcpName against the registry name");
+  assert.equal(entry.version, pkg.version);
+  assert.equal(entry.version, VERSION);
+  assert.ok(entry.description.length <= 100, "the registry allows 100 characters");
+  assert.deepEqual(entry.remotes, [{ type: "streamable-http", url: "https://mcp.polyxd.com/mcp" }]);
+  for (const icon of entry.icons) assert.match(icon.src, /^https:\/\/polyxd\.com\//);
+});
+
+test("the MCP App declares an empty Content Security Policy and a border, for Claude and ChatGPT, and no ui.domain", () => {
+  const meta = appResourceMeta();
+  assert.deepEqual(meta.ui, { prefersBorder: true, csp: { connectDomains: [], resourceDomains: [] } });
+  // Claude rejects a ui.domain that is not its own hash of the connector URL; ChatGPT reads openai/widgetDomain.
+  assert.equal("domain" in meta.ui, false);
+  assert.equal(meta["openai/widgetDomain"], WIDGET_DOMAIN);
+  assert.equal(WIDGET_DOMAIN, "https://mcp.polyxd.com");
+  assert.deepEqual(meta["openai/widgetCSP"], { connect_domains: [], resource_domains: [] });
+  assert.equal(meta["openai/widgetPrefersBorder"], true);
+  assert.ok(meta["openai/widgetDescription"].length > 40);
+  assert.equal(appResourceMeta("https://example.org")["openai/widgetDomain"], "https://example.org");
+});
+
 test("the MCP App resource is HTML with the renderer, every pack and the MCP Apps bridge", async () => {
   const { resources } = await session.client.listResources();
   const listed = resources.find((r) => r.uri === VIEW_URI);
@@ -221,7 +257,8 @@ test("the MCP App resource is HTML with the renderer, every pack and the MCP App
   const content = read.contents[0] as any;
   assert.equal(content.uri, VIEW_URI);
   assert.equal(content.mimeType, "text/html;profile=mcp-app");
-  assert.deepEqual(content._meta?.ui, { prefersBorder: true });
+  assert.deepEqual(content._meta, appResourceMeta());
+  assert.deepEqual(listed!._meta, appResourceMeta());
   const html: string = content.text;
   assert.match(html, /^<!doctype html>/i);
   assert.match(html, /<\/html>\s*$/);
