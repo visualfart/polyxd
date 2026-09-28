@@ -110,7 +110,7 @@ jobs:
       - name: Publish to Open VSX
         if: steps.need.outputs.openvsx == 'true'
         working-directory: apps/vscode
-        run: npx --yes ovsx@1.2.0 publish "${{ steps.need.outputs.vsix }}"
+        run: npx --yes ovsx@1.2.0 publish --skip-duplicate "${{ steps.need.outputs.vsix }}"
 
   # The generation server's image, on version tags only and only after everything above passed and
   # published. It goes to GitHub Container Registry with the workflow's own token: no secret to
