@@ -62,6 +62,7 @@
     "./tokens/*": "./tokens/*",
     "./components/*": "./components/*",
     "./patterns/*": "./patterns/*",
+    "./examples/*": "./examples/*",
     "./package.json": "./package.json"
   },
   "repository": {
