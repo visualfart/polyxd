@@ -1208,7 +1208,7 @@ const LANDING_PAGES: LandingPage[] = [
         ["Packs", `${counts.PACKCOUNTNUM} design systems and ${counts.TEMPLATECOUNT} templates, one package each.`],
         ["Tools", "The <code>polyxd</code> CLI, <code>@polyxd/verifier</code>, <code>@polyxd/a2ui</code> and the editor extension."],
       ] } },
-      { note: "Planned, not shipped: an MCP server, a runtime SDK, native renderers and a Figma importer. Follow them on the <a href=\"/docs/roadmap/\">roadmap</a>." },
+      { note: "Built in the repository, not on npm yet: the runtime SDK, the MCP server and the generation server. Planned: native renderers and a Figma importer. Follow them on the <a href=\"/docs/roadmap/\">roadmap</a>." },
     ],
   },
 ];
