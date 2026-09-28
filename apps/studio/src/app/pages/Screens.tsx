@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type ScreenRow } from "../api.ts";
+import { track } from "../analytics.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 import { SHELL_TEMPLATE, TEMPLATES, fromTemplate, shellFromTemplate } from "../screen/templates.ts";
 import { checkDocument } from "../../screens/validate.ts";
@@ -67,6 +68,7 @@ export function Screens({ ws }: { ws: Ws }) {
     setBusy(true);
     try {
       const r = await api<{ key: string }>("POST", `/api/w/${ws.slug}/screens`, { name: title, key: key || slugOf(title), intent: finalIntent, document });
+      track("screen_authored", { start }, ws.id);
       setCreating(false);
       navigate(`/w/${ws.slug}/screens/${r.key}`);
     } catch (e) {

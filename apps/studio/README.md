@@ -100,7 +100,7 @@ The landing's product images are captured from a running Studio: against a local
 
 1. `npx wrangler d1 create studio`, put the id in the environment's `d1_databases`, then `npm run db:migrate:remote -w @polyxd/studio`.
 2. `npx wrangler r2 bucket create polyxd-studio-files`.
-3. Secrets, with `npx wrangler secret put <NAME> --env production`: `AUTH_SECRET` (a long random string; signs sessions), `SECRETS_KEY` (another; encrypts registry tokens), `RESEND_API_KEY` (verification, reset and invite emails; without it, links are logged), and optionally `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for "Continue with Google" (redirect URI: `<APP_URL>/api/auth/callback/google`).
+3. Secrets, with `npx wrangler secret put <NAME> --env production`: `AUTH_SECRET` (a long random string; signs sessions), `SECRETS_KEY` (another; encrypts registry tokens), `RESEND_API_KEY` (verification, reset and invite emails; without it, links are logged), and optionally `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for "Continue with Google" (redirect URI: `<APP_URL>/api/auth/callback/google`). Analytics are off unless you also set `POSTHOG_KEY` (and `POSTHOG_HOST` for PostHog's EU cloud); `docs/analytics.md` says what they send.
 4. `npm run deploy -w @polyxd/studio`.
 
 The hosted one at studio.polyxd.com is this same configuration.

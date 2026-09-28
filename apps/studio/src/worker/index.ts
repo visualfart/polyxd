@@ -20,6 +20,7 @@ import { applyChanges, checkChanges } from "../tokens/edit.ts";
 import { FORMATS, exportDesignSystem, isFormat } from "../export/index.ts";
 import { blankDirection, rulesFromWorkspace, toExport, type CompanyPattern, type Direction, type DirectionRule, type Snapshot } from "../direction/model.ts";
 import { checkDirection } from "../direction/schema.ts";
+import { capture, ingest, posthogConfig, type Properties } from "./analytics.ts";
 
 type Vars = { user: User | null; apiWorkspace: string | null };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
@@ -58,7 +59,23 @@ const text = (v: unknown, max: number, what: string): string => {
 
 const MAX_UPLOAD = 25 * 1024 * 1024;
 
-app.on(["GET", "POST"], "/api/auth/*", (c) => makeAuth(c.env).handler(c.req.raw));
+/** Work that may finish after the answer: the Worker waits for it, a test just lets it run. */
+function later(c: Ctx, work: Promise<unknown>) {
+  try {
+    c.executionCtx.waitUntil(work);
+  } catch {
+    void work;
+  }
+}
+/** An analytics event from the Worker (src/worker/analytics.ts), when POSTHOG_KEY is set; otherwise nothing. */
+function track(c: Ctx, event: string, who: { distinctId?: string; workspace?: string; properties?: Properties }) {
+  if (posthogConfig(c.env)) later(c, capture(c.env, event, who));
+}
+
+// The app's analytics, through Studio's own address (src/worker/analytics.ts). A 404 without POSTHOG_KEY.
+app.all("/ingest/*", (c) => ingest(c.req.raw, c.env));
+
+app.on(["GET", "POST"], "/api/auth/*", (c) => makeAuth(c.env, { onSignUp: (id, method) => track(c as Ctx, "signed_up", { distinctId: id, properties: { method } }) }).handler(c.req.raw));
 
 app.use("/api/*", async (c, next) => {
   c.header("X-Content-Type-Options", "nosniff");
@@ -78,6 +95,17 @@ app.use("/api/*", async (c, next) => {
   c.set("apiWorkspace", apiWorkspace);
   await next();
 });
+
+// The delivery paths, counted when a product calls them with a workspace API key: which kind, and
+// the answer's status. Studio's own pages, signed in, aren't counted here.
+for (const [path, kind] of [["/api/w/:slug/screens/:key", "screen"], ["/api/w/:slug/directions/:key", "direction"], ["/api/w/:slug/directions/:key/patterns/:file", "pattern"]] as const) {
+  app.get(path, async (c, next) => {
+    await next();
+    // The key's own workspace: a key used on another workspace's address is counted, as a 403, against its own.
+    const workspace = c.get("apiWorkspace");
+    if (workspace) track(c as Ctx, "api_fetch", { workspace, properties: { kind, status: c.res.status } });
+  });
+}
 
 const need = (c: Ctx): User => {
   const u = c.get("user");
@@ -123,7 +151,9 @@ app.get("/api/me", async (c) => {
   if (!user) return c.json({ user: null, workspaces: [], signIn });
   const workspaces = await c.env.DB.prepare("SELECT w.id, w.slug, w.name, m.role FROM workspaces w JOIN memberships m ON m.workspace_id = w.id WHERE m.user_id = ? ORDER BY w.name")
     .bind(user.id).all<Workspace>();
-  return c.json({ user, workspaces: workspaces.results, signIn });
+  // The app's analytics are on only for signed-in people, and only when the Worker has a key (the public one).
+  const config = posthogConfig(c.env);
+  return c.json({ user, workspaces: workspaces.results, signIn, ...(config ? { analytics: { key: config.key, ui: config.ui } } : {}) });
 });
 
 // ---------------------------------------------------------------- workspaces, members, invites
@@ -940,6 +970,8 @@ app.post("/api/w/:slug/screens/:key/versions/:n/publish", async (c) => {
     c.env.DB.prepare("UPDATE screen_versions SET status = 'published', issues_json = ? WHERE id = ?").bind(JSON.stringify(result), v.id),
     c.env.DB.prepare("UPDATE screens SET status = 'published', updated_at = ? WHERE id = ?").bind(now(), s.id),
   ]);
+  const kind = (JSON.parse(v.document_json) as Doc).surface?.kind === "shell" ? "shell" : "surface";
+  track(c as Ctx, "screen_published", { distinctId: need(c as Ctx).id, workspace: w.id, properties: { version: v.number, kind, warnings: result.issues.length - errors.length } });
   return c.json({ ok: true, published: v.number, url: `${c.env.APP_URL}/api/w/${w.slug}/screens/${s.key}` });
 });
 
@@ -1136,6 +1168,7 @@ app.post("/api/w/:slug/directions/:key/versions/:n/publish", async (c) => {
     c.env.DB.prepare("UPDATE direction_versions SET status = 'published' WHERE id = ?").bind(v.id),
     c.env.DB.prepare("UPDATE directions SET status = 'published', updated_at = ? WHERE id = ?").bind(now(), d.id),
   ]);
+  track(c as Ctx, "direction_published", { distinctId: need(c as Ctx).id, workspace: w.id, properties: { version: v.number } });
   return c.json({ ok: true, published: v.number, url: `${c.env.APP_URL}/api/w/${w.slug}/directions/${d.key}` });
 });
 

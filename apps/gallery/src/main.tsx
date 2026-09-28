@@ -98,6 +98,18 @@ function placeholder(ref: string) {
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
+/**
+ * polyxd.com's own analytics, when the site was built with them (apps/site/scripts/analytics.ts
+ * defines `pxdTrack`). Otherwise, or when the visitor asks not to be tracked, this does nothing.
+ */
+function track(event: string, properties: Record<string, string>) {
+  try {
+    (window as { pxdTrack?: (event: string, properties: Record<string, string>) => void }).pxdTrack?.(event, properties);
+  } catch {
+    // Analytics never break the gallery.
+  }
+}
+
 function readParam<T extends string>(name: string, allowed: readonly T[], fallback: T): T {
   const v = new URLSearchParams(location.search).get(name);
   return allowed.includes(v as T) ? (v as T) : fallback;
@@ -211,7 +223,7 @@ function Gallery() {
       <main className="g-main">
         <div className="g-toolbar" role="toolbar" aria-label="Preview settings">
           <Cluster label="Design system">
-            <PackPicker packs={packs} value={theme} onChange={(t) => (setTheme(t), sync({ theme: t }))} />
+            <PackPicker packs={packs} value={theme} onChange={(t) => (setTheme(t), sync({ theme: t }), track("gallery_pack_changed", { pack: t }))} />
           </Cluster>
           <Cluster label="Mode">
             <Segmented label="Mode" options={MODE_OPTIONS} value={mode} onChange={(m) => (setMode(m), sync({ mode: m }))} showText={false} />

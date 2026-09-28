@@ -9,10 +9,13 @@
  *   /favicon.ico, /favicon.svg, /icon-512.png   redirects to polyxd.com's copies, so apps that look
  *             up a host's icon find the Polyxd mark
  *
+ * With POSTHOG_KEY set, /mcp also counts initializes and tool calls, anonymously (src/analytics.ts).
+ *
  * The page the MCP App shows is passed in (src/index.ts bundles it as text), so the tests can run
  * this in Node.
  */
 import { createHttpHandler, rateLimiter, VERSION, type RequestLog } from "@polyxd/mcp/http";
+import { eventsFor, posthogConfig, rpcMessages, sendEvents, type AnalyticsEnv } from "./analytics.ts";
 
 const ICONS = new Map([["/favicon.ico", "/favicon.ico"], ["/favicon.svg", "/favicon.svg"], ["/icon-512.png", "/icon-512.png"], ["/apple-touch-icon.png", "/icon-180.png"]]);
 
@@ -20,8 +23,8 @@ export const DOCS_URL = "https://polyxd.com/docs/mcp/";
 /** Requests per minute from one IP address. Claude and ChatGPT call from their own servers, so one address can carry many people; keep this generous. */
 export const RATE_LIMIT = 600;
 
-/** The bindings wrangler.jsonc declares. */
-export interface Env {
+/** The bindings wrangler.jsonc declares, and the secrets that may be set (POSTHOG_KEY: src/analytics.ts). */
+export interface Env extends AnalyticsEnv {
   /** Cloudflare's rate limiting binding: counts per location, so it is a guard against floods, not an exact quota. */
   RATE_LIMITER?: { limit(options: { key: string }): Promise<{ success: boolean }> };
   /** OpenAI's domain-verification token for the app directory, set with `wrangler secret put OPENAI_APPS_CHALLENGE`. */
@@ -31,6 +34,13 @@ export interface Env {
 export interface AppOptions {
   viewHtml: () => string;
   log?: (entry: RequestLog) => void;
+  /** How analytics reach PostHog. Default: the global fetch. Used only when POSTHOG_KEY is set. */
+  analyticsFetch?: typeof fetch;
+}
+
+/** The part of a Worker's execution context this uses: work that may finish after the answer. */
+export interface WaitUntil {
+  waitUntil(promise: Promise<unknown>): void;
 }
 
 const clientIp = (request: Request) => request.headers.get("cf-connecting-ip") ?? "unknown";
@@ -55,10 +65,44 @@ export function createApp(options: AppOptions) {
     return handler;
   };
 
+  /**
+   * /mcp. When POSTHOG_KEY is set, copies of the request and the answer are read after the answer
+   * has gone out, to count initializes and tool calls (src/analytics.ts). The log line is unchanged.
+   */
+  async function mcp(request: Request, env: Env, ctx?: WaitUntil): Promise<Response> {
+    const config = request.method === "POST" ? posthogConfig(env) : null;
+    if (!config) return handlerFor(env)(request);
+    const started = Date.now();
+    const tap = request.clone();
+    const response = await handlerFor(env)(request);
+    // Floods and oversized bodies are refused before any tool runs; they are not counted.
+    if (response.status === 429 || response.status === 413 || !response.body) {
+      void tap.body?.cancel().catch(() => {});
+      return response;
+    }
+    const copy = response.clone();
+    const work = (async () => {
+      try {
+        const requests = rpcMessages(await tap.text());
+        if (!requests.some((m) => m?.method === "initialize" || m?.method === "tools/call")) {
+          await copy.body?.cancel();
+          return;
+        }
+        const responses = rpcMessages(await copy.text(), copy.headers.get("content-type") ?? "");
+        const events = eventsFor({ requests, responses, status: response.status, ms: Date.now() - started, userAgent: request.headers.get("user-agent"), protocolHeader: request.headers.get("mcp-protocol-version") });
+        if (events.length) await sendEvents(config, events, options.analyticsFetch);
+      } catch {
+        // Counting never affects the answer.
+      }
+    })();
+    ctx?.waitUntil(work);
+    return response;
+  }
+
   return {
-    async fetch(request: Request, env: Env = {}): Promise<Response> {
+    async fetch(request: Request, env: Env = {}, ctx?: WaitUntil): Promise<Response> {
       const { pathname } = new URL(request.url);
-      if (pathname === "/mcp") return handlerFor(env)(request);
+      if (pathname === "/mcp") return mcp(request, env, ctx);
 
       const started = Date.now();
       let response: Response;

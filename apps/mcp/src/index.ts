@@ -9,5 +9,5 @@ import { createApp, type Env } from "./app.ts";
 const app = createApp({ viewHtml: () => viewHtml });
 
 export default {
-  fetch: (request, env) => app.fetch(request, env),
+  fetch: (request, env, ctx) => app.fetch(request, env, ctx),
 } satisfies ExportedHandler<Env>;

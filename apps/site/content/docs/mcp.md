@@ -63,6 +63,8 @@ claude mcp add --transport http polyxd https://mcp.polyxd.com/mcp
 
 The hosted server takes request bodies up to 1 MB and answers within 15 seconds. One address can make 600 requests a minute. For each request it logs the method, the path, the status and how long it took. It never logs what you send.
 
+The hosted server also counts its use, anonymously, in PostHog. When a client connects, it counts the client's name and version and the protocol version. For each tool call, it counts the tool, whether it worked and the kind of error, the pack and mode of a shown screen, how many of each component type the document used, how many errors and warnings came back, how long it took, and the product name from the User-Agent. Each event has a new random id. It never sends the document, its data, a Direction, the IP address or anything from your conversation. The [privacy policy](/privacy/#the-hosted-mcp-server) has the details. The server you run yourself, below, sends nothing anywhere.
+
 ## Run it on your machine
 
 **Claude Desktop.** Add the server to `claude_desktop_config.json`, then restart Claude Desktop:

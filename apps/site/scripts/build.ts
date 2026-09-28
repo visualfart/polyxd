@@ -5,6 +5,8 @@
  *   /gallery/              the live example gallery (apps/gallery, built with Vite)
  *   /privacy/, /terms/     Markdown in content/legal
  *   sitemap.xml, robots.txt, 404.html, assets
+ *
+ * With POSTHOG_KEY in the environment, every page also gets the analytics tag (scripts/analytics.ts).
  */
 import { copyFile, cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -16,6 +18,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { PolyxdSurface, type UIDocument } from "@polyxd/react";
 import { loadDesignSystem, loadContract } from "@polyxd/spec";
+import { analyticsKey, analyticsScript, POSTHOG_JS, SCRIPT_PATH, uiHost, VENDOR_PATH, withTag } from "./analytics.ts";
 
 const here = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 const SITE = here("../");
@@ -926,6 +929,9 @@ async function write(path: string, content: string) {
   await writeFile(path, content);
 }
 
+// Analytics are built in only with POSTHOG_KEY set (scripts/analytics.ts); a malformed key stops the build here.
+const ANALYTICS_KEY = analyticsKey();
+
 await rm(DIST, { recursive: true, force: true });
 await cp(join(SITE, "src/assets"), join(DIST, "assets"), { recursive: true });
 
@@ -1385,4 +1391,16 @@ await write(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${ORIGI
   }
 }
 
-console.log(`built ${pages.length} docs pages, landing, gallery → ${DIST}`);
+// Analytics, last, so every page gets the same tag: the site's, the docs', the gallery's and the demos'.
+// Without a key nothing is written and no page is touched.
+if (ANALYTICS_KEY) {
+  await copyFile(join(REPO, POSTHOG_JS), join(DIST, VENDOR_PATH.slice(1)));
+  await write(join(DIST, SCRIPT_PATH.slice(1)), analyticsScript(ANALYTICS_KEY, uiHost()));
+  for (const f of await readdir(DIST, { recursive: true, encoding: "utf8" })) {
+    if (!f.endsWith(".html")) continue;
+    const path = join(DIST, f);
+    await writeFile(path, withTag(await readFile(path, "utf8")));
+  }
+}
+
+console.log(`built ${pages.length} docs pages, landing, gallery → ${DIST}${ANALYTICS_KEY ? ", with analytics" : ""}`);

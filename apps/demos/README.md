@@ -119,6 +119,9 @@ schema validators compiled ahead of time, so nothing generates code at run time.
 - **Cost and time.** One repair at most, so two model calls an ask, and 90 seconds in all.
 - **Same site only.** A cross-site `Origin` is refused.
 - **No ask in the logs.** One line per generation: product, outcome, attempts, tokens and timing.
+  With the site's `POSTHOG_KEY` set too, the same numbers go to PostHog as `demo_live_generation`
+  (`onGeneration` in `server/live.ts`; `docs/analytics.md`). The page counts `demo_ask`: the product
+  and whether the library, live generation or "not yet" answered. Never the ask.
 
 ### Trying it locally
 

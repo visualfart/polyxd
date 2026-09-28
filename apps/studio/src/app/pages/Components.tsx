@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { api } from "../api.ts";
+import { track } from "../analytics.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 
 interface Comp { name: string; kind: "builtin" | "custom"; category: string; summary: string; whenToUse: string[]; whenNotToUse: string[]; enabled: boolean; renderer: { package: string; export: string } | null; updatedAt: string | null }
@@ -29,6 +30,7 @@ export function ComponentsPanel({ ws, frame }: { ws: Ws; frame: (body: ReactNode
   }, [ws.slug]);
   const toggle = async (c: Comp) => {
     await api("PUT", `/api/w/${ws.slug}/components/${c.name}`, { enabled: !c.enabled });
+    track("components_chosen", { change: c.enabled ? "disabled" : "enabled" }, ws.id);
     toast(`${c.name}: generators ${c.enabled ? "can no longer" : "may now"} use it`);
     load();
   };
@@ -43,6 +45,7 @@ export function ComponentsPanel({ ws, frame }: { ws: Ws; frame: (body: ReactNode
       guidance: { summary: draft.summary, whenToUse: lines(draft.whenToUse), whenNotToUse: lines(draft.whenNotToUse) },
       renderer: draft.pkg && draft.exp ? { package: draft.pkg, export: draft.exp } : null,
     });
+    track("components_chosen", { change: "guidance" }, ws.id);
     toast(`Saved ${open.name}`);
     setOpen(null);
     load();

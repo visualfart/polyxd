@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, type Candidate, type RoleRow } from "../api.ts";
+import { track } from "../analytics.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
 
 interface MappingData { modes: string[]; rows: RoleRow[]; summary: { total: number; mapped: number; exact: number; guessed: number; missing: number; fails: number; primitive: number; off: number } }
@@ -65,6 +66,7 @@ export function Mapping({ ws }: { ws: Ws }) {
   const set = async (role: string, token: string | null, reset = false) => {
     try {
       await api("PUT", `${base}/mapping`, { role, token, reset });
+      track("roles_mapped", { how: reset ? "reset" : token ? "one" : "unmapped", count: 1 }, ws.id);
       await load();
       toast(reset ? `${role}: back to Studio's guess` : token ? `${role} reads ${token}` : `${role} left unmapped`);
     } catch (e) {
@@ -73,6 +75,7 @@ export function Mapping({ ws }: { ws: Ws }) {
   };
   const acceptExact = async () => {
     const r = await api<{ accepted: number }>("POST", `${base}/accept-exact`);
+    track("roles_mapped", { how: "bulk", count: r.accepted }, ws.id);
     toast(`Accepted ${r.accepted} exact matches`);
     load();
   };

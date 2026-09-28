@@ -28,6 +28,8 @@ export interface Me {
   user: { id: string; email: string; name: string } | null;
   workspaces: { id: string; slug: string; name: string; role: string }[];
   signIn?: { google: boolean; emailVerification: boolean };
+  /** Present only when the Worker has a PostHog key: the project's public key and PostHog's app for its region. */
+  analytics?: { key: string; ui: string };
 }
 
 export interface Scan {

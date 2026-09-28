@@ -1,6 +1,7 @@
 import { createContext, lazy, Suspense, useContext, useEffect, useState, type ReactNode } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { api, type Me } from "./api.ts";
+import { startAnalytics, stopAnalytics } from "./analytics.ts";
 import { SignIn } from "./pages/SignIn.tsx";
 import { Workspaces } from "./pages/Workspaces.tsx";
 import { Home } from "./pages/Home.tsx";
@@ -40,6 +41,11 @@ export function App() {
   useEffect(() => {
     refresh();
   }, []);
+  // Studio's analytics (./analytics.ts): only when the Worker offers them, and only once someone is signed in.
+  useEffect(() => {
+    if (me?.user) startAnalytics(me.analytics, me.user.id);
+    else if (me) stopAnalytics();
+  }, [me?.user?.id, me?.analytics?.key]);
   useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(null), 4000);

@@ -20,7 +20,7 @@ const problems: string[] = [];
 const note = (s: string) => problems.push(s);
 
 /** Licences a dependency may be under without anyone being asked. */
-const ALLOWED = /^(MIT|Apache-2\.0|ISC|BSD-[23]-Clause|0BSD|CC0-1\.0|Unlicense|MIT OR Apache-2\.0|MPL-2\.0|\(MIT OR Apache-2\.0\))$/;
+const ALLOWED = /^(MIT|Apache-2\.0|ISC|BSD-[23]-Clause|0BSD|CC0-1\.0|Unlicense|MIT OR Apache-2\.0|MPL-2\.0|\(MIT OR Apache-2\.0\)|\(Apache-2\.0 AND MIT\))$/;
 /** Licences that are fine but need saying out loud in NOTICE. */
 const NAMED_IN_NOTICE = ["axe-core", "gsap"];
 

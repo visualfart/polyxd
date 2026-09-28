@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, type Scan } from "../api.ts";
+import { track } from "../analytics.ts";
 import { Page, type Ws } from "../App.tsx";
 
 type Source = "package" | "file" | "tarball";
@@ -33,6 +34,8 @@ export function Import({ ws }: { ws: Ws }) {
       if (source === "package") fd.set("package", pkg);
       else if (file) fd.set("file", file);
       const r = await api<{ designSystemId: string; versionId: string; scan: Scan }>("POST", `/api/w/${ws.slug}/design-systems/import`, fd);
+      // The kind of source only: never the file's or the package's name.
+      track("design_system_imported", { source: source === "package" ? "package" : /\.css$/i.test(file?.name ?? "") ? "css" : /\.(tgz|tar\.gz)$/i.test(file?.name ?? "") ? "tarball" : "json" }, ws.id);
       navigate(`/w/${ws.slug}/design-systems/${r.designSystemId}/versions/${r.versionId}/scan`);
     } catch (err) {
       setError((err as Error).message);

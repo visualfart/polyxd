@@ -199,6 +199,8 @@ Apache-2.0: playwright
 MIT: react, react-dom, radix-ui, ajv, ajv-formats, vite, @vitejs/plugin-react,
      marked, lenis, @types/react, @types/react-dom
 MIT OR Apache-2.0: wrangler, @cloudflare/workers-types
+Apache-2.0 AND MIT: posthog-js (the analytics on polyxd.com and in Studio, only
+     when a PostHog key is set; the site's build copies it out of node_modules)
 
 Two need a word.
 
