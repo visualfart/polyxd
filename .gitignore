@@ -15,3 +15,4 @@ model/weights/
 # Copied from the repository root at release time (scripts/release.ts)
 packages/*/LICENSE
 packages/*/NOTICE
+.dev.vars
