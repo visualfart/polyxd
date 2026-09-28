@@ -3,9 +3,10 @@ import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-r
 import type { ActionEvent, Data } from "@polyxd/react";
 import type { Undo } from "../kit/store.ts";
 import { matchAsk, suggestions } from "../kit/ask.ts";
-import { JitSurface } from "../kit/jit.tsx";
+import { JitPending, JitSurface } from "../kit/jit.tsx";
+import { guardLiveActions, pendingStatus, useLive } from "../kit/live-ui.tsx";
 import type { IntentFile } from "../kit/types.ts";
-import { ASKABLE, REPORTS, intentById, live, resolveSlots, surfaceData } from "./intents.ts";
+import { ASKABLE, REPORTS, intentById, live as rederive, resolveSlots, surfaceData } from "./intents.ts";
 import { Ctx, store, useFoundry, type Session } from "./session.ts";
 import { runAction, type Outcome } from "./actions.ts";
 import { daysUntil, isOpen, me } from "./seed.ts";
@@ -17,6 +18,7 @@ import { Tickets, Ticket } from "./screens/tickets.tsx";
 import { Settings } from "./screens/settings.tsx";
 import { AuthoredScreen } from "./authored.tsx";
 import { PACKS, loadPack } from "./packs.ts";
+import { LIVE } from "./live.ts";
 
 export { store, useFoundry } from "./session.ts";
 
@@ -29,7 +31,9 @@ export function App() {
   const location = useLocation();
   const mode = useMode(h.settings.appearance);
   const [palette, setPalette] = useState<{ text: string } | null>(null);
-  const [surface, setSurface] = useState<{ intent: IntentFile; slots: Record<string, unknown>; data: Record<string, unknown> } | null>(null);
+  /** `live` holds the capabilities a generated screen was offered; library screens have none. */
+  const [surface, setSurface] = useState<{ intent: IntentFile; slots: Record<string, unknown>; data: Record<string, unknown>; live?: string[] } | null>(null);
+  const live = useLive(LIVE);
   const [snack, setSnack] = useState<{ text: string; undo?: Undo } | null>(null);
   const [drawer, setDrawer] = useState(false);
 
@@ -54,7 +58,7 @@ export function App() {
   }, []);
   // While a surface is open, its inputs re-derive what the store says (filters narrow the list, a
   // quote's receipt follows its fields).
-  const derive = useCallback((data: Data) => (surface ? { ...data, ...live(store.get(), surface.intent.id, data) } : undefined), [surface]);
+  const derive = useCallback((data: Data) => (surface && !surface.live ? { ...data, ...rederive(store.get(), surface.intent.id, data) } : undefined), [surface]);
 
   const say = useCallback((text: string, undo?: Undo) => setSnack({ text, undo }), []);
   const open = useCallback(
@@ -68,6 +72,14 @@ export function App() {
     [say],
   );
   const ask = useCallback((text = "") => setPalette({ text }), []);
+  // An ask the library has no screen for: written now if the site has a model, otherwise the palette's "not yet".
+  const answer = (text: string) =>
+    live.route(text, (t) => matchAsk(t, ASKABLE), {
+      library: (m) => open(m.intent.id, resolveSlots(store.get(), m.slots)),
+      started: () => setPalette(null),
+      live: ({ intent, capabilities }) => setSurface({ intent, slots: {}, data: surfaceData(store.get(), intent, {}), live: capabilities }),
+      miss: () => setPalette((p) => p ?? { text }),
+    });
 
   const onAction = (e: ActionEvent) => {
     const out: Outcome = runAction(store, e);
@@ -116,10 +128,29 @@ export function App() {
           }
         />
       </Routes>
-      {palette && <Palette initial={palette.text} onClose={() => setPalette(null)} onOpen={open} />}
+      {palette && <Palette initial={palette.text} onClose={() => setPalette(null)} onOpen={open} onAsk={answer} live={live.available} />}
+      {live.pending && (
+        <Sheet title="Writing a screen" note="Foundry is writing this screen for you" onClose={live.cancel}>
+          <JitPending theme="shadcn" mode={mode} status={pendingStatus(live.pending)} />
+        </Sheet>
+      )}
       {surface && (
         <Sheet title={surface.intent.title} onClose={() => setSurface(null)}>
-          <JitSurface intent={surface.intent} report={REPORTS[surface.intent.id]} data={surface.data} theme="shadcn" mode={mode} density="compact" onAction={onAction} onDismiss={() => setSurface(null)} derive={derive} locale="en-US" origin="library" packs={PACKS} loadPack={loadPack} />
+          <JitSurface
+            intent={surface.intent}
+            report={surface.live ? undefined : REPORTS[surface.intent.id]}
+            data={surface.data}
+            theme="shadcn"
+            mode={mode}
+            density="compact"
+            onAction={surface.live ? guardLiveActions(surface.live, onAction, () => say("This screen can't do that.")) : onAction}
+            onDismiss={() => setSurface(null)}
+            derive={derive}
+            locale="en-US"
+            origin={surface.live ? "live" : "library"}
+            packs={PACKS}
+            loadPack={loadPack}
+          />
         </Sheet>
       )}
       {snack && (
@@ -272,7 +303,7 @@ interface Item {
   run: () => void;
 }
 
-function Palette({ initial, onClose, onOpen }: { initial: string; onClose: () => void; onOpen: (id: string, slots: Record<string, unknown>) => void }) {
+function Palette({ initial, onClose, onOpen, onAsk, live }: { initial: string; onClose: () => void; onOpen: (id: string, slots: Record<string, unknown>) => void; onAsk: (text: string) => void; live: boolean }) {
   const { h } = useFoundry();
   const navigate = useNavigate();
   const ref = useRef<HTMLDialogElement>(null);
@@ -325,7 +356,7 @@ function Palette({ initial, onClose, onOpen }: { initial: string; onClose: () =>
       e.preventDefault();
       const it = items[active];
       if (it) it.run();
-      else if (q) askIt(q);
+      else if (q && !askIt(q)) onAsk(q);
     }
   };
   let lastGroup = "";
@@ -340,7 +371,18 @@ function Palette({ initial, onClose, onOpen }: { initial: string; onClose: () =>
         <div className="fd-palette-list" ref={listRef} id="fd-palette-list" role="listbox">
           {miss && (
             <div className="fd-palette-miss" role="status">
-              <b>Foundry can't do that one yet.</b> “{q}” isn't something the desk can act on. Try one of the asks below, or say it another way.
+              {live ? (
+                <>
+                  <b>Foundry has no screen for that yet.</b> Press <Kbd>↵</Kbd> and Foundry will write one for “{q}”, checked against the spec before you see it.{" "}
+                  <Button variant="outline" size="sm" icon="spark" onClick={() => onAsk(q)}>
+                    Write it now
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <b>Foundry can't do that one yet.</b> “{q}” isn't something the desk can act on. Try one of the asks below, or say it another way.
+                </>
+              )}
             </div>
           )}
           {items.map((it, i) => {
@@ -380,7 +422,7 @@ function Palette({ initial, onClose, onOpen }: { initial: string; onClose: () =>
 
 /* ---- Sheet: a generated surface, beside the desk on wide screens and over it on phones. ---- */
 
-function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Sheet({ title, note, onClose, children }: { title: string; note?: string; onClose: () => void; children: ReactNode }) {
   const ref = useRef<HTMLDialogElement>(null);
   useModal(ref, onClose);
   return (
@@ -389,7 +431,7 @@ function Sheet({ title, onClose, children }: { title: string; onClose: () => voi
         <div className="fd-sheet-head">
           <p>
             <Icon name="spark" size={14} />
-            Foundry wrote this screen for you · {title}
+            {note ?? `Foundry wrote this screen for you · ${title}`}
           </p>
           <Button variant="ghost" size="icon" onClick={() => ref.current?.close()} aria-label="Close">
             <Icon name="close" />

@@ -1,4 +1,4 @@
-import { daysFromNow, rng } from "../kit/store.ts";
+import { daysFromNow, rng } from "../kit/seeding.ts";
 
 /** Wexley's data: one resident, the council services she uses, and the letters between them. */
 export interface Wexley {

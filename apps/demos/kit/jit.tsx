@@ -59,12 +59,14 @@ function fingerprint(text: string): string {
   return (h >>> 0).toString(36);
 }
 
-/** Shown while a live document is on its way. */
-export function JitPending({ title, pattern, theme, mode }: { title?: string; pattern?: string; theme: string; mode: "light" | "dark" }) {
+/** Shown while a live document is on its way: the product's own skeleton, and what's happening in words. */
+export function JitPending({ title, pattern, theme, mode, status = "Writing this screen…" }: { title?: string; pattern?: string; theme: string; mode: "light" | "dark"; status?: string }) {
   return (
-    <div className="jit">
+    <div className="jit" aria-busy="true">
       <PolyxdSkeleton title={title} pattern={pattern} theme={theme} mode={mode} />
-      <p className="jit-mark jit-mark-pending">Writing this screen…</p>
+      <p className="jit-mark jit-mark-pending" role="status" aria-live="polite">
+        {status}
+      </p>
     </div>
   );
 }

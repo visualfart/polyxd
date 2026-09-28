@@ -3,14 +3,15 @@ import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-
 import { PolyxdFrame, type ActionEvent } from "@polyxd/react";
 import type { Undo } from "../kit/store.ts";
 import { matchAsk, suggestions } from "../kit/ask.ts";
-import { JitSurface } from "../kit/jit.tsx";
+import { JitPending, JitSurface } from "../kit/jit.tsx";
+import { guardLiveActions, pendingStatus, useLive } from "../kit/live-ui.tsx";
 import type { IntentFile } from "../kit/types.ts";
 import { ASKABLE, REPORTS, SHELL, intentById, resolveSlots, surfaceData } from "./intents.ts";
-import { useHalden } from "./session.ts";
 import { runAction, type Outcome } from "./actions.ts";
 import { Button, Fab, Icon } from "./ui.tsx";
 import { AuthoredScreen } from "./authored.tsx";
 import { PACKS, loadPack } from "./packs.ts";
+import { LIVE } from "./live.ts";
 import { Home } from "./screens/home.tsx";
 import { Payments, Payment } from "./screens/payments.tsx";
 import { Payees, Payee } from "./screens/payees.tsx";
@@ -26,8 +27,10 @@ export function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const mode = useMode(h.settings.appearance);
-  const [asking, setAsking] = useState<{ text: string } | null>(null);
-  const [surface, setSurface] = useState<{ intent: IntentFile; slots: Record<string, unknown>; data: Record<string, unknown> } | null>(null);
+  const [asking, setAsking] = useState<{ text: string; miss?: string } | null>(null);
+  /** `live` holds the capabilities a generated screen was offered; library screens have none. */
+  const [surface, setSurface] = useState<{ intent: IntentFile; slots: Record<string, unknown>; data: Record<string, unknown>; live?: string[] } | null>(null);
+  const live = useLive(LIVE);
   const [snack, setSnack] = useState<{ text: string; undo?: Undo } | null>(null);
 
   useEffect(() => {
@@ -50,6 +53,17 @@ export function App() {
     [say],
   );
   const ask = useCallback((text = "") => setAsking({ text }), []);
+  // The library first; then, only if the site has a model, a screen written now; otherwise "not yet".
+  const answer = (text: string, showMiss: () => void) =>
+    live.route(text, (t) => matchAsk(t, ASKABLE), {
+      library: (m) => open(m.intent.id, resolveSlots(store.get(), m.slots)),
+      started: () => setAsking(null),
+      live: ({ intent, capabilities }) => setSurface({ intent, slots: {}, data: surfaceData(store.get(), intent, {}), live: capabilities }),
+      miss: () => {
+        showMiss();
+        setAsking((a) => a ?? { text, miss: text });
+      },
+    });
 
   const onAction = (e: ActionEvent) => {
     const out: Outcome = runAction(store, e);
@@ -113,10 +127,27 @@ export function App() {
           }
         />
       </Routes>
-      {asking && <AskSheet initial={asking.text} onClose={() => setAsking(null)} onOpen={open} />}
+      {asking && <AskSheet initial={asking.text} missed={asking.miss} onClose={() => setAsking(null)} onAsk={answer} />}
+      {live.pending && (
+        <Sheet label="Writing a screen" note="Halden is writing this screen for you" onClose={live.cancel}>
+          <JitPending theme="material3" mode={mode} status={pendingStatus(live.pending)} />
+        </Sheet>
+      )}
       {surface && (
         <Sheet label={surface.intent.document.surface.title} onClose={() => setSurface(null)}>
-          <JitSurface intent={surface.intent} report={REPORTS[surface.intent.id]} data={surface.data} theme="material3" mode={mode} density="comfortable" onAction={onAction} onDismiss={() => setSurface(null)} origin="library" packs={PACKS} loadPack={loadPack} />
+          <JitSurface
+            intent={surface.intent}
+            report={surface.live ? undefined : REPORTS[surface.intent.id]}
+            data={surface.data}
+            theme="material3"
+            mode={mode}
+            density="comfortable"
+            onAction={surface.live ? guardLiveActions(surface.live, onAction, () => say("This screen can't do that.")) : onAction}
+            onDismiss={() => setSurface(null)}
+            origin={surface.live ? "live" : "library"}
+            packs={PACKS}
+            loadPack={loadPack}
+          />
         </Sheet>
       )}
       {snack && (
@@ -186,7 +217,7 @@ function useModal(ref: React.RefObject<HTMLDialogElement | null>, onClose: () =>
   }, [ref]);
 }
 
-function Sheet({ label, onClose, children }: { label: string; onClose: () => void; children: ReactNode }) {
+function Sheet({ label, note = "Halden wrote this screen for you", onClose, children }: { label: string; note?: string; onClose: () => void; children: ReactNode }) {
   const ref = useRef<HTMLDialogElement>(null);
   useModal(ref, onClose);
   return (
@@ -194,7 +225,7 @@ function Sheet({ label, onClose, children }: { label: string; onClose: () => voi
       <div className="hal-sheet-panel">
         <div className="hal-sheet-handle" aria-hidden="true" />
         <div className="hal-sheet-head">
-          <p>Halden wrote this screen for you</p>
+          <p>{note}</p>
           <button type="button" className="hal-icon-button" onClick={() => ref.current?.close()} aria-label="Close">
             <Icon name="close" />
           </button>
@@ -207,20 +238,15 @@ function Sheet({ label, onClose, children }: { label: string; onClose: () => voi
 
 /* ---- The ask screen ---- */
 
-function AskSheet({ initial, onClose, onOpen }: { initial: string; onClose: () => void; onOpen: (id: string, slots: Record<string, unknown>) => void }) {
-  const { h } = useHalden();
+function AskSheet({ initial, missed, onClose, onAsk }: { initial: string; missed?: string; onClose: () => void; onAsk: (text: string, showMiss: () => void) => void }) {
   const ref = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const [text, setText] = useState(initial);
-  const [miss, setMiss] = useState<string | null>(null);
+  const [miss, setMiss] = useState<string | null>(missed ?? null);
   const tries = useMemo(() => suggestions(ASKABLE, 4), []);
   useModal(ref, onClose);
   useEffect(() => input.current?.focus(), []);
-  const go = (t: string) => {
-    const m = matchAsk(t, ASKABLE);
-    if (!m) return setMiss(t);
-    onOpen(m.intent.id, resolveSlots(h, m.slots));
-  };
+  const go = (t: string) => onAsk(t, () => setMiss(t));
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (text.trim()) go(text.trim());

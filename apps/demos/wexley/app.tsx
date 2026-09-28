@@ -3,11 +3,13 @@ import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } fr
 import type { ActionEvent } from "@polyxd/react";
 import type { Undo } from "../kit/store.ts";
 import { matchAsk, suggestions } from "../kit/ask.ts";
-import { JitSurface } from "../kit/jit.tsx";
+import { JitPending, JitSurface } from "../kit/jit.tsx";
+import { guardLiveActions, pendingStatus, useLive, type LiveScreen } from "../kit/live-ui.tsx";
 import type { IntentFile } from "../kit/types.ts";
 import { ASKABLE, REPORTS, intentById, intentBySlug, resolveSlots, slug, surfaceData } from "./intents.ts";
 import { runAction, type Outcome } from "./actions.ts";
-import { Ctx, store, type Session } from "./session.ts";
+import { Ctx, store, useWexley, type Session } from "./session.ts";
+import { LIVE } from "./live.ts";
 import { Banner, BackLink, Breadcrumbs, Button, Footer, Header, Heading, LinkButton, PhaseBanner, TextField } from "./ui.tsx";
 import { AuthoredScreen } from "./authored.tsx";
 import { SignIn } from "./screens/signin.tsx";
@@ -63,6 +65,8 @@ interface Opened {
   from: string;
   /** Opened from another surface (a review, a confirmation): dismissing goes back a page, not home. */
   chained: boolean;
+  /** A page written just now: the capabilities it was offered. Library pages have none. */
+  live?: string[];
 }
 interface Notice {
   text: string;
@@ -198,15 +202,18 @@ function Ask() {
   const [miss, setMiss] = useState<string | null>(null);
   const tried = useRef<string | null>(null);
   const tries = useMemo(() => suggestions(ASKABLE, 4), []);
+  const live = useLive(LIVE);
+  const { route } = live;
   const go = useCallback(
-    (t: string) => {
-      const m = matchAsk(t, ASKABLE);
-      if (!m) return setMiss(t);
-      const slots = resolveSlots(store.get(), m.slots);
-      // Straight to the page: the ask box is a way in, not a place to stay.
-      navigate(`/ask/${slug(m.intent.id)}`, { replace: true, state: { key: stash(m.intent, slots, "/") } });
-    },
-    [navigate],
+    (t: string) =>
+      route(t, (x) => matchAsk(x, ASKABLE), {
+        // Straight to the page: the ask box is a way in, not a place to stay.
+        library: (m) => navigate(`/ask/${slug(m.intent.id)}`, { replace: true, state: { key: stash(m.intent, resolveSlots(store.get(), m.slots), "/") } }),
+        // Nothing in the library: a page written now when the site has a model, checked before it is shown.
+        live: ({ intent, capabilities }: LiveScreen) => navigate(`/ask/${slug(intent.id)}`, { state: { key: stash(intent, {}, "/ask", capabilities) } }),
+        miss: () => setMiss(t),
+      }),
+    [navigate, route],
   );
   useEffect(() => {
     if (initial && tried.current !== initial) {
@@ -218,6 +225,20 @@ function Ask() {
     e.preventDefault();
     if (text.trim()) go(text.trim());
   };
+  if (live.pending)
+    return (
+      <>
+        <Breadcrumbs items={[{ label: "Your account", to: "/" }, { label: "Ask for something" }]} />
+        <Heading>We are writing this page for you</Heading>
+        <p className="wx-body">“{live.pending.ask}” has no page yet. We check the new one against the rules for council pages before you see it.</p>
+        <div className="wx-surface">
+          <JitPending theme="govuk" mode="light" status={pendingStatus(live.pending)} />
+        </div>
+        <p className="wx-body">
+          <LinkButton onClick={live.cancel}>Cancel and ask something else</LinkButton>
+        </p>
+      </>
+    );
   return (
     <>
       <Breadcrumbs items={[{ label: "Your account", to: "/" }, { label: "Ask for something" }]} />
@@ -253,9 +274,9 @@ function Ask() {
 
 /** Surfaces opened from the ask page share the App's map through a module-level stash. */
 const stashed = new Map<string, Opened>();
-function stash(intent: IntentFile, slots: Record<string, unknown>, from: string): string {
+function stash(intent: IntentFile, slots: Record<string, unknown>, from: string, live?: string[]): string {
   const key = Math.random().toString(36).slice(2, 10);
-  stashed.set(key, { intent, slots, data: surfaceData(store.get(), intent, slots), from, chained: false });
+  stashed.set(key, { intent, slots, data: surfaceData(store.get(), intent, slots), from, chained: false, live });
   return key;
 }
 
@@ -265,6 +286,7 @@ function SurfacePage({ lookup, onAction }: { lookup: (key: string) => Opened | u
   const { id = "" } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { say } = useWexley();
   const key = (location.state as { key?: string } | null)?.key ?? "";
   const opened = useMemo<Opened | undefined>(() => {
     const found = lookup(key) ?? stashed.get(key);
@@ -299,7 +321,21 @@ function SurfacePage({ lookup, onAction }: { lookup: (key: string) => Opened | u
       <BackLink onClick={() => (window.history.length > 1 ? navigate(-1) : leave())} />
       <Breadcrumbs items={[{ label: "Your account", to: "/" }, { label: opened.intent.title }]} />
       <div className="wx-surface">
-        <JitSurface key={key || id} intent={opened.intent} report={REPORTS[opened.intent.id]} data={opened.data} theme="govuk" mode="light" density="comfortable" disclosure="progressive" onAction={(e) => onAction(opened, e)} onDismiss={leave} origin="library" packs={PACKS} loadPack={loadPack} />
+        <JitSurface
+          key={key || id}
+          intent={opened.intent}
+          report={opened.live ? undefined : REPORTS[opened.intent.id]}
+          data={opened.data}
+          theme="govuk"
+          mode="light"
+          density="comfortable"
+          disclosure="progressive"
+          onAction={opened.live ? guardLiveActions(opened.live, (e) => onAction(opened, e), () => say("This page cannot do that.", undefined, "Important")) : (e) => onAction(opened, e)}
+          onDismiss={leave}
+          origin={opened.live ? "live" : "library"}
+          packs={PACKS}
+          loadPack={loadPack}
+        />
         <p className="wx-small wx-muted wx-surface-note">
           The council wrote this page for what you asked. <Link to="/ask">Ask for something else</Link>.
         </p>

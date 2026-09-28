@@ -73,6 +73,8 @@ const issues = checkCapabilities(doc, registry, { "reading-import": false });
 //    message: "\"books.import\" is switched off by flag \"reading-import\"" }]
 ```
 
+A product can offer fewer capabilities to a screen written at request time than to one it verified ahead of time. The [demos](/demos/) have a live path, off until the site has a model key, that offers a generated screen only the product's `none` and `low` capabilities. Anything consequential stays behind the verified confirmations in the product's library. The browser also refuses any action the screen wasn't offered, before the product's own handlers see it.
+
 `agentMayInvoke` is recorded in the schema; enforcing it at runtime is planned. The spec's example registry is `packages/spec/examples/registry/capabilities.json`, and the benchmark has a larger one (`bench/registry.json`, 58 capabilities).
 
 ## Journeys

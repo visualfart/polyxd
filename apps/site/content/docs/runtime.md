@@ -7,7 +7,7 @@ section: Guides
 
 # Runtime
 
-`@polyxd/runtime` turns an ask into a UI document with the model you choose. It builds the prompt from the spec and your [Design Direction](/docs/design-direction), checks the answer, sends any problems back to the model to fix, streams as it goes, and remembers the screen shown for each intent. It uses `fetch` only and has no model SDK dependencies, so it runs in Node, browsers and Workers.
+`@polyxd/runtime` turns an ask into a UI document with the model you choose. It builds the prompt from the spec and your [Design Direction](/docs/design-direction), checks the answer, sends any problems back to the model to fix, streams as it goes, and remembers the screen shown for each intent. It uses `fetch` only and has no model SDK dependencies, so it runs in Node and browsers, and in Workers with a precompiled schema validator (see [In a Cloudflare Worker](#in-a-cloudflare-worker)).
 
 It is new in the repository and not on npm yet.
 
@@ -174,6 +174,16 @@ When a document passes, it is stored by its ask's `intent`, without its data. Th
 | `error` | `reason`, `attempts`, `ms`, and `status` or `checks` when there are any |
 
 `checks` holds check ids such as `spec` or `rule:money-moves-in-confirm`, never their messages. No event carries the ask, the data or the document. A hook that throws never breaks generation. The package sends no telemetry anywhere.
+
+## In a Cloudflare Worker
+
+The spec's schema check uses Ajv, and Ajv turns a schema into a function at runtime. Cloudflare Workers don't allow that, so `checkDocument` fails there as it stands. The fix is to compile the validator ahead of time and give the bundle that instead. The site does this for the demos: `apps/site/scripts/build-validator.ts` writes the UI schema's validator with Ajv's standalone output, and `wrangler.jsonc` aliases `ajv/dist/2020.js` to a small class that hands it back. It gives the same answers and the same error lists as the compiled one. Node and browsers need none of this.
+
+## In the demos
+
+The [demos](/demos/) have a live path built on this package. When an ask matches nothing in a product's verified library, the site's Worker can run `createRuntime` with that product's Design Direction, its own low-risk capabilities and its seed data, and stream the result back. A screen that passes shows with a "Generated just now" mark; one that still fails after repair is "not yet". The browser keeps interface memory with `storageStore(localStorage)`, so asking again for the same thing sends last time's screen with it.
+
+The path is off on polyxd.com. It stays off until the site has a model key, so the public demos answer from their library only. [`apps/demos/README.md`](https://github.com/visualfart/polyxd/tree/main/apps/demos#live-generation) says how an operator turns it on.
 
 ## Everything it exports
 

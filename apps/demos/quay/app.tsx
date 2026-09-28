@@ -3,9 +3,11 @@ import { Link, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import type { ActionEvent, Data } from "@polyxd/react";
 import type { Undo } from "../kit/store.ts";
 import { matchAsk, suggestions } from "../kit/ask.ts";
-import { JitSurface } from "../kit/jit.tsx";
+import { JitPending, JitSurface } from "../kit/jit.tsx";
+import { guardLiveActions, pendingStatus, useLive } from "../kit/live-ui.tsx";
 import type { IntentFile } from "../kit/types.ts";
-import { ASKABLE, REPORTS, intentById, live, resolveSlots, surfaceData } from "./intents.ts";
+import { ASKABLE, REPORTS, intentById, live as rederive, resolveSlots, surfaceData } from "./intents.ts";
+import { LIVE } from "./live.ts";
 import { Ctx, store, useQuay, type SaveBar, type Session } from "./session.ts";
 import { runAction, type Outcome } from "./actions.ts";
 import { fullName, isLate, me } from "./seed.ts";
@@ -31,7 +33,9 @@ export function App() {
   const navigate = useNavigate();
   const mode = useMode(h.settings.appearance);
   const [palette, setPalette] = useState<{ text: string } | null>(null);
-  const [surface, setSurface] = useState<{ intent: IntentFile; slots: Record<string, unknown>; data: Record<string, unknown> } | null>(null);
+  /** `live` holds the capabilities a generated screen was offered; library screens have none. */
+  const [surface, setSurface] = useState<{ intent: IntentFile; slots: Record<string, unknown>; data: Record<string, unknown>; live?: string[] } | null>(null);
+  const live = useLive(LIVE);
   const [snack, setSnack] = useState<{ text: string; undo?: Undo } | null>(null);
   const [drawer, setDrawer] = useState(false);
   const [bar, setBar] = useState<SaveBar | null>(null);
@@ -57,7 +61,7 @@ export function App() {
   }, []);
   // While a surface is open, its inputs re-derive what the store says (the low-stock list narrows,
   // the refund receipt follows the ticked items, the price preview follows the percent).
-  const derive = useCallback((data: Data) => (surface ? { ...data, ...live(store.get(), surface.intent.id, data) } : undefined), [surface]);
+  const derive = useCallback((data: Data) => (surface && !surface.live ? { ...data, ...rederive(store.get(), surface.intent.id, data) } : undefined), [surface]);
 
   const say = useCallback((text: string, undo?: Undo) => setSnack({ text, undo }), []);
   const open = useCallback(
@@ -71,6 +75,14 @@ export function App() {
     [say],
   );
   const ask = useCallback((text = "") => setPalette({ text }), []);
+  // An ask the library has no screen for: written now if the site has a model, otherwise the palette's "not yet".
+  const answer = (text: string) =>
+    live.route(text, (t) => matchAsk(t, ASKABLE), {
+      library: (m) => open(m.intent.id, resolveSlots(store.get(), m.slots)),
+      started: () => setPalette(null),
+      live: ({ intent, capabilities }) => setSurface({ intent, slots: {}, data: surfaceData(store.get(), intent, {}), live: capabilities }),
+      miss: () => setPalette((p) => p ?? { text }),
+    });
   const saveBar = useCallback((b: SaveBar | null) => setBar(b), []);
 
   const onAction = (e: ActionEvent) => {
@@ -117,10 +129,30 @@ export function App() {
         </main>
         {drawer && <Drawer onClose={() => setDrawer(false)} />}
       </div>
-      {palette && <Palette initial={palette.text} onClose={() => setPalette(null)} onOpen={open} />}
+      {palette && <Palette initial={palette.text} onClose={() => setPalette(null)} onOpen={open} onAsk={answer} live={live.available} />}
+      {live.pending && (
+        <Sheet title="Writing a screen" note="Quay is writing this screen for you" onClose={live.cancel}>
+          <JitPending theme="polaris" mode={mode} status={pendingStatus(live.pending)} />
+        </Sheet>
+      )}
       {surface && (
         <Sheet title={surface.intent.title} onClose={() => setSurface(null)}>
-          <JitSurface intent={surface.intent} report={REPORTS[surface.intent.id]} data={surface.data} theme="polaris" mode={mode} density="compact" onAction={onAction} onDismiss={() => setSurface(null)} derive={derive} locale="en-US" resolveMedia={resolveMedia} origin="library" packs={PACKS} loadPack={loadPack} />
+          <JitSurface
+            intent={surface.intent}
+            report={surface.live ? undefined : REPORTS[surface.intent.id]}
+            data={surface.data}
+            theme="polaris"
+            mode={mode}
+            density="compact"
+            onAction={surface.live ? guardLiveActions(surface.live, onAction, () => say("This screen can't do that.")) : onAction}
+            onDismiss={() => setSurface(null)}
+            derive={derive}
+            locale="en-US"
+            resolveMedia={resolveMedia}
+            origin={surface.live ? "live" : "library"}
+            packs={PACKS}
+            loadPack={loadPack}
+          />
         </Sheet>
       )}
       {snack && (
@@ -274,7 +306,7 @@ interface Item {
   run: () => void;
 }
 
-function Palette({ initial, onClose, onOpen }: { initial: string; onClose: () => void; onOpen: (id: string, slots: Record<string, unknown>) => void }) {
+function Palette({ initial, onClose, onOpen, onAsk, live }: { initial: string; onClose: () => void; onOpen: (id: string, slots: Record<string, unknown>) => void; onAsk: (text: string) => void; live: boolean }) {
   const { h } = useQuay();
   const navigate = useNavigate();
   const ref = useRef<HTMLDialogElement>(null);
@@ -334,7 +366,7 @@ function Palette({ initial, onClose, onOpen }: { initial: string; onClose: () =>
       e.preventDefault();
       const it = items[active];
       if (it) it.run();
-      else if (q) askIt(q);
+      else if (q && !askIt(q)) onAsk(q);
     }
   };
   let lastGroup = "";
@@ -349,7 +381,18 @@ function Palette({ initial, onClose, onOpen }: { initial: string; onClose: () =>
         <div className="q-palette-list" ref={listRef} id="q-palette-list" role="listbox">
           {miss && (
             <div className="q-palette-miss" role="status">
-              <b>Quay can't do that one yet.</b> “{q}” isn't an order, a product, a customer, or something the store can act on. Try one of the asks, or say it another way.
+              {live ? (
+                <>
+                  <b>Quay has no screen for that yet.</b> “{q}” isn't an order, a product or a customer. Quay can write a screen for it now, checked against the spec before you see it.{" "}
+                  <Button variant="secondary" size="slim" icon="spark" onClick={() => onAsk(q)}>
+                    Write it now
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <b>Quay can't do that one yet.</b> “{q}” isn't an order, a product, a customer, or something the store can act on. Try one of the asks, or say it another way.
+                </>
+              )}
             </div>
           )}
           {items.map((it, i) => {
@@ -389,7 +432,7 @@ function Palette({ initial, onClose, onOpen }: { initial: string; onClose: () =>
 
 /* ---- Sheet: a generated surface, beside the admin on wide screens and over it on phones. ---- */
 
-function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Sheet({ title, note, onClose, children }: { title: string; note?: string; onClose: () => void; children: ReactNode }) {
   const ref = useRef<HTMLDialogElement>(null);
   useModal(ref, onClose);
   return (
@@ -398,7 +441,7 @@ function Sheet({ title, onClose, children }: { title: string; onClose: () => voi
         <div className="q-sheet-head">
           <p>
             <Icon name="spark" size={14} />
-            Quay wrote this screen for you · {title}
+            {note ?? `Quay wrote this screen for you · ${title}`}
           </p>
           <button type="button" className="q-icon-btn" onClick={() => ref.current?.close()} aria-label="Close">
             <Icon name="close" />

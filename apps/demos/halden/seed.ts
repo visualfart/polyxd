@@ -1,4 +1,4 @@
-import { daysFromNow, ids, rng } from "../kit/store.ts";
+import { daysFromNow, ids, rng } from "../kit/seeding.ts";
 
 /** Halden's data: one person, one account, three months of ordinary life. */
 export interface Halden {

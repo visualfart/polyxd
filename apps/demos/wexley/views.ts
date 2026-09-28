@@ -1,5 +1,5 @@
 import type { IntentFile } from "../kit/types.ts";
-import { daysFromNow } from "../kit/store.ts";
+import { daysFromNow } from "../kit/seeding.ts";
 import { BIN_NAMES, SLOT_NAMES, STAGE_NAMES, daysUntil, nextMarch, nextPaymentDay, nextWeekday, oneLine, openFine, planMonthly, repair, vehicleLine, zone, zoneForPostcode, zoneName, type Address, type AppealReason, type BinKind, type Wexley } from "./seed.ts";
 import { date, dayDate, isoDay, money, ordinal, today } from "./format.ts";
 

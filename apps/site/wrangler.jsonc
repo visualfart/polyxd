@@ -15,5 +15,8 @@
     "run_worker_first": true
   },
   "kv_namespaces": [{ "binding": "WAITLIST", "id": "84207e26f8214e97bdd24474b5a11f19" }],
+  // Workers can't compile code at runtime, so the demos' live endpoint gets the spec's UI schema
+  // validator precompiled (scripts/build-validator.ts) in place of Ajv's compiler.
+  "alias": { "ajv/dist/2020.js": "./worker/ajv-2020.ts" },
   "observability": { "enabled": true }
 }

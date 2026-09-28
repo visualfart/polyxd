@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Three products built on Polyxd, each in a different design system: Halden (personal money, Material 3), Foundry (customer success, shadcn) and Wexley (council services, GOV.UK).",
+  "description": "Four products built on Polyxd, each in a different design system: Halden (personal money, Material 3), Foundry (customer success, shadcn), Wexley (council services, GOV.UK) and Quay (store admin, Polaris).",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@polyxd/react": "^0.3.0",
+    "@polyxd/runtime": "^0.3.0",
     "@polyxd/spec": "^0.3.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

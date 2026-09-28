@@ -1,4 +1,4 @@
-import { daysFromNow, ids, rng } from "../kit/store.ts";
+import { daysFromNow, ids, rng } from "../kit/seeding.ts";
 
 /**
  * Foundry's data: the customer-success desk of Basalt, a data platform sold in three annual,
