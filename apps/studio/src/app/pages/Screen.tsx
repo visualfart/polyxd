@@ -328,9 +328,9 @@ export function Screen({ ws }: { ws: Ws }) {
         </aside>
         <section className="scr-center" aria-label="Preview">
           <div className="scr-toolbar">
-            {themeId !== "workspace" && <PackLogo id={themeId} size={32} />}
-            <select className="select" value={themeId} onChange={(e) => setThemeId(e.target.value)} aria-label="Design system">
-              {wsTheme && <option value="workspace">{wsTheme.name} (your design system)</option>}
+            {themeId !== "workspace" ? <PackLogo id={themeId} size={32} /> : wsTheme?.template ? <PackLogo id={wsTheme.template} size={32} /> : null}
+            <select className="select scr-ds" value={themeId} onChange={(e) => setThemeId(e.target.value)} aria-label="Design system" title={themeId === "workspace" && wsTheme ? `${wsTheme.name}, your design system` : BUILTIN.find((t) => t.id === themeId)?.name}>
+              {wsTheme && <optgroup label="Your design system"><option value="workspace">{wsTheme.name}</option></optgroup>}
               {wsTheme === null && <option value="" disabled>No published design system yet</option>}
               <optgroup label="Built-in themes">{BUILTIN.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}</optgroup>
             </select>
