@@ -5,17 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Demos · Polyxd</title>
     <meta name="description" content="Four products built on Polyxd, each in a different design system: Halden, Foundry, Wexley and Quay." />
-    <meta name="theme-color" content="#f4f1ea" />
+    <meta name="theme-color" content="#F3F1EC" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121211" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/assets/site.css" />
+    <!-- Polyxd's type: Young Serif, Hanken Grotesk, DM Mono (brand/build.ts FONTS_URL). -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap" rel="stylesheet" />
+    <!-- Polyxd's tokens (paper, or night when the visitor prefers dark) and the mark's state CSS, bundled from brand/. -->
+    <link rel="stylesheet" href="../../brand/tokens.css" />
+    <link rel="stylesheet" href="../../brand/mark.css" />
     <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--ink);
+        font: var(--text-body);
+        font-size: 17px;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: inherit;
+      }
+      :focus-visible {
+        outline: none;
+        box-shadow: var(--focus-ring);
+      }
+      .wrap {
+        width: 100%;
+        max-width: 1440px;
+        margin: 0 auto;
+        padding-inline: clamp(20px, 5.5vw, 80px);
+      }
+
+      /* Header: the site's. The lockup, then the nav. */
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: color-mix(in srgb, var(--ground) 88%, transparent);
+        backdrop-filter: saturate(1.4) blur(12px);
+        border-bottom: 1px solid var(--rule);
+      }
+      .site-header .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        min-height: 72px;
+      }
+      /* The lockup: the word at 0.8 of the mark, a gap of 5/32 of it. */
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--ink);
+        text-decoration: none;
+        border-radius: var(--radius-small);
+      }
+      .brand-word {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 26px;
+        line-height: 1;
+        letter-spacing: -0.015em;
+        margin-top: -1px;
+      }
+      /* The mark reads the word beside it when you point at it (only the pupil moves). */
+      .brand:is(:hover, :focus-visible) .pxb-mark[data-state="idle"] .pxb-pupil {
+        transform: translate(1.3px, -1.1px);
+      }
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: clamp(16px, 2.4vw, 36px);
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .site-nav a {
+        margin-inline: -8px;
+        padding: 10px 8px;
+        text-decoration: none;
+        border-radius: var(--radius-pill);
+      }
+      .site-nav a:hover {
+        color: var(--signal-text);
+      }
+
+      /* The page */
+      .section {
+        padding-block: clamp(56px, 7vw, 96px);
+      }
+      .eyebrow {
+        margin: 0;
+        font: var(--text-label);
+        letter-spacing: var(--tracking-label);
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      h1 {
+        margin: 12px 0 16px;
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: clamp(36px, 5vw, 64px);
+        line-height: 1;
+        letter-spacing: -0.015em;
+        text-wrap: balance;
+      }
+      .lead {
+        max-width: 60ch;
+        margin: 0;
+        font: var(--text-lead);
+        font-size: clamp(17px, 1.4vw, 20px);
+        color: var(--muted);
+      }
+
+      /* One card per product. Each product's letter keeps that product's own colour: it is their
+         brand, not Polyxd's. */
       .demos {
         display: grid;
         gap: 24px;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
         margin-top: 40px;
       }
       .demo {
@@ -23,15 +138,16 @@
         flex-direction: column;
         gap: 12px;
         padding: 28px;
-        border: 1px solid var(--line);
-        border-radius: 20px;
-        background: var(--paper);
+        border: 1px solid var(--rule);
+        border-radius: var(--radius-card);
+        corner-shape: squircle;
+        background: var(--surface);
         color: inherit;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        text-decoration: none;
+        transition: border-color var(--duration-fast) var(--ease-standard);
       }
       .demo:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 32px rgb(0 0 0 / 0.08);
+        border-color: var(--border);
       }
       .demo-mark {
         display: inline-flex;
@@ -39,68 +155,71 @@
         height: 48px;
         align-items: center;
         justify-content: center;
-        border-radius: 14px;
+        border-radius: var(--radius-icon);
+        corner-shape: squircle;
         color: #fff;
-        font: 700 24px var(--display);
+        font: 600 24px/1 var(--font-body);
       }
       .demo h2 {
         margin: 8px 0 0;
-        font: 700 26px/1.1 var(--display);
-        letter-spacing: -0.02em;
+        font: var(--text-title);
+        letter-spacing: var(--tracking-title);
       }
       .demo p {
         margin: 0;
-        color: var(--ink-2);
+        color: var(--muted);
       }
       .demo .ds {
-        font-size: 13px;
-        color: var(--ink-2);
-        letter-spacing: 0.02em;
+        font: var(--text-label);
+        letter-spacing: var(--tracking-label);
         text-transform: uppercase;
+        color: var(--muted);
       }
-      .demo .soon {
-        display: inline-block;
-        margin-top: 6px;
-        padding: 4px 10px;
-        border-radius: 999px;
-        background: var(--line);
-        font-size: 12px;
+      /* On night, the darker products' letters (Foundry, Quay) keep a hairline so the square still reads. */
+      @media (prefers-color-scheme: dark) {
+        .demo-mark {
+          box-shadow: inset 0 0 0 1px var(--border);
+        }
       }
     </style>
   </head>
   <body>
     <header class="site-header">
       <div class="wrap">
-        <a class="brand" href="/" aria-label="Polyxd home"><img src="/favicon.svg" alt="" width="30" height="30"><span class="brand-word">polyxd</span></a>
+        <a class="brand" href="/" aria-label="Polyxd home">
+          <!-- The Polyxd mark at rest (brand/build.ts markSvg): orange p, white window, ink pupil. -->
+          <svg class="pxb-mark" data-state="idle" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M13 6H19C22.864 6 26 9.136 26 13V19C26 22.864 22.864 26 19 26H13C9.136 26 6 22.864 6 19V13C6 9.136 9.136 6 13 6Z" fill="var(--signal)"/><path d="M8.5 14H8.5C9.88 14 11 15.12 11 16.5V25.5C11 26.88 9.88 28 8.5 28H8.5C7.12 28 6 26.88 6 25.5V16.5C6 15.12 7.12 14 8.5 14Z" fill="var(--signal)"/><path d="M16 11.2H16C20.224 11.2 20.8 11.776 20.8 16V16C20.8 20.224 20.224 20.8 16 20.8H16C11.776 20.8 11.2 20.224 11.2 16V16C11.2 11.776 11.776 11.2 16 11.2Z" fill="var(--mark-window)"/><circle class="pxb-pupil" cx="16" cy="16" r="2.4" fill="var(--mark-pupil)"/><path class="pxb-tick" d="M13.9 16.3l1.5 1.5 2.8-3.1" pathLength="1" fill="none" stroke="var(--mark-pupil)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="brand-word" aria-hidden="true">polyxd</span>
+        </a>
         <nav class="site-nav" aria-label="Main"><a href="/gallery/">Gallery</a><a href="/docs/">Docs</a></nav>
       </div>
     </header>
     <main class="section">
       <div class="wrap">
         <p class="eyebrow">Demos</p>
-        <h1 class="display" style="font-size: clamp(36px, 5vw, 64px); margin: 12px 0 16px">Four products. Four design systems. One spec.</h1>
-        <p style="max-width: 60ch; color: var(--ink-2)">Each is a working product with its own screens, data that changes when you act, and an ask box for everything the product has no screen for. Those screens are generated as Polyxd documents, rendered in the product's design system, and verified before they show. Everything stays in your browser.</p>
+        <h1>Four products. Four design systems. One spec.</h1>
+        <p class="lead">Each is a working product with its own screens, data that changes when you act, and an ask box for everything the product has no screen for. Those screens are generated as Polyxd documents, rendered in the product's design system, and verified before they show. Everything stays in your browser.</p>
         <div class="demos">
           <a class="demo" href="/demos/halden/">
-            <span class="demo-mark" style="background: #65558f">h</span>
+            <span class="demo-mark" style="background: #65558f" aria-hidden="true">h</span>
             <span class="ds">Material 3 · phone first</span>
             <h2>Halden</h2>
             <p>A current account. Ask it to send money, explain a charge, set a budget or freeze the card.</p>
           </a>
           <a class="demo" href="/demos/foundry/">
-            <span class="demo-mark" style="background: #18181b">f</span>
+            <span class="demo-mark" style="background: #18181b" aria-hidden="true">f</span>
             <span class="ds">shadcn/ui · dense desktop</span>
             <h2>Foundry</h2>
             <p>A customer-success desk for a SaaS. Renewals, tickets, plan changes and hand-overs, keyboard first.</p>
           </a>
           <a class="demo" href="/demos/wexley/">
-            <span class="demo-mark" style="background: #1d70b8">w</span>
+            <span class="demo-mark" style="background: #1d70b8" aria-hidden="true">w</span>
             <span class="ds">GOV.UK · forms and plain words</span>
             <h2>Wexley Borough Council</h2>
             <p>A resident's account: permits, council tax, repairs and appeals, as services rather than screens.</p>
           </a>
           <a class="demo" href="/demos/quay/">
-            <span class="demo-mark" style="background: #303030">q</span>
+            <span class="demo-mark" style="background: #303030" aria-hidden="true">q</span>
             <span class="ds">Polaris · store admin</span>
             <h2>Quay</h2>
             <p>A candle brand's store admin. Ask why sales dropped, what's about to sell out, or to refund an order.</p>

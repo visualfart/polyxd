@@ -32,13 +32,10 @@
   outline-offset: var(--pxd-focus-ring-offset);
   border-radius: var(--pxd-radius-small);
 }
+/* The Polyxd mark keeps its own colours on any product's ground; only its pupil changes (jit.tsx). */
 .jit-mark-dot {
   display: inline-flex;
-  color: var(--pxd-color-text-default);
   flex: none;
-}
-.jit-mark-issues .jit-mark-dot svg path:nth-child(3) {
-  fill: var(--pxd-color-status-warning-emphasis);
 }
 .jit-mark-pending {
   margin: 0;

@@ -81,17 +81,32 @@ function Checked({ report, origin, onOpen }: { report?: ReportSummary; origin: "
   return (
     <button type="button" className={`jit-mark${report && report.errors ? " jit-mark-issues" : ""}`} onClick={onOpen} aria-haspopup="dialog">
       <span className="jit-mark-dot" aria-hidden="true">
-        {/* The Polyxd mark in its "checked" state: the pupil is the verifier's tick. brand/mark-states.svg */}
-        <svg width="16" height="16" viewBox="0 0 32 32" focusable="false">
-          <path d="M13 6h6a7 7 0 0 1 7 7v6a7 7 0 0 1-7 7h-6a7 7 0 0 1-7-7v-6a7 7 0 0 1 7-7z" fill="currentColor" />
-          <rect x="6" y="14" width="5" height="14" rx="2.5" fill="currentColor" />
-          <path d="M16 11.2C19.504 11.2 20.8 12.496 20.8 16S19.504 20.8 16 20.8 11.2 19.504 11.2 16 12.496 11.2 16 11.2z" fill="var(--pxd-color-status-success-emphasis)" />
-          <path d="M13.9 16.3l1.5 1.5 2.8-3.1" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <PolyxdMark state={!report ? (origin === "live" ? "checked" : "idle") : report.errors ? "attention" : "checked"} />
       </span>
       {text}
       <span className="jit-mark-more">Under the hood</span>
     </button>
+  );
+}
+
+/**
+ * The Polyxd mark, as brand/build.ts draws it: an orange p, a white window and an ink pupil drawn on
+ * top. It sits on the product's own ground, light or dark, and never changes colour; only the pupil
+ * says what happened. Checked: the pupil becomes the verifier's tick. Attention: the pupil grows,
+ * the report has errors to read. Idle: not verified yet.
+ */
+function PolyxdMark({ state, size = 20 }: { state: "checked" | "attention" | "idle"; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" focusable="false">
+      <path d="M13 6H19C22.864 6 26 9.136 26 13V19C26 22.864 22.864 26 19 26H13C9.136 26 6 22.864 6 19V13C6 9.136 9.136 6 13 6Z" fill="#FF6E40" />
+      <path d="M8.5 14H8.5C9.88 14 11 15.12 11 16.5V25.5C11 26.88 9.88 28 8.5 28H8.5C7.12 28 6 26.88 6 25.5V16.5C6 15.12 7.12 14 8.5 14Z" fill="#FF6E40" />
+      <path d="M16 11.2H16C20.224 11.2 20.8 11.776 20.8 16V16C20.8 20.224 20.224 20.8 16 20.8H16C11.776 20.8 11.2 20.224 11.2 16V16C11.2 11.776 11.776 11.2 16 11.2Z" fill="#FFFFFF" />
+      {state === "checked" ? (
+        <path d="M13.9 16.3l1.5 1.5 2.8-3.1" fill="none" stroke="#141413" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      ) : (
+        <circle cx="16" cy="16" r={state === "attention" ? 3 : 2.4} fill="#141413" />
+      )}
+    </svg>
   );
 }
 
