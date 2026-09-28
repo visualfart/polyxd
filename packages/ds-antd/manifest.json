@@ -10,6 +10,23 @@
     "dark": ["tokens/primitive.json", "tokens/system.json", "tokens/system.dark.json", "tokens/semantic.json"]
   },
   "defaultMode": "light",
+  "logo": {
+    "file": "logo.svg",
+    "source": "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
+    "guidelines": "https://github.com/ant-design/ant-design/blob/master/LICENSE",
+    "colours": [
+      "#4285EB",
+      "#2EC7FF",
+      "#29CDFF",
+      "#148EFF",
+      "#0A60FF",
+      "#FA816E",
+      "#F74A5C",
+      "#F51D2C",
+      "#FA8E7D"
+    ],
+    "note": "The mark ant.design's header and the ant-design README load (.dumi/theme/slots/Header/Logo.tsx at e0ea7bb7), from Ant's own CDN, unchanged. Ant Design publishes no logo guidelines; the repository is MIT."
+  },
   "provenance": [
     {
       "source": "npm:antd (https://github.com/ant-design/ant-design)",

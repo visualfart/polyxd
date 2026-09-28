@@ -16,6 +16,16 @@
     ]
   },
   "defaultMode": "light",
+  "logo": {
+    "file": "logo.svg",
+    "source": "https://raw.githubusercontent.com/mantinedev/mantine/f38933cb4f1c534600f4ff59ee3ddbb4685a4bc4/apps/mantine.dev/src/components/LogoAssets/assets/mantine-logo.svg",
+    "guidelines": "https://mantine.dev/about/",
+    "colours": [
+      "#339AF0",
+      "#ffffff"
+    ],
+    "note": "The mark mantine.dev/about offers for download, byte for byte from the repository. The About page gives the logos out with no usage rules; the repository is MIT."
+  },
   "provenance": [
     {
       "source": "npm:@mantine/core styles.css (https://github.com/mantinedev/mantine)",

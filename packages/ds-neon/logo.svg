@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Neon, a Polyxd template">
+<title>Neon, a Polyxd template</title>
+<rect x="0.5" y="0.5" width="31" height="31" rx="4.8" fill="#0a0a14" stroke="#7873a8" stroke-width="1"/>
+<rect x="7" y="8" width="12" height="3" rx="1" fill="#eee9ff"/>
+<rect x="7" y="13.5" width="16" height="2" rx="1" fill="#a9a3c8"/>
+<rect x="7" y="19" width="12" height="6" rx="3" fill="#ff2bd6"/>
+<circle cx="23" cy="22" r="2.75" fill="#4ff0ff"/>
+</svg>

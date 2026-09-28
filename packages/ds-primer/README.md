@@ -38,3 +38,9 @@ Primer's semantic pairs are tuned by GitHub and clear the contract as they are; 
 | `tokens/semantic.json` | the Polyxd contract, each token an alias — identical in both themes |
 | `manifest.json` | modes, contract version, provenance |
 | `scripts/sources/primer/` | the vendored stylesheets and Primer's licence |
+
+## Logo
+
+This pack has no logo file yet. GitHub's [trademark guidelines](https://brand.github.com/foundations/logo) don't allow its logos to be used without GitHub's permission, so wherever Polyxd lists this pack it sets the name, *GitHub Primer*, in its own type and leaves the logo's place empty. The official mark is published by GitHub ([here](https://brand.github.com/foundations/logo)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once GitHub permits it.
+
+GitHub and Primer are trademarks of GitHub, Inc., named here to identify the design system this pack is modelled on. Polyxd is not affiliated with GitHub, Inc.

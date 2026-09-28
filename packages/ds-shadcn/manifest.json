@@ -10,6 +10,15 @@
     "dark": ["tokens/system.json", "tokens/system.dark.json", "tokens/semantic.json"]
   },
   "defaultMode": "light",
+  "logo": {
+    "file": "logo.svg",
+    "source": "https://raw.githubusercontent.com/shadcn-ui/ui/98a1fe67b439324ddc857f47fbdce056600a4329/apps/v4/components/icons.tsx",
+    "guidelines": "https://github.com/shadcn-ui/ui/blob/main/LICENSE.md",
+    "colours": [
+      "currentColor"
+    ],
+    "note": "Icons.logo in the shadcn/ui site's own icons.tsx, copied into a standalone SVG: the viewBox, the rect and both lines verbatim, with the JSX attribute names written the SVG way (strokeWidth as stroke-width). It draws in currentColor, black where no colour is set. shadcn publishes no logo guidelines; the repository is MIT."
+  },
   "provenance": [
     {
       "source": "shadcn/ui default theme (https://github.com/shadcn-ui/ui, apps/v4/app/globals.css)",

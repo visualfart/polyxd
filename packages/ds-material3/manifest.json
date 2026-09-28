@@ -10,6 +10,11 @@
     "dark": ["tokens/primitive.json", "tokens/system.json", "tokens/system.dark.json", "tokens/semantic.json"]
   },
   "defaultMode": "light",
+  "logo": {
+    "text": "Material 3",
+    "guidelines": "https://partnermarketinghub.withgoogle.com/brands/google/trademarks-and-terms/terms-and-conditions/",
+    "note": "No logo yet: Google's brand terms allow its logos only after Google approves a permission request, and state no referential exception. The official Material mark is published at material-components/material-web catalog/site/images/favicon.svg; it can go here once Google permits it."
+  },
   "provenance": [
     {
       "source": "npm:@material/material-color-utilities (https://github.com/material-foundation/material-color-utilities)",

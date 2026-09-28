@@ -16,6 +16,16 @@
     ]
   },
   "defaultMode": "light",
+  "logo": {
+    "file": "logo.svg",
+    "dark": "logo-white.svg",
+    "source": "https://raw.githubusercontent.com/radix-ui/website/bb424082fd33fadc244a6dd276d3ced55caa6234/public/favicon-black.svg",
+    "guidelines": "https://github.com/radix-ui/website/blob/main/LICENSE",
+    "colours": [
+      "#1C2024"
+    ],
+    "note": "The Radix mark as radix-ui.com serves it (favicon-black.svg, and favicon-white.svg for dark grounds, which the site itself uses in dark mode), byte for byte from the radix-ui/website repository. WorkOS publishes no Radix logo guidelines; the website repository is MIT."
+  },
   "provenance": [
     {
       "source": "npm:@radix-ui/themes styles.css (https://github.com/radix-ui/themes)",

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Brutalist, a Polyxd template">
+<title>Brutalist, a Polyxd template</title>
+<rect x="3" y="3" width="28" height="28" rx="0" fill="#000000"/>
+<rect x="1" y="1" width="28" height="28" rx="0" fill="#ffffff" stroke="#000000" stroke-width="2"/>
+<rect x="7" y="8" width="12" height="3" rx="0" fill="#000000"/>
+<rect x="7" y="13.5" width="16" height="2" rx="0" fill="#333333"/>
+<rect x="7" y="19" width="12" height="6" rx="0" fill="#000000"/>
+<circle cx="22" cy="22" r="2.75" fill="#ffe600"/>
+</svg>

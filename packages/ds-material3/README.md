@@ -58,3 +58,9 @@ Every contrast pair in the contract passes in both modes with the raw M3 roles, 
 None of the values are scraped from m3.material.io.
 
 Known quirk: material-color-utilities 0.4.0 contains extensionless relative imports (e.g. `from '../dynamiccolor/dynamic_scheme'`). Plain Node ESM cannot resolve them, so `generate.ts` registers a small resolve hook that retries them with `.js` added.
+
+## Logo
+
+This pack has no logo file yet. Google's [trademark guidelines](https://partnermarketinghub.withgoogle.com/brands/google/trademarks-and-terms/terms-and-conditions/) don't allow its logos to be used without Google's permission, so wherever Polyxd lists this pack it sets the name, *Material 3*, in its own type and leaves the logo's place empty. The official mark is published by Google ([here](https://github.com/material-components/material-web/blob/cbd34a8921915af94d5ef65c2a69eece41d5b4f3/catalog/site/images/favicon.svg)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once Google permits it.
+
+Material Design and Material 3 are trademarks of Google LLC, named here to identify the design system this pack is modelled on. Polyxd is not affiliated with Google LLC.

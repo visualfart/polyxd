@@ -10,6 +10,11 @@
     "dark": ["tokens/system.dark.json", "tokens/semantic.json"]
   },
   "defaultMode": "light",
+  "logo": {
+    "text": "Microsoft Fluent 2",
+    "guidelines": "https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks",
+    "note": "No logo yet: Microsoft's trademark guidelines say its logos and icons can never be used without an express licence; names may be used to refer to its products. The official Fluent 2 logo is the one in the fluent2.microsoft.design header; it can go here once Microsoft licenses it."
+  },
   "provenance": [
     {
       "source": "npm:@fluentui/tokens (https://github.com/microsoft/fluentui/tree/master/packages/tokens)",

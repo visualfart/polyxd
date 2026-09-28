@@ -127,3 +127,9 @@ Do not edit the token files by hand.
 | [`@carbon/styles`](https://github.com/carbon-design-system/carbon/tree/main/packages/styles) | 1.115.0 | Apache-2.0 | Box-shadow and focus-outline geometry (transcribed) |
 
 None of the values are scraped from carbondesignsystem.com.
+
+## Logo
+
+This pack has no logo file yet. IBM's [trademark guidelines](https://www.ibm.com/legal/copytrade) don't allow its logos to be used without IBM's permission, so wherever Polyxd lists this pack it sets the name, *IBM Carbon*, in its own type and leaves the logo's place empty. The official mark is published by IBM ([here](https://github.com/carbon-design-system/carbon-website/blob/d8783ad2ae3b5e59c58f58311491f8a2c4e62631/src/images/favicon.svg)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once IBM permits it.
+
+IBM and Carbon are trademarks of IBM Corp., named here to identify the design system this pack is modelled on. Polyxd is not affiliated with IBM Corp.

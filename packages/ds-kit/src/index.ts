@@ -10,7 +10,8 @@
  * Fluent, shadcn, Bootstrap) have their own generators, written before this existed; they produce
  * the same shape of output and are checked the same way.
  */
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import type { PackLogo } from "./logo.ts";
 import { contrastRatio } from "@polyxd/spec";
 import { join } from "node:path";
 
@@ -18,6 +19,7 @@ export type Json = any;
 export type Vars = Record<string, string>;
 
 export { cssVars, resolveVars } from "./css.ts";
+export { templateMark, type PackLogo } from "./logo.ts";
 
 /**
  * A CSS length as a DTCG dimension. rem and em are 16px at the root, and the simple `calc()` a
@@ -171,10 +173,17 @@ export interface PackFiles {
   modes?: string[];
   /** Layout variables the renderer defines and this pack sets; see the manifest schema. */
   layout?: Record<string, string>;
+  /** The pack's logo; when omitted, the one already in the manifest is kept. */
+  logo?: PackLogo;
 }
 
-/** Writes a pack's token files, manifest and package.json. */
+/**
+ * Writes a pack's token files, manifest and package.json. A logo already recorded in the manifest
+ * is kept, and shipped: it is the owner's file, downloaded by hand, not something a generator makes.
+ */
 export async function writePack(pack: PackFiles): Promise<void> {
+  const previous = await readFile(join(pack.dir, "manifest.json"), "utf8").then(JSON.parse, () => undefined);
+  const logo: PackLogo | undefined = pack.logo ?? previous?.logo;
   const tokens = join(pack.dir, "tokens");
   await mkdir(tokens, { recursive: true });
   const write = (file: string, data: Json) => writeFile(join(tokens, file), JSON.stringify(data, null, 2) + "\n");
@@ -198,6 +207,7 @@ export async function writePack(pack: PackFiles): Promise<void> {
         modes: Object.fromEntries(modes.map((mode) => [mode, files(mode)])),
         defaultMode: modes[0],
         ...(pack.layout ? { layout: pack.layout } : {}),
+        ...(logo ? { logo } : {}),
         provenance: pack.provenance,
       },
       null,
@@ -214,7 +224,7 @@ export async function writePack(pack: PackFiles): Promise<void> {
         description: `${pack.displayName} design-system pack for Polyxd (DTCG 2025.10 tokens)`,
         license: "Apache-2.0",
         type: "module",
-        files: ["manifest.json", "tokens", "README.md"],
+        files: ["manifest.json", "tokens", ...[logo?.file, logo?.dark].filter((f): f is string => Boolean(f)), "README.md"],
         scripts: {
           generate: "node scripts/generate.ts",
           check: "node ../spec/src/cli/check-design-system.ts manifest.json",

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Health, a Polyxd template">
+<title>Health, a Polyxd template</title>
+<rect x="0.5" y="0.5" width="31" height="31" rx="4.8" fill="#fdfbf6" stroke="#6f8a87" stroke-width="1"/>
+<rect x="7" y="8" width="12" height="3" rx="1" fill="#1f2d2c"/>
+<rect x="7" y="13.5" width="16" height="2" rx="1" fill="#4e6b69"/>
+<rect x="7" y="19" width="12" height="6" rx="3" fill="#0f6e6a"/>
+<circle cx="23" cy="22" r="2.75" fill="#c17a1d"/>
+</svg>

@@ -18,6 +18,11 @@
     ]
   },
   "defaultMode": "light",
+  "logo": {
+    "text": "GitHub Primer",
+    "guidelines": "https://brand.github.com/foundations/logo",
+    "note": "No logo yet: GitHub's logo guidelines permit its logos only to link to GitHub, to show an integration with GitHub or in writing about GitHub, and forbid using one as a project's logo or combining it with other words; anything else needs GitHub's prior written permission. Primer has no mark of its own; the Invertocat can go here once GitHub permits it."
+  },
   "provenance": [
     {
       "source": "npm:@primer/primitives dist/css (https://github.com/primer/primitives)",

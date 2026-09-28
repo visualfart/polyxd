@@ -28,3 +28,9 @@ Mantine's palettes are ten steps per hue, and the pack picks the step that clear
 **Where no step passes.** Mantine's green and yellow `-light` pairs — its own tinted background with its own text colour — are 3.81:1 and 2.69:1 in light mode. No step of those ramps reaches 4.5:1 on that tint, so status text falls back to the body text colour, and the token says so.
 
 **Filled buttons are the one worth repeating:** Mantine's default filled button puts white on step 6 of a hue, which is 3.56:1 — below 4.5:1 for its own label.
+
+## Logo
+
+`logo.svg` is the Mantine mark that [mantine.dev/about](https://mantine.dev/about/) offers for download, byte for byte from the repository ([`mantine-logo.svg`](https://github.com/mantinedev/mantine/blob/f38933cb4f1c534600f4ff59ee3ddbb4685a4bc4/apps/mantine.dev/src/components/LogoAssets/assets/mantine-logo.svg)). The About page gives the logos out with no usage rules; the repository is [MIT](https://github.com/mantinedev/mantine/blob/master/LICENSE).
+
+Mantine and its logo are trademarks of Vitaly Rtishchev, used here to identify the design system this pack is modelled on. Polyxd is not affiliated with Vitaly Rtishchev.

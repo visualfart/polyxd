@@ -25,6 +25,11 @@
     "action-item": "1 1 0",
     "action-bleed": "var(--pxd-space-stack-default) calc(-1 * var(--pxd-space-inset-comfortable)) calc(-1 * var(--pxd-space-inset-comfortable))"
   },
+  "logo": {
+    "text": "IBM Carbon",
+    "guidelines": "https://www.ibm.com/legal/copytrade",
+    "note": "No logo yet: IBM's trademark page says no other company may use IBM logos without IBM's express written permission or a licence, and limits fair use to text-only references. The official Carbon mark is carbon-website src/images/favicon.svg; it can go here once IBM permits it."
+  },
   "provenance": [
     {
       "source": "npm:@carbon/colors (https://github.com/carbon-design-system/carbon/tree/main/packages/colors)",

@@ -29,3 +29,9 @@ Bootstrap's bright hues can't carry a 3:1 accent in light mode — cyan `#0dcaf0
 | `color.data.categorical.1–6` | `--bs-blue`, `teal`, `indigo`, `orange`, `pink`, `cyan` | 1.96–2.57:1 | the six `*-text-emphasis` hues |
 | `color.border.strong` | `--bs-border-color` | 1.3:1 | `--bs-secondary-color` |
 | `opacity.state.disabled` | `.disabled` is 0.65 | above the contract's 0.6 cap | 0.6 |
+
+## Logo
+
+`logo.svg` (colour) and `logo-white.svg` (white, for dark grounds) are Bootstrap's own files from its [brand page](https://getbootstrap.com/docs/5.3/about/brand/), byte for byte as in the [v5.3.8 repository](https://github.com/twbs/bootstrap/tree/v5.3.8/site/static/docs/%5Bversion%5D/assets/brand). The brand page asks that the mark be used unmodified, in colour, black or white, when referring to Bootstrap, and that the name be written *Bootstrap*.
+
+Bootstrap and its logo are trademarks of the Bootstrap team, used here to identify the design system this pack is modelled on. Polyxd is not affiliated with the Bootstrap team.

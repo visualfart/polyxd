@@ -33,3 +33,9 @@ Three places where Fluent's natural choice doesn't clear the contract's floor. E
 | `color.border.strong` | `colorNeutralStroke1` | 1.46:1 light, 2.87:1 dark | `colorNeutralStrokeAccessible` — Fluent's own name for the 3:1 stroke |
 | `color.action.primary.background` | `colorBrandBackground` | 2.48:1 on the dark canvas | `colorBrandBackgroundStatic` (3.06:1, white text on it 5.38:1) |
 | `color.status.warning.emphasis` | `colorStatusWarningBorderActive` | 2.98:1 on the light canvas | `colorStatusWarningBorder2` |
+
+## Logo
+
+This pack has no logo file yet. Microsoft's [trademark guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks) don't allow its logos to be used without Microsoft's permission, so wherever Polyxd lists this pack it sets the name, *Microsoft Fluent 2*, in its own type and leaves the logo's place empty. The official mark is published by Microsoft ([here](https://fluent2.microsoft.design/)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once Microsoft permits it.
+
+Microsoft and Fluent are trademarks of Microsoft Corporation, named here to identify the design system this pack is modelled on. Polyxd is not affiliated with Microsoft Corporation.

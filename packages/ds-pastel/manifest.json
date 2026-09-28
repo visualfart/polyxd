@@ -19,6 +19,11 @@
   },
   "defaultMode": "light",
   "template": true,
+  "logo": {
+    "file": "logo.svg",
+    "source": "Polyxd",
+    "note": "A Polyxd-made mark drawn from this template's own tokens by packages/ds-kit/scripts/pack-logos.ts. It is not the logo of any design system."
+  },
   "provenance": [
     {
       "source": "Polyxd",

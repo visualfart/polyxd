@@ -16,6 +16,16 @@
     ]
   },
   "defaultMode": "light",
+  "logo": {
+    "file": "logo.svg",
+    "source": "https://raw.githubusercontent.com/chakra-ui/chakra-ui/961161428b8c59157ad921dd23303b73c294d73f/media/logomark-colored.svg",
+    "guidelines": "https://github.com/chakra-ui/chakra-ui/blob/main/LICENSE",
+    "colours": [
+      "#3585A3",
+      "#00DEAE"
+    ],
+    "note": "The colour logomark from the brand assets in the chakra-ui repository's media/ folder, unchanged. Chakra publishes no logo guidelines; the repository is MIT."
+  },
   "provenance": [
     {
       "source": "npm:@chakra-ui/react defaultSystem.getTokenCss() (https://github.com/chakra-ui/chakra-ui)",

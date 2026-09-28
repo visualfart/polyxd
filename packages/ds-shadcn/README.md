@@ -39,3 +39,9 @@ Three places where shadcn's default theme doesn't clear the contract's floor, al
 | `color.border.focus` | `--ring` | 2.59:1 on `--background` | `zinc-600` |
 
 The focus one is worth stating plainly: a focus indicator at 2.59:1 is hard to see, and a generated surface has to be operable by keyboard.
+
+## Logo
+
+`logo.svg` is the shadcn/ui mark from the project's own site code, [`apps/v4/components/icons.tsx`](https://github.com/shadcn-ui/ui/blob/98a1fe67b439324ddc857f47fbdce056600a4329/apps/v4/components/icons.tsx) (`Icons.logo`), copied into a standalone SVG: the viewBox, the rectangle and both lines verbatim, with the JSX attribute names written the SVG way. It draws in `currentColor`, which is black in an `<img>`. shadcn publishes no logo guidelines; the repository is [MIT](https://github.com/shadcn-ui/ui/blob/main/LICENSE.md).
+
+shadcn/ui and its logo are trademarks of shadcn, used here to identify the design system this pack is modelled on. Polyxd is not affiliated with shadcn.

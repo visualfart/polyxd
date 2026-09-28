@@ -28,3 +28,9 @@ Radix publishes every scale twice: sRGB, and the same colours in display-p3 insi
 | `color.action.danger.background` | `red-9` with white | 3.91:1 in both modes | `red-11` with `gray-1` |
 
 That last one is the interesting case. **No solid red step carries white text at 4.5:1** — step 9 is 3.91:1, and in dark mode the ramp gets lighter, not darker. Step 11 flips with the mode, dark in light and light in dark, so pairing it with step 1 passes both ways: 5.21:1 and 8.95:1.
+
+## Logo
+
+`logo.svg` (black) and `logo-white.svg` (white, which radix-ui.com itself uses on a dark system theme) are the Radix mark as the Radix site serves it, byte for byte from the [radix-ui/website repository](https://github.com/radix-ui/website/tree/bb424082fd33fadc244a6dd276d3ced55caa6234/public) (`favicon-black.svg`, `favicon-white.svg`). WorkOS publishes no Radix logo guidelines; the website repository is [MIT](https://github.com/radix-ui/website/blob/main/LICENSE).
+
+Radix UI and its logo are trademarks of WorkOS, used here to identify the design system this pack is modelled on. Polyxd is not affiliated with WorkOS.

@@ -44,3 +44,9 @@ Polaris has no numbered ramps, but each status has a family that runs light to d
 | `tokens/semantic.json` | the Polyxd contract, each token an alias — identical in both themes |
 | `manifest.json` | modes, contract version, provenance |
 | `scripts/sources/polaris/` | the vendored stylesheet and Polaris's licence |
+
+## Logo
+
+This pack has no logo file yet. Shopify's [trademark guidelines](https://www.shopify.com/brand-assets) don't allow its logos to be used without Shopify's permission, so wherever Polyxd lists this pack it sets the name, *Shopify Polaris*, in its own type and leaves the logo's place empty. The official mark is published by Shopify ([here](https://www.shopify.com/brand-assets)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once Shopify permits it.
+
+Shopify and Polaris are trademarks of Shopify Inc., named here to identify the design system this pack is modelled on. Polyxd is not affiliated with Shopify Inc.

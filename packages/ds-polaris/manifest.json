@@ -16,6 +16,11 @@
     ]
   },
   "defaultMode": "light",
+  "logo": {
+    "text": "Shopify Polaris",
+    "guidelines": "https://www.shopify.com/brand-assets",
+    "note": "No logo yet: Shopify's Trademark Usage Guidelines (on its brand-assets page) say use of its brand assets must be expressly authorised in writing. Polaris has no mark of its own; Shopify's bag is on that page and can go here once Shopify permits it."
+  },
   "provenance": [
     {
       "source": "npm:@shopify/polaris-tokens dist/css/styles.css (https://github.com/Shopify/polaris)",

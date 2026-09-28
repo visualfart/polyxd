@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Glass, a Polyxd template">
+<title>Glass, a Polyxd template</title>
+<rect x="0.5" y="1" width="31" height="30.5" rx="8" fill="#ffffff" fill-opacity="0.6"/>
+<rect x="0.5" y="0.5" width="31" height="30.5" rx="8" fill="#e6ebf7" stroke="#68758f" stroke-width="1"/>
+<rect x="7" y="8" width="12" height="3" rx="1" fill="#0f172a"/>
+<rect x="7" y="13.5" width="16" height="2" rx="1" fill="#465063"/>
+<rect x="7" y="19" width="12" height="6" rx="3" fill="#3552c9"/>
+<circle cx="23" cy="22" r="2.75" fill="#0c7a92"/>
+</svg>

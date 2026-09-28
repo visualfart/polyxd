@@ -46,3 +46,7 @@ Web fonts: JetBrains Mono, Space Grotesk — from Google Fonts under the SIL Ope
 | `tokens/semantic.json` | The Polyxd contract, aliasing `neon.*` |
 
 Licence Apache-2.0, like the rest of Polyxd. Provenance in the manifest: original template by Polyxd.
+
+## Logo
+
+`logo.svg` is Polyxd's own mark for this template, not anyone's logo: a small card drawn only from the template's tokens in its default mode (the ground, strong border and radius, the text and muted text, the primary action and one accent). `packages/ds-kit/scripts/pack-logos.ts` draws it, so it follows the tokens: change them and run `node packages/ds-kit/scripts/pack-logos.ts` to redraw it. A test fails if it goes stale.

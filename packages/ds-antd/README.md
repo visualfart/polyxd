@@ -118,3 +118,9 @@ The dump holds `theme.defaultSeed`, the output of `theme.defaultAlgorithm(seed)`
 | Polyxd | – | Apache-2.0 | The semantic mapping, contrast adjustments, solid composites, and the `polyxd.sys.*` additions |
 
 The dump was produced with react/react-dom 19.3.0, which antd needs as a peer dependency but which affects no values. The licence texts of antd and @ant-design/colors are vendored next to the data (`scripts/sources/antd/LICENSE.*`). Our own code and the token files are Apache-2.0.
+
+## Logo
+
+`logo.svg` is the Ant Design mark exactly as Ant serves it from its own CDN, [`gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg`](https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg): the file ant.design's header and the ant-design README load ([`.dumi/theme/slots/Header/Logo.tsx`](https://github.com/ant-design/ant-design/blob/e0ea7bb76fdf2a8871b5f3f0eea5e9fd0cd7f485/.dumi/theme/slots/Header/Logo.tsx)). Ant Design publishes no logo guidelines; the repository is [MIT](https://github.com/ant-design/ant-design/blob/master/LICENSE).
+
+Ant Design and its logo are trademarks of Ant Group, used here to identify the design system this pack is modelled on. Polyxd is not affiliated with Ant Group.

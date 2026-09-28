@@ -12,6 +12,11 @@
     ]
   },
   "defaultMode": "light",
+  "logo": {
+    "text": "GOV.UK Design System",
+    "guidelines": "https://www.gov.uk/service-manual/design/making-your-service-look-like-govuk",
+    "note": "No logo: the crown and the GOV.UK logotype are protected, and the GOV.UK Service Manual says a service that is not on GOV.UK must not use them (or the GDS Transport typeface, or suggest it is an official government site). Polyxd sets the words GOV.UK Design System in its own type instead."
+  },
   "provenance": [
     {
       "source": "npm:govuk-frontend dist/govuk/settings (https://github.com/alphagov/govuk-frontend)",

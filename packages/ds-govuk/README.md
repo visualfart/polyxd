@@ -38,3 +38,9 @@ Where a role does have to move, it moves along GOV.UK's own variants of the same
 | `tokens/semantic.json` | the Polyxd contract, each token an alias |
 | `manifest.json` | the one mode, contract version, provenance |
 | `scripts/sources/govuk/` | the vendored Sass settings and GOV.UK's licence |
+
+## Logo
+
+This pack has no logo file, on purpose. The crown and the GOV.UK logotype are protected: the GOV.UK Service Manual ([Making your service look like GOV.UK](https://www.gov.uk/service-manual/design/making-your-service-look-like-govuk)) says a service that isn't on GOV.UK must not use them, nor the GDS Transport typeface, nor suggest it is an official government website. Wherever Polyxd lists this pack it sets the plain words *GOV.UK Design System* in its own type.
+
+GOV.UK and the crown are protected marks of the UK Government, named here only to identify the design system this pack is modelled on. Polyxd is not affiliated with the Government Digital Service.

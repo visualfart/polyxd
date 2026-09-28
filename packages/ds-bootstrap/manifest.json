@@ -10,6 +10,19 @@
     "dark": ["tokens/system.dark.json", "tokens/semantic.json"]
   },
   "defaultMode": "light",
+  "logo": {
+    "file": "logo.svg",
+    "dark": "logo-white.svg",
+    "source": "https://raw.githubusercontent.com/twbs/bootstrap/v5.3.8/site/static/docs/%5Bversion%5D/assets/brand/bootstrap-logo.svg",
+    "guidelines": "https://getbootstrap.com/docs/5.3/about/brand/",
+    "colours": [
+      "#9013fe",
+      "#6610f2",
+      "#ffffff",
+      "#f1e5fc"
+    ],
+    "note": "The colour mark and the white one from Bootstrap's brand page (getbootstrap.com/docs/5.3/assets/brand/), byte for byte as in the v5.3.8 repository. The brand page asks that the mark be used unmodified, in colour, black or white, when referring to Bootstrap. The colour file has width and height but no viewBox, as Bootstrap serves it."
+  },
   "provenance": [
     {
       "source": "npm:bootstrap dist/css/bootstrap.css (https://github.com/twbs/bootstrap)",

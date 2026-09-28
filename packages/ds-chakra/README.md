@@ -44,3 +44,9 @@ Chakra's shadows are built with `color-mix()`, which the kit now reads as a shad
 | `manifest.json` | modes, contract version, provenance |
 | `scripts/sources/chakra/` | the emitted stylesheet and Chakra's licence |
 | `scripts/extract.ts` | re-emits that stylesheet from an installed copy of Chakra |
+
+## Logo
+
+`logo.svg` is the colour logomark from the brand assets in the chakra-ui repository, [`media/logomark-colored.svg`](https://github.com/chakra-ui/chakra-ui/blob/961161428b8c59157ad921dd23303b73c294d73f/media/logomark-colored.svg), unchanged. Chakra publishes no logo guidelines; the repository is [MIT](https://github.com/chakra-ui/chakra-ui/blob/main/LICENSE).
+
+Chakra UI and its logo are trademarks of Chakra Systems Inc., used here to identify the design system this pack is modelled on. Polyxd is not affiliated with Chakra Systems Inc.
