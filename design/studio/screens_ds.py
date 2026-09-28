@@ -5,7 +5,7 @@ alias them (action/primary), and component tokens (button.primary.bg) — and of
 just colour. Studio maps Polyxd's 87 roles onto your semantic tier, keeps the component tier for
 your own components, and shows every alias chain down to the primitive.
 """
-from kit import (S, TONE, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
+from kit import (S, TONE, MARK, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
                  checkbox, radio, segmented, swatch, meter, mono, card, h2, notice, table, search, filter_chip, tabs,
                  app, page_head, drawer, dialog, toast, mini_surface, mini_desktop, kbd)
 
@@ -67,7 +67,7 @@ def ds_import():
 
 
 def ds_scan():
-    tiers = "".join(card(f'<span style="font-size: 13px; color: {S["muted"]};">{t}</span><span style="font-family: {DISPLAY}; font-size: 28px; font-weight: 700; line-height: 34px;">{n}</span><span style="font-size: 12px; color: {S["ink2"]};">{d}</span>', pad=16, gap=4) for t, n, d in [("Primitives", "1,846", "Raw values: brand/600, space/4, font/size/16"), ("Semantic", "904", "What things mean: action/primary, text/subtle"), ("Component", "392", "Per component: button/primary/bg, input/border")])
+    tiers = "".join(card(f'<span style="font-size: 13px; color: {S["muted"]};">{t}</span><span style="font-family: {DISPLAY}; font-size: 28px; font-weight: 400; line-height: 34px;">{n}</span><span style="font-size: 12px; color: {S["ink2"]};">{d}</span>', pad=16, gap=4) for t, n, d in [("Primitives", "1,846", "Raw values: brand/600, space/4, font/size/16"), ("Semantic", "904", "What things mean: action/primary, text/subtle"), ("Component", "392", "Per component: button/primary/bg, input/border")])
     types = [("Colour", 1204, 612, 468, 124), ("Dimension (space, size)", 612, 402, 132, 78), ("Typography (composite)", 188, 0, 96, 92), ("Font family, weight", 15, 15, 0, 0), ("Line height, letter spacing", 36, 36, 0, 0), ("Radius", 18, 10, 6, 2), ("Border", 48, 12, 22, 14), ("Shadow (elevation)", 36, 18, 12, 6), ("Opacity", 12, 12, 0, 0), ("Duration, easing", 22, 16, 6, 0), ("Z-index", 11, 0, 11, 0), ("Breakpoint", 6, 6, 0, 0)]
     rows = [[t, f"{a:,}", f"{b:,}", f"{c:,}", f"{d:,}"] for t, a, b, c, d in types]
     type_table = table(["Type", "Total", "Primitive", "Semantic", "Component"], rows, aligns=["left", "right", "right", "right", "right"], widths=[None, 90, 100, 100, 110], row_h=38, caption="Tokens by type")

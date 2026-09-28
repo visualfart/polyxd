@@ -1,5 +1,5 @@
 """Studio, second half: direction, reviews, product (capabilities, journeys), releases, insights, settings."""
-from kit import (mini_desktop, S, TONE, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
+from kit import (mini_desktop, S, TONE, MARK, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
                  checkbox, radio, segmented, swatch, meter, mono, card, h2, notice, table, search, filter_chip, tabs,
                  app, page_head, drawer, dialog, toast, mini_surface, kbd, scrim)
 from screens_a import stat, spark
@@ -94,7 +94,7 @@ def rule_edit():
 <div style="display: flex; flex-direction: column; gap: 8px;">{label("Check")}{cond}</div>
 <div style="display: flex; gap: 16px;">{select("Severity", "Error: the screen isn't shown", "sev", w=300)}{select("Applies to", "Every intent", "scope", w=300)}</div>
 </div>'''
-    right = card(h2("Tested against the last 500 screens", None, btn("Run again", "ghost", "repeat", h=28)) + f'''<div style="display: flex; gap: 24px;"><div><div style="font-family: {DISPLAY}; font-size: 28px; font-weight: 700;">23</div><div style="font-size: 12px; color: {S["muted"]};">would fail</div></div><div><div style="font-family: {DISPLAY}; font-size: 28px; font-weight: 700;">4</div><div style="font-size: 12px; color: {S["muted"]};">intents affected</div></div></div>
+    right = card(h2("Tested against the last 500 screens", None, btn("Run again", "ghost", "repeat", h=28)) + f'''<div style="display: flex; gap: 24px;"><div><div style="font-family: {DISPLAY}; font-size: 28px; font-weight: 400;">23</div><div style="font-size: 12px; color: {S["muted"]};">would fail</div></div><div><div style="font-family: {DISPLAY}; font-size: 28px; font-weight: 400;">4</div><div style="font-size: 12px; color: {S["muted"]};">intents affected</div></div></div>
 <ul style="list-style: none; margin: 0; padding: 0;">{fails}</ul><a href="#" style="font-size: 13px; font-weight: 500;">See all 23</a>''', pad=20, gap=12, extra="flex-grow: 1;")
     body = page_head("Edit rule", None, f'{btn("Delete rule", "danger_ghost", "trash")}{btn("Cancel", "ghost")}{btn("Save rule", "primary")}') + f'<div style="padding: 16px 32px; display: flex; gap: 28px; align-items: flex-start;">{left}{right}</div>'
     return app("Edit rule", "Rules", ["Northwind", "Rules", "Destructive actions name what is lost"], body)
@@ -142,7 +142,7 @@ def review_surface():
         for t, a, b in [("ok", "Accessibility", "0 issues in light and dark, 390 and 1100 px"), ("ok", "Agent task", "Sent £40 to Alex by name in 2 steps"), ("warn", "Rule: amounts are the largest text", "£40.00 is 34px; the title is 17px. Passes."), ("gray", "Closest exemplar", "Send money: amount first · 91% similar")]
     )
     left = f'''<aside aria-label="Request" style="width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;">
-{card(f'<span style="font-size: 12px; color: {S["muted"]};">Request</span><p style="margin: 0; font-family: {DISPLAY}; font-size: 20px; line-height: 26px; font-weight: 500;">“send Alex £40 for the concert tickets”</p><div style="display: flex; gap: 6px; flex-wrap: wrap;">{tag("transfer.create", "gray", True)}{tag("New intent", "info")}</div>', pad=18)}
+{card(f'<span style="font-size: 12px; color: {S["muted"]};">Request</span><p style="margin: 0; font-family: {DISPLAY}; font-size: 20px; line-height: 26px; font-weight: 400;">“send Alex £40 for the concert tickets”</p><div style="display: flex; gap: 6px; flex-wrap: wrap;">{tag("transfer.create", "gray", True)}{tag("New intent", "info")}</div>', pad=18)}
 {card(h2("Data it was given") + f'<pre style="margin: 0; font-family: {MONO}; font-size: 12px; line-height: 18px; color: {S["ink2"]}; white-space: pre-wrap;">{{ "payee": {{ "name": "Alex Kim" }},\n  "amount": 40, "currency": "GBP",\n  "from": "Everyday ····4521" }}</pre>', pad=18, gap=8)}
 {card(h2("Checks") + f'<ul style="list-style: none; margin: 0; padding: 0;">{findings}</ul>', pad=18, gap=4)}
 </aside>'''
@@ -321,7 +321,7 @@ def insights():
     w, h = 520, 180
     step = w / (len(trend) - 1)
     pts = " ".join(f"{i * step:.1f},{h - (v - 80) / 14 * h:.1f}" for i, v in enumerate(trend))
-    chart = f'<svg width="{w}" height="{h + 24}" viewBox="0 0 {w} {h + 24}" role="img" aria-label="Verifier score by week, from 84 to 91"><g stroke="{S["soft"]}">{"".join(f"<line x1=\"0\" x2=\"{w}\" y1=\"{y}\" y2=\"{y}\"/>" for y in (0, 60, 120, 180))}</g><polyline points="{pts}" fill="none" stroke="{S["signal"]}" stroke-width="2.5" stroke-linejoin="round"/>{"".join(f"<text x=\"{i * step:.0f}\" y=\"{h + 18}\" font-size=\"11\" fill=\"{S['muted']}\" font-family=\"Geist, sans-serif\" text-anchor=\"middle\">W{i + 27}</text>" for i in range(0, 12, 2))}</svg>'
+    chart = f'<svg width="{w}" height="{h + 24}" viewBox="0 0 {w} {h + 24}" role="img" aria-label="Verifier score by week, from 84 to 91"><g stroke="{S["soft"]}">{"".join(f"<line x1=\"0\" x2=\"{w}\" y1=\"{y}\" y2=\"{y}\"/>" for y in (0, 60, 120, 180))}</g><polyline points="{pts}" fill="none" stroke="{S["signal"]}" stroke-width="2.5" stroke-linejoin="round"/>{"".join(f"<text x=\"{i * step:.0f}\" y=\"{h + 18}\" font-size=\"11\" fill=\"{S['muted']}\" font-family=\"Hanken Grotesk, sans-serif\" text-anchor=\"middle\">W{i + 27}</text>" for i in range(0, 12, 2))}</svg>'
     failing = table(["Check", "Screens", "Trend"], [[mono(c, 12, S["ink"]), f"{n:,}", tag(t, tone)] for c, n, t, tone in [("data:missing-path", 412, "−38%", "ok"), ("copy:raw-identifier", 288, "−12%", "ok"), ("layout:target-size-pack", 164, "+4%", "warn"), ("rule:amount-largest", 91, "new", "gray")]], aligns=["left", "right", "right"], widths=[None, 70, 70], row_h=42, pad_x=0)
     unmet = "".join(f'<li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid {S["soft"]}; font-size: 14px;"><span>“{r}”</span><span style="color: {S["muted"]};">{n} asks</span></li>' for r, n in [("split this bill with Sam", 212), ("export this as a PDF", 164), ("undo my last payment", 97), ("show my invoices by client", 81)])
     stats = f'''<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;">{stat("Screens generated", "212k", "30 days")}{stat("Verifier score", "91", "+7 since W27", "ok")}{stat("Journeys finished", "84%", "+3%", "ok")}{stat("Asked for, not possible", "1,410", "requests", "warn")}</div>'''

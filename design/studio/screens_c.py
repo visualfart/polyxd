@@ -1,5 +1,5 @@
 """Studio: signing up to signing out, your account, the shell's menus, patterns, and the states between."""
-from kit import (S, TONE, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
+from kit import (S, TONE, MARK, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
                  checkbox, radio, segmented, swatch, meter, mono, card, h2, notice, table, search, filter_chip, tabs,
                  app, page_head, drawer, dialog, toast, mini_surface, mini_desktop, kbd, scrim)
 from screens_a import home
@@ -8,10 +8,10 @@ from screens_a import home
 # ---------------------------------------------------------------- the auth frame
 
 def auth(title, form, aside=None):
-    aside = aside or f'''<p style="margin: 0; font-family: {DISPLAY}; font-size: 28px; line-height: 36px; font-weight: 500; max-width: 440px;">Screens written on demand, in your design system, checked before anyone sees them.</p>
+    aside = aside or f'''<p style="margin: 0; font-family: {DISPLAY}; font-size: 28px; line-height: 36px; font-weight: 400; max-width: 440px;">Screens written on demand, in your design system, checked before anyone sees them.</p>
 <p style="margin: 0; font-size: 14px; color: #CFCBC0; max-width: 420px;">Studio is where your design system team decides what those screens may look like, and reviews what they actually look like.</p>'''
     return doc(title, 1440, 900, f'''<main style="flex: 1 1 0; display: flex; flex-direction: column; background: {S["paper"]};">
-<header style="height: 72px; padding: 0 48px; display: flex; align-items: center; gap: 10px;"><span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 8px; background: {S["ink"]}; color: {S["signal"]}; display: inline-flex; align-items: center; justify-content: center; font-family: {DISPLAY}; font-weight: 700;">p</span><span style="font-family: {DISPLAY}; font-weight: 700; font-size: 16px;">Polyxd Studio</span></header>
+<header style="height: 72px; padding: 0 48px; display: flex; align-items: center; gap: 10px;">{MARK(28)}<span style="font-family: {DISPLAY}; font-weight: 400; font-size: 18px; letter-spacing: -0.015em;">polyxd <span style="font-family: {BODY}; font-weight: 500; font-size: 15px; color: {S["muted"]}; letter-spacing: 0;">Studio</span></span></header>
 <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-bottom: 72px;"><div style="width: 400px; display: flex; flex-direction: column; gap: 18px;">{form}</div></div>
 </main>
 <aside style="flex: 1 1 0; background: {S["night"]}; color: {S["night_text"]}; display: flex; flex-direction: column; justify-content: center; padding: 64px; gap: 20px;">{aside}</aside>''')
@@ -19,11 +19,11 @@ def auth(title, form, aside=None):
 
 def title_block(t, sub=None):
     s = f'<p style="margin: 6px 0 0; font-size: 15px; color: {S["muted"]};">{sub}</p>' if sub else ""
-    return f'<div><h1 style="margin: 0; font-family: {DISPLAY}; font-size: 30px; line-height: 36px; font-weight: 700; letter-spacing: -0.01em;">{t}</h1>{s}</div>'
+    return f'<div><h1 style="margin: 0; font-family: {DISPLAY}; font-size: 30px; line-height: 36px; font-weight: 400; letter-spacing: -0.01em;">{t}</h1>{s}</div>'
 
 
 def provider_btn(text, icon_name):
-    return f'<button type="button" style="height: 44px; border: 1px solid {S["line"]}; border-radius: 10px; background: {S["paper"]}; font-family: {BODY}; font-size: 14px; font-weight: 500; color: {S["ink"]}; display: flex; align-items: center; justify-content: center; gap: 10px;">{ic(icon_name, 18)}{text}</button>'
+    return f'<button type="button" style="height: 44px; border: 1.5px solid {S["border"]}; border-radius: 22px; background: transparent; font-family: {BODY}; font-size: 15px; font-weight: 600; color: {S["ink"]}; display: flex; align-items: center; justify-content: center; gap: 10px;">{ic(icon_name, 18)}{text}</button>'
 
 
 def or_line():
@@ -73,7 +73,7 @@ def sign_in():
 {provider_btn("Continue with SSO", "key")}
 {or_line()}
 {field("Email", "maya@northwind.io", "si-email", h=44)}
-<div style="display: flex; flex-direction: column; gap: 6px;"><div style="display: flex; justify-content: space-between;">{label("Password", "si-pass")}<a href="#" style="font-size: 13px;">Forgot password?</a></div><div style="height: 44px; box-sizing: border-box; border: 1px solid {S["line"]}; border-radius: 8px; display: flex; align-items: center;"><input id="si-pass" type="password" value="••••••••••••" style="flex-grow: 1; height: 100%; border: 0; background: transparent; padding: 0 10px; font-family: {BODY}; font-size: 14px;"><button type="button" style="border: 0; background: transparent; font-family: {BODY}; font-size: 13px; color: {S["muted"]}; padding: 0 12px;">Show</button></div></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><div style="display: flex; justify-content: space-between;">{label("Password", "si-pass")}<a href="#" style="font-size: 13px;">Forgot password?</a></div><div style="height: 44px; box-sizing: border-box; border: 1.5px solid {S["border"]}; border-radius: 22px; background: {S["paper"]}; display: flex; align-items: center; padding: 0 6px;"><input id="si-pass" type="password" value="••••••••••••" style="flex-grow: 1; height: 100%; border: 0; background: transparent; padding: 0 12px; font-family: {BODY}; font-size: 15px;"><button type="button" style="border: 0; background: transparent; font-family: {BODY}; font-size: 13px; color: {S["muted"]}; padding: 0 12px;">Show</button></div></div>
 {checkbox(True, "", "Keep me signed in on this device")}
 {primary_full("Sign in")}
 <p style="margin: 0; font-size: 14px; color: {S["ink2"]};">New to Studio? <a href="#">Create an account</a></p>'''
@@ -295,7 +295,7 @@ def pattern_detail():
 def empty_state(icon_name, title, text, actions):
     return f'''<div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; padding: 48px;"><div style="max-width: 440px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;">
 <span style="width: 56px; height: 56px; border-radius: 16px; background: {S["soft"]}; display: inline-flex; align-items: center; justify-content: center; color: {S["ink2"]};">{ic(icon_name, 26)}</span>
-<h2 style="margin: 0; font-family: {DISPLAY}; font-size: 22px; line-height: 28px; font-weight: 700;">{title}</h2>
+<h2 style="margin: 0; font-family: {DISPLAY}; font-size: 22px; line-height: 28px; font-weight: 400;">{title}</h2>
 <p style="margin: 0; font-size: 14px; color: {S["muted"]};">{text}</p>
 <div style="display: flex; gap: 8px; margin-top: 6px;">{actions}</div></div></div>'''
 
@@ -309,7 +309,7 @@ def rules_empty():
     sug = "".join(f'<li style="display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid {S["line"]}; border-radius: 10px; text-align: left;"><span style="flex-grow: 1; font-size: 14px;">{t}</span>{btn("Add", "secondary", "plus", h=30)}</li>' for t in ["Destructive actions name what is lost", "Never ask “Are you sure”", "Amounts are the largest text on a payment"])
     body = page_head("Rules", tabs_html="") + f'''<div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; padding: 48px;"><div style="width: 520px; display: flex; flex-direction: column; gap: 14px; text-align: center; align-items: center;">
 <span style="width: 56px; height: 56px; border-radius: 16px; background: {S["soft"]}; display: inline-flex; align-items: center; justify-content: center; color: {S["ink2"]};">{ic("rule", 26)}</span>
-<h2 style="margin: 0; font-family: {DISPLAY}; font-size: 22px; line-height: 28px; font-weight: 700;">No rules of your own yet</h2>
+<h2 style="margin: 0; font-family: {DISPLAY}; font-size: 22px; line-height: 28px; font-weight: 400;">No rules of your own yet</h2>
 <p style="margin: 0; font-size: 14px; color: {S["muted"]};">Polyxd's 13 built-in rules already run on every screen. Add yours to hold screens to Northwind's standards. Teams usually start with these:</p>
 <ul style="list-style: none; margin: 0; padding: 0; width: 100%; display: flex; flex-direction: column; gap: 8px;">{sug}</ul>
 <div>{btn("Write a rule", "primary", "plus")}</div></div></div>'''

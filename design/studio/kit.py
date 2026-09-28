@@ -1,5 +1,5 @@
 """Building blocks for Polyxd Studio, in polyxd.com's own look: a warm ground, near-black ink, one
-signal orange, Bricolage Grotesque for titles, Geist for everything read, Geist Mono for tokens and ids.
+signal orange with ink text on it, Young Serif for titles, Hanken Grotesk for everything read, DM Mono for tokens and ids.
 
 Every control is a real element (<button>, <input>, <label>, <select>, <a>) so the drawings are
 accessible as drawn. Colours under text meet 4.5:1: the signal orange is for marks and focus, and
@@ -13,20 +13,31 @@ _flows = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_flows)
 ICONS = dict(_flows.ICONS)
 
+# Polyxd's own brand (brand/BRAND-2026.md, the "Polyxd Design System"): paper, ink, one signal orange
+# with ink text on it, a darker orange for orange words, round controls, squircle surfaces.
 S = dict(
-    ground="#F4F1EA", paper="#FFFFFF", sunk="#FAF8F3", ink="#141414", ink2="#3F3E3A", muted="#5E5C55",
-    line="#DDD8CC", soft="#ECE8DE", signal="#FF5A1F", signal_ink="#B8350A", signal_bg="#FFE8DD",
-    ok="#1D6B3F", ok_bg="#DFF2E5", warn="#7A4F00", warn_bg="#FBEFD2", bad="#B42318", bad_bg="#FDE4E1",
-    info="#1F4FB8", info_bg="#E4ECFB", night="#141414", night_text="#F4F1EA", focus="#FF5A1F",
+    ground="#F3F1EC", paper="#FFFFFF", sunk="#F8F7F3", ink="#141413", ink2="#3F3E3A", muted="#5E5A52",
+    line="#DAD5CA", border="#8A8479", soft="#ECE9E1", signal="#FF6E40", signal_ink="#B14C2C", signal_bg="#FFE6DC",
+    ok="#1D7A4C", ok_bg="#DFF2E5", warn="#7A4F00", warn_bg="#FBEFD2", bad="#B42318", bad_bg="#FDE4E1",
+    info="#1F4FB8", info_bg="#E4ECFB", night="#121211", night_text="#F3F1EC", focus="#141413",
 )
 TONE = {
     "ok": (S["ok_bg"], S["ok"]), "warn": (S["warn_bg"], S["warn"]), "bad": (S["bad_bg"], S["bad"]),
     "info": (S["info_bg"], S["info"]), "gray": (S["soft"], S["ink2"]), "signal": (S["signal_bg"], S["signal_ink"]),
     "ink": (S["ink"], "#FFFFFF"),
 }
-BODY = "'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif"
-DISPLAY = "'Bricolage Grotesque', 'Geist', ui-sans-serif, system-ui, sans-serif"
-MONO = "'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace"
+BODY = "'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif"
+DISPLAY = "'Young Serif', Georgia, 'Times New Roman', serif"
+MONO = "'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace"
+
+
+def MARK(size=28):
+    """The Polyxd mark (brand/chosen-mark.svg): an orange p, a white window, an ink pupil."""
+    return (f'<svg aria-hidden="true" width="{size}" height="{size}" viewBox="0 0 32 32" style="flex-shrink: 0; display: block;">'
+            '<path d="M13 6H19C22.864 6 26 9.136 26 13V19C26 22.864 22.864 26 19 26H13C9.136 26 6 22.864 6 19V13C6 9.136 9.136 6 13 6Z" fill="#FF6E40"/>'
+            '<path d="M8.5 14H8.5C9.88 14 11 15.12 11 16.5V25.5C11 26.88 9.88 28 8.5 28H8.5C7.12 28 6 26.88 6 25.5V16.5C6 15.12 7.12 14 8.5 14Z" fill="#FF6E40"/>'
+            '<path d="M16 11.2H16C20.224 11.2 20.8 11.776 20.8 16V16C20.8 20.224 20.224 20.8 16 20.8H16C11.776 20.8 11.2 20.224 11.2 16V16C11.2 11.776 11.776 11.2 16 11.2Z" fill="#FFFFFF"/>'
+            '<circle cx="16" cy="16" r="2.4" fill="#141413"/></svg>')
 
 ICONS.update({
     "home": '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',
@@ -92,7 +103,7 @@ def doc(title, w, h, body, bg=None):
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
 body{{margin:0;font-family:{BODY};color:{S['ink']};background:{bg}}}
 a{{color:{S['signal_ink']};text-decoration:none}}a:hover{{text-decoration:underline}}
@@ -127,11 +138,11 @@ def dot(tone="ok", size=8):
     return f'<span aria-hidden="true" style="width: {size}px; height: {size}px; border-radius: 50%; background: {TONE[tone][1]}; flex-shrink: 0; display: inline-block;"></span>'
 
 
-def btn(label, kind="secondary", icon_name=None, h=36, only_icon=False, trail_icon=None, w=None, href=None):
+def btn(label, kind="secondary", icon_name=None, h=44, only_icon=False, trail_icon=None, w=None, href=None):
     bg, fg, border = {
-        "primary": (S["ink"], "#FFFFFF", S["ink"]),
-        "accent": (S["signal_ink"], "#FFFFFF", S["signal_ink"]),
-        "secondary": (S["paper"], S["ink"], S["line"]),
+        "primary": (S["signal"], S["ink"], S["signal"]),
+        "accent": (S["ink"], S["ground"], S["ink"]),
+        "secondary": ("transparent", S["ink"], S["border"]),
         "ghost": ("transparent", S["ink2"], "transparent"),
         "danger": (S["bad"], "#FFFFFF", S["bad"]),
         "danger_ghost": ("transparent", S["bad"], "transparent"),
@@ -143,9 +154,9 @@ def btn(label, kind="secondary", icon_name=None, h=36, only_icon=False, trail_ic
     tag_ = "a" if href else "button"
     extra = f' href="{href}"' if href else ' type="button"'
     if only_icon:
-        return f'<{tag_}{extra} aria-label="{label}" title="{label}" style="width: {h}px; height: {h}px; flex-shrink: 0; box-sizing: border-box; border: 1px solid {border}; border-radius: 8px; background: {bg}; color: {fg}; display: inline-flex; align-items: center; justify-content: center; padding: 0;">{lead}</{tag_}>'
-    pad = "0 10px" if kind in ("ghost", "link", "danger_ghost") else "0 14px"
-    return f'<{tag_}{extra} style="height: {h}px;{width} flex-shrink: 0; box-sizing: border-box; padding: {pad}; border: 1px solid {border}; border-radius: 8px; background: {bg}; color: {fg}; font-family: {BODY}; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; text-decoration: none;">{lead}<span>{label}</span>{trail}</{tag_}>'
+        return f'<{tag_}{extra} aria-label="{label}" title="{label}" style="width: {h}px; height: {h}px; flex-shrink: 0; box-sizing: border-box; border: 1.5px solid {border}; border-radius: {h // 2}px; background: {bg}; color: {fg}; display: inline-flex; align-items: center; justify-content: center; padding: 0;">{lead}</{tag_}>'
+    pad = "0 12px" if kind in ("ghost", "link", "danger_ghost") else "0 20px"
+    return f'<{tag_}{extra} style="height: {h}px;{width} flex-shrink: 0; box-sizing: border-box; padding: {pad}; border: 1.5px solid {border}; border-radius: {h // 2}px; background: {bg}; color: {fg}; font-family: {BODY}; font-size: 15px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; text-decoration: none;">{lead}<span>{label}</span>{trail}</{tag_}>'
 
 
 def avatar(initials, tone="signal", size=28):
@@ -159,11 +170,11 @@ def label(text, for_id=None, hint=None):
     return f'<label{f} style="font-size: 13px; font-weight: 500; color: {S["ink"]};">{text}{h}</label>'
 
 
-def field(lbl, value="", id_=None, placeholder="", help_text=None, mono=False, w=None, error=None, prefix=None, suffix=None, hint=None, h=36):
+def field(lbl, value="", id_=None, placeholder="", help_text=None, mono=False, w=None, error=None, prefix=None, suffix=None, hint=None, h=44):
     id_ = id_ or lbl.lower().replace(" ", "-").replace("’", "")[:24]
     width = f"width: {w}px;" if w else ""
     font = MONO if mono else BODY
-    border = S["bad"] if error else S["line"]
+    border = S["bad"] if error else S["border"]
     pre = f'<span style="color: {S["muted"]}; font-size: 13px; padding-left: 10px; font-family: {font};">{prefix}</span>' if prefix else ""
     suf = f'<span style="color: {S["muted"]}; font-size: 13px; padding-right: 10px;">{suffix}</span>' if suffix else ""
     below = ""
@@ -173,7 +184,7 @@ def field(lbl, value="", id_=None, placeholder="", help_text=None, mono=False, w
         below = f'<span style="font-size: 12px; color: {S["muted"]};">{help_text}</span>'
     return f'''<div style="display: flex; flex-direction: column; gap: 6px; {width}">
 {label(lbl, id_, hint)}
-<div style="height: {h}px; box-sizing: border-box; border: 1px solid {border}; border-radius: 8px; background: {S["paper"]}; display: flex; align-items: center;">{pre}<input id="{id_}" value="{value}" placeholder="{placeholder}" style="flex-grow: 1; min-width: 0; height: 100%; border: 0; background: transparent; padding: 0 10px; font-family: {font}; font-size: 14px; color: {S["ink"]}; outline: none;">{suf}</div>
+<div style="height: {h}px; box-sizing: border-box; border: 1.5px solid {border}; border-radius: {h // 2}px; background: {S["paper"]}; display: flex; align-items: center; padding: 0 6px;">{pre}<input id="{id_}" value="{value}" placeholder="{placeholder}" style="flex-grow: 1; min-width: 0; height: 100%; border: 0; background: transparent; padding: 0 12px; font-family: {font}; font-size: 15px; color: {S["ink"]}; outline: none;">{suf}</div>
 {below}
 </div>'''
 
@@ -184,7 +195,7 @@ def textarea(lbl, value="", id_=None, rows_h=88, help_text=None, w=None):
     below = f'<span style="font-size: 12px; color: {S["muted"]};">{help_text}</span>' if help_text else ""
     return f'''<div style="display: flex; flex-direction: column; gap: 6px; {width}">
 {label(lbl, id_)}
-<textarea id="{id_}" style="height: {rows_h}px; box-sizing: border-box; resize: none; border: 1px solid {S["line"]}; border-radius: 8px; background: {S["paper"]}; padding: 8px 10px; font-family: {BODY}; font-size: 14px; line-height: 20px; color: {S["ink"]};">{value}</textarea>
+<textarea id="{id_}" style="height: {rows_h}px; box-sizing: border-box; resize: none; border: 1.5px solid {S["border"]}; border-radius: 18px; background: {S["paper"]}; padding: 10px 16px; font-family: {BODY}; font-size: 15px; line-height: 20px; color: {S["ink"]};">{value}</textarea>
 {below}
 </div>'''
 
@@ -196,7 +207,7 @@ def select(lbl, value, id_=None, w=None, help_text=None, mono=False):
     below = f'<span style="font-size: 12px; color: {S["muted"]};">{help_text}</span>' if help_text else ""
     return f'''<div style="display: flex; flex-direction: column; gap: 6px; {width}">
 {label(lbl, id_)}
-<div style="position: relative; display: flex;"><select id="{id_}" style="appearance: none; flex-grow: 1; height: 36px; border: 1px solid {S["line"]}; border-radius: 8px; background: {S["paper"]}; padding: 0 32px 0 10px; font-family: {font}; font-size: 14px; color: {S["ink"]};"><option>{value}</option></select><span style="position: absolute; right: 10px; top: 10px; color: {S["muted"]}; display: flex; pointer-events: none;">{ic("chev_d", 16)}</span></div>
+<div style="position: relative; display: flex;"><select id="{id_}" style="appearance: none; flex-grow: 1; height: 44px; border: 1.5px solid {S["border"]}; border-radius: 22px; background: {S["paper"]}; padding: 0 36px 0 16px; font-family: {font}; font-size: 15px; color: {S["ink"]};"><option>{value}</option></select><span style="position: absolute; right: 14px; top: 14px; color: {S["muted"]}; display: flex; pointer-events: none;">{ic("chev_d", 16)}</span></div>
 {below}
 </div>'''
 
@@ -245,7 +256,7 @@ def kbd(text):
 
 
 def card(inner, pad=20, gap=12, extra="", bg=None):
-    return f'<section style="box-sizing: border-box; background: {bg or S["paper"]}; border: 1px solid {S["line"]}; border-radius: 12px; padding: {pad}px; display: flex; flex-direction: column; gap: {gap}px; {extra}">{inner}</section>'
+    return f'<section style="box-sizing: border-box; background: {bg or S["paper"]}; border: 1px solid {S["line"]}; border-radius: 24px; corner-shape: squircle; padding: {pad}px; display: flex; flex-direction: column; gap: {gap}px; {extra}">{inner}</section>'
 
 
 def h2(text, sub=None, action=""):
@@ -280,7 +291,7 @@ def table(head, rows, aligns=None, widths=None, row_h=48, selected=(), pad_x=16,
 
 def search(placeholder, w=280, value=""):
     v = f' value="{value}"' if value else ""
-    return f'<div style="width: {w}px; height: 36px; box-sizing: border-box; border: 1px solid {S["line"]}; border-radius: 8px; background: {S["paper"]}; display: flex; align-items: center; gap: 8px; padding: 0 10px; color: {S["muted"]};">{ic("search", 16)}<input aria-label="{placeholder}" placeholder="{placeholder}"{v} style="flex-grow: 1; min-width: 0; border: 0; background: transparent; font-family: {BODY}; font-size: 14px; color: {S["ink"]}; outline: none;"></div>'
+    return f'<div style="width: {w}px; height: 44px; box-sizing: border-box; border: 1.5px solid {S["border"]}; border-radius: 22px; background: {S["paper"]}; display: flex; align-items: center; gap: 8px; padding: 0 10px; color: {S["muted"]};">{ic("search", 16)}<input aria-label="{placeholder}" placeholder="{placeholder}"{v} style="flex-grow: 1; min-width: 0; border: 0; background: transparent; font-family: {BODY}; font-size: 14px; color: {S["ink"]}; outline: none;"></div>'
 
 
 def filter_chip(text, on=False, count=None):
@@ -328,8 +339,8 @@ def sidebar(active):
             groups += "".join(item(n, i) for n, i in children)
     return f'''<aside style="width: 232px; flex-shrink: 0; box-sizing: border-box; padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; border-right: 1px solid {S["line"]}; background: {S["ground"]};">
 <div style="display: flex; align-items: center; gap: 10px; padding: 4px 8px 14px;">
-<span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 8px; background: {S["ink"]}; color: {S["signal"]}; display: inline-flex; align-items: center; justify-content: center; font-family: {DISPLAY}; font-weight: 700; font-size: 16px;">p</span>
-<div style="display: flex; flex-direction: column; line-height: 16px;"><span style="font-family: {DISPLAY}; font-weight: 700; font-size: 15px;">Polyxd Studio</span><span style="font-size: 12px; color: {S["muted"]};">Northwind</span></div>
+{MARK(28)}
+<div style="display: flex; flex-direction: column; line-height: 16px;"><span style="font-family: {DISPLAY}; font-weight: 400; font-size: 17px; letter-spacing: -0.015em;">polyxd <span style="font-family: {BODY}; font-weight: 500; font-size: 14px; color: {S["muted"]}; letter-spacing: 0;">Studio</span></span><span style="font-size: 12px; color: {S["muted"]};">Northwind</span></div>
 <button type="button" aria-label="Switch workspace" style="margin-left: auto; border: 0; background: transparent; color: {S["muted"]}; display: flex; padding: 4px;">{ic("chev_d", 16)}</button>
 </div>
 <nav aria-label="Studio" style="display: flex; flex-direction: column; gap: 2px;">{groups}</nav>
@@ -352,7 +363,7 @@ def topbar(crumbs, actions=""):
     return f'''<header style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid {S["soft"]};">
 <nav aria-label="Breadcrumb" style="display: flex; align-items: center; gap: 8px; font-size: 13px;">{sep.join(parts)}</nav>
 <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
-<button type="button" style="height: 32px; box-sizing: border-box; padding: 0 10px; border: 1px solid {S["line"]}; border-radius: 8px; background: {S["sunk"]}; color: {S["muted"]}; font-family: {BODY}; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; width: 220px;">{ic("search", 15)}<span>Search Studio</span><span style="margin-left: auto;">{kbd("⌘K")}</span></button>
+<button type="button" style="height: 36px; box-sizing: border-box; padding: 0 14px; border: 1.5px solid {S["border"]}; border-radius: 18px; background: {S["sunk"]}; color: {S["muted"]}; font-family: {BODY}; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; width: 220px;">{ic("search", 15)}<span>Search Studio</span><span style="margin-left: auto;">{kbd("⌘K")}</span></button>
 {btn("Notifications", "ghost", "bell", h=32, only_icon=True)}
 {actions}
 </div>
@@ -364,7 +375,7 @@ def page_head(title, desc=None, actions="", meta=None, tabs_html="", pad="24px 3
     m = f'<div style="display: flex; gap: 8px; align-items: center; margin-top: 10px;">{meta}</div>' if meta else ""
     return f'''<div style="padding: {pad}; display: flex; flex-direction: column; gap: 16px;">
 <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
-<div><h1 style="margin: 0; font-family: {DISPLAY}; font-size: 28px; line-height: 34px; font-weight: 700; letter-spacing: -0.01em;">{title}</h1>{d}{m}</div>
+<div><h1 style="margin: 0; font-family: {DISPLAY}; font-size: 28px; line-height: 34px; font-weight: 400; letter-spacing: -0.01em;">{title}</h1>{d}{m}</div>
 <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">{actions}</div>
 </div>
 {tabs_html}
@@ -393,7 +404,7 @@ def drawer(title, body, footer, w=520, sub=None):
     return f'''{scrim()}
 <aside role="dialog" aria-modal="true" aria-label="{title}" style="position: absolute; top: 0; right: 0; bottom: 0; width: {w}px; box-sizing: border-box; background: {S["paper"]}; display: flex; flex-direction: column; box-shadow: -12px 0 40px rgba(20,20,20,.18);">
 <header style="padding: 20px 24px; border-bottom: 1px solid {S["soft"]}; display: flex; align-items: flex-start; gap: 12px;">
-<div style="flex-grow: 1;"><h2 style="margin: 0; font-family: {DISPLAY}; font-size: 20px; line-height: 26px; font-weight: 700;">{title}</h2>{s}</div>
+<div style="flex-grow: 1;"><h2 style="margin: 0; font-family: {DISPLAY}; font-size: 20px; line-height: 26px; font-weight: 400;">{title}</h2>{s}</div>
 {btn("Close", "ghost", "close", h=32, only_icon=True)}
 </header>
 <div style="flex-grow: 1; min-height: 0; overflow: hidden; padding: 20px 24px; display: flex; flex-direction: column; gap: 18px;">{body}</div>
@@ -405,7 +416,7 @@ def dialog(title, body, footer, w=480):
     return f'''{scrim()}
 <div role="dialog" aria-modal="true" aria-label="{title}" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: {w}px; box-sizing: border-box; background: {S["paper"]}; border-radius: 14px; box-shadow: 0 24px 64px rgba(20,20,20,.28); display: flex; flex-direction: column;">
 <div style="padding: 24px 24px 8px; display: flex; flex-direction: column; gap: 14px;">
-<h2 style="margin: 0; font-family: {DISPLAY}; font-size: 20px; line-height: 26px; font-weight: 700;">{title}</h2>
+<h2 style="margin: 0; font-family: {DISPLAY}; font-size: 20px; line-height: 26px; font-weight: 400;">{title}</h2>
 {body}
 </div>
 <footer style="padding: 16px 24px 24px; display: flex; gap: 8px; justify-content: flex-end;">{footer}</footer>

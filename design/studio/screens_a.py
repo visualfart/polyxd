@@ -1,12 +1,12 @@
 """Studio, first half: getting started, the design system (tokens) and components."""
-from kit import (mini_desktop, S, TONE, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
+from kit import (mini_desktop, S, TONE, MARK, BODY, DISPLAY, MONO, ic, doc, tag, dot, btn, avatar, label, field, textarea, select, switch,
                  checkbox, radio, segmented, swatch, meter, mono, card, h2, notice, table, search, filter_chip, tabs,
                  app, page_head, drawer, dialog, toast, mini_surface, kbd, scrim)
 
 
 def stat(label_text, value, sub=None, tone=None, spark=None):
     s = f'<span style="font-size: 12px; color: {TONE[tone][1] if tone else S["muted"]};">{sub}</span>' if sub else ""
-    return card(f'<span style="font-size: 13px; color: {S["muted"]};">{label_text}</span><div style="display: flex; align-items: baseline; gap: 10px;"><span style="font-family: {DISPLAY}; font-size: 30px; line-height: 36px; font-weight: 700;">{value}</span>{s}</div>{spark or ""}', pad=18, gap=6)
+    return card(f'<span style="font-size: 13px; color: {S["muted"]};">{label_text}</span><div style="display: flex; align-items: baseline; gap: 10px;"><span style="font-family: {DISPLAY}; font-size: 30px; line-height: 36px; font-weight: 400;">{value}</span>{s}</div>{spark or ""}', pad=18, gap=6)
 
 
 def spark(points, w=240, h=40, color=None):
@@ -68,7 +68,7 @@ def workspace_new():
     )
     form = f'''<div style="width: 560px; display: flex; flex-direction: column; gap: 22px;">
 <ol aria-label="Setup steps" style="list-style: none; margin: 0; padding: 0; display: flex; gap: 24px;">{steps}</ol>
-<div><h1 style="margin: 0; font-family: {DISPLAY}; font-size: 36px; line-height: 42px; font-weight: 700; letter-spacing: -0.02em;">Tell us about your product</h1>
+<div><h1 style="margin: 0; font-family: {DISPLAY}; font-size: 36px; line-height: 42px; font-weight: 400; letter-spacing: -0.02em;">Tell us about your product</h1>
 <p style="margin: 8px 0 0; color: {S["muted"]}; font-size: 15px;">Studio sets up a workspace for one product. Everything here can be changed later.</p></div>
 {field("Product name", "Northwind", "product")}
 {field("Workspace address", "northwind", "address", prefix="studio.polyxd.com/", help_text="Your team signs in here.")}
@@ -77,8 +77,8 @@ def workspace_new():
 <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 6px;">{btn("Back", "ghost", "chev_l")}{btn("Continue", "primary", trail_icon="arrow_r", h=40)}</div>
 </div>'''
     aside = f'''<div style="flex: 1 1 0; background: {S["night"]}; color: {S["night_text"]}; display: flex; flex-direction: column; justify-content: center; padding: 64px; gap: 20px;">
-<span style="font-family: {DISPLAY}; font-size: 22px; font-weight: 700; color: {S["signal"]};">p</span>
-<p style="margin: 0; font-family: {DISPLAY}; font-size: 30px; line-height: 38px; font-weight: 500; max-width: 440px;">Screens written on demand, in your design system, checked before anyone sees them.</p>
+{MARK(44)}
+<p style="margin: 0; font-family: {DISPLAY}; font-size: 30px; line-height: 38px; font-weight: 400; max-width: 440px;">Screens written on demand, in your design system, checked before anyone sees them.</p>
 <p style="margin: 0; font-size: 14px; color: #CFCBC0; max-width: 420px;">Studio is where your design system team decides what those screens are allowed to look like, and reviews what they actually look like.</p>
 </div>'''
     return doc("Create a workspace", 1440, 900, f'<main style="flex: 1 1 0; display: flex; align-items: center; justify-content: center; background: {S["paper"]};">{form}</main>{aside}')
