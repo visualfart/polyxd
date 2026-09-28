@@ -7,7 +7,7 @@ section: Guides
 
 # Runtime
 
-`@polyxd/runtime` turns an ask into a UI document with the model you choose. It builds the prompt from the spec and your [Design Direction](/docs/design-direction), checks the answer, sends any problems back to the model to fix, streams as it goes, and remembers the screen shown for each intent. It uses `fetch` only and has no model SDK dependencies, so it runs in Node and browsers, and in Workers with a precompiled schema validator (see [In a Cloudflare Worker](#in-a-cloudflare-worker)).
+`@polyxd/runtime` turns an ask into a UI document with the model you choose. It builds the prompt from the spec and your [Design Direction](/docs/design-direction), checks the answer, sends any problems back to the model to fix, streams as it goes, and remembers the screen shown for each intent. It uses `fetch` only and has no model SDK dependencies. It runs in Node, in browsers and in Cloudflare Workers as it is. The spec's schema checks come compiled ahead of time, so nothing turns text into code at run time, which Workers forbid.
 
 It is new in the repository and not on npm yet.
 
@@ -174,10 +174,6 @@ When a document passes, it is stored by its ask's `intent`, without its data. Th
 | `error` | `reason`, `attempts`, `ms`, and `status` or `checks` when there are any |
 
 `checks` holds check ids such as `spec` or `rule:money-moves-in-confirm`, never their messages. No event carries the ask, the data or the document. A hook that throws never breaks generation. The package sends no telemetry anywhere.
-
-## In a Cloudflare Worker
-
-The spec's schema check uses Ajv, and Ajv turns a schema into a function at runtime. Cloudflare Workers don't allow that, so `checkDocument` fails there as it stands. The fix is to compile the validator ahead of time and give the bundle that instead. The site does this for the demos: `apps/site/scripts/build-validator.ts` writes the UI schema's validator with Ajv's standalone output, and `wrangler.jsonc` aliases `ajv/dist/2020.js` to a small class that hands it back. It gives the same answers and the same error lists as the compiled one. Node and browsers need none of this.
 
 ## In the demos
 

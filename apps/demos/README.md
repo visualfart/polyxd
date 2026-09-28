@@ -99,9 +99,8 @@ npx wrangler secret put POLYXD_MODEL          # required for openai and gemini
 ```
 
 Then deploy the site as usual. Deleting the secret (`npx wrangler secret delete ANTHROPIC_API_KEY`)
-turns it off again. The Worker bundle needs `worker/ui-validate.generated.js`, which the site's build
-writes: Workers can't compile Ajv's validator at runtime, so it is compiled ahead of time
-(`apps/site/scripts/build-validator.ts`) and aliased in `wrangler.jsonc`.
+turns it off again. The Worker needs nothing special for the spec's checks: `@polyxd/spec` ships its
+schema validators compiled ahead of time, so nothing generates code at run time.
 
 ### Guardrails
 

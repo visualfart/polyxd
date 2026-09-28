@@ -107,6 +107,8 @@ The validator checks the tree beyond the schema:
 - `Media` needs `alt` unless it is `decorative`.
 - The shell components (`Frame`, `AppBar`, `Footer`, `Outlet`, `Custom`) appear only in a document whose `surface.kind` is `shell` and whose `surface.origin` is `authored`; a shell's root is a `Frame` with exactly one `Outlet` under its `main`.
 
+The validator is `validateDocument` in `@polyxd/spec`. Import it from `@polyxd/spec/browser` to use it anywhere: Node, browsers and Cloudflare Workers. Its schema check is compiled ahead of time. It never uses `eval` or `new Function`, so it also works on a page with a strict content security policy.
+
 ## Bindings
 
 Any value that comes from the host is a **binding**: `{ "path": "<JSON Pointer>" }`. Paths are RFC 6901 JSON Pointers into host data.
