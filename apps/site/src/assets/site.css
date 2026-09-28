@@ -595,6 +595,12 @@ select:focus-visible {
 .ds-name code {
   white-space: nowrap;
 }
+.ds-logo-text span {
+  font: 500 calc(var(--ds-logo) * 0.24) / 1 var(--font-mono);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  white-space: nowrap;
+}
 .ds-logo-none {
   border-color: transparent;
   background: none;

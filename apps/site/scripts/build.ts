@@ -75,7 +75,9 @@ function packLogo(key: string, size: number | string = 20, spacer = false): stri
   const logo = PACK_LOGOS.get(key);
   if (!logo) return "";
   const box = typeof size === "number" ? `${size}px` : size;
-  if (!logo.src) return spacer ? `<span class="ds-logo ds-logo-none" style="--ds-logo:${box}" aria-hidden="true"></span>` : "";
+  // A system whose logo is protected (GOV.UK's crown and logotype) gets its name, set in Polyxd's
+  // own mono type on a plain tile, so rows of logos keep their rhythm without borrowing the mark.
+  if (!logo.src) return logo.text ? `<span class="ds-logo ds-logo-text" style="--ds-logo:${box}" aria-hidden="true"><span>${esc(logo.text.split(" ")[0])}</span></span>` : spacer ? `<span class="ds-logo ds-logo-none" style="--ds-logo:${box}" aria-hidden="true"></span>` : "";
   const px = typeof size === "number" ? size : 40;
   return `<span class="ds-logo" style="--ds-logo:${box}" aria-hidden="true"><img src="${logo.src}" alt="" width="${px}" height="${px}" decoding="async"></span>`;
 }
@@ -627,15 +629,31 @@ async function packWipeHtml(): Promise<{ layers: string; names: string; tabs: st
   return { layers: layers + edges, names, tabs, count: n };
 }
 
+/** The phone: a metal slab with edge thickness, buttons, the island, a status bar and a home indicator. */
+const PHONE_STATUS = `<div class="phone-status" aria-hidden="true"><span class="phone-time">9:41</span><i class="phone-island"></i><svg class="phone-icons" width="54" height="12" viewBox="0 0 54 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="6" rx="1"/><rect x="10" y="3.5" width="3" height="8.5" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1"/><rect x="26" y=".5" width="23" height="11" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".45"/><rect x="28" y="2.5" width="17" height="7" rx="2"/><rect x="50.5" y="4" width="1.8" height="4" rx=".9" fill-opacity=".45"/></svg></div>`;
+const PHONE_BODY = `<i class="phone-depth" aria-hidden="true">${"<b></b>".repeat(8)}</i><i class="phone-btn phone-btn-power" aria-hidden="true"></i><i class="phone-btn phone-btn-vol1" aria-hidden="true"></i><i class="phone-btn phone-btn-vol2" aria-hidden="true"></i>`;
 /**
- * One screen that travels down the page: born in "the turn", restyled through the packs in the
- * phone, checked at night, then let go. Fixed to the viewport and moved by home.js between the
- * scenes' [data-slot] places; the scenes keep their own copies as stills for when nothing moves.
+ * A phone around `inner`. In a scene it is also a place the travelling phone stops at
+ * (data-slot); the scene's own copy is what shows when nothing moves.
+ */
+function phoneHtml(inner: string, name: string, mode = "light", slot = true): string {
+  return `<div class="phone-wrap${slot ? " slot-wrap" : ""}" data-phone="${name}"><div class="phone"${slot ? ` data-slot="${name}" data-mode="${mode}"` : ""}><div class="phone-screen phone-${mode}">${PHONE_STATUS}<div class="phone-view">${inner}</div><i class="phone-home" aria-hidden="true"></i><i class="phone-glare" aria-hidden="true"></i></div>${PHONE_BODY}</div></div>`;
+}
+
+/** The app with no screen for the ask, as "the gap" shows it. */
+const GAP_APP = `<div class="gap-app"><div class="gap-tiles"><span>Payments</span><span>Cards</span><span>Statements</span><span>Payees</span><span>Savings</span><span>Settings</span></div><div class="gap-stamp"><span class="mono">No screen</span></div><div class="gap-ask">Split Friday’s dinner with Priya</div></div>`;
+
+/**
+ * The phone that travels down the page, one device from start to finish: it arrives with an app
+ * that has no screen for the ask, the answer is drawn inside it, it is restyled pack by pack,
+ * checked at night, and its screen turns to dust. Fixed to the viewport and moved by home.js
+ * between the scenes' phones (data-slot).
  */
 function travellerHtml(doc: UIDocument): string {
   const layers = WIPE_PACKS.map((p, i) => `<div class="tv-layer" style="--i:${i === 0 ? -9 : i}">${surfaceHtml(doc, p)}</div>`).join("");
   const edges = WIPE_PACKS.slice(1).map((_, i) => `<i class="tv-edge" style="--i:${i + 1}"></i>`).join("");
-  return `<div class="traveller" data-traveller aria-hidden="true" inert><div class="tv-clip">${layers}<div class="tv-dark">${surfaceHtml(doc, DARK_PACK, { mode: "dark" })}</div>${edges}<i class="tv-scan"></i></div></div>`;
+  const view = `<div class="tv-app">${GAP_APP}</div><div class="tv-screen">${layers}<div class="tv-dark">${surfaceHtml(doc, DARK_PACK, { mode: "dark" })}</div>${edges}<i class="tv-scan"></i></div>`;
+  return `<div class="traveller" data-traveller aria-hidden="true" inert><div class="tv-tilt">${phoneHtml(view, "traveller", "light", false)}<div class="tv-dust" data-dust></div></div></div>`;
 }
 
 /** Every pack the repo ships, by its own logo: the real systems, then Polyxd's templates. */
@@ -719,6 +737,7 @@ async function replaceAsync(s: string, re: RegExp, fn: (...m: string[]) => Promi
 async function fill(html: string, { title, description, path, current = "home" }: { title: string; description: string; path: string; current?: string }): Promise<string> {
   // Scenes first: they carry placeholders of their own.
   html = await replaceAsync(html, /<!--SCENE:([a-z]+)-->/g, async (_, name: string) => readFile(join(SITE, "src/scenes", `${name}.html`), "utf8"));
+  html = html.replace(/<!--PHONE:(\w+):(\w+)-->([\s\S]*?)<!--\/PHONE-->/g, (_, name: string, mode: string, inner: string) => phoneHtml(inner, name, mode));
   let out = html
     .replace("<!--HEAD-->", head({ title, description, path, css: ["/assets/themes.css", "/assets/renderer.css", "/assets/home.css"] }))
     .replace("<!--HEADER-->", header(current))
@@ -733,7 +752,7 @@ async function fill(html: string, { title, description, path, current = "home" }
   if (out.includes("<!--PACK_WALL_SYSTEMS-->")) out = out.replace("<!--PACK_WALL_SYSTEMS-->", await packWallHtml(true));
   if (out.includes("<!--DEMO_TILES-->")) out = out.replace("<!--DEMO_TILES-->", await demoCardsHtml());
   if (out.includes("<!--SCENARIOS-->")) out = out.replace("<!--SCENARIOS-->", await scenariosHtml(demo.packs));
-  for (const [k, v] of Object.entries({ ...counts, ...SCREENS })) out = out.replaceAll(`<!--${k}-->`, v);
+  for (const [k, v] of Object.entries({ ...counts, ...SCREENS, GAP_APP })) out = out.replaceAll(`<!--${k}-->`, v);
   return out
     .replace(/<!--PACKLOGO:([a-z0-9]+)(?::(\d+))?-->/g, (_, key: string, size?: string) => packLogo(key, size ? Number(size) : 24))
     // <!--MARK:state:size:class--> places the living mark (only its pupil moves).
@@ -741,7 +760,7 @@ async function fill(html: string, { title, description, path, current = "home" }
 }
 const landing = await fill(await readFile(join(SITE, "src/index.html"), "utf8"), {
   title: "Polyxd: every ask gets a screen",
-  description: "Your product has screens for what people asked last year. Polyxd draws the rest on demand, in your own design system, and checks each one before anyone sees it.",
+  description: "Apps only have the screens someone built in advance. Polyxd draws the rest on demand, in your own design system, and checks each one before anyone sees it.",
   path: "/",
 });
 await write(join(DIST, "index.html"), landing);
@@ -771,8 +790,7 @@ interface LandingPage {
 }
 
 const art = {
-  screen: (doc: UIDocument, pack: string, mode = "light", slot = false) =>
-    `<div class="art-screen"><i class="art-halo"></i><div class="art-slot"${slot ? ` data-slot="art"${mode === "dark" ? ' data-mode="dark"' : ""}` : ""}>${surfaceHtml(doc, pack, { mode })}</div></div>`,
+  screen: (doc: UIDocument, pack: string, mode = "light") => `<div class="art-phone"><i class="art-halo"></i>${phoneHtml(surfaceHtml(doc, pack, { mode }), "art", mode, false)}</div>`,
   wall: () => {
     const keys = ["material3", "carbon", "shadcn", "polaris", "fluent", "antd", "primer", "spectrum", "chakra", "mantine", "radix", "bootstrap"];
     return `<div class="art-wall">${keys.map((k, i) => `<span style="--i:${i}">${packLogo(k, 44)}</span>`).join("")}</div>`;
@@ -805,7 +823,7 @@ const LANDING_PAGES: LandingPage[] = [
     eyebrow: "How it works", h1: "Polyxd turns the answer into a screen.",
     lead: "A small document says what the screen means. Your design system draws it. A verifier checks it before anyone sees it.",
     ctas: [["Get started", "/docs/quickstart/"], ["Try Studio", "https://studio.polyxd.com"]],
-    art: art.screen(send.intent.document, "material3", "light", true),
+    art: art.screen(send.intent.document, "material3"),
     blocks: [
       { scene: "gap" }, { scene: "turn" },
       { points: { title: "Four layers. Your generator touches one.", items: [
@@ -837,7 +855,7 @@ const LANDING_PAGES: LandingPage[] = [
     eyebrow: "Verify", h1: "Checked before anyone sees it.",
     lead: "Every screen, every pack, light and dark, phone and desktop. Then an agent tries to finish the task by name alone.",
     ctas: [["How the verifier works", "/docs/verifier/"], ["Run it in CI", "/docs/quickstart/#3-verify-it"]],
-    art: art.screen(send.intent.document, DARK_PACK, "dark", true),
+    art: art.screen(send.intent.document, DARK_PACK, "dark"),
     blocks: [
       { scene: "check" },
       { points: { title: "Four layers of checks.", items: [

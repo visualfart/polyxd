@@ -31,13 +31,11 @@
 /* One focus state for the whole bar: its border deepens to a 2px ink line. The input inside
    draws nothing of its own, so no second ring appears inside the first. */
 .ask { transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard); }
-.ask:hover { border-color: var(--ink); }
-.ask:focus-within { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
-.ask input:focus, .ask input:focus-visible { outline: none; box-shadow: none; }
+.ask-line { flex: 1; min-width: 0; margin: 0; display: flex; align-items: center; font: 500 18px var(--font-body); white-space: nowrap; overflow: hidden; }
+.ask-caret { flex-shrink: 0; width: 2px; height: 22px; margin-left: 2px; border-radius: 1px; background: var(--signal); animation: caret 1s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+.chip.is-current:not([aria-pressed="true"]) { border-color: var(--ink); }
 .ask .btn:focus-visible { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
-.ask input { flex: 1; min-width: 0; height: 44px; border: 0; background: transparent; font: 500 18px var(--font-body); color: var(--ink); outline: none; }
-.ask input::placeholder { color: var(--muted); }
-.ask-miss { margin: -12px 0 0; color: var(--ink); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; max-width: 600px; }
 
 .hero-stage { position: relative; height: 600px; }
@@ -48,7 +46,7 @@
 .stage-status { position: absolute; left: calc(50% - 230px + 72px); top: -2px; margin: 0; padding: 6px 12px; border-radius: 12px; background: color-mix(in srgb, var(--ground) 94%, transparent); font: 500 13px/1.4 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
 .stage-status:empty { display: none; }
 .answers { position: absolute; left: 50%; top: 56px; width: var(--box-w); height: 520px; transform: translateX(-50%); }
-.answer[hidden], .ask-miss[hidden], .ask-reset[hidden] { display: none; }
+.answer[hidden], .ask-reset[hidden] { display: none; }
 .answer { margin: 0; height: 100%; display: flex; flex-direction: column; gap: 12px; animation: rise 520ms var(--ease-standard) both; }
 .answer-screen { position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: var(--radius-card); border: 1px solid var(--rule); background: var(--surface); }
 .answer-screen::after { content: ""; position: absolute; inset: auto 0 0; height: 48px; background: linear-gradient(transparent, var(--surface)); pointer-events: none; }
@@ -93,24 +91,32 @@
 .phone-view { position: relative; flex: 1; min-height: 0; overflow: hidden; background: var(--surface); }
 .phone-home { position: absolute; left: 50%; bottom: 8px; width: 36%; height: 5px; transform: translateX(-50%); border-radius: 3px; background: color-mix(in srgb, var(--ink) 80%, transparent); z-index: 7; }
 .phone-glare { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 7; background: linear-gradient(calc(115deg + var(--ry, 0deg) * 2), rgba(255,255,255,0) 30%, rgba(255,255,255,.14) 44%, rgba(255,255,255,0) 58%); mix-blend-mode: screen; }
-.scene-check .phone-status { background: #161616; color: #F4F4F4; }
+.scene-check .phone-status, .phone-dark .phone-status, .phone-dark .phone-view { background: #161616; color: #F4F4F4; }
 .scene-check .phone-view { background: #161616; }
 
-/* The travelling screen: one copy of the document, fixed to the viewport, moved between the
-   scenes' [data-slot] places by home.js. It only exists while motion is on. */
+/* The travelling phone: one device, fixed to the viewport, moved by home.js between the scenes'
+   phones ([data-slot]) and turned in 3D on the way. It only exists while motion is on; the scenes'
+   own phones are the still frames. */
 .traveller { display: none; }
-/* Still frames: the empty phone keeps a gentle three-quarter turn. */
-:root:not(.motion) [data-phone="gap"] .phone { --ry: -14deg; --rx: 4deg; }
-.motion .traveller.on { display: block; position: fixed; left: 0; top: 0; z-index: 4; pointer-events: none; transform-origin: 0 0; will-change: transform, width, height; }
-.tv-clip { position: absolute; inset: 0; overflow: hidden; border-radius: var(--tv-r, 28px); clip-path: inset(0 0 calc(var(--tv-hide, 0) * 100%) 0 round var(--tv-r, 28px)); opacity: var(--tv-o, 1); }
+.motion .traveller.on { display: block; position: fixed; left: 0; top: 0; z-index: 4; pointer-events: none; transform-origin: 0 0; will-change: transform; }
+.traveller .phone-wrap { padding-bottom: 0; }
+.traveller .phone-wrap::after { bottom: -28px; }
+.traveller .phone { height: 660px; }
+.traveller .phone-view { background: var(--pxd-color-surface, #fff); }
+.tv-app { position: absolute; inset: 0; opacity: var(--tv-app, 1); }
+.tv-screen { position: absolute; inset: 0; clip-path: inset(0 0 calc((1 - var(--tv-c, 0)) * 100%) 0); opacity: var(--tv-o, 1); }
 .tv-layer { --s: clamp(0, (var(--tv-u, 0) - var(--i) + .6) / .6, 1); position: absolute; inset: 0; clip-path: inset(0 calc((1 - var(--s)) * 100%) 0 0); }
 .tv-layer .pxd-frame, .tv-dark .pxd-frame { height: 100%; }
 .tv-dark { position: absolute; inset: 0; opacity: var(--tv-dark, 0); }
 .tv-edge { --s: clamp(0, (var(--tv-u, 0) - var(--i) + .6) / .6, 1); position: absolute; top: 0; bottom: 0; left: calc(var(--s) * 100% - 7px); width: 14px; background-image: radial-gradient(var(--signal) 3px, transparent 3.4px); background-size: 14px 14px; opacity: clamp(0, min(var(--s), 1 - var(--s)) * 14, 1); }
 .tv-scan { position: absolute; left: 0; right: 0; height: 150px; top: calc(var(--tv-scan, 0) * 100% - 150px); background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--signal) 20%, transparent) 94%, var(--signal)); opacity: var(--tv-scan-o, 0); }
-/* While it travels, the scenes' own copies step aside (their places stay, as the path). */
-.motion.travelling [data-slot] > * { visibility: hidden; }
-.motion.travelling .check-scan { display: none; }
+.traveller .phone-status { transition: background var(--duration-base) var(--ease-standard), color var(--duration-base) var(--ease-standard); }
+.traveller.is-dark .phone-status, .traveller.is-dark .phone-view { background: #161616; color: #F4F4F4; }
+.tv-dust { position: absolute; left: 10px; top: 60px; width: 292px; height: 562px; pointer-events: none; }
+.tv-dust i { position: absolute; width: 7px; height: 7px; border-radius: 9px; background: var(--signal); opacity: var(--tv-do, 0); transform: translate(calc(var(--tv-q, 0) * var(--tv-q, 0) * var(--dx) * 1px), calc(var(--tv-q, 0) * var(--dy) * 1px)); }
+.tv-dust i.ink { background: var(--ink); }
+/* While it travels, the scenes' own phones step aside; their places stay, as the path. */
+.motion.travelling .slot-wrap { visibility: hidden; }
 .pxd-frame { background: var(--pxd-color-surface, #fff); }
 
 /* 05 · The gap */
@@ -121,7 +127,8 @@
 .chat { height: min(560px, 56svh); }
 .gap-grid { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 56px; align-items: start; }
 .gap-phone, .gap-chat { margin: 0; display: flex; flex-direction: column; gap: 14px; }
-.gap-phone .phone-view { padding: 16px; box-sizing: border-box; }
+.gap-app { position: absolute; inset: 0; padding: 16px; box-sizing: border-box; background: var(--surface); }
+.traveller .gap-app { --a: var(--tv-ga, 0); --b: var(--tv-gb, 0); }
 .gap-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; opacity: calc(1 - var(--b) * .6); filter: grayscale(var(--b)); }
 .gap-tiles span { height: 78px; padding: 12px; border-radius: 18px; background: var(--ground); font-size: 13px; font-weight: 600; box-sizing: border-box; }
 .gap-stamp { position: absolute; left: 50%; top: 42%; width: 200px; height: 58px; margin-left: -100px; display: flex; align-items: center; justify-content: center; border: 2px dashed var(--signal-text); border-radius: var(--radius-pill); background: var(--surface); color: var(--signal-text); letter-spacing: .08em; text-transform: uppercase; font-size: 13px; opacity: var(--b); transform: scale(calc(1.15 - var(--b) * .15)); }
@@ -134,18 +141,17 @@
 
 /* 06 · The turn */
 .scene-turn { --p: .96; --a: clamp(0, var(--p) / .22, 1); --b: clamp(0, (var(--p) - .24) / .22, 1); --c: clamp(0, (var(--p) - .5) / .36, 1); --d: clamp(0, (var(--p) - .88) / .1, 1); }
-.turn-grid { display: grid; grid-template-columns: minmax(0, 1fr) 80px minmax(0, 400px); gap: 24px; align-items: center; justify-content: center; }
+.turn-grid { display: grid; grid-template-columns: minmax(0, 1fr) 80px minmax(0, 360px); gap: 24px; align-items: center; justify-content: center; }
 .turn-left { position: relative; height: 330px; max-width: 520px; width: 100%; justify-self: end; }
 .turn-para { position: absolute; inset: 30px 0 auto; padding: 22px 24px; border-radius: 24px; background: color-mix(in srgb, var(--ink) 7%, var(--ground)); font-size: 17px; line-height: 1.65; opacity: calc(1 - var(--a)); filter: blur(calc(var(--a) * 8px)); }
 .turn-dots { position: absolute; inset: 30px 0 60px; border-radius: 24px; background-image: radial-gradient(var(--signal) 2.6px, transparent 3px); background-size: 14px 14px; opacity: calc(var(--a) - var(--b)); transform: scale(calc(1 - var(--b) * .12)); }
 .turn-json { position: absolute; inset: 0; margin: 0; padding: 26px; border-radius: 28px; background: #141413; color: #D9D5CC; font-size: 14px; line-height: 1.85; overflow: hidden; opacity: var(--b); clip-path: inset(0 0 calc((1 - var(--b)) * 100%) 0); }
 .turn-line { height: 2px; background: var(--rule); }
 .turn-line i { display: block; height: 100%; background: var(--signal); transform: scaleX(var(--c)); transform-origin: 0 50%; }
-.turn-right { position: relative; height: min(560px, 58svh); }
-.turn-halo { position: absolute; inset: -14px; border-radius: 40px; background-image: radial-gradient(var(--signal) 1.8px, transparent 2.2px); background-size: 10px 10px; opacity: var(--d); }
-.turn-screen { position: absolute; inset: 0; border-radius: var(--radius-card); border: 1px solid var(--rule); overflow: hidden; background: var(--surface); clip-path: inset(0 0 calc((1 - var(--c)) * 100%) 0 round 28px); }
-.turn-screen .pxd-frame { height: 100%; }
-.turn-check { z-index: 6; position: absolute; left: calc(100% + 24px); top: 4px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; opacity: var(--d); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+.turn-right { position: relative; display: flex; justify-content: center; }
+.turn-halo { position: absolute; left: 50%; top: -14px; width: calc(min(660px, 70svh) * 9 / 19 + 28px); height: calc(min(660px, 70svh) + 28px); transform: translateX(-50%); border-radius: 66px; background-image: radial-gradient(var(--signal) 1.8px, transparent 2.2px); background-size: 10px 10px; opacity: var(--d); }
+.turn-screen { position: absolute; inset: 0; clip-path: inset(0 0 calc((1 - var(--c)) * 100%) 0); }
+.turn-screen .pxd-frame, .turn-check { z-index: 6; position: absolute; left: calc(100% + 24px); top: 4px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; opacity: var(--d); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
 .turn-rail { list-style: none; margin: 0; padding: 18px 0 0; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid var(--rule); position: relative; font-weight: 600; font-size: 15px; }
 .turn-rail::before { content: ""; position: absolute; left: 0; right: 0; top: -2px; height: 2px; background: var(--signal); transform: scaleX(var(--p)); transform-origin: 0 50%; }
 .turn-rail li { --s: clamp(0, (var(--p) - var(--at)) * 12, 1); color: color-mix(in srgb, var(--ink) calc(40% + var(--s) * 60%), var(--ground)); display: flex; align-items: center; gap: 8px; }
@@ -194,12 +200,9 @@
 
 /* 09 · Gone when it’s done */
 .scene-gone { --p: .86; --f: clamp(0, (var(--p) - .12) / .18, 1); --o: calc(clamp(0, (var(--p) - .08) / .12, 1) * (1 - clamp(0, (var(--p) - .5) / .45, 1))); --q: clamp(0, (var(--p) - .22) / .7, 1); --h1: clamp(0, (var(--p) - .5) / .15, 1); --h2: clamp(0, (var(--p) - .66) / .15, 1); }
-.scene-gone .scene-inner { align-items: center; min-height: 560px; justify-content: center; }
-.gone-screen { position: absolute; left: 50%; top: 50%; width: 300px; height: 460px; margin: -230px 0 0 -150px; border-radius: 28px; overflow: hidden; border: 1px solid var(--rule); opacity: calc(1 - var(--f)); }
-.gone-screen .pxd-frame { height: 100%; }
-.gone-dust { position: absolute; left: 50%; top: 50%; width: 300px; height: 460px; margin: -230px 0 0 -150px; pointer-events: none; }
-.gone-dust i { position: absolute; width: 7px; height: 7px; border-radius: 9px; background: var(--signal); opacity: var(--o); transform: translate(calc(var(--q) * var(--q) * var(--dx) * 1px), calc(var(--q) * var(--dy) * 1px)); }
-.gone-dust i.ink { background: var(--ink); }
+.scene-gone .scene-inner { align-items: center; min-height: 700px; justify-content: center; }
+.gone-phone { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.gone-screen { position: absolute; inset: 0; opacity: calc(1 - var(--f)); }
 .gone-title { position: relative; margin: 0; text-align: center; font-size: clamp(48px, 6.4vw, 96px); line-height: 1.05; }
 .gone-1, .gone-2 { display: block; }
 .gone-1 { opacity: var(--h1); transform: translateY(calc((1 - var(--h1)) * 16px)); }
@@ -309,7 +312,7 @@
   .hero-stage { height: 560px; }
   .gap-grid, .turn-grid, .wipe-grid, .check-grid, .platform-grid { grid-template-columns: minmax(0, 1fr); }
   .turn-line, .turn-check { display: none; }
-  .turn-right { height: 520px; }
+  .turn-right { position: relative; display: flex; justify-content: center; }
   .turn-left { justify-self: stretch; }
   .check-phone { max-width: 320px; margin: 40px auto 0; }
   .demo-tiles { grid-template-columns: 1fr 1fr; }
@@ -327,10 +330,9 @@
 .page-title { font-size: clamp(48px, 6vw, 92px); }
 .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 4px 0 0; }
 .page-art { position: relative; display: flex; align-items: center; justify-content: center; min-height: 460px; }
-.art-screen { position: relative; width: min(420px, 100%); height: 520px; }
-.art-slot { position: relative; height: 100%; overflow: hidden; border-radius: var(--radius-card); border: 1px solid var(--rule); }
-.art-slot .pxd-frame { height: 100%; }
-.art-halo { position: absolute; inset: -16px; border-radius: 40px; background-image: radial-gradient(var(--signal) 1.8px, transparent 2.2px); background-size: 10px 10px; }
+.art-phone { position: relative; }
+.art-phone .phone { height: min(560px, 64svh); }
+.art-halo { position: absolute; inset: -14px -14px 14px; border-radius: 66px; background-image: radial-gradient(var(--signal) 1.8px, transparent 2.2px); background-size: 10px 10px; }
 .art-wall { display: grid; grid-template-columns: repeat(4, 88px); gap: 16px; }
 .art-wall span { display: flex; align-items: center; justify-content: center; width: 88px; height: 88px; border-radius: 26px; background: var(--surface); border: 1px solid var(--rule); animation: rise 600ms var(--ease-standard) both; animation-delay: calc(var(--i) * 50ms); }
 .art-term { width: min(460px, 100%); font-size: 15px; }
@@ -366,3 +368,5 @@
   .art-wall { grid-template-columns: repeat(4, 64px); gap: 10px; }
   .art-wall span { width: 64px; height: 64px; border-radius: 20px; }
 }
+
+@media (prefers-reduced-motion: reduce) { .ask-caret { animation: none; } }
