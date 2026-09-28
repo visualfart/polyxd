@@ -1,15 +1,19 @@
 /**
- * The hosted Polyxd MCP server, https://mcp.polyxd.com. Three routes:
+ * The hosted Polyxd MCP server, https://mcp.polyxd.com. Its routes:
  *
  *   /mcp      the server over Streamable HTTP (@polyxd/mcp/http), with no authentication: every
  *             tool is read-only and touches no account and no personal data
  *   /health   a small JSON answer for uptime checks
  *   /         a redirect to the docs
+ *   /favicon.ico, /favicon.svg, /icon-512.png   redirects to polyxd.com's copies, so apps that look
+ *             up a host's icon find the Polyxd mark
  *
  * The page the MCP App shows is passed in (src/index.ts bundles it as text), so the tests can run
  * this in Node.
  */
 import { createHttpHandler, rateLimiter, VERSION, type RequestLog } from "@polyxd/mcp/http";
+
+const ICONS = new Map([["/favicon.ico", "/favicon.ico"], ["/favicon.svg", "/favicon.svg"], ["/icon-512.png", "/icon-512.png"], ["/apple-touch-icon.png", "/icon-180.png"]]);
 
 export const DOCS_URL = "https://polyxd.com/docs/mcp/";
 /** Requests per minute from one IP address. Claude and ChatGPT call from their own servers, so one address can carry many people; keep this generous. */
@@ -57,6 +61,8 @@ export function createApp(options: AppOptions) {
       let response: Response;
       if (pathname === "/" && (request.method === "GET" || request.method === "HEAD")) {
         response = Response.redirect(DOCS_URL, 302);
+      } else if (ICONS.has(pathname) && (request.method === "GET" || request.method === "HEAD")) {
+        response = new Response(null, { status: 301, headers: { location: `https://polyxd.com${ICONS.get(pathname)}`, "cache-control": "public, max-age=86400" } });
       } else if (pathname === "/health") {
         response = Response.json({ ok: true, name: "polyxd", version: VERSION, endpoint: "/mcp" }, { headers: { "cache-control": "no-store", "access-control-allow-origin": "*" } });
       } else {

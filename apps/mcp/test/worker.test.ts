@@ -48,6 +48,12 @@ test("/ redirects to the docs, /health answers, anything else is 404", async () 
   assert.equal(body.endpoint, "/mcp");
   assert.match(body.version, /^\d+\.\d+\.\d+/);
 
+  for (const [path, target] of [["/favicon.ico", "/favicon.ico"], ["/favicon.svg", "/favicon.svg"], ["/apple-touch-icon.png", "/icon-180.png"]]) {
+    const icon = await app.fetch(at(path));
+    assert.equal(icon.status, 301, path);
+    assert.equal(icon.headers.get("location"), `https://polyxd.com${target}`);
+  }
+
   assert.equal((await app.fetch(at("/mcp/extra"))).status, 404);
   assert.equal((await app.fetch(at("/.well-known/oauth-authorization-server"))).status, 404, "no authentication to discover");
 });
