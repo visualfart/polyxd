@@ -9,7 +9,6 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "build:prompt": "node scripts/build-prompt.ts",
     "verify": "node scripts/verify.ts",
     "test": "node --test \"test/**/*.test.ts\""
   },

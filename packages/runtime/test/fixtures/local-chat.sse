@@ -1,0 +1,10 @@
+data: {"id":"chatcmpl-7","object":"chat.completion.chunk","created":1790000000,"model":"qwen3:8b","system_fingerprint":"fp_ollama","choices":[{"index":0,"delta":{"role":"assistant","content":"```json\n{\"specVersion\":\"0.3.0\",\"surface\":{\"id\":\"pay\",\"title\":\"Pay £5\"},"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-7","object":"chat.completion.chunk","created":1790000000,"model":"qwen3:8b","system_fingerprint":"fp_ollama","choices":[{"index":0,"delta":{"role":"assistant","content":"\"root\":\"t\",\"components\":[{\"id\":\"t\",\"component\":\"Text\","},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-7","object":"chat.completion.chunk","created":1790000000,"model":"qwen3:8b","system_fingerprint":"fp_ollama","choices":[{"index":0,"delta":{"role":"assistant","content":"\"text\":\"You're about to pay £5.\"}]}\n```"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-7","object":"chat.completion.chunk","created":1790000000,"model":"qwen3:8b","system_fingerprint":"fp_ollama","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":"stop"}]}
+
+data: [DONE]
+

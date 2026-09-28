@@ -3,11 +3,11 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["ES2022", "DOM"],
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true
   },
   "include": ["src"],
-  "references": [{ "path": "../spec" }, { "path": "../runtime" }, { "path": "../verifier" }, { "path": "../web" }]
+  "references": [{ "path": "../spec" }, { "path": "../core" }]
 }

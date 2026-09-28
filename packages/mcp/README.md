@@ -62,7 +62,7 @@ The model receives that as the user's next message and acts on it. Closing the s
 
 ## The prompt
 
-`src/prompt.generated.ts` is the generator prompt that `apps/demos/scripts/build-prompt.ts` builds from the spec, copied unchanged by `npm run sync -w @polyxd/mcp`; `src/packs.generated.ts` lists the packs. The tests fail if either is out of date. `src/prompt.ts` is the only module that reads the prompt.
+The generator prompt comes from `@polyxd/runtime`, which builds it from the spec. `src/packs.generated.ts` lists the packs; `npm run sync -w @polyxd/mcp` rewrites it, and the tests fail if it is out of date.
 
 ## Build and test
 

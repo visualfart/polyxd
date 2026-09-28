@@ -79,4 +79,4 @@ Nobody registers capabilities with this server. So the guide tells the model to 
 
 ## The prompt
 
-The guide reuses the generator prompt the demos build from the spec (`apps/demos/scripts/build-prompt.ts`). The package keeps a copy, and its tests fail when the copy is out of date.
+The guide uses the same generator prompt as the [runtime](/docs/runtime), built from the spec, so a model writing screens over MCP gets the same instructions as one the runtime drives.

@@ -1,0 +1,50 @@
+Request: Send £250 to Alex for the rent
+Intent: money.send
+
+Capabilities you may use:
+- transfer.confirm (risk: consequential; inputs: quoteId*): Send money for a reviewed quote
+
+DATA (bind to it with JSON Pointers; do not copy values into text):
+{"quote":{"id":"q_91","recipient":"Alex Kim","amount":250,"fee":0,"reference":"Rent share","recipientAccount":"Monzo ••42","recipientInitials":"AK"}}
+
+Paths you can bind to:
+- /quote/id (string)
+- /quote/recipient (string)
+- /quote/amount (number)
+- /quote/fee (number)
+- /quote/reference (string)
+- /quote/recipientAccount (string)
+- /quote/recipientInitials (string)
+
+Design direction: calm-finance (design system: material3)
+Profile:
+- Density: comfortable.
+- At most 1 primary action visible at a time.
+- Lead with the key figures as Metric components.
+- Put secondary detail behind a Disclosure.
+- Freedom: strict. Stay close to the preferred patterns and the examples; don't invent new kinds of layout.
+Voice:
+- Guidelines: Plain, calm and specific. Say what happens to the user's money. No jokes about money.
+- Tone: formality neutral, energy calm, warmth reserved, humor none
+- Person: address the user as "you"; never say "we"
+- Style: sentence case; en-GB spelling; reading grade 8 or below; no exclamation marks; no emoji; button labels of at most 4 words; buttons start with a verb
+- Words: say "payment", not "transaction" or "txn"; say "send", not "transfer"
+- Never use: "simply", "just", "oops", "invalid", "failed"
+- For empty states: Say what will appear here and how to make it appear.
+- For error states: Say what happened, that nothing was lost, and what to do next. Never blame the user.
+- For confirm states: Name the amount, the recipient and whether it can be undone.
+- For success states: Confirm what happened in one short sentence, with the amount.
+Rules (each one is checked):
+- Money only moves from a confirmation
+
+Patterns for this request (set surface.pattern to the one you follow):
+- confirm-destructive: Before something that is hard or impossible to undo, say exactly what will happen and ask for an explicit, specific confirmation. Structure: Confirm (title names the action and object) → Consequence: what happens and whether it can be undone → Optional DetailList summary of what is being confirmed → Cancel (least destructive, focused first) and a confirm button that repeats the verb
+- review-and-submit: Before committing, show everything that will be submitted in a scannable summary, then one clear submit action. Structure: Sections with DetailLists summarising what will be submitted → Any final acknowledgements (terms) → Submit label states the commitment ('Book and pay £312')
+
+Examples of how this product does it (follow their structure, keys and wording where they fit):
+Request: send Alex the rent
+Document: {"specVersion":"0.3.0","surface":{"id":"send","title":"Send money","intent":"money.send","pattern":"multi-step-form"},"root":"form","components":[{"id":"form","component":"Form","children":["recipient","amount","reference","fee-details"],"submit":{"label":"Continue","action":{"event":{"name":"transfer.review","context":{"recipient":{"path":"/draft/recipient"},"amount":{"path":"/draft/amount"},"reference":{"path":"/draft/reference"}}}}}},{"id":"recipient","component":"Choice","key":"recipient","label":"Who are you sending to?","options":{"path":"/payees","valuePath":"id","labelPath":"name","avatarPath":"initials","recentPath":"recent","descriptionPath":"bank"},"value":{"path":"/draft/recipient"},"required":true},{"id":"amount","component":"TextInput","key":"amount","label":"Amount","kind":"currency","currency":"GBP","value":{"path":"/draft/amount"},"required":true,"validation":{"min":0.01,"max":5000,"message":"Enter an amount between £0.01 and £5,000"},"size":"hero"},{"id":"reference","component":"TextInput","key":"reference","label":"Reference","help":"Shown on their statement","value":{"path":"/draft/reference"},"validation":{"maxLength":18}},{"id":"fee-details","component":"DetailList","items":[{"key":"amount","label":"You send","value":{"path":"/draft/amount"},"format":{"type":"currency","currency":"GBP"}},{"key":"fee","label":"Fee","value":{"path":"/quote/fee"},"format":{"type":"currency","currency":"GBP"}},{"key":"total","label":"They get","value":{"path":"/draft/amount"},"format":{"type":"currency","currency":"GBP"},"total":true}],"variant":"receipt"}]}
+Request: confirm sending £250 to Alex
+Document: {"specVersion":"0.3.0","surface":{"id":"send-confirm","title":"Confirm payment","intent":"money.send","pattern":"confirm-destructive"},"root":"confirm","components":[{"id":"confirm","component":"Confirm","title":"Send this payment?","severity":"consequential","consequence":"The money leaves your account immediately and can't be recalled.","summary":"summary","confirm":{"label":"Send £250.00","action":{"event":{"name":"transfer.confirm","context":{"quoteId":{"path":"/quote/id"}}}}},"amount":{"value":{"path":"/quote/amount"},"format":{"type":"currency","currency":"GBP"}},"subject":{"title":{"path":"/quote/recipient"},"subtitle":{"path":"/quote/recipientAccount"},"avatar":{"path":"/quote/recipientInitials"}}},{"id":"summary","component":"DetailList","items":[{"key":"amount","label":"Amount","value":{"path":"/quote/amount"},"format":{"type":"currency","currency":"GBP"}},{"key":"fee","label":"Fee","value":{"path":"/quote/fee"},"format":{"type":"currency","currency":"GBP"}},{"key":"reference","label":"Reference","value":{"path":"/quote/reference"}},{"key":"total","label":"They get","value":{"path":"/quote/amount"},"format":{"type":"currency","currency":"GBP"},"total":true}],"variant":"receipt"}]}
+
+Output the JSON document now.

@@ -18,11 +18,11 @@ Polyxd has no fixed timeline. Work is split into phases ordered by dependency, a
 | 2 | **Web renderer and theming.** `@polyxd/react`, the theme compiler, thirteen design-system packs and twelve templates, the gallery; then `@polyxd/core` and the Web Components renderer `@polyxd/web`, held to each other by a conformance suite. Decision 0002 on Astryx | Done |
 | 3 | **Verifier and benchmark.** Document, rendered, agent and consistency checks; 50 requests, 10 multi-turn sequences and a gold set | In progress. The verifier is done (20 of 20 injected defects caught). The benchmark is in progress: the requests, sequences and gold documents exist, and the designer ranking that the gold-set exit test needs is still to do |
 | 4–6 | **Generator experiments.** Baselines and tuning of small local models, scored by the verifier | Paused. Polyxd ships no model; any generator that emits spec-valid JSON drives it |
-| 7 | **Demo and release.** Four demo products (ask, a UI appears, it goes away, ask again, it's recognisable), every package on npm, and Studio at studio.polyxd.com. The write-up waits on the benchmark | Done, except the write-up |
+| 7 | **Demo and release.** Four demo products (ask, a UI appears, it goes away, ask again, it's recognisable), the 0.3 release of every package then built, on npm, and Studio at studio.polyxd.com. The write-up waits on the benchmark | Done, except the write-up |
 
 Polyxd does not depend on a model of its own. The spec, renderer and verifier work with any generator, and the verifier is what lets you compare generators on equal terms.
 
-**Next:** the runtime SDK, which generates a document with the model you choose and applies a Design Direction as it does; a generation server; and publishing the [MCP server](/docs/mcp/), which is built but not yet on npm. **Later:** SwiftUI and Compose renderers (the spec already maps every component to both), a design-system generator, and an importer for Figma variables (Studio already imports Tokens Studio, DTCG and CSS files and npm packages).
+The [runtime SDK](/docs/runtime), `@polyxd/runtime`, and the [MCP server](/docs/mcp/), `@polyxd/mcp`, are built: the runtime generates a document with the model you choose and applies a Design Direction as it does, and the MCP server lets a chat app's own model write, check and show a screen. Both are in the repository and not on npm yet. **Next:** publishing them, and a generation server. **Later:** SwiftUI and Compose renderers (the spec already maps every component to both), a design-system generator, and an importer for Figma variables (Studio already imports Tokens Studio, DTCG and CSS files and npm packages).
 
 ### Release milestones
 
@@ -31,14 +31,14 @@ Polyxd does not depend on a model of its own. The spec, renderer and verifier wo
 | v0.1 | Phase 3 | Spec, design-system packs, React renderer, verifier. Works with any LLM. The first npm release | Released |
 | v0.2 | | Authored screens, more components, the demos, Studio's first version | Released |
 | v0.3 | | The shell components, `@polyxd/core`, the Web Components renderer, twelve templates, `polyxd dev` | Released |
-| next | | Runtime SDK, MCP server, generation server | MCP server built; the rest planned |
+| next | | Runtime SDK, MCP server, generation server | In progress. The runtime SDK and the MCP server are built and not yet published; the generation server is planned |
 | v1.0 | | Spec frozen, then native renderers | Planned |
 
 Before v1.0 the spec may break. Every document carries `specVersion`, releases follow semver, and breaking changes will come with migration notes.
 
 ## Distribution
 
-Each layer ships as its own package, so nobody has to adopt all of it. The first rows exist and are on npm; the rest are planned.
+Each layer ships as its own package, so nobody has to adopt all of it. What exists today is on npm, except where the row says otherwise; the rest is planned.
 
 | Layer | Planned package | Channel | Today |
 |---|---|---|---|
@@ -46,12 +46,12 @@ Each layer ships as its own package, so nobody has to adopt all of it. The first
 | Design-system packs | `@polyxd/ds-material3`, `ds-carbon`, `ds-antd` | npm | Exist |
 | Web renderer | `@polyxd/react` | npm | Exists |
 | Verifier and benchmark | `polyxd-verify` CLI, dataset | npm, Hugging Face Datasets | Verifier exists; dataset in progress |
-| Runtime SDK (generator, memory, validation, streaming) | `@polyxd/runtime`, `polyxd` (Python) | npm, PyPI | Planned |
+| Runtime SDK (generator, memory, validation, streaming) | `@polyxd/runtime`, `polyxd` (Python) | npm, PyPI | `@polyxd/runtime` exists in the repository, not on npm yet; Python planned |
 | Agent integration | MCP server (MCP Apps compatible) and A2UI export | npm (`npx @polyxd/mcp`) | A2UI export exists; the MCP server is built ([`@polyxd/mcp`](/docs/mcp/)) but not yet on npm |
 | Server | Generation server and HTTP API with streaming, pointed at the model endpoint you choose | Docker image on GitHub Container Registry | Planned |
 | Native renderers | Swift package, Compose library | SPM, Maven Central | Later |
 
-The runtime is meant to point at any generator: a hosted API such as Claude, GPT or Gemini, a self-hosted server, or a model running on the device. Interface memory is meant to be stored on the client. There is no telemetry.
+The runtime points at any generator: Claude, GPT or Gemini through their APIs, or a model on your own machine or server behind an OpenAI-compatible endpoint. Interface memory is stored on the client. There is no telemetry.
 
 ## Open core
 

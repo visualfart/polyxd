@@ -31,6 +31,7 @@
   ],
   "dependencies": {
     "@modelcontextprotocol/server": "^2.1.0",
+    "@polyxd/runtime": "^0.3.0",
     "@polyxd/spec": "^0.3.0",
     "@polyxd/verifier": "^0.3.0"
   },

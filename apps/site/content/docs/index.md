@@ -52,7 +52,7 @@ These rules make a Polyxd surface safe to embed in other software:
 
 ## What's in the box today
 
-Everything is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) scope, from one [open-source monorepo](https://github.com/visualfart/polyxd).
+Everything here is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) scope, from one [open-source monorepo](https://github.com/visualfart/polyxd), except `@polyxd/runtime`, `@polyxd/mcp` and the Python package `polyxd-spec`, which are new and in the repository only for now.
 
 | Package | What it does |
 |---|---|
@@ -66,6 +66,7 @@ Everything is on npm under the [`@polyxd`](https://www.npmjs.com/org/polyxd) sco
 | `@polyxd/mcp` | An MCP server: gives the host's model the spec, validates and verifies what it writes, and shows it to the user as an MCP App in any pack. Built, not yet on npm. See [MCP server](/docs/mcp/) |
 | `@polyxd/verifier` | The `polyxd-verify` CLI and library: document checks, rendered accessibility and layout checks, scripted agent tasks, and a consistency score |
 | `polyxd-spec` (Python) | The spec's schemas, component catalogue and validator for Python, with the same verdicts and messages as `@polyxd/spec`, and a `polyxd-spec validate` command. In the repository at `packages/python-spec`; not yet on PyPI |
+| `@polyxd/runtime` | Generates a document for an ask with the model you choose (Claude, GPT, Gemini, or a local model behind an OpenAI-compatible endpoint), with your Design Direction applied; checks and repairs the answer, streams it, and remembers the screen per intent on the client. See [Runtime](/docs/runtime). Not on npm yet |
 
 The repository also holds the benchmark (`bench/`: 50 requests, multi-turn sequences, agent tasks and a gold set) and the [gallery](/gallery/).
 
@@ -80,9 +81,9 @@ Polyxd is an **early preview**. The spec is at `specVersion` 0.3 and may still c
 | 2: Web renderer and theming | Done: React and Web Components renderers on one core, held to each other by a [conformance suite](/docs/renderers/) |
 | 3: Verifier and benchmark | In progress. The verifier is done; the benchmark is in progress |
 | 4–6: Generator experiments | Paused |
-| 7: Demo and release | Done: [four demo products](/demos/), every package on npm at 0.3, and [Studio](/docs/studio) |
+| 7: Demo and release | Done: [four demo products](/demos/), the 0.3 release of every package then built, on npm, and [Studio](/docs/studio) |
 
-**There is no bundled model.** Today you write or generate UI documents with any generator, validate them, render them in thirteen design systems, and verify them. See the [roadmap](/docs/roadmap).
+**There is no bundled model.** Today you write or generate UI documents with any generator (or with the [runtime](/docs/runtime) and the model you choose), validate them, render them in thirteen design systems, and verify them. See the [roadmap](/docs/roadmap).
 
 ## Next steps
 

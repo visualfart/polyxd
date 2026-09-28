@@ -177,4 +177,4 @@ A `key` is a stable semantic name for a thing on screen, such as `fee` or `recip
 
 Keys can go on components and on items inside them (detail rows, table columns, steps, views, chart series, comparison attributes).
 
-They matter because recognition depends on them. The verifier's consistency check matches two generations of the same intent by key, then compares which component each key uses, their relative order, and their labels. Planned interface memory will record the same things per user and feed them back to the generator as constraints, so the same task keeps the same shape. See [Verifier](/docs/verifier#consistency).
+They matter because recognition depends on them. The verifier's consistency check matches two generations of the same intent by key, then compares which component each key uses, their relative order, and their labels. The runtime's [interface memory](/docs/runtime#memory) keeps the screen shown for each intent on the client and gives it back to the model next time, with the instruction to keep its keys, structure, order and labels, so the same task keeps the same shape. See [Verifier](/docs/verifier#consistency).

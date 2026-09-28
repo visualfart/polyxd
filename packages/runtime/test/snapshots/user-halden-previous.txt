@@ -1,0 +1,47 @@
+Request: confirm the rent
+Intent: money.send
+Pattern: confirm-destructive
+
+Capabilities you may use:
+- transfer.confirm (risk: consequential; inputs: quoteId*): Send money for a reviewed quote
+
+DATA (bind to it with JSON Pointers; do not copy values into text):
+{"quote":{"id":"q_91","recipient":"Alex Kim","amount":250,"fee":0,"reference":"Rent share","recipientAccount":"Monzo ••42","recipientInitials":"AK"}}
+
+Paths you can bind to:
+- /quote/id (string)
+- /quote/recipient (string)
+- /quote/amount (number)
+- /quote/fee (number)
+- /quote/reference (string)
+- /quote/recipientAccount (string)
+- /quote/recipientInitials (string)
+
+Design direction: halden (design system: material3)
+Profile:
+- Density: comfortable.
+- At most 1 primary action visible at a time.
+- Lead with the key figures as Metric components.
+- Put secondary detail behind a Disclosure.
+- Freedom: strict. Stay close to the preferred patterns and the examples; don't invent new kinds of layout.
+Voice:
+- Guidelines: Plain, calm and specific. Say what happens to the person's money and when. Money is never a joke. Numbers are exact; time is concrete ("by 5pm today", not "soon").
+- Tone: formality neutral, energy calm, warmth warm, humor none
+- Person: address the user as "you"; never say "we"
+- Style: sentence case; en-GB spelling; reading grade 7 or below; no exclamation marks; no emoji; button labels of at most 4 words; buttons start with a verb
+- Words: say "payment", not "transaction" or "txn"; say "send", not "transfer" or "wire"; say "payee", not "beneficiary" or "recipient"; say "frozen", not "locked" or "blocked"
+- Never use: "simply", "just", "oops", "invalid", "failed", "error", "please note"
+- For empty states: Say what would appear here and the one thing to do to make it appear.
+- For error states: Say what did not happen, that no money moved, and what to try.
+- For success states: Say what happened, with the amount and who to.
+Rules (each one is checked):
+- The button that sends money states the amount
+- Money only moves from a confirmation
+
+Patterns for this request (set surface.pattern to the one you follow):
+- confirm-destructive: Before something that is hard or impossible to undo, say exactly what will happen and ask for an explicit, specific confirmation. Structure: Confirm (title names the action and object) → Consequence: what happens and whether it can be undone → Optional DetailList summary of what is being confirmed → Cancel (least destructive, focused first) and a confirm button that repeats the verb
+
+Last time, this intent showed the screen below. Keep its keys, structure, order and labels so the person recognises it; change only what this request needs:
+{"specVersion":"0.3.0","surface":{"id":"send-confirm","title":"Confirm payment","intent":"money.send","pattern":"confirm-destructive"},"root":"confirm","components":[{"id":"confirm","component":"Confirm","title":"Send this payment?","severity":"consequential","consequence":"The money leaves your account immediately and can't be recalled.","summary":"summary","confirm":{"label":"Send £250.00","action":{"event":{"name":"transfer.confirm","context":{"quoteId":{"path":"/quote/id"}}}}},"amount":{"value":{"path":"/quote/amount"},"format":{"type":"currency","currency":"GBP"}},"subject":{"title":{"path":"/quote/recipient"},"subtitle":{"path":"/quote/recipientAccount"},"avatar":{"path":"/quote/recipientInitials"}}},{"id":"summary","component":"DetailList","items":[{"key":"amount","label":"Amount","value":{"path":"/quote/amount"},"format":{"type":"currency","currency":"GBP"}},{"key":"fee","label":"Fee","value":{"path":"/quote/fee"},"format":{"type":"currency","currency":"GBP"}},{"key":"reference","label":"Reference","value":{"path":"/quote/reference"}},{"key":"total","label":"They get","value":{"path":"/quote/amount"},"format":{"type":"currency","currency":"GBP"},"total":true}],"variant":"receipt"}]}
+
+Output the JSON document now.

@@ -2,12 +2,13 @@
  * The spec as instructions for the host's model. Everything the server says about writing a
  * document lives in this module.
  *
- * The generator prompt itself is not written here: it is the one the demos build from the spec
- * (apps/demos/scripts/build-prompt.ts), copied byte for byte into prompt.generated.ts by
- * `npm run sync -w @polyxd/mcp` and checked for drift by the tests. When a package owns that
- * prompt, this import is the one line to change.
+ * The generator prompt itself is not written here: it is the one `@polyxd/runtime` builds from the
+ * spec, so a model writing documents over MCP gets the same instructions as one driven by the runtime.
  */
-import { SPEC_VERSION, SYSTEM_PROMPT } from "./prompt.generated.ts";
+import { SPEC_VERSION } from "@polyxd/spec/browser";
+import { systemPrompt } from "@polyxd/runtime";
+
+const SYSTEM_PROMPT = systemPrompt();
 import { PACKS } from "./packs.generated.ts";
 
 export { SPEC_VERSION, SYSTEM_PROMPT };

@@ -2,11 +2,10 @@
  * Copies what the server serves from elsewhere in the repository into src/, so the published
  * package needs nothing outside itself:
  *
- *   src/prompt.generated.ts   the generator prompt the demos build (apps/demos/scripts/build-prompt.ts), byte for byte
  *   src/packs.generated.ts    every design-system pack: name, display name, and whether it is a template
  *
- *   node scripts/sync.ts           write both
- *   node scripts/sync.ts --check   exit 1 if either is out of date (the tests run the same comparison)
+ *   node scripts/sync.ts           write it
+ *   node scripts/sync.ts --check   exit 1 if it is out of date (the tests run the same comparison)
  */
 import { readdirSync, readFileSync, existsSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -20,8 +19,6 @@ const isTemplate = (m: any) =>
   m?.template === true || (Array.isArray(m.provenance) ? m.provenance : [m.provenance]).some((e: any) => e?.template === true || /^Original template/.test(String(e?.notes ?? "")));
 
 export function expected(): Record<string, string> {
-  const prompt = read("apps/demos/kit/prompt.generated.ts");
-
   const dirs = readdirSync(new URL("packages/", REPO))
     .filter((d) => d.startsWith("ds-") && existsSync(new URL(`packages/${d}/manifest.json`, REPO)))
     .sort();
@@ -51,7 +48,7 @@ export interface Pack {
 
 export const PACKS: Pack[] = ${JSON.stringify(packs, null, 2)};
 `;
-  return { [here("../src/prompt.generated.ts")]: prompt, [here("../src/packs.generated.ts")]: packsFile };
+  return { [here("../src/packs.generated.ts")]: packsFile };
 }
 
 if (import.meta.main) {

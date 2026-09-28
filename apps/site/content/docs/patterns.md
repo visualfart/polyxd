@@ -98,4 +98,4 @@ A journey can pin down its own copy. `money.send` requires the confirm button to
 
 ## Your own patterns
 
-The [Design Direction](/docs/design-direction) schema has `patterns.custom`: paths to a company's own pattern files, in the same format as the core patterns, which take precedence over them. The schema is in place; the runtime that loads and applies them is planned.
+The [Design Direction](/docs/design-direction) schema has `patterns.custom`: paths to a company's own pattern files, in the same format as the core patterns, which take precedence over them. The schema is in place. The [runtime](/docs/runtime) applies a Direction's preferred and disallowed patterns today; loading company pattern files is planned.

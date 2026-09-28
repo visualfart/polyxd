@@ -38,14 +38,13 @@ halden/
 the same views, verified the same way (its report lands in `reports/` too) and rendered through `JitSurface`
 inside the product's own shell, so the mark reads "Authored · Checked" instead of "Checked".
 
-`kit/` is shared: a store with undo, ask matching with slots, the generator prompt built from the spec,
-`JitSurface` (the surface plus the mark and the drawer), and types.
+`kit/` is shared: a store with undo, ask matching with slots, `JitSurface` (the surface plus the mark and
+the drawer), and types. The generator prompt is built from the spec by `@polyxd/runtime`.
 
 ## Scripts
 
 ```sh
 npm run dev -w @polyxd/demos                 # all four at http://localhost:5174/demos/
-node scripts/build-prompt.ts                 # regenerate kit/prompt.generated.ts from the spec
 node scripts/snapshot.ts [product] [intent]  # put a data snapshot from the seed into each document
 node scripts/verify.ts [product] [intent]    # verify every document in 13 packs; writes reports/
 node scripts/og.ts                           # social images and touch icons into public/
@@ -58,7 +57,7 @@ A document changes → `snapshot` → `verify` → commit the document and its r
 ## Live generation
 
 The public demos answer from their verified library, so they never depend on a model being
-available. The same prompt (`kit/prompt.ts`) and the browser-safe validator (`@polyxd/spec/browser`)
-are what a live path uses: a Worker with a model key generates a document for an ask the library
-doesn't cover, validates it, and hands it to the product, which shows it with a "generated just now"
-mark instead of a verified one.
+available, and none of them runs a live path today. One would use `@polyxd/runtime`: `createRuntime` with
+the product's `direction.json`, the capabilities from its registry and a model adapter builds the prompt
+from the spec, checks and repairs the answer, and returns a document for an ask the library doesn't
+cover. The product would show it with a "generated just now" mark instead of a verified one.

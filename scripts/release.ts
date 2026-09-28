@@ -22,7 +22,7 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const publish = process.argv.includes("--publish");
 
 /** Dependency order: nothing is published before what it depends on. */
-const CORE = ["spec", "core", "ds-kit", "react", "web", "a2ui", "verifier", "mcp"];
+const CORE = ["spec", "core", "ds-kit", "react", "web", "a2ui", "verifier", "runtime", "mcp"];
 const PACKS = readdirSync(join(ROOT, "packages"))
   .filter((d) => d.startsWith("ds-") && d !== "ds-kit" && existsSync(join(ROOT, "packages", d, "manifest.json")))
   .sort();

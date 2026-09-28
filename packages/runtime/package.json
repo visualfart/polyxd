@@ -1,0 +1,44 @@
+{
+  "name": "@polyxd/runtime",
+  "version": "0.3.0",
+  "description": "Generates a spec-valid Polyxd UI document for an ask with the model you choose: applies a Design Direction, validates and repairs, streams, and remembers the screen per intent",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "build:catalog": "node scripts/build-catalog.ts",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@polyxd/core": "^0.3.0",
+    "@polyxd/spec": "^0.3.0"
+  },
+  "devDependencies": {
+    "@polyxd/verifier": "^0.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualfart/polyxd.git",
+    "directory": "packages/runtime"
+  },
+  "homepage": "https://polyxd.com",
+  "bugs": "https://github.com/visualfart/polyxd/issues",
+  "publishConfig": {
+    "access": "public"
+  }
+}
