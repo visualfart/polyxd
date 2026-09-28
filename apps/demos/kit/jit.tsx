@@ -83,7 +83,7 @@ function Checked({ report, origin, onOpen }: { report?: ReportSummary; origin: "
       <span className="jit-mark-dot" aria-hidden="true">
         <PolyxdMark state={!report ? (origin === "live" ? "checked" : "idle") : report.errors ? "attention" : "checked"} />
       </span>
-      {text}
+      <span className="jit-mark-text">{text}</span>
       <span className="jit-mark-more">Under the hood</span>
     </button>
   );

@@ -49,6 +49,14 @@
   background: var(--pxd-color-text-muted);
   opacity: 0.5;
 }
+/* A report with errors: the sentence becomes the product's own danger tone, a pair each pack's contract
+   checks for contrast, so it reads as a problem in every design system, not only by the mark's pupil. */
+.jit-mark-issues .jit-mark-text {
+  padding: 2px var(--pxd-space-inline-default);
+  border-radius: var(--pxd-radius-full);
+  background: var(--pxd-color-status-danger-background);
+  color: var(--pxd-color-status-danger-foreground);
+}
 .jit-mark-more {
   color: var(--pxd-color-text-link);
   text-decoration: underline;
