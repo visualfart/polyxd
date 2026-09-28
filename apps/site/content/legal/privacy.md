@@ -6,7 +6,7 @@ updated: "29 September 2026"
 
 ## The short version
 
-- polyxd.com counts visits and clicks on its buttons with PostHog, without cookies or local storage. It has no advertising and no tracking cookies. If your browser sends Do Not Track or Global Privacy Control, the analytics don't load at all.
+- polyxd.com counts visits and clicks on its buttons with PostHog, without cookies or local storage. If your browser sends Do Not Track or Global Privacy Control, PostHog doesn't load at all. Cloudflare Web Analytics also measures how fast pages load and counts visits, as totals only. It has no advertising and no tracking cookies.
 - The demos keep their data in your browser. If live generation is switched on, an ask the demos can't answer from their library goes to an AI model provider. We count how asks were answered, never what you asked.
 - Studio keeps what it needs to run your account and your workspaces, and sends email through Resend. It records the main steps you take in Studio, tied to a random user id, never your name or email address.
 - If a team sends its own product's usage events to Studio Insights, Studio keeps only daily counts of them for that team. It never keeps the events, anything people typed, or session ids.
@@ -46,6 +46,7 @@ This policy covers polyxd.com (the site, the docs, the gallery and the demos), P
 - **Your theme.** If you choose light or dark, the choice is saved in your browser's local storage as `pxd-theme`. It never leaves your browser.
 - **Fonts.** Pages load fonts from Google Fonts. To do that, your browser connects to Google, which sees your IP address and browser details. Google's use of this is covered by the [Google privacy policy](https://policies.google.com/privacy).
 - **Hosting.** Cloudflare hosts the site. To deliver pages and protect the site from attacks, Cloudflare processes your IP address and the details of each request. Cloudflare may set a strictly necessary security cookie (such as `__cf_bm`) to tell people from bots.
+- **Page speed and visit counts.** Cloudflare Web Analytics adds a small script, loaded from `static.cloudflareinsights.com`, to every page of the site, the demos and Studio. It measures how quickly each page loads and responds, and counts visits by country, page, referring site, browser, operating system and device type. It sets no cookies and uses no local storage, and it doesn't record query strings. We see only totals, never a single visit. Cloudflare adds this script itself, so it loads whether or not your browser sends Do Not Track or Global Privacy Control.
 - **Server logs.** Cloudflare keeps logs for our Workers: the time, method, address and status of each request, how long it took, and technical details Cloudflare attaches, which can include your IP address, rough location and browser. We use them to fix problems and stop abuse. They are kept for up to 7 days.
 - **The early-access list.** If you give us your email address to hear about early access, we keep that address and the time you joined. We use it only to tell you about early access. You can ask to be removed at any time. We delete the list once early access is open.
 
@@ -80,7 +81,7 @@ Studio is where teams set up their design systems and screens. It needs an accou
 
 - Each sign-in creates a session: a random token, when it expires, and the IP address and browser it came from. A session lasts 30 days and is renewed while you use Studio.
 - Studio sets cookies that keep you signed in: `studio.session_token` and `studio.session_data` (named with a `__Secure-` prefix on studio.polyxd.com). They are strictly necessary, so we don't ask for consent. If you sign in with Google, a short-lived cookie may also be set while the sign-in happens.
-- Studio sets no analytics or advertising cookies.
+- Studio sets no analytics or advertising cookies. Cloudflare Web Analytics measures its page speed and counts visits, as on the site.
 
 **Analytics.** We use PostHog to learn which parts of Studio help teams get started. Only once you are signed in, Studio records these steps:
 
@@ -156,6 +157,7 @@ We collect personal information only when we need it for one of these purposes, 
 | Live generation in the demos | To answer the ask you typed |
 | Hosted MCP server requests | To answer the tool calls your assistant makes |
 | Analytics in PostHog | To understand how the site, the demos, Studio and the hosted MCP server are used, and make them better |
+| Page speed and visit totals in Cloudflare Web Analytics | To keep pages fast and see how many people visit |
 | The early-access list | To tell you about early access, as you asked |
 | Emails you send us | To reply to you |
 | Records we must keep by law | To meet legal obligations |
@@ -166,7 +168,7 @@ We use these providers to run the services. Each processes data for us, on our i
 
 | Provider | What for | Where |
 |---|---|---|
-| Cloudflare, Inc. | Hosting, security, logs, Studio's database and file storage, the early-access list | USA, with a global network |
+| Cloudflare, Inc. | Hosting, security, logs, page speed and visit totals, Studio's database and file storage, the early-access list | USA, with a global network |
 | Resend (Plus Five Five, Inc.) | Sending Studio's emails | USA |
 | Anthropic, PBC | Writing screens for live generation in the demos, only while it is switched on | USA |
 | PostHog, Inc. | Product analytics for the site, the demos, Studio and the hosted MCP server | USA |
@@ -188,6 +190,7 @@ Our providers are based in the USA and may store and process data there or elsew
 | Demo asks | Not kept by us |
 | MCP server requests | Not kept; only the one-line log and the anonymous counts above |
 | Analytics events in PostHog | Up to 12 months |
+| Cloudflare Web Analytics | Each page load's measurements for 7 days, then only samples and totals, for up to 6 months |
 | Studio account and workspace data | While your account exists. After you ask us to delete it, within one month, and gone from Cloudflare's database backups within 30 days after that |
 | Studio sessions | 30 days from your last use |
 | Studio Insights counts | 90 days, or until the workspace owner deletes them. The events themselves are not kept |

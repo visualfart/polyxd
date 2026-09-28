@@ -25,6 +25,17 @@ export function axisLabel(v: unknown, type: string | undefined, locale: string):
   return String(v ?? "").slice(0, 12);
 }
 
+/**
+ * How many points apart the x-axis labels go so they don't overlap: 1 when every label fits under
+ * its band, otherwise the smallest step that leaves room for the widest label. Widths are estimated
+ * at 7 units a character (the axis text is 12px), with 8 units between labels.
+ */
+export function axisLabelStep(labels: string[], plotW: number): number {
+  if (labels.length < 2) return 1;
+  const widest = Math.max(...labels.map((l) => l.length)) * 7 + 8;
+  return Math.max(1, Math.ceil(widest / (plotW / labels.length)));
+}
+
 export interface Rect {
   x: number;
   y: number;

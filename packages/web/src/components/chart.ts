@@ -1,4 +1,4 @@
-import { CHART_H as H, CHART_PAD as PAD, CHART_W as W, MARKERS, absolute, asList, axisLabel, childPointer, flowLayout, formatValue, get, markerShape, niceMax, resolveFormat, seriesColor as color, treemap, verticalScale, type Node } from "@polyxd/core";
+import { CHART_H as H, CHART_PAD as PAD, CHART_W as W, MARKERS, absolute, asList, axisLabel, axisLabelStep, childPointer, flowLayout, formatValue, get, markerShape, niceMax, resolveFormat, seriesColor as color, treemap, verticalScale, type Node } from "@polyxd/core";
 import { h, type VChild, type VNode } from "../dom.ts";
 import type { Ctx } from "../renderer.ts";
 
@@ -209,11 +209,13 @@ export function Chart(node: Node, ctx: Ctx): VNode {
   const { lo, max, ticks } = verticalScale(all, node.intent === "trend");
   const scaleY = (v: number) => PAD.top + plotH - ((v - lo) / (max - lo || 1)) * plotH;
   const band = plotW / Math.max(points.length, 1);
+  const labels = points.map((p) => axisLabel(x(p), node.x.format?.type, r.locale));
+  const step = axisLabelStep(labels, plotW);
   const axis = h(
     "g",
     { class: "pxd-chart-axis" },
     ...ticks.map((t) => h("g", { key: t }, h("line", { x1: PAD.left, x2: W - PAD.right, y1: scaleY(t), y2: scaleY(t), class: "pxd-chart-grid" }), h("text", { x: PAD.left - 8, y: scaleY(t) + 4, "text-anchor": "end" }, formatValue(t, { ...(resolveFormat(series[0].format, r.data, b.scope) ?? { type: "number" }), precision: 0 }, r.locale)))),
-    ...points.map((p, i) => h("text", { key: p, x: PAD.left + band * i + band / 2, y: H - 10, "text-anchor": "middle" }, axisLabel(x(p), node.x.format?.type, r.locale))),
+    ...labels.flatMap((label, i) => (i % step ? [] : [h("text", { key: points[i], x: PAD.left + band * i + band / 2, y: H - 10, "text-anchor": "middle" }, label)])),
   );
   let body: VChild[];
   if (node.intent === "trend") {

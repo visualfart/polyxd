@@ -3,7 +3,7 @@ import { resolveFormat, useBindings, useSurface, type Node } from "../context.ts
 import { asList, absolute, childPointer, get } from "../data.ts";
 import { formatValue } from "../format.ts";
 import { useA11y } from "../surface.tsx";
-import { CHART_H as H, CHART_PAD as PAD, CHART_W as W, MARKERS, axisLabel, flowLayout, niceMax, seriesColor, treemap, verticalScale } from "@polyxd/core";
+import { CHART_H as H, CHART_PAD as PAD, CHART_W as W, MARKERS, axisLabel, axisLabelStep, flowLayout, niceMax, seriesColor, treemap, verticalScale } from "@polyxd/core";
 
 function Marker({ kind, x, y, color }: { kind: string; x: number; y: number; color: string }) {
   if (kind === "square") return <rect x={x - 4} y={y - 4} width={8} height={8} fill={color} />;
@@ -302,6 +302,8 @@ export function Chart({ node }: { node: Node }) {
   const { lo, max, ticks } = verticalScale(all, node.intent === "trend");
   const scaleY = (v: number) => PAD.top + plotH - ((v - lo) / (max - lo || 1)) * plotH;
   const band = plotW / Math.max(points.length, 1);
+  const labels = points.map((p) => axisLabel(x(p), node.x.format?.type, s.locale));
+  const step = axisLabelStep(labels, plotW);
 
   const axis = (
     <g className="pxd-chart-axis">
@@ -313,11 +315,13 @@ export function Chart({ node }: { node: Node }) {
           </text>
         </g>
       ))}
-      {points.map((p, i) => (
-        <text key={p} x={PAD.left + band * i + band / 2} y={H - 10} textAnchor="middle">
-          {axisLabel(x(p), node.x.format?.type, s.locale)}
-        </text>
-      ))}
+      {labels.map((label, i) =>
+        i % step ? null : (
+          <text key={points[i]} x={PAD.left + band * i + band / 2} y={H - 10} textAnchor="middle">
+            {label}
+          </text>
+        ),
+      )}
     </g>
   );
 

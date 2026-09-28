@@ -20,7 +20,7 @@ export { type MetricChange, type GaugeState, metricChange, meterHint, gaugeState
 export { avatarTone, initialsOf, isMediaRef, ICON_PATHS, iconPath, STATUS_ICON, STAR_PATH } from "./avatar.ts";
 export { type CalendarMonth, collectionItemValue, collectionLayout, orderedIndices, moveItem, dateParts, monthToShow, shiftMonth, calendarMonth, nearestSlide } from "./collection.ts";
 export { bestPerAttribute, groupAttributes, recommendedFirst, groupItems, navigationLabel } from "./comparison.ts";
-export { type Rect, CHART_W, CHART_H, CHART_PAD, MARKERS, seriesColor, niceMax, axisLabel, treemap, verticalScale, markerShape, flowLayout } from "./chart.ts";
+export { type Rect, CHART_W, CHART_H, CHART_PAD, MARKERS, seriesColor, niceMax, axisLabel, axisLabelStep, treemap, verticalScale, markerShape, flowLayout } from "./chart.ts";
 export { type TreeRow, type TreeMove, VIRTUAL_LIMIT, OVERSCAN, TYPEAHEAD_MS, treeRows, typeAheadTarget, treeKey, visibleWindow } from "./tree.ts";
 export { type ActiveFilter, FILTER_COMPACT_PX, activeFilters, resultCountText } from "./filter.ts";
 export { qrEncode } from "./qr.ts";

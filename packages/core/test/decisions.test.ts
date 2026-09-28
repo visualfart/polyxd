@@ -11,7 +11,7 @@ import {
   bestPerAttribute, groupAttributes, recommendedFirst, groupItems, navigationLabel,
   metricChange, meterHint, gaugeState, starsLabel, ratingSaid, maskSecret, groupSummary, avatarTone, initialsOf,
   richText, applyMask, numericValue, storedText, addTag, parseColor, formatColor, toHex6, sameColor, formatBytes, refuseFile, fileLimits,
-  niceMax, axisLabel, treemap, verticalScale, qrEncode, treeRows, treeKey, typeAheadTarget, visibleWindow, activeFilters, resultCountText,
+  niceMax, axisLabel, axisLabelStep, treemap, verticalScale, qrEncode, treeRows, treeKey, typeAheadTarget, visibleWindow, activeFilters, resultCountText,
   type Option, type Node,
 } from "../src/index.ts";
 
@@ -246,6 +246,10 @@ test("chart geometry and QR encoding are deterministic", () => {
   assert.equal(axisLabel("2026-04-01T00:00:00Z", "date", "en-GB"), "Apr");
   assert.equal(axisLabel("2026-04-03T00:00:00Z", "date", "en-GB"), "3 Apr");
   assert.equal(axisLabel("a very long label indeed", undefined, "en-GB"), "a very long ");
+  assert.equal(axisLabelStep(["Jan", "Feb", "Mar", "Apr", "May", "Jun"], 528), 1, "six months fit");
+  const days = Array.from({ length: 30 }, (_, i) => axisLabel(`2026-04-${String(i + 2).padStart(2, "0")}T00:00:00Z`, "date", "en-GB"));
+  assert.equal(axisLabelStep(days, 528), 3, "30 days: every third label");
+  assert.equal(axisLabelStep(["x"], 528), 1);
   const rects = treemap([3, 1, 0], 600, 240);
   assert.equal(rects[2], null);
   assert.ok(Math.abs(rects[0]!.w * rects[0]!.h - 0.75 * 600 * 240) < 1);
