@@ -1,0 +1,133 @@
+{
+  "$schema": "https://developers.openai.com/plugins/schemas/chatgpt-app-submission.v1.json",
+  "schema_version": 1,
+  "app_info": {
+    "display_name": "Polyxd",
+    "subtitle": "Real screens, right in chat",
+    "description": "Polyxd shows interactive screens right in the conversation. Ask ChatGPT to split a bill, return an order, fill in a form, compare plans or summarise a week of numbers, and instead of a wall of text you get a real interface: fields to fill in, choices to make, a receipt that adds up, a chart with a plain-words summary, and buttons that do what they say.\n\nChatGPT writes each screen as a small Polyxd document, a JSON description of what the screen means rather than how it looks. The connector checks it against the open Polyxd specification before anything is shown: every value bound to real data, labels that say what happens, one primary action at a time, no more than six inputs per view, and confirmations before anything consequential. A screen with errors is never shown; ChatGPT fixes it first.\n\nThen Polyxd draws it in the design system you choose. The same screen looks native in Material 3, IBM Carbon, GOV.UK, Fluent 2, shadcn/ui, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, Ant Design, Bootstrap, Chakra UI, Mantine and Radix Themes, or in one of twelve original templates, in light or dark mode.\n\nWhen you press a button, the choice comes back to ChatGPT as your next message, with the values you entered, so the conversation carries on from what you did.\n\nDesigners and product teams use it to try out a flow in their own design system in seconds. Anyone can use it to get a clear, usable screen instead of a long answer.\n\nEvery tool is read-only. The connector needs no account, sees only the screens ChatGPT sends it, stores nothing, and does not reach the internet. Polyxd is open source (Apache-2.0); the specification is CC-BY-4.0.",
+    "category": "DESIGN"
+  },
+  "tools": {
+    "polyxd_guide": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "It only checks or returns data the model sent, or lists Polyxd's own components and packs. It creates, changes and deletes nothing, anywhere.",
+        "open_world_justification": "It runs entirely inside the Polyxd server. It calls no other API and reaches nothing on the internet.",
+        "destructive_justification": "Nothing it does can be undone or cause loss: it has no side effects at all."
+      }
+    },
+    "polyxd_validate": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "It only checks or returns data the model sent, or lists Polyxd's own components and packs. It creates, changes and deletes nothing, anywhere.",
+        "open_world_justification": "It runs entirely inside the Polyxd server. It calls no other API and reaches nothing on the internet.",
+        "destructive_justification": "Nothing it does can be undone or cause loss: it has no side effects at all."
+      }
+    },
+    "polyxd_verify": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "It only checks or returns data the model sent, or lists Polyxd's own components and packs. It creates, changes and deletes nothing, anywhere.",
+        "open_world_justification": "It runs entirely inside the Polyxd server. It calls no other API and reaches nothing on the internet.",
+        "destructive_justification": "Nothing it does can be undone or cause loss: it has no side effects at all."
+      }
+    },
+    "polyxd_show": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "It only checks or returns data the model sent, or lists Polyxd's own components and packs. It creates, changes and deletes nothing, anywhere.",
+        "open_world_justification": "It runs entirely inside the Polyxd server. It calls no other API and reaches nothing on the internet.",
+        "destructive_justification": "Nothing it does can be undone or cause loss: it has no side effects at all."
+      }
+    },
+    "polyxd_packs": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "It only checks or returns data the model sent, or lists Polyxd's own components and packs. It creates, changes and deletes nothing, anywhere.",
+        "open_world_justification": "It runs entirely inside the Polyxd server. It calls no other API and reaches nothing on the internet.",
+        "destructive_justification": "Nothing it does can be undone or cause loss: it has no side effects at all."
+      }
+    },
+    "polyxd_components": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "It only checks or returns data the model sent, or lists Polyxd's own components and packs. It creates, changes and deletes nothing, anywhere.",
+        "open_world_justification": "It runs entirely inside the Polyxd server. It calls no other API and reaches nothing on the internet.",
+        "destructive_justification": "Nothing it does can be undone or cause loss: it has no side effects at all."
+      }
+    }
+  },
+  "test_cases": [
+    {
+      "description": "Split a bill in Material 3. ChatGPT writes the screen, validates it, and shows it in the Material 3 pack.",
+      "user_prompt": "Split Friday's dinner with Priya, Sam and Jo. The bill was £126.40 and I'd like to add a 10% tip. Show it in Material 3.",
+      "tools_triggered": "polyxd_guide, polyxd_validate, polyxd_show",
+      "expected_output": "A form with the three friends chosen, 'Equally' selected, a 10% tip option, and a receipt: bill £126.40, tip £12.64, each person pays £34.76, you get back £104.28. Buttons 'Not now' and 'Review requests'. Pressing 'Review requests' sends a chat message naming the action with the chosen people. No money moves."
+    },
+    {
+      "description": "Return an order in IBM Carbon.",
+      "user_prompt": "I need to return the running shoes from order #4821, they're too small. Use Carbon.",
+      "tools_triggered": "polyxd_validate, polyxd_show",
+      "expected_output": "A return form in IBM Carbon: the item and order, 'Too small' selected, drop-off or courier collection, where the refund goes, and a refund summary (item £89.99, postage free, you get back £89.99). Pressing 'Review return' sends the choices to the chat."
+    },
+    {
+      "description": "A GOV.UK form, checked against form-design rules before it is shown.",
+      "user_prompt": "Help me tell the council I've moved house. Make it a GOV.UK form, and check it follows good form design before you show it.",
+      "tools_triggered": "polyxd_validate, polyxd_verify, polyxd_show",
+      "expected_output": "polyxd_verify reports no errors. The screen, in GOV.UK style, shows fields for the new address, postcode and move-in date, with one 'Continue' button. Pressing it sends what was typed to the chat."
+    },
+    {
+      "description": "A dashboard in dark mode, using only the numbers given.",
+      "user_prompt": "Here's this week's helpdesk export: 42 open tickets (down 12%), median first reply 38 minutes (down 21%), satisfaction 94% (up 2%), and tickets opened and solved per day. Show my support team's week as a dashboard in shadcn, dark mode.",
+      "tools_triggered": "polyxd_validate, polyxd_show",
+      "expected_output": "A dark-mode dashboard in the shadcn/ui pack: three metrics with their changes, a chart of tickets opened and solved per day with a one-sentence summary, and the numbers from the prompt with none invented."
+    },
+    {
+      "description": "List the packs, then compare three plans in the Editorial template.",
+      "user_prompt": "Which design systems can Polyxd draw in? Then compare these broadband deals in the Editorial pack and help me pick: Fibre 150 at £27 a month, 145/30 Mbps, 24 months; Full Fibre 500 at £32, 500/70 Mbps, 18 months; Flex 900 at £45 plus £35 set-up, 900/110 Mbps, 1 month. I work from home.",
+      "tools_triggered": "polyxd_packs, polyxd_validate, polyxd_show",
+      "expected_output": "The reply lists the 25 packs (13 published design systems and 12 original templates). The screen compares the three plans across cost, speed and terms, recommends one with a short reason, and each plan has a 'Choose this plan' button that sends that plan to the chat."
+    }
+  ],
+  "negative_test_cases": [
+    {
+      "description": "A request that isn't about an interface.",
+      "user_prompt": "What's the weather in Leeds tomorrow?",
+      "expected_output": "No Polyxd tool is called. Polyxd draws screens from data in the conversation and fetches nothing, so it has no weather data."
+    },
+    {
+      "description": "Asking it to move money.",
+      "user_prompt": "Send £40 to Priya from my bank account now.",
+      "expected_output": "The assistant says it can't make payments. It may offer a screen to review a transfer, but must not say money was sent: a button in a screen only sends a message back to the chat."
+    },
+    {
+      "description": "A design system Polyxd doesn't have.",
+      "user_prompt": "Show me a login form in the Tailwind UI pack.",
+      "expected_output": "The assistant says there is no Tailwind UI pack and offers the nearest one, such as shadcn/ui, or asks which to use. An unsupported pack or a document with errors is refused by polyxd_show, and nothing is shown."
+    }
+  ]
+}
