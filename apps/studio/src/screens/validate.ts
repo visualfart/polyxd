@@ -1,6 +1,7 @@
 /**
- * Checks a document the way the spec's validateDocument does, without ajv, so it runs in the
- * Worker at save and in the browser as the designer edits (see schema.ts for why). Schema first;
+ * Checks a document the way the spec's validateDocument does, in the Worker at save and in the
+ * browser as the designer edits. It walks the schema itself (see schema.ts) so that each problem
+ * points at the prop it is about, in the editor's words. Schema first;
  * when that passes, the rules the schema can't say: references, one parent each, no cycles,
  * primary-action budget, bindings against the sample data, and the workspace's own rules.
  */

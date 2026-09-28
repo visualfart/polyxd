@@ -1,9 +1,9 @@
 /**
  * The voice settings as the verifier checks them, run on a sample the designer types.
  *
- * `compileVoice` is the spec's (packages/spec/src/direction.ts), copied because the spec's entry
- * module compiles its schemas with ajv at load, which a Worker refuses (see src/screens/schema.ts);
- * a test holds the copy to the original. The checks themselves are the spec's own, from
+ * `compileVoice` is the spec's (packages/spec/src/direction.ts), copied because it is exported only
+ * from the spec's root entry, which also loads the token checks that read files, and this runs in
+ * the browser; a test holds the copy to the original. The checks themselves are the spec's own, from
  * `@polyxd/spec/checks`, run on a small document holding the sample: a heading, a sentence and
  * a button, so the sample is judged exactly as a screen's copy would be.
  */

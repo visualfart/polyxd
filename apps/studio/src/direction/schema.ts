@@ -1,10 +1,10 @@
 /**
- * A Direction checked against the spec's schema, without ajv (Workers refuse code generated from
- * strings; see src/screens/schema.ts). It walks direction.schema.json, and check.schema.json for
- * the rules, with the subset of JSON Schema they use: types, required, properties, closed
- * objects, enums, consts, patterns, bounds, list sizes, $ref, and the checks' discriminated
- * oneOf. The Worker runs it on save; the editor runs it on every change and puts each problem
- * beside its control. The tests hold it to ajv's verdict.
+ * A Direction checked against the spec's schema, by walking it rather than with a schema library,
+ * so each problem comes out in plain words with the field's name. It walks direction.schema.json,
+ * and check.schema.json for the rules, with the subset of JSON Schema they use: types, required,
+ * properties, closed objects, enums, consts, patterns, bounds, list sizes, $ref, and the checks'
+ * discriminated oneOf. The Worker runs it on save; the editor runs it on every change and puts
+ * each problem beside its control. The tests hold it to ajv's verdict.
  */
 import directionSchema from "@polyxd/spec/schema/direction.schema.json" with { type: "json" };
 import checkSchema from "@polyxd/spec/schema/check.schema.json" with { type: "json" };
