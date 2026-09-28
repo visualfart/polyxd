@@ -41,16 +41,20 @@
   };
   const show = (i) => {
     clearTimeout(timer);
-    answers.forEach((a) => (a.hidden = true));
+    answers.forEach((a) => { a.hidden = true; a.classList.remove("pending"); });
     chips.forEach((c, k) => c.setAttribute("aria-pressed", String(k === i)));
     const a = answers[i];
+    // Laid out but not yet shown, so the dots can gather into its device's own shape.
+    a.hidden = false;
+    a.classList.add("pending");
+    if (fieldCtl) fieldCtl.box = a.querySelector(".phone, .browser") || boxEl;
     stage.classList.add("asking");
     setMark(bigMark, "thinking");
     setMark(askMark, "thinking");
     status.textContent = `Drawing it in ${a.dataset.packName}`;
     field.formTarget = 1;
     timer = setTimeout(() => {
-      a.hidden = false;
+      a.classList.remove("pending");
       reset.hidden = false;
       setMark(bigMark, "checked");
       setMark(askMark, "idle");
@@ -59,7 +63,7 @@
   };
   const clear = () => {
     clearTimeout(timer);
-    answers.forEach((a) => (a.hidden = true));
+    answers.forEach((a) => { a.hidden = true; a.classList.remove("pending"); });
     chips.forEach((c) => c.setAttribute("aria-pressed", "false"));
     stage.classList.remove("asking");
     reset.hidden = true;
@@ -81,6 +85,15 @@
     reset.addEventListener("click", () => { clear(); touched = false; idle(); chips[current].focus(); });
     setTimeout(idle, 900);
   }
+
+  // ---------- Devices: the screen inside is scaled from a 390px (phone) or 1024px (desktop) layout ----------
+  const fitRO = new ResizeObserver((es) => {
+    for (const e of es) {
+      const w = e.target.firstElementChild?.classList.contains("fit-wide") ? 1024 : 390;
+      if (e.contentRect.width) e.target.style.setProperty("--k", (e.contentRect.width / w).toFixed(4));
+    }
+  });
+  $$(".phone-view, .browser-view").forEach((v) => fitRO.observe(v));
 
   // ---------- The dot field (assets/field.js) ----------
   // The hero's field gathers into the answer's box when something is asked.
@@ -119,10 +132,10 @@
     let seed = 7;
     const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
     const frag = document.createDocumentFragment();
-    for (let y = 4; y < 556; y += 16) for (let x = 4; x < 288; x += 16) {
+    for (let y = 4; y < 588; y += 16) for (let x = 4; x < 292; x += 16) {
       const i = document.createElement("i");
       const r1 = rnd(), r2 = rnd(), r3 = rnd();
-      i.style.cssText = `left:${x}px;top:${y}px;--dx:${Math.round((x - 146) * 1.8 + (r1 - .5) * 420)};--dy:${Math.round((y - 280) * 1.1 - r2 * 320)}`;
+      i.style.cssText = `left:${x}px;top:${y}px;--dx:${Math.round((x - 148) * 1.8 + (r1 - .5) * 420)};--dy:${Math.round((y - 296) * 1.1 - r2 * 320)}`;
       if (r3 > .72) i.className = "ink";
       frag.append(i);
     }

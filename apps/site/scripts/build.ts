@@ -606,7 +606,7 @@ async function heroAsksHtml(): Promise<{ chips: string; answers: string }> {
     chips.push(`<button type="button" class="chip" data-ask="${i}">${esc(a.chip)}</button>`);
     answers.push(`<figure class="answer" data-answer="${i}" data-words="${esc(words.join("|"))}" data-pack-name="${esc(PACK_DISPLAY[pack])}" data-product="${esc(DEMO_NAME[a.product])}" hidden>
 <p class="sr-only">${esc(intent.title)}, drawn by ${esc(DEMO_NAME[a.product])} in ${esc(PACK_DISPLAY[pack])}.</p>
-<div class="answer-screen">${surfaceHtml(intent.document, pack)}</div>
+<div class="answer-screen answer-${DEMO_DEVICE[a.product]}">${device(a.product, surfaceHtml(intent.document, pack), "answer")}</div>
 <figcaption>${packName(pack, PACK_DISPLAY[pack], 20)}<span class="answer-score">${report ? `Checked in ${report.targets.length} renders · score ${report.score}` : "Checked"}</span><a href="/demos/${a.product}/">Open ${esc(DEMO_NAME[a.product].split(" ")[0])}</a></figcaption>
 </figure>`);
   }
@@ -633,12 +633,23 @@ async function packWipeHtml(): Promise<{ layers: string; names: string; tabs: st
 const PHONE_STATUS = `<div class="phone-status" aria-hidden="true"><span class="phone-time">9:41</span><i class="phone-island"></i><svg class="phone-icons" width="54" height="12" viewBox="0 0 54 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="6" rx="1"/><rect x="10" y="3.5" width="3" height="8.5" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1"/><rect x="26" y=".5" width="23" height="11" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".45"/><rect x="28" y="2.5" width="17" height="7" rx="2"/><rect x="50.5" y="4" width="1.8" height="4" rx=".9" fill-opacity=".45"/></svg></div>`;
 const PHONE_BODY = `<i class="phone-depth" aria-hidden="true">${"<b></b>".repeat(8)}</i><i class="phone-btn phone-btn-power" aria-hidden="true"></i><i class="phone-btn phone-btn-vol1" aria-hidden="true"></i><i class="phone-btn phone-btn-vol2" aria-hidden="true"></i>`;
 /**
- * A phone around `inner`. In a scene it is also a place the travelling phone stops at
+ * A phone around `inner`. What's inside is laid out at a real phone's width (390px) and scaled to
+ * the display (.fit, --k set by home.js), the way a phone shows an app, so a screen never reflows
+ * into a cramped column. In a scene the phone is also a place the travelling phone stops at
  * (data-slot); the scene's own copy is what shows when nothing moves.
  */
 function phoneHtml(inner: string, name: string, mode = "light", slot = true): string {
-  return `<div class="phone-wrap${slot ? " slot-wrap" : ""}" data-phone="${name}"><div class="phone"${slot ? ` data-slot="${name}" data-mode="${mode}"` : ""}><div class="phone-screen phone-${mode}">${PHONE_STATUS}<div class="phone-view">${inner}</div><i class="phone-home" aria-hidden="true"></i><i class="phone-glare" aria-hidden="true"></i></div>${PHONE_BODY}</div></div>`;
+  return `<div class="phone-wrap${slot ? " slot-wrap" : ""}" data-phone="${name}"><div class="phone"${slot ? ` data-slot="${name}" data-mode="${mode}"` : ""}><div class="phone-screen phone-${mode}">${PHONE_STATUS}<div class="phone-view"><div class="fit">${inner}</div></div><i class="phone-home" aria-hidden="true"></i><i class="phone-glare" aria-hidden="true"></i></div>${PHONE_BODY}</div></div>`;
 }
+
+/** A desktop browser window, for products that live on a desk (Foundry): laid out at 1024px and scaled. */
+function browserHtml(inner: string, host: string): string {
+  return `<div class="browser"><div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span class="browser-url">${esc(host)}</span></div><div class="browser-view"><div class="fit fit-wide">${inner}</div></div></div>`;
+}
+/** Each demo product's own device: Foundry is keyboard-first on a desk, the others are in a hand. */
+const DEMO_DEVICE: Record<string, "phone" | "browser"> = { halden: "phone", foundry: "browser", wexley: "phone", quay: "phone" };
+const device = (product: string, inner: string, name: string) =>
+  DEMO_DEVICE[product] === "browser" ? browserHtml(inner, `${product}.polyxd.com`) : phoneHtml(inner, name, "light", false);
 
 /** The app with no screen for the ask, as "the gap" shows it. */
 const GAP_APP = `<div class="gap-app"><div class="gap-tiles"><span>Payments</span><span>Cards</span><span>Statements</span><span>Payees</span><span>Savings</span><span>Settings</span></div><div class="gap-stamp"><span class="mono">No screen</span></div><div class="gap-ask">Split Friday’s dinner with Priya</div></div>`;
@@ -675,7 +686,7 @@ async function demoCardsHtml(): Promise<string> {
     const { intent } = await demoIntent(a.product, a.intent);
     const pack = DEMO_PACK[a.product];
     cards.push(`<a class="demo-tile" href="/demos/${a.product}/">
-<div class="demo-shot">${surfaceHtml(intent.document, pack)}</div>
+<div class="demo-shot demo-${DEMO_DEVICE[a.product]}">${device(a.product, surfaceHtml(intent.document, pack), "demo")}</div>
 <span class="demo-meta"><b>${esc(DEMO_NAME[a.product])}</b>${packName(pack, PACK_DISPLAY[pack], 18)}</span>
 </a>`);
   }
