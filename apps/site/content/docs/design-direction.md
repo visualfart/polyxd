@@ -9,18 +9,18 @@ section: Concepts
 
 Tokens control how things look. Taste goes further: how dense a screen is, how much gets emphasised, how the copy sounds, which patterns a team prefers, and what to leave out. A **Design Direction** holds a company's taste as one versioned JSON package next to its design-system pack.
 
-The goal is that designers shape generated UI without writing prompts or JSON by hand, and without retraining a model. Today the Direction **schema** exists (`schema/direction.schema.json`), with two example directions, and its rules and checkable voice settings run in the verifier. [Studio](/docs/studio) holds a team's rules and which components generated screens may use, with guidance for each. Applying the rest of a Direction during generation (profile, patterns, exemplars) is planned, with the runtime.
+The goal is that designers shape generated UI without writing prompts or JSON by hand, and without retraining a model. Today the Direction **schema** exists (`schema/direction.schema.json`), with two example directions, and its rules and checkable voice settings run in the verifier. [Studio](/docs/studio) holds a team's rules and which components generated screens may use, with guidance for each. The [runtime](/docs/runtime) applies a Direction at generation. It gives the model the profile, the voice and the rules, the preferred patterns that fit the ask, and up to two exemplars chosen by relevance. Then it checks every answer against the rules and the compiled voice before accepting it. `profile.motion` and custom pattern files aren't applied yet.
 
 ## What a Direction contains
 
 | Part | What the designer sets | How it's used today |
 |---|---|---|
-| `designSystem` | The pack it goes with, e.g. `material3` | Reference only |
-| `profile` | Density, emphasis budget, data display, motion, disclosure, freedom | Planned: generator constraints |
-| `voice` | Copy and tone: tone, person, reading level, casing, spelling, punctuation, label length, glossary, words to avoid, guidance for recurring situations | **Checkable settings are compiled into rules and checked today**; all of it is given to the generator |
-| `patterns` | Preferred and disallowed patterns, plus the company's own pattern files | Planned: pattern library with company precedence |
-| `rules` | Dos and don'ts, each written in plain language and as a check | **Checked by the verifier today** |
-| `exemplars` | "This is how we'd do it" pairs of request and UI document | Planned: retrieved as examples at generation time |
+| `designSystem` | The pack it goes with, e.g. `material3` | Named in the runtime's prompt |
+| `profile` | Density, emphasis budget, data display, motion, disclosure, freedom | **Given to the generator by the runtime**, all but `motion`. The emphasis budget is also enforced by the validator |
+| `voice` | Copy and tone: tone, person, reading level, casing, spelling, punctuation, label length, glossary, words to avoid, guidance for recurring situations | **Checkable settings are compiled into rules and checked today**; all of it is given to the generator by the runtime |
+| `patterns` | Preferred and disallowed patterns, plus the company's own pattern files | **The runtime gives the generator the preferred patterns that fit the ask, and the disallowed ones, which it also checks.** Company pattern files are planned |
+| `rules` | Dos and don'ts, each written in plain language and as a check | **Checked by the verifier and the runtime today**; the runtime also gives them to the generator |
+| `exemplars` | "This is how we'd do it" pairs of request and UI document | **Chosen by relevance to the ask and given to the generator by the runtime** |
 
 ### Profile
 
@@ -111,7 +111,7 @@ const report = await verifyDocument(doc, { registry, rules: directionRules(direc
 - **Guided:** new layouts are allowed, built from approved components.
 - **Open:** anything that passes the verifier.
 
-When the generator has no fitting pattern, the plan is for it to flag the gap for review. This behaviour is planned along with the runtime that applies a Direction during generation.
+The runtime gives the model this setting as an instruction. When the generator has no fitting pattern, the plan is for it to flag the gap for review. That part is planned.
 
 ## Precedence
 

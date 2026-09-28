@@ -16,7 +16,7 @@ When screens are generated, product managers and designers stop drawing screens 
 | Acceptance criteria | **Checks** that run against generated UIs |
 | Analytics and funnels | **Semantic events**, emitted automatically |
 
-All three have schemas in `@polyxd/spec` today. Capabilities and journeys are checked by the validator and verifier. The runtime that emits events is planned.
+All three have schemas in `@polyxd/spec` today. Capabilities and journeys are checked by the validator and verifier. Emitting these events is planned: the [runtime](/docs/runtime) doesn't emit them yet.
 
 ## Capabilities
 
@@ -126,7 +126,7 @@ The verifier's scripted agent tasks (`bench/tasks.json`) use this goal and done-
 
 ## Semantic analytics events
 
-Every generated UI already knows its intent, pattern, components and capabilities, so the planned runtime will emit standard events with no manual tracking (`schema/event.schema.json`):
+Every generated UI already knows its intent, pattern, components and capabilities, so the runtime is planned to emit standard events with no manual tracking (`schema/event.schema.json`). It doesn't yet: today its `onEvent` hook reports only on generation (counts, timings, validity and check ids). The planned events:
 
 | Event | When |
 |---|---|
