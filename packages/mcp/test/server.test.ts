@@ -229,6 +229,7 @@ test("server.json describes the hosted server for the MCP Registry, in step with
   assert.equal(entry.name, pkg.mcpName, "npm checks the package's mcpName against the registry name");
   assert.equal(entry.version, pkg.version);
   assert.equal(entry.version, VERSION);
+  assert.deepEqual(entry.packages.map((p: any) => [p.registryType, p.identifier, p.version]), [["npm", pkg.name, pkg.version]], "the registry checks npm has this version");
   assert.ok(entry.description.length <= 100, "the registry allows 100 characters");
   assert.deepEqual(entry.remotes, [{ type: "streamable-http", url: "https://mcp.polyxd.com/mcp" }]);
   for (const icon of entry.icons) assert.match(icon.src, /^https:\/\/polyxd\.com\//);

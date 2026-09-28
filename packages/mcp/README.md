@@ -132,13 +132,9 @@ mcp-publisher publish      # from packages/mcp
 
 This needs OpenSSL 3 (macOS's LibreSSL has no Ed25519). Keep `key.pem` private and out of the repository. The TXT record goes on the apex, `polyxd.com`. HTTP proof works instead: serve the same `v=MCPv1; k=ed25519; p=...` line at `https://polyxd.com/.well-known/mcp-registry-auth` and use `mcp-publisher login http`. It has to be `polyxd.com`, not `mcp.polyxd.com`, whose proof would only cover names under `com.polyxd.mcp`.
 
-Once `@polyxd/mcp` is on npm, add it to `server.json` so hosts can offer the stdio server too. `package.json` already carries the `mcpName` the registry checks:
+The release workflow publishes `server.json` to the registry on each version tag, once npm has the version, signing in with the private key in the `MCP_REGISTRY_KEY` Actions secret (the hex string the `--private-key` command above prints). Without the secret, or when the registry already has the version, the step is skipped with a notice.
 
-```json
-"packages": [{ "registryType": "npm", "identifier": "@polyxd/mcp", "version": "0.3.0", "transport": { "type": "stdio" } }]
-```
-
-Keep `version` in `server.json` in step with `package.json`; a test checks it.
+`server.json` lists both the hosted server (`remotes`) and the npm package (`packages`), so hosts can offer either. The registry checks the package's `mcpName` in `package.json`. Keep both `version` fields in `server.json` in step with `package.json`; a test checks it.
 
 ## Build and test
 

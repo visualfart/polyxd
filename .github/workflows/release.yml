@@ -4,7 +4,8 @@
 #
 # Every package already on npm at its current version is skipped, so a release publishes only
 # what changed. On a tag, the generation server's Docker image then goes to GitHub Container
-# Registry (the `image` job below), and the VS Code extension to its two registries (`vscode`).
+# Registry (the `image` job below), the VS Code extension to its two registries (`vscode`), and
+# the MCP server's entry to the MCP Registry (`registry`).
 #
 # No npm token: this uses npm trusted publishing. Each package on npmjs.com names this repository
 # and this workflow file (release.yml) as its trusted publisher, and npm accepts the job's GitHub
@@ -117,6 +118,55 @@ jobs:
         if: steps.need.outputs.openvsx == 'true'
         working-directory: apps/vscode
         run: npx --yes ovsx@1.2.0 publish --skip-duplicate "${{ steps.need.outputs.vsix }}"
+
+  # The MCP Registry entry, com.polyxd/mcp, on version tags once npm has the version it points at.
+  # Signing in proves control of polyxd.com: the MCP_REGISTRY_KEY secret is the Ed25519 private key
+  # (hex) whose public half polyxd.com serves at /.well-known/mcp-registry-auth. Skipped, with a
+  # notice, when the secret is missing or the registry already has this version.
+  registry:
+    needs: publish
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Does the registry need this version?
+        id: need
+        env:
+          HAS_KEY: ${{ secrets.MCP_REGISTRY_KEY != '' }}
+        run: |
+          version=$(jq -r .version packages/mcp/server.json)
+          if [ "$HAS_KEY" != "true" ]; then
+            echo "::notice title=MCP Registry::skipped, MCP_REGISTRY_KEY is not set (packages/mcp/README.md)"
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          elif curl -sf -o /dev/null "https://registry.modelcontextprotocol.io/v0/servers/com.polyxd%2Fmcp/versions/$version"; then
+            echo "::notice title=MCP Registry::com.polyxd/mcp $version is already published"
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+      # A pinned release, checked against the checksum its release lists, since it runs with the key.
+      - name: Install mcp-publisher 1.8.1
+        if: steps.need.outputs.go == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v1.8.1 --repo modelcontextprotocol/registry --pattern mcp-publisher_linux_amd64.tar.gz
+          echo "a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc  mcp-publisher_linux_amd64.tar.gz" | sha256sum -c -
+          tar xzf mcp-publisher_linux_amd64.tar.gz mcp-publisher
+      - name: Publish to the MCP Registry
+        if: steps.need.outputs.go == 'true'
+        working-directory: packages/mcp
+        env:
+          MCP_REGISTRY_KEY: ${{ secrets.MCP_REGISTRY_KEY }}
+        run: |
+          ../../mcp-publisher login http --domain polyxd.com --private-key "$MCP_REGISTRY_KEY"
+          # The registry checks that npm has the version, and npm can take a few minutes to serve
+          # one it has just accepted.
+          for i in $(seq 1 20); do
+            ../../mcp-publisher publish && exit 0
+            sleep 30
+          done
+          exit 1
 
   # The generation server's image, on version tags only and only after everything above passed and
   # published. It goes to GitHub Container Registry with the workflow's own token: no secret to
