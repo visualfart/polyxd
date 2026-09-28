@@ -26,7 +26,8 @@ Only the pupil moves.
 | `mark.css` | The design system's `Mark` state CSS: an inline mark with `class="pxb-mark" data-state="…"` moves its pupil |
 | `tokens.css` | `tokens.json` as CSS custom properties (`--ground`, `--ink`, `--signal`, `--focus-ring`, `--font-display`, …) for paper and night |
 | `icon-*.png` | App icons on ink at 128, 180, 192, 512, 1024; `icon-accent-1024.png` on signal with the ink mark |
-| `og.png` | 1200 × 630 social image |
+| `favicon.ico` | The mark alone at 16, 32 and 48px, for browsers and crawlers that ask for `/favicon.ico` (the SVG favicon is the mark itself) |
+| `og.png` | 1200 × 630 social image, the fallback; polyxd.com gives each page its own card (`apps/site/og/`) |
 
 From code, `build.ts` exports `mark()` and `svg()` for a still mark, `markSvg()` for the living one
 (tokens and `mark.css`), `tokensCss()`, `FONTS_URL` and the colours.
