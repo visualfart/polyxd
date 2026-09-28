@@ -99,7 +99,7 @@ It reads your CSS custom properties, maps what it can onto the contract, writes 
 | [`@polyxd/spec`](https://www.npmjs.com/package/@polyxd/spec) | Types, JSON Schema, validator, patterns, token contract; `polyxd-validate` |
 | [`@polyxd/verifier`](https://www.npmjs.com/package/@polyxd/verifier) | `polyxd-verify`: static, rendered and agent checks |
 | [`@polyxd/a2ui`](https://www.npmjs.com/package/@polyxd/a2ui) | Export to A2UI v1.0 |
-| [`@polyxd/mcp`](https://www.npmjs.com/package/@polyxd/mcp) | MCP server (`npx -y @polyxd/mcp`): the spec for the host's model, validation and verification, and an MCP App that shows the screen in any pack |
+| [`@polyxd/mcp`](https://www.npmjs.com/package/@polyxd/mcp) | MCP server (`npx -y @polyxd/mcp`): the spec for the host's model, validation and verification, and an MCP App that shows the screen in any pack. Built, not yet on npm |
 | [`polyxd`](https://www.npmjs.com/package/polyxd) | The `polyxd` command: `pack` and `check` |
 | [`@polyxd/ds-kit`](https://www.npmjs.com/package/@polyxd/ds-kit) | The library behind `polyxd pack` |
 | `@polyxd/ds-*` | The thirteen packs as DTCG tokens, for building your own themes, plus twelve original templates to start from (`sketch`, `wireframe`, `editorial`, `brutalist`, `glass`, `terminal`, `pastel`, `civic`, `finance`, `health`, `neon`, `mono`). The renderer already includes their CSS |

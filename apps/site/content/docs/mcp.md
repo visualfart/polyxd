@@ -35,7 +35,7 @@ claude mcp add polyxd -- npx -y @polyxd/mcp
 
 **Other MCP clients.** Use the same command and arguments: `npx`, with `-y @polyxd/mcp`. The screen shows in hosts that support MCP Apps. Other hosts get a text summary instead, and every tool still works.
 
-**From a clone.** Run `npm install && npm run build -w @polyxd/mcp`, then use `node <repo>/packages/mcp/dist/bin.js` as the command.
+**From a clone.** `@polyxd/mcp` is built but not yet on npm, so until it is, `npx` can't fetch it. Clone the [repository](https://github.com/visualfart/polyxd), run `npm install && npm run build -w @polyxd/mcp`, then use `node <repo>/packages/mcp/dist/bin.js` as the command.
 
 ## The tools
 
