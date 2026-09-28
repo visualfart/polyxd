@@ -47,7 +47,7 @@ Each layer ships as its own package, so nobody has to adopt all of it. What exis
 | Web renderer | `@polyxd/react` | npm | Exists |
 | Verifier and benchmark | `polyxd-verify` CLI, dataset | npm, Hugging Face Datasets | Verifier exists; dataset in progress |
 | Runtime SDK (generator, memory, validation, streaming) | `@polyxd/runtime`, `polyxd` (Python) | npm, PyPI | `@polyxd/runtime` on npm; Python planned |
-| Semantic analytics events and adapters | `@polyxd/react` and `@polyxd/web` emit them; `@polyxd/analytics` sends them to PostHog, Segment, GA4 or an endpoint | npm | The renderers emit them. `@polyxd/analytics` exists in the repository (`packages/analytics`), not yet on npm. Amplitude and OpenTelemetry adapters are not written |
+| Semantic analytics events and adapters | `@polyxd/react` and `@polyxd/web` emit them; `@polyxd/analytics` sends them to PostHog, Segment, GA4 or an endpoint | npm | `@polyxd/analytics` is on npm. The renderers emit the events in the repository; the renderers on npm (0.4.0) don't yet. Amplitude and OpenTelemetry adapters are not written |
 | Agent integration | MCP server (MCP Apps compatible) and A2UI export | npm (`npx @polyxd/mcp`) | A2UI export exists; the MCP server ([`@polyxd/mcp`](/docs/mcp/)) is on npm and hosted at `mcp.polyxd.com` |
 | Server | Generation server and HTTP API with streaming, pointed at the model endpoint you choose | Docker image on GitHub Container Registry, and npm (`npx @polyxd/server`) | [`@polyxd/server`](/docs/server/) on npm, with a Dockerfile to build the image |
 | Native renderers | Swift package, Compose library | SPM, Maven Central | Later |
