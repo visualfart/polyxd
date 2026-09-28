@@ -1,0 +1,43 @@
+/**
+ * Every package this repository publishes to npm. test/packages.test.ts checks this against
+ * packages/*\/package.json, so a new package fails the tests until it is added here. At run time
+ * the registry's search for `scope:polyxd` adds any package this list has missed.
+ */
+export const PACKAGES = [
+  "polyxd",
+  "@polyxd/a2ui",
+  "@polyxd/core",
+  "@polyxd/ds-antd",
+  "@polyxd/ds-bootstrap",
+  "@polyxd/ds-brutalist",
+  "@polyxd/ds-carbon",
+  "@polyxd/ds-chakra",
+  "@polyxd/ds-civic",
+  "@polyxd/ds-editorial",
+  "@polyxd/ds-finance",
+  "@polyxd/ds-fluent",
+  "@polyxd/ds-glass",
+  "@polyxd/ds-govuk",
+  "@polyxd/ds-health",
+  "@polyxd/ds-kit",
+  "@polyxd/ds-mantine",
+  "@polyxd/ds-material3",
+  "@polyxd/ds-mono",
+  "@polyxd/ds-neon",
+  "@polyxd/ds-pastel",
+  "@polyxd/ds-polaris",
+  "@polyxd/ds-primer",
+  "@polyxd/ds-radix",
+  "@polyxd/ds-shadcn",
+  "@polyxd/ds-sketch",
+  "@polyxd/ds-spectrum",
+  "@polyxd/ds-terminal",
+  "@polyxd/ds-wireframe",
+  "@polyxd/mcp",
+  "@polyxd/react",
+  "@polyxd/runtime",
+  "@polyxd/server",
+  "@polyxd/spec",
+  "@polyxd/verifier",
+  "@polyxd/web",
+] as const;

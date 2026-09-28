@@ -1,0 +1,28 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "polyxd-stats",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  // No public address: the job runs on its crons. /health and the token-guarded /run answer only
+  // through `wrangler dev`, or through a route added later.
+  "workers_dev": false,
+  "preview_urls": false,
+  // 01:30 caches npm publish histories; 02:00 collects yesterday and sends it (src/index.ts).
+  // Split in two so neither run needs more than the 50 subrequests Workers Free allows.
+  "triggers": { "crons": ["30 1 * * *", "0 2 * * *"] },
+  // Remembers which days were sent, the last totals, and the history cache. Create it with
+  //   npx wrangler kv namespace create STATS
+  // and put the id it prints here (see README.md).
+  "kv_namespaces": [{ "binding": "STATS", "id": "REPLACE_WITH_STATS_KV_NAMESPACE_ID" }],
+  // An EU PostHog project uses https://eu.i.posthog.com. The key is a secret: wrangler secret put POSTHOG_KEY.
+  "vars": { "POSTHOG_HOST": "https://us.i.posthog.com" },
+  // The Worker writes one summary line per run. Cloudflare's invocation logs, traces and Issues are
+  // off, as for apps/mcp.
+  "observability": {
+    "enabled": true,
+    "redact_query_string": true,
+    "logs": { "enabled": true, "invocation_logs": false },
+    "traces": { "enabled": false },
+    "issues": { "enabled": false }
+  }
+}
