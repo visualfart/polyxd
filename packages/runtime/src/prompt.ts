@@ -44,6 +44,7 @@ export function systemPrompt(options: SystemPromptOptions = {}): string {
     'Collections and Tables need an "empty" Status when the list may be empty.',
     "If no listed capability can do what was asked, show a Status explaining that instead of a fake interface.",
     'Format numbers, money and dates with "format", never by writing them into strings.',
+    'A "percent" format takes a fraction: 0.12 shows as "12%", and 12 would show as "1,200%". Store 12% as 0.12, including a change\'s value.',
     'There is no template engine. Text is either literal or a binding; "{{budget}}" or "${spent}" in a string reaches the screen exactly as written.',
     'Bind text to a field that holds text. A pointer at an object or a list prints as "[object Object]"; point at the string inside it.',
     'Show people names, not internal ids. If a record has both "id" and "name", the screen gets "name"; the id belongs in an action\'s context.',

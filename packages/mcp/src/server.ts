@@ -46,7 +46,7 @@ const dataSchema = {
 
 type DocArgs = { document: Record<string, unknown>; data?: Record<string, unknown> };
 
-const INSTRUCTIONS = `Polyxd turns a small JSON document of meaning into a real screen in a design system. You write the document; this server checks it and shows it to the user. Call polyxd_guide once before writing your first document, polyxd_validate until it is valid, then polyxd_show. Actions the user takes in a shown screen come back to you as chat messages.`;
+const INSTRUCTIONS = `Polyxd turns a small JSON document of meaning into a real screen in a design system. You write the document; this server checks it and shows it to the user. Call polyxd_guide once before writing your first document, polyxd_validate until it is valid, then polyxd_show. Actions the user takes in a shown screen come back to you as chat messages. A button press only tells you what the user chose: it submits, pays or saves nothing, so never say it did.`;
 
 /**
  * The MCP App resource's `_meta`, for Claude and ChatGPT alike. The page loads nothing from anywhere
@@ -159,7 +159,7 @@ export function createServer(options: ServerOptions): McpServer {
     "polyxd_show",
     {
       title: "Show a Polyxd screen",
-      description: `Validates a Polyxd UI document and shows it to the user as an interactive screen, drawn by the Polyxd renderer in the design-system pack you choose (default ${DEFAULT_PACK}). Shows nothing if the document has errors; fix them first with polyxd_validate. When the user presses an action in the screen, you receive a chat message from the user naming the action and its context. Packs: ${packNames.join(", ")}.`,
+      description: `Validates a Polyxd UI document and shows it to the user as an interactive screen, drawn by the Polyxd renderer in the design-system pack you choose (default ${DEFAULT_PACK}). Shows nothing if the document has errors; fix them first with polyxd_validate. When the user presses an action in the screen, you receive a chat message from the user naming the action and its context; that only tells you their choice, and nothing has been submitted or paid. Packs: ${packNames.join(", ")}.`,
       inputSchema: fromJsonSchema<DocArgs & { pack?: string; mode?: "light" | "dark" }>({
         type: "object",
         properties: {

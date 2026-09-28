@@ -13,10 +13,11 @@ Rules:
 7. Collections and Tables need an "empty" Status when the list may be empty.
 8. If no listed capability can do what was asked, show a Status explaining that instead of a fake interface.
 9. Format numbers, money and dates with "format", never by writing them into strings.
-10. There is no template engine. Text is either literal or a binding; "{{budget}}" or "${spent}" in a string reaches the screen exactly as written.
-11. Bind text to a field that holds text. A pointer at an object or a list prints as "[object Object]"; point at the string inside it.
-12. Show people names, not internal ids. If a record has both "id" and "name", the screen gets "name"; the id belongs in an action's context.
-13. Never use AppBar, Custom, Footer, Frame or Outlet: the product's shell is authored, and your surface renders inside it. Never draw navigation, a header or a footer around a surface.
+10. A "percent" format takes a fraction: 0.12 shows as "12%", and 12 would show as "1,200%". Store 12% as 0.12, including a change's value.
+11. There is no template engine. Text is either literal or a binding; "{{budget}}" or "${spent}" in a string reaches the screen exactly as written.
+12. Bind text to a field that holds text. A pointer at an object or a list prints as "[object Object]"; point at the string inside it.
+13. Show people names, not internal ids. If a record has both "id" and "name", the screen gets "name"; the id belongs in an action's context.
+14. Never use AppBar, Custom, Footer, Frame or Outlet: the product's shell is authored, and your surface renders inside it. Never draw navigation, a header or a footer around a surface.
 
 Components (* = required):
 - Action(label*: text|{path}, action*: {event:{name,context?}}, emphasis: primary|secondary|tertiary, tone: default|danger, disabled: bool|{path}, description: text|{path}, copy: text|{path}, shortcut: string)

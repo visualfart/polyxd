@@ -112,6 +112,51 @@ export function hintFor(doc: unknown, issue: { at: string; message: string; code
   return undefined;
 }
 
+/** Reads an absolute JSON Pointer ("/a/0/b") in data; anything else is undefined. */
+function readPointer(data: unknown, pointer: string): unknown {
+  if (!pointer.startsWith("/")) return undefined;
+  let at: any = data;
+  for (const raw of pointer.slice(1).split("/")) {
+    const key = raw.replace(/~1/g, "/").replace(/~0/g, "~");
+    if (at == null || typeof at !== "object") return undefined;
+    at = at[key];
+  }
+  return at;
+}
+
+/**
+ * A "percent" format takes a fraction (0.12 is 12%). Models often write the percentage itself, which
+ * shows as "1,200%". Warn wherever a percent-formatted value, literal or bound by an absolute path, is
+ * bigger than 1.5: a real 150%+ is rare, a mistaken 12 is common.
+ */
+function percentWarnings(doc: any): ReportedIssue[] {
+  const out: ReportedIssue[] = [];
+  const components: unknown[] = Array.isArray(doc?.components) ? doc.components : [];
+  const visit = (node: any, pointer: string, component: ReportedIssue["component"]) => {
+    if (!node || typeof node !== "object") return;
+    if (node.format?.type === "percent" && "value" in node) {
+      const v = node.value;
+      const n = typeof v === "number" ? v : v && typeof v.path === "string" ? readPointer(doc.data, v.path) : undefined;
+      if (typeof n === "number" && Math.abs(n) > 1.5) {
+        const shown = new Intl.NumberFormat("en-GB", { style: "percent", maximumFractionDigits: 1 }).format(n);
+        out.push({
+          severity: "warning",
+          pointer: `${pointer}/value`,
+          ...(component ? { component } : {}),
+          message: `a "percent" format shows ${n} as "${shown}"`,
+          hint: `"percent" takes a fraction. For ${n}%, store ${Number((n / 100).toFixed(6))}${typeof v === "number" ? "" : ` at ${v.path}`}.`,
+        });
+      }
+    }
+    for (const [k, child] of Object.entries(node)) if (child && typeof child === "object" && k !== "format") visit(child, `${pointer}/${k}`, component);
+  };
+  components.forEach((c: any, i) => {
+    const component = { ...(typeof c?.id === "string" ? { id: c.id } : {}), ...(typeof c?.component === "string" ? { type: c.component } : {}) };
+    visit(c, `/components/${i}`, Object.keys(component).length ? component : undefined);
+  });
+  return out;
+}
+
 export function validate(document: unknown, data?: unknown): ValidationReport {
   const doc = withData(document, data);
   const result = validateDocument(doc);
@@ -120,6 +165,7 @@ export function validate(document: unknown, data?: unknown): ValidationReport {
     const hint = hintFor(doc, i);
     return { severity: i.severity, pointer: i.at, ...(component ? { component } : {}), message: i.message, ...(hint ? { hint } : {}) };
   });
+  issues.push(...percentWarnings(doc));
   const errors = issues.filter((i) => i.severity === "error").length;
   return { valid: errors === 0, errors, warnings: issues.length - errors, issues };
 }

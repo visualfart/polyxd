@@ -21,7 +21,7 @@ test("an allow-list narrows the catalog and adds a rule", () => {
   const system = systemPrompt({ components: ["Confirm", "DetailList", "Status"] });
   assert.match(system, /- Confirm\(/);
   assert.ok(!system.includes("- Table("));
-  assert.match(system, /14\. Use only the components listed below\./);
+  assert.match(system, /15\. Use only the components listed below\./);
 });
 
 test("the user turn under calm-finance: capabilities, data paths, profile, voice, rules, patterns and exemplars", async () => {
