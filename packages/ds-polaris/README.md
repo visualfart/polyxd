@@ -47,6 +47,6 @@ Polaris has no numbered ramps, but each status has a family that runs light to d
 
 ## Logo
 
-This pack has no logo file yet. Shopify's [trademark guidelines](https://www.shopify.com/brand-assets) don't allow its logos to be used without Shopify's permission, so wherever Polyxd lists this pack it sets the name, *Shopify Polaris*, in its own type and leaves the logo's place empty. The official mark is published by Shopify ([here](https://www.shopify.com/brand-assets)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once Shopify permits it.
+`logo.svg` is Shopify's shopping-bag logo, since Polaris has no mark of its own, unaltered, from [www.shopify.com/brand-assets](https://cdn.shopify.com/shopifycloud/brochure/assets/brand-assets/shopify-logo-shopping-bag-full-color-66166b2e55d67988b56b4bd28b63c271e2b9713358cb723070a92bde17ad7d63.svg). Polyxd shows it beside the pack's name to identify the design system this pack is modelled on. Shopify's [trademark guidelines](https://www.shopify.com/brand-assets) restrict the use of its logos (Use of Shopify brand assets must be expressly authorised in writing and must not imply sponsorship, affiliation or endorsement); Polyxd's maintainer has chosen to show it and is responsible for that choice.
 
-Shopify and Polaris are trademarks of Shopify Inc., named here to identify the design system this pack is modelled on. Polyxd is not affiliated with Shopify Inc.
+Shopify, Polaris and the Shopify logo are trademarks of Shopify Inc., used here to identify the design system this pack is modelled on. Polyxd is not affiliated with Shopify Inc.

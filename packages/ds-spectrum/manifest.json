@@ -17,9 +17,13 @@
   },
   "defaultMode": "light",
   "logo": {
-    "text": "Adobe Spectrum 2",
+    "file": "logo.svg",
+    "source": "https://spectrum.adobe.com/_next/static/media/adobe_logo_spectrum_site.b6d47fe3.svg",
     "guidelines": "https://www.adobe.com/legal/permissions/trademarks.html",
-    "note": "No logo yet: Adobe's trademark guidelines don't allow its logos without a licence; the names may be used to refer to its products. Spectrum has no mark of its own; the Adobe logo in the spectrum.adobe.com header can go here once Adobe licenses it."
+    "colours": [
+      "#FA0F00"
+    ],
+    "note": "Adobe's logo, since Spectrum has no mark of its own (the Spectrum site's header uses it beside the name), unaltered, from https://spectrum.adobe.com/. Shown at the request of Polyxd's maintainer to identify the design system this pack is modelled on. Adobe's guidelines: Use of Adobe logos (corporate or product) is not allowed unless licensed by Adobe; the names may be used referentially ('for use with', 'compatible with')."
   },
   "provenance": [
     {

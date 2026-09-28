@@ -19,9 +19,13 @@
   },
   "defaultMode": "light",
   "logo": {
-    "text": "GitHub Primer",
+    "file": "logo.svg",
+    "source": "https://brand.github.com/GitHub_Logos.zip (entry 'GitHub Logos/SVG/GitHub_Invertocat_Black.svg')",
     "guidelines": "https://brand.github.com/foundations/logo",
-    "note": "No logo yet: GitHub's logo guidelines permit its logos only to link to GitHub, to show an integration with GitHub or in writing about GitHub, and forbid using one as a project's logo or combining it with other words; anything else needs GitHub's prior written permission. Primer has no mark of its own; the Invertocat can go here once GitHub permits it."
+    "colours": [
+      "#000000"
+    ],
+    "note": "GitHub's Invertocat, since Primer has no mark of its own (primer.style's header uses it beside the name), unaltered, from https://brand.github.com/foundations/logo. Shown at the request of Polyxd's maintainer to identify the design system this pack is modelled on. GitHub's guidelines: Unmodified permitted GitHub logos may be used to link to GitHub, show integration, or in articles about GitHub, placed secondary and never implying affiliation or combined with other words; any other use needs GitHub's prior written permission."
   },
   "provenance": [
     {

@@ -41,6 +41,6 @@ Primer's semantic pairs are tuned by GitHub and clear the contract as they are; 
 
 ## Logo
 
-This pack has no logo file yet. GitHub's [trademark guidelines](https://brand.github.com/foundations/logo) don't allow its logos to be used without GitHub's permission, so wherever Polyxd lists this pack it sets the name, *GitHub Primer*, in its own type and leaves the logo's place empty. The official mark is published by GitHub ([here](https://brand.github.com/foundations/logo)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once GitHub permits it.
+`logo.svg` is GitHub's Invertocat, since Primer has no mark of its own (primer.style's header uses it beside the name), unaltered, from [brand.github.com/foundations/logo](https://brand.github.com/GitHub_Logos.zip). Polyxd shows it beside the pack's name to identify the design system this pack is modelled on. GitHub's [trademark guidelines](https://brand.github.com/foundations/logo) restrict the use of its logos (Unmodified permitted GitHub logos may be used to link to GitHub, show integration, or in articles about GitHub, placed secondary and never implying affiliation or combined with other words; any other use needs GitHub's prior written permission); Polyxd's maintainer has chosen to show it and is responsible for that choice.
 
-GitHub and Primer are trademarks of GitHub, Inc., named here to identify the design system this pack is modelled on. Polyxd is not affiliated with GitHub, Inc.
+GitHub, Primer and the GitHub logo are trademarks of GitHub, Inc., used here to identify the design system this pack is modelled on. Polyxd is not affiliated with GitHub, Inc.

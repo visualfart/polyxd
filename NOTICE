@@ -137,13 +137,20 @@ Vendored under `packages/ds-spectrum/scripts/sources/`, with the upstream licenc
 
 ## Logos
 
-Six packs ship their design system's official logo, unaltered, as `logo.svg`
+Twelve packs ship their design system's official logo, unaltered, as `logo.svg`
 (Bootstrap and Radix also ship the owner's white version as `logo-white.svg`),
-downloaded from the owner's own site or repository. Each is used only to
-identify the design system a pack is modelled on, beside its name. The logos
-are trademarks of their owners, not Polyxd's, and are not covered by Polyxd's
-licence:
+downloaded from the owner's own site, repository or brand page. Where a design
+system has no mark of its own (Polaris, Spectrum, Primer), the pack ships its
+company's logo. Each is used only to identify the design system a pack is
+modelled on, beside its name. The logos are trademarks of their owners, not
+Polyxd's, and are not covered by Polyxd's licence:
 
+- Material 3 (`@polyxd/ds-material3`) — Google LLC
+- Carbon (`@polyxd/ds-carbon`) — IBM Corp.
+- Fluent 2 (`@polyxd/ds-fluent`) — Microsoft Corporation
+- Polaris (`@polyxd/ds-polaris`) — the Shopify logo, Shopify Inc.
+- Spectrum 2 (`@polyxd/ds-spectrum`) — the Adobe logo, Adobe Inc.
+- Primer (`@polyxd/ds-primer`) — the GitHub logo, GitHub, Inc.
 - shadcn/ui (`@polyxd/ds-shadcn`) — shadcn
 - Ant Design (`@polyxd/ds-antd`) — Ant Group
 - Bootstrap (`@polyxd/ds-bootstrap`) — the Bootstrap team
@@ -151,12 +158,11 @@ licence:
 - Mantine (`@polyxd/ds-mantine`) — Vitaly Rtishchev
 - Radix UI (`@polyxd/ds-radix`) — WorkOS
 
-Seven packs ship no logo. GOV.UK's crown and logotype are protected and may
-not be used by a service that is not on GOV.UK. Google (Material 3), IBM
-(Carbon), Shopify (Polaris), Microsoft (Fluent 2), Adobe (Spectrum 2) and
-GitHub (Primer) do not allow their logos to be used without permission, so
-those packs are named in words only. Each pack's manifest (`logo`) and README
-record the source and the owner's guidelines.
+Google, IBM, Microsoft, Shopify, Adobe and GitHub restrict the use of their
+logos without permission; each pack's manifest (`logo`) and README record the
+source and the owner's guidelines. GOV.UK's crown and logotype are protected and
+may not be used by a service that is not on GOV.UK, so `@polyxd/ds-govuk` ships
+no logo and is named in words only.
 
 The twelve template packs' `logo.svg` files are Polyxd's own marks, drawn from
 each template's tokens.

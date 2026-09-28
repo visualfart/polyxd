@@ -181,9 +181,10 @@
       }
       /* The product's design system, by its logo: the owner's file, unaltered, on a white squircle tile
          with a hairline, white in both themes (as the mark's window is) so the logo keeps its colours.
-         Decorative: the name beside it is the label. A system whose owner doesn't allow its logo
-         (GOV.UK's crown is protected; Google and Shopify need permission) is named in words alone. */
+         Decorative: the name beside it is the label. GOV.UK's crown and logotype
+         are protected, so it is named in words alone. */
       .ds-logo {
+        grid-template: minmax(0, 1fr) / minmax(0, 1fr);
         flex: none;
         box-sizing: border-box;
         display: inline-grid;
@@ -197,6 +198,10 @@
         background: var(--mark-window);
       }
       .ds-logo img {
+        min-width: 0;
+        min-height: 0;
+        max-width: 100%;
+        max-height: 100%;
         display: block;
         width: 100%;
         height: 100%;
@@ -229,7 +234,7 @@
         <div class="demos">
           <a class="demo" href="/demos/halden/">
             <span class="demo-mark" style="background: #65558f" aria-hidden="true">h</span>
-            <span class="ds"><span>Material 3 · phone first</span></span>
+            <span class="ds"><span class="ds-logo" aria-hidden="true"><img src="../../packages/ds-material3/logo.svg" alt="" width="24" height="24" /></span><span>Material 3 · phone first</span></span>
             <h2>Halden</h2>
             <p>A current account. Ask it to send money, explain a charge, set a budget or freeze the card.</p>
           </a>
@@ -247,7 +252,7 @@
           </a>
           <a class="demo" href="/demos/quay/">
             <span class="demo-mark" style="background: #303030" aria-hidden="true">q</span>
-            <span class="ds"><span>Shopify Polaris · store admin</span></span>
+            <span class="ds"><span class="ds-logo" aria-hidden="true"><img src="../../packages/ds-polaris/logo.svg" alt="" width="24" height="24" /></span><span>Shopify Polaris · store admin</span></span>
             <h2>Quay</h2>
             <p>A candle brand's store admin. Ask why sales dropped, what's about to sell out, or to refund an order.</p>
           </a>

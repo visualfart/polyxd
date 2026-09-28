@@ -26,9 +26,13 @@
     "action-bleed": "var(--pxd-space-stack-default) calc(-1 * var(--pxd-space-inset-comfortable)) calc(-1 * var(--pxd-space-inset-comfortable))"
   },
   "logo": {
-    "text": "IBM Carbon",
+    "file": "logo.svg",
+    "source": "https://raw.githubusercontent.com/carbon-design-system/carbon-website/d8783ad2ae3b5e59c58f58311491f8a2c4e62631/src/images/favicon.svg",
     "guidelines": "https://www.ibm.com/legal/copytrade",
-    "note": "No logo yet: IBM's trademark page says no other company may use IBM logos without IBM's express written permission or a licence, and limits fair use to text-only references. The official Carbon mark is carbon-website src/images/favicon.svg; it can go here once IBM permits it."
+    "colours": [
+      "#878d96"
+    ],
+    "note": "Carbon's own two-hexagon mark, unaltered, from https://carbondesignsystem.com/. Shown at the request of Polyxd's maintainer to identify the design system this pack is modelled on. IBM's guidelines: No other company may use IBM logos without IBM's express written permission or a licence; unlicensed use is limited to text-only references to IBM trademarks."
   },
   "provenance": [
     {

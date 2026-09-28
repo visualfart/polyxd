@@ -11,9 +11,13 @@
   },
   "defaultMode": "light",
   "logo": {
-    "text": "Microsoft Fluent 2",
+    "file": "logo.svg",
+    "source": "https://fluent2.microsoft.design/ (the footer's inline mark, copied verbatim)",
     "guidelines": "https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks",
-    "note": "No logo yet: Microsoft's trademark guidelines say its logos and icons can never be used without an express licence; names may be used to refer to its products. The official Fluent 2 logo is the one in the fluent2.microsoft.design header; it can go here once Microsoft licenses it."
+    "colours": [
+      "#242424"
+    ],
+    "note": "The Fluent mark from the fluent2.microsoft.design footer (the header's lockup, mark plus \"Fluent 2\", is too wide for a square tile), unaltered, from https://fluent2.microsoft.design/. Shown at the request of Polyxd's maintainer to identify the design system this pack is modelled on. Microsoft's guidelines: Microsoft logos, icons and designs can never be used without an express licence; only the names may be used referentially (compatibility/integration) without implying affiliation."
   },
   "provenance": [
     {

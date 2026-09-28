@@ -17,9 +17,15 @@
   },
   "defaultMode": "light",
   "logo": {
-    "text": "Shopify Polaris",
+    "file": "logo.svg",
+    "source": "https://cdn.shopify.com/shopifycloud/brochure/assets/brand-assets/shopify-logo-shopping-bag-full-color-66166b2e55d67988b56b4bd28b63c271e2b9713358cb723070a92bde17ad7d63.svg",
     "guidelines": "https://www.shopify.com/brand-assets",
-    "note": "No logo yet: Shopify's Trademark Usage Guidelines (on its brand-assets page) say use of its brand assets must be expressly authorised in writing. Polaris has no mark of its own; Shopify's bag is on that page and can go here once Shopify permits it."
+    "colours": [
+      "#95BF47",
+      "#5E8E3E",
+      "#FFFFFF"
+    ],
+    "note": "Shopify's shopping-bag logo, since Polaris has no mark of its own, unaltered, from https://www.shopify.com/brand-assets. Shown at the request of Polyxd's maintainer to identify the design system this pack is modelled on. Shopify's guidelines: Use of Shopify brand assets must be expressly authorised in writing and must not imply sponsorship, affiliation or endorsement."
   },
   "provenance": [
     {

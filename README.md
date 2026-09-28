@@ -35,21 +35,21 @@ All 24 examples score 100 across **1,248 renders** (13 packs × 2 widths × ligh
 
 | | Design system | Pack |
 |---|---|---|
-|  | Material 3 | [`@polyxd/ds-material3`](packages/ds-material3/) |
-|  | IBM Carbon | [`@polyxd/ds-carbon`](packages/ds-carbon/) |
+| <img src="packages/ds-material3/logo.svg" height="20" alt=""> | Material 3 | [`@polyxd/ds-material3`](packages/ds-material3/) |
+| <img src="packages/ds-carbon/logo.svg" height="20" alt=""> | IBM Carbon | [`@polyxd/ds-carbon`](packages/ds-carbon/) |
 | <img src="packages/ds-antd/logo.svg" height="20" alt=""> | Ant Design | [`@polyxd/ds-antd`](packages/ds-antd/) |
-|  | Microsoft Fluent 2 | [`@polyxd/ds-fluent`](packages/ds-fluent/) |
+| <img src="packages/ds-fluent/logo.svg" height="20" alt=""> | Microsoft Fluent 2 | [`@polyxd/ds-fluent`](packages/ds-fluent/) |
 | <img src="packages/ds-shadcn/logo.svg" height="20" alt=""> | shadcn/ui | [`@polyxd/ds-shadcn`](packages/ds-shadcn/) |
 | <picture><source media="(prefers-color-scheme: dark)" srcset="packages/ds-bootstrap/logo-white.svg"><img src="packages/ds-bootstrap/logo.svg" height="20" alt=""></picture> | Bootstrap 5 | [`@polyxd/ds-bootstrap`](packages/ds-bootstrap/) |
 | <img src="packages/ds-mantine/logo.svg" height="20" alt=""> | Mantine 8 | [`@polyxd/ds-mantine`](packages/ds-mantine/) |
 | <picture><source media="(prefers-color-scheme: dark)" srcset="packages/ds-radix/logo-white.svg"><img src="packages/ds-radix/logo.svg" height="20" alt=""></picture> | Radix Themes 3 | [`@polyxd/ds-radix`](packages/ds-radix/) |
-|  | Shopify Polaris | [`@polyxd/ds-polaris`](packages/ds-polaris/) |
-|  | GitHub Primer | [`@polyxd/ds-primer`](packages/ds-primer/) |
-|  | Adobe Spectrum 2 | [`@polyxd/ds-spectrum`](packages/ds-spectrum/) |
+| <img src="packages/ds-polaris/logo.svg" height="20" alt=""> | Shopify Polaris | [`@polyxd/ds-polaris`](packages/ds-polaris/) |
+| <img src="packages/ds-primer/logo.svg" height="20" alt=""> | GitHub Primer | [`@polyxd/ds-primer`](packages/ds-primer/) |
+| <img src="packages/ds-spectrum/logo.svg" height="20" alt=""> | Adobe Spectrum 2 | [`@polyxd/ds-spectrum`](packages/ds-spectrum/) |
 |  | GOV.UK Design System | [`@polyxd/ds-govuk`](packages/ds-govuk/) |
 | <img src="packages/ds-chakra/logo.svg" height="20" alt=""> | Chakra UI 3 | [`@polyxd/ds-chakra`](packages/ds-chakra/) |
 
-A logo appears only where its owner's guidelines don't forbid it, and only as the owner's own file; the others are named in words. Each pack's README says which, and why. Twelve original templates (`sketch`, `wireframe`, `editorial`, `brutalist`, `glass`, `terminal`, `pastel`, `civic`, `finance`, `health`, `neon`, `mono`) sit beside them, each with a mark drawn from its own tokens.
+Each logo is its owner's own file, unaltered, used to identify the design system a pack is modelled on (where a system has no mark of its own, its company's logo). Several owners' guidelines restrict logo use without permission; each pack's README records the source and the guidelines. GOV.UK's crown and logotype are protected, so it is named in words alone. Twelve original templates (`sketch`, `wireframe`, `editorial`, `brutalist`, `glass`, `terminal`, `pastel`, `civic`, `finance`, `health`, `neon`, `mono`) sit beside them, each with a mark drawn from its own tokens.
 
 ## Try it
 

@@ -1,7 +1,7 @@
 /**
  * A pack's logo, as its manifest names it (packages/ds-<id>/logo.svg): the owner's official file for
  * a real design system whose guidelines allow it, a Polyxd-made mark for a template. Packs named in
- * words only (GOV.UK, and the systems whose owners require permission) have no file and draw nothing.
+ * words only (GOV.UK, whose crown and logotype are protected) have no file and draw nothing.
  */
 const files = import.meta.glob<string>("../../../../packages/ds-*/logo.{svg,png}", { eager: true, query: "?url", import: "default" });
 

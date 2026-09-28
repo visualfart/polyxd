@@ -42,6 +42,6 @@ Spectrum's token package publishes no typeface, no motion and no measure, so `po
 
 ## Logo
 
-This pack has no logo file yet. Adobe's [trademark guidelines](https://www.adobe.com/legal/permissions/trademarks.html) don't allow its logos to be used without Adobe's permission, so wherever Polyxd lists this pack it sets the name, *Adobe Spectrum 2*, in its own type and leaves the logo's place empty. The official mark is published by Adobe ([here](https://spectrum.adobe.com/)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once Adobe permits it.
+`logo.svg` is Adobe's logo, since Spectrum has no mark of its own (the Spectrum site's header uses it beside the name), unaltered, from [spectrum.adobe.com/](https://spectrum.adobe.com/_next/static/media/adobe_logo_spectrum_site.b6d47fe3.svg). Polyxd shows it beside the pack's name to identify the design system this pack is modelled on. Adobe's [trademark guidelines](https://www.adobe.com/legal/permissions/trademarks.html) restrict the use of its logos (Use of Adobe logos (corporate or product) is not allowed unless licensed by Adobe; the names may be used referentially ('for use with', 'compatible with')); Polyxd's maintainer has chosen to show it and is responsible for that choice.
 
-Adobe and Spectrum are trademarks of Adobe Inc., named here to identify the design system this pack is modelled on. Polyxd is not affiliated with Adobe Inc.
+Adobe, Spectrum and the Adobe logo are trademarks of Adobe Inc., used here to identify the design system this pack is modelled on. Polyxd is not affiliated with Adobe Inc.

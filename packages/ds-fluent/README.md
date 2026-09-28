@@ -36,6 +36,6 @@ Three places where Fluent's natural choice doesn't clear the contract's floor. E
 
 ## Logo
 
-This pack has no logo file yet. Microsoft's [trademark guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks) don't allow its logos to be used without Microsoft's permission, so wherever Polyxd lists this pack it sets the name, *Microsoft Fluent 2*, in its own type and leaves the logo's place empty. The official mark is published by Microsoft ([here](https://fluent2.microsoft.design/)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once Microsoft permits it.
+`logo.svg` is the Fluent mark from the fluent2.microsoft.design footer (the header's lockup, mark plus "Fluent 2", is too wide for a square tile), unaltered, from [fluent2.microsoft.design/](https://fluent2.microsoft.design/). Polyxd shows it beside the pack's name to identify the design system this pack is modelled on. Microsoft's [trademark guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks) restrict the use of its logos (Microsoft logos, icons and designs can never be used without an express licence; only the names may be used referentially (compatibility/integration) without implying affiliation); Polyxd's maintainer has chosen to show it and is responsible for that choice.
 
-Microsoft and Fluent are trademarks of Microsoft Corporation, named here to identify the design system this pack is modelled on. Polyxd is not affiliated with Microsoft Corporation.
+Microsoft, Fluent and the Fluent logo are trademarks of Microsoft Corporation, used here to identify the design system this pack is modelled on. Polyxd is not affiliated with Microsoft Corporation.

@@ -130,6 +130,6 @@ None of the values are scraped from carbondesignsystem.com.
 
 ## Logo
 
-This pack has no logo file yet. IBM's [trademark guidelines](https://www.ibm.com/legal/copytrade) don't allow its logos to be used without IBM's permission, so wherever Polyxd lists this pack it sets the name, *IBM Carbon*, in its own type and leaves the logo's place empty. The official mark is published by IBM ([here](https://github.com/carbon-design-system/carbon-website/blob/d8783ad2ae3b5e59c58f58311491f8a2c4e62631/src/images/favicon.svg)); it goes in as `logo.svg`, recorded in the manifest's `logo`, once IBM permits it.
+`logo.svg` is Carbon's own two-hexagon mark, unaltered, from [carbondesignsystem.com/](https://raw.githubusercontent.com/carbon-design-system/carbon-website/d8783ad2ae3b5e59c58f58311491f8a2c4e62631/src/images/favicon.svg). Polyxd shows it beside the pack's name to identify the design system this pack is modelled on. IBM's [trademark guidelines](https://www.ibm.com/legal/copytrade) restrict the use of its logos (No other company may use IBM logos without IBM's express written permission or a licence; unlicensed use is limited to text-only references to IBM trademarks); Polyxd's maintainer has chosen to show it and is responsible for that choice.
 
-IBM and Carbon are trademarks of IBM Corp., named here to identify the design system this pack is modelled on. Polyxd is not affiliated with IBM Corp.
+IBM, Carbon and the Carbon logo are trademarks of IBM Corp., used here to identify the design system this pack is modelled on. Polyxd is not affiliated with IBM Corp.
