@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../api.ts";
 import { track } from "../analytics.ts";
 import { Page, useSession, type Ws } from "../App.tsx";
@@ -6,6 +7,8 @@ import { Page, useSession, type Ws } from "../App.tsx";
 interface Member { id: string; email: string; name: string; role: string; created_at: string }
 interface Detail { members: Member[]; invites: { id: string; email: string; role: string; expires_at: string }[] }
 interface Key { id: string; name: string; created_at: string; last_used_at: string | null }
+interface IngestKey extends Key { key: string }
+const CAN_MANAGE_INGEST = new Set(["owner", "engineer", "design-system", "product"]);
 
 const ROLES: [string, string][] = [["design-system", "Design system: tokens, components, rules, releases"], ["designer", "Designer: direction, reviews, exemplars"], ["product", "Product: capabilities, journeys, insights"], ["engineer", "Engineer: components, capabilities, integrations"], ["viewer", "Viewer: everything, read only"]];
 
@@ -18,9 +21,24 @@ export function Team({ ws }: { ws: Ws }) {
   const [role, setRole] = useState("designer");
   const [links, setLinks] = useState<{ email: string; link?: string; sent?: boolean }[]>([]);
   const [newKey, setNewKey] = useState<string | null>(null);
+  const [ingestKeys, setIngestKeys] = useState<IngestKey[]>([]);
   const load = () => {
     api<Detail>("GET", `/api/w/${ws.slug}`).then(setD);
     api<{ keys: Key[] }>("GET", `/api/w/${ws.slug}/api-keys`).then((r) => setKeys(r.keys));
+    api<{ keys: IngestKey[] }>("GET", `/api/w/${ws.slug}/ingest-keys`).then((r) => setIngestKeys(r.keys));
+  };
+  const makeIngestKey = async () => {
+    try {
+      await api("POST", `/api/w/${ws.slug}/ingest-keys`, { name: "Product events" });
+      load();
+    } catch (e) {
+      toast((e as Error).message, "bad");
+    }
+  };
+  const revokeIngestKey = async (k: IngestKey) => {
+    if (!window.confirm(`Revoke “${k.name}”? Products sending events with it are refused from now on.`)) return;
+    await api("DELETE", `/api/w/${ws.slug}/ingest-keys/${k.id}`);
+    load();
   };
   useEffect(() => {
     load();
@@ -58,6 +76,13 @@ export function Team({ ws }: { ws: Ws }) {
             {newKey && <div className="notice signal"><div className="body"><b>Copy this key now; it won't be shown again</b><code className="mono" style={{ userSelect: "all" }}>{newKey}</code><div style={{ marginTop: 6 }}>Then, in your package: <code className="mono">POLYXD_STUDIO_KEY={"<key>"} npx polyxd studio push ./ --to {location.origin}/api/w/{ws.slug}</code></div></div></div>}
             <ul className="list">
               {keys.map((k) => <li key={k.id}><span style={{ flexGrow: 1 }}>{k.name}<div className="small muted">made {new Date(k.created_at).toLocaleDateString("en-GB")} · {k.last_used_at ? `last used ${new Date(k.last_used_at).toLocaleDateString("en-GB")}` : "never used"}</div></span><button type="button" className="btn ghost sm" onClick={async () => { await api("DELETE", `/api/w/${ws.slug}/api-keys/${k.id}`); load(); }}>Revoke</button></li>)}
+            </ul>
+          </div>
+          <div className="card">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}><div><h2>Ingest keys</h2><p>For your product's pages, to send semantic events to <Link to={`/w/${ws.slug}/insights`}>Insights</Link>. A key can send events and nothing else, so it isn't a secret.</p></div>{CAN_MANAGE_INGEST.has(ws.role) && <button type="button" className="btn sm" onClick={makeIngestKey}>New key</button>}</div>
+            <ul className="list">
+              {ingestKeys.map((k) => <li key={k.id}><span style={{ flexGrow: 1, minWidth: 0 }}>{k.name}<code className="mono small" style={{ display: "block", userSelect: "all", overflowWrap: "anywhere" }}>{k.key}</code><div className="small muted">made {new Date(k.created_at).toLocaleDateString("en-GB")} · {k.last_used_at ? `last used ${new Date(k.last_used_at).toLocaleDateString("en-GB")}` : "never used"}</div></span>{CAN_MANAGE_INGEST.has(ws.role) && <button type="button" className="btn ghost sm" onClick={() => revokeIngestKey(k)}>Revoke</button>}</li>)}
+              {!ingestKeys.length && <li className="small muted">None yet.</li>}
             </ul>
           </div>
         </div>

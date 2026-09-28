@@ -33,6 +33,7 @@ export function pathShape(path: string): string {
   return path
     .replace(/\/w\/[^/]+/, "/w/:workspace")
     .replace(/\/(screens|directions)\/(?!import$)[^/]+/g, "/$1/:key")
+    .replace(/\/insights\/[^/]+/, "/insights/:intent")
     .replace(/\/design-systems\/(?!import$)[^/]+/, "/design-systems/:id")
     .replace(/\/versions\/[^/]+/, "/versions/:version")
     .replace(/\/invite\/[^/]+/, "/invite/:id")

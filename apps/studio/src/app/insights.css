@@ -1,0 +1,47 @@
+/* Insights (pages/Insights.tsx): Studio's cards, pills and tables, with a few bars of its own. */
+.ins-stat { gap: 2px; padding: 20px 22px; }
+.ins-table-card { padding: 4px 8px 8px; overflow-x: auto; }
+.ins-table th.r, .ins-table td.r, .ins-compare .r, .page table .r { text-align: right; }
+.ins-table td { vertical-align: top; padding-top: 14px; padding-bottom: 14px; }
+.ins-table tbody tr:last-child td { border-bottom: 0; }
+.ins-intent { font-weight: 600; color: var(--ink); font-size: 15px; }
+.ins-sub { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
+.ins-sub .tag { height: 22px; padding: 0 8px; font-size: 12px; }
+.ins-rate { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
+.ins-rate .meter { width: 72px; }
+.ins-foot { max-width: 820px; }
+.ins-link { border: 0; background: transparent; padding: 0; color: var(--bad); font: inherit; text-decoration: underline; cursor: pointer; }
+
+/* The funnel and the ranked lists: a bar on the soft track, ink, and the brand's signal for done. */
+.ins-bar { display: block; height: 10px; border-radius: var(--radius-pill); background: var(--soft); overflow: hidden; }
+.ins-bar i { display: block; height: 100%; border-radius: inherit; background: color-mix(in srgb, var(--ink) 72%, var(--surface)); min-width: 2px; }
+.ins-bar i.done { background: var(--signal); }
+.ins-bar.sm { height: 6px; }
+.ins-funnel { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.ins-funnel li { display: flex; flex-direction: column; gap: 6px; }
+.ins-funnel-head { display: flex; justify-content: space-between; gap: 12px; }
+.ins-ranked { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ins-ranked li { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.ins-ranked li > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ins-tags { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.ins-compare td { height: 44px; padding: 6px 12px; }
+.ins-compare td:first-child { padding-left: 0; }
+.ins-compare .ins-win { font-weight: 700; }
+
+/* The chart is the renderer's own, in the workspace's design system; the card only frames it. */
+.ins-chart { gap: 8px; }
+.ins-chart .pxd-chart { margin: 0; }
+.ins-chart-wait { height: 280px; border-radius: var(--radius-small); background: var(--sunk); }
+
+/* Setting up: three numbered steps and the code. */
+.ins-empty { display: flex; flex-direction: column; gap: 24px; max-width: 760px; }
+.ins-empty-head h2 { font-family: var(--display); font-size: 24px; line-height: 30px; font-weight: 400; letter-spacing: -0.01em; }
+.ins-empty-head p { color: var(--muted); margin-top: 6px; }
+.ins-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.ins-steps > li { display: flex; gap: 16px; align-items: flex-start; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-card); corner-shape: squircle; padding: 20px 22px; }
+.ins-steps > li > div { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; flex: 1; }
+.ins-steps h3 { font-size: 16px; line-height: 24px; font-weight: 600; }
+.ins-step-n { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; background: var(--signal-bg); color: var(--signal-ink); }
+.ins-key { display: block; padding: 10px 16px; border-radius: var(--radius-pill); background: var(--sunk); border: 1px solid var(--line); overflow-wrap: anywhere; }
+.ins-code { align-self: stretch; margin: 0; padding: 16px 18px; border-radius: var(--radius-small); corner-shape: squircle; background: var(--sunk); border: 1px solid var(--line); font-family: var(--mono); font-size: 13px; line-height: 20px; white-space: pre; overflow-x: auto; max-width: 100%; }
+.drawer .ins-steps > li { border: 0; padding: 0; background: transparent; }

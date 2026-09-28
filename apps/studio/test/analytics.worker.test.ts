@@ -112,5 +112,6 @@ test("the app's events carry the shape of a path, never a workspace's address or
   assert.equal(pathShape("/w/zqharbour/design-systems/import"), "/w/:workspace/design-systems/import");
   assert.equal(pathShape("/w/zqharbour/design-systems/0f3a/versions/9b2c/map"), "/w/:workspace/design-systems/:id/versions/:version/map");
   assert.equal(pathShape("/w/zqharbour/directions/zq-voice"), "/w/:workspace/directions/:key");
+  assert.equal(pathShape("/w/zqharbour/insights/money.send"), "/w/:workspace/insights/:intent");
   assert.equal(pathShape("/invite/0f3a-secret"), "/invite/:id");
 });

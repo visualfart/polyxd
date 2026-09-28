@@ -16,7 +16,7 @@ When screens are generated, product managers and designers stop drawing screens 
 | Acceptance criteria | **Checks** that run against generated UIs |
 | Analytics and funnels | **Semantic events**, emitted automatically |
 
-All three have schemas in `@polyxd/spec` today. Capabilities and journeys are checked by the validator and verifier. Both renderers emit the events to a handler you pass, and `@polyxd/analytics` sends them on to your own analytics. Polyxd receives none of them.
+All three have schemas in `@polyxd/spec` today. Capabilities and journeys are checked by the validator and verifier. Both renderers emit the events to a handler you pass, and `@polyxd/analytics` sends them on to your own analytics. Polyxd receives none of them, unless you choose to send them to [Studio Insights](#send-them-to-studio-insights).
 
 ## Capabilities
 
@@ -130,7 +130,7 @@ The verifier's scripted agent tasks (`bench/tasks.json`) use this goal and done-
 
 Every screen already knows its intent, pattern, components and capabilities. So the renderers can report what people do with it in those terms, with no tracking code. Both renderers, `@polyxd/react` and `@polyxd/web`, emit the events defined in `schema/event.schema.json` when you give them a handler. Without a handler they make none.
 
-**Polyxd itself receives none of these events.** They go to your handler and nowhere else, and Polyxd has no telemetry.
+**Polyxd itself receives none of these events.** They go to your handler and nowhere else, and Polyxd has no telemetry. The one exception is your choice: point `toFetch` at [Studio Insights](#send-them-to-studio-insights) and Studio counts them for your workspace.
 
 These are about people using a rendered screen. The [runtime's](/docs/runtime#events-and-privacy) `onEvent` is a different hook: it reports on generating a screen.
 
@@ -205,7 +205,7 @@ This example is from `packages/spec/examples/events/`. The generator name in it 
 - Events carry ids, keys, capability names and short codes. **Never field values, never text from your data, never the document's data.**
 - `reason` is a short code: letters, digits, dots, dashes and underscores, up to 64 characters. Anything else is never sent. An input error's reason becomes `invalid` instead.
 - The adapters below run `redact` on every event first. It rebuilds the event from the schema's allow-list, so a property the schema doesn't define never leaves the page.
-- **Polyxd receives nothing.** The runtime and the renderers have no telemetry. The events go to your handler, and the adapters send them only where you point them.
+- **Polyxd receives nothing.** The runtime and the renderers have no telemetry. The events go to your handler, and the adapters send them only where you point them. If you point one at Studio Insights, Studio keeps daily counts, never the events.
 
 ### Send them to PostHog
 
@@ -232,6 +232,33 @@ el.onEvent = toPostHog(posthog); // on <polyxd-surface>
 GA4 names can't hold dots or spaces, so `ga4EventName` turns `action.taken` into `polyxd_action_taken`, and values are cut to GA4's limits. `toFetch` sends the events as the schema defines them, not flattened, in batches: 20 at a time, after 5 seconds, or when the page is hidden. It uses `keepalive`, so a batch sent as the page closes still arrives. Its handler also has `flush()` and `close()`.
 
 For another tool, `flatten(event)` gives the same flat properties and `defaultEventName(type)` the same name, so a handler is one line: `(e) => amplitude.track(defaultEventName(e.type), flatten(redact(e)!))`. `EVENT_TYPES` and `ALLOWED_PROPERTIES` are the event types and the allow-list, both checked against the schema in the package's tests.
+
+### Send them to Studio Insights
+
+[Studio](/docs/studio#insights) can count the events for your workspace and show how each screen does: how often it is shown, completed and abandoned, how long it takes, which inputs are refused and why, and generated screens beside authored ones. Make an ingest key in Studio (Team, or the Insights page), then hand the renderer's events to `toFetch`:
+
+```tsx
+import { toFetch } from "@polyxd/analytics";
+
+const studio = toFetch("https://studio.polyxd.com/api/w/<workspace>/events", {
+  headers: { "x-polyxd-key": "<ingest key>" },
+});
+
+<PolyxdSurface document={doc} onEvent={studio} events={{ generator: "my-model@3" }} />
+```
+
+On `<polyxd-surface>`, set `el.onEvent = studio`. To send to your own analytics too, call both from one handler.
+
+An ingest key can only send events to its own workspace. It can't read anything, so it is safe in a page. Studio takes a browser's request from any origin, up to 100 events and 64 KB at a time, and limits requests per key and per address.
+
+**What is sent:** the events as they are, the schema's shape. **What is kept:** daily counts, and nothing else.
+
+- Each event is checked against `event.schema.json`. One with a property the schema doesn't define is dropped whole, and the answer says how many were dropped.
+- The rest pass `redact`, then add 1 to a count for the day (UTC) Studio received them. A count is filed by intent, surface id, pattern, event type, component key (or id), capability, reason code, generated or authored, and person or agent.
+- Each of those must be a code: letters, digits, dots, dashes, underscores and colons, with at least one letter. Anything else, such as a sentence, an email address or a card number, is left out. Where the renderers only send reasons from a fixed list (input errors, Status kinds, how a surface was left), only that list is kept.
+- A completion also adds its duration to a sum and to one of eight time ranges. Feedback adds its rating to a sum.
+- Never kept: the events themselves, session ids, timestamps, values, experiment variants, the Direction or the generator's name. A screen counts as generated when its events name a generator, and as authored when they don't.
+- Counts are kept for 90 days. The workspace owner can delete them all at any time.
 
 ### Not built yet
 

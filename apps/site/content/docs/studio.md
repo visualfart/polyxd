@@ -1,6 +1,6 @@
 ---
 title: Studio
-description: Where a design-system team brings its tokens, decides what generated screens may look like, authors screens of its own, and delivers them to products. Hosted at studio.polyxd.com, or run on your own Cloudflare account.
+description: Where a design-system team brings its tokens, decides what generated screens may look like, authors screens of its own, delivers them to products, and sees how they do. Hosted at studio.polyxd.com, or run on your own Cloudflare account.
 section: Guides
 order: 23
 ---
@@ -72,9 +72,32 @@ curl -H "Authorization: Bearer $POLYXD_STUDIO_KEY" \
 
 It returns the Direction, valid against `direction.schema.json`, with an `X-Polyxd-Direction-Version` header (the Studio version number); an unpublished one answers 404. Paths inside it are relative to that address: your own patterns are listed in `patterns.custom` as `<key>/patterns/<id>.json`, fetched from `…/directions/<key>/patterns/<id>.json`, and an exemplar screen as `../screens/<screen>`, which is the screen's own delivery address. Hold a document to it with `directionRules(direction)` from `@polyxd/spec`, as in [Design Direction](/docs/design-direction). A key reads Directions and can't change them.
 
+## Insights
+
+Insights shows how your screens do in your product, from the [semantic events](/docs/product#semantic-analytics-events) your product's renderer already emits. Studio counts them each day. It never keeps the events.
+
+- **A table of intents** over the last 7, 30 or 90 days: how often each was shown, completed and abandoned, the completion rate, the time to complete, input errors with the most common component and reason, Statuses shown, undo, and the feedback average. An intent that matches one of your screens links to it.
+- **A page per intent**: each day drawn by Polyxd's own Chart in your design system, the steps from shown to started to completed, input errors by component key and reason, the actions taken, the Statuses shown, how people left, and generated screens beside authored ones when both sent events.
+- **Honest figures.** Completion is tasks completed for every time the screen was shown, so a journey spread over two screens reads lower than it is. A screen with no task, such as an overview, has no completion rate. Time to complete is the range the median falls in (under 2 s, 2 to 5 s, and so on up to over 5 min) and the mean, because Studio keeps no single durations.
+
+To start, make an **ingest key** (on the Insights page, or in Team) and point `toFetch` from `@polyxd/analytics` at your workspace:
+
+```ts
+const studio = toFetch("https://studio.polyxd.com/api/w/<workspace>/events", {
+  headers: { "x-polyxd-key": "<ingest key>" },
+});
+<PolyxdSurface document={doc} onEvent={studio} events={{ generator: "my-model@3" }} />
+```
+
+Name the generator on generated screens; a screen whose events name none counts as authored.
+
+An ingest key is publishable, like the key a web analytics tool puts in a page. It can send events to its own workspace and nothing else: it can't read a screen, a Direction, a design system or Insights, and it isn't an API key. Studio shows it again whenever you need it, and revoking it stops it at once. The endpoint, `POST /api/w/<workspace>/events`, answers browsers from any origin, without cookies. It takes up to 100 events and 64 KB a request, and limits requests per key and per address.
+
+**What Studio keeps:** daily counts by intent, surface id, pattern, event type, component key, capability, reason code, generated or authored, and person or agent, plus sums of completion times and feedback ratings. Every one of those must be a short code, so a value in the wrong place is left out. An event with a property the schema doesn't define is dropped whole, and the answer says how many were. Never kept: the events, session ids, timestamps, values, experiment variants, the Direction or the generator's name. Counts are kept for 90 days, the same on every workspace, since Studio has no plans yet. The workspace owner can delete them all from the Insights page.
+
 ## Team
 
-Workspaces, invites with roles (design-system, designer, product, engineer, viewer), sign-in through [better-auth](https://www.better-auth.com) (email and password with verification, Google when configured), API keys.
+Workspaces, invites with roles (design-system, designer, product, engineer, viewer), sign-in through [better-auth](https://www.better-auth.com) (email and password with verification, Google when configured), API keys, and ingest keys for Insights.
 
 ## Run it yourself
 
