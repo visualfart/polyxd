@@ -100,6 +100,8 @@ All six are read-only.
 
 `polyxd_validate`, `polyxd_verify` and `polyxd_show` also take `data`: the values the screen shows. It replaces the document's own `data`.
 
+Every tool also returns its result as structured data, and says what that data looks like: each declares an output schema. `polyxd_validate` gives `valid`, the counts and every issue with its pointer and hint. `polyxd_verify` gives the counts and the findings. `polyxd_show` gives the document as shown, with the pack, or `shown: false` and the issues. `polyxd_guide` gives the guide's text and the spec version.
+
 `polyxd_verify` runs the document checks only, from `@polyxd/verifier/static`, so installing the server installs no Playwright and no browser. The rendered checks (accessibility, layout and agent tasks) need a browser, so run [`polyxd-verify`](/docs/verifier/) for those.
 
 The server also lists the spec's example documents as resources (`polyxd://examples/<name>.json`), and the example Design Directions (`polyxd://directions/<name>.json`).

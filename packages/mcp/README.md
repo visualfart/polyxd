@@ -42,16 +42,18 @@ From a clone of this repository: `npm install && npm run build -w @polyxd/mcp`, 
 
 ## Tools
 
-| Tool | What it does |
-|---|---|
-| `polyxd_guide` | The spec as instructions: how to use these tools, then the generator prompt the demos use (document shape, rules for generated screens, bindings, actions, every component and its props, the patterns). |
-| `polyxd_validate` | Validates a document. Every issue comes with its JSON Pointer, the component it is in, and a hint saying what to change. |
-| `polyxd_verify` | The verifier's document checks (`staticAudit` from `@polyxd/verifier/static`, so installing the server installs no Playwright), optionally against a Design Direction (an object, or `calm-finance` / `playful-personal`) and a capability registry. A compact report. |
-| `polyxd_show` | Validates, then returns the document for display. `pack` picks the design-system pack (default `material3`), `mode` picks light or dark (default: the host's theme). Shows nothing when there are errors. |
-| `polyxd_packs` | The packs: published design systems and original templates. |
-| `polyxd_components` | The components with a one-line summary each, or one component's full definition by `name`. |
+| Tool | What it does | `structuredContent` |
+|---|---|---|
+| `polyxd_guide` | The spec as instructions: how to use these tools, then the generator prompt the demos use (document shape, rules for generated screens, bindings, actions, every component and its props, the patterns). | `{ specVersion, guide }`, the guide being the same text as the content |
+| `polyxd_validate` | Validates a document. Every issue comes with its JSON Pointer, the component it is in, and a hint saying what to change. | `{ valid, errors, warnings, issues[{ severity, pointer, component?, message, hint? }] }` |
+| `polyxd_verify` | The verifier's document checks (`staticAudit` from `@polyxd/verifier/static`, so installing the server installs no Playwright), optionally against a Design Direction (an object, or `calm-finance` / `playful-personal`) and a capability registry. A compact report. | `{ errors, warnings, findings[{ severity, check, message, hint? }], direction?, rules }` |
+| `polyxd_show` | Validates, then returns the document for display. `pack` picks the design-system pack (default `material3`), `mode` picks light or dark (default: the host's theme). Shows nothing when there are errors. | `{ shown: true, document, pack, packName, mode?, specVersion }`, or `{ shown: false, issues }` with `isError` |
+| `polyxd_packs` | The packs: published design systems and original templates. | `{ default, packs[{ name, displayName, template, package, description }] }` |
+| `polyxd_components` | The components with a one-line summary each, or one component's full definition by `name`. | `{ components[{ name, category, summary, shell }] }`, or `{ component }` with the full definition |
 
 Every tool is read-only. `data` can be passed to `polyxd_validate`, `polyxd_verify` and `polyxd_show` separately from the document; it replaces the document's own `data`.
+
+Every tool declares an `outputSchema` (JSON Schema 2020-12, in `src/output-schemas.ts`, each property described for the model), and every successful result carries `structuredContent` that conforms to it; the SDK checks each one before it is sent. Error results (`isError: true`) are not held to the schema: `polyxd_show`'s not-shown result still conforms, the others carry text only.
 
 ## Resources
 
