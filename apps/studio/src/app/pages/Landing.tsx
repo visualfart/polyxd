@@ -121,8 +121,8 @@ export function Landing() {
         <section className="l-source" aria-labelledby="source-title">
           <div className="l-wrap l-source-grid">
             <div>
-              <h2 id="source-title">Open source, or hosted</h2>
-              <p>Studio is Apache-2.0, in <code>apps/studio</code> of the <a href={REPO}>Polyxd repository</a>, running on Cloudflare Workers with D1 and R2. Run it on your own account, or use the hosted one at studio.polyxd.com. Same code either way.</p>
+              <h2 id="source-title">Run it yourself, or hosted</h2>
+              <p>Studio's source is in <code>apps/studio</code> of the <a href={REPO}>Polyxd repository</a>, under the <a href={`${REPO}/blob/main/apps/studio/LICENSE`}>Functional Source License</a>: run it free for your own team or company on Cloudflare Workers with D1 and R2, or use the hosted one at studio.polyxd.com. Same code either way.</p>
             </div>
             <div className="l-source-cards">
               <div className="l-card">
@@ -131,7 +131,7 @@ export function Landing() {
               </div>
               <div className="l-card">
                 <h3>Hosted</h3>
-                <p>Free for one workspace. A small fee may cover its storage later.</p>
+                <p>Free for one workspace. Paid plans for bigger teams are coming.</p>
                 {signedIn ? <Link className="l-btn l-btn-ink l-btn-small" to="/">Open Studio</Link> : <Link className="l-btn l-btn-ink l-btn-small" to="/signin?mode=signup">Create a workspace</Link>}
               </div>
             </div>
@@ -149,7 +149,7 @@ export function Landing() {
             <a href="https://polyxd.com">Polyxd</a>
             <a href={REPO}>GitHub</a>
           </nav>
-          <span>© 2026 Polyxd · Apache-2.0 code, CC-BY-4.0 spec</span>
+          <span>© 2026 Polyxd · Studio under FSL-1.1, everything else Apache-2.0, spec CC-BY-4.0</span>
         </div>
       </footer>
     </div>

@@ -2,7 +2,9 @@ Polyxd
 Copyright 2026 the Polyxd authors
 
 This product includes software developed at Polyxd, licensed under the Apache
-License, Version 2.0 (see LICENSE).
+License, Version 2.0 (see LICENSE), except Polyxd Studio (apps/studio), which is
+licensed under the Functional Source License, Version 1.1, ALv2 Future License
+(see apps/studio/LICENSE).
 
 It also includes material from the projects below. Each is used under its own
 licence, and each licence is included in full beside the material it covers.

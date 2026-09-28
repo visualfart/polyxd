@@ -1,6 +1,6 @@
 # Polyxd Studio
 
-Where a design-system team decides what generated screens may look like, and reviews what they actually look like. Apache-2.0, like the rest of Polyxd.
+Where a design-system team decides what generated screens may look like, and reviews what they actually look like. Source-available under the [Functional Source License](LICENSE) (FSL-1.1-ALv2), unlike the rest of Polyxd, which is Apache-2.0: run it for your own team or company, but not as a competing hosted service. Each version becomes Apache-2.0 two years after its release.
 
 Run it yourself on your own Cloudflare account, or use the hosted one at studio.polyxd.com (same code; a small fee may cover its storage later).
 

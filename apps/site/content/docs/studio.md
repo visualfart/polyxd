@@ -7,7 +7,7 @@ order: 23
 
 # Studio
 
-[Studio](https://studio.polyxd.com) is the team's side of Polyxd: open source (Apache-2.0, in `apps/studio`), running on Cloudflare Workers with D1 and R2, and the same code whether you use the hosted one or your own. The hosted Studio is free for one workspace; a small fee may later cover its storage.
+[Studio](https://studio.polyxd.com) is the team's side of Polyxd: source-available (the [Functional Source License](https://fsl.software), in `apps/studio`: free to run for your own team or company, not as a competing hosted service, and each version becomes Apache-2.0 after two years), running on Cloudflare Workers with D1 and R2, and the same code whether you use the hosted one or your own. The hosted Studio is free for one workspace; paid plans for bigger teams are coming, and will be published before they start.
 
 ## Your design system
 
@@ -108,3 +108,5 @@ npm run dev -w @polyxd/studio             # http://localhost:8789
 ```
 
 For production: a D1 database, an R2 bucket, `SECRETS_KEY` and `AUTH_SECRET` secrets, `RESEND_API_KEY` for email, and `npm run deploy -w @polyxd/studio`. The README in `apps/studio` has the exact steps.
+
+The [licence](https://github.com/visualfart/polyxd/blob/main/apps/studio/LICENSE) lets you run Studio for your own team or company, change it, and share your changes. It does not let you offer Studio, or something substantially like it, as a service to others. Each version becomes Apache-2.0 two years after its release.
