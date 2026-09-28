@@ -1,0 +1,424 @@
+/*
+ * Film S, "Who gives AI taste?": on top of kit.css, film-b.css and film-b4.css (the camera rig, the
+ * hand-drawn layer, the captions, the turn's paper). What is new here: the Studio window the real
+ * Studio's screens sit in, the phone box that carries the product and its doodles, the sticky note,
+ * the file chips, the devices a published screen goes to, the export chips.
+ */
+
+/* ——— The phone, and the doodles drawn on it, move as one box ——— */
+#phonebox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+}
+#pink {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --hw-ink: #141413;
+  --hw-accent: #ff6e40;
+}
+
+/* ——— The Studio window: Studio's own screens, captured at 1600×1000, drawn at 0.75 ——— */
+#studio-win {
+  position: absolute;
+  left: 660px;
+  top: 150px;
+  width: 1204px;
+  height: 788px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 2px solid #141413;
+  overflow: hidden;
+  box-shadow: 0 40px 90px rgba(20, 20, 19, 0.14);
+  transform-origin: 50% 50%;
+}
+#studio-win .win-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-bottom: 1.5px solid #dad5ca;
+  background: #f3f1ec;
+}
+#studio-win .win-bar i {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 6px;
+  background: #dad5ca;
+}
+#studio-win .win-bar span {
+  margin-left: 14px;
+  font-family: "DM Mono", monospace;
+  font-size: 14px;
+  color: #6b675e;
+}
+#studio-view {
+  position: absolute;
+  left: 0;
+  top: 34px;
+  width: 1600px;
+  height: 1000px;
+  transform: scale(0.75);
+  transform-origin: 0 0;
+  overflow: hidden;
+  background: #ffffff;
+}
+#studio-view img.sshot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1600px;
+  height: 1000px;
+  display: none;
+}
+#studio-view img.crop {
+  position: absolute;
+  display: none;
+}
+#sink {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1600px;
+  height: 1000px;
+  pointer-events: none;
+  --hw-ink: #141413;
+  --hw-accent: #ff6e40;
+}
+/* Patches the film lays over a still to animate what the page did: counters, rows filling in. */
+.patch {
+  position: absolute;
+  background: #ffffff;
+}
+.count {
+  position: absolute;
+  font-family: "Young Serif", serif;
+  color: #141413;
+  white-space: nowrap;
+  background: #ffffff;
+}
+.hair {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.hair rect {
+  fill: none;
+  stroke: #141413;
+  stroke-width: 1.5;
+}
+
+/* ——— Import: the kinds of file a design system arrives as ——— */
+.fchip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 58px;
+  padding: 0 20px 0 14px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 2px solid #141413;
+  box-shadow: 0 10px 24px rgba(20, 20, 19, 0.12);
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #141413;
+  white-space: nowrap;
+  opacity: 0;
+}
+.fchip .ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-family: "DM Mono", monospace;
+  font-size: 13px;
+  font-weight: 400;
+  color: #ffffff;
+  background: #141413;
+}
+.fchip .mono {
+  font-family: "DM Mono", monospace;
+  font-weight: 400;
+  font-size: 18px;
+  color: #6b675e;
+}
+
+/* ——— The turn: a sticky note on paper ——— */
+#sticky {
+  position: absolute;
+  width: 330px;
+  height: 330px;
+  background: #ffe58a;
+  box-shadow: 0 18px 30px rgba(20, 20, 19, 0.14), inset 0 -18px 30px rgba(20, 20, 19, 0.04);
+  padding: 30px 30px;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 1.12;
+  color: #141413;
+}
+#sticky .t {
+  font-size: 38px;
+  color: #6b5a1c;
+  margin-bottom: 6px;
+}
+#turn-mark2 {
+  position: absolute;
+  width: 170px;
+  height: 170px;
+}
+#turn-ink {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ——— Publish: the devices a published screen goes to, the fetch, the exports ——— */
+#devices {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+#d-laptop {
+  position: absolute;
+  left: 930px;
+  top: 250px;
+  width: 700px;
+  height: 452px;
+  border-radius: 16px;
+  background: #141413;
+  padding: 12px;
+}
+#d-laptop .lscreen {
+  position: relative;
+  width: 676px;
+  height: 428px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff;
+}
+#d-laptop .lbase {
+  position: absolute;
+  left: -60px;
+  right: -60px;
+  bottom: -26px;
+  height: 26px;
+  border-radius: 0 0 22px 22px;
+  background: #2a2a28;
+}
+#d-laptop .lview {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1040px;
+  height: 658px;
+  transform: scale(0.65);
+  transform-origin: 0 0;
+}
+#d-phone {
+  position: absolute;
+  left: 1660px;
+  top: 300px;
+  width: 210px;
+  height: 440px;
+  border-radius: 34px;
+  background: #141413;
+  padding: 7px;
+}
+#d-phone .pscreen {
+  position: relative;
+  width: 196px;
+  height: 426px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #ffffff;
+}
+#d-phone .pview {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 390px;
+  height: 848px;
+  transform: scale(0.5026);
+  transform-origin: 0 0;
+}
+.dview {
+  background: var(--pxd-color-surface-default);
+}
+.dview .pad {
+  padding: 28px 30px;
+}
+.dview .dbar {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 22px;
+  border-bottom: 1px solid var(--pxd-color-border-default);
+  font-family: var(--pxd-type-title-item-family);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--pxd-color-text-default);
+}
+.dview .dbar b {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: var(--pxd-color-action-primary-foreground);
+  background: var(--pxd-color-action-primary-background);
+  font-size: 16px;
+}
+#d-code {
+  position: absolute;
+  left: 930px;
+  top: 760px;
+  font-family: "DM Mono", monospace;
+  font-size: 27px;
+  color: #141413;
+  white-space: nowrap;
+}
+#d-code .verb {
+  color: #ff6e40;
+}
+.xchip {
+  position: absolute;
+  height: 52px;
+  padding: 0 20px;
+  border-radius: 26px;
+  background: #ffffff;
+  border: 2px solid #141413;
+  display: flex;
+  align-items: center;
+  font-family: "Hanken Grotesk", sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: #141413;
+  white-space: nowrap;
+  opacity: 0;
+}
+#flycard {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 24px 50px rgba(20, 20, 19, 0.2);
+}
+#flycard img {
+  display: block;
+}
+/* A saved rule, flying from Studio to the screen it fixes. */
+.rulecard {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 2px solid #141413;
+  box-shadow: 0 16px 34px rgba(20, 20, 19, 0.16);
+  font-family: "Hanken Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: #141413;
+  white-space: nowrap;
+  opacity: 0;
+  transform-origin: 50% 50%;
+}
+.rulecard em {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  margin-left: 10px;
+  padding: 3px 9px;
+  border-radius: 10px;
+  color: #b3261e;
+  background: #fde7e4;
+}
+.rulecard em.warn {
+  color: #8a5a00;
+  background: #fff1d6;
+}
+
+/* Captions in the rules scene sit low, under the small phone. */
+.b4cap.low {
+  top: auto;
+  bottom: 90px;
+  height: auto;
+  width: 560px;
+}
+.b4cap.low .line {
+  font-size: 60px;
+}
+
+/* ——— Two worlds, two cameras (the rig transform is written by render) ——— */
+.stage {
+  position: absolute;
+  inset: 0;
+}
+.persp {
+  position: absolute;
+  inset: 0;
+  perspective: 2200px;
+  perspective-origin: 50% 50%;
+}
+.rig {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+#rigB .phone {
+  box-shadow: 0 40px 90px rgba(20, 20, 19, 0.16);
+}
+#screen .layer {
+  position: absolute;
+  inset: 0;
+}
+/* Paper under the captions, when the Studio camera needs the whole frame. */
+#panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 860px;
+  background: linear-gradient(90deg, #f3f1ec 0, #f3f1ec 780px, rgba(243, 241, 236, 0) 860px);
+  opacity: 0;
+  pointer-events: none;
+}
+#fly {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* Captions beside the Studio window: a little narrower. */
+.b4cap.side {
+  left: 120px;
+  width: 620px;
+}
+.b4cap.side .line {
+  font-size: 68px;
+}

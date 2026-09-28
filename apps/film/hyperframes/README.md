@@ -237,3 +237,67 @@ Output: `apps/film/out/hyperframes/polyxd-b5-return-the-shoes.mp4` (78.2 s, −1
 `polyxd-b5-return-the-shoes-sheet.png`, ten stills in `stills/`. No new catalogue items: the score
 and every sound effect are B4's (see B4's credits). The logos are the design systems' own marks as
 shipped in `packages/ds-*/logo.svg` (their owners' trademarks); GOV.UK is shown as words only.
+
+## Film S: "Who gives AI taste?" (`film-s-who-gives-ai-taste/`)
+
+The Studio film, from `STORY-STUDIO.md`, made the way B5 was: an assistant draws a cancel screen
+nobody on the team would ship (three primaries, "Oops!", the wrong blue); the designers give it taste
+in Studio (import, tune, components, rules, author, publish); the same ask comes back and the screen
+is theirs. 86.7 s including B's intro sting and outro (subtext "Polyxd Studio · studio.polyxd.com").
+Scene-by-scene notes with the skills and techniques used: `film-s-who-gives-ai-taste/STORYBOARD.md`.
+
+Studio's screens are the real Studio. `film-s-capture.mjs` seeds a throwaway local Studio the way
+`apps/studio/scripts/landing-shots.ts` does (a local test account with a random password, through
+the app's own API; nothing real is touched), adds the film's screen ("Cancel your plan", key
+`cancel`) and three rules, then captures every state at 2× with the boxes the camera and doodles aim
+at. The product screens are the real renderer; the team's screen is the document Studio publishes,
+drawn with Harbourline's CSS export. New code is film-s only (`shared/film-s.js`, `shared/film-s.css`,
+`shared/film-s-timings.json`, `make-s.mjs`, `music-s.mjs`, `film-s-capture.mjs`); everything else
+is B4/B5's machinery, unchanged.
+
+```sh
+# a local Studio with a database of its own (in apps/studio):
+npx wrangler d1 migrations apply studio-dev --local --persist-to <dir>
+npm run build -w @polyxd/studio && npx wrangler dev --persist-to <dir> --port 8789
+node apps/film/hyperframes/film-s-capture.mjs      # Studio's screens → film-s-who-gives-ai-taste/assets/studio/
+# (stop the dev server)
+node apps/film/hyperframes/music-s.mjs             # the score, cut on its bars
+node apps/film/hyperframes/make-s.mjs              # index.html, themes, crops, sound cues
+cd apps/film/hyperframes/film-s-who-gives-ai-taste && npx hyperframes check && \
+  npx hyperframes render --quality delivery --output ../../out/hyperframes/polyxd-s-who-gives-ai-taste.mp4
+ffmpeg -i ../../out/hyperframes/polyxd-s-who-gives-ai-taste.mp4 -c:v libx264 -crf 24 -preset slow \
+  -pix_fmt yuv420p -c:a copy -movflags +faststart ../../out/hyperframes/polyxd-s-who-gives-ai-taste-share.mp4
+```
+
+Output: `apps/film/out/hyperframes/polyxd-s-who-gives-ai-taste.mp4` (86.7 s, 41 MB, −14.2 LUFS,
+−1.7 dBTP), `polyxd-s-who-gives-ai-taste-share.mp4` (CRF 24, 9.8 MB),
+`polyxd-s-who-gives-ai-taste-sheet.png`, ten stills in `stills/`.
+
+### Credits (film S)
+
+From the **HeyGen audio catalogue** through media-use's HeyGen route (the owner's signed-in account),
+frozen into the project with `npx hyperframes media-use resolve --from …` (`.media/manifest.jsonl`,
+git-ignored; re-download by id). Used under the HeyGen account's terms for catalogue audio; the
+catalogue attaches no per-item licence string, so confirm commercial use in the account terms.
+
+| Use | Item (catalogue id) | Name |
+|---|---|---|
+| Score (cut: `music-s.mjs`) | 78398bc2… | "Astral Generated Music: 78398bc2" — elegant cinematic corporate build with rhythmic confidence and premium strings (120 bpm, 160 s) |
+| Sting, the flight to the devices, into the payoff | 00caa739… | Quick Whoosh |
+| Publish (soft, under the impact) | 128d8419… | Cinematic Sub Bass Hit |
+| Send, saving a rule | 19bd1766… | Soft muted tap |
+| Parts arriving, dialogs, export chips | 4558aa13… | UI Pop |
+| Camera moves, rule flights | 72d0b143… | Fast whoosh |
+| Pen on paper: every doodle, the hairlines | 9b77ef76… | Page turn |
+| The tilt, the Studio window arriving | a4855a82… | Fast airy whoosh |
+| Typing (the ask, guidance, a rule, the fetch) | e401e115… | Keyboard Typing |
+| Scan count, contrast ticks, the Publish press | e7945ed1… | Sharp click |
+| The mark's check | ef870618… | Bright electronic chime |
+| Into the turn | f6995a68… | Deep whoosh riser |
+| Component switches | ee5e8476… | Mechanical double click (new) |
+| A rule applied | f6601811… | High pitched chime (new) |
+| The rebrand slider | f21dfc94… | Short synth whoosh (new) |
+| Publish | 8639f575… | Quick Swipe Impact (new) |
+| File chips landing | d9b59db7… | Airy pop (new) |
+
+Fonts: Young Serif, DM Mono, Hanken Grotesk (SIL OFL); Caveat (SIL OFL, installed by the registry).

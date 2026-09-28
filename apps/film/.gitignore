@@ -1,3 +1,5 @@
 assets/
 out/*
 !out/poster.png
+# Film S: the HeyGen catalogue score and effects (re-download by the ids in hyperframes/README.md)
+hyperframes/film-s-who-gives-ai-taste/.media/
