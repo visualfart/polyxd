@@ -11,6 +11,9 @@ One 1200 × 630 card per page of polyxd.com, shown when a link is shared.
   has none. The four demo products' cards go to `apps/demos/public/<name>/og.png`, where their
   pages already point; `apps/demos/scripts/og.ts` renders the same cards there too.
 
+The repository's own social preview (1280 × 640) is `.github/social-preview.png`, from
+`.github/social-preview.html`; GitHub only takes it as an upload in the repo's settings.
+
 Nothing on a card is smaller than 24px, since a feed shows it at about half size.
 
 To change a card, edit it in `cards/` (and on the canvas), then run:
