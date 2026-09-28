@@ -72,8 +72,8 @@ export function Landing() {
             <Feature
               n={1}
               title="Your design system, as it is"
-              image={{ src: "/landing/scan.png", w: 1600, h: 1000, alt: "The scan of a design system started from the Sketch template: 275 tokens counted by tier and by type, a light and a dark mode, every reference resolving" }}
-              second={{ src: "/landing/templates.png", w: 720, h: 690, alt: "The template chooser: Blank, Mono, Civic, Sketch, Wireframe, Editorial, Pastel and Health, each with a line of character and a strip of swatches from its own tokens" }}
+              image={{ src: "/landing/scan.png", w: 1600, h: 1000, alt: "The scan of the Sketch pack imported as a Tokens Studio file: 275 tokens counted by tier and by type, a light and a dark mode, every reference resolving" }}
+              second={{ src: "/landing/templates.png", w: 720, h: 690, alt: "The template chooser: Blank, Mono, Civic, Sketch, Wireframe and Editorial, each with a line of character and a strip of swatches from its own tokens" }}
             >
               Import it from an npm package, public or private, a packed <code>.tgz</code>, a Tokens Studio file, a W3C DTCG file, or CSS custom properties. Push it from where the tokens are built with <code>polyxd studio push</code>, so a release step can run it. Or start from one of twelve templates. Either way the scan shows what was found: tokens by tier and type, modes, aliases, broken and circular references, deprecated tokens.
             </Feature>
@@ -87,7 +87,7 @@ export function Landing() {
             <Feature
               n={3}
               title="Tune it, export it"
-              image={{ src: "/landing/tokens.png", w: 1600, h: 1000, alt: "The tokens editor: the brand colour ramp as a row of swatches, each marked with the roles that read it and whether their contrast pairs pass, with the primitive's value open for editing" }}
+              image={{ src: "/landing/tokens.png", w: 1600, h: 1000, alt: "The tokens editor: a brand colour ramp turned to teal, as rows of swatches, each marked with the roles that read it and whether their contrast pairs pass, with the primitive's value open for editing" }}
               second={{ src: "/landing/export.png", w: 560, h: 739, alt: "The export dialog: CSS variables, a DTCG pack, a Tailwind theme, a Style Dictionary source, a Swift enum and a Kotlin object" }}
             >
               Primitives by group, colour ramps as swatches that show which roles read each step and whether their contrast pairs pass, scales as lists. Change a value and every alias through it follows, with contrast measured again as you type; save the edits as a new draft version. Export any version for code: CSS variables, a DTCG pack, a Tailwind theme, a Style Dictionary source, a Swift enum or a Kotlin object, from the Export button or the API with a key.

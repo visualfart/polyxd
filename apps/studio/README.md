@@ -81,6 +81,8 @@ npm run dev -w @polyxd/studio     # builds the app, then wrangler dev on http://
 
 Create an account with any email: locally no email goes out, so it works at once. Tests: `npm test -w @polyxd/studio`.
 
+The landing's product images are captured from a running Studio: against a local one with a database of its own (`--persist-to` a scratch directory for both the migration and `wrangler dev`), `node apps/studio/scripts/landing-shots.ts` makes a test account and the Harbourline workspace (the Sketch pack imported, a Mono-based design system rebranded and published, the spec's screens and the shell) and writes `public/landing/*.png`. `node apps/studio/scripts/og.ts` then writes the social image, `public/og.png`, from the brand and one of those images.
+
 ## Deploy your own
 
 `wrangler.jsonc` has a `production` environment; copy it and change the route to your domain.
@@ -107,4 +109,5 @@ The hosted one at studio.polyxd.com is this same configuration.
 | `src/screens/` | Screens, shared by the Worker and the app: the schema read without ajv (Workers refuse generated code), the checker with the spec's shell rules, the tree edits |
 | `src/app/` | The React app; `src/app/screen/` is the editor's tree, preview, property panel and themes; `pages/TokensEditor.tsx` the tokens editor; `pages/Landing.tsx` and `landing.css` the landing, `pages/SignIn.tsx` and `signin.css` the sign-in |
 | `migrations/` | D1 schema |
+| `scripts/` | `landing-shots.ts` (the landing's images, from a seeded local Studio) and `og.ts` (the social image) |
 | `../../design/studio` | The design every screen here follows |
