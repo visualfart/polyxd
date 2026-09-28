@@ -11,19 +11,21 @@ section: Guides
 
 Use it when the model key must stay on a server, or when the code that wants a screen isn't JavaScript. It keeps no state between requests and logs nothing from them but the method, path, status and duration.
 
-It is on npm as `@polyxd/server`. Run it with `npx @polyxd/server`, or build its Docker image from a clone.
+It is on npm as `@polyxd/server`, and its Docker image is on GitHub Container Registry as `ghcr.io/visualfart/polyxd-server`.
 
 ## Run it with Docker
 
-From a clone of the [repository](https://github.com/visualfart/polyxd):
-
 ```sh
-docker build -f packages/server/Dockerfile -t polyxd-server .
-
 docker run --rm -p 8080:8080 \
   -e POLYXD_PROVIDER=anthropic \
   -e ANTHROPIC_API_KEY \
-  polyxd-server
+  ghcr.io/visualfart/polyxd-server:0.4.0
+```
+
+To build the image yourself, from a clone of the [repository](https://github.com/visualfart/polyxd):
+
+```sh
+docker build -f packages/server/Dockerfile -t polyxd-server .
 ```
 
 `-e ANTHROPIC_API_KEY` with no value passes the key from your shell, so it isn't written in the command. The image runs Node 26 as an unprivileged user, listens on port 8080, and has a health check on `/v1/health`. It contains the server and its production dependencies only: no Playwright and no browser.

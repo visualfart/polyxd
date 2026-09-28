@@ -138,7 +138,7 @@ Polyxd ships no model. Any model or program that emits spec-valid JSON drives it
 
 [`@polyxd/runtime`](packages/runtime/) does the generating part for you: it builds the prompt from the spec and your Direction, calls Claude, GPT, Gemini or a local model behind an OpenAI-compatible endpoint, checks the answer and sends problems back for repair, streams, and remembers the screen shown for each intent. See [Runtime](https://polyxd.com/docs/runtime/).
 
-[`@polyxd/server`](packages/server/) puts the runtime behind an HTTP API with streaming, for when the model key has to stay on a server or the code that wants a screen isn't JavaScript. Run it with `npx @polyxd/server`, or build its Docker image from a clone. See [Generation server](https://polyxd.com/docs/server/).
+[`@polyxd/server`](packages/server/) puts the runtime behind an HTTP API with streaming, for when the model key has to stay on a server or the code that wants a screen isn't JavaScript. Run it with `npx @polyxd/server` or the Docker image `ghcr.io/visualfart/polyxd-server`. See [Generation server](https://polyxd.com/docs/server/).
 
 ## Repository
 
