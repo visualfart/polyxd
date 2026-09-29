@@ -1,13 +1,14 @@
 # Polyxd Studio
 
-Where a design-system team decides what generated screens may look like, and reviews what they actually look like. Apache-2.0, like the rest of Polyxd.
+Where a design-system team decides what generated screens may look like, and reviews what they actually look like. Source-available under the [Functional Source License](LICENSE) (FSL-1.1-ALv2), unlike the rest of Polyxd, which is Apache-2.0: run it for your own team or company, but not as a competing hosted service. Each version becomes Apache-2.0 two years after its release.
 
-Run it yourself on your own Cloudflare account, or use the hosted one at studio.polyxd.com (same code; a small fee may cover its storage later).
+Run it yourself on your own Cloudflare account, free and with no limits, or use the hosted one at studio.polyxd.com (same code), which has a Free plan and paid ones ([plans and billing](#plans-and-billing-the-hosted-studio)).
 
 ## What works
 
 - A landing page at `/` for anyone signed out (and at `/welcome` for anyone signed in): what Studio does, in the site's voice, with the spec's send-money example drawn live by `@polyxd/react` and cycled through three design systems, product images captured from Studio itself (`public/landing/`), and the sign-in split beside it (`/signin`, `?mode=signup` or `?mode=forgot` open that form).
-- Sign up and sign in through [better-auth](https://www.better-auth.com), open source and running inside the Worker: email and password with verification, password reset, Google when a client is configured; two-step verification and SAML/OIDC single sign-on are its plugins, to add when a customer needs them. Workspaces, invites with roles, API keys.
+- Sign up and sign in through [better-auth](https://www.better-auth.com), open source and running inside the Worker: email and password with verification, password reset, Google when a client is configured; two-step verification and SAML/OIDC single sign-on are its plugins, to add when a customer needs them. Workspaces, invites with roles (withdrawn from the Team page), owners taking people out, API keys.
+- On the hosted Studio only, plans and billing: a Billing page (plan, seats, usage, upgrade and manage), limits per plan, fetch metering, Stripe ([below](#plans-and-billing-the-hosted-studio)).
 - Import a design system as it is, from an npm package (public, or private through a read-only registry token kept encrypted, an uploaded `npm pack` tarball, or `polyxd studio push` from inside your network), a Tokens Studio file, a W3C DTCG file, or CSS custom properties.
 - Or **start from a template**: one of the twelve original template packs (`packages/ds-{mono,civic,sketch,wireframe,editorial,pastel,health,finance,glass,terminal,brutalist,neon}`, bundled into the Worker as JSON), or a blank one (Mono's structure with a grey ramp). Each is shown with one line of character and a strip of swatches from its own tokens. It becomes a design system of the workspace with its tokens copied, scanned, and every role mapped to the pack's semantic token of the same name (exact matches accepted), ready to tune and publish.
 - A scan of what was found: tokens by tier and type, modes, broken and circular references, deprecated tokens.
@@ -117,7 +118,35 @@ The landing's product images are captured from a running Studio: against a local
 3. Secrets, with `npx wrangler secret put <NAME> --env production`: `AUTH_SECRET` (a long random string; signs sessions), `SECRETS_KEY` (another; encrypts registry tokens), `RESEND_API_KEY` (verification, reset and invite emails; without it, links are logged), and optionally `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for "Continue with Google" (redirect URI: `<APP_URL>/api/auth/callback/google`). Analytics are off unless you also set `POSTHOG_KEY` (and `POSTHOG_HOST` for PostHog's EU cloud); `docs/analytics.md` says what they send.
 4. `npm run deploy -w @polyxd/studio`.
 
-The hosted one at studio.polyxd.com is this same configuration.
+The hosted one at studio.polyxd.com is this same configuration, plus billing (below). Leave `BILLING` unset and your Studio has no plans, no limits and no Billing page: every workspace can have as many editors, design systems, Directions, published screens and fetches as you like, and no request to Stripe or Analytics Engine is ever made.
+
+## Plans and billing (the hosted Studio)
+
+Only a Studio whose `BILLING` is `on` has plans. The limits live in one table, `LIMITS` in `src/worker/plans.ts`, from [the pricing decision](../../docs/decisions/0004-pricing-and-licensing.md):
+
+| | Free | Pro | Team | Enterprise |
+|---|---|---|---|---|
+| Workspaces a person owns | 1 | 3 | unlimited | unlimited |
+| Editors (every role but `viewer`; viewers are free) | 2 | 1 | unlimited | unlimited |
+| Design systems (imported or from a template) | 1 | unlimited | unlimited | unlimited |
+| Directions | 1 | unlimited | unlimited | unlimited |
+| Published screens | 10 | unlimited | unlimited | unlimited |
+| Fetches by API key a month | 10,000 | 250,000 | 1,000,000 | 10,000,000 |
+| Versions kept per screen, Direction or design system | last 10 | all | all | all |
+
+- **Hard limits** only stop something new: creating a workspace, inviting or accepting an invite as an editor (an open editor invite holds a seat; withdraw it on the Team page to free it), importing or starting a design system, creating a Direction, publishing a screen that isn't published yet. The answer is a 402 `{ error, code: "plan_limit", limit, plan, current, max }`, and the app shows an upgrade dialog. On Free, saving a version prunes all but the last 10 (the published or live one is always kept).
+- **Fetches** are soft. A product's `GET` by API key of a published screen, a Direction or a design system's export writes one data point to Workers Analytics Engine (`FETCHES`, dataset `polyxd_studio_fetches`), never a D1 row. The hourly cron (`triggers` in `wrangler.jsonc`) reads this month's and last month's totals back through the Analytics Engine SQL API into `usage`, and sets `over_quota_since` on a workspace over its plan's fetches (or clears it). Going over never blocks a fetch. Seven days over, every change in the workspace answers 402 `{ code: "over_quota" }` until it upgrades or the month turns; reads, fetches and billing keep working. The Billing page warns at 80% and 100%; email warnings are still to do.
+- **Stripe**, through its REST API (`src/worker/billing.ts`): `POST /api/w/<workspace>/billing/checkout` with `{ plan: "pro" | "team", interval: "month" | "year" }` opens Checkout (Team's quantity is the workspace's editors; the founding coupon is applied while it lasts, then the full price), `POST …/billing/portal` opens the Customer Portal, and only owners may call either. `POST /api/billing/webhook` checks the `Stripe-Signature` with Web Crypto and is the only thing that changes a workspace's plan: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted` (back to Free) and `invoice.payment_failed` (shown as past due while Stripe retries). A Team subscription's quantity follows editors joining and leaving, prorated. Enterprise is set by hand: `UPDATE workspaces SET plan = 'enterprise' WHERE slug = '…'`.
+
+To turn it on:
+
+1. In Stripe (test mode first): a product **Pro** with prices of $8 a month and $80 a year, a product **Team** with per-unit prices of $12 a month and $120 a year, and a coupon of 50% off, duration forever, max redemptions 100. In the Customer Portal settings, allow switching between those prices, changing Team's quantity and cancelling.
+2. A webhook endpoint at `https://<your Studio>/api/billing/webhook` for the five events above.
+3. An Analytics Engine API token: a Cloudflare API token with *Account Analytics: Read*.
+4. Secrets, with `npx wrangler secret put <NAME> --env production`: `BILLING` (`on`), `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_PRO_MONTH`, `STRIPE_PRICE_PRO_YEAR`, `STRIPE_PRICE_TEAM_MONTH`, `STRIPE_PRICE_TEAM_YEAR`, `STRIPE_COUPON_FOUNDING` (optional), `CF_ACCOUNT_ID` and `CF_ANALYTICS_TOKEN`.
+5. `npm run db:migrate:remote -w @polyxd/studio` for `migrations/0007_plans.sql`, then deploy.
+
+Locally, `npx wrangler dev --var BILLING:on` shows the limits and the Billing page without Stripe; `test/billing.worker.test.ts` runs both kinds of Studio with Stripe and Analytics Engine stood in for.
 
 ## Layout
 
@@ -130,7 +159,7 @@ The hosted one at studio.polyxd.com is this same configuration.
 | `src/templates/` | The twelve template packs bundled as JSON (`packs.ts`), their extras stylesheets as text (`extras.ts`), and each as a graph with a swatch summary |
 | `src/tokens/` | Editing: a pack as a graph, edits applied with aliases re-checked, the OKLCH ramp and rebrand, values as CSS and as one line |
 | `src/export/` | The six export formats |
-| `src/worker/` | The API on Workers: auth, workspaces, design systems, templates, editing, export, components, rules, screens, Directions, and Insights' ingest endpoint (`insights.ts`) |
+| `src/worker/` | The API on Workers: auth, workspaces, design systems, templates, editing, export, components, rules, screens, Directions, Insights' ingest endpoint (`insights.ts`); `plans.ts` the plan table, limits, fetch metering and the rollup, `billing.ts` Stripe |
 | `src/screens/` | Screens, shared by the Worker and the app: the schema read directly (the editor's shapes, and problems placed at the prop they are about), the checker with the spec's shell rules, the tree edits |
 | `src/insights/` | Insights, shared by the Worker and the app: the event check and the counting (`events.ts`), and the report the page reads (`report.ts`) |
 | `src/direction/` | Directions, shared by the Worker and the app: what a version stores and what a product gets (`model.ts`), the schema check in plain words (`schema.ts`), the field-by-field diff (`diff.ts`), the voice sample (`voice.ts`), and every setting's words (`labels.ts`) |

@@ -23,6 +23,24 @@ export interface Env extends AnalyticsEnv {
   EMAIL_FROM?: string;
   GOOGLE_CLIENT_ID?: string;
   GOOGLE_CLIENT_SECRET?: string;
+  /**
+   * "on" only on the hosted Studio: plans, limits, fetch metering and Stripe (src/worker/plans.ts,
+   * billing.ts). Unset, as on every self-hosted Studio, there are no limits and no billing.
+   */
+  BILLING?: string;
+  STRIPE_SECRET_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
+  STRIPE_PRICE_PRO_MONTH?: string;
+  STRIPE_PRICE_PRO_YEAR?: string;
+  STRIPE_PRICE_TEAM_MONTH?: string;
+  STRIPE_PRICE_TEAM_YEAR?: string;
+  /** The founding offer: a coupon at 50% off, forever, for at most 100 redemptions. */
+  STRIPE_COUPON_FOUNDING?: string;
+  /** Workers Analytics Engine: one data point per fetch by key, rolled up by the cron. */
+  FETCHES?: AnalyticsEngineDataset;
+  /** For the rollup to read Analytics Engine back: the account, and a token with Account Analytics Read. */
+  CF_ACCOUNT_ID?: string;
+  CF_ANALYTICS_TOKEN?: string;
 }
 
 export interface User {
@@ -109,9 +127,10 @@ export async function userFromRequest(c: Ctx, auth: Auth): Promise<{ user: User 
   const bearer = c.req.header("authorization")?.match(/^Bearer (pxs_[a-f0-9]+)$/)?.[1];
   if (bearer) {
     const hash = await sha256(bearer);
-    const key = await c.env.DB.prepare("SELECT id, workspace_id, created_by FROM api_keys WHERE key_hash = ?").bind(hash).first<{ id: string; workspace_id: string; created_by: string }>();
+    const key = await c.env.DB.prepare("SELECT id, workspace_id, created_by, last_used_at FROM api_keys WHERE key_hash = ?").bind(hash).first<{ id: string; workspace_id: string; created_by: string; last_used_at: string | null }>();
     if (!key) return { user: null, apiWorkspace: null };
-    await c.env.DB.prepare("UPDATE api_keys SET last_used_at = ? WHERE id = ?").bind(now(), key.id).run();
+    // A product fetches by key on every request; "last used" to the hour is enough, and saves a write each time.
+    if (!key.last_used_at || Date.parse(key.last_used_at) < Date.now() - 3600e3) await c.env.DB.prepare("UPDATE api_keys SET last_used_at = ? WHERE id = ?").bind(now(), key.id).run();
     const user = await c.env.DB.prepare("SELECT id, email, name FROM user WHERE id = ?").bind(key.created_by).first<User>();
     return { user, apiWorkspace: key.workspace_id };
   }

@@ -2,6 +2,7 @@
   "name": "@polyxd/studio",
   "version": "0.0.1",
   "private": true,
+  "license": "FSL-1.1-ALv2",
   "description": "Polyxd Studio: where a design-system team decides what generated screens may look like, and reviews what they actually look like",
   "type": "module",
   "scripts": {

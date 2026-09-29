@@ -216,6 +216,6 @@ Before a pull request: `npm run test:all` and `npm run check:licences`.
 
 ## Licence
 
-Code is [Apache-2.0](LICENSE); the spec and documentation are [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/). [NOTICE](NOTICE) lists every vendored source and its licence.
+Code is [Apache-2.0](LICENSE), except Studio (`apps/studio`), which is [FSL-1.1-ALv2](apps/studio/LICENSE): free to run for your own team or company, not as a competing hosted service, and Apache-2.0 two years after each release; the spec and documentation are [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/). [NOTICE](NOTICE) lists every vendored source and its licence.
 
 The design-system packs are Polyxd's work, reading each system's published tokens. Polyxd is not affiliated with, endorsed by or sponsored by any of those projects or their owners, and each name is the trademark of its owner.

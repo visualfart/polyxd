@@ -23,11 +23,17 @@
   // The top level is local development: `wrangler dev` uses a local database and bucket, no
   // email goes out, and an account works as soon as it's created. Production is `production`.
   "vars": { "APP_URL": "http://localhost:8789", "EMAIL_FROM": "Polyxd Studio <studio@polyxd.com>" },
+  // Plans and billing run only where BILLING is "on" (the hosted Studio sets it as a secret, with
+  // Stripe's). Without it the fetch counter and the hourly rollup do nothing, and there are no limits.
+  "analytics_engine_datasets": [{ "binding": "FETCHES", "dataset": "polyxd_studio_fetches" }],
+  "triggers": { "crons": ["17 * * * *"] },
   "env": {
     "production": {
       "routes": [{ "pattern": "studio.polyxd.com", "custom_domain": true }],
       "d1_databases": [{ "binding": "DB", "database_name": "studio", "database_id": "0d0c8972-4d26-4897-8115-471304e74ead", "migrations_dir": "migrations" }],
       "r2_buckets": [{ "binding": "FILES", "bucket_name": "polyxd-studio-files" }],
+      "analytics_engine_datasets": [{ "binding": "FETCHES", "dataset": "polyxd_studio_fetches" }],
+      "triggers": { "crons": ["17 * * * *"] },
       "vars": { "APP_URL": "https://studio.polyxd.com", "EMAIL_FROM": "Polyxd Studio <studio@polyxd.com>" },
       "workers_dev": false,
       "preview_urls": false,

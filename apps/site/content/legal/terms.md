@@ -20,7 +20,7 @@ Our [privacy policy](/privacy/) explains what we do with personal data.
 
 ## Open-source software
 
-Polyxd's code is open source under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). The specification and the documentation are licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). Those licences, not these terms, govern your use of the code, the specification and the docs, wherever you get them. You can run all of it yourself.
+Polyxd's code is open source under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0), except Polyxd Studio, whose source is available under the [Functional Source License 1.1](https://fsl.software) (you may run it for your own team or company, but not offer it as a competing service; each version becomes Apache 2.0 two years after its release). The specification and the documentation are licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). Those licences, not these terms, govern your use of the code, the specification and the docs, wherever you get them. You can run all of it yourself.
 
 These terms apply to the services we host for you.
 
