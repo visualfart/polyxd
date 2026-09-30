@@ -17,6 +17,7 @@ import { Invite } from "./pages/Invite.tsx";
 import { Billing } from "./pages/Billing.tsx";
 import { Mark, StudioLockup } from "./mark.tsx";
 // The screen pages carry the renderer, the schema and the spec's examples; they load when opened.
+const Admin = lazy(() => import("./pages/Admin.tsx").then((m) => ({ default: m.Admin })));
 const Screens = lazy(() => import("./pages/Screens.tsx").then((m) => ({ default: m.Screens })));
 const Screen = lazy(() => import("./pages/Screen.tsx").then((m) => ({ default: m.Screen })));
 // The Direction editor draws exemplar screens with the renderer; it loads when opened.
@@ -65,6 +66,7 @@ export function App() {
         <Route path="/invite/:id" element={<Invite />} />
         <Route path="/" element={me.user ? <Workspaces /> : <Suspense fallback={null}><Landing /></Suspense>} />
         <Route path="/welcome" element={<Suspense fallback={null}><Landing /></Suspense>} />
+        <Route path="/admin" element={me.admin ? <Suspense fallback={null}><Admin /></Suspense> : <Navigate to="/" replace />} />
         <Route path="/w/:slug/*" element={me.user ? <Shell /> : <Navigate to="/signin" replace />} />
       </Routes>
       {toast && (

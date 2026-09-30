@@ -10,7 +10,7 @@ import { scan } from "../import/scan.ts";
 import { mapRoles, candidatesFor, scalar, type Contract, type Override } from "../import/map.ts";
 import { checkRegistryUrl, fetchPackage, findTokenFiles, untar } from "../import/package.ts";
 import { decrypt, encrypt, newApiKey, sha256 } from "./crypto.ts";
-import { isLocal, makeAuth, now, sendEmail, userFromRequest, type Ctx, type Env, type User } from "./auth.ts";
+import { isLocal, makeAuth, now, page, sendEmail, userFromRequest, type Ctx, type Env, type User } from "./auth.ts";
 import { checkDocument, type Rule } from "../screens/validate.ts";
 import { blankDocument } from "../screens/tree.ts";
 import type { Doc } from "../screens/schema.ts";
@@ -23,16 +23,23 @@ import { checkDirection } from "../direction/schema.ts";
 import { capture, ingest, posthogConfig, type Properties } from "./analytics.ts";
 import { CORS, ingestEvents, newIngestKey, preflight } from "./insights.ts";
 import { RANGES, RETENTION_DAYS, detail, range, summarise, type StoredRow } from "../insights/report.ts";
-import { PlanLimit, assertCanCreate, assertCanEdit, billingOn, countFetch, isEditor, planSummary, pruneHistory, rollUp } from "./plans.ts";
+import { PLANS, PlanLimit, assertCanCreate, assertCanEdit, billingOn, countFetch, isEditor, planSummary, pruneHistory, rollUp } from "./plans.ts";
 import { StripeError, applySubscription, checkoutParams, isPaidPlan, priceFor, stripe, stripeOn, syncSeats, verifySignature, type Subscription } from "./billing.ts";
+import { audit, isPlan, isSuperAdmin, overview, recentActions, searchUsers, searchWorkspaces, workspaceDetail } from "./admin.ts";
 
 type Vars = { user: User | null; apiWorkspace: string | null };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
 const CONTRACT = contract as unknown as Contract;
-const ROLES = ["owner", "design-system", "designer", "product", "engineer", "viewer"] as const;
-const CAN_EDIT_TOKENS = new Set(["owner", "design-system", "engineer"]);
-const CAN_EDIT_RULES = new Set(["owner", "design-system", "designer"]);
-const CAN_EDIT_SCREENS = new Set(["owner", "design-system", "designer", "product"]);
+// owner and admin both run a workspace; the difference is that there is exactly one owner, and
+// only the owner can transfer it away or delete the workspace. owner is never invited or set by a
+// role change: it moves only through a transfer, which demotes the previous owner to admin.
+const ROLES = ["owner", "admin", "design-system", "designer", "product", "engineer", "viewer"] as const;
+const GRANTABLE = ROLES.filter((r) => r !== "owner");
+/** Runs the workspace: people, roles and billing. */
+const RUNS = new Set(["owner", "admin"]);
+const CAN_EDIT_TOKENS = new Set(["owner", "admin", "design-system", "engineer"]);
+const CAN_EDIT_RULES = new Set(["owner", "admin", "design-system", "designer"]);
+const CAN_EDIT_SCREENS = new Set(["owner", "admin", "design-system", "designer", "product"]);
 const secretsKey = (env: Env) => env.SECRETS_KEY ?? (isLocal(env) ? "dev-only-not-a-secret" : "");
 
 class Fail extends Error {
@@ -184,7 +191,7 @@ app.get("/api/me", async (c) => {
     .bind(user.id).all<Workspace>();
   // The app's analytics are on only for signed-in people, and only when the Worker has a key (the public one).
   const config = posthogConfig(c.env);
-  return c.json({ user, workspaces: workspaces.results, signIn, billing: billingOn(c.env), ...(config ? { analytics: { key: config.key, ui: config.ui } } : {}) });
+  return c.json({ user, workspaces: workspaces.results, signIn, billing: billingOn(c.env), ...(isSuperAdmin(c.env, user) ? { admin: true } : {}), ...(config ? { analytics: { key: config.key, ui: config.ui } } : {}) });
 });
 
 // ---------------------------------------------------------------- workspaces, members, invites
@@ -215,7 +222,7 @@ app.get("/api/w/:slug", async (c) => {
 });
 
 app.post("/api/w/:slug/invites", async (c) => {
-  const w = await ws(c as Ctx, new Set(["owner", "design-system"]));
+  const w = await ws(c as Ctx, new Set(["owner", "admin", "design-system"]));
   const user = need(c as Ctx);
   const { emails, role, message } = await body<{ emails?: string[]; role?: string; message?: string }>(c as Ctx);
   if (!role || !ROLES.includes(role as (typeof ROLES)[number]) || role === "owner") throw new Fail(400, "Pick a role other than owner");
@@ -228,13 +235,29 @@ app.post("/api/w/:slug/invites", async (c) => {
   if (already.length) throw new Fail(409, `${already.join(", ")} ${already.length === 1 ? "is" : "are"} already in this workspace`);
   // An editor invite holds a seat until it is used or expires; viewers are always free.
   if (isEditor(role)) await assertCanCreate(c.env, w, { kind: "editors", adding: list.length, pending: true });
+  // Someone invited who already has an account is greeted by name; a stranger simply isn't greeted.
+  const known = new Map(
+    (await c.env.DB.prepare(`SELECT email, name FROM user WHERE email IN (${list.map(() => "?").join(", ")})`).bind(...list).all<{ email: string; name: string }>()).results.map((u) => [u.email.toLowerCase(), u.name]),
+  );
   const made = [];
   for (const email of list) {
     const id = crypto.randomUUID();
     await c.env.DB.prepare("INSERT INTO invites (id, workspace_id, email, role, message, invited_by, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
       .bind(id, w.id, email, role, message ?? "", user.id, now(), new Date(Date.now() + 7 * 86400e3).toISOString()).run();
     const link = `${c.env.APP_URL}/invite/${id}`;
-    const sent = await sendEmail(c.env, email, `${user.name || user.email} invited you to ${w.name} on Polyxd Studio`, `<div style="font-family: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #141413;"><h2 style="font-size: 20px; margin: 0 0 12px;">Join ${w.name} on Studio</h2><p style="font-size: 15px; line-height: 22px;">${user.name || user.email} invited you as ${role}.${message ? ` “${String(message).replace(/[<>]/g, "")}”` : ""}</p><p><a href="${link}" style="display: inline-block; background: #FF6E40; color: #141413; padding: 12px 22px; border-radius: 999px; text-decoration: none; font-weight: 600;">Accept the invite</a></p><p style="font-size: 12px; color: #5E5A52;">It expires in 7 days. Or paste this into your browser: ${link}</p></div>`);
+    const sent = await sendEmail(
+      c.env,
+      email,
+      `${user.name || user.email} invited you to ${w.name} on Polyxd Studio`,
+      page({
+        title: `Join ${w.name} on Studio`,
+        name: known.get(email) ?? null,
+        body: `<b>${user.name || user.email}</b> invited you to ${w.name} as ${role}.${message ? ` “${String(message).replace(/[<>]/g, "")}”` : ""}`,
+        cta: { text: "Accept the invite", url: link },
+        note: "The invite expires in 7 days.",
+        preview: `${user.name || user.email} invited you to ${w.name} on Polyxd Studio.`,
+      }),
+    );
     // Without an email sender, the link comes back so the inviter can pass it on.
     made.push({ id, email, link: sent ? undefined : link, sent });
   }
@@ -272,20 +295,55 @@ app.post("/api/invites/:id/accept", async (c) => {
 
 /** An open invite withdrawn, which frees the seat it held. */
 app.delete("/api/w/:slug/invites/:id", async (c) => {
-  const w = await ws(c as Ctx, new Set(["owner", "design-system"]));
+  const w = await ws(c as Ctx, new Set(["owner", "admin", "design-system"]));
   await c.env.DB.prepare("DELETE FROM invites WHERE id = ? AND workspace_id = ? AND accepted_at IS NULL").bind(c.req.param("id"), w.id).run();
   return c.json({ ok: true });
 });
 
-/** Someone taken out of the workspace by an owner. The last owner stays. */
-app.delete("/api/w/:slug/members/:user", async (c) => {
+/** Someone's role changed by whoever runs the workspace. The owner's role changes only by transfer. */
+app.patch("/api/w/:slug/members/:user", async (c) => {
+  const w = await ws(c as Ctx, RUNS);
+  const { role } = await body<{ role?: string }>(c as Ctx);
+  if (!role || !GRANTABLE.includes(role as (typeof GRANTABLE)[number])) throw new Fail(400, `Pick one of ${GRANTABLE.join(", ")}`);
+  const target = c.req.param("user");
+  const m = await c.env.DB.prepare("SELECT role FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(w.id, target).first<{ role: string }>();
+  if (!m) throw new Fail(404, "They're not in this workspace");
+  if (m.role === "owner") throw new Fail(409, "The owner's role changes by transferring the workspace");
+  if (m.role === role) return c.json({ ok: true, role });
+  // A viewer becoming an editor takes a seat, so the plan has to have one.
+  if (!isEditor(m.role) && isEditor(role)) await assertCanCreate(c.env, w, { kind: "editors", adding: 1, pending: false });
+  await c.env.DB.prepare("UPDATE memberships SET role = ? WHERE workspace_id = ? AND user_id = ?").bind(role, w.id, target).run();
+  if (isEditor(m.role) !== isEditor(role)) await later(c as Ctx, syncSeats(c.env, w.id));
+  return c.json({ ok: true, role });
+});
+
+/**
+ * The workspace handed to someone else: exactly one owner, always. The previous owner stays as an
+ * admin, so nobody loses their place, and the two changes are one batch so there is never a moment
+ * with two owners or none.
+ */
+app.post("/api/w/:slug/owner", async (c) => {
   const w = await ws(c as Ctx, new Set(["owner"]));
+  const me = need(c as Ctx);
+  const { user: target } = await body<{ user?: string }>(c as Ctx);
+  if (!target || target === me.id) throw new Fail(400, "Name someone else in this workspace");
+  const m = await c.env.DB.prepare("SELECT role FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(w.id, target).first<{ role: string }>();
+  if (!m) throw new Fail(404, "They're not in this workspace");
+  await c.env.DB.batch([
+    c.env.DB.prepare("UPDATE memberships SET role = 'admin' WHERE workspace_id = ? AND user_id = ?").bind(w.id, me.id),
+    c.env.DB.prepare("UPDATE memberships SET role = 'owner' WHERE workspace_id = ? AND user_id = ?").bind(w.id, target),
+  ]);
+  // A viewer becoming the owner is a new editor; the seats follow.
+  if (!isEditor(m.role)) await later(c as Ctx, syncSeats(c.env, w.id));
+  return c.json({ ok: true });
+});
+
+/** Someone taken out of the workspace. The owner can only leave by transferring it first. */
+app.delete("/api/w/:slug/members/:user", async (c) => {
+  const w = await ws(c as Ctx, RUNS);
   const m = await c.env.DB.prepare("SELECT role FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(w.id, c.req.param("user")).first<{ role: string }>();
   if (!m) throw new Fail(404, "They're not in this workspace");
-  if (m.role === "owner") {
-    const owners = await c.env.DB.prepare("SELECT COUNT(*) AS n FROM memberships WHERE workspace_id = ? AND role = 'owner'").bind(w.id).first<{ n: number }>();
-    if ((owners?.n ?? 0) <= 1) throw new Fail(409, "A workspace needs an owner; make someone else owner first");
-  }
+  if (m.role === "owner") throw new Fail(409, "A workspace needs an owner; transfer it first");
   await c.env.DB.prepare("DELETE FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(w.id, c.req.param("user")).run();
   if (isEditor(m.role)) await later(c as Ctx, syncSeats(c.env, w.id));
   return c.json({ ok: true });
@@ -332,7 +390,7 @@ app.get("/api/w/:slug/api-keys", async (c) => {
 });
 
 app.post("/api/w/:slug/api-keys", async (c) => {
-  const w = await ws(c as Ctx, new Set(["owner", "engineer", "design-system"]));
+  const w = await ws(c as Ctx, new Set(["owner", "admin", "engineer", "design-system"]));
   const user = need(c as Ctx);
   const { name } = await body<{ name?: string }>(c as Ctx);
   if (name !== undefined) text(name, 80, "Name");
@@ -345,7 +403,7 @@ app.post("/api/w/:slug/api-keys", async (c) => {
 });
 
 app.delete("/api/w/:slug/api-keys/:id", async (c) => {
-  const w = await ws(c as Ctx, new Set(["owner", "engineer", "design-system"]));
+  const w = await ws(c as Ctx, new Set(["owner", "admin", "engineer", "design-system"]));
   await c.env.DB.prepare("DELETE FROM api_keys WHERE id = ? AND workspace_id = ?").bind(c.req.param("id"), w.id).run();
   return c.json({ ok: true });
 });
@@ -763,7 +821,7 @@ app.post("/api/w/:slug/design-systems/:id/default", async (c) => {
 });
 
 app.delete("/api/w/:slug/design-systems/:id", async (c) => {
-  const w = await ws(c as Ctx, new Set(["owner", "design-system"]));
+  const w = await ws(c as Ctx, new Set(["owner", "admin", "design-system"]));
   const { ds } = await version(c as Ctx, w);
   const { confirm } = await body<{ confirm?: string }>(c as Ctx).catch(() => ({ confirm: undefined }));
   if (confirm !== ds.name) throw new Fail(400, `Type the design system's name, ${ds.name}, to confirm`);
@@ -1317,16 +1375,16 @@ app.get("/api/w/:slug/insights/:intent", async (c) => {
   return c.json({ days, from, to, retentionDays: RETENTION_DAYS, ...detail(intent, rows, from, to), screens: screens[intent] ?? [] });
 });
 
-/** Every count the workspace holds, gone. The owner's call: the counts are theirs. */
+/** Every count the workspace holds, gone. The workspace's call: the counts are theirs. */
 app.delete("/api/w/:slug/insights", async (c) => {
-  const w = await ws(c as Ctx, new Set(["owner"]));
+  const w = await ws(c as Ctx, RUNS);
   const r = await c.env.DB.prepare("DELETE FROM insight_counts WHERE workspace_id = ?").bind(w.id).run();
   return c.json({ ok: true, deleted: r.meta.changes });
 });
 
 // ---------------------------------------------------------------- plans and billing (hosted Studio only)
 
-const OWNERS = new Set(["owner"]);
+const OWNERS = RUNS; // billing: the owner and any admin
 
 /** The workspace's plan and what it uses, for the Billing page; { enabled: false } on a self-hosted Studio. */
 app.get("/api/w/:slug/billing", async (c) => {
@@ -1403,6 +1461,110 @@ app.post("/api/billing/webhook", async (c) => {
       break;
   }
   return c.json({ received: true });
+});
+
+// ---------------------------------------------------------------- support (super admins only)
+
+/**
+ * Every /api/admin route passes through here. Someone signed in who isn't a super admin is told
+ * the endpoint doesn't exist rather than that they aren't allowed, so the surface isn't something
+ * to probe; a reader of the list is, by definition, on it.
+ */
+const needAdmin = (c: Ctx): User => {
+  const user = need(c);
+  if (!isSuperAdmin(c.env, user)) throw new Fail(404, "No such endpoint");
+  return user;
+};
+
+app.get("/api/admin/overview", async (c) => {
+  needAdmin(c as Ctx);
+  return c.json({ ...(await overview(c.env)), actions: await recentActions(c.env, 20) });
+});
+
+app.get("/api/admin/workspaces", async (c) => {
+  needAdmin(c as Ctx);
+  return c.json({ workspaces: await searchWorkspaces(c.env, c.req.query("q") ?? "") });
+});
+
+app.get("/api/admin/workspaces/:id", async (c) => {
+  needAdmin(c as Ctx);
+  const detail = await workspaceDetail(c.env, c.req.param("id"));
+  if (!detail) throw new Fail(404, "No such workspace");
+  return c.json(detail);
+});
+
+/**
+ * A plan set by hand, for a comp, a design partner or an enterprise deal invoiced elsewhere. It
+ * does not touch Stripe: `enterprise` is the one the webhook leaves alone, so it is the one to use
+ * for anything that should not be undone by a subscription event.
+ */
+app.post("/api/admin/workspaces/:id/plan", async (c) => {
+  const admin = needAdmin(c as Ctx);
+  const { plan, note } = await body<{ plan?: string; note?: string }>(c as Ctx);
+  if (!isPlan(plan)) throw new Fail(400, `plan: one of ${PLANS.join(", ")}`);
+  const id = c.req.param("id");
+  const w = await c.env.DB.prepare("SELECT plan, stripe_subscription_id FROM workspaces WHERE id = ?").bind(id).first<{ plan: string; stripe_subscription_id: string | null }>();
+  if (!w) throw new Fail(404, "No such workspace");
+  await audit(c.env, admin.email, "plan", { workspaceId: id, before: w.plan, after: plan, note });
+  await c.env.DB.prepare("UPDATE workspaces SET plan = ? WHERE id = ?").bind(plan, id).run();
+  // A workspace that pays Stripe and is given a plan by hand keeps its subscription: say so, so
+  // nobody is surprised by the next invoice.
+  return c.json({ ok: true, plan, subscribed: !!w.stripe_subscription_id });
+});
+
+/** The workspace handed to someone already in it, when the owner has gone and support must step in. */
+app.post("/api/admin/workspaces/:id/owner", async (c) => {
+  const admin = needAdmin(c as Ctx);
+  const { user: target, note } = await body<{ user?: string; note?: string }>(c as Ctx);
+  const id = c.req.param("id");
+  if (!target) throw new Fail(400, "user: who to hand it to");
+  const m = await c.env.DB.prepare("SELECT role FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(id, target).first<{ role: string }>();
+  if (!m) throw new Fail(404, "They're not in this workspace");
+  const current = await c.env.DB.prepare("SELECT user_id FROM memberships WHERE workspace_id = ? AND role = 'owner'").bind(id).first<{ user_id: string }>();
+  if (current?.user_id === target) return c.json({ ok: true });
+  await audit(c.env, admin.email, "owner", { workspaceId: id, userId: target, before: current?.user_id ?? null, after: target, note });
+  const statements = [c.env.DB.prepare("UPDATE memberships SET role = 'owner' WHERE workspace_id = ? AND user_id = ?").bind(id, target)];
+  if (current) statements.unshift(c.env.DB.prepare("UPDATE memberships SET role = 'admin' WHERE workspace_id = ? AND user_id = ?").bind(id, current.user_id));
+  await c.env.DB.batch(statements);
+  await later(c as Ctx, syncSeats(c.env, id));
+  return c.json({ ok: true });
+});
+
+/** Someone taken out of a workspace by support. The owner goes only after the workspace is handed on. */
+app.delete("/api/admin/workspaces/:id/members/:user", async (c) => {
+  const admin = needAdmin(c as Ctx);
+  const id = c.req.param("id");
+  const target = c.req.param("user");
+  const m = await c.env.DB.prepare("SELECT role FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(id, target).first<{ role: string }>();
+  if (!m) throw new Fail(404, "They're not in this workspace");
+  if (m.role === "owner") throw new Fail(409, "Hand the workspace to someone else first");
+  await audit(c.env, admin.email, "member-removed", { workspaceId: id, userId: target, before: m.role, after: null });
+  await c.env.DB.prepare("DELETE FROM memberships WHERE workspace_id = ? AND user_id = ?").bind(id, target).run();
+  if (isEditor(m.role)) await later(c as Ctx, syncSeats(c.env, id));
+  return c.json({ ok: true });
+});
+
+app.get("/api/admin/users", async (c) => {
+  needAdmin(c as Ctx);
+  return c.json({ users: await searchUsers(c.env, c.req.query("q") ?? "") });
+});
+
+/** The workspaces one person is in, for "I can't see my workspace" questions. */
+app.get("/api/admin/users/:id", async (c) => {
+  needAdmin(c as Ctx);
+  const u = await c.env.DB.prepare("SELECT id, email, name, emailVerified, createdAt FROM user WHERE id = ?").bind(c.req.param("id")).first<Record<string, unknown>>();
+  if (!u) throw new Fail(404, "No such person");
+  const workspaces = (
+    await c.env.DB.prepare("SELECT w.id, w.slug, w.name, w.plan, m.role FROM memberships m JOIN workspaces w ON w.id = m.workspace_id WHERE m.user_id = ? ORDER BY w.name")
+      .bind(c.req.param("id"))
+      .all<Record<string, unknown>>()
+  ).results;
+  return c.json({ user: u, workspaces });
+});
+
+app.get("/api/admin/log", async (c) => {
+  needAdmin(c as Ctx);
+  return c.json({ actions: await recentActions(c.env, 100) });
 });
 
 app.get("/api/contract", (c) => c.json({ roles: Object.keys(CONTRACT.tokens).length, contrastPairs: CONTRACT.contrast.length }));

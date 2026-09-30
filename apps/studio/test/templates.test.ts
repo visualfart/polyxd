@@ -29,7 +29,8 @@ test("every template pack becomes a graph with two modes, a clean scan and all 8
   for (const name of TEMPLATE_NAMES) {
     const g = templateGraph(name);
     const s = scan(g);
-    assert.deepEqual([...s.modes.map((m) => m.name)].sort(), ["dark", "light"], name);
+    // Two modes, unless the pack itself publishes one: GOV.UK has no dark theme.
+    assert.deepEqual([...s.modes.map((m) => m.name)].sort(), Object.keys(TEMPLATE_PACKS[name].manifest.modes).sort(), name);
     assert.equal(s.modes[0].name, TEMPLATE_PACKS[name].manifest.defaultMode, `${name}: the pack's default mode leads (Terminal is dark-first)`);
     assert.ok(s.total > 150, `${name}: ${s.total} tokens`);
     assert.equal(s.byTier.semantic, ROLES.length, `${name}: the semantic file is the 87 roles`);
@@ -41,7 +42,7 @@ test("every template pack becomes a graph with two modes, a clean scan and all 8
     assert.equal(rows.filter((r) => r.status === "fails").length, 0, `${name}: contrast passes in both modes`);
     // Values differ by mode where the pack says so.
     const surface = rows.find((r) => r.role === "color.surface.default")!;
-    assert.notEqual(surface.values.light, surface.values.dark, `${name}: the page colour changes with the mode`);
+    if (s.modes.length > 1) assert.notEqual(surface.values.light, surface.values.dark, `${name}: the page colour changes with the mode`);
   }
 });
 
@@ -54,9 +55,15 @@ test("a template's summary has a character line, swatches from its own tokens, a
   assert.ok(sketch.font, "a display face");
   assert.match(sketch.radius, /px$/);
   const all = allTemplates();
-  assert.equal(all.length, 13);
+  // Blank, Polyxd's twelve, and the twelve modelled on published design systems.
+  assert.equal(all.length, 25);
   assert.equal(all[0].name, BLANK);
-  assert.ok(all.every((t) => t.character && t.swatches.length >= 8));
+  assert.ok(all.every((t) => t.character && t.swatches.length >= 8), all.filter((t) => !t.character || t.swatches.length < 8).map((t) => t.name).join(", "));
+  // A pack modelled on someone else's system says so, and still carries a full set of swatches.
+  const m3 = all.find((t) => t.name === "material3")!;
+  assert.equal(m3.displayName, "Material 3");
+  assert.match(m3.character, /Material 3/);
+  assert.deepEqual(all.find((t) => t.name === "govuk")!.modes, ["light"], "GOV.UK publishes one theme");
 });
 
 test("blank is Mono with a grey brand ramp: same structure, chroma 0, contrast still passing", () => {

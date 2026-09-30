@@ -45,6 +45,8 @@ export interface Me {
   analytics?: { key: string; ui: string };
   /** Whether this Studio has plans (the hosted one). A self-hosted Studio has no limits and no Billing page. */
   billing?: boolean;
+  /** Present when this person's address is in SUPER_ADMINS: the Support page is theirs to open. */
+  admin?: boolean;
 }
 
 type Limit = number | null;
@@ -163,4 +165,66 @@ export interface DirectionVersionRow {
   created_at: string;
   author: string;
   version: string;
+}
+
+
+// ---------------------------------------------------------------- support (super admins only)
+
+export interface AdminWorkspace {
+  id: string;
+  slug: string;
+  name: string;
+  plan: string;
+  plan_status: string | null;
+  seats: number | null;
+  stripe_customer_id: string | null;
+  created_at: string;
+  owner_email: string | null;
+  members: number;
+}
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string;
+  emailVerified: number;
+  createdAt: string;
+  workspaces: number;
+}
+
+export interface AdminAction {
+  id: string;
+  at: string;
+  admin_email: string;
+  action: string;
+  workspace_id: string | null;
+  workspace_slug?: string | null;
+  user_id: string | null;
+  before: string | null;
+  after: string | null;
+  note: string | null;
+}
+
+export interface AdminOverview {
+  plans: Record<string, number>;
+  workspaces: number;
+  users: number;
+  subscribed: number;
+  overQuota: number;
+  actions: AdminAction[];
+}
+
+export interface AdminStripe {
+  customer: string | null;
+  subscriptions: { id: string; status: string; cancelAtPeriodEnd: boolean; quantity: number | null; price: string | null; amount: number | null; currency: string | null }[];
+  invoices: { id: string; number: string | null; status: string | null; total: number; currency: string; created: string; url: string | null }[];
+  error: string | null;
+}
+
+export interface AdminDetail {
+  workspace: Record<string, string | number | null>;
+  members: { id: string; role: string; created_at: string; email: string; name: string }[];
+  invites: { id: string; email: string; role: string; created_at: string; expires_at: string }[];
+  usage: Omit<Billing, "enabled" | "canManage">;
+  stripe: AdminStripe;
 }

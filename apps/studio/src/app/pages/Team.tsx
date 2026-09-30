@@ -10,10 +10,10 @@ interface Key { id: string; name: string; created_at: string; last_used_at: stri
 interface IngestKey extends Key { key: string }
 const CAN_MANAGE_INGEST = new Set(["owner", "engineer", "design-system", "product"]);
 
-const ROLES: [string, string][] = [["design-system", "Design system: tokens, components, rules, releases"], ["designer", "Designer: direction, reviews, exemplars"], ["product", "Product: capabilities, journeys, insights"], ["engineer", "Engineer: components, capabilities, integrations"], ["viewer", "Viewer: everything, read only"]];
+const ROLES: [string, string][] = [["admin", "Admin: everything, including people and billing"], ["design-system", "Design system: tokens, components, rules, releases"], ["designer", "Designer: direction, reviews, exemplars"], ["product", "Product: capabilities, journeys, insights"], ["engineer", "Engineer: components, capabilities, integrations"], ["viewer", "Viewer: everything, read only"]];
 
 export function Team({ ws }: { ws: Ws }) {
-  const { toast, me } = useSession();
+  const { toast, me, refresh } = useSession();
   const [d, setD] = useState<Detail | null>(null);
   const [keys, setKeys] = useState<Key[]>([]);
   const [inviting, setInviting] = useState(false);
@@ -68,7 +68,29 @@ export function Team({ ws }: { ws: Ws }) {
       toast((e as Error).message, "bad");
     }
   };
-  const canInvite = ws.role === "owner" || ws.role === "design-system";
+  const canInvite = ws.role === "owner" || ws.role === "admin" || ws.role === "design-system";
+  // The owner and the admins run the workspace; only the owner can hand it on.
+  const runs = ws.role === "owner" || ws.role === "admin";
+  const changeRole = async (id: string, to: string, who: string) => {
+    try {
+      await api("PATCH", `/api/w/${ws.slug}/members/${id}`, { role: to });
+      toast(`${who} is now ${to}`);
+      load();
+    } catch (e) {
+      toast((e as Error).message, "bad");
+    }
+  };
+  const handOver = async (id: string, who: string) => {
+    if (!window.confirm(`Hand ${ws.name} to ${who}? You stay as an admin, and only they can hand it on after that.`)) return;
+    try {
+      await api("POST", `/api/w/${ws.slug}/owner`, { user: id });
+      toast(`${who} owns ${ws.name}`);
+      load();
+      await refresh();
+    } catch (e) {
+      toast((e as Error).message, "bad");
+    }
+  };
   if (!d) return null;
   return (
     <Page crumbs={[ws.name, "Workspace", "Team"]} title="Team" lede={`${d.members.length} people · ${d.invites.length} invite${d.invites.length === 1 ? "" : "s"} pending`} actions={<button type="button" className="btn primary" onClick={() => setInviting(true)}>Invite people</button>}>
@@ -77,7 +99,25 @@ export function Team({ ws }: { ws: Ws }) {
           <table>
             <thead><tr><th>Person</th><th>Role</th><th>Joined</th><th /></tr></thead>
             <tbody>
-              {d.members.map((m) => <tr key={m.id}><td><b>{m.name || m.email}</b><div className="small muted">{m.email}</div></td><td>{m.role}</td><td className="small muted">{new Date(m.created_at).toLocaleDateString("en-GB")}</td><td style={{ textAlign: "right" }}>{ws.role === "owner" && m.id !== me.user?.id && <button type="button" className="btn ghost sm" onClick={() => act("DELETE", `members/${m.id}`, `${m.name || m.email} is out of ${ws.name}`)}>Remove</button>}</td></tr>)}
+              {d.members.map((m) => (
+                <tr key={m.id}>
+                  <td><b>{m.name || m.email}</b><div className="small muted">{m.email}</div></td>
+                  <td>
+                    {m.role === "owner" || !runs || m.id === me.user?.id ? (
+                      m.role
+                    ) : (
+                      <select className="select sm" value={m.role} onChange={(e) => changeRole(m.id, e.target.value, m.name || m.email)} aria-label={`Role for ${m.name || m.email}`}>
+                        {ROLES.map(([r]) => <option key={r} value={r}>{r}</option>)}
+                      </select>
+                    )}
+                  </td>
+                  <td className="small muted">{new Date(m.created_at).toLocaleDateString("en-GB")}</td>
+                  <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                    {ws.role === "owner" && m.role !== "owner" && m.id !== me.user?.id && <button type="button" className="btn ghost sm" onClick={() => handOver(m.id, m.name || m.email)}>Make owner</button>}
+                    {runs && m.role !== "owner" && m.id !== me.user?.id && <button type="button" className="btn ghost sm" onClick={() => act("DELETE", `members/${m.id}`, `${m.name || m.email} is out of ${ws.name}`)}>Remove</button>}
+                  </td>
+                </tr>
+              ))}
               {d.invites.map((i) => <tr key={i.id}><td><b>{i.email}</b><div className="small muted">invited</div></td><td>{i.role}</td><td className="small muted">expires {new Date(i.expires_at).toLocaleDateString("en-GB")}</td><td style={{ textAlign: "right" }}>{canInvite && <button type="button" className="btn ghost sm" onClick={() => act("DELETE", `invites/${i.id}`, `The invite to ${i.email} is withdrawn`)}>Withdraw</button>}</td></tr>)}
             </tbody>
           </table>

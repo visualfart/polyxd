@@ -19,7 +19,7 @@ export function Workspaces() {
       const w = await api<{ id: string; slug: string }>("POST", "/api/workspaces", { name, slug: slug || name });
       track("workspace_created", {}, w.id);
       await refresh();
-      navigate(`/w/${w.slug}/design-systems/import`);
+      navigate(`/w/${w.slug}`);
     } catch (err) {
       setError((err as Error).message);
     }
@@ -29,7 +29,14 @@ export function Workspaces() {
       <main>
         <div className="auth-top">
           <StudioLockup size={26} />
-          <span className="small muted">{me.user?.email}</span>
+          <span className="small muted">
+            {me.admin && (
+              <>
+                <Link to="/admin">Support</Link> ·{" "}
+              </>
+            )}
+            {me.user?.email}
+          </span>
         </div>
         <div className="form" style={{ width: 560 }}>
           {creating ? (
