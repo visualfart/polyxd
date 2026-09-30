@@ -379,3 +379,40 @@ test("Stripe's signature and form encoding", async () => {
     "mode=subscription&line_items[0][price]=p&line_items[0][quantity]=2&metadata[workspace_id]=w",
   );
 });
+
+test("a refusal from Stripe says what Stripe said, so a mode mismatch isn't an opaque 500", async () => {
+  const worker = await startWorker(STRIPE);
+  const mira = await worker.signUp("mira@harbourline.test", "Harbourline");
+  const real = globalThis.fetch;
+  // The shape of a live key asked for a test price: Stripe answers 400 resource_missing.
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    if (!String(input).startsWith("https://api.stripe.com")) return real(input as RequestInfo, init);
+    return new Response(JSON.stringify({ error: { message: "No such price: 'price_pro_month'", code: "resource_missing", param: "line_items[0][price]" } }), { status: 400, headers: { "content-type": "application/json" } });
+  }) as typeof fetch;
+  try {
+    const r = await mira.call("POST", "/api/w/harbourline/billing/checkout", { plan: "pro", interval: "month" });
+    assert.equal(r.status, 400, "a refusal, not a 500");
+    assert.match(r.body.error, /No such price/);
+    assert.equal(r.body.code, "resource_missing");
+    assert.equal(r.body.param, "line_items[0][price]");
+  } finally {
+    globalThis.fetch = real;
+  }
+});
+
+test("Stripe being down is a 502, not a refusal the owner could act on", async () => {
+  const worker = await startWorker(STRIPE);
+  const mira = await worker.signUp("mira@harbourline.test", "Harbourline");
+  const real = globalThis.fetch;
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    if (!String(input).startsWith("https://api.stripe.com")) return real(input as RequestInfo, init);
+    return new Response(JSON.stringify({ error: { message: "Stripe is having a moment" } }), { status: 503, headers: { "content-type": "application/json" } });
+  }) as typeof fetch;
+  try {
+    const r = await mira.call("POST", "/api/w/harbourline/billing/checkout", { plan: "pro", interval: "month" });
+    assert.equal(r.status, 502);
+    assert.match(r.body.error, /didn't answer/);
+  } finally {
+    globalThis.fetch = real;
+  }
+});
