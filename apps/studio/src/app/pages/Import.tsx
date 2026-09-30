@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { api, type Scan } from "../api.ts";
 import { track } from "../analytics.ts";
 import { Page, type Ws } from "../App.tsx";
@@ -62,7 +62,12 @@ export function Import({ ws }: { ws: Ws }) {
   ];
 
   return (
-    <Page crumbs={[ws.name, "Design systems", "Import"]} title="Import a design system" lede="Bring your tokens as they are: primitives, semantic tokens and component tokens, of every type, in every mode. Studio reads them, shows what it found, then maps Polyxd's roles onto your semantic tier for you to check.">
+    <Page
+      crumbs={[ws.name, "Design systems", "Import"]}
+      title="Import a design system"
+      lede="Bring your tokens as they are: primitives, semantic tokens and component tokens, of every type, in every mode. Studio reads them, shows what it found, then maps Polyxd's roles onto your semantic tier for you to check."
+      actions={<Link className="btn ghost" to={`/w/${ws.slug}`}>Not now</Link>}
+    >
       <form onSubmit={submit} className="split">
         <div style={{ width: 460, flexShrink: 0, display: "flex", flexDirection: "column", gap: 10 }}>
           <h2 style={{ marginBottom: 4 }}>1. Where are your tokens?</h2>

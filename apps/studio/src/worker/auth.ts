@@ -41,6 +41,8 @@ export interface Env extends AnalyticsEnv {
   /** For the rollup to read Analytics Engine back: the account, and a token with Account Analytics Read. */
   CF_ACCOUNT_ID?: string;
   CF_ANALYTICS_TOKEN?: string;
+  /** Who may use /admin: email addresses, separated by commas. Never a column, so no row grants it. */
+  SUPER_ADMINS?: string;
 }
 
 export interface User {
@@ -69,8 +71,51 @@ export async function sendEmail(env: Env, to: string, subject: string, html: str
   return r.ok;
 }
 
-const page = (title: string, body: string, cta?: { text: string; url: string }) =>
-  `<div style="font-family: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #141413;"><h2 style="font-size: 20px; margin: 0 0 12px;">${title}</h2><p style="font-size: 15px; line-height: 22px; margin: 0 0 20px;">${body}</p>${cta ? `<p><a href="${cta.url}" style="display: inline-block; background: #FF6E40; color: #141413; padding: 12px 22px; border-radius: 999px; text-decoration: none; font-weight: 600;">${cta.text}</a></p><p style="font-size: 12px; color: #5E5A52;">Or paste this into your browser: ${cta.url}</p>` : ""}</div>`;
+/**
+ * One email, laid out the way email actually works: tables, inline styles, no web fonts and no
+ * image that has to load before it makes sense. The mark is two squares drawn with table cells,
+ * so it survives a blocked-images inbox. The site's paper, ink and signal orange.
+ */
+const EMAIL = { ground: "#F4F1EA", paper: "#FFFFFF", ink: "#141413", muted: "#5E5A52", line: "#E3DED2", signal: "#FF5A1F" };
+
+/** "Hi Neel," reads better than "Hi," and better than the whole name; nothing at all is fine too. */
+export const firstName = (name?: string | null): string => (name ?? "").trim().split(/\s+/)[0] ?? "";
+
+const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+export function page(o: { title: string; body: string; name?: string | null; cta?: { text: string; url: string }; note?: string; preview?: string }): string {
+  const hello = firstName(o.name);
+  const font = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>${escapeHtml(o.title)}</title></head>
+<body style="margin:0;padding:0;background:${EMAIL.ground};">
+<div style="display:none;font-size:1px;color:${EMAIL.ground};max-height:0;overflow:hidden;">${escapeHtml(o.preview ?? o.body)}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${EMAIL.ground};padding:32px 16px;">
+<tr><td align="center">
+<table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%;">
+<tr><td style="padding:0 0 20px 4px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+    <td width="22" height="22" style="background:${EMAIL.signal};border-radius:6px;"></td>
+    <td style="padding-left:10px;font-family:${font};font-size:17px;font-weight:700;color:${EMAIL.ink};letter-spacing:-0.02em;">polyxd <span style="font-weight:400;color:${EMAIL.muted};">Studio</span></td>
+  </tr></table>
+</td></tr>
+<tr><td style="background:${EMAIL.paper};border:1px solid ${EMAIL.line};border-radius:16px;padding:32px;">
+  <h1 style="margin:0 0 14px;font-family:${font};font-size:22px;line-height:1.25;font-weight:700;color:${EMAIL.ink};">${escapeHtml(o.title)}</h1>
+  ${hello ? `<p style="margin:0 0 10px;font-family:${font};font-size:15px;line-height:1.55;color:${EMAIL.ink};">Hi ${escapeHtml(hello)},</p>` : ""}
+  <p style="margin:0 0 24px;font-family:${font};font-size:15px;line-height:1.55;color:${EMAIL.ink};">${o.body}</p>
+  ${o.cta ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:${EMAIL.signal};border-radius:999px;">
+    <a href="${o.cta.url}" style="display:inline-block;padding:13px 26px;font-family:${font};font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">${escapeHtml(o.cta.text)}</a>
+  </td></tr></table>
+  <p style="margin:20px 0 0;font-family:${font};font-size:12px;line-height:1.5;color:${EMAIL.muted};word-break:break-all;">Or paste this into your browser:<br><a href="${o.cta.url}" style="color:${EMAIL.muted};">${o.cta.url}</a></p>` : ""}
+  ${o.note ? `<p style="margin:20px 0 0;font-family:${font};font-size:13px;line-height:1.5;color:${EMAIL.muted};">${o.note}</p>` : ""}
+</td></tr>
+<tr><td style="padding:18px 4px 0;font-family:${font};font-size:12px;line-height:1.5;color:${EMAIL.muted};">
+  Polyxd Studio · <a href="https://polyxd.com" style="color:${EMAIL.muted};">polyxd.com</a><br>
+  Interfaces that show up when you need them.
+</td></tr>
+</table>
+</td></tr></table>
+</body></html>`;
+}
 
 /**
  * One auth instance per request: the D1 binding is per request on Workers. `onSignUp` hears of
@@ -104,14 +149,38 @@ export function makeAuth(env: Env, hooks: { onSignUp?: (userId: string, method: 
       requireEmailVerification: !local,
       revokeSessionsOnPasswordReset: true,
       sendResetPassword: async ({ user, url }) => {
-        await sendEmail(env, user.email, "Reset your Studio password", page("Choose a new password", "Someone asked to reset the password for this email on Polyxd Studio. If it wasn't you, ignore this; nothing changes.", { text: "Reset password", url }));
+        await sendEmail(
+          env,
+          user.email,
+          "Reset your Studio password",
+          page({
+            title: "Choose a new password",
+            name: user.name,
+            body: "Someone asked to reset the password for this email on Polyxd Studio.",
+            cta: { text: "Reset password", url },
+            note: "If it wasn't you, ignore this and nothing changes. The link works for an hour.",
+            preview: "Reset the password for your Polyxd Studio account.",
+          }),
+        );
       },
     },
     emailVerification: {
       sendOnSignUp: !local,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }) => {
-        await sendEmail(env, user.email, "Verify your email for Studio", page("Verify your email", "One click and you're in. The link works for an hour.", { text: "Verify email", url }));
+        await sendEmail(
+          env,
+          user.email,
+          "Verify your email for Studio",
+          page({
+            title: "Verify your email",
+            name: user.name,
+            body: "One click and your Studio account is ready. Then you can make a workspace, bring in your design system and start publishing screens.",
+            cta: { text: "Verify email", url },
+            note: "The link works for an hour.",
+            preview: "One click and your Polyxd Studio account is ready.",
+          }),
+        );
       },
     },
     socialProviders: env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? { google: { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } } : {},

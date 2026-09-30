@@ -120,6 +120,28 @@ Plans apply to the hosted Studio only. You pay per editor: a viewer is always fr
 - **The founding offer**: the first 100 paying workspaces pay half, for as long as they stay subscribed.
 - **You can always leave**: every design system, screen and Direction exports as JSON on every plan.
 
+## Roles
+
+| Role | How many | What they can do |
+|---|---|---|
+| Owner | exactly one | Everything, plus billing, deleting the workspace and handing it to someone else |
+| Admin | any number | Everything except those three: invite, remove, change roles, edit tokens, rules, screens and Directions |
+| Design system | any number | Tokens, components, rules, releases |
+| Designer | any number | Direction, reviews, exemplars |
+| Product | any number | Capabilities, journeys, Insights |
+| Engineer | any number | Components, capabilities, integrations |
+| Viewer | any number | Everything, read only — and always free |
+
+Owner is never invited or set from the role list. It moves only by **handing the workspace over** (Team → Make owner), which makes the new person owner and the previous one an admin in the same step, so there is always exactly one. Everyone but a viewer counts as an editor for your plan's seats.
+
+## Support
+
+The people who run a hosted Studio can open **/admin**: find any workspace or person, set a plan by hand, hand a workspace to a new owner when the old one has gone, take someone out, and read what Stripe says about a customer. It never writes to Stripe.
+
+Who counts is the `SUPER_ADMINS` secret — email addresses separated by commas, checked against the signed-in person on every request. It is deliberately not a column, so editing the database grants nobody access. Every change is recorded with the address that made it, what it was before and after, and the reason given.
+
+A plan set by hand is separate from a Stripe subscription. **Enterprise** is the one a Stripe event never overwrites, so use it for comps, design partners and deals invoiced elsewhere.
+
 ## Run it yourself
 
 ```sh
