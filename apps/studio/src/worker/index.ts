@@ -52,6 +52,16 @@ class Fail extends Error {
 app.onError((e, c) => {
   if (e instanceof Fail) return c.json({ error: e.message }, e.status as 500);
   if (e instanceof PlanLimit) return c.json({ error: e.message, ...e.data }, 402);
+  // What Stripe refused, in Stripe's own words. "No such price" or "No such coupon" is the
+  // difference between a mode mismatch and an outage, and an opaque 500 hides both. Stripe's
+  // messages carry no secret: they name the object that was asked for, not the key that asked.
+  if (e instanceof StripeError) {
+    console.error(`Stripe ${e.status}${e.code ? ` ${e.code}` : ""}${e.param ? ` (${e.param})` : ""}: ${e.message}`);
+    return c.json(
+      { error: e.status >= 500 ? `Stripe didn't answer: ${e.message}` : `Stripe refused this: ${e.message}`, code: e.code, param: e.param },
+      (e.status >= 500 ? 502 : 400) as 500,
+    );
+  }
   console.error(e);
   return c.json({ error: "Something went wrong on our side" }, 500);
 });
