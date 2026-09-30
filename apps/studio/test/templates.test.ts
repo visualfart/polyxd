@@ -55,8 +55,8 @@ test("a template's summary has a character line, swatches from its own tokens, a
   assert.ok(sketch.font, "a display face");
   assert.match(sketch.radius, /px$/);
   const all = allTemplates();
-  // Blank, Polyxd's twelve, and the twelve modelled on published design systems.
-  assert.equal(all.length, 25);
+  // Blank, Polyxd's twelve, and the thirteen modelled on published design systems.
+  assert.equal(all.length, 26);
   assert.equal(all[0].name, BLANK);
   assert.ok(all.every((t) => t.character && t.swatches.length >= 8), all.filter((t) => !t.character || t.swatches.length < 8).map((t) => t.name).join(", "));
   // A pack modelled on someone else's system says so, and still carries a full set of swatches.

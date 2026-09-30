@@ -66,9 +66,13 @@ function systemTier(shadcn: Vars, tw: Vars, mode: "light" | "dark"): Json {
   const color: Json = { $type: "color" };
   for (const [name, value] of Object.entries(shadcn)) {
     if (name === "--radius") continue;
-    // The docs theme points its chart ramp at Tailwind blues; resolve those to values.
-    const resolved = /^var\((--color-[a-z]+-\d+)\)$/.exec(value)?.[1];
-    color[name.slice(2)] = { $value: resolved ? tw[resolved] : value };
+    const ref = /^var\((--[a-z0-9-]+)\)$/.exec(value)?.[1];
+    // The docs theme points its chart ramp at Tailwind blues; resolve those to values. Where it
+    // points one of its own variables at another (--code: var(--surface)), that is an alias, and
+    // DTCG has a way to say so — leaving the CSS in would read as a broken alias to a consumer.
+    const aliases = ref && ref !== "--radius" && ref in shadcn;
+    const resolved = aliases ? `{shadcn.${ref!.slice(2)}}` : ref && ref in tw ? tw[ref] : value;
+    color[name.slice(2)] = { $value: resolved };
   }
   return {
     $description: `shadcn/ui default theme, ${mode} (${PINNED["shadcn/ui"]}), variable names unchanged.`,

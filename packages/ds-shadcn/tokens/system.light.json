@@ -36,10 +36,10 @@
       "$value": "oklch(42.4% 0.199 265.638)"
     },
     "code": {
-      "$value": "var(--surface)"
+      "$value": "{shadcn.surface}"
     },
     "code-foreground": {
-      "$value": "var(--surface-foreground)"
+      "$value": "{shadcn.surface-foreground}"
     },
     "code-highlight": {
       "$value": "oklch(0.96 0 0)"
@@ -120,7 +120,7 @@
       "$value": "oklch(0.98 0 0)"
     },
     "surface-foreground": {
-      "$value": "var(--foreground)"
+      "$value": "{shadcn.foreground}"
     }
   },
   "tailwind": {
