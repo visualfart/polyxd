@@ -181,10 +181,8 @@ export const TEMPLATE_PACKS: Record<string, TemplatePack> = {
 export const TEMPLATE_NAMES = [
   // Polyxd's own, plainest first.
   "mono", "civic", "sketch", "wireframe", "editorial", "pastel", "health", "finance", "glass", "terminal", "brutalist", "neon",
-  // Modelled on published design systems, for a team whose product already uses one. shadcn is
-  // not among them yet: five of its tokens carry shadcn's own `var(--surface)` CSS instead of an
-  // alias, so a copy would land in a workspace with broken aliases showing.
-  "material3", "carbon", "fluent", "antd", "bootstrap", "mantine", "radix", "polaris", "primer", "spectrum", "chakra", "govuk",
+  // Modelled on published design systems, for a team whose product already uses one.
+  "material3", "carbon", "fluent", "shadcn", "antd", "bootstrap", "mantine", "radix", "polaris", "primer", "spectrum", "chakra", "govuk",
 ] as const;
 export type TemplateName = (typeof TEMPLATE_NAMES)[number];
 
