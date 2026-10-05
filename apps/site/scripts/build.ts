@@ -194,7 +194,7 @@ function header(current: string) {
 <a class="nav-optional" href="/how-it-works/"${cur("how-it-works")}>Product</a>
 <a class="nav-optional" href="/design-systems/"${cur("design-systems")}>Design systems</a>
 <a class="nav-wide" href="/verify/"${cur("verify")}>Verify</a>
-<a class="nav-wide" href="/studio/"${cur("studio")}>Studio</a>
+<a class="nav-wide" href="/studio/"${cur("studio")}>Studio <span class="soon">Coming soon</span></a>
 <a class="nav-wide" href="/demos/">Demos</a>
 <a href="/docs/"${cur("docs")}>Docs</a>
 <a class="nav-wide" href="${GITHUB}">GitHub</a>
@@ -213,14 +213,14 @@ const footer = `<footer class="site-footer" aria-labelledby="footer-title">
 <canvas class="footer-field" data-field data-rest="#141413" data-rest-alpha=".34" data-active="#F3F1EC" data-density=".8" data-quiet=".footer-line, .footer-actions, .footer-col, .footer-base" data-solid=".footer-giant .footer-mark, .footer-word" aria-hidden="true"></canvas>
 <div class="wrap footer-top">
 <p class="display footer-line" id="footer-title">Every ask gets a screen.</p>
-<div class="footer-actions"><a class="btn footer-btn" href="/docs/quickstart/">Get started</a><a class="footer-quiet" href="https://studio.polyxd.com">Try Studio</a></div>
+<div class="footer-actions"><a class="btn footer-btn" href="/docs/quickstart/">Get started</a><a class="footer-quiet" href="/studio/">Studio <span class="soon">Coming soon</span></a></div>
 </div>
 <div class="wrap footer-cols">
 <nav aria-label="Footer">
-<span class="footer-col"><b>Product</b><a href="/how-it-works/">How it works</a><a href="/design-systems/">Design systems</a><a href="/verify/">Verify</a><a href="/studio/">Studio</a></span>
+<span class="footer-col"><b>Product</b><a href="/how-it-works/">How it works</a><a href="/design-systems/">Design systems</a><a href="/verify/">Verify</a><a href="/studio/">Studio <span class="soon">Coming soon</span></a></span>
 <span class="footer-col"><b>For</b><a href="/designers/">Designers</a><a href="/design-system-teams/">Design-system teams</a><a href="/developers/">Engineers</a><a href="/product-teams/">Product teams</a></span>
 <span class="footer-col"><b>Build</b><a href="/docs/">Docs</a><a href="/docs/quickstart/">Quickstart</a><a href="/gallery/">Gallery</a><a href="/demos/">Demos</a></span>
-<span class="footer-col"><b>Open</b><a href="/open-source/">Open source</a><a href="${GITHUB}">GitHub</a><a href="/docs/roadmap/">Roadmap</a><a href="https://studio.polyxd.com">Try Studio</a></span>
+<span class="footer-col"><b>Open</b><a href="/open-source/">Open source</a><a href="${GITHUB}">GitHub</a><a href="/docs/roadmap/">Roadmap</a><a href="/studio/">Studio <span class="soon">Coming soon</span></a></span>
 </nav>
 </div>
 <div class="footer-giant" aria-hidden="true">${livingMark({ size: 320, mono: "ink", className: "footer-mark" })}<span class="footer-word">polyxd</span></div>
@@ -1187,7 +1187,7 @@ const LANDING_PAGES: LandingPage[] = [
     title: "How Polyxd works", description: "A model, a template or a designer writes a small document. Your product draws it with your design system. A verifier checks it first.",
     eyebrow: "How it works", h1: "Polyxd turns the answer into a screen.",
     lead: "A small document says what the screen means. Your design system draws it. A verifier checks it before anyone sees it.",
-    ctas: [["Get started", "/docs/quickstart/"], ["Try Studio", "https://studio.polyxd.com"]],
+    ctas: [["Get started", "/docs/quickstart/"], ["Studio · coming soon", "/studio/"]],
     art: art.screen(send.intent.document, "material3"),
     blocks: [
       { scene: "gap" }, { scene: "turn" },
@@ -1237,7 +1237,7 @@ const LANDING_PAGES: LandingPage[] = [
     title: "For designers · Polyxd", description: "Decide what every screen must be like, and prove it. Your taste becomes a file the generator follows.",
     eyebrow: "For designers", h1: "Draw the rules, not every screen.",
     lead: "Decide what every screen must be like, and prove it. Author the ones that matter in the same format.",
-    ctas: [["Try Studio", "https://studio.polyxd.com"], ["The designer’s job", "/docs/designers/"]],
+    ctas: [["Studio · coming soon", "/studio/"], ["The designer’s job", "/docs/designers/"]],
     art: art.screen(refund.intent.document, "polaris"),
     blocks: [
       { points: { title: "The same judgement, applied once.", items: [
@@ -1254,7 +1254,7 @@ const LANDING_PAGES: LandingPage[] = [
     title: "For design-system teams · Polyxd", description: "One contract of 87 roles, checked before publishing, used by every generated screen.",
     eyebrow: "For design-system teams", h1: "Adoption you can prove.",
     lead: "One contract of 87 roles, contrast checked before anything publishes, and every generated screen built from your components.",
-    ctas: [["Bring your design system", "/docs/your-design-system/"], ["Try Studio", "https://studio.polyxd.com"]],
+    ctas: [["Bring your design system", "/docs/your-design-system/"], ["Studio · coming soon", "/studio/"]],
     art: art.wall(),
     blocks: [
       { term: { title: "Your tokens, read in one command.", lead: "Every guess written down. Every failing colour pair named.", code: `<span class="dim">$</span> npx polyxd pack ./tokens.css\n--brand-600   → <em>action.primary</em>\n--gray-50     → <em>surface.base</em>\n<span class="dim">…</span>\n<em>2 pairs fail 4.5:1</em>`, link: ["Your design system", "/docs/your-design-system/"] } },

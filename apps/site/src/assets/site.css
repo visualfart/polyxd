@@ -660,3 +660,22 @@ select:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .theme-options { transition: none; }
 }
+
+/* Studio isn't open yet: a small tag beside every mention, and its buttons shown but not pressable. */
+.soon {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  font-size: 0.68em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  vertical-align: middle;
+  white-space: nowrap;
+  opacity: 0.75;
+}
+.nav-wide:has(.soon) { white-space: nowrap; }
+.btn.is-soon { opacity: 0.6; cursor: default; pointer-events: none; }

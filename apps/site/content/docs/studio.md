@@ -7,6 +7,8 @@ order: 23
 
 # Studio
 
+> **Coming soon.** The hosted Studio at studio.polyxd.com isn't open yet. This page describes what it will do.
+
 [Studio](https://studio.polyxd.com) is the team's side of Polyxd: source-available (the [Functional Source License](https://fsl.software), in `apps/studio`: free to run for your own team or company, not as a competing hosted service, and each version becomes Apache-2.0 after two years), running on Cloudflare Workers with D1 and R2, and the same code whether you use the hosted one or your own. The hosted Studio has a Free plan and paid ones ([Plans](#plans)); a Studio you run yourself has no plans and no limits.
 
 ## Your design system
