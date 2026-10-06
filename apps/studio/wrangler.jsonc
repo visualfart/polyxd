@@ -34,7 +34,7 @@
       "r2_buckets": [{ "binding": "FILES", "bucket_name": "polyxd-studio-files" }],
       "analytics_engine_datasets": [{ "binding": "FETCHES", "dataset": "polyxd_studio_fetches" }],
       "triggers": { "crons": ["17 * * * *"] },
-      "vars": { "APP_URL": "https://studio.polyxd.com", "EMAIL_FROM": "Polyxd Studio <studio@polyxd.com>" },
+      "vars": { "APP_URL": "https://studio.polyxd.com", "EMAIL_FROM": "Polyxd Studio <studio@polyxd.com>", "SIGNUPS": "closed" },
       "workers_dev": false,
       "preview_urls": false,
       "observability": { "enabled": true }

@@ -10,7 +10,7 @@ import { scan } from "../import/scan.ts";
 import { mapRoles, candidatesFor, scalar, type Contract, type Override } from "../import/map.ts";
 import { checkRegistryUrl, fetchPackage, findTokenFiles, untar } from "../import/package.ts";
 import { decrypt, encrypt, newApiKey, sha256 } from "./crypto.ts";
-import { isLocal, makeAuth, now, page, sendEmail, userFromRequest, type Ctx, type Env, type User } from "./auth.ts";
+import { isLocal, makeAuth, signupsOpen, now, page, sendEmail, userFromRequest, type Ctx, type Env, type User } from "./auth.ts";
 import { checkDocument, type Rule } from "../screens/validate.ts";
 import { blankDocument } from "../screens/tree.ts";
 import type { Doc } from "../screens/schema.ts";
@@ -194,7 +194,7 @@ async function dropVersionFiles(env: Env, ids: string[]) {
 
 app.get("/api/me", async (c) => {
   const user = c.get("user");
-  const signIn = { google: !!(c.env.GOOGLE_CLIENT_ID && c.env.GOOGLE_CLIENT_SECRET), emailVerification: !isLocal(c.env) };
+  const signIn = { google: !!(c.env.GOOGLE_CLIENT_ID && c.env.GOOGLE_CLIENT_SECRET), emailVerification: !isLocal(c.env), signups: signupsOpen(c.env) };
   // billing: whether this Studio has plans at all (the hosted one); a self-hosted one shows none.
   if (!user) return c.json({ user: null, workspaces: [], signIn, billing: billingOn(c.env) });
   const workspaces = await c.env.DB.prepare("SELECT w.id, w.slug, w.name, m.role, w.plan FROM workspaces w JOIN memberships m ON m.workspace_id = w.id WHERE m.user_id = ? ORDER BY w.name")

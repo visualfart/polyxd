@@ -6,6 +6,7 @@
  */
 import type { Context } from "hono";
 import { betterAuth } from "better-auth";
+import { APIError } from "better-auth/api";
 import { D1Dialect } from "kysely-d1";
 import { sha256 } from "./crypto.ts";
 import type { AnalyticsEnv } from "./analytics.ts";
@@ -43,7 +44,28 @@ export interface Env extends AnalyticsEnv {
   CF_ANALYTICS_TOKEN?: string;
   /** Who may use /admin: email addresses, separated by commas. Never a column, so no row grants it. */
   SUPER_ADMINS?: string;
+  /**
+   * "closed" turns away new accounts, by email or Google, until the hosted Studio opens. People
+   * who already have one still sign in. Unset, as on every self-hosted Studio, anyone may sign up.
+   */
+  SIGNUPS?: string;
+  /** While sign-ups are closed, who may still make an account: email addresses, separated by commas. */
+  SIGNUP_ALLOW?: string;
 }
+
+export const signupsOpen = (env: Env) => env.SIGNUPS !== "closed";
+
+/** Whether this email may make a new account: always while sign-ups are open; while closed, only the listed, the super admins, and anyone with a pending invite. */
+export async function maySignUp(env: Env, email: string): Promise<boolean> {
+  if (signupsOpen(env)) return true;
+  const e = email.trim().toLowerCase();
+  const listed = `${env.SIGNUP_ALLOW ?? ""},${env.SUPER_ADMINS ?? ""}`.split(",").map((x) => x.trim().toLowerCase());
+  if (listed.includes(e)) return true;
+  const invite = await env.DB.prepare("SELECT 1 AS ok FROM invites WHERE lower(email) = ? AND accepted_at IS NULL AND expires_at > ?").bind(e, now()).first();
+  return !!invite;
+}
+
+export const SIGNUPS_CLOSED = "Studio isn't open for new accounts yet. It's coming soon.";
 
 export interface User {
   id: string;
@@ -127,6 +149,10 @@ export function makeAuth(env: Env, hooks: { onSignUp?: (userId: string, method: 
     databaseHooks: {
       user: {
         create: {
+          // Every new account comes through here, by email or Google, so this is the one place sign-ups close.
+          before: async (user) => {
+            if (!(await maySignUp(env, user.email))) throw new APIError("FORBIDDEN", { message: SIGNUPS_CLOSED });
+          },
           after: async (user, ctx) => {
             try {
               hooks.onSignUp?.(user.id, /google|callback/.test(ctx?.path ?? "") ? "google" : "email");

@@ -40,7 +40,7 @@ export interface PlanLimitError {
 export interface Me {
   user: { id: string; email: string; name: string } | null;
   workspaces: { id: string; slug: string; name: string; role: string; plan?: string }[];
-  signIn?: { google: boolean; emailVerification: boolean };
+  signIn?: { google: boolean; emailVerification: boolean; signups?: boolean };
   /** Present only when the Worker has a PostHog key: the project's public key and PostHog's app for its region. */
   analytics?: { key: string; ui: string };
   /** Whether this Studio has plans (the hosted one). A self-hosted Studio has no limits and no Billing page. */
