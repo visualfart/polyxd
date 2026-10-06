@@ -30,6 +30,7 @@ const REPO = "https://github.com/visualfart/polyxd";
 export function Landing() {
   const { me } = useSession();
   const signedIn = !!me.user;
+  const closed = me.signIn?.signups === false;
   return (
     <div className="landing">
       <a className="l-skip" href="#main">Skip to content</a>
@@ -46,7 +47,7 @@ export function Landing() {
             ) : (
               <>
                 <Link to="/signin">Sign in</Link>
-                <Link className="l-btn l-btn-line l-btn-small" to="/signin?mode=signup">Create a workspace</Link>
+                {closed ? <span className="l-btn l-btn-line l-btn-small" aria-disabled="true" style={{ opacity: 0.6, cursor: "default" }}>Coming soon</span> : <Link className="l-btn l-btn-line l-btn-small" to="/signin?mode=signup">Create a workspace</Link>}
               </>
             )}
           </nav>
@@ -60,7 +61,7 @@ export function Landing() {
               <h1 id="hero-title">Where your design system decides what generated screens may look like.</h1>
               <p className="l-lede">Bring your tokens as they are, map them onto Polyxd's 87 roles, tune and export them for code, author the screens that aren't generated, and deliver all of it to your product by key.</p>
               <div className="l-cta-row">
-                {signedIn ? <Link className="l-btn l-btn-signal" to="/">Open Studio</Link> : <Link className="l-btn l-btn-signal" to="/signin?mode=signup">Create a workspace</Link>}
+                {signedIn ? <Link className="l-btn l-btn-signal" to="/">Open Studio</Link> : closed ? <span className="l-btn l-btn-signal" aria-disabled="true" style={{ opacity: 0.6, cursor: "default" }}>Coming soon</span> : <Link className="l-btn l-btn-signal" to="/signin?mode=signup">Create a workspace</Link>}
                 <a className="l-btn l-btn-line" href="#how">See how it works ↓</a>
               </div>
             </div>
@@ -132,7 +133,7 @@ export function Landing() {
               <div className="l-card">
                 <h3>Hosted</h3>
                 <p>Free for one workspace. Paid plans for bigger teams are coming.</p>
-                {signedIn ? <Link className="l-btn l-btn-ink l-btn-small" to="/">Open Studio</Link> : <Link className="l-btn l-btn-ink l-btn-small" to="/signin?mode=signup">Create a workspace</Link>}
+                {signedIn ? <Link className="l-btn l-btn-ink l-btn-small" to="/">Open Studio</Link> : closed ? <span className="l-btn l-btn-ink l-btn-small" aria-disabled="true" style={{ opacity: 0.6, cursor: "default" }}>Coming soon</span> : <Link className="l-btn l-btn-ink l-btn-small" to="/signin?mode=signup">Create a workspace</Link>}
               </div>
             </div>
           </div>

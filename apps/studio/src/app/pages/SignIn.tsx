@@ -26,6 +26,7 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const [mode, setMode] = useState<Mode>(() => startMode(start, params.get("mode")));
+  const signupClosed = mode === "signup" && me.signIn?.signups === false;
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -35,6 +36,8 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
   const [busy, setBusy] = useState(false);
   const google = me.signIn?.google;
   const needsVerification = me.signIn?.emailVerification;
+  // Sign-ups closed: the sign-up form says so instead, and the sign-in doesn't offer one.
+  const closed = me.signIn?.signups === false;
 
   const switchTo = (m: Mode) => {
     setMode(m);
@@ -95,7 +98,7 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
         <form className="signin-form" onSubmit={submit}>
           <div className="signin-head">
             <h1>{title}</h1>
-            {sub && <p className="signin-sub">{sub}</p>}
+            {signupClosed ? <p className="signin-sub">Studio isn't open for new accounts yet. It's coming soon.</p> : sub && <p className="signin-sub">{sub}</p>}
             {!needsVerification && mode !== "reset" && <p className="signin-local">Local development: no email goes out, so an account works as soon as it's created.</p>}
           </div>
           <div aria-live="polite">
@@ -104,25 +107,25 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
           <div aria-live="assertive">
             {error && <div className="notice bad" role="alert"><div className="body">{error}</div></div>}
           </div>
-          {google && (mode === "signin" || mode === "signup") && (
+          {!signupClosed && google && (mode === "signin" || mode === "signup") && (
             <>
               <button type="button" className="btn full" onClick={withGoogle}>Continue with Google</button>
               <div className="signin-or" aria-hidden="true"><span />or<span /></div>
             </>
           )}
-          {mode !== "reset" && (
+          {!signupClosed && mode !== "reset" && (
             <div className="field">
               <label htmlFor="email">{mode === "signup" ? "Work email" : "Email"}</label>
               <input id="email" className="input" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
             </div>
           )}
-          {mode === "signup" && (
+          {mode === "signup" && !signupClosed && (
             <div className="field">
               <label htmlFor="name">Full name</label>
               <input id="name" className="input" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} required />
             </div>
           )}
-          {mode !== "forgot" && (
+          {mode !== "forgot" && !signupClosed && (
             <div className="field">
               <div className="signin-label-row">
                 <label htmlFor="password">{mode === "reset" ? "New password" : "Password"}</label>
@@ -145,10 +148,10 @@ export function SignIn({ start = "signin" }: { start?: Mode }) {
               {mode !== "signin" && <span className="help" id="password-help">At least 12 characters. A sentence you'll remember beats symbols you won't.</span>}
             </div>
           )}
-          <button className="btn primary full" type="submit" disabled={busy}>{busy ? "One moment…" : cta}</button>
-          {mode === "signup" && <p className="signin-terms">By creating an account you agree to the <a href="https://polyxd.com/terms">Terms</a> and <a href="https://polyxd.com/privacy">Privacy policy</a>.</p>}
+          {!signupClosed && <button className="btn primary full" type="submit" disabled={busy}>{busy ? "One moment…" : cta}</button>}
+          {mode === "signup" && !signupClosed && <p className="signin-terms">By creating an account you agree to the <a href="https://polyxd.com/terms">Terms</a> and <a href="https://polyxd.com/privacy">Privacy policy</a>.</p>}
           <p className="signin-switch">
-            {mode === "signin" && <>New to Studio? <button type="button" className="signin-link" onClick={() => switchTo("signup")}>Create a workspace</button></>}
+            {mode === "signin" && (closed ? <>New accounts open soon.</> : <>New to Studio? <button type="button" className="signin-link" onClick={() => switchTo("signup")}>Create a workspace</button></>)}
             {mode === "signup" && <>Already have an account? <button type="button" className="signin-link" onClick={() => switchTo("signin")}>Sign in</button></>}
             {(mode === "forgot" || mode === "reset") && <button type="button" className="signin-link" onClick={() => switchTo("signin")}>Back to sign in</button>}
           </p>
