@@ -15,7 +15,7 @@ import { componentDefinitions, componentNamed, exampleDirections, exampleDocumen
 import { componentsOutput, docsOutput, guideOutput, packsOutput, showOutput, validateOutput, verifyOutput } from "./output-schemas.ts";
 import { DOCS, PAGE_LIMIT_CHARS, docPage, searchDocs } from "./docs.ts";
 
-export const VERSION = "0.4.3";
+export const VERSION = "0.4.4";
 /** The MCP App resource every shown screen renders in. */
 export const VIEW_URI = "ui://polyxd/surface.html";
 /** MCP Apps' HTML profile. */
