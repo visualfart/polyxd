@@ -39,7 +39,7 @@ claude mcp add --transport http polyxd https://mcp.polyxd.com/mcp
 
 **ChatGPT.** Custom servers need developer mode. Open **Settings > Security and login** and turn on **Developer mode**. Then go to [chatgpt.com/plugins](https://chatgpt.com/plugins) and select the plus button. Give it a name, such as Polyxd, and enter the URL under **Connection**. The server needs no authentication. Your workspace's policy decides whether developer mode is available to you.
 
-**Cursor.** Add this to `~/.cursor/mcp.json`, or to `.cursor/mcp.json` in a project:
+**Cursor.** Install the [Polyxd extension](/docs/vscode/) from Open VSX and the server is added for you. Or add this to `~/.cursor/mcp.json`, or to `.cursor/mcp.json` in a project:
 
 ```json
 {
@@ -49,7 +49,7 @@ claude mcp add --transport http polyxd https://mcp.polyxd.com/mcp
 }
 ```
 
-**VS Code.** Add this to `.vscode/mcp.json` in a workspace, or run **MCP: Add Server** and choose HTTP:
+**VS Code.** Install the [Polyxd extension](/docs/vscode/) and the server is in agent mode's tools (VS Code 1.101 or later). Or add this to `.vscode/mcp.json` in a workspace, or run **MCP: Add Server** and choose HTTP:
 
 ```json
 {

@@ -15,6 +15,7 @@ Works in VS Code, Cursor, VSCodium and Windsurf.
 - **An action log.** Press a button or submit a form in the preview. The action shows below it, with its context filled in from the data.
 - **Commands.** Verify the document in every design system, insert a component, or send the document to Polyxd Studio.
 - **Polyxd documents in the Explorer.** Every document in the workspace, by folder, with a dot for its check: green, yellow or red.
+- **The Polyxd MCP server for your agent.** In Cursor, and in VS Code 1.101 or later, installing the extension adds the Polyxd MCP server (`https://mcp.polyxd.com/mcp`) to the agent's tools, with no `mcp.json` to edit. The agent can then show you real screens in chat. Turn it off with `polyxd.mcp.enabled`.
 
 ![The preview in the Polaris design system, light and wider, with an action in the log](images/preview-controls.png)
 
@@ -40,7 +41,7 @@ git clone https://github.com/visualfart/polyxd && cd polyxd
 npm ci
 npm run build -w @polyxd/core && npm run build:preview -w @polyxd/react
 npm run package -w polyxd-vscode
-code --install-extension apps/vscode/polyxd-vscode-0.3.0.vsix     # or: cursor --install-extension …
+code --install-extension apps/vscode/polyxd-vscode-0.4.4.vsix     # or: cursor --install-extension …
 ```
 
 In Cursor, VSCodium and Windsurf you can also use **Extensions → … → Install from VSIX**.
@@ -72,6 +73,7 @@ Open a folder with Polyxd documents in it. A document is a JSON file with `specV
 |---|---|---|
 | `polyxd.pack` | (empty) | A design-system pack of your own for the preview's pack switcher: a `manifest.json` written by `polyxd pack`, compiled here, or an already compiled theme stylesheet. Relative to the workspace folder. |
 | `polyxd.defaultPack` | `material3` | The pack the preview opens with. One of `material3`, `carbon`, `antd`, `fluent`, `shadcn`, `bootstrap`, `mantine`, `radix`, `polaris`, `primer`, `spectrum`, `govuk`, `chakra`. |
+| `polyxd.mcp.enabled` | `true` | Offer the Polyxd MCP server (`https://mcp.polyxd.com/mcp`) to the editor's agent: Cursor's agent, and VS Code's agent mode from 1.101. Its tools show Polyxd screens in the chat. Turn off to remove it. |
 | `polyxd.studio.workspaceUrl` | (empty) | Your Studio workspace's API base for **Polyxd: Push to Studio**, e.g. `https://studio.polyxd.com/api/w/acme`. The API key is never kept here: set it with **Polyxd: Set Studio API key** (stored in the editor's secret storage) or export `POLYXD_STUDIO_KEY`. |
 <!-- /generated:settings -->
 
@@ -85,6 +87,7 @@ The extension collects no telemetry and sends nothing on its own. The check and 
 - **Push to Studio** uploads the document to the Studio workspace you set.
 - **Verify document** may download `@polyxd/verifier` from npm, if your project doesn't have it.
 - The preview shows images from `https` URLs that your document names.
+- Cursor's agent, or VS Code's agent mode, calls mcp.polyxd.com when it uses a Polyxd tool. The editor makes that call, not the extension, and only when the agent picks the tool. `polyxd.mcp.enabled` turns it off.
 
 ## Licence
 
