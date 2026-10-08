@@ -1,8 +1,8 @@
 {
   "name": "polyxd-vscode",
   "displayName": "Polyxd",
-  "description": "Write Polyxd UI documents with completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away.",
-  "version": "0.4.3",
+  "description": "Write Polyxd UI documents with completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away. Adds the Polyxd MCP server to Cursor and VS Code's agent.",
+  "version": "0.4.4",
   "publisher": "polyxd",
   "private": true,
   "license": "Apache-2.0",
@@ -65,6 +65,8 @@
   },
   "main": "./dist/extension.cjs",
   "activationEvents": [
+    "onStartupFinished",
+    "onMcpServerDefinitionProvider:polyxd.mcp",
     "onLanguage:json",
     "onLanguage:jsonc",
     "workspaceContains:**/*.polyxd.json",
@@ -73,6 +75,12 @@
     "workspaceContains:**/screens/*.json"
   ],
   "contributes": {
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "polyxd.mcp",
+        "label": "Polyxd"
+      }
+    ],
     "jsonValidation": [
       {
         "fileMatch": [
@@ -206,6 +214,11 @@
           ],
           "description": "The pack the preview opens with."
         },
+        "polyxd.mcp.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Offer the Polyxd MCP server (`https://mcp.polyxd.com/mcp`) to the editor's agent: Cursor's agent, and VS Code's agent mode from 1.101. Its tools show Polyxd screens in the chat. Turn off to remove it."
+        },
         "polyxd.studio.workspaceUrl": {
           "type": "string",
           "default": "",
@@ -218,15 +231,15 @@
     "build": "node scripts/build.ts",
     "watch": "node scripts/build.ts --watch",
     "test": "node --test \"test/*.test.ts\"",
-    "test:smoke": "node scripts/build.ts && node --test test/smoke/run.ts test/smoke/editor.ts",
+    "test:smoke": "node scripts/build.ts && node --test test/smoke/run.ts test/smoke/mcp.ts test/smoke/editor.ts",
     "readme": "node scripts/readme.ts",
     "screenshots": "node scripts/package.ts && node scripts/screenshots.ts",
     "package": "node scripts/package.ts",
     "vscode:prepublish": "node scripts/build.ts"
   },
   "devDependencies": {
-    "@polyxd/react": "^0.4.3",
-    "@polyxd/spec": "^0.4.3",
+    "@polyxd/react": "^0.4.4",
+    "@polyxd/spec": "^0.4.4",
     "@types/vscode": "^1.96.0",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",

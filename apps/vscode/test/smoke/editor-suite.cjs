@@ -35,6 +35,10 @@ exports.run = async function run() {
   });
   assert.ok(diagnostics.some((d) => d.message.includes("/budgets/daysLef")), diagnostics.map((d) => d.message).join("\n"));
 
+  // The MCP server went in through VS Code's definition provider (registering it throws when the
+  // provider id isn't in package.json's contributes).
+  assert.equal(api.mcpRoute, "vscode", `VS Code ${vscode.version} has no MCP server definition API`);
+
   // The bundled schema, through the editor's own JSON support: an intent file with a component
   // that doesn't exist is flagged inside its "document", and the valid intent beside it isn't
   // flagged at all (the spec's schema at an intent's root would call every line of it wrong).

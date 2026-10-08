@@ -29,7 +29,7 @@ git clone https://github.com/visualfart/polyxd && cd polyxd
 npm ci
 npm run build -w @polyxd/core && npm run build:preview -w @polyxd/react
 npm run package -w polyxd-vscode
-code --install-extension apps/vscode/polyxd-vscode-0.3.0.vsix     # or: cursor --install-extension …
+code --install-extension apps/vscode/polyxd-vscode-0.4.4.vsix     # or: cursor --install-extension …
 ```
 
 In Cursor, VSCodium and Windsurf you can also use **Extensions → … → Install from VSIX**.
@@ -42,6 +42,7 @@ In Cursor, VSCodium and Windsurf you can also use **Extensions → … → Insta
 - **Both ways between JSON and screen.** Click a component in the preview and the cursor goes to its JSON. Put the cursor in a component's JSON and the preview outlines it.
 - **An action log.** Actions the surface dispatches show under the preview, with their context filled in from the data.
 - **Polyxd documents** in the Explorer: every document in the workspace by folder, with the check's status as a dot.
+- **The Polyxd MCP server for your agent.** In Cursor, and in VS Code 1.101 or later, the extension adds the [MCP server](/docs/mcp/) (`https://mcp.polyxd.com/mcp`) to the agent's tools. There's no `mcp.json` to edit. In VS Code it shows in **MCP: List Servers**. The `polyxd.mcp.enabled` setting turns it off.
 
 ![The preview in the Polaris design system, light and wider, with an action in the log](/vscode/preview-controls.png)
 
@@ -60,11 +61,12 @@ In Cursor, VSCodium and Windsurf you can also use **Extensions → … → Insta
 |---|---|
 | `polyxd.defaultPack` | The pack the preview opens with. `material3` unless you set it. |
 | `polyxd.pack` | Your own pack for the preview's switcher: a `manifest.json` written by `polyxd pack`, or a compiled theme stylesheet. Relative to the workspace folder. |
+| `polyxd.mcp.enabled` | Offer the Polyxd MCP server to Cursor's agent and VS Code's agent mode. On unless you turn it off. |
 | `polyxd.studio.workspaceUrl` | Your Studio workspace's API base, `https://studio.polyxd.com/api/w/<workspace>`, for **Push to Studio**. |
 
 ## Privacy
 
-The extension collects no telemetry. The check and the preview run on your machine from files inside the extension. It reaches the network only when you ask: **Open in Studio** opens your browser, **Push to Studio** uploads the document to your workspace, and **Verify document** may fetch the verifier from npm. The preview shows images from `https` URLs your document names.
+The extension collects no telemetry. The check and the preview run on your machine from files inside the extension. It reaches the network only when you ask: **Open in Studio** opens your browser, **Push to Studio** uploads the document to your workspace, and **Verify document** may fetch the verifier from npm. The preview shows images from `https` URLs your document names. When Cursor's agent or VS Code's agent mode uses a Polyxd tool, the editor calls mcp.polyxd.com.
 
 ![The Polyxd documents view in the Explorer beside the preview of another screen](/vscode/documents-view.png)
 
