@@ -59,6 +59,8 @@ claude mcp add --transport http polyxd https://mcp.polyxd.com/mcp
 }
 ```
 
+**Grok.** At [grok.com/connectors](https://grok.com/connectors), choose **New Connector**, then **Custom**, and paste the URL. It needs no sign-in. We haven't confirmed that Grok draws MCP Apps; where a client doesn't, `polyxd_show` still answers with a text summary of the screen, and every other tool works as usual. Developers calling the xAI API can pass the same URL as a [remote MCP tool](https://docs.x.ai/developers/tools/remote-mcp).
+
 **Other clients.** Any client that speaks MCP's Streamable HTTP transport can use the URL. A client that can only start local commands can run the stdio server instead, below.
 
 The hosted server takes request bodies up to 1 MB and answers within 15 seconds. One address can make 600 requests a minute. For each request it logs the method, the path, the status and how long it took. It never logs what you send.
