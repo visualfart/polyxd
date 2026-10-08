@@ -7,8 +7,12 @@
  *   npm run build -w @polyxd/mcp && node packages/mcp/listing/render.ts
  *
  * Every document is checked with polyxd_validate and polyxd_verify first; one with an error stops
- * the run, so nothing unchecked is ever pictured.
+ * the run, so nothing unchecked is ever pictured. The raw renders go to screenshots/raw/, with the
+ * first document also drawn in other packs for the "any design system" image; compose.ts then
+ * lays them out as the directory carousel (screenshots/) and the marketing set (marketing/).
  */
+import { mkdirSync } from "node:fs";
+import { compose, type RawShot } from "./compose.ts";
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { chromium, type Page } from "playwright";
 import { Client } from "@modelcontextprotocol/client";
@@ -110,6 +114,34 @@ async function host(page: Page, toolResult: unknown, theme: "light" | "dark") {
 const dir = here("screenshots/documents/");
 const files = readdirSync(dir).filter((f) => f.endsWith(".json")).sort();
 const index: string[] = [];
+mkdirSync(here("screenshots/raw/"), { recursive: true });
+const raws: RawShot[] = [];
+
+/** The colour behind the screen, so a composition can extend it rather than frame it in white. */
+const backgroundOf = (iframe: any) =>
+  iframe.contentFrame().then((f: any) =>
+    f.evaluate(() => {
+      for (const el of [document.querySelector(".pxd-surface"), document.body, document.documentElement]) {
+        const c = el && getComputedStyle(el).backgroundColor;
+        if (c && c !== "rgba(0, 0, 0, 0)" && c !== "transparent") return c;
+      }
+      return "rgb(255, 255, 255)";
+    }),
+  ) as Promise<string>;
+
+/** Shows a checked document in a pack and screenshots it into screenshots/raw/. */
+async function shoot(name: string, document: unknown, pack: string, mode: "light" | "dark") {
+  const shown = await call("polyxd_show", { document, pack, mode });
+  if (shown.isError || !shown.structuredContent?.shown) throw new Error(`${name} was not shown:\n${textOf(shown)}`);
+  const page = await browser.newPage({ viewport: { width: WIDTH, height: 900 }, deviceScaleFactor: SCALE });
+  const iframe = await host(page, shown, mode);
+  const path = here(`screenshots/raw/${name}`).pathname;
+  await iframe!.screenshot({ path });
+  const background = await backgroundOf(iframe);
+  const packName = String(shown.structuredContent.packName ?? pack);
+  await page.close();
+  return { path, background, pack, packName, mode };
+}
 for (const file of files) {
   const shot = JSON.parse(readFileSync(new URL(file, dir), "utf8")) as Shot;
   // The spec's own validator first, then the server's tools, as a host's model would call them.
@@ -121,17 +153,23 @@ for (const file of files) {
   const report = verified.structuredContent as { errors: number; warnings: number } | undefined;
   if (verified.isError || !report || report.errors > 0) throw new Error(`${file} failed the verifier:\n${textOf(verified)}`);
   const issues = (validated.structuredContent.issues ?? []) as unknown[];
-  const shown = await call("polyxd_show", { document: shot.document, pack: shot.pack, mode: shot.mode });
-  if (shown.isError || !shown.structuredContent?.shown) throw new Error(`${file} was not shown:\n${textOf(shown)}`);
-
-  const page = await browser.newPage({ viewport: { width: WIDTH, height: 900 }, deviceScaleFactor: SCALE });
-  const iframe = await host(page, shown, shot.mode);
   const png = file.replace(/\.json$/, ".png");
-  await iframe!.screenshot({ path: here(`screenshots/${png}`).pathname });
-  await page.close();
-  console.log(`wrote listing/screenshots/${png} (${shot.pack}, ${shot.mode}); verify: ${textOf(verified).split("\n")[0]}`);
+  const raw = await shoot(png, shot.document, shot.pack, shot.mode);
+  raws.push({ file: png, prompt: shot.prompt, title: String((shot.document as any).surface?.title ?? ""), ...raw });
+  console.log(`rendered ${png} (${shot.pack}, ${shot.mode}); verify: ${textOf(verified).split("\n")[0]}`);
   index.push(`${png}\t${shot.pack}\t${shot.mode}\ttrue\t${issues.length}\t${report.errors}\t${report.warnings}`);
 }
+// The first document again in other packs: the same screen, native in each.
+const first = JSON.parse(readFileSync(new URL(files[0], dir), "utf8")) as Shot;
+const variants: RawShot[] = [];
+for (const [pack, mode] of [["carbon", "dark"], ["govuk", "light"], ["shadcn", "light"]] as const) {
+  const name = `variant-${pack}-${mode}.png`;
+  variants.push({ file: name, prompt: first.prompt, title: String((first.document as any).surface?.title ?? ""), ...(await shoot(name, first.document, pack, mode)) });
+  console.log(`rendered ${name}`);
+}
+
+await compose(browser, raws, variants);
+
 writeFileSync(here("screenshots/checked.tsv"), `file\tpack\tmode\tvalid\tvalidator issues\tverifier errors\tverifier warnings\n${index.join("\n")}\n`);
 
 await browser.close();
