@@ -27,12 +27,13 @@ const archive = {
 };
 
 /** A host page: the view in an iframe, answering `ui/initialize` and sending the tool's result once the view is initialized. */
-async function host(page: Page, toolResult: unknown, hostContext: Record<string, unknown> = { theme: "light" }) {
+async function host(page: Page, toolResult: unknown, hostContext: Record<string, unknown> = { theme: "light" }, refuse = 0) {
   await page.setContent("<!doctype html><html><body></body></html>");
   await page.evaluate(
-    ({ html, toolResult, hostContext }) => {
+    ({ html, toolResult, hostContext, refuse }) => {
       const w = window as any;
       w.received = [];
+      let refusals = refuse;
       const iframe = document.createElement("iframe");
       iframe.setAttribute("sandbox", "allow-scripts");
       iframe.style.cssText = "width:800px;height:600px;border:0";
@@ -47,13 +48,17 @@ async function host(page: Page, toolResult: unknown, hostContext: Record<string,
           reply({ method: "ui/notifications/tool-input", params: { arguments: {} } });
           reply({ method: "ui/notifications/tool-result", params: toolResult });
         } else if (m.method === "ui/message") {
+          // A busy chat refuses, as Claude does while it is still replying.
+          if (refusals-- > 0) reply({ id: m.id, error: { code: -32000, message: "Message sending denied" } });
+          else reply({ id: m.id, result: {} });
+        } else if (m.method === "ui/update-model-context") {
           reply({ id: m.id, result: {} });
         }
       });
       iframe.srcdoc = html;
       document.body.append(iframe);
     },
-    { html: viewHTML(), toolResult, hostContext },
+    { html: viewHTML(), toolResult, hostContext, refuse },
   );
   const frame = await (await page.waitForSelector("iframe")).contentFrame();
   return frame!;
@@ -120,5 +125,22 @@ test("a result with errors shows them instead of a screen", async (t) => {
   await frame.waitForSelector("text=The document has errors");
   assert.ok(await frame.$('li:has-text("/root: root \\"missing\\" is not a component id")'));
   assert.equal(await frame.$(".pxd-surface"), null);
+  await page.close();
+});
+
+test("a press while the chat is busy waits, tells the model, and sends once the chat accepts", async (t) => {
+  if (!browser) return t.skip("Chromium is not installed for Playwright");
+  const page = await browser.newPage();
+  const frame = await host(page, { content: [], structuredContent: { shown: true, document: archive, pack: "material3" } }, { theme: "light" }, 2);
+  await (await frame.waitForSelector("button:has-text('Archive task')")).click();
+  await frame.waitForSelector("#note:has-text('Waiting for the chat')");
+  await frame.waitForSelector("#note:has-text('Sent to the chat')", { timeout: 15_000 });
+  const all = await received(page);
+  const messages = all.filter((m) => m.method === "ui/message");
+  assert.equal(messages.length, 3, "two refusals, then accepted");
+  assert.ok(messages.every((m) => m.params.content[0].text === messages[0].params.content[0].text), "the same press each time");
+  const context = all.filter((m) => m.method === "ui/update-model-context");
+  assert.match(context[0].params.content[0].text, /"Archive task".*\n\(Not sent yet/s, "the model hears about it while it waits");
+  assert.deepEqual(context.at(-1).params.content, [], "and the note is cleared once it is sent");
   await page.close();
 });

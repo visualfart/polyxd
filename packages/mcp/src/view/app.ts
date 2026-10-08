@@ -2,7 +2,8 @@
  * The MCP App view: runs in the host's sandboxed iframe, speaks the MCP Apps protocol
  * (SEP-1865, 2026-01-26) to the host over postMessage, and renders the document from
  * polyxd_show's tool result with @polyxd/web. Actions in the screen go back to the host as
- * `ui/message` requests, so the model receives them as the user's next message.
+ * `ui/message` requests, so the model receives them as the user's next message. A press made while
+ * the chat is still replying (Claude refuses `ui/message` then) is held and sent when it accepts.
  *
  * Bundled with every pack's CSS into dist/view.html by scripts/build-view.ts. It is written
  * against the protocol directly, as the spec allows, so the page carries no SDK.
@@ -173,14 +174,60 @@ function describeAction(e: ActionEvent): string {
   return `[Polyxd] In the "${title()}" screen I pressed ${label ? `"${label}" ` : ""}(action ${e.name}).${context}`;
 }
 
-async function send(text: string) {
-  say("Sending to the chat…");
+/** How long to keep offering a press the chat refused, and how often to try again. */
+const RETRY_FOR_MS = 3 * 60_000;
+const RETRY_EVERY_MS = 2_000;
+
+/** A request the host may never answer (an older host without the method): resolves undefined after `ms`. */
+const requestWithin = (method: string, params: Json, ms: number) =>
+  Promise.race([request(method, params).catch(() => undefined), new Promise((r) => setTimeout(() => r(undefined), ms))]);
+
+/** Presses waiting for the chat, oldest first. Claude refuses `ui/message` while it is still replying. */
+const queue: string[] = [];
+let draining = false;
+
+async function trySend(text: string): Promise<boolean> {
   try {
     const result = await request("ui/message", { role: "user", content: [{ type: "text", text }] });
-    say(result?.isError ? "The chat did not accept the message." : "Sent to the chat.");
-  } catch (err) {
-    say(`Could not send to the chat: ${(err as Error).message}`);
+    return !result?.isError;
+  } catch {
+    return false;
   }
+}
+
+/**
+ * Sends each press as the user's next message. When the chat refuses (it is busy replying), the
+ * press stays queued and is offered again every few seconds; meanwhile the model is told about it
+ * through `ui/update-model-context`, so it isn't lost if the person types instead.
+ */
+async function send(text: string) {
+  queue.push(text);
+  if (draining) return say(`Waiting for the chat to finish its reply. ${queue.length} presses will send then, in order.`);
+  draining = true;
+  let told = false;
+  const giveUpAt = Date.now() + RETRY_FOR_MS;
+  while (queue.length) {
+    say(told ? "Waiting for the chat to finish its reply. This will send then." : "Sending to the chat…");
+    if (await trySend(queue[0])) {
+      queue.shift();
+      continue;
+    }
+    if (Date.now() > giveUpAt) {
+      say("The chat is still busy, so this wasn't sent. Press the button again when Claude has finished.");
+      queue.length = 0;
+      draining = false;
+      return;
+    }
+    if (!told) {
+      told = true;
+      void requestWithin("ui/update-model-context", { content: [{ type: "text", text: `${queue.join("\n")}\n(Not sent yet: the chat was busy.)` }] }, 5_000);
+    }
+    await new Promise((r) => setTimeout(r, RETRY_EVERY_MS));
+  }
+  // Everything was delivered as messages, so the pending note is no longer true.
+  if (told) void requestWithin("ui/update-model-context", { content: [] }, 5_000);
+  draining = false;
+  say("Sent to the chat.");
 }
 
 // ---------- Notifications from the host ----------

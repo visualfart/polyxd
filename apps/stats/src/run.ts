@@ -27,14 +27,25 @@ import {
 } from "./sources.ts";
 import { addToLedger, readCache, readLedger, readTotal, writeCache, writeTotal, type Store, type TotalSeen } from "./store.ts";
 
-/** npm days a scheduled run covers, ending on npm's last complete day: two missed runs are caught up. */
-export const DEFAULT_DAYS = 3;
+/**
+ * npm days a scheduled run covers, ending on npm's last complete day. Still one call per package
+ * however long the window, so a week costs nothing extra: npm's counts stalled at 4 October 2026
+ * for days, and a catch-up longer than the window would leave a gap.
+ */
+export const DEFAULT_DAYS = 7;
 /** The most a backfill may ask for. npm keeps 18 months; a Worker run has a time budget. */
 export const MAX_DAYS = 365;
 /** Requests in flight at once. npm's downloads API rate-limits bursts, so two, with retries (sources.ts `politely`). */
 export const CONCURRENCY = 2;
-/** How long a cached publish history is trusted: long enough for the 01:30 refresh to serve the 02:00 run, too short to miss a release. */
+/** How long a cached publish history is trusted: long enough for the 01:00 refresh to serve the 02:00 run, too short to miss a release. */
 export const HISTORY_MAX_AGE_MS = 6 * 3_600_000;
+/**
+ * Subrequests one Worker invocation may make on Workers Free. Going over makes every later fetch
+ * throw, PostHog's included, so the run would send nothing: the Worker passes this as `subrequests`.
+ */
+export const SUBREQUEST_LIMIT = 50;
+/** The npm prefetch is split into this many shards, one per cron run (index.ts), so each stays far under the limit. */
+export const SHARDS = 4;
 
 export interface RunOptions {
   fetch: Fetch;
@@ -52,6 +63,11 @@ export interface RunOptions {
   sleep?: Sleep;
   /** Why nothing is sent, for the summary line, when it is not a missing key. */
   notSending?: string;
+  /**
+   * The most subrequests this run may make, retries included. Collection stops short of it, so the
+   * PostHog send always has room; what it skips is caught up by a later run. Unset: no limit.
+   */
+  subrequests?: number;
 }
 
 export interface RunResult {
@@ -99,33 +115,76 @@ async function publishHistory(options: RunOptions, fetch: Fetch, pkg: string): P
   return (await readCache<PublishHistory>(options.store, `npm-history:${pkg}`, options.now, HISTORY_MAX_AGE_MS)) ?? fetchPublishHistory(fetch, pkg);
 }
 
+/** A package's npm downloads for one window, as the prefetch cached it. */
+interface CachedRange {
+  start: Day;
+  end: Day;
+  downloads: Array<[Day, number]>;
+}
+
+async function downloadRange(options: RunOptions, fetch: Fetch, pkg: string, start: Day, end: Day): Promise<Map<Day, number>> {
+  const cached = await readCache<CachedRange>(options.store, `npm-range:${pkg}`, options.now, HISTORY_MAX_AGE_MS);
+  if (cached && cached.start === start && cached.end === end) return new Map(cached.downloads);
+  return fetchDownloadRange(fetch, pkg, start, end);
+}
+
 /**
- * Fetches every package's publish history into the store's cache. The Worker runs this half an
- * hour before the main run, so neither run needs more than 50 subrequests (the Workers Free limit).
+ * A fetch that refuses once `limit` requests have been made, so a run never reaches the point
+ * where the Workers runtime throws on every fetch (the PostHog send included).
  */
-export async function refreshHistories(options: Pick<RunOptions, "fetch" | "store" | "now" | "packages" | "log" | "sleep">): Promise<string> {
+function budgeted(fetch: Fetch, limit: number | undefined): Fetch {
+  if (limit === undefined) return fetch;
+  let used = 0;
+  return (url, init) => (used++ < limit ? fetch(url, init) : Promise.reject(new Error("subrequest budget spent, left for a later run")));
+}
+
+/**
+ * Fetches publish histories and download counts into the store's cache, for every package or, with
+ * `shard`, for every SHARDS-th one. The Worker runs one shard per cron before the main run, so no
+ * run comes near the 50 subrequests Workers Free allows, retries included, as the package list grows.
+ */
+export async function refreshHistories(options: Pick<RunOptions, "fetch" | "store" | "now" | "packages" | "log" | "sleep" | "days"> & { shard?: number }): Promise<string> {
   const fetch = politely(options.fetch, options.sleep);
   const errors: string[] = [];
   let packages: string[] = options.packages ? [...options.packages] : [...PACKAGES];
   if (!options.packages) {
-    try {
-      const found = await fetchNpmSearch(fetch);
-      packages = [...new Set([...PACKAGES, ...found])];
-      await writeCache(options.store, "npm-packages", options.now, found);
-    } catch (error) {
-      errors.push(`npm search: ${message(error)}`);
+    // The first shard searches; the others use what it found.
+    let found = options.shard ? await readCache<string[]>(options.store, "npm-packages", options.now, HISTORY_MAX_AGE_MS) : null;
+    if (!found) {
+      try {
+        found = await fetchNpmSearch(fetch);
+        await writeCache(options.store, "npm-packages", options.now, found);
+      } catch (error) {
+        errors.push(`npm search: ${message(error)}`);
+      }
     }
+    packages = [...new Set([...PACKAGES, ...(found ?? [])])];
+  }
+  const mine = options.shard === undefined ? packages : packages.filter((_, i) => i % SHARDS === options.shard);
+  let window: Day[] | null = null;
+  try {
+    const through = await fetchLastCompleteDay(fetch);
+    await writeCache(options.store, "npm-through", options.now, through);
+    window = daysEndingOn(through, Math.min(Math.max(Math.floor(options.days ?? DEFAULT_DAYS), 1), MAX_DAYS));
+  } catch (error) {
+    errors.push(`npm last day: ${message(error)}`);
   }
   let cached = 0;
-  await pool(packages, CONCURRENCY, async (pkg) => {
+  await pool(mine, CONCURRENCY, async (pkg) => {
     try {
       await writeCache(options.store, `npm-history:${pkg}`, options.now, await fetchPublishHistory(fetch, pkg));
+      if (window) {
+        const [start, end] = [window[0], window[window.length - 1]];
+        const range = await fetchDownloadRange(fetch, pkg, start, end);
+        await writeCache(options.store, `npm-range:${pkg}`, options.now, { start, end, downloads: [...range] } satisfies CachedRange);
+      }
       cached++;
     } catch (error) {
       errors.push(`${pkg} history: ${message(error)}`);
     }
   });
-  const summary = `adoption history: cached ${cached} of ${packages.length} packages${errors.length ? ` · errors: ${errors.join("; ")}` : ""}`;
+  const of = options.shard === undefined ? "" : ` (shard ${options.shard + 1} of ${SHARDS})`;
+  const summary = `adoption history: cached ${cached} of ${mine.length} packages${of}${errors.length ? ` · errors: ${errors.join("; ")}` : ""}`;
   (options.log ?? console.log)(summary);
   return summary;
 }
@@ -133,10 +192,36 @@ export async function refreshHistories(options: Pick<RunOptions, "fetch" | "stor
 /** Collects every source. Reads the store (caches, last totals) but writes nothing. */
 export async function collect(options: RunOptions): Promise<{ events: AdoptionEvent[]; errors: string[]; npmThrough: Day | null; packages: number }> {
   const { store, now } = options;
-  const fetch = politely(options.fetch, options.sleep);
+  // One subrequest per PostHog batch stays free for run() to send what was collected.
+  const fetch = politely(budgeted(options.fetch, options.subrequests === undefined ? undefined : options.subrequests - 1), options.sleep);
   const errors: string[] = [];
   const events: AdoptionEvent[] = [];
   const days = Math.min(Math.max(Math.floor(options.days ?? DEFAULT_DAYS), 1), MAX_DAYS);
+
+  // ---- Readings of the present, filed under yesterday ----
+  // First: unlike npm's history, a reading missed today can't be caught up tomorrow.
+  const day = yesterday(now);
+  const present: AdoptionEvent[] = [];
+  const vscode = async (store_: string, metric: string, total: number) => {
+    const previous = await readTotal(store, `${store_}:${metric}`);
+    present.push({ event: "adoption_vscode_daily", properties: { store: store_, metric, day, total, ...delta(previous, day, total) } });
+  };
+  const [openVsx, marketplace, github, registry] = await Promise.allSettled([
+    fetchOpenVsx(fetch),
+    fetchMarketplace(fetch),
+    fetchGitHub(fetch, options.githubToken),
+    fetchRegistry(fetch),
+  ]);
+  if (openVsx.status === "fulfilled") await vscode("open-vsx", "downloads", openVsx.value);
+  else errors.push(`Open VSX: ${message(openVsx.reason)}`);
+  if (marketplace.status === "fulfilled") {
+    await vscode("vs-marketplace", "installs", marketplace.value.installs);
+    await vscode("vs-marketplace", "downloads", marketplace.value.downloads);
+  } else errors.push(`Marketplace: ${message(marketplace.reason)}`);
+  if (github.status === "fulfilled") present.push({ event: "adoption_github_daily", properties: { day, ...github.value } });
+  else errors.push(`GitHub: ${message(github.reason)}`);
+  if (registry.status === "fulfilled") present.push({ event: "adoption_registry", properties: { day, listed: registry.value.listed, version: registry.value.version } });
+  else errors.push(`MCP Registry: ${message(registry.reason)}`);
 
   // ---- npm: history, per package ----
   let npmThrough: Day | null = null;
@@ -144,7 +229,9 @@ export async function collect(options: RunOptions): Promise<{ events: AdoptionEv
   try {
     npmThrough = await fetchLastCompleteDay(fetch);
   } catch (error) {
-    errors.push(`npm last day: ${message(error)}`);
+    // The prefetch looked it up within the hour; without it, npm waits for the next run.
+    npmThrough = await readCache<Day>(store, "npm-through", now, HISTORY_MAX_AGE_MS);
+    if (!npmThrough) errors.push(`npm last day: ${message(error)}`);
   }
   if (npmThrough) {
     const window = daysEndingOn(npmThrough, days);
@@ -152,7 +239,7 @@ export async function collect(options: RunOptions): Promise<{ events: AdoptionEv
     const perPackage = new Map<string, AdoptionEvent[]>();
     await pool(packages, CONCURRENCY, async (pkg) => {
       try {
-        const [range, history] = await Promise.all([fetchDownloadRange(fetch, pkg, window[0], npmThrough!), publishHistory(options, fetch, pkg)]);
+        const [range, history] = await Promise.all([downloadRange(options, fetch, pkg, window[0], npmThrough!), publishHistory(options, fetch, pkg)]);
         const list: AdoptionEvent[] = [];
         for (const day of window) {
           // Nothing to say about a day before the package existed.
@@ -170,28 +257,8 @@ export async function collect(options: RunOptions): Promise<{ events: AdoptionEv
     for (const pkg of packages) events.push(...(perPackage.get(pkg) ?? []));
   }
 
-  // ---- Readings of the present, filed under yesterday ----
-  const day = yesterday(now);
-  const vscode = async (store_: string, metric: string, total: number) => {
-    const previous = await readTotal(store, `${store_}:${metric}`);
-    events.push({ event: "adoption_vscode_daily", properties: { store: store_, metric, day, total, ...delta(previous, day, total) } });
-  };
-  const [openVsx, marketplace, github, registry] = await Promise.allSettled([
-    fetchOpenVsx(fetch),
-    fetchMarketplace(fetch),
-    fetchGitHub(fetch, options.githubToken),
-    fetchRegistry(fetch),
-  ]);
-  if (openVsx.status === "fulfilled") await vscode("open-vsx", "downloads", openVsx.value);
-  else errors.push(`Open VSX: ${message(openVsx.reason)}`);
-  if (marketplace.status === "fulfilled") {
-    await vscode("vs-marketplace", "installs", marketplace.value.installs);
-    await vscode("vs-marketplace", "downloads", marketplace.value.downloads);
-  } else errors.push(`Marketplace: ${message(marketplace.reason)}`);
-  if (github.status === "fulfilled") events.push({ event: "adoption_github_daily", properties: { day, ...github.value } });
-  else errors.push(`GitHub: ${message(github.reason)}`);
-  if (registry.status === "fulfilled") events.push({ event: "adoption_registry", properties: { day, listed: registry.value.listed, version: registry.value.version } });
-  else errors.push(`MCP Registry: ${message(registry.reason)}`);
+  // Sent in the same order as before: npm first, then the readings.
+  events.push(...present);
 
   return { events, errors, npmThrough, packages: packages.length };
 }
