@@ -105,6 +105,8 @@ test("with a key: one event per initialize and per tool call, with counts and fi
     { name: "polyxd_show", arguments: { document: SECRET_DOC, pack: "zq-no-such-pack" } },
     { name: "polyxd_show", arguments: { document: { ...SECRET_DOC, root: "zqmissing" }, data: SECRET_DATA } },
     { name: "polyxd_components", arguments: { name: "ZqNoSuchComponent" } },
+    { name: "polyxd_docs", arguments: { query: "zqsecret question about my private roadmap" } },
+    { name: "polyxd_docs", arguments: { page: "zq-secret-page" } },
   ];
   try {
     for (const c of calls) await client.callTool(c);
@@ -135,7 +137,9 @@ test("with a key: one event per initialize and per tool call, with counts and fi
   assert.equal(init[0].properties.client_version, "1.2.3");
   assert.match(init[0].properties.protocol_version, /^\d{4}-\d{2}-\d{2}$/);
 
-  const [guide, validate, verify, shown, badPack, invalid, component] = tools.map((e) => e.properties);
+  const [guide, validate, verify, shown, badPack, invalid, component, search, page] = tools.map((e) => e.properties);
+  assert.deepEqual([search.tool, search.ok], ["polyxd_docs", true]);
+  assert.deepEqual([page.tool, page.ok, page.error], ["polyxd_docs", false, "unknown_page"]);
   assert.deepEqual([guide.tool, guide.ok], ["polyxd_guide", true]);
   assert.equal(guide.components, undefined);
   assert.deepEqual(validate.components, { Form: 1, TextInput: 1, Text: 1 });

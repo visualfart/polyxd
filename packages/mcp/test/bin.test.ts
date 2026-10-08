@@ -40,7 +40,7 @@ test("the built bin starts, answers initialize over stdio, and lists its tools",
     send({ method: "notifications/initialized" });
     send({ id: 2, method: "tools/list" });
     const list = await response(2);
-    assert.equal(list.result.tools.length, 6);
+    assert.equal(list.result.tools.length, 7);
 
     send({ id: 3, method: "resources/read", params: { uri: "ui://polyxd/surface.html" } });
     const view = await response(3);

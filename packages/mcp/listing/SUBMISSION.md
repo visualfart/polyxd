@@ -26,7 +26,7 @@ These live in code outside this folder. Tick each before opening either portal.
 - [ ] The hosted server's logs hold only method, path, status and duration, as the privacy policy says. If it runs on Cloudflare Workers with `observability` on, turn invocation logs off (`"observability": { "logs": { "invocation_logs": false } }`) or the policy is wrong: invocation logs record request details.
 - [ ] https://polyxd.com/privacy/ and https://polyxd.com/terms/ are deployed with the placeholders filled.
 - [ ] https://polyxd.com/docs/mcp/ documents the hosted server: its URL (`https://mcp.polyxd.com/mcp`), that it needs no account, and how to add it as a custom connector in Claude and as an app in ChatGPT. Today the page covers the local server only. Claude needs public documentation by the publish date.
-- [ ] You have added the server to Claude as a custom connector and called all six tools from a conversation, and run them in MCP Inspector (the Claude portal asks you to confirm this).
+- [ ] You have added the server to Claude as a custom connector and called all seven tools from a conversation, and run them in MCP Inspector (the Claude portal asks you to confirm this).
 - [ ] OpenAI domain verification is served (see "OpenAI: identity and domain verification").
 
 ---
@@ -131,7 +131,7 @@ Nothing. No account, plan, API key or setup. Screens show in hosts that support 
 **Reads or writes data**
 
 ```
-Read only. All six tools have readOnlyHint: true. They check and display what the model sends and change nothing anywhere.
+Read only. All seven tools have readOnlyHint: true. They check and display what the model sends and change nothing anywhere.
 ```
 
 ---
@@ -168,6 +168,7 @@ Read only. All six tools have readOnlyHint: true. They check and display what th
 | `polyxd_show` | Show a Polyxd screen | Validates, then returns the document for the MCP App to draw in the chosen pack and mode; shows nothing when there are errors | readOnly, not destructive, idempotent, closed world |
 | `polyxd_packs` | List Polyxd packs | The 25 design-system packs a screen can be drawn in | readOnly, not destructive, idempotent, closed world |
 | `polyxd_components` | List Polyxd components | The components with a summary each, or one component's full definition | readOnly, not destructive, idempotent, closed world |
+| `polyxd_docs` | Search the Polyxd docs | The polyxd.com docs bundled into the server: matching sections, one page, or the list of pages, with URLs | readOnly, not destructive, idempotent, closed world |
 
 `openWorldHint` is `false` for every tool: nothing reaches the internet or any outside system.
 
@@ -269,7 +270,7 @@ No account or credentials are needed. The server has no authentication.
 1. Add the connector: in Claude, Settings > Connectors > Add custom connector, URL https://mcp.polyxd.com/mcp (in ChatGPT, add it as an app with the same URL). Leave authentication empty.
 2. Start a new conversation with the connector on and send any test prompt below. Claude calls polyxd_guide (once per conversation), then polyxd_validate, then polyxd_show.
 3. The screen appears inline in the reply, drawn in the design system named in the prompt. Pressing a button in it sends a message into the chat naming the action and the values entered; Claude continues from it.
-4. For the other tools, ask: "Which design systems can Polyxd draw in?" (polyxd_packs), "What props does the Polyxd Choice component take?" (polyxd_components), and "Check this Polyxd screen against the calm-finance direction" after any screen (polyxd_verify).
+4. For the other tools, ask: "Which design systems can Polyxd draw in?" (polyxd_packs), "What props does the Polyxd Choice component take?" (polyxd_components), "How do I run the Polyxd verifier in CI?" (polyxd_docs), and "Check this Polyxd screen against the calm-finance direction" after any screen (polyxd_verify).
 
 Every tool is read-only and changes nothing. Screens use whatever data is in the conversation; nothing is fetched from anywhere.
 ```

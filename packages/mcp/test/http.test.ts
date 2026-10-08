@@ -12,7 +12,7 @@ import { createHttpHandler, rateLimiter, viewHTML, VIEW_URI, VIEW_MIME_TYPE, app
 import { exampleFiles, loadExample, textOf } from "./helpers.ts";
 
 const URL_ = "https://mcp.polyxd.test/mcp";
-const TOOLS = ["polyxd_guide", "polyxd_validate", "polyxd_verify", "polyxd_show", "polyxd_packs", "polyxd_components"];
+const TOOLS = ["polyxd_guide", "polyxd_validate", "polyxd_verify", "polyxd_show", "polyxd_packs", "polyxd_components", "polyxd_docs"];
 
 function handler(options: Partial<HttpHandlerOptions> = {}) {
   const logs: RequestLog[] = [];
@@ -98,7 +98,7 @@ test("a 2026-07-28 client, which sends the protocol version with every request, 
   const c = await client(handle, { mode: { pin: "2026-07-28" } });
   try {
     const { tools } = await c.listTools();
-    assert.equal(tools.length, 6);
+    assert.equal(tools.length, 7);
     const s: any = await c.callTool({ name: "polyxd_show", arguments: { document: loadExample("tasks-list.json") } });
     assert.equal(s.structuredContent.shown, true, textOf(s));
     const view = await c.readResource({ uri: VIEW_URI });
@@ -125,7 +125,7 @@ test("raw JSON-RPC: initialize answers, a notification is accepted with 202 and 
   // Stateless: a request works without an initialize before it on the same connection.
   const list = await handle(post({ jsonrpc: "2.0", id: 2, method: "tools/list" }, { "mcp-protocol-version": "2025-11-25" }));
   assert.equal(list.status, 200);
-  assert.equal((await messages(list))[0].result.tools.length, 6);
+  assert.equal((await messages(list))[0].result.tools.length, 7);
 });
 
 test("GET and DELETE answer 405: no standalone stream and no sessions to end", async () => {
@@ -275,7 +275,7 @@ test("the HTTP entry bundles for a Worker (no Node built-ins, no file system) an
   const c = await client(handle);
   try {
     const { tools } = await c.listTools();
-    assert.equal(tools.filter((t) => t.outputSchema).length, 6);
+    assert.equal(tools.filter((t) => t.outputSchema).length, 7);
     const ok = async (name: string, args: Record<string, unknown> = {}) => {
       const r: any = await c.callTool({ name, arguments: args });
       assert.notEqual(r.isError, true, `${name}: ${textOf(r)}`);

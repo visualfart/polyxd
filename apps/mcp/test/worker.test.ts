@@ -68,7 +68,7 @@ test("/mcp serves the SDK client: tools, a shown screen and the MCP App page", a
   await client.connect(new StreamableHTTPClientTransport(new URL("https://mcp.polyxd.com/mcp"), { fetch: (url, init) => app.fetch(new Request(url, init)) }));
   try {
     const { tools } = await client.listTools();
-    assert.equal(tools.length, 6);
+    assert.equal(tools.length, 7);
     const doc = JSON.parse(readFileSync(new URL("../../../packages/spec/examples/tasks-add.json", import.meta.url), "utf8"));
     const shown: any = await client.callTool({ name: "polyxd_show", arguments: { document: doc } });
     assert.equal(shown.structuredContent.shown, true);

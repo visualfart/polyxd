@@ -99,6 +99,7 @@ All six are read-only.
 | `polyxd_show` | Validates the document, then shows it. `pack` picks the design system (default `material3`). `mode` picks light or dark (default: the host's theme). A document with errors is not shown. |
 | `polyxd_packs` | Every pack: the published design systems and the original templates. |
 | `polyxd_components` | Every component with a one-line summary, or one component's full definition by `name`. |
+| `polyxd_docs` | The polyxd.com docs, as of the server's version: the sections that best match a `query`, one whole `page`, or the list of pages, each with its URL to cite. |
 
 `polyxd_validate`, `polyxd_verify` and `polyxd_show` also take `data`: the values the screen shows. It replaces the document's own `data`.
 

@@ -70,7 +70,7 @@ export async function sendEvents(config: PostHogConfig, events: AnalyticsEvent[]
   );
 }
 
-const TOOLS = new Set(["polyxd_guide", "polyxd_validate", "polyxd_verify", "polyxd_show", "polyxd_packs", "polyxd_components"]);
+const TOOLS = new Set(["polyxd_guide", "polyxd_validate", "polyxd_verify", "polyxd_show", "polyxd_packs", "polyxd_components", "polyxd_docs"]);
 /** Component types the spec defines. Anything else in a document (a custom component's name) is counted as "Other". */
 const COMPONENTS = new Set(Object.keys((catalog as { components: Record<string, unknown> }).components));
 const RPC_ERRORS: Record<number, string> = { [-32700]: "parse_error", [-32600]: "invalid_request", [-32601]: "method_not_found", [-32602]: "invalid_params", [-32603]: "internal_error", [-32000]: "server_error" };
@@ -135,6 +135,7 @@ function errorClass(tool: string, response: any, status: number): string | undef
   if (tool === "polyxd_show") return isObject(result.structuredContent) && result.structuredContent.shown === false ? "invalid_document" : "unknown_pack";
   if (tool === "polyxd_components") return "unknown_component";
   if (tool === "polyxd_verify") return "unknown_direction";
+  if (tool === "polyxd_docs") return "unknown_page";
   return "tool_error";
 }
 

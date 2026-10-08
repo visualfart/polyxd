@@ -50,6 +50,7 @@ From a clone of this repository: `npm install && npm run build -w @polyxd/mcp`, 
 | `polyxd_show` | Validates, then returns the document for display. `pack` picks the design-system pack (default `material3`), `mode` picks light or dark (default: the host's theme). Shows nothing when there are errors. | `{ shown: true, document, pack, packName, mode?, specVersion }`, or `{ shown: false, issues }` with `isError` |
 | `polyxd_packs` | The packs: published design systems and original templates. | `{ default, packs[{ name, displayName, template, package, description }] }` |
 | `polyxd_components` | The components with a one-line summary each, or one component's full definition by `name`. | `{ components[{ name, category, summary, shell }] }`, or `{ component }` with the full definition |
+| `polyxd_docs` | Searches the polyxd.com docs bundled into this version: the sections that best match `query`, one whole `page`, or the list of pages. | `{ sections[{ page, title, heading, url, text }] }`, `{ page }` or `{ pages[] }` |
 
 Every tool is read-only. `data` can be passed to `polyxd_validate`, `polyxd_verify` and `polyxd_show` separately from the document; it replaces the document's own `data`.
 

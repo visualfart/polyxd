@@ -12,7 +12,8 @@ import { formatValidation, formatVerify, validate, verify, withData } from "./ch
 import { guide, SPEC_VERSION } from "./prompt.ts";
 import { PACKS } from "./packs.generated.ts";
 import { componentDefinitions, componentNamed, exampleDirections, exampleDocuments } from "./spec.ts";
-import { componentsOutput, guideOutput, packsOutput, showOutput, validateOutput, verifyOutput } from "./output-schemas.ts";
+import { componentsOutput, docsOutput, guideOutput, packsOutput, showOutput, validateOutput, verifyOutput } from "./output-schemas.ts";
+import { DOCS, PAGE_LIMIT_CHARS, docPage, searchDocs } from "./docs.ts";
 
 export const VERSION = "0.4.2";
 /** The MCP App resource every shown screen renders in. */
@@ -71,7 +72,7 @@ const dataSchema = {
 
 type DocArgs = { document: Record<string, unknown>; data?: Record<string, unknown> };
 
-const INSTRUCTIONS = `Polyxd turns a small JSON document of meaning into a real screen in a design system. You write the document; this server checks it and shows it to the user. Call polyxd_guide once before writing your first document, polyxd_validate until it is valid, then polyxd_show. Actions the user takes in a shown screen come back to you as chat messages. A button press only tells you what the user chose: it submits, pays or saves nothing, so never say it did.`;
+const INSTRUCTIONS = `Polyxd turns a small JSON document of meaning into a real screen in a design system. You write the document; this server checks it and shows it to the user. Call polyxd_guide once before writing your first document, polyxd_validate until it is valid, then polyxd_show. For questions about Polyxd itself (installing a renderer, the verifier, the runtime, Studio, anything in the docs), call polyxd_docs and cite the URLs it returns rather than answering from memory. Actions the user takes in a shown screen come back to you as chat messages. A button press only tells you what the user chose: it submits, pays or saves nothing, so never say it did.`;
 
 /**
  * The MCP App resource's `_meta`, for Claude and ChatGPT alike. The page loads nothing from anywhere
@@ -285,6 +286,39 @@ export function createServer(options: ServerOptions): McpServer {
         content: text([`${rows.length} components for generated screens:`, ...rows, "", `Shell components, authored once per product and never generated: ${shell.join(", ")}.`].join("\n")),
         structuredContent: { components: all.map((c) => ({ name: c.name, category: c.category, summary: c.summary, shell: c.shell === true })) },
       };
+    },
+  );
+
+  server.registerTool(
+    "polyxd_docs",
+    {
+      title: "Search the Polyxd docs",
+      description:
+        "Searches the polyxd.com docs, as of this server's version: installing and using the React and Web Components renderers, the spec, the verifier and its CLI, the runtime, the generation server, design systems and packs, Design Directions, analytics events, Studio, the MCP server and the roadmap. Pass \"query\" for the sections that best match, \"page\" for one whole page, or nothing for the list of pages. Cite the URLs it returns. For writing a document, use polyxd_guide.",
+      inputSchema: fromJsonSchema<{ query?: string; page?: string }>({
+        type: "object",
+        properties: {
+          query: { type: "string", description: "A question or topic, e.g. \"run the verifier in CI\" or \"Web Components renderer\"." },
+          page: { type: "string", description: "A page's slug, title or URL, e.g. \"quickstart\", for the whole page." },
+        },
+      }),
+      outputSchema: fromJsonSchema(docsOutput),
+      annotations: readOnly("Search the Polyxd docs"),
+    },
+    async ({ query, page }) => {
+      if (page) {
+        const p = docPage(page);
+        if (!p) return { isError: true, content: text(`No docs page "${page}". Pages: ${DOCS.map((d) => d.slug || "(home)").join(", ")}.`) };
+        const markdown = p.markdown.length > PAGE_LIMIT_CHARS ? `${p.markdown.slice(0, PAGE_LIMIT_CHARS)}\n…(cut at ${PAGE_LIMIT_CHARS} characters: the rest is at ${p.url})` : p.markdown;
+        return { content: text(`# ${p.title}\n${p.url}\n\n${markdown}`), structuredContent: { page: { slug: p.slug, title: p.title, description: p.description, url: p.url, markdown } } };
+      }
+      if (query?.trim()) {
+        const found = searchDocs(query);
+        if (!found.length) return { content: text(`Nothing in the docs matches "${query}". Call polyxd_docs with no arguments for the list of pages.`), structuredContent: { sections: [] } };
+        return { content: text(found.map((s) => `## ${s.title}: ${s.heading}\n${s.url}\n\n${s.text}`).join("\n\n---\n\n")), structuredContent: { sections: found } };
+      }
+      const pages = DOCS.map((p) => ({ slug: p.slug, title: p.title, description: p.description, section: p.section, url: p.url }));
+      return { content: text(pages.map((p) => `- ${p.title} (${p.slug || "home"}): ${p.description} ${p.url}`).join("\n")), structuredContent: { pages } };
     },
   );
 

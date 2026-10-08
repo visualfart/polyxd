@@ -12,7 +12,7 @@ import { Client } from "@modelcontextprotocol/client";
 import { connect, exampleFiles, loadExample, textOf } from "./helpers.ts";
 import { PACKS, SPEC_VERSION, componentDefinitions, exampleDirections, guide } from "../src/index.ts";
 
-const TOOLS = ["polyxd_guide", "polyxd_validate", "polyxd_verify", "polyxd_show", "polyxd_packs", "polyxd_components"];
+const TOOLS = ["polyxd_guide", "polyxd_validate", "polyxd_verify", "polyxd_show", "polyxd_packs", "polyxd_components", "polyxd_docs"];
 
 let session: Awaited<ReturnType<typeof connect>>;
 // Strict, except that a oneOf branch may require a property the root declares (strictRequired).
@@ -47,7 +47,7 @@ function* properties(schema: any, path = ""): Generator<[string, any]> {
   }
 }
 
-test("tools/list gives all six tools an object-rooted output schema, every property described", async () => {
+test("tools/list gives all seven tools an object-rooted output schema, every property described", async () => {
   const { tools } = await session.client.listTools();
   assert.deepEqual(tools.filter((t) => t.outputSchema).map((t) => t.name).sort(), [...TOOLS].sort());
   for (const t of tools) {
@@ -179,4 +179,10 @@ test("the SDK checks successful results against the output schema, and skips isE
     await client.close();
     await server.close();
   }
+});
+
+test("polyxd_docs results conform: the list of pages, one page, and a search", async () => {
+  conforms("polyxd_docs", await call("polyxd_docs"));
+  conforms("polyxd_docs", await call("polyxd_docs", { page: "quickstart" }));
+  conforms("polyxd_docs", await call("polyxd_docs", { query: "Web Components renderer" }));
 });
