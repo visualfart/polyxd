@@ -1,0 +1,150 @@
+/*
+ * Film D2, vertical (1080×1920, Instagram Reels): on top of film-d2.css. The Reels safe zone is
+ * x 60–960, y 250–1500 (the right 120 px is the like/comment/share rail, the top ~250 px the header,
+ * the bottom ~420 px the caption, audio and username). Captions, counts, the code that matters and
+ * the address stay inside it; the ground and the dot grid run full-bleed.
+ */
+html,
+body {
+  width: 1080px;
+  height: 1920px;
+}
+
+/* ——— Captions: a large block in the upper third of the safe zone, stacked short lines ——— */
+.b4cap,
+.b4cap.dnarrow {
+  left: 60px;
+  top: 262px;
+  bottom: auto;
+  width: 900px;
+  height: auto;
+  display: block;
+}
+.b4cap .line,
+.b4cap.dnarrow .line {
+  font-size: 80px;
+  line-height: 1.08;
+  text-align: left;
+}
+.b4cap.centre {
+  left: 60px;
+  right: auto;
+  width: 900px;
+}
+.b4cap.centre .line {
+  text-align: center;
+  font-size: 74px;
+}
+/* The scrim behind a caption runs across the top of the frame. */
+#d-lscrim {
+  left: 0;
+  top: 0;
+  bottom: auto;
+  width: 1080px;
+  height: 660px;
+  background: linear-gradient(rgba(11, 11, 10, 0.95) 0%, rgba(11, 11, 10, 0.9) 70%, rgba(11, 11, 10, 0));
+}
+.d2-sub {
+  left: 62px;
+  top: 560px;
+  font-size: 30px;
+}
+
+/* ——— The turn: the mark above the card, inside the safe zone ——— */
+#d-turn-mark {
+  left: 510px;
+  top: 630px;
+}
+
+/* ——— The line that matters, as a card above the phone; the prop card; the kind chip ——— */
+.d2-linecard {
+  position: absolute;
+  border-radius: 16px;
+  background: var(--p1);
+  border: 1px solid rgba(255, 110, 64, 0.55);
+  box-shadow: 0 0 40px rgba(255, 110, 64, 0.14), 0 20px 50px rgba(0, 0, 0, 0.6);
+  font-family: "DM Mono", monospace;
+  font-size: 30px;
+  overflow: visible;
+}
+.d2-linecard .tx {
+  position: absolute;
+  left: 26px;
+  top: 12px;
+  line-height: 48px;
+  white-space: pre;
+  color: var(--fg);
+}
+.d2-linecard .k,
+.d2-linecard .tg {
+  color: #f3f1ec;
+}
+.d2-linecard .s {
+  color: #ff8a63;
+}
+.d2-linecard .p {
+  color: #8a857b;
+}
+.d2-linecard .at {
+  color: #d8cfc0;
+}
+.d2-linecard.prop .d-line {
+  padding-left: 26px;
+}
+.d2-linecard.prop .d-line .ln {
+  display: none;
+}
+.d2-linecard.prop .d-file {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+.d2-kind.v {
+  transform-origin: 50% 50%;
+  translate: -50% 0;
+}
+
+/* ——— Terminals read at 34 px or more at their camera ——— */
+.d-term.t33 .d-tl {
+  font-size: 33px;
+  line-height: 50px;
+  height: 50px;
+}
+.d-term.t29 .d-tl {
+  font-size: 29px;
+  line-height: 46px;
+  height: 46px;
+}
+.d-term.t33 .d-tcaret,
+.d-term.t29 .d-tcaret {
+  height: 30px;
+}
+
+/* ——— Safe-zone guide (hidden by default; ?guide or GUIDE=1 node make-d2v.mjs shows it) ——— */
+#d-guide {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: none;
+  z-index: 1000;
+}
+#d-guide.on {
+  display: block;
+}
+#d-guide .zone {
+  position: absolute;
+  background: rgba(124, 255, 107, 0.14);
+}
+#d-guide .safe {
+  position: absolute;
+  left: 60px;
+  top: 250px;
+  width: 900px;
+  height: 1250px;
+  outline: 3px dashed rgba(124, 255, 107, 0.95);
+}
+#d-guide .lbl {
+  position: absolute;
+  font: 600 22px "DM Mono", monospace;
+  color: rgba(124, 255, 107, 0.95);
+}

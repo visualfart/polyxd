@@ -374,3 +374,71 @@ account terms before publishing.
 | Verify's result, the fix, same fingerprint, the clear board | 7e44f651… | Sharp click |
 
 Fonts: Young Serif, DM Mono, Hanken Grotesk (SIL OFL); Caveat (SIL OFL, installed by the registry).
+
+## Film D2: "Where's my order?" (`film-d2-where-is-my-order/`)
+
+The developer film's second cut (`STORY-DEV-2.md`, plus the owner's changes listed in the project's
+`BRIEF.md`): dark, one ask (#933 "Where's my order? Show tracking in the app"), four verbs. Film D is
+kept as it was; D2 has its own generator and copies of the pieces it changed.
+
+```sh
+node apps/film/hyperframes/music-d2.mjs     # the owner's score, re-cut on its bars -> film-d2-*/assets/music.wav
+node apps/film/hyperframes/make-d2.mjs      # index.html, assets and sound cues from shared/film-d2-timings.json
+cd apps/film/hyperframes/film-d2-where-is-my-order
+npx hyperframes check
+npx hyperframes render --quality delivery --output ../../out/hyperframes/polyxd-d2-where-is-my-order.mp4
+```
+
+The project pins hyperframes 0.8.141 (film D stays on 0.8.81; `check` passes on the new version).
+The score is re-cut on its bars by `music-d2.mjs` (see its header for the film ← track map).
+
+What is on screen and where it came from:
+
+- **Screens:** `@polyxd/web`'s browser build, live, in each pack's dark mode (GOV.UK has no dark mode
+  and renders light). The order document is `packages/spec/examples/shop-order-status.json` plus one
+  Action ("Change delivery time", event `order.reschedule`, context `{ orderId: { path: "/order/id" } }`)
+  and `order.id: "4821"` (`shared/film-d2-order/order-status.json`). The payoff's cards build into one
+  spec example each (phones for consumer asks; crm-accounts-list, crm-account-record,
+  crm-cancel-subscription, team-members, settings-api-keys and storage-usage as desktop screens).
+- **Checks, run in this repository on 8 October 2026:** `validateDocument(doc)` → `{ valid: true, issues: [] }`
+  (`shared/film-d2-order/validate.mjs`); `npx polyxd-verify order-status.json --tasks tasks.json` →
+  `100  order-status  (0 errors, 0 warnings agent 12/12)` and `1 documents · 12 renders · mean score
+  100.0 · agent tasks 12/12` (the task is `shared/film-d2-order/tasks.json`: press "Change delivery
+  time", expect `order.reschedule { orderId: "4821" }`).
+- **Your design system:** `npx polyxd pack ./acme.css --dark ./acme-dark.css` (film D's `acme.css`
+  unchanged, plus a dark counterpart written for this film) printed `read 40 variables from acme.css and
+  40 from acme-dark.css` / `mapped 54 of 87 contract tokens` / … / `wrote ./ds-acme`
+  (`shared/film-d2-acme/pack-output.txt`). Its `pack.css` is `packCss` from `@polyxd/ds-kit` run on the
+  written pack, with each mode compiled from its own `system.<mode>.json`: the manifest `polyxd pack`
+  writes lists `semantic.json` (the light values) after `system.dark.json` in the dark mode, so compiled
+  as written the dark mode comes out light. That looks like a bug in `polyxd pack`'s manifest.
+- **Intro and outro:** `shared/ascii-field.js` (a seek-safe glyph field after the registry's
+  ascii-render-pass), `shared/sting-ascii.html`, `shared/outro-ascii.html`.
+
+### Credits (film D2)
+
+| Use | Source | Name |
+|---|---|---|
+| Score (cut: `music-d2.mjs`) | Supplied by the owner (`nveravetyanmusic-stylish-deep-electronic-262632.mp3`; the file name suggests Pixabay, id 262632), frozen with `media-use resolve --from` as `.media/audio/bgm/bgm_002.mp3` | "Stylish Deep Electronic" by nveravetyanmusic (105 bpm, 96 s). Licence: Pixabay Content License if it is the Pixabay track; the owner to confirm |
+| Sound effects | Film D's HeyGen catalogue effects (table above), ingested into this project with `media-use resolve --from` | as in film D |
+| The order's item photos (Desk lamp, LED bulbs) | Supplied by the owner (`.media/images/desk-lamp.png`, `led-bulbs.png`); third-party catalogue photos, rights are the owner's call. `make-d2.mjs` crops them square on the product and inlines them for the renderer's `resolveMedia` | — |
+
+Fonts: Young Serif, DM Mono, Hanken Grotesk, Caveat (SIL OFL).
+
+### Film D2, vertical (`film-d2-vertical/`)
+
+9:16 (1080×1920) for Instagram Reels: the same story, timings, score cut and sound cues as D2, recomposed
+for portrait (see its `STORYBOARD.md`). The picture is `shared/film-d2v.js` and `shared/film-d2v.css`
+(film-d2.js forked; the horizontal project is untouched), the sting and outro
+`shared/sting-ascii-v.html` and `shared/outro-ascii-v.html` (`shared/ascii-field.js` now takes the frame
+size; its defaults keep the horizontal output identical).
+
+```sh
+node apps/film/hyperframes/music-d2.mjs      # the score (written into the horizontal project, copied from there)
+node apps/film/hyperframes/make-d2v.mjs      # GUIDE=1 shows the Reels safe-zone guide (or open the page with ?guide)
+cd apps/film/hyperframes/film-d2-vertical && npx hyperframes check
+```
+
+Everything the Reels UI covers is kept clear: captions, counts, the code that matters and the address
+sit inside x 60–960, y 250–1500. Media is the horizontal project's, ingested with media-use
+(`.media/`), plus the owner's two product photos.

@@ -1,0 +1,26 @@
+{
+  "$schema": "../spec/schema/design-system.schema.json",
+  "name": "acme",
+  "displayName": "Acme",
+  "version": "0.0.0",
+  "contractVersion": "0.2.0",
+  "license": "Apache-2.0",
+  "modes": {
+    "light": [
+      "tokens/system.light.json",
+      "tokens/semantic.json"
+    ],
+    "dark": [
+      "tokens/system.dark.json",
+      "tokens/semantic.json"
+    ]
+  },
+  "defaultMode": "light",
+  "provenance": [
+    {
+      "source": "local:acme.css",
+      "license": "see the owning project",
+      "notes": "Drafted by `polyxd pack` from this project's own tokens."
+    }
+  ]
+}

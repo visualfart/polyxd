@@ -1,0 +1,108 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[{"id":"url","type":"string","label":"Address line","default":"polyxd.com/docs · open source"},{"id":"dur","type":"number","label":"Length","default":8},{"id":"blink","type":"number","label":"Blink at","default":4.2}]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Film D2's outro, the sting mirrored: the board dissolves into the ASCII glyph field, which
+         converges on the lockup; the pupil blinks on the score's final stop; the address types in
+         under it with a blinking orange cursor and holds. Needs shared/mark.js and shared/ascii-field.js. -->
+  </head>
+  <body>
+    <template id="outro-ascii-template">
+      <style>
+        #outro-ascii-root {
+          position: absolute;
+          inset: 0;
+        }
+        #outro-ascii-canvas {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+        }
+        #outro-ascii-url {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 730px;
+          text-align: center;
+          font-family: "DM Mono", monospace;
+          font-size: 36px;
+          line-height: 48px;
+          color: #f3f1ec;
+          white-space: pre;
+        }
+        #outro-ascii-url .cur {
+          display: inline-block;
+          width: 18px;
+          height: 38px;
+          margin-left: 4px;
+          vertical-align: -7px;
+          background: #ff6e40;
+          box-shadow: 0 0 14px rgba(255, 110, 64, 0.8);
+        }
+      </style>
+      <div id="outro-ascii-root" data-composition-id="outro-ascii" data-width="1920" data-height="1080" data-duration="8">
+        <canvas id="outro-ascii-canvas" width="1920" height="1080"></canvas>
+        <div id="outro-ascii-url" data-layout-allow-overflow></div>
+      </div>
+      <script>
+        (function () {
+          const M = window.PolyxdMark;
+          const vars = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+          const D = Number(vars.dur) || 8;
+          const BL = Number(vars.blink) || 4.2;
+          const URL_TEXT = String(vars.url || "polyxd.com/docs · open source");
+          const seg = (t, a, d) => Math.max(0, Math.min(1, (t - a) / d));
+          const EV = [
+            { t: BL - 1.2, state: "looking" },
+            { t: BL - 0.7, state: "idle" },
+            { t: BL, state: "blink" },
+          ];
+          const TYPE0 = BL + 0.4, PER = 0.034;
+          const urlEl = document.getElementById("outro-ascii-url");
+          let key = "";
+          const build = () => {
+            const field = window.AsciiField.create(document.getElementById("outro-ascii-canvas"), { y: 500 });
+            // Left-aligned where the whole address will sit centred, so typing doesn't shift it.
+            const mc = document.createElement("canvas").getContext("2d");
+            mc.font = "36px 'DM Mono'";
+            urlEl.style.left = `${Math.round(960 - mc.measureText(URL_TEXT).width / 2)}px`;
+            urlEl.style.right = "auto";
+            urlEl.style.textAlign = "left";
+            const render = (t) => {
+              field.draw(t, {
+                bg: seg(t, 0, 0.8),
+                field: seg(t, 0, 0.6),
+                mark: seg(t, 0.7, 1.3),
+                word: seg(t, 1.6, 1.1),
+                quiet: seg(t, 2.2, 1.4),
+                dissolve: 0,
+                pupil: M.geometryAt(EV, t),
+              });
+              // The address types in; the cursor blinks on whole half-seconds of film time.
+              const n = t < TYPE0 ? 0 : Math.min(URL_TEXT.length, Math.floor((t - TYPE0) / PER) + 1);
+              const typing = n < URL_TEXT.length;
+              const on = t >= TYPE0 - 0.5 && (typing || Math.floor((t - TYPE0) * 2) % 2 === 0);
+              const k = `${n}|${on}`;
+              if (k !== key) {
+                key = k;
+                const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+                urlEl.innerHTML = t >= TYPE0 - 0.5 ? `${esc(URL_TEXT.slice(0, n))}<span class="cur" style="opacity:${on ? 1 : 0}"></span>` : "";
+              }
+            };
+            const tl = gsap.timeline({ paused: true });
+            const clock = { t: 0 };
+            tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => render(clock.t) }, 0);
+            render(0);
+            window.__timelines["outro-ascii"] = tl;
+            if (window.__hfForceTimelineRebind) window.__hfForceTimelineRebind();
+          };
+          Promise.all(["18px 'DM Mono'", "160px 'Young Serif'"].map((f) => document.fonts.load(f))).then(() => document.fonts.ready).then(build);
+        })();
+      </script>
+    </template>
+  </body>
+</html>

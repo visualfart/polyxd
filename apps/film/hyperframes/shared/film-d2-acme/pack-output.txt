@@ -1,0 +1,21 @@
+read 40 variables from acme.css and 40 from acme-dark.css
+
+mapped 54 of 87 contract tokens
+  41 from their names
+
+16 tokens took a Polyxd default (state opacities, touch target, focus ring, motion). Override any of them in the mapping.
+
+still needed — nothing in your tokens matched, and there is no sensible default:
+  color.scrim                        (color)
+  color.text.link                    (color)
+  color.action.secondary.border      (color)
+  color.selection.foreground         (color)
+  color.status.info.foreground       (color)
+  color.status.success.foreground    (color)
+  color.status.warning.foreground    (color)
+  size.icon.default                  (dimension)
+  shadow.overlay                     (shadow)
+
+Add them to polyxd.mapping.json: "color.scrim": "your-variable-name", or "=#hex" for a literal.
+
+4 of your own pairs don't meet the contrast the contract requires:

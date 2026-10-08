@@ -58,6 +58,21 @@
         "4320"
       ],
       "port": 4320
+    },
+    {
+      "name": "film-d2-vertical",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "hyperframes@0.8.141",
+        "preview",
+        "apps/film/hyperframes/film-d2-vertical",
+        "--port",
+        "3003",
+        "--foreground",
+        "--no-open"
+      ],
+      "port": 3003
     }
   ]
 }
