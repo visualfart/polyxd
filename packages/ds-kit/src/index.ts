@@ -158,6 +158,55 @@ export function systemTier(vars: Vars, namespace: string, rules: TypeRule[], des
   return { $description: description, [namespace]: tokens };
 }
 
+/** Every token in a DTCG tree, by its dotted path: a token is any object with a `$value`. */
+function tokensOf(tree: Json, prefix = ""): Map<string, Json> {
+  const out = new Map<string, Json>();
+  for (const [key, value] of Object.entries(tree ?? {})) {
+    if (key.startsWith("$") || !value || typeof value !== "object") continue;
+    const path = prefix ? `${prefix}.${key}` : key;
+    if ("$value" in value) out.set(path, value);
+    else for (const [p, t] of tokensOf(value, path)) out.set(p, t);
+  }
+  return out;
+}
+
+function treeOf(tokens: Map<string, Json>): Json {
+  const tree: Json = {};
+  for (const [path, token] of tokens) {
+    const parts = path.split(".");
+    let node = tree;
+    for (const part of parts.slice(0, -1)) node = node[part] ??= {};
+    node[parts[parts.length - 1]] = token;
+  }
+  return tree;
+}
+
+/**
+ * Splits two modes' tokens into what each mode loads: a token with the same value in both goes in
+ * `semantic` (loaded by both), and one that differs goes only in that mode's own file. A pack's
+ * files load in order and a later file wins, so `semantic.json` must never carry a value that
+ * differs between modes: when it held every light colour, it overwrote dark mode's and dark
+ * rendered light (`polyxd pack --dark`). With one mode, everything is `semantic`.
+ */
+export function splitModes(light: Json, dark?: Json): { light: Json; dark: Json; semantic: Json } {
+  if (!dark) return { light: {}, dark: {}, semantic: light };
+  const l = tokensOf(light);
+  const d = tokensOf(dark);
+  const same = new Map<string, Json>();
+  const onlyLight = new Map<string, Json>();
+  const onlyDark = new Map<string, Json>();
+  for (const path of new Set([...l.keys(), ...d.keys()])) {
+    const a = l.get(path);
+    const b = d.get(path);
+    if (a && b && JSON.stringify(a) === JSON.stringify(b)) same.set(path, a);
+    else {
+      if (a) onlyLight.set(path, a);
+      if (b) onlyDark.set(path, b);
+    }
+  }
+  return { light: treeOf(onlyLight), dark: treeOf(onlyDark), semantic: treeOf(same) };
+}
+
 export interface PackFiles {
   dir: string;
   name: string;
