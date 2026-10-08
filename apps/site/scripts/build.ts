@@ -952,6 +952,11 @@ await Promise.all(VENDOR.map((f) => cp(join(REPO, "node_modules", f), join(DIST,
 // Favicons: down to 12px the pupil stays (BRAND-2026.md), so the SVG favicon is the whole mark.
 await write(join(DIST, "favicon.svg"), markSvg(mark()));
 for (const f of ["icon-180.png", "icon-192.png", "icon-512.png", "favicon.ico"]) await copyFile(join(REPO, "brand", f), join(DIST, f));
+// The MCP directory listings' carousel (Claude asks for image URLs on a domain we control):
+// packages/mcp/listing/screenshots, drawn by the real server (packages/mcp/listing/render.ts).
+await mkdir(join(DIST, "listing"), { recursive: true });
+for (const f of (await readdir(join(REPO, "packages/mcp/listing/screenshots"))).filter((f) => f.endsWith(".png"))) await copyFile(join(REPO, "packages/mcp/listing/screenshots", f), join(DIST, "listing", f));
+await copyFile(join(REPO, "packages/mcp/listing/icon-1024.png"), join(DIST, "listing", "icon-1024.png"));
 // Social cards: one per page (scripts/og.ts), and the home card as the default /og.png.
 if (existsSync(OG_DIR)) await cp(OG_DIR, join(DIST, "og"), { recursive: true });
 await copyFile(existsSync(join(OG_DIR, "home.png")) ? join(OG_DIR, "home.png") : join(REPO, "brand/og.png"), join(DIST, "og.png"));
