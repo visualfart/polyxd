@@ -34,7 +34,8 @@ This policy covers polyxd.com (the site, the docs, the gallery and the demos), P
   - your browser's user agent (its name and version, your operating system and device type), and your screen size, language and time zone;
   - the country your IP address is in;
   - clicks on the site's own buttons and links to act, such as "Get started" or "Try Studio", and where they lead;
-  - when you copy an install command, and which package it installs;
+  - when you copy an install command, which package it installs, and whether you used a Copy button;
+  - when you copy a docs page with its "Copy page" button, and which page. Never the text;
   - which design system you pick in the gallery;
   - in a demo, whether your ask was answered from the library, generated live, or not yet. Never what you asked.
 

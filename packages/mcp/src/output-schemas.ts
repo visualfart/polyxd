@@ -193,3 +193,52 @@ export const componentsOutput = {
   oneOf: [{ required: ["component"] }, { required: ["components"] }],
   additionalProperties: false,
 } as const;
+
+/** polyxd_docs: matching sections, one whole page, or the list of pages. */
+export const docsOutput = {
+  type: "object",
+  properties: {
+    sections: {
+      type: "array",
+      description: "The sections that best match \"query\", best first.",
+      items: {
+        type: "object",
+        properties: {
+          page: { type: "string", description: "The page's slug, for \"page\"." },
+          title: { type: "string", description: "The page's title." },
+          heading: { type: "string", description: "The section's heading." },
+          url: { type: "string", description: "The section on polyxd.com, to cite." },
+          text: { type: "string", description: "The section's Markdown." },
+        },
+        required: ["page", "title", "heading", "url", "text"],
+      },
+    },
+    page: {
+      type: "object",
+      description: "The page asked for with \"page\".",
+      properties: {
+        slug: { type: "string", description: "The page's path under /docs/, \"\" for the docs home." },
+        title: { type: "string", description: "The page's title." },
+        description: { type: "string", description: "A one-line summary of the page." },
+        url: { type: "string", description: "The page on polyxd.com, to cite." },
+        markdown: { type: "string", description: "The whole page as Markdown, links made absolute." },
+      },
+      required: ["slug", "title", "url", "markdown"],
+    },
+    pages: {
+      type: "array",
+      description: "Every docs page, when neither \"query\" nor \"page\" is given.",
+      items: {
+        type: "object",
+        properties: {
+          slug: { type: "string", description: "The page's path under /docs/, for \"page\"." },
+          title: { type: "string", description: "The page's title." },
+          description: { type: "string", description: "A one-line summary of the page." },
+          section: { type: "string", description: "The docs section it sits in, e.g. \"Start\" or \"Guides\"." },
+          url: { type: "string", description: "The page on polyxd.com, to cite." },
+        },
+        required: ["slug", "title", "url"],
+      },
+    },
+  },
+} as const;

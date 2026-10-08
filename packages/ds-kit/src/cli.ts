@@ -17,7 +17,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import { contrastRatio, loadContract } from "@polyxd/spec";
-import { cssVars, resolveVars, length, duration, bezier, shadowLayers, writePack, type Json, type Vars } from "./index.ts";
+import { cssVars, resolveVars, length, duration, bezier, shadowLayers, splitModes, writePack, type Json, type Vars } from "./index.ts";
 import { inferMapping, type Mapping } from "./infer.ts";
 
 
@@ -176,9 +176,9 @@ async function main(): Promise<void> {
     contractVersion: contract.contractVersion ?? "0.2.0",
     modes: dark ? ["light", "dark"] : ["light"],
     provenance: [{ source: `local:${basename(options.input)}`, license: "see the owning project", notes: "Drafted by `polyxd pack` from this project's own tokens." }],
-    light: built.semantic,
-    dark: builtDark?.semantic ?? built.semantic,
-    semantic: built.semantic,
+    // Each mode's own values in its own file, and only what both share in semantic.json, which
+    // both load last (splitModes says why).
+    ...splitModes(built.semantic, builtDark?.semantic),
   });
   await writeFile(mappingPath, JSON.stringify(mapping, null, 2) + "\n");
 

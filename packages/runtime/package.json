@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/runtime",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Generates a spec-valid Polyxd UI document for an ask with the model you choose: applies a Design Direction, validates and repairs, streams, and remembers the screen per intent",
   "license": "Apache-2.0",
   "type": "module",
@@ -25,9 +25,9 @@
     "test": "node --test \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@polyxd/core": "^0.4.2",
-    "@polyxd/spec": "^0.4.2",
-    "@polyxd/verifier": "^0.4.2"
+    "@polyxd/core": "^0.4.3",
+    "@polyxd/spec": "^0.4.3",
+    "@polyxd/verifier": "^0.4.3"
   },
   "repository": {
     "type": "git",

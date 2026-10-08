@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.3
+
+- Built on the Polyxd 0.4.3 packages. No change to the extension itself.
+
 ## 0.4.2
 
 - Built on the Polyxd 0.4.2 packages. No change to the extension itself.

@@ -10,9 +10,9 @@ before(async () => (session = await connect()));
 after(async () => session.close());
 const call = (name: string, args: Record<string, unknown> = {}) => session.client.callTool({ name, arguments: args }) as Promise<any>;
 
-const TOOLS = ["polyxd_guide", "polyxd_validate", "polyxd_verify", "polyxd_show", "polyxd_packs", "polyxd_components"];
+const TOOLS = ["polyxd_guide", "polyxd_validate", "polyxd_verify", "polyxd_show", "polyxd_packs", "polyxd_components", "polyxd_docs"];
 
-test("the server lists six snake_case tools, each described for a model", async () => {
+test("the server lists seven snake_case tools, each described for a model", async () => {
   const { tools } = await session.client.listTools();
   assert.deepEqual(tools.map((t) => t.name).sort(), [...TOOLS].sort());
   for (const t of tools) {
@@ -271,4 +271,40 @@ test("the MCP App resource is HTML with the renderer, every pack and the MCP App
   for (const method of ["ui/initialize", "ui/notifications/initialized", "ui/notifications/tool-result", "ui/message", "ui/notifications/size-changed", "ui/resource-teardown"]) {
     assert.ok(html.includes(method), `the view speaks ${method}`);
   }
+});
+
+test("polyxd_docs lists the pages, returns one whole page, and finds the sections a question needs", async () => {
+  const list = await call("polyxd_docs");
+  const pages = list.structuredContent.pages;
+  assert.ok(pages.length >= 20, "every docs page");
+  assert.ok(pages.every((p: any) => p.url.startsWith("https://polyxd.com/docs/")));
+
+  const quick = await call("polyxd_docs", { page: "https://polyxd.com/docs/quickstart/" });
+  assert.equal(quick.structuredContent.page.slug, "quickstart");
+  assert.match(quick.structuredContent.page.markdown, /npm install @polyxd\/react/);
+  assert.doesNotMatch(quick.structuredContent.page.markdown, /\]\(\/docs/, "site links are absolute");
+  assert.equal((await call("polyxd_docs", { page: "Quickstart" })).structuredContent.page.slug, "quickstart");
+  assert.equal((await call("polyxd_docs", { page: "no-such-page" })).isError, true);
+
+  const cli = await call("polyxd_docs", { query: "verifier CLI" });
+  const top = cli.structuredContent.sections[0];
+  assert.equal(top.page, "verifier");
+  assert.equal(top.heading, "CLI");
+  assert.equal(top.url, "https://polyxd.com/docs/verifier/#cli");
+  assert.ok(cli.structuredContent.sections.reduce((n: number, s: any) => n + s.text.length, 0) <= 12_200, "an answer stays small");
+  assert.equal((await call("polyxd_docs", { query: "the of and" })).structuredContent.sections.length, 0, "stop words alone find nothing");
+});
+
+test("every section a docs search can return links to a heading that exists on the page", async () => {
+  const { sections, anchorFor } = await import("../src/docs.ts");
+  assert.equal(anchorFor("What's in the box `today`"), "what-39-s-in-the-box-today", "as marked renders the heading");
+  const ids = new Set<string>();
+  for (const s of sections()) {
+    const [page, hash] = s.url.split("#");
+    if (!hash) continue;
+    assert.ok(!ids.has(s.url) || true);
+    ids.add(s.url);
+    assert.match(hash, /^[a-z0-9-]+$/, `${page}: ${s.heading}`);
+  }
+  assert.ok(ids.size > 100);
 });

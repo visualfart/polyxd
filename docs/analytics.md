@@ -93,7 +93,8 @@ which the Worker passes to PostHog without cookies or credentials (`apps/site/wo
 |---|---|
 | `$pageview`, `$pageleave` | PostHog's; addresses without query strings, fragments or ad-click ids |
 | `cta_clicked` | `cta` (the button's own words), `target` (where it leads, no query), `page` |
-| `install_command_copied` | `package` (`@polyxd/…` or `polyxd…`), `page` |
+| `install_command_copied` | `package` (`@polyxd/…` or `polyxd…`), `via` (`button` or `selection`), `page` |
+| `doc_page_copied` | `page` (the docs page whose Markdown a "Copy page" button copied, never the text) |
 | `gallery_pack_changed` | `pack`, `page` |
 | `demo_ask` | `product`, `outcome` (`library`, `live` or `not_yet`), `page`. Never the ask |
 
