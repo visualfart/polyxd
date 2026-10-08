@@ -4,7 +4,7 @@
   "app_info": {
     "display_name": "Polyxd",
     "subtitle": "Real screens, right in chat",
-    "description": "Polyxd shows interactive screens right in the conversation. Ask ChatGPT to split a bill, return an order, fill in a form, compare plans or summarise a week of numbers, and instead of a wall of text you get a real interface: fields to fill in, choices to make, a receipt that adds up, a chart with a plain-words summary, and buttons that do what they say.\n\nChatGPT writes each screen as a small Polyxd document, a JSON description of what the screen means rather than how it looks. The connector checks it against the open Polyxd specification before anything is shown: every value bound to real data, labels that say what happens, one primary action at a time, no more than six inputs per view, and confirmations before anything consequential. A screen with errors is never shown; ChatGPT fixes it first.\n\nThen Polyxd draws it in the design system you choose. The same screen looks native in Material 3, IBM Carbon, GOV.UK, Fluent 2, shadcn/ui, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, Ant Design, Bootstrap, Chakra UI, Mantine and Radix Themes, or in one of twelve original templates, in light or dark mode.\n\nWhen you press a button, the choice comes back to ChatGPT as your next message, with the values you entered, so the conversation carries on from what you did.\n\nDesigners and product teams use it to try out a flow in their own design system in seconds. Anyone can use it to get a clear, usable screen instead of a long answer.\n\nEvery tool is read-only. The connector needs no account, sees only the screens ChatGPT sends it, stores nothing, and does not reach the internet. Polyxd is open source (Apache-2.0); the specification is CC-BY-4.0.",
+    "description": "Polyxd shows interactive screens right in the conversation. Ask ChatGPT to split a bill, return an order, fill in a form, compare plans or summarise a week of numbers, and instead of a wall of text you get a real interface: fields to fill in, choices to make, a receipt that adds up, a chart with a plain-words summary, and buttons that do what they say.\n\nChatGPT writes each screen as a small Polyxd document, a JSON description of what the screen means rather than how it looks. The connector checks it against the open Polyxd specification before anything is shown: every value bound to real data, labels that say what happens, one primary action at a time, no more than six inputs per view, and confirmations before anything consequential. A screen with errors is never shown; ChatGPT fixes it first.\n\nThen Polyxd draws it in the design system you choose. The same screen looks native in Material 3, IBM Carbon, GOV.UK, Fluent 2, shadcn/ui, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, Ant Design, Bootstrap, Chakra UI, Mantine and Radix Themes, or in one of twelve original templates, in light or dark mode.\n\nWhen you press a button, the choice comes back to ChatGPT as your next message, with the values you entered, so the conversation carries on from what you did.\n\nAsk about Polyxd itself, such as how to add it to a React app or run the verifier in CI, and ChatGPT answers from the Polyxd docs, with links to the pages.\n\nDesigners and product teams use it to try out a flow in their own design system in seconds. Anyone can use it to get a clear, usable screen instead of a long answer.\n\nEvery tool is read-only. The connector needs no account, sees only the screens ChatGPT sends it, stores nothing, and does not reach the internet. Polyxd is open source (Apache-2.0); the specification is CC-BY-4.0.",
     "category": "DESIGN"
   },
   "tools": {
@@ -79,6 +79,18 @@
         "open_world_justification": "It runs entirely inside the Polyxd server. It calls no other API and reaches nothing on the internet.",
         "destructive_justification": "Nothing it does can be undone or cause loss: it has no side effects at all."
       }
+    },
+    "polyxd_docs": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "It only returns passages from Polyxd's own documentation, which ships inside the server. It creates, changes and deletes nothing, anywhere.",
+        "open_world_justification": "The docs are bundled into the server, so it reads nothing over the network: it calls no other API and reaches nothing on the internet.",
+        "destructive_justification": "Nothing it does can be undone or cause loss: it has no side effects at all."
+      }
     }
   },
   "test_cases": [
@@ -111,6 +123,12 @@
       "user_prompt": "Which design systems can Polyxd draw in? Then compare these broadband deals in the Editorial pack and help me pick: Fibre 150 at £27 a month, 145/30 Mbps, 24 months; Full Fibre 500 at £32, 500/70 Mbps, 18 months; Flex 900 at £45 plus £35 set-up, 900/110 Mbps, 1 month. I work from home.",
       "tools_triggered": "polyxd_packs, polyxd_validate, polyxd_show",
       "expected_output": "The reply lists the 25 packs (13 published design systems and 12 original templates). The screen compares the three plans across cost, speed and terms, recommends one with a short reason, and each plan has a 'Choose this plan' button that sends that plan to the chat."
+    },
+    {
+      "description": "A question about Polyxd itself, answered from its docs.",
+      "user_prompt": "How do I run the Polyxd verifier in my CI pipeline?",
+      "tools_triggered": "polyxd_docs",
+      "expected_output": "An answer drawn from the Polyxd verifier docs: the polyxd-verify command and how to run it in CI, with a link to https://polyxd.com/docs/verifier/. No screen is shown and nothing is made up beyond what the docs say."
     }
   ],
   "negative_test_cases": [

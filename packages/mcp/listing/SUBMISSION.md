@@ -45,7 +45,7 @@ Polyxd
 Ask for a screen and get a real, working one in the chat: forms, dashboards and comparisons, checked against the spec and drawn in Material 3, Carbon, GOV.UK or 22 other design systems.
 ```
 
-**Description** (1,654 of 2,000 characters)
+**Description** (1,810 of 2,000 characters)
 
 ```
 Polyxd shows interactive screens right in the conversation. Ask Claude to split a bill, return an order, fill in a form, compare plans or summarise a week of numbers, and instead of a wall of text you get a real interface: fields to fill in, choices to make, a receipt that adds up, a chart with a plain-words summary, and buttons that do what they say.
@@ -55,6 +55,8 @@ Claude writes each screen as a small Polyxd document, a JSON description of what
 Then Polyxd draws it in the design system you choose. The same screen looks native in Material 3, IBM Carbon, GOV.UK, Fluent 2, shadcn/ui, Shopify Polaris, GitHub Primer, Adobe Spectrum 2, Ant Design, Bootstrap, Chakra UI, Mantine and Radix Themes, or in one of twelve original templates, in light or dark mode.
 
 When you press a button, the choice comes back to Claude as your next message, with the values you entered, so the conversation carries on from what you did.
+
+Ask about Polyxd itself, such as how to add it to a React app or run the verifier in CI, and Claude answers from the Polyxd docs, with links to the pages.
 
 Designers and product teams use it to try out a flow in their own design system in seconds. Anyone can use it to get a clear, usable screen instead of a long answer.
 
@@ -120,6 +122,7 @@ polyxd
 - Try a product flow in a real design system (Material 3, Carbon, GOV.UK, Fluent, shadcn/ui, Polaris and more) in light or dark mode, without writing code.
 - Check a Polyxd UI document against the specification and a team's Design Direction, with every issue located and a hint to fix it.
 - Look up Polyxd's components, their props and when to use each, and the design-system packs available.
+- Answer questions about Polyxd from its own docs (installing a renderer, the verifier, the runtime, Studio), with links to the pages, instead of from memory.
 ```
 
 **What users need before they can connect**
@@ -277,7 +280,7 @@ Every tool is read-only and changes nothing. Screens use whatever data is in the
 
 ---
 
-## Test cases (OpenAI: five positive, three negative)
+## Test cases (OpenAI: at least five positive, three negative)
 
 No test account or fixture data is needed: the data comes from the prompt. The exact documents
 for the first four cases are in `screenshots/documents/`, valid and verified.
@@ -318,6 +321,12 @@ for the first four cases are in `screenshots/documents/`, valid and verified.
 - Expected tools: `polyxd_packs`, optionally `polyxd_components` with `name: "Comparison"`, `polyxd_validate`, then `polyxd_show` with `pack: "editorial"`.
 - Expected result: the reply lists the 25 packs (13 published design systems and 12 original templates). The screen compares the three plans across cost, speed and terms, marks the best value of each row, recommends one with a one-line reason, and has a "Choose this plan" button per plan that sends `plan.choose` with that plan to the chat.
 - Fixture: `screenshots/documents/5-compare-broadband-editorial.json`.
+
+**P6. A question about Polyxd, answered from its docs**
+
+- Prompt: "How do I run the Polyxd verifier in my CI pipeline?"
+- Expected tools: `polyxd_docs` with a `query`.
+- Expected result: the answer comes from the verifier docs (the `polyxd-verify` command and how to run it in CI) and links to https://polyxd.com/docs/verifier/. No screen is shown, and nothing beyond what the docs say is made up.
 
 ### Negative
 
