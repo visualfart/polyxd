@@ -168,8 +168,8 @@ test("a package npm has not counted yet gives no events and no error; the packag
   assert.deepEqual(result.errors, []);
   const packages = new Set(result.events.filter((e) => e.event === "adoption_npm_daily").map((e) => e.properties.package));
   assert.deepEqual([...packages].sort(), ["@polyxd/spec", "polyxd"], "only the two with recorded downloads");
-  assert.ok(network.calls.some((c) => c.url.endsWith("/downloads/range/2026-09-25:2026-09-27/@polyxd/brand-new")), "the search's extra package is asked about");
-  assert.ok(network.calls.some((c) => c.url.endsWith("/downloads/range/2026-09-25:2026-09-27/@polyxd/ds-carbon")), "src/packages.ts is asked about");
+  assert.ok(network.calls.some((c) => c.url.endsWith("/downloads/range/2026-09-21:2026-09-27/@polyxd/brand-new")), "the search's extra package is asked about");
+  assert.ok(network.calls.some((c) => c.url.endsWith("/downloads/range/2026-09-21:2026-09-27/@polyxd/ds-carbon")), "src/packages.ts is asked about");
 });
 
 test("the 01:30 refresh caches publish histories, so the 02:00 run does not fetch them again", async () => {

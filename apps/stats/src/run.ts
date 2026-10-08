@@ -27,8 +27,12 @@ import {
 } from "./sources.ts";
 import { addToLedger, readCache, readLedger, readTotal, writeCache, writeTotal, type Store, type TotalSeen } from "./store.ts";
 
-/** npm days a scheduled run covers, ending on npm's last complete day: two missed runs are caught up. */
-export const DEFAULT_DAYS = 3;
+/**
+ * npm days a scheduled run covers, ending on npm's last complete day. Still one call per package
+ * however long the window, so a week costs nothing extra: npm's counts stalled at 4 October 2026
+ * for days, and a catch-up longer than the window would leave a gap.
+ */
+export const DEFAULT_DAYS = 7;
 /** The most a backfill may ask for. npm keeps 18 months; a Worker run has a time budget. */
 export const MAX_DAYS = 365;
 /** Requests in flight at once. npm's downloads API rate-limits bursts, so two, with retries (sources.ts `politely`). */
