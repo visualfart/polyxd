@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/core",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "The framework-free heart of Polyxd rendering: document types, JSON Pointer bindings, localised formatting, the renderer's decisions, and a headless surface model every renderer walks the same way",
   "license": "Apache-2.0",
   "type": "module",

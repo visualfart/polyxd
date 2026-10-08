@@ -36,6 +36,7 @@ The [runtime SDK](/docs/runtime), `@polyxd/runtime`, the [MCP server](/docs/mcp/
 | v0.4.2 | | The MCP App holds a button press made while the chat is still replying and sends it when the chat accepts, instead of failing | Released |
 | v0.4.3 | | The MCP server answers questions from the docs (`polyxd_docs`); every docs page as Markdown, with Copy page, `llms.txt` and `llms-full.txt`; `polyxd pack --dark` makes a dark mode that is dark | Released |
 | v0.4.4 | | The VS Code extension adds the Polyxd MCP server to Cursor's agent and VS Code's agent mode when it's installed | Released |
+| v0.4.5 | | Width observers in both renderers stop the "ResizeObserver loop" warning when a table, filter panel or action bar redraws | Released |
 | v1.0 | | Spec frozen, then native renderers | Planned |
 
 Before v1.0 the spec may break. Every document carries `specVersion`, releases follow semver, and breaking changes will come with migration notes.

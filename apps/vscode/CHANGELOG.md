@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.5
+
+- Built on the Polyxd 0.4.5 packages. No change to the extension itself.
+
 ## 0.4.4
 
 - The Polyxd MCP server comes with the extension. In Cursor and in VS Code 1.101 or later, installing the extension adds `https://mcp.polyxd.com/mcp` to the agent's tools, with no `mcp.json` to edit. The new `polyxd.mcp.enabled` setting turns it off.
