@@ -1,0 +1,9 @@
+---
+description: Writing or editing a Polyxd UI document (JSON with "specVersion", "surface", "root" and "components", or a "$schema" of https://polyxd.com/schema/...)
+alwaysApply: false
+---
+
+- Follow the format from the Polyxd MCP server's `polyxd_guide`, not memory, and look components up with `polyxd_components`.
+- Bind every value the screen shows to data with `{"path": "/pointer"}`; a document never holds URLs or invented numbers.
+- At most one primary action visible at a time, at most six inputs per view, and labels that say what happens.
+- Run `polyxd_validate` (or `npx polyxd-validate <file>`) after each change and fix every error before showing or committing the document.
