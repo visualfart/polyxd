@@ -19,7 +19,7 @@ It is on npm as `@polyxd/server`, and its Docker image is on GitHub Container Re
 docker run --rm -p 8080:8080 \
   -e POLYXD_PROVIDER=anthropic \
   -e ANTHROPIC_API_KEY \
-  ghcr.io/visualfart/polyxd-server:0.4.1
+  ghcr.io/visualfart/polyxd-server:0.4.2
 ```
 
 To build the image yourself, from a clone of the [repository](https://github.com/visualfart/polyxd):

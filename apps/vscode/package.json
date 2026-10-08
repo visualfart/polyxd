@@ -2,7 +2,7 @@
   "name": "polyxd-vscode",
   "displayName": "Polyxd",
   "description": "Write Polyxd UI documents with completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away.",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "publisher": "polyxd",
   "private": true,
   "license": "Apache-2.0",
@@ -225,8 +225,8 @@
     "vscode:prepublish": "node scripts/build.ts"
   },
   "devDependencies": {
-    "@polyxd/react": "^0.4.1",
-    "@polyxd/spec": "^0.4.1",
+    "@polyxd/react": "^0.4.2",
+    "@polyxd/spec": "^0.4.2",
     "@types/vscode": "^1.96.0",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",

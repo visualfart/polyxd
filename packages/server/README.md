@@ -2,7 +2,7 @@
 
 A generation server for Polyxd: [`@polyxd/runtime`](../runtime/) behind a small HTTP API, pointed at the model you choose. Your app sends an ask; the server builds the prompt from the spec and your Design Direction, calls the model, checks the answer, repairs it, and returns the document, as JSON or streamed as server-sent events. It keeps no state between requests and logs only the method, path, status and duration of each one.
 
-It is on npm. Run it with `npx @polyxd/server`, or with Docker: `docker run -p 8080:8080 ghcr.io/visualfart/polyxd-server:0.4.1`. Docs: [polyxd.com/docs/server](https://polyxd.com/docs/server/).
+It is on npm. Run it with `npx @polyxd/server`, or with Docker: `docker run -p 8080:8080 ghcr.io/visualfart/polyxd-server:0.4.2`. Docs: [polyxd.com/docs/server](https://polyxd.com/docs/server/).
 
 ```sh
 # Docker, from the repository root

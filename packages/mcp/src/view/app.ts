@@ -11,7 +11,7 @@
 import { mount, type ActionEvent, type Mounted, type UIDocument } from "@polyxd/web";
 
 const PROTOCOL_VERSION = "2026-01-26";
-const APP_INFO = { name: "Polyxd", version: "0.4.1" };
+const APP_INFO = { name: "Polyxd", version: "0.4.2" };
 
 type Json = Record<string, any>;
 interface HostContext {

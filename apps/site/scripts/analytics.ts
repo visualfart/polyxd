@@ -140,10 +140,14 @@ if (w.pxdTrack) {
 
   // An install command copied from the docs or the site: which package, nothing else.
   const INSTALL = /\\b(?:npm\\s+(?:i|install|add)|npx|pnpm\\s+(?:add|dlx)|yarn\\s+(?:add|dlx)|bunx|bun\\s+add|pip\\s+install|uvx|uv\\s+add)(?:\\s+-{1,2}[\\w-]+)*\\s+(@polyxd\\/[a-z0-9-]+|polyxd[a-z0-9-]*)\\b/i;
-  document.addEventListener("copy", () => {
-    const m = INSTALL.exec(String(document.getSelection() ?? "").slice(0, 2000));
-    if (m) track("install_command_copied", { package: m[1].toLowerCase() });
-  });
+  // Either a selection copied by hand, or a code block's Copy button (assets/copy.js), which writes
+  // to the clipboard directly and announces it as pxd:copied.
+  const installed = (text, via) => {
+    const m = INSTALL.exec(String(text ?? "").slice(0, 2000));
+    if (m) track("install_command_copied", { package: m[1].toLowerCase(), via });
+  };
+  document.addEventListener("copy", () => installed(document.getSelection(), "selection"));
+  document.addEventListener("pxd:copied", (e) => installed(e.detail, "button"));
 }
 `;
 }

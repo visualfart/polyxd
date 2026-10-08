@@ -91,7 +91,7 @@ test("the build adds analytics only with a project key, and the page's stub resp
   assert.equal(appended[0].src, "/assets/analytics.js");
 
   const script = analyticsScript(KEY, "https://us.posthog.com");
-  for (const setting of ['cookieless_mode: "always"', 'persistence: "memory"', "autocapture: false", "disable_session_recording: true", "disable_external_dependency_loading: true", 'api_host: "/ingest"']) assert.ok(script.includes(setting), setting);
+  for (const setting of ['cookieless_mode: "always"', 'persistence: "memory"', "autocapture: false", "disable_session_recording: true", "disable_external_dependency_loading: true", 'api_host: "/ingest"', "disable_compression: true", '"pxd:copied"']) assert.ok(script.includes(setting), setting);
 });
 
 test("/ingest adds Cloudflare's country to the page's events, and nothing finer", async () => {

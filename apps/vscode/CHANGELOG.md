@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2
+
+- Built on the Polyxd 0.4.2 packages. No change to the extension itself.
+
 ## 0.4.1
 
 - Charts in the preview label every second or third point when there are too many to fit, instead of drawing the labels on top of each other.

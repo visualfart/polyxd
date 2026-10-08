@@ -679,3 +679,25 @@ select:focus-visible {
 }
 .nav-wide:has(.soon) { white-space: nowrap; }
 .btn.is-soon { opacity: 0.6; cursor: default; pointer-events: none; }
+
+/* Code blocks' Copy button (assets/copy.js): always visible, so it works on touch screens too. */
+.copy-wrap { position: relative; }
+.copy-wrap > pre { margin: 0; }
+.prose .copy-wrap { margin: 0 0 20px; }
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  font: 500 12px/1.4 var(--font-body);
+  color: inherit;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.copy-btn:hover, .copy-btn:focus-visible { opacity: 1; background: color-mix(in srgb, currentColor 14%, transparent); }
+.term + .copy-btn { color: #F3F1EC; }
+.prose pre + .copy-btn { color: var(--ink); }
+.prose .copy-wrap > pre { padding-right: 76px; }

@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/verifier",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Verifies Polyxd UI documents: spec rules, rendered accessibility and layout, consistency across generations, and scripted agent tasks",
   "license": "Apache-2.0",
   "type": "module",
@@ -37,17 +37,17 @@
     "conformance": "npm run build:harness && node scripts/conformance.ts"
   },
   "devDependencies": {
-    "@polyxd/react": "^0.4.1",
+    "@polyxd/react": "^0.4.2",
     "@vitejs/plugin-react": "^6.1.1",
     "ajv": "^8.20.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "vite": "^8.3.0",
-    "@polyxd/web": "^0.4.1",
+    "@polyxd/web": "^0.4.2",
     "playwright": "^1.63.0"
   },
   "dependencies": {
-    "@polyxd/spec": "^0.4.1",
+    "@polyxd/spec": "^0.4.2",
     "axe-core": "^4.13.0"
   },
   "peerDependencies": {

@@ -226,6 +226,7 @@ const footer = `<footer class="site-footer" aria-labelledby="footer-title">
 <div class="footer-giant" aria-hidden="true">${livingMark({ size: 320, mono: "ink", className: "footer-mark" })}<span class="footer-word">polyxd</span></div>
 <div class="wrap footer-base"><span>© 2026 Polyxd</span><span>Apache-2.0 code · CC-BY-4.0 spec</span><span class="footer-legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></span><a href="#">Back to top</a></div>
 <script src="/assets/field.js" defer></script>
+<script src="/assets/copy.js" defer></script>
 <script>(() => {
   const m = document.querySelector(".footer-mark"), p = m && m.querySelector(".pxb-pupil");
   if (!p || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
