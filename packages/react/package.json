@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/react",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "React renderer for Polyxd UI documents: Radix primitives styled by design-system tokens",
   "license": "Apache-2.0",
   "type": "module",
@@ -41,8 +41,8 @@
     "esbuild": "^0.28.1"
   },
   "dependencies": {
-    "@polyxd/core": "^0.4.2",
-    "@polyxd/spec": "^0.4.2",
+    "@polyxd/core": "^0.4.3",
+    "@polyxd/spec": "^0.4.3",
     "radix-ui": "^1.6.7"
   },
   "repository": {

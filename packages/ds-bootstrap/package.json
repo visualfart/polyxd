@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/ds-bootstrap",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Bootstrap 5 design-system pack for Polyxd (DTCG 2025.10 tokens)",
   "license": "Apache-2.0",
   "type": "module",
