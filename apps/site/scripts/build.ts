@@ -2,6 +2,7 @@
  * Builds polyxd.com into apps/site/dist:
  *   /                      landing page (src/index.html)
  *   /docs/…                Markdown in content/docs, plus reference pages generated from the spec's own JSON
+ *   /docs/<page>.md, /llms.txt, /llms-full.txt   the same docs as Markdown, for agents (scripts/llms.ts)
  *   /gallery/              the live example gallery (apps/gallery, built with Vite)
  *   /privacy/, /terms/     Markdown in content/legal
  *   sitemap.xml, robots.txt, 404.html, assets
@@ -19,6 +20,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { PolyxdSurface, type UIDocument } from "@polyxd/react";
 import { loadDesignSystem, loadContract } from "@polyxd/spec";
 import { analyticsKey, analyticsScript, POSTHOG_JS, SCRIPT_PATH, uiHost, VENDOR_PATH, withTag } from "./analytics.ts";
+import { llmsFullTxt, llmsTxt, markdownPath, pageMarkdown } from "./llms.ts";
 
 const here = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 const SITE = here("../");
@@ -36,6 +38,8 @@ interface Page {
   order: number;
   html: string;
   toc: { id: string; text: string }[];
+  /** The page's own Markdown, for /docs/<page>.md and llms.txt (scripts/llms.ts); generated pages have none. */
+  markdown?: string;
 }
 
 const esc = (s: unknown) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -288,9 +292,10 @@ async function markdownPages(): Promise<Page[]> {
   return Promise.all(
     files.map(async (f) => {
       const { meta, body } = frontMatter(await readFile(join(dir, f), "utf8"));
-      const { html, toc } = renderMarkdown(body.replace(/^\s*# .*\n/, ""));
+      const markdown = body.replace(/^\s*# .*\n/, "");
+      const { html, toc } = renderMarkdown(markdown);
       const slug = f === "index.md" ? "" : f.replace(/\.md$/, "");
-      return { slug, title: meta.title ?? slug, description: meta.description ?? "", section: meta.section ?? "Concepts", order: Number(meta.order ?? 50), html, toc };
+      return { slug, title: meta.title ?? slug, description: meta.description ?? "", section: meta.section ?? "Concepts", order: Number(meta.order ?? 50), html, toc, markdown };
     }),
   );
 }
@@ -524,6 +529,7 @@ ${header("docs")}
 <main id="content" class="prose">
 <h1>${esc(page.title)}</h1>
 ${page.description ? `<p class="lede">${esc(page.description)}</p>` : ""}
+<div class="doc-actions"><button type="button" class="copy-page" data-md="${markdownPath(page.slug)}">Copy page</button><a href="${markdownPath(page.slug)}">View as Markdown</a><a href="/llms.txt" title="Every docs page, as an index for AI tools">llms.txt</a></div>
 ${page.html}
 <nav class="pager" aria-label="Previous and next">${prev ? `<a class="prev" href="${href(prev.slug)}"><span>Previous</span>${esc(prev.title)}</a>` : ""}${next ? `<a class="next" href="${href(next.slug)}"><span>Next</span>${esc(next.title)}</a>` : ""}</nav>
 <p class="edit-note">Polyxd is an early preview. Found something unclear? It will get better with your feedback.</p>
@@ -1332,6 +1338,10 @@ const pages = [...(await markdownPages()), await componentsPage(), await tokensP
   (a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section) || a.order - b.order,
 );
 for (const p of pages) await write(join(DIST, p.slug ? `docs/${p.slug}/index.html` : "docs/index.html"), docsPage(p, pages));
+// The same pages as Markdown, for agents: one file per page, an index and everything at once (scripts/llms.ts).
+for (const p of pages) await write(join(DIST, markdownPath(p.slug).slice(1)), pageMarkdown(p));
+await write(join(DIST, "llms.txt"), llmsTxt(pages));
+await write(join(DIST, "llms-full.txt"), llmsFullTxt(pages));
 const legal = await legalPages();
 for (const p of legal) await write(join(DIST, p.slug, "index.html"), legalPage(p, legal));
 

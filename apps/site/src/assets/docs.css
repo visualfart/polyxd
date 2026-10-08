@@ -147,6 +147,28 @@
   color: var(--muted);
   margin: 0 0 40px;
 }
+/* Under the summary: copy the page as Markdown for an agent, or open it (assets/copy.js, scripts/llms.ts). */
+.prose .lede:has(+ .doc-actions) { margin-bottom: 20px; }
+.prose .doc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin: 0 0 40px;
+  font: var(--text-label);
+}
+.prose .doc-actions a { color: var(--muted); }
+.prose .doc-actions a:hover { color: var(--ink); }
+.prose .copy-page {
+  padding: 6px 14px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.prose .copy-page:hover, .prose .copy-page:focus-visible { border-color: var(--ink); }
 /* The privacy policy and terms: the date they were last changed, under the title. */
 .prose .legal-updated {
   margin: 0 0 40px;

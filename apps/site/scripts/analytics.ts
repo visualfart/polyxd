@@ -16,8 +16,9 @@
  * - Page views, and page leaves, with URLs cut to origin and path: no query string, no fragment,
  *   and no ad-click ids. PostHog works out the country from the IP address and is set to drop
  *   the address (docs/analytics.md).
- * - Named events only: cta_clicked, install_command_copied, and what the gallery and the demos
- *   send through `pxdTrack` (gallery_pack_changed, demo_ask).
+ * - Named events only: cta_clicked, install_command_copied, and what the gallery, the docs' "Copy
+ *   page" button and the demos send through `pxdTrack` (gallery_pack_changed, doc_page_copied,
+ *   demo_ask).
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
