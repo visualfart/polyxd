@@ -1,7 +1,8 @@
 /**
  * Polyxd for VS Code (and Cursor and Windsurf): the schema for completion and hover text, the
  * static check as diagnostics while you type, a live preview in every design system, the
- * verifier and Studio a command away, and a view of the workspace's documents.
+ * verifier and Studio a command away, a view of the workspace's documents, and the Polyxd MCP
+ * server offered to the editor's agent.
  */
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
@@ -9,6 +10,7 @@ import * as vscode from "vscode";
 import { insertComponent, openInStudio, pushToStudio, setStudioKey, verify } from "./commands.ts";
 import { publish } from "./diagnostics.ts";
 import { isDataFile, loadDocument, siblingDataPath, type Loaded } from "./documents.ts";
+import { mcpRoute, registerMcp } from "./mcp.ts";
 import { Preview, type PreviewHealth } from "./preview.ts";
 import { DocumentsView } from "./tree.ts";
 
@@ -17,6 +19,8 @@ const JSON_LANGUAGES = new Set(["json", "jsonc"]);
 /** What activate returns: read by the editor smoke test (test/smoke/editor-suite.cjs), nothing else. */
 export interface PolyxdExtension {
   previewHealth(): PreviewHealth;
+  /** Which editor API the MCP server was offered through. */
+  mcpRoute: ReturnType<typeof mcpRoute>;
 }
 
 export function activate(context: vscode.ExtensionContext): PolyxdExtension {
@@ -26,6 +30,7 @@ export function activate(context: vscode.ExtensionContext): PolyxdExtension {
   const preview = new Preview(context, (uri) => vscode.window.visibleTextEditors.find((e) => e.document.uri.toString() === uri.toString()));
   const view = new DocumentsView(context);
   context.subscriptions.push(diagnostics);
+  registerMcp(context, context.extension?.packageJSON?.version);
 
   const isJson = (d: vscode.TextDocument) => JSON_LANGUAGES.has(d.languageId) || d.uri.path.endsWith(".json");
 
@@ -131,7 +136,7 @@ export function activate(context: vscode.ExtensionContext): PolyxdExtension {
   );
 
   for (const d of vscode.workspace.textDocuments) void check(d);
-  return { previewHealth: () => preview.health };
+  return { previewHealth: () => preview.health, mcpRoute: mcpRoute() };
 }
 
 export function deactivate(): void {}

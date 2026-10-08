@@ -102,6 +102,9 @@ export class EventEmitter<T> {
   fire(e: T) {
     for (const l of this.listeners) l(e);
   }
+  dispose() {
+    this.listeners.clear();
+  }
 }
 export class SnippetString {
   value: string;
