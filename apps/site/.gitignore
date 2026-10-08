@@ -1,2 +1,4 @@
 dist/
 .wrangler/
+# POSTHOG_KEY=phc_… for the build (scripts/analytics.ts). Public, but kept out of the repository.
+.env

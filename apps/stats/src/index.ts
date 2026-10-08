@@ -2,19 +2,23 @@
  * The Worker. It has no public address (wrangler.jsonc: no routes, workers_dev and preview URLs
  * off) and does its work on two cron triggers:
  *
- *   30 1 * * *   refresh the npm publish histories into KV
- *   0 2 * * *    collect yesterday's numbers and send them to PostHog
+ *   every 15 minutes in hour 1 (01:00 to 01:45): each caches a quarter of the packages' npm publish
+ *     histories and download counts into KV
+ *   0 2 * * *    collect yesterday's numbers (npm from that cache) and send them to PostHog
+ *
+ * Workers Free allows 50 subrequests an invocation, retries included; one run doing all of npm
+ * went over it on most days, and then the send failed too. The shards keep each run far under.
  *
  * Its fetch handler answers /health, and POST /run for a manual run or a backfill when a request
  * carries `Authorization: Bearer <ADMIN_TOKEN>` (404 when no ADMIN_TOKEN is set). It is reachable
  * only through `wrangler dev` unless a route is added; the backfill script (scripts/backfill.ts) is
  * the usual way to fill in past days.
  */
-import { MAX_DAYS, refreshHistories, run } from "./run.ts";
+import { MAX_DAYS, refreshHistories, run, SHARDS, SUBREQUEST_LIMIT } from "./run.ts";
 import type { Fetch } from "./sources.ts";
 import { MemoryStore, type Store } from "./store.ts";
 
-export const HISTORY_CRON = "30 1 * * *";
+export const HISTORY_CRON = "*/15 1 * * *";
 export const COLLECT_CRON = "0 2 * * *";
 
 /** The bindings wrangler.jsonc declares and the secrets set with `wrangler secret put`. */
@@ -52,7 +56,8 @@ export function createWorker(deps: WorkerDeps = {}) {
   const now = deps.now ?? (() => new Date());
   const log = deps.log ?? ((line: string) => console.log(line));
 
-  const options = (env: Env, days?: number) => {
+  // Cron runs get the Workers Free subrequest budget; /run is for wrangler dev and backfills, which have none.
+  const options = (env: Env, days?: number, subrequests?: number) => {
     const store = env.STATS;
     if (!store) log("adoption: no STATS KV binding, so nothing will be sent (see apps/stats/README.md)");
     return {
@@ -64,6 +69,7 @@ export function createWorker(deps: WorkerDeps = {}) {
       notSending: store ? undefined : "no STATS binding",
       githubToken: env.GITHUB_TOKEN || undefined,
       log,
+      subrequests,
     };
   };
 
@@ -85,8 +91,11 @@ export function createWorker(deps: WorkerDeps = {}) {
       return json({ error: "not found" }, 404);
     },
 
-    async scheduled(controller: { cron: string }, env: Env, ctx: { waitUntil(promise: Promise<unknown>): void }): Promise<void> {
-      ctx.waitUntil(controller.cron === HISTORY_CRON ? refreshHistories(options(env)) : run(options(env)));
+    async scheduled(controller: { cron: string; scheduledTime?: number }, env: Env, ctx: { waitUntil(promise: Promise<unknown>): void }): Promise<void> {
+      if (controller.cron !== HISTORY_CRON) return ctx.waitUntil(run(options(env, undefined, SUBREQUEST_LIMIT)));
+      // :00 is shard 0, :15 shard 1, and so on.
+      const shard = Math.floor(new Date(controller.scheduledTime ?? now().getTime()).getUTCMinutes() / 15) % SHARDS;
+      ctx.waitUntil(refreshHistories({ ...options(env), shard }));
     },
   };
 }

@@ -7,9 +7,10 @@
   // through `wrangler dev`, or through a route added later.
   "workers_dev": false,
   "preview_urls": false,
-  // 01:30 caches npm publish histories; 02:00 collects yesterday and sends it (src/index.ts).
-  // Split in two so neither run needs more than the 50 subrequests Workers Free allows.
-  "triggers": { "crons": ["30 1 * * *", "0 2 * * *"] },
+  // 01:00 to 01:45 cache npm's histories and downloads, a quarter of the packages each; 02:00
+  // collects yesterday and sends it (src/index.ts). Split so no run comes near the 50 subrequests
+  // Workers Free allows: one big run went over on most days, and then sent nothing.
+  "triggers": { "crons": ["*/15 1 * * *", "0 2 * * *"] },
   // Remembers which days were sent, the last totals, and the history cache. Create it with
   //   npx wrangler kv namespace create STATS
   // and put the id it prints here (see README.md).

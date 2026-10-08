@@ -54,20 +54,35 @@ function worker(network = fakeNetwork()) {
   return { w, ctx, settle, lines, network };
 }
 
-test("the 02:00 cron collects and sends; the 01:30 cron only caches histories", async () => {
+test("the 02:00 cron collects and sends within Workers Free's 50 subrequests; the four 01:xx crons only cache npm, a quarter each", async () => {
   const { w, ctx, settle, lines, network } = worker();
   const env: Env = { STATS: new MemoryStore(), POSTHOG_KEY: "phc_test", POSTHOG_HOST: "https://eu.i.posthog.com" };
 
-  await w.scheduled({ cron: HISTORY_CRON }, env, ctx);
-  await settle();
+  for (const minute of [0, 15, 30, 45]) {
+    const before = network.calls.length;
+    await w.scheduled({ cron: HISTORY_CRON, scheduledTime: Date.UTC(2026, 8, 28, 1, minute) }, env, ctx);
+    await settle();
+    assert.match(lines.at(-1)!, new RegExp(`^adoption history: cached \\d+ of \\d+ packages \\(shard ${minute / 15 + 1} of 4\\)$`));
+    assert.ok(network.calls.length - before < 30, "each shard far under the limit");
+  }
   assert.equal(network.posthogCalls().length, 0);
-  assert.match(lines.at(-1)!, /^adoption history: cached \d+ of \d+ packages$/);
 
+  const before = network.calls.length;
   await w.scheduled({ cron: COLLECT_CRON }, env, ctx);
   await settle();
+  assert.ok(network.calls.length - before <= 10, "npm comes from the cache");
   assert.equal(network.posthogCalls().length, 1);
   assert.equal(network.posthogCalls()[0].url, "https://eu.i.posthog.com/batch/");
   assert.match(lines.at(-1)!, /^adoption: npm \d+ packages through 2026-09-27 · \d+ new events · 0 already sent · sent \d+$/);
+});
+
+test("a 02:00 run with nothing cached stops short of the limit and still sends what it has", async () => {
+  const { w, ctx, settle, lines, network } = worker();
+  await w.scheduled({ cron: COLLECT_CRON }, { STATS: new MemoryStore(), POSTHOG_KEY: "phc_test" }, ctx);
+  await settle();
+  assert.ok(network.calls.length <= 50, `${network.calls.length} subrequests`);
+  assert.equal(network.posthogCalls().length, 1, "the send always has room");
+  assert.match(lines.at(-1)!, /sent \d+ · errors: .*subrequest budget spent/);
 });
 
 test("without the STATS namespace the Worker sends nothing, even with a key, rather than risk counting twice", async () => {
@@ -76,7 +91,7 @@ test("without the STATS namespace the Worker sends nothing, even with a key, rat
   await settle();
   assert.equal(network.posthogCalls().length, 0);
   assert.match(lines[0], /no STATS KV binding/);
-  assert.match(lines.at(-1)!, /not sent \(no STATS binding\)$/);
+  assert.match(lines.at(-1)!, /not sent \(no STATS binding\)/);
 });
 
 test("/health answers; /run is 404 without ADMIN_TOKEN, 401 with the wrong one, and runs a backfill with the right one", async () => {
@@ -108,6 +123,6 @@ test("/health answers; /run is 404 without ADMIN_TOKEN, 401 with the wrong one, 
   assert.equal(body.errors.length, 0);
   assert.ok(body.sent > 0);
   assert.equal(body.sent, body.events);
-  const range = network.calls.find((c) => c.url.includes("/downloads/range/"));
+  const range = network.calls.findLast((c) => c.url.includes("/downloads/range/"));
   assert.match(range!.url, /\/downloads\/range\/2026-08-29:2026-09-27\//, "30 days ending on npm's last counted day");
 });

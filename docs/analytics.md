@@ -21,11 +21,14 @@ needs it to write the script into the pages.
 ```sh
 cd apps/site
 npx wrangler secret put POSTHOG_KEY           # the Worker: /ingest/* and demo_live_generation
-POSTHOG_KEY=phc_… npm run deploy              # the build writes the script into every page
+echo "POSTHOG_KEY=phc_…" > .env               # once: the build reads it (the file is gitignored)
+npm run deploy                                 # the build writes the script into every page
 ```
 
-A build without `POSTHOG_KEY` in its environment writes pages with no analytics at all, whatever
-the Worker has. A value that isn't a `phc_` key fails the build.
+A build without `POSTHOG_KEY` (in its environment or `apps/site/.env`) writes pages with no
+analytics at all, whatever the Worker has, so every site chart in PostHog reads 0. `npm run deploy`
+therefore refuses to deploy without one; `POSTHOG_KEY=off npm run deploy` deploys without analytics
+on purpose. A value that isn't a `phc_` key fails the build.
 
 **Studio** (studio.polyxd.com). The Worker tells the app whether analytics are on (`/api/me`), so
 there is nothing to set at build time.
@@ -73,7 +76,9 @@ Set these before the first key goes live:
 
 Every event also carries PostHog's own library properties. The ones from browsers carry the user
 agent, screen size, language, time zone, the page's address cut to origin and path, and the country
-PostHog derives before discarding the address. The Workers' events set `$geoip_disable` and
+(for Studio, PostHog's GeoIP derives it before discarding the address; for the site, the `/ingest`
+proxy adds Cloudflare's country, because PostHog's cookieless mode drops the address before GeoIP
+runs, PostHog/posthog#48660). The Workers' events set `$geoip_disable` and
 `$ip: null`, so they carry no location at all.
 
 ### polyxd.com: the pages (`apps/site/scripts/analytics.ts`)

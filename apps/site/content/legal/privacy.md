@@ -1,7 +1,7 @@
 ---
 title: Privacy policy
 description: What Polyxd collects on each of its services, why, who else sees it, how long it is kept, and your rights.
-updated: "29 September 2026"
+updated: "8 October 2026"
 ---
 
 ## The short version
@@ -41,7 +41,7 @@ This policy covers polyxd.com (the site, the docs, the gallery and the demos), P
   Addresses are sent without their query strings or fragments, and without ad-click ids.
 - **No cookies or local storage for analytics.** Nothing is stored in your browser. To count unique visitors, PostHog makes a code each day from your IP address, your browser details and a secret that changes daily, and uses it only for that day. The code can't be turned back into your IP address, and a new day gives you a new code, so we can't recognise you from one day to the next.
 - **Do Not Track and Global Privacy Control.** If your browser sends either signal, the analytics script isn't loaded at all.
-- **How it travels.** Events go to polyxd.com first, at `/ingest`, which passes them on to PostHog without cookies. PostHog uses your IP address to work out your country, then discards the address. It isn't stored.
+- **How it travels.** Events go to polyxd.com first, at `/ingest`, which passes them on to PostHog without cookies. Cloudflare, which runs polyxd.com, works out your country from your IP address, and `/ingest` adds only that country to the event. PostHog uses the address to make the day's visitor code above, then discards it. The address isn't stored.
 - **No advertising.** The site loads no advertising scripts and sets no cookies of its own.
 - **Your theme.** If you choose light or dark, the choice is saved in your browser's local storage as `pxd-theme`. It never leaves your browser.
 - **Fonts.** Pages load fonts from Google Fonts. To do that, your browser connects to Google, which sees your IP address and browser details. Google's use of this is covered by the [Google privacy policy](https://policies.google.com/privacy).

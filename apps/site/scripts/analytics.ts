@@ -1,7 +1,7 @@
 /**
  * polyxd.com's analytics script, built into the pages only when the build has a PostHog key:
  *
- *   POSTHOG_KEY=phc_… npm run build -w @polyxd/site
+ *   POSTHOG_KEY=phc_… npm run build -w @polyxd/site    (or put POSTHOG_KEY=phc_… in apps/site/.env)
  *
  * (POSTHOG_HOST picks the region's app for PostHog's own links; default the US cloud.) Without
  * the key the build writes no script, no vendor file and no tag: the pages are byte for byte what
@@ -30,10 +30,19 @@ export const POSTHOG_JS_VERSION: string = JSON.parse(readFileSync(`${REPO}node_m
 export const VENDOR_PATH = `/assets/vendor/posthog-${POSTHOG_JS_VERSION}.js`;
 export const SCRIPT_PATH = "/assets/analytics.js";
 
-/** The key from the build's environment, or null. A value that isn't a project key fails the build. */
-export function analyticsKey(env: NodeJS.ProcessEnv = process.env): string | null {
+/**
+ * The key from the build's environment (or apps/site/.env, which `npm run build` and `deploy`
+ * read), or null. A value that isn't a project key fails the build. `POSTHOG_KEY=off` builds
+ * without analytics on purpose; a deploy build (`deploy`) with no key at all stops, because pages
+ * shipped without the tag silently zero every site chart in PostHog.
+ */
+export function analyticsKey(env: NodeJS.ProcessEnv = process.env, deploy = false): string | null {
   const key = env.POSTHOG_KEY?.trim();
-  if (!key) return null;
+  if (key === "off") return null;
+  if (!key) {
+    if (deploy) throw new Error("No POSTHOG_KEY for a deploy: the pages would ship with no analytics. Put POSTHOG_KEY=phc_… in apps/site/.env, or set POSTHOG_KEY=off to deploy without analytics on purpose.");
+    return null;
+  }
   if (!/^phc_[A-Za-z0-9_-]{8,}$/.test(key)) throw new Error("POSTHOG_KEY should be a PostHog project key (phc_…), the public one.");
   return key;
 }
@@ -82,6 +91,8 @@ if (w.pxdTrack) {
     // Cookieless: nothing is stored in the browser; PostHog counts unique visitors with a daily
     // server-side hash that it discards (the project has cookieless server hash mode on).
     cookieless_mode: "always",
+    // Plain JSON, so the /ingest proxy can add the visitor's country (worker/analytics.ts withCountry).
+    disable_compression: true,
     persistence: "memory",
     person_profiles: "identified_only",
     autocapture: false,

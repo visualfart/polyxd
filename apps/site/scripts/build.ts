@@ -929,8 +929,10 @@ async function write(path: string, content: string) {
   await writeFile(path, content);
 }
 
-// Analytics are built in only with POSTHOG_KEY set (scripts/analytics.ts); a malformed key stops the build here.
-const ANALYTICS_KEY = analyticsKey();
+// Analytics are built in only with POSTHOG_KEY set (scripts/analytics.ts); a malformed key, or no
+// key on a deploy build, stops the build here.
+const ANALYTICS_KEY = analyticsKey(process.env, process.argv.includes("--deploy"));
+console.log(ANALYTICS_KEY ? "analytics: on" : "analytics: off (no POSTHOG_KEY), so the pages carry no tag");
 
 await rm(DIST, { recursive: true, force: true });
 await cp(join(SITE, "src/assets"), join(DIST, "assets"), { recursive: true });

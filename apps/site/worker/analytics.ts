@@ -40,6 +40,48 @@ export function posthogConfig(env: AnalyticsEnv): PostHogConfig | null {
 const FORWARD = ["content-type", "content-encoding", "accept", "user-agent"];
 const MAX_BODY = 1024 * 1024;
 
+/**
+ * The visitor's country as Cloudflare resolved it (two letters), or null. PostHog can't: in
+ * cookieless mode it drops the address before its GeoIP step runs (PostHog/posthog#48660).
+ */
+export function countryOf(request: Request): string | null {
+  const cc = ((request as { cf?: { country?: unknown } }).cf?.country ?? request.headers.get("cf-ipcountry")) as string | null;
+  // XX: unknown; T1: Tor.
+  return typeof cc === "string" && /^[A-Z]{2}$/.test(cc) && cc !== "XX" && cc !== "T1" ? cc : null;
+}
+
+const COUNTRY_NAMES = (() => {
+  try {
+    return new Intl.DisplayNames(["en"], { type: "region" });
+  } catch {
+    return null;
+  }
+})();
+
+/**
+ * The page's events with `$geoip_country_code` and `$geoip_country_name` added (only the country:
+ * no city, region or coordinates), or null to forward the body as it came. Only for an
+ * uncompressed JSON body on an event endpoint; the page's script turns compression off for this.
+ */
+export function withCountry(body: ArrayBuffer, url: URL, country: string | null): string | null {
+  if (!country || url.searchParams.has("compression")) return null;
+  if (!/^\/(e|batch|i\/v0\/e)\/?$/.test(url.pathname.replace(/^\/ingest/, ""))) return null;
+  let json: unknown;
+  try {
+    json = JSON.parse(new TextDecoder().decode(body));
+  } catch {
+    return null;
+  }
+  const list = Array.isArray(json) ? json : json && typeof json === "object" && Array.isArray((json as { batch?: unknown }).batch) ? (json as { batch: unknown[] }).batch : [json];
+  const name = COUNTRY_NAMES?.of(country) ?? country;
+  for (const event of list) {
+    const props = event && typeof event === "object" ? (event as { properties?: unknown }).properties : null;
+    if (!props || typeof props !== "object" || "$geoip_country_code" in props) continue;
+    Object.assign(props, { $geoip_country_code: country, $geoip_country_name: name });
+  }
+  return JSON.stringify(json);
+}
+
 /** /ingest/* → PostHog. A 404 when analytics are off. */
 export async function ingest(request: Request, env: AnalyticsEnv): Promise<Response> {
   const config = posthogConfig(env);
@@ -53,15 +95,17 @@ export async function ingest(request: Request, env: AnalyticsEnv): Promise<Respo
     const v = request.headers.get(h);
     if (v) headers.set(h, v);
   }
-  // PostHog works out the country from the address, then discards it (a project setting: see
-  // docs/analytics.md). Without it PostHog would see only Cloudflare's address.
+  // PostHog makes its daily cookieless visitor hash from the address, then discards it (see
+  // docs/analytics.md); without this it would see only Cloudflare's. The country comes from
+  // Cloudflare instead (withCountry), because cookieless mode drops the address before GeoIP.
   const ip = request.headers.get("cf-connecting-ip");
   if (ip) headers.set("x-forwarded-for", ip);
-  let body: ArrayBuffer | undefined;
+  let body: ArrayBuffer | string | undefined;
   if (request.method === "POST") {
     if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY) return new Response(null, { status: 413 });
     body = await request.arrayBuffer();
     if (body.byteLength > MAX_BODY) return new Response(null, { status: 413 });
+    body = withCountry(body, url, countryOf(request)) ?? body;
   }
   let upstream: Response;
   try {
