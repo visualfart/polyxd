@@ -956,7 +956,10 @@ for (const f of ["icon-180.png", "icon-192.png", "icon-512.png", "favicon.ico"])
 // packages/mcp/listing/screenshots, drawn by the real server (packages/mcp/listing/render.ts).
 await mkdir(join(DIST, "listing"), { recursive: true });
 for (const f of (await readdir(join(REPO, "packages/mcp/listing/screenshots"))).filter((f) => f.endsWith(".png"))) await copyFile(join(REPO, "packages/mcp/listing/screenshots", f), join(DIST, "listing", f));
-await copyFile(join(REPO, "packages/mcp/listing/icon-1024.png"), join(DIST, "listing", "icon-1024.png"));
+for (const f of ["icon-1024.png", "logo.png", "logo-dark.png", "logo-card.png"]) await copyFile(join(REPO, "packages/mcp/listing", f), join(DIST, "listing", f));
+// The store-style set (packages/mcp/listing/compose.ts), for listings and posts that take them.
+await mkdir(join(DIST, "listing", "marketing"), { recursive: true });
+for (const f of (await readdir(join(REPO, "packages/mcp/listing/marketing"))).filter((f) => f.endsWith(".png"))) await copyFile(join(REPO, "packages/mcp/listing/marketing", f), join(DIST, "listing", "marketing", f));
 // Social cards: one per page (scripts/og.ts), and the home card as the default /og.png.
 if (existsSync(OG_DIR)) await cp(OG_DIR, join(DIST, "og"), { recursive: true });
 await copyFile(existsSync(join(OG_DIR, "home.png")) ? join(OG_DIR, "home.png") : join(REPO, "brand/og.png"), join(DIST, "og.png"));
