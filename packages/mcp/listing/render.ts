@@ -66,6 +66,26 @@ for (const size of [512, 1024]) {
   console.log(`wrote listing/icon-${size}.png`);
 }
 
+// ---------- Wordmark logo ----------
+
+// The lockup as brand/build.ts sets it (the word at 0.8 of the mark, a gap of 5/32 of it), on a
+// transparent ground for the directory's "Logo URL": ink for light grounds, paper for dark.
+const FONTS_URL = "https://fonts.googleapis.com/css2?family=Young+Serif&display=swap";
+// logo-card.png sits on a paper card, so it reads on a light or a dark directory page alike: the
+// one to give a field that takes a single image.
+for (const [name, color, card] of [["logo.png", "#141413", false], ["logo-dark.png", "#F3F1EC", false], ["logo-card.png", "#141413", true]] as const) {
+  const m = 192;
+  const page = await browser.newPage({ viewport: { width: 900, height: 260 }, deviceScaleFactor: 2 });
+  await page.setContent(
+    `<!doctype html><head><link href="${FONTS_URL}" rel="stylesheet"></head><body style="margin:0;background:transparent"><div id="l" style="display:inline-flex;align-items:center;gap:${Math.round((m * 5) / 32)}px;${card ? `padding:40px 72px 40px 48px;background:${PAPER};border-radius:44px` : "padding:8px"}"><img src="${markUri}" alt="" style="width:${m}px;height:${m}px"><span style="font-family:'Young Serif',serif;font-size:${Math.round(m * 0.8)}px;letter-spacing:-0.015em;line-height:1;margin-top:-${Math.round(m * 0.04)}px;color:${color}">polyxd</span></div></body>`,
+    { waitUntil: "networkidle" },
+  );
+  await page.evaluate(() => document.fonts.ready);
+  await (await page.$("#l"))!.screenshot({ path: here(name).pathname, omitBackground: true });
+  await page.close();
+  console.log(`wrote listing/${name}`);
+}
+
 // ---------- Screenshots ----------
 
 /** A host page: the view in a sandboxed iframe, sized to what the view reports, fed one tool result. */
