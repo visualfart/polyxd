@@ -7,13 +7,15 @@
  *                       Claude's spec requires ("cropped to the app response only").
  *   marketing/*.png     store-style images, 2400 x 1500: a headline, one line, and the real screen
  *                       in a chat with the prompt that made it, on the brand's paper or night ground.
+ *                       The first two are for people new to all this: the same question answered
+ *                       as text and as a screen, then the three steps to turn Polyxd on.
  *                       For Cursor, OpenAI where allowed, polyxd.com and social posts.
  *
  * Nothing in either set is drawn by hand: every screen is a render of a document that passed the
  * spec's validator, polyxd_validate and polyxd_verify, so the pictures can't promise what the
  * product doesn't do.
  */
-import { mkdirSync, readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync } from "node:fs";
 import type { Browser } from "playwright";
 
 export interface RawShot {
@@ -158,7 +160,59 @@ export async function compose(browser: Browser, shots: RawShot[], variants: RawS
     { file: "4-your-numbers.png", ground: "night", eyebrow: "Dashboards from your data", headline: "Your numbers, as a dashboard.", line: "Metrics, a chart with a plain-words summary and a table, using only the numbers you gave. Nothing invented.", visual: chat(dashboard, true, "", 760) },
     { file: "5-chat-carries-on.png", ground: "paper", eyebrow: "It's a conversation", headline: "Press a button. The chat carries on.", line: "Your choice comes back as your next message, with what you entered. Nothing is paid, sent or saved behind your back.", visual: chat(compare, false, pressed, 640) },
   ];
-  for (const s of slides) {
+  // For people who've never heard of an MCP server: what changes, and how to turn it on.
+  const reply = [
+    "Sure! There are a few ways to split a bill fairly. First, work out the total including the tip: £126.40 plus 10% is £139.04.",
+    "If everyone shares equally, divide by four, which gives £34.76 each. If people ordered very different amounts, you could instead itemise: each person pays for their own dishes plus a share of the tip in proportion to their subtotal.",
+    "To ask your friends for the money, you could send each of them a message saying how much they owe and how to pay you. Would you like me to draft those messages, or work out an itemised split instead?",
+  ]
+    .map((p) => `<p style="margin:0 0 14px">${esc(p)}</p>`)
+    .join("");
+  const tag = (label: string, on: boolean) =>
+    `<div style="font:600 14px/1 'Hanken Grotesk';letter-spacing:0.12em;text-transform:uppercase;color:${on ? SIGNAL_TEXT : MUTED};margin-bottom:12px">${label}</div>`;
+  const { width: sw, height: sh } = sizeOf(split.path);
+  const beforeAfter = `<div style="display:grid;grid-template-columns:350px 1fr;gap:22px;width:880px;align-items:start">
+  <div>${tag("Without Polyxd", false)}<div style="background:#FFFFFF;border:1px solid ${RULE};border-radius:24px;padding:22px;height:600px;overflow:hidden;position:relative;box-sizing:border-box">
+    <div style="margin-left:auto;max-width:300px;background:${PAPER};border-radius:18px 18px 6px 18px;padding:10px 14px;font:400 15px/1.4 'Hanken Grotesk';color:${INK}">Split Friday's dinner between four of us. £126.40, plus 10% tip.</div>
+    <div style="margin-top:18px;font:400 15px/1.6 'Hanken Grotesk';color:${MUTED}">${reply}${reply}</div>
+    <div style="position:absolute;left:0;right:0;bottom:0;height:160px;background:linear-gradient(rgba(255,255,255,0),#FFFFFF)"></div>
+  </div></div>
+  <div>${tag("With Polyxd", true)}<div style="background:#FFFFFF;border:1px solid ${RULE};border-radius:24px;padding:10px;height:600px;box-sizing:border-box;display:flex;align-items:center;justify-content:center">
+    <img src="${uri(split.path)}" alt="" style="display:block;width:${Math.min(480, Math.round((570 * sw) / sh))}px;height:auto;border-radius:12px">
+  </div></div>
+</div>`;
+
+  const markSmall = (size: number) => MARK.replace("<svg", `<svg width="${size}" height="${size}"`);
+  const step = (n: number, title: string, line: string, art: string) => `<div style="display:grid;grid-template-columns:56px 1fr 330px;gap:22px;align-items:center;background:#FFFFFF;border:1px solid ${RULE};border-radius:24px;padding:24px 26px">
+  <div style="width:56px;height:56px;border-radius:50%;background:${INK};color:${PAPER};display:flex;align-items:center;justify-content:center;font:400 28px/1 'Young Serif'">${n}</div>
+  <div><div style="font:400 30px/1.1 'Young Serif';letter-spacing:-0.015em;color:${INK}">${esc(title)}</div><div style="margin-top:8px;font:400 17px/1.45 'Hanken Grotesk';color:${MUTED}">${esc(line)}</div></div>
+  <div style="display:flex;justify-content:flex-end">${art}</div>
+</div>`;
+  const toggle = `<div style="display:flex;align-items:center;gap:12px;border:1px solid ${RULE};border-radius:16px;padding:12px 16px;background:${PAPER}">
+  <span style="display:block;width:30px;height:30px">${markSmall(30)}</span>
+  <span style="font:600 18px/1 'Hanken Grotesk';color:${INK}">Polyxd</span>
+  <span style="margin-left:18px;width:50px;height:28px;border-radius:999px;background:${INK};position:relative;display:block"><span style="position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;background:${SIGNAL}"></span></span>
+</div>`;
+  const ask = `<div style="max-width:330px;background:${PAPER};border:1px solid ${RULE};border-radius:18px 18px 6px 18px;padding:12px 16px;font:400 16px/1.4 'Hanken Grotesk';color:${INK}">Help me split dinner between four of us.</div>`;
+  const tapArt = `<div style="position:relative;width:240px;height:150px;border-radius:14px;overflow:hidden;border:1px solid ${RULE};background:${split.background}">
+  <img src="${uri(split.path)}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top left;display:block">
+  <span style="position:absolute;left:96px;top:66px;width:18px;height:18px;border-radius:50%;background:${INK};border:3px solid #FFFFFF;box-shadow:0 0 0 5px rgba(255,110,64,0.45)"></span>
+</div>`;
+  const howTo = `<div style="display:flex;flex-direction:column;gap:22px;width:860px">
+  ${step(1, "Turn on Polyxd", "Find it in Claude's connectors and switch it on. No account, nothing to install.", toggle)}
+  ${step(2, "Ask the way you always do", "Plain words. Say \"show me\" when you'd rather see it than read it.", ask)}
+  ${step(3, "Tap instead of reading", "The answer arrives as a screen you can use. Your choices go back into the chat.", tapArt)}
+</div>`;
+
+  const intro: Slide[] = [];
+  intro.push({ file: "before-and-after.png", ground: "paper", eyebrow: "Less reading, more doing", headline: "Same question. Something you can use.", line: "Without Polyxd, Claude answers in paragraphs. With it, the same answer is a screen: tick the friends, pick how to split, press one button.", visual: beforeAfter });
+  intro.push({ file: "how-to-turn-it-on.png", ground: "paper", eyebrow: "Three steps", headline: "Better answers in Claude, in a minute.", line: "Polyxd works inside the chat you already use. Nothing to learn: ask as usual, and tap where you used to read.", visual: howTo });
+
+  // People who don't know what this is come first: what changes, then how to turn it on, then the detail.
+  const ordered = [...intro, ...slides].map((s, i) => ({ ...s, file: `${i + 1}-${s.file.replace(/^\d+-/, "")}` }));
+  rmSync(here("marketing/"), { recursive: true, force: true });
+  mkdirSync(here("marketing/"), { recursive: true });
+  for (const s of ordered) {
     await render(browser, slideHtml(s), 1600, 1000, 1.5, here(`marketing/${s.file}`));
     console.log(`wrote listing/marketing/${s.file}`);
   }
