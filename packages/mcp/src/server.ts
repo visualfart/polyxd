@@ -16,7 +16,7 @@ import { componentsOutput, docsOutput, guideOutput, packsOutput, showOutput, val
 import { DOCS, PAGE_LIMIT_CHARS, docPage, searchDocs } from "./docs.ts";
 import { PROMPTS, argsSchema } from "./prompts.ts";
 
-export const VERSION = "0.4.5";
+export const VERSION = "0.4.6";
 /** The MCP App resource every shown screen renders in. */
 export const VIEW_URI = "ui://polyxd/surface.html";
 /** MCP Apps' HTML profile. */

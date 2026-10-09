@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.6
+
+- Built on the Polyxd 0.4.6 packages. No change to the extension itself.
+
 ## 0.4.5
 
 - No changes to the extension: every Polyxd package moved to 0.4.5 together (a Claude Code plugin, and prompts in the MCP server).

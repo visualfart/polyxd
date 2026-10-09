@@ -41,7 +41,7 @@ git clone https://github.com/visualfart/polyxd && cd polyxd
 npm ci
 npm run build -w @polyxd/core && npm run build:preview -w @polyxd/react
 npm run package -w polyxd-vscode
-code --install-extension apps/vscode/polyxd-vscode-0.4.5.vsix     # or: cursor --install-extension …
+code --install-extension apps/vscode/polyxd-vscode-0.4.6.vsix     # or: cursor --install-extension …
 ```
 
 In Cursor, VSCodium and Windsurf you can also use **Extensions → … → Install from VSIX**.
