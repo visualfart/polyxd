@@ -2,7 +2,7 @@
 
 ## 0.4.5
 
-- Built on the Polyxd 0.4.5 packages. No change to the extension itself.
+- No changes to the extension: every Polyxd package moved to 0.4.5 together (a Claude Code plugin, and prompts in the MCP server).
 
 ## 0.4.4
 

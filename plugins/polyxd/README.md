@@ -1,4 +1,4 @@
-# Polyxd for Cursor
+# Polyxd for Claude Code and Cursor
 
 Interactive screens in the chat, in a real design system, checked before anyone sees them; and help putting Polyxd into your own code.
 
@@ -11,7 +11,19 @@ Interactive screens in the chat, in a real design system, checked before anyone 
   - `polyxd_packs`, `polyxd_components`: what's available.
   - `polyxd_docs`: answers from the Polyxd docs, with links.
 - **Skills**: `polyxd-screens` (show a screen in the chat) and `add-polyxd` (render, validate and verify Polyxd documents in your app, and make a pack from your own tokens).
-- **A rule** for writing and editing Polyxd documents.
+- **Prompts** from the server: `screen`, `as-screen`, `compare` and `add-to-app`. In Claude Code they're slash commands, such as `/mcp__polyxd__screen`.
+- **A rule** for writing and editing Polyxd documents (Cursor).
+
+## Install
+
+Claude Code:
+
+```sh
+claude plugin marketplace add visualfart/polyxd
+claude plugin install polyxd@polyxd
+```
+
+Cursor: from the Cursor Marketplace, or **Add plugin** with this repository.
 
 ## Try it
 
