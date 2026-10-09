@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/ds-polaris",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Shopify Polaris design-system pack for Polyxd (DTCG 2025.10 tokens)",
   "license": "Apache-2.0",
   "type": "module",

@@ -1,0 +1,16 @@
+{
+  "name": "polyxd",
+  "owner": { "name": "Polyxd", "url": "https://polyxd.com" },
+  "metadata": {
+    "description": "Polyxd for Claude: screens in the chat instead of walls of text, checked against the spec, in 25 design systems; and help adding Polyxd to your code."
+  },
+  "plugins": [
+    {
+      "name": "polyxd",
+      "source": "./plugins/polyxd",
+      "description": "Show interactive screens in the chat in Material 3, Carbon, GOV.UK and 22 more design systems, and add Polyxd's renderer, spec and verifier to your codebase, with answers from the Polyxd docs.",
+      "category": "design",
+      "homepage": "https://polyxd.com/docs/mcp/"
+    }
+  ]
+}

@@ -14,8 +14,9 @@ import { PACKS } from "./packs.generated.ts";
 import { componentDefinitions, componentNamed, exampleDirections, exampleDocuments } from "./spec.ts";
 import { componentsOutput, docsOutput, guideOutput, packsOutput, showOutput, validateOutput, verifyOutput } from "./output-schemas.ts";
 import { DOCS, PAGE_LIMIT_CHARS, docPage, searchDocs } from "./docs.ts";
+import { PROMPTS, argsSchema } from "./prompts.ts";
 
-export const VERSION = "0.4.4";
+export const VERSION = "0.4.5";
 /** The MCP App resource every shown screen renders in. */
 export const VIEW_URI = "ui://polyxd/surface.html";
 /** MCP Apps' HTML profile. */
@@ -339,6 +340,14 @@ export function createServer(options: ServerOptions): McpServer {
   for (const ex of [...exampleDocuments(), ...exampleDirections()]) {
     server.registerResource(ex.name, ex.uri, { title: ex.title, description: ex.description, mimeType: "application/json" }, async (uri) => ({
       contents: [{ uri: uri.href, mimeType: "application/json", text: ex.json }],
+    }));
+  }
+
+  // Ready-made asks for people who don't know what to type: slash commands in Claude Code, a menu elsewhere.
+  for (const p of PROMPTS) {
+    server.registerPrompt(p.name, { title: p.title, description: p.description, argsSchema: argsSchema(p) }, async (args) => ({
+      description: p.description,
+      messages: [{ role: "user" as const, content: { type: "text" as const, text: p.text(args as Record<string, string | undefined>) } }],
     }));
   }
 
