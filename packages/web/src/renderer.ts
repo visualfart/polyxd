@@ -238,7 +238,15 @@ export class Renderer {
     if (!el) return;
     if (this.observers.has(el)) return;
     if (typeof ResizeObserver === "undefined") return;
-    const measure = () => fn(el.getBoundingClientRect().width);
+    // Only a change of width reaches fn: a redraw that only changes the height would otherwise
+    // notify again in the same frame ("ResizeObserver loop completed with undelivered notifications").
+    let last = -1;
+    const measure = () => {
+      const width = el.getBoundingClientRect().width;
+      if (width === last) return;
+      last = width;
+      fn(width);
+    };
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     this.observers.set(el, ro);

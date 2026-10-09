@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/analytics",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Sends Polyxd's semantic events to your own analytics: PostHog, Segment, Google Analytics 4 or your endpoint, with an allow-list guard. No dependencies; Polyxd receives nothing",
   "license": "Apache-2.0",
   "type": "module",
@@ -24,7 +24,7 @@
     "test": "node --test \"test/**/*.test.ts\""
   },
   "devDependencies": {
-    "@polyxd/core": "^0.4.5",
+    "@polyxd/core": "^0.4.6",
     "ajv": "^8.20.0"
   },
   "repository": {

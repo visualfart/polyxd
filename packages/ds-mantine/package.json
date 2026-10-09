@@ -1,6 +1,6 @@
 {
   "name": "@polyxd/ds-mantine",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Mantine 8 design-system pack for Polyxd (DTCG 2025.10 tokens)",
   "license": "Apache-2.0",
   "type": "module",

@@ -1,0 +1,939 @@
+/*
+ * Film D2, "Ship the screen, not the backlog" (STORY-DEV-2.md): deep IDE dark. On top of kit.css and
+ * film-b4.css (the camera rig, the hand-drawn layer, the captions). Film D's set styles, re-coloured:
+ * ground #0B0B0A with a faint dot grid, panels #141413 / #1C1B19 with #2A2825 rules, warm off-white
+ * type, signal orange the only accent. No blue or purple in the film's own palette.
+ */
+:root {
+  --g: #0b0b0a;
+  --p1: #141413;
+  --p2: #1c1b19;
+  --rule: #2a2825;
+  --fg: #f3f1ec;
+  --mut: #a8a298;
+  --sig: #ff6e40;
+  --ok: #4cc38a;
+}
+html,
+body,
+#root {
+  background: var(--g);
+  color: var(--fg);
+}
+
+/* ——— Ground: a faint dot grid the camera drifts over; a vignette on the frame ——— */
+#d-ground {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(243, 241, 236, 0.075) 1.3px, transparent 1.9px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+#d-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 75% 70% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none;
+}
+
+#rig .set {
+  position: absolute;
+  width: 1920px;
+  height: 1080px;
+}
+#rig .set * {
+  box-sizing: border-box;
+}
+#ink {
+  --hw-ink: #f3f1ec;
+}
+.hand {
+  color: var(--sig);
+}
+.hw-draw.glow svg {
+  filter: drop-shadow(0 0 6px rgba(255, 110, 64, 0.45));
+}
+.hw-callout svg {
+  filter: drop-shadow(0 0 6px rgba(255, 110, 64, 0.4));
+}
+
+/* ——— The issues list (a generic tracker: no product's name, logo or icons) ——— */
+.d2-list {
+  position: absolute;
+  border-radius: 22px;
+  background: var(--p1);
+  border: 1px solid var(--rule);
+  box-shadow: 0 40px 110px rgba(0, 0, 0, 0.6);
+  font-family: "Hanken Grotesk", sans-serif;
+  color: var(--fg);
+}
+.d2-list-head {
+  position: absolute;
+  left: 40px;
+  top: 34px;
+  font-size: 48px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.d2-tabs {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 120px;
+  height: 94px;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 44px;
+  font-size: 30px;
+  color: var(--mut);
+  border-bottom: 1px solid var(--rule);
+  background: var(--p2);
+}
+.d2-tabs .on {
+  color: var(--fg);
+  font-weight: 650;
+}
+.d2-tabs b {
+  font-weight: 700;
+}
+.d2-tabs .cl {
+  font-style: normal;
+  margin-right: 10px;
+}
+.d2-tabs .od,
+.d2-row .od {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid var(--ok);
+  box-shadow: inset 0 0 0 4px var(--p1), inset 0 0 0 12px var(--ok);
+  margin-right: 14px;
+  vertical-align: -3px;
+}
+.d2-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 104px;
+  border-bottom: 1px solid var(--rule);
+}
+.d2-row .od {
+  position: absolute;
+  left: 38px;
+  top: 22px;
+}
+.d2-row .tt {
+  position: absolute;
+  left: 84px;
+  top: 14px;
+  font-size: 32px;
+  font-weight: 650;
+  white-space: nowrap;
+  color: var(--fg);
+}
+.d2-row .meta {
+  position: absolute;
+  left: 84px;
+  top: 60px;
+  font-size: 22px;
+  color: var(--mut);
+  white-space: nowrap;
+}
+.lbl {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 1px 12px;
+  border-radius: 14px;
+  font-size: 19px;
+  font-weight: 600;
+  color: #ff8a63;
+  background: rgba(255, 110, 64, 0.12);
+  border: 1px solid rgba(255, 110, 64, 0.4);
+}
+.d2-row .av,
+.d2-card .av {
+  position: absolute;
+  display: flex;
+}
+.d2-row .av {
+  right: 150px;
+  top: 30px;
+}
+.d2-row .av span,
+.d2-card .av span {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  margin-left: -10px;
+  border: 3px solid var(--p1);
+  color: #141413;
+  font-size: 15px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.d2-row .up {
+  position: absolute;
+  right: 36px;
+  top: 32px;
+  font-size: 26px;
+  color: var(--mut);
+}
+.d2-row .up b {
+  color: var(--fg);
+  font-weight: 650;
+}
+
+/* ——— The board (the same tracker at the payoff) ——— */
+.d2-board {
+  position: absolute;
+  border-radius: 26px;
+  background: var(--p1);
+  border: 1px solid var(--rule);
+  box-shadow: 0 40px 110px rgba(0, 0, 0, 0.6);
+}
+.d2-board-head {
+  position: absolute;
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 40px;
+  font-weight: 650;
+  color: var(--fg);
+  display: none;
+}
+.d2-col {
+  position: absolute;
+  border-radius: 18px;
+  background: var(--p2);
+  border: 1px solid var(--rule);
+}
+.d2-col-head {
+  position: absolute;
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 30px;
+  font-weight: 650;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.d2-col-head b {
+  display: inline-block;
+  margin-left: 14px;
+  min-width: 46px;
+  padding: 0 12px;
+  border-radius: 18px;
+  background: #2a2825;
+  color: var(--mut);
+  font-family: "DM Mono", monospace;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 36px;
+  text-align: center;
+  vertical-align: 3px;
+}
+.d2-card {
+  position: absolute;
+  height: 100px;
+  border-radius: 14px;
+  background: #23211e;
+  border: 1px solid #34312c;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+  font-family: "Hanken Grotesk", sans-serif;
+}
+.d2-card .tt {
+  position: absolute;
+  left: 22px;
+  top: 14px;
+  right: 80px;
+  font-size: 27px;
+  font-weight: 650;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.d2-card .meta {
+  position: absolute;
+  left: 22px;
+  top: 58px;
+  font-size: 21px;
+  color: var(--mut);
+  font-family: "DM Mono", monospace;
+}
+.d2-card .av {
+  right: 18px;
+  top: 50px;
+}
+.d2-card .av span {
+  width: 36px;
+  height: 36px;
+  border-color: #23211e;
+  font-size: 13px;
+}
+.d-tile.shot {
+  border-radius: 10px;
+  border: 1px solid #34312c;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+/* ——— Windows: the editor, the terminal ——— */
+.d-win {
+  position: absolute;
+  border-radius: 22px;
+  background: var(--p1);
+  border: 1px solid var(--rule);
+  box-shadow: 0 40px 110px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+.d-win.focus {
+  box-shadow: 0 0 0 1px rgba(255, 110, 64, 0.28), 0 0 90px rgba(255, 110, 64, 0.1), 0 40px 110px rgba(0, 0, 0, 0.6);
+}
+.d-win .bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 60px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px;
+  background: var(--p2);
+}
+.d-win .bar i,
+.d-term .bar i {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  background: #3a3733;
+}
+.d-win .tab {
+  margin-left: 18px;
+  height: 60px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  font-family: "DM Mono", monospace;
+  font-size: 24px;
+  color: var(--fg);
+  background: var(--p1);
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+  box-shadow: inset 0 2px 0 var(--sig);
+}
+.d-win .tab b {
+  font-weight: 400;
+  color: var(--sig);
+  margin-right: 10px;
+}
+.d-code {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 60px;
+  bottom: 0;
+  overflow: hidden;
+  font-family: "DM Mono", monospace;
+  color: var(--fg);
+}
+.d-file {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 26px;
+}
+.d-line {
+  position: relative;
+  height: 48px;
+  line-height: 48px;
+  font-size: 30px;
+  white-space: pre;
+  padding-left: 96px;
+}
+.d-line .ln {
+  position: absolute;
+  left: 0;
+  width: 70px;
+  text-align: right;
+  color: #8a857b;
+  font-size: 22px;
+}
+.d-line .tx {
+  position: relative;
+  z-index: 1;
+}
+.d-band {
+  position: absolute;
+  left: 84px;
+  height: 48px;
+  border-radius: 8px;
+  background: rgba(255, 110, 64, 0.14);
+  box-shadow: inset 4px 0 0 #ff6e40, 0 0 26px rgba(255, 110, 64, 0.16);
+  transform-origin: 0 50%;
+  opacity: 0;
+  z-index: 0;
+}
+.d-caret {
+  position: absolute;
+  width: 3px;
+  height: 34px;
+  background: var(--sig);
+  border-radius: 2px;
+  box-shadow: 0 0 10px 1px rgba(255, 110, 64, 0.8);
+  z-index: 3;
+  opacity: 0;
+}
+/* Syntax, dark, from the brand: keys off-white, strings warm orange, numbers amber, punctuation muted. */
+.d-code .k,
+.d-code .tg {
+  color: #f3f1ec;
+}
+.d-code .s {
+  color: #ff8a63;
+}
+.d-code .n {
+  color: #e8c27a;
+}
+.d-code .p {
+  color: #8a857b;
+}
+.d-code .kw {
+  color: #e8c27a;
+}
+.d-code .c {
+  color: #6f6a62;
+}
+.d-code .at {
+  color: #d8cfc0;
+}
+
+/* The integrated terminal pane at the bottom of the editor, and the terminal window. */
+.d-pane {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 240px;
+  background: #0f0f0e;
+  border-top: 1px solid var(--rule);
+  color: var(--fg);
+  font-family: "DM Mono", monospace;
+  padding: 24px 32px;
+}
+.d-term {
+  position: absolute;
+  border-radius: 22px;
+  background: var(--p1);
+  border: 1px solid var(--rule);
+  color: var(--fg);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(255, 110, 64, 0.22), 0 0 80px rgba(255, 110, 64, 0.08), 0 40px 110px rgba(0, 0, 0, 0.6);
+  font-family: "DM Mono", monospace;
+}
+.d-term .bar {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 22px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--p2);
+}
+.d-term .bar span {
+  margin-left: 14px;
+  font-size: 20px;
+  color: var(--mut);
+}
+.d-tl {
+  white-space: pre;
+  font-size: 28px;
+  line-height: 44px;
+  height: 44px;
+  color: #d9d4c8;
+}
+.d-tl.cmd {
+  color: var(--fg);
+}
+.d-tl.cmd .pr {
+  color: var(--sig);
+}
+.d-tl.dim {
+  color: var(--mut);
+}
+.d-tl.ok {
+  color: var(--ok);
+}
+.d-tl .hl {
+  color: #ffffff;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
+}
+.d-tcaret {
+  display: inline-block;
+  width: 14px;
+  height: 28px;
+  background: var(--sig);
+  box-shadow: 0 0 10px rgba(255, 110, 64, 0.8);
+  vertical-align: -5px;
+  margin-left: 2px;
+}
+
+/* ——— Phones and screens (each pack's dark mode) ——— */
+.d-phone {
+  position: absolute;
+  width: 442px;
+  height: 926px;
+  padding: 13px;
+  border-radius: 64px;
+  background: #1c1b19;
+  border: 1px solid #34312c;
+  box-shadow: 0 0 0 1px rgba(255, 110, 64, 0.18), 0 0 90px rgba(255, 110, 64, 0.08), 0 40px 110px rgba(0, 0, 0, 0.65);
+}
+.d-phone .phone-glass {
+  position: relative;
+  width: 416px;
+  height: 900px;
+  border-radius: 51px;
+  overflow: hidden;
+  background: #000;
+}
+.d-app {
+  position: absolute;
+  inset: 0;
+  background: var(--pxd-color-surface-default);
+  color: var(--pxd-color-text-default);
+  font-family: var(--pxd-type-body-default-family);
+}
+.d-app .pad {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 56px;
+  padding: 0 14px;
+}
+.d-app .home-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: 136px;
+  height: 5px;
+  margin-left: -68px;
+  border-radius: 3px;
+  background: var(--pxd-color-text-default);
+  opacity: 0.85;
+}
+.d-app *,
+.d-tile * {
+  transition: none !important;
+  animation: none !important;
+  caret-color: transparent !important;
+}
+.d2-tap {
+  position: relative;
+  overflow: visible !important;
+  filter: brightness(calc(1 + 0.25 * var(--press, 0)));
+  transform: scale(calc(1 - 0.03 * var(--press, 0)));
+}
+.d2-tap::after {
+  content: "";
+  position: absolute;
+  left: 70%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-radius: 23px;
+  background: rgba(243, 241, 236, 0.28);
+  border: 2px solid rgba(255, 110, 64, 0.95);
+  box-shadow: 0 0 16px rgba(255, 110, 64, 0.6);
+  opacity: var(--finger, 0);
+  transform: scale(calc(1.1 - 0.1 * var(--finger, 0)));
+  pointer-events: none;
+}
+.d-label {
+  position: absolute;
+  font-family: "DM Mono", monospace;
+  font-size: 26px;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.d-label.muted {
+  color: var(--mut);
+  font-size: 22px;
+}
+.d-tile {
+  position: absolute;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: var(--p1);
+}
+.d-tile .in {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  background: var(--pxd-color-surface-default);
+  color: var(--pxd-color-text-default);
+  font-family: var(--pxd-type-body-default-family);
+  padding: 24px 18px;
+}
+.d-tile.wide .in {
+  padding: 36px 300px;
+}
+
+/* The event a tap sends to the host. */
+.d-event {
+  position: absolute;
+  padding: 18px 26px;
+  border-radius: 18px;
+  background: var(--p2);
+  border: 1.5px solid rgba(255, 110, 64, 0.7);
+  box-shadow: 0 0 40px rgba(255, 110, 64, 0.18), 0 20px 50px rgba(0, 0, 0, 0.6);
+  font-family: "DM Mono", monospace;
+  font-size: 28px;
+  line-height: 42px;
+  white-space: pre;
+  color: var(--fg);
+  transform-origin: 50% 50%;
+}
+.d-event .s {
+  color: #ff8a63;
+}
+
+/* ——— Screen-space layers ——— */
+#d-veil {
+  position: absolute;
+  inset: 0;
+  background: var(--g);
+  opacity: 0;
+  pointer-events: none;
+}
+#d-turn-mark {
+  position: absolute;
+  left: 50%;
+  top: 205px;
+  width: 170px;
+  height: 170px;
+  margin-left: -85px;
+  opacity: 0;
+  filter: drop-shadow(0 0 30px rgba(255, 110, 64, 0.35));
+}
+#d-fly {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  border-radius: 14px;
+  background: var(--p1);
+  border: 1px solid rgba(255, 110, 64, 0.6);
+  box-shadow: 0 0 60px rgba(255, 110, 64, 0.16), 0 30px 80px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  font-family: "Hanken Grotesk", sans-serif;
+  color: var(--fg);
+}
+#d-fly .t {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 860px;
+  height: 150px;
+  padding: 26px 40px 0 86px;
+  transform-origin: 0 0;
+  white-space: nowrap;
+}
+#d-fly .t .od {
+  position: absolute;
+  left: 36px;
+  top: 36px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid var(--ok);
+  box-shadow: inset 0 0 0 5px var(--p1), inset 0 0 0 14px var(--ok);
+}
+#d-fly .t .a {
+  font-size: 38px;
+  font-weight: 650;
+}
+#d-fly .t .b {
+  margin-top: 8px;
+  font-size: 26px;
+  color: var(--mut);
+}
+
+/* Scrims behind captions: across the top for the wide code shots, down the left for the side ones. */
+#d-scrim {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 240px;
+  background: linear-gradient(rgba(11, 11, 10, 0.96) 0%, rgba(11, 11, 10, 0.9) 55%, rgba(11, 11, 10, 0));
+  opacity: 0;
+  pointer-events: none;
+}
+#d-lscrim {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 790px;
+  background: linear-gradient(90deg, rgba(11, 11, 10, 0.92) 0%, rgba(11, 11, 10, 0.8) 72%, rgba(11, 11, 10, 0));
+  opacity: 0;
+  pointer-events: none;
+}
+.b4cap .line {
+  color: var(--fg);
+}
+.b4cap.dtop {
+  top: 58px;
+  bottom: auto;
+  left: 120px;
+  width: 1700px;
+  height: auto;
+  display: block;
+}
+.b4cap.dtop .line {
+  font-size: 68px;
+}
+.b4cap.dnarrow {
+  width: 740px;
+}
+.b4cap.dnarrow .line {
+  font-size: 72px;
+}
+
+/* ——— Payoff: the To Do fade, the screen-cards ——— */
+.d2-more {
+  position: absolute;
+  border-radius: 0 0 18px 18px;
+  background: linear-gradient(rgba(28, 27, 25, 0) 0%, #1c1b19 62%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 26px;
+  z-index: 50;
+}
+.d2-more span {
+  font-family: "DM Mono", monospace;
+  font-size: 26px;
+  color: var(--mut);
+}
+.d2-sc {
+  position: absolute;
+  border-radius: 14px;
+  background: #23211e;
+  border: 1px solid #3a3631;
+  box-shadow: 0 0 0 1px rgba(255, 110, 64, 0.12), 0 16px 40px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  z-index: 60;
+}
+.d2-sc .hd {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border-bottom: 1px solid #34312c;
+  font-family: "Hanken Grotesk", sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.d2-sc .hd i {
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 6px;
+  background: #4a4640;
+}
+.d2-sc .hd .tt {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 22px;
+  font-weight: 650;
+  color: var(--fg);
+  margin-left: 4px;
+}
+.d2-sc .hd .n {
+  flex: none;
+  font-family: "DM Mono", monospace;
+  font-size: 18px;
+  color: var(--mut);
+}
+.d2-sc .bd {
+  position: absolute;
+  left: 0;
+}
+.d2-sc .scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--sig);
+  box-shadow: 0 0 16px 3px rgba(255, 110, 64, 0.55);
+  opacity: 0;
+}
+.d-tile.flat {
+  border: 0;
+  border-radius: 0;
+}
+
+/* ——— Style it: the kind of system, pinned beside the prop; the enterprise desktop window ——— */
+.d2-kind {
+  position: absolute;
+  white-space: nowrap;
+  padding: 6px 18px;
+  border-radius: 26px;
+  background: #1c1b19;
+  border: 1.5px solid rgba(255, 110, 64, 0.75);
+  box-shadow: 0 0 24px rgba(255, 110, 64, 0.2);
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 28px;
+  line-height: 36px;
+  color: var(--fg);
+  transform-origin: 0 50%;
+}
+.d2-kind b {
+  font-weight: 650;
+  color: #ff8a63;
+  margin-right: 12px;
+}
+.d2-desk {
+  position: absolute;
+  border-radius: 16px;
+  background: var(--p1);
+  border: 1px solid #3a3631;
+  box-shadow: 0 0 0 1px rgba(255, 110, 64, 0.2), 0 40px 110px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+.d2-desk .bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  background: var(--p2);
+  border-bottom: 1px solid var(--rule);
+}
+.d2-desk .bar i {
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  background: #4a4640;
+}
+.d2-desk .bar span {
+  margin-left: 12px;
+  font-family: "DM Mono", monospace;
+  font-size: 20px;
+  color: var(--mut);
+}
+
+/* The Open count rolls like an odometer: the old number leaves upward, the new one arrives from below.
+   Clipped vertically only, sized for four digits in tabular figures, so no digit is ever cut. */
+.d2-list-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  line-height: 1;
+}
+.roll {
+  position: relative;
+  display: inline-block;
+  width: 3.4ch;
+  height: 1.2em;
+  clip-path: inset(0 -1em);
+  vertical-align: -0.24em;
+  font-variant-numeric: tabular-nums;
+  font-weight: inherit;
+}
+.roll span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  line-height: 1.2em;
+}
+.d2-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #2a2825;
+  color: var(--mut);
+  font-size: 28px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.d2-pill .roll {
+  vertical-align: 0;
+  text-align: center;
+}
+#rig .set > .hw-draw {
+  z-index: 80;
+}
+
+/* Who is writing the document: you, then your agent. A small chip that rides under the caret. */
+.d2-author {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  padding: 2px 12px;
+  border-radius: 14px;
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 22px;
+  font-weight: 650;
+  line-height: 28px;
+  white-space: nowrap;
+  opacity: 0;
+}
+.d2-author.you {
+  background: #2a2825;
+  color: var(--fg);
+}
+.d2-author.you i {
+  display: inline-block;
+  width: 2px;
+  height: 18px;
+  margin-right: 6px;
+  vertical-align: -3px;
+  background: var(--fg);
+}
+.d2-author.ag {
+  background: rgba(255, 110, 64, 0.16);
+  border: 1px solid rgba(255, 110, 64, 0.7);
+  color: #ff8a63;
+  box-shadow: 0 0 16px rgba(255, 110, 64, 0.3);
+}
+.d2-author.ag b {
+  color: var(--sig);
+  font-weight: 400;
+}
+
+
+/* A supporting line under a side caption (Describe it: how an agent gets Polyxd). */
+.d2-sub {
+  position: absolute;
+  left: 150px;
+  top: 720px;
+  font-family: "DM Mono", monospace;
+  font-size: 28px;
+  line-height: 36px;
+  color: var(--mut);
+  white-space: nowrap;
+  opacity: 0;
+}

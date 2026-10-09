@@ -1,0 +1,20 @@
+{
+  "tasks": [
+    {
+      "id": "reschedule-order",
+      "document": "order-status",
+      "instruction": "Where's my order? I need it later today.",
+      "steps": [
+        {
+          "press": "Change delivery time"
+        }
+      ],
+      "expect": {
+        "event": "order.reschedule",
+        "context": {
+          "orderId": "4821"
+        }
+      }
+    }
+  ]
+}
