@@ -31,7 +31,14 @@ It needs no account and no sign-in. Every tool is read-only. The server keeps no
 
 **Claude Desktop.** Claude Desktop uses the connectors on your claude.ai account, so add it in claude.ai as above and it shows up in the app too.
 
-**Claude Code.**
+**Claude Code.** Install the Polyxd plugin. It adds the server, two skills (one for showing screens in the chat, one for adding Polyxd to your code) and the prompts below:
+
+```sh
+claude plugin marketplace add visualfart/polyxd
+claude plugin install polyxd@polyxd
+```
+
+Or add only the server:
 
 ```sh
 claude mcp add --transport http polyxd https://mcp.polyxd.com/mcp
@@ -91,7 +98,7 @@ claude mcp add polyxd -- npx -y @polyxd/mcp
 
 ## The tools
 
-All six are read-only.
+All seven are read-only.
 
 | Tool | What it does |
 |---|---|
@@ -110,6 +117,19 @@ Every tool also returns its result as structured data, and says what that data l
 `polyxd_verify` runs the document checks only, from `@polyxd/verifier/static`, so installing the server installs no Playwright and no browser. The rendered checks (accessibility, layout and agent tasks) need a browser, so run [`polyxd-verify`](/docs/verifier/) for those.
 
 The server also lists the spec's example documents as resources (`polyxd://examples/<name>.json`), and the example Design Directions (`polyxd://directions/<name>.json`).
+
+## The prompts
+
+The server also offers ready-made asks, for when you'd rather pick than type. Claude Code lists them as slash commands, such as `/mcp__polyxd__screen`; other apps show them in a menu, if they show prompts at all.
+
+| Prompt | What it asks for |
+|---|---|
+| `screen` | Show something as an interactive screen instead of text. Takes `what` and, optionally, a `pack`. |
+| `as-screen` | Turn the last answer into a screen, with its choices and fields as controls. |
+| `compare` | Compare a few `options` side by side, with a button to pick one. |
+| `add-to-app` | Add Polyxd's renderer, validator and verifier to the project you're working in, following these docs. |
+
+Each is only a message from you to the model: it asks for what the tools already do, and changes nothing about them.
 
 ## The MCP App
 

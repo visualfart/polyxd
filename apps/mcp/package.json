@@ -11,8 +11,8 @@
     "test": "npm run build -w @polyxd/mcp && node --test \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@polyxd/mcp": "^0.4.4",
-    "@polyxd/spec": "^0.4.4"
+    "@polyxd/mcp": "^0.4.5",
+    "@polyxd/spec": "^0.4.5"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260919.1",

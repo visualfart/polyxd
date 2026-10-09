@@ -2,7 +2,7 @@
   "name": "polyxd-vscode",
   "displayName": "Polyxd",
   "description": "Write Polyxd UI documents with completion, the static check as you type, a live preview in 13 design systems, and the verifier a command away. Adds the Polyxd MCP server to Cursor and VS Code's agent.",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "publisher": "polyxd",
   "private": true,
   "license": "Apache-2.0",
@@ -238,8 +238,8 @@
     "vscode:prepublish": "node scripts/build.ts"
   },
   "devDependencies": {
-    "@polyxd/react": "^0.4.4",
-    "@polyxd/spec": "^0.4.4",
+    "@polyxd/react": "^0.4.5",
+    "@polyxd/spec": "^0.4.5",
     "@types/vscode": "^1.96.0",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",
