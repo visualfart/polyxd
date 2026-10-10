@@ -132,6 +132,9 @@ function errorClass(tool: string, response: any, status: number): string | undef
   if (isObject(response.error)) return RPC_ERRORS[response.error.code] ?? "rpc_error";
   const result = response.result;
   if (!isObject(result) || result.isError !== true) return undefined;
+  // Arguments that miss the tool's input schema (probes often send `{}`): the SDK answers before the tool runs.
+  const text = Array.isArray(result.content) && isObject(result.content[0]) ? result.content[0].text : undefined;
+  if (typeof text === "string" && text.startsWith("Input validation error")) return "invalid_arguments";
   if (tool === "polyxd_show") return isObject(result.structuredContent) && result.structuredContent.shown === false ? "invalid_document" : "unknown_pack";
   if (tool === "polyxd_components") return "unknown_component";
   if (tool === "polyxd_verify") return "unknown_direction";

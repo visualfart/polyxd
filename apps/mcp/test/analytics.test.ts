@@ -107,6 +107,9 @@ test("with a key: one event per initialize and per tool call, with counts and fi
     { name: "polyxd_components", arguments: { name: "ZqNoSuchComponent" } },
     { name: "polyxd_docs", arguments: { query: "zqsecret question about my private roadmap" } },
     { name: "polyxd_docs", arguments: { page: "zq-secret-page" } },
+    { name: "polyxd_validate", arguments: {} },
+    { name: "polyxd_verify", arguments: {} },
+    { name: "polyxd_show", arguments: {} },
   ];
   try {
     for (const c of calls) await client.callTool(c);
@@ -137,7 +140,8 @@ test("with a key: one event per initialize and per tool call, with counts and fi
   assert.equal(init[0].properties.client_version, "1.2.3");
   assert.match(init[0].properties.protocol_version, /^\d{4}-\d{2}-\d{2}$/);
 
-  const [guide, validate, verify, shown, badPack, invalid, component, search, page] = tools.map((e) => e.properties);
+  const [guide, validate, verify, shown, badPack, invalid, component, search, page, ...noArgs] = tools.map((e) => e.properties);
+  for (const t of noArgs) assert.deepEqual([t.ok, t.error], [false, "invalid_arguments"], `${t.tool} with no arguments is an argument error, not a tool's own error`);
   assert.deepEqual([search.tool, search.ok], ["polyxd_docs", true]);
   assert.deepEqual([page.tool, page.ok, page.error], ["polyxd_docs", false, "unknown_page"]);
   assert.deepEqual([guide.tool, guide.ok], ["polyxd_guide", true]);
